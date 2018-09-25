@@ -8,6 +8,11 @@
 using namespace std;
 using namespace scam;
 
+namespace
+{
+    WorkQueue queue;
+}
+
 class OneShotWorker : public Worker
 {
 public:
@@ -20,9 +25,8 @@ public:
 class Countdown : public Worker
 {
 public:
-    Countdown(size_t n, WorkQueue & queue)
+    Countdown(size_t n)
         : n(n)
-        , queue(queue)
     {
     }
 
@@ -34,21 +38,18 @@ public:
         else {
             cout << n << "... ";
 
-            WorkerHandle next = std::make_shared<Countdown>(n-1, queue);
+            WorkerHandle next = std::make_shared<Countdown>(n-1);
             queue.put(next);
         }
     }
 
 private:
     size_t n;
-    WorkQueue & queue;
 };
 
 int main(int argc, char ** argv)
 {
-    WorkQueue queue;
-
-    WorkerHandle count = std::make_shared<Countdown>(3, queue);
+    WorkerHandle count = std::make_shared<Countdown>(3);
     queue.put(count);
 
     WorkerHandle start = std::make_shared<OneShotWorker>();

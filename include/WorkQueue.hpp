@@ -11,13 +11,13 @@ namespace scam
     class WorkQueue
     {
     public:
-	void put(std::shared_ptr<Worker> & worker);
-	std::shared_ptr<Worker> get();
+        void put(std::shared_ptr<Worker> & worker);
+        std::shared_ptr<Worker> get();
 
-	bool empty() const;
+        bool empty() const;
 
     private:
-	std::deque<std::shared_ptr<Worker>> workers;
+        std::deque<std::shared_ptr<Worker>> workers;
     };
 }
 

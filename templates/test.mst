@@ -5,8 +5,14 @@ Comments for the human users
 [name]
 One Line for reporting
 
-[input]
-Scheme input
+[test]
+(list some
+      scam
+      (expressions go here)
+      )
 
-[result]
-One Expression per input
+=> an expected result
+== continued on next line as long as needed
+== leading and trailing whitespace trimmed from
+== both actual and expected
+

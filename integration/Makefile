@@ -1,5 +1,5 @@
 
-all : unittests
+all : testscam
 
 SRC = $(wildcard *.cpp)
 OBJ = $(SRC:.cpp=.o)
@@ -8,7 +8,7 @@ DEP = $(SRC:.cpp=.d)
 CPP = /usr/bin/g++ -g -std=c++11
 INC = -I include -I ../include
 
-unittests : $(OBJ) lib
+testscam : $(OBJ) lib
 	$(CPP) -o $@ $(OBJ) -L../src -lscam
 
 $(OBJ) : %.o : %.cpp
@@ -20,13 +20,13 @@ $(DEP) : %.d : %.cpp
 lib :
 	make -C ../src all
 
-test : unittests
-	@./unittests
+test : testscam
+	@./testscam `find . -name '*.mst'`
+
+current : testscam
+	@./testscheme current.mst
 
 clean :
-	make -C ../src clean
-	-@rm -f *.o *.d unittests
+	-@rm -f *.o *.d testscam
 
 include $(DEP)
-
-.PHONY : test

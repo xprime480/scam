@@ -12,7 +12,7 @@ std::shared_ptr<Worker> WorkQueue::get()
 {
     static std::shared_ptr<Worker> lazy;
     if ( empty() ) {
-	return lazy;
+        return lazy;
     }
 
     std::shared_ptr<Worker> worker = workers.front();

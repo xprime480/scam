@@ -14,7 +14,7 @@ namespace scam
     public:
         virtual ~Worker() {}
 
-	virtual void run() = 0;
+        virtual void run() = 0;
     };
 }
 
