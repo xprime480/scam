@@ -27,7 +27,10 @@ int TestManager::runsuite(int argc, char ** argv)
     std::cout << badCount << " incorrectly formatted\n";
     std::cout << skipCount << " skipped\n";
 
-    return passCount == runCount ? 0 : 1;
+    int rv = 0;
+    rv |= passCount == runCount ? 0 : 1;
+    rv |= badCount == 0 ? 0 : 2;
+    return rv;
 }
 
 void TestManager::runtest(char const * script)

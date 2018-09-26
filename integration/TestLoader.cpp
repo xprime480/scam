@@ -105,4 +105,3 @@ void TestLoader::handleLine(std::string const & line)
     }
 }
 
-

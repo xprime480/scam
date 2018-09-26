@@ -1,0 +1,14 @@
+Read boolean literals
+
+;[skip] uncomment to skip this test
+
+[name]
+Boolean Literals
+
+[test]
+#t
+#f
+
+[result]
+#t
+#f
