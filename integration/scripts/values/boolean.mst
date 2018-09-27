@@ -5,7 +5,7 @@ Read boolean literals
 [name]
 Boolean Literals
 
-[test]
+[input]
 #t
 #f
 

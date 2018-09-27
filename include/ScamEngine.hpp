@@ -5,7 +5,6 @@
 #include "output/OutputHandler.hpp"
 
 #include <string>
-#include <memory>
 
 namespace scam
 {

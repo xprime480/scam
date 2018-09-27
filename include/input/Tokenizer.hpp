@@ -3,13 +3,14 @@
 
 #include "input/Token.hpp"
 
+#include <iostream>
+
 namespace scam
 {
     class Tokenizer
     {
     public:
         virtual ~Tokenizer() {}
-
         virtual Token next() = 0;
     };
 }

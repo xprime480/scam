@@ -9,6 +9,8 @@ namespace scam
     {
         TT_NONE = 0,
 
+            TT_BOOLEAN,
+
 //            TT_OPEN_PAREN,
 //            TT_CLOSE_PAREN,
 //            TT_DOT,
@@ -20,8 +22,8 @@ namespace scam
 //            TT_DOUBLE,
 //            TT_SYMBOL,
 //
-//            TT_END_OF_INPUT = 254,
-//            TT_SCAN_ERROR = 255
+            TT_END_OF_INPUT = 254,
+            TT_SCAN_ERROR = 255
     };
 
     class Token

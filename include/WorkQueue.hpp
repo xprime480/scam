@@ -19,6 +19,8 @@ namespace scam
     private:
         std::deque<std::shared_ptr<Worker>> workers;
     };
+
+    extern WorkQueue GlobalWorkQueue;
 }
 
 #endif

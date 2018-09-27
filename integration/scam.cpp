@@ -6,10 +6,11 @@
 #include "input/StringTokenizer.hpp"
 
 using namespace scam;
+using namespace std;
 
 namespace
 {
-    static std::string const testforms("\
+    static string const testforms("\
 (define add +)\
 (define sub -)\
 (define two 2)\
@@ -24,11 +25,11 @@ namespace
         {
         }
 
-        void handleResult(std::string const & result) {}
+        void handleResult(string const & result) {}
 
-        void handleError(std::string const & error) { ok = false; }
+        void handleError(string const & error) { ok = false; }
 
-        void handleTrace(std::string const & msg) {}
+        void handleTrace(string const & msg) {}
 
         operator bool() const
         {
@@ -41,7 +42,7 @@ namespace
 
 }
 
-std::string call_scam(std::string const & input)
+string call_scam(string const & input)
 {
     ScamEngine engine;
 
@@ -57,7 +58,7 @@ std::string call_scam(std::string const & input)
 
     engine.repl(tokenizer, output);
 
-    std::string const & rv = output.get();
+    string const & rv = output.get();
     return rv;
 }
 

@@ -24,3 +24,5 @@ bool WorkQueue::empty() const
 {
     return workers.empty();
 }
+
+WorkQueue scam::GlobalWorkQueue;

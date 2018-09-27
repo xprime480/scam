@@ -1,5 +1,5 @@
-#if ! defined(SCAM_XXX_H)
-#define SCAM_XXX_H
+#if ! defined(XXX_H)
+#define XXX_H 1
 
 namespace scam
 {
