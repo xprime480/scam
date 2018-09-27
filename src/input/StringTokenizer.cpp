@@ -48,18 +48,24 @@ void StringTokenizer::skipWhitespace()
     }
 }
 
+bool StringTokenizer::isDelimiter(char c) const
+{
+    static const string delimiters("\"()[];#");
+    return ( c == '\0' || isspace(c) || string::npos != delimiters.find(c) );
+}
+
 Token StringTokenizer::scanBoolean()
 {
     if ( *pos != '#' ) {
         return none;
     }
 
-    if ( 't' == pos[1] || 'T' == pos[1] ) {
+    if ( ( 't' == pos[1] || 'T' == pos[1] ) && isDelimiter(pos[2]) ) {
         static const Token tokenTrue(TokenType::TT_BOOLEAN, "#t");
         pos += 2;
         return tokenTrue;
     }
-    else if ( 'f' == pos[1] || 'F' == pos[1] ) {
+    else if ( ( 'f' == pos[1] || 'F' == pos[1] ) && isDelimiter(pos[2]) ) {
         static const Token tokenFalse(TokenType::TT_BOOLEAN, "#f");
         pos += 2;
         return tokenFalse;

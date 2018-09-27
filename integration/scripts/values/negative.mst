@@ -1,0 +1,12 @@
+Ensure bad values are reported
+
+;[skip] uncomment to skip this test
+
+[name]
+Negative Tests for Tokenizing
+
+[input]
+#tt
+
+[result]
+Unable to scan input: {#tt}

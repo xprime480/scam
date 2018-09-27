@@ -21,6 +21,7 @@ namespace scam
         char const * pos;
 
         void skipWhitespace();
+        bool isDelimiter(char c) const;
 
         Token scanBoolean();
 
