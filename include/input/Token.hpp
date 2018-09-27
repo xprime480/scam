@@ -29,14 +29,18 @@ namespace scam
     class Token
     {
     public:
+        Token();
         Token(TokenType type, std::string const & text);
+
+        Token(Token const & rhs) = default;
+        Token & operator=(Token const & rhs) = default;
 
         TokenType getType() const;
         std::string const & getText() const;
 
     private:
         TokenType type;
-        std::string const text;
+        std::string text;
     };
 }
 

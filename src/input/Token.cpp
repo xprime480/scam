@@ -2,8 +2,15 @@
 #include "input/Token.hpp"
 
 using namespace scam;
+using namespace std;
 
-Token::Token(TokenType type, std::string const & text)
+Token::Token()
+    : type(TokenType::TT_NONE)
+    , text("")
+{
+}
+
+Token::Token(TokenType type, string const & text)
     : type(type)
     , text(text)
 {
@@ -14,7 +21,7 @@ TokenType Token::getType() const
     return type;
 }
 
-std::string const & Token::getText() const
+string const & Token::getText() const
 {
     return text;
 }

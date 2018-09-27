@@ -5,7 +5,7 @@ SRC = $(wildcard *.cpp)
 OBJ = $(SRC:.cpp=.o)
 DEP = $(SRC:.cpp=.d)
 
-CPP = /usr/bin/g++ -g -std=c++11
+CPP = /usr/bin/g++ -g -std=c++11 -Wall
 INC = -I include -I ../include
 
 unittests : $(OBJ) lib

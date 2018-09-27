@@ -9,7 +9,9 @@
 using namespace scam;
 using namespace std;
 
-StringTokenizer::StringTokenizer(std::string const & input)
+static const Token none(TokenType::TT_NONE, "");
+
+StringTokenizer::StringTokenizer(string const & input)
     : input(input)
     , pos(this->input.c_str())
 {
@@ -18,7 +20,6 @@ StringTokenizer::StringTokenizer(std::string const & input)
 Token StringTokenizer::next()
 {
     if ( ! pos ) {
-        static const Token none(TokenType::TT_NONE, "");
         return none;
     }
     skipWhitespace();
@@ -27,15 +28,10 @@ Token StringTokenizer::next()
         return eof;
     }
 
-    if ( 0 == strncmp(pos, "#t", 2) ) {
-        static const Token tokenTrue(TokenType::TT_BOOLEAN, "#t");
-        pos += 2;
-        return tokenTrue;
-    }
-    else if ( 0 == strncmp(pos, "#f", 2) ) {
-        static const Token tokenFalse(TokenType::TT_BOOLEAN, "#f");
-        pos += 2;
-        return tokenFalse;
+    Token rv;
+    rv = scanBoolean();
+    if ( TokenType::TT_NONE != rv.getType() ) {
+        return rv;
     }
 
     stringstream s;
@@ -52,17 +48,37 @@ void StringTokenizer::skipWhitespace()
     }
 }
 
-TokenType StringTokenizer::scanNumericToken(std::string & contents)
+Token StringTokenizer::scanBoolean()
+{
+    if ( *pos != '#' ) {
+        return none;
+    }
+
+    if ( 't' == pos[1] || 'T' == pos[1] ) {
+        static const Token tokenTrue(TokenType::TT_BOOLEAN, "#t");
+        pos += 2;
+        return tokenTrue;
+    }
+    else if ( 'f' == pos[1] || 'F' == pos[1] ) {
+        static const Token tokenFalse(TokenType::TT_BOOLEAN, "#f");
+        pos += 2;
+        return tokenFalse;
+    }
+
+    return none;
+}
+
+TokenType StringTokenizer::scanNumericToken(string & contents)
 {
     return TokenType::TT_NONE;
 }
 
-TokenType StringTokenizer::scanString(std::string & contents)
+TokenType StringTokenizer::scanString(string & contents)
 {
     return TokenType::TT_NONE;
 }
 
-TokenType StringTokenizer::scanSymbol(std::string & contents)
+TokenType StringTokenizer::scanSymbol(string & contents)
 {
     return TokenType::TT_NONE;
 }

@@ -5,7 +5,7 @@ SRC = $(wildcard *.cpp)
 OBJ = $(SRC:.cpp=.o)
 DEP = $(SRC:.cpp=.d)
 
-CPP = /usr/bin/g++ -g -std=c++11
+CPP = /usr/bin/g++ -g -std=c++11 -Wall
 SUBOBJ = input/*.o output/*.o expr/*.o
 
 libscam.a : $(OBJ) subs

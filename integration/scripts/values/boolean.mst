@@ -8,7 +8,11 @@ Boolean Literals
 [input]
 #t
 #f
+#T
+#F
 
 [result]
+#t
+#f
 #t
 #f

@@ -5,7 +5,7 @@ SRC = $(wildcard *.cpp)
 OBJ = $(SRC:.cpp=.o)
 DEP = $(SRC:.cpp=.d)
 
-CPP = /usr/bin/g++ -g -std=c++11
+CPP = /usr/bin/g++ -g -std=c++11 -Wall
 INCL = -I ../../include
 
 liboutput.a : $(OBJ)

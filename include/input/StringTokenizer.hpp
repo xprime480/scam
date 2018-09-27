@@ -22,6 +22,8 @@ namespace scam
 
         void skipWhitespace();
 
+        Token scanBoolean();
+
         TokenType scanNumericToken(std::string & contents);
         TokenType scanString(std::string & contents);
         TokenType scanSymbol(std::string & contents);
