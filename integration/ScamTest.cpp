@@ -54,6 +54,7 @@ bool ScamTest::isPassed() const
 
 void ScamTest::run()
 {
+    input = strip_trailing_whitespace(input);
     actual = strip_trailing_whitespace(call_scam(input));
     if ( actual == expected ) {
         dopass(SHOW_FAIL);

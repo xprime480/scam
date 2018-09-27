@@ -38,7 +38,10 @@ Token StringTokenizer::next()
         return tokenFalse;
     }
 
-    static const Token err(TokenType::TT_SCAN_ERROR, pos);
+    stringstream s;
+    s << "Unable to scan input: {" << pos << "}";
+    Token err(TokenType::TT_SCAN_ERROR, s.str());
+    pos += strlen(pos);
     return err;
 }
 

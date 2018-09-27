@@ -1,0 +1,14 @@
+Test that unknown text reports an error message
+
+;[skip] uncomment to skip this test
+
+[name]
+Bad Input
+
+[input]
+:x
+
+[result]
+Unable to scan input: {:x}
+
+

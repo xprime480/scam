@@ -128,6 +128,11 @@ namespace
 
         void do_error()
         {
+            ScamContext context;
+            context.cont = make_shared<PrintContinuation>(*this);
+            string value = expr->toString();
+            output.handleError(value);
+            context.cont->run(expr);
         }
     };
 
