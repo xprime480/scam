@@ -27,15 +27,15 @@ Token StringTokenizer::next()
 
     bool keepSkipping { true };
     while ( keepSkipping ) {
-	keepSkipping  = skipWhitespace();
-	keepSkipping |= skipSimpleComments();
+        keepSkipping  = skipWhitespace();
+        keepSkipping |= skipSimpleComments();
 
-	rv = skipNestedComments();
-	if ( TokenType::TT_SCAN_ERROR == rv.getType() ) {
-	    return rv;
-	}
-	keepSkipping |= TokenType::TT_BOOLEAN == rv.getType();
-    } 
+        rv = skipNestedComments();
+        if ( TokenType::TT_SCAN_ERROR == rv.getType() ) {
+            return rv;
+        }
+        keepSkipping |= TokenType::TT_BOOLEAN == rv.getType();
+    }
 
     if ( ! *pos ) {
         static const Token eof(TokenType::TT_END_OF_INPUT, "");
@@ -90,22 +90,22 @@ Token StringTokenizer::skipNestedComments()
     pos += 2;
 
     while ( *pos ) {
-	if ( 0 == strncmp(pos, "|#", 2 ) ) {
-	    pos += 2;
-	    Token ok(TokenType::TT_BOOLEAN, "#t");
-	    return ok;
-	}
-	else if ( 0 == strncmp(pos, "#|", 2) ) {
-	    Token rv = skipNestedComments();
-	    if ( TokenType::TT_SCAN_ERROR == rv.getType() ) {
-		return rv;
-	    }
-	}
-	else {
-	    ++pos;
-	}
+        if ( 0 == strncmp(pos, "|#", 2 ) ) {
+            pos += 2;
+            Token ok(TokenType::TT_BOOLEAN, "#t");
+            return ok;
+        }
+        else if ( 0 == strncmp(pos, "#|", 2) ) {
+            Token rv = skipNestedComments();
+            if ( TokenType::TT_SCAN_ERROR == rv.getType() ) {
+                return rv;
+            }
+        }
+        else {
+            ++pos;
+        }
     }
-    
+
     stringstream s;
     s << "End of input in nested comment: {" << original << "}";
     Token err(TokenType::TT_SCAN_ERROR, s.str());
@@ -164,4 +164,3 @@ Token StringTokenizer::scanInteger()
     Token token(TokenType::TT_INTEGER, text);
     return token;
 }
-

@@ -98,7 +98,7 @@ This comment style can span lines!\n\
     bool nestedcommentsbad1()
     {
         string const input{ "#| simple unterminated." };
-	string const msg{ "End of input in nested comment: {#| simple unterminated.}" };
+        string const msg{ "End of input in nested comment: {#| simple unterminated.}" };
         vector<Token> exp { Token(TokenType::TT_SCAN_ERROR, msg) };
 
         return string2tokens(input, exp);
@@ -107,7 +107,7 @@ This comment style can span lines!\n\
     bool nestedcommentsbad2()
     {
         string const input{ "#| #| two in |# one out." };
-	string const msg { "End of input in nested comment: {#| #| two in |# one out.}" };
+        string const msg { "End of input in nested comment: {#| #| two in |# one out.}" };
         vector<Token> exp { Token(TokenType::TT_SCAN_ERROR, msg) };
 
         return string2tokens(input, exp);
@@ -116,7 +116,7 @@ This comment style can span lines!\n\
     bool nestedcommentsbad3()
     {
         string const input{ "#| #| double plus ungood." };
-	string const msg { "End of input in nested comment: {#| double plus ungood.}" };
+        string const msg { "End of input in nested comment: {#| double plus ungood.}" };
         vector<Token> exp { Token(TokenType::TT_SCAN_ERROR, msg) };
 
         return string2tokens(input, exp);
@@ -156,7 +156,6 @@ This comment style can span lines!\n\
 
         return string2tokens(input, exp);
     }
-
 }
 
 bool tokenizertest()
