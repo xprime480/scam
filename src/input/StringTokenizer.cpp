@@ -25,16 +25,9 @@ Token StringTokenizer::next()
 
     Token rv;
 
-    bool keepSkipping { true };
-    while ( keepSkipping ) {
-        keepSkipping  = skipWhitespace();
-        keepSkipping |= skipSimpleComments();
-
-        rv = skipNestedComments();
-        if ( TokenType::TT_SCAN_ERROR == rv.getType() ) {
-            return rv;
-        }
-        keepSkipping |= TokenType::TT_BOOLEAN == rv.getType();
+    rv = scanAtmosphere();
+    if ( TokenType::TT_NONE != rv.getType() ) {
+        return rv;
     }
 
     if ( ! *pos ) {
@@ -67,6 +60,23 @@ Token StringTokenizer::next()
     Token err(TokenType::TT_SCAN_ERROR, s.str());
     pos += strlen(pos);
     return err;
+}
+
+Token StringTokenizer::scanAtmosphere()
+{
+    bool keepSkipping { true };
+    while ( keepSkipping ) {
+        keepSkipping  = skipWhitespace();
+        keepSkipping |= skipSimpleComments();
+
+        Token rv = skipNestedComments();
+        if ( TokenType::TT_SCAN_ERROR == rv.getType() ) {
+            return rv;
+        }
+        keepSkipping |= TokenType::TT_BOOLEAN == rv.getType();
+    }
+
+    return none;
 }
 
 bool StringTokenizer::skipWhitespace()

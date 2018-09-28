@@ -20,6 +20,7 @@ namespace scam
         std::string const & input;
         char const * pos;
 
+        Token scanAtmosphere();
         bool skipWhitespace();
         bool skipSimpleComments();
         Token skipNestedComments();
