@@ -76,6 +76,52 @@ namespace
         return string2tokens(input, exp);
     }
 
+    bool nestedcomments1()
+    {
+        string const input{ "\n\
+#| ignore me!! \n\
+This comment style can span lines!\n\
+|#" };
+        vector<Token> exp { };
+
+        return string2tokens(input, exp);
+    }
+
+    bool nestedcomments2()
+    {
+        string const input{ "#| nesting #| works! |don't get fooled||# |#" };
+        vector<Token> exp { };
+
+        return string2tokens(input, exp);
+    }
+
+    bool nestedcommentsbad1()
+    {
+        string const input{ "#| simple unterminated." };
+	string const msg{ "End of input in nested comment: {#| simple unterminated.}" };
+        vector<Token> exp { Token(TokenType::TT_SCAN_ERROR, msg) };
+
+        return string2tokens(input, exp);
+    }
+
+    bool nestedcommentsbad2()
+    {
+        string const input{ "#| #| two in |# one out." };
+	string const msg { "End of input in nested comment: {#| #| two in |# one out.}" };
+        vector<Token> exp { Token(TokenType::TT_SCAN_ERROR, msg) };
+
+        return string2tokens(input, exp);
+    }
+
+    bool nestedcommentsbad3()
+    {
+        string const input{ "#| #| double plus ungood." };
+	string const msg { "End of input in nested comment: {#| double plus ungood.}" };
+        vector<Token> exp { Token(TokenType::TT_SCAN_ERROR, msg) };
+
+        return string2tokens(input, exp);
+    }
+
     bool booleans()
     {
         string const input{ "#t #f #T #F" };
@@ -119,6 +165,11 @@ bool tokenizertest()
     ok &= emptytest();
     ok &= whitespace();
     ok &= simplecomments();
+    ok &= nestedcomments1();
+    ok &= nestedcomments2();
+    ok &= nestedcommentsbad1();
+    ok &= nestedcommentsbad2();
+    ok &= nestedcommentsbad3();
     ok &= booleans();
     ok &= bad_booleans();
     ok &= integers();

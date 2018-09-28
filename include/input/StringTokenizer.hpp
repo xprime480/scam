@@ -21,7 +21,8 @@ namespace scam
         char const * pos;
 
         bool skipWhitespace();
-        bool skipComments();
+        bool skipSimpleComments();
+        Token skipNestedComments();
 
         bool isDelimiter(char c) const;
 
