@@ -159,11 +159,21 @@ This comment style can span lines!\n\
         return string2tokens(input, exp);
     }
 
-    bool badcharacter()
+    bool badcharacter1()
     {
         string const input{ "#\\" };
         vector<Token> exp {
-            Token(TokenType::TT_SCAN_ERROR, "Malformed Character: {#\\}"),
+            Token(TokenType::TT_SCAN_ERROR, "Malformed character: {#\\}"),
+        };
+
+        return string2tokens(input, exp);
+    }
+
+    bool badcharacter2()
+    {
+        string const input{ "#\\a23" };
+        vector<Token> exp {
+            Token(TokenType::TT_SCAN_ERROR, "Unable to scan input: {#\\a23}"),
         };
 
         return string2tokens(input, exp);
@@ -210,6 +220,18 @@ This comment style can span lines!\n\
         return string2tokens(input, exp);
     }
 
+    bool floats()
+    {
+        string const input{ "0.0001 +3.2 -5.01" };
+        vector<Token> exp {
+            Token(TokenType::TT_NUMERIC, "0.0001"),
+            Token(TokenType::TT_NUMERIC, "+3.2"),
+            Token(TokenType::TT_NUMERIC, "-5.01")
+        };
+
+        return string2tokens(input, exp);
+    }
+
 }
 
 bool tokenizertest()
@@ -228,13 +250,14 @@ bool tokenizertest()
     ok &= booleans();
     ok &= bad_booleans();
     ok &= characters();
+    ok &= badcharacter1();
+    ok &= badcharacter2();
     ok &= emptystring();
     ok &= nonemptystring();
     ok &= badstring();
 
     ok &= integers();
-
-
+    //    ok &= floats();
 
     return ok;
 }

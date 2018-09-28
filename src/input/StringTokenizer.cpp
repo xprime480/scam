@@ -165,6 +165,11 @@ Token StringTokenizer::scanCharacter()
         return err;
     }
 
+    if ( ! isDelimiter(pos[1]) ) {
+        pos = original;
+        return none;
+    }
+
     string text(pos, 1);
     Token token(TokenType::TT_CHARACTER, text);
     ++pos;
@@ -225,5 +230,3 @@ Token StringTokenizer::scanNumeric()
     Token token(TokenType::TT_NUMERIC, text);
     return token;
 }
-
-
