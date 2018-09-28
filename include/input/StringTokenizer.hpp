@@ -27,8 +27,9 @@ namespace scam
         bool isDelimiter(char c) const;
 
         Token scanBoolean();
-        Token scanInteger();
+        Token scanCharacter();
         Token scanString();
+        Token scanInteger();
     };
 }
 

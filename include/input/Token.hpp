@@ -10,8 +10,9 @@ namespace scam
         TT_NONE = 0,
 
             TT_BOOLEAN,
-            TT_INTEGER,
+            TT_CHARACTER,
             TT_STRING,
+            TT_INTEGER,
 
 //            TT_OPEN_PAREN,
 //            TT_CLOSE_PAREN,
@@ -58,12 +59,16 @@ namespace scam
             os << "Boolean";
             break;
 
-        case TokenType::TT_INTEGER:
-            os << "Integer";
+        case TokenType::TT_CHARACTER:
+            os << "Character";
             break;
 
         case TokenType::TT_STRING:
             os << "String";
+            break;
+
+        case TokenType::TT_INTEGER:
+            os << "Integer";
             break;
 
         case TokenType::TT_END_OF_INPUT:

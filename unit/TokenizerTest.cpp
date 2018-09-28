@@ -145,13 +145,25 @@ This comment style can span lines!\n\
         return string2tokens(input, exp);
     }
 
-    bool integers()
+    bool characters()
     {
-        string const input{ "1 +3 -5" };
+        string const input{ "#\\a#\\Z    #\\+#\\ #\\\\" };
         vector<Token> exp {
-            Token(TokenType::TT_INTEGER, "1"),
-            Token(TokenType::TT_INTEGER, "+3"),
-            Token(TokenType::TT_INTEGER, "-5")
+            Token(TokenType::TT_CHARACTER, "a"),
+            Token(TokenType::TT_CHARACTER, "Z"),
+            Token(TokenType::TT_CHARACTER, "+"),
+            Token(TokenType::TT_CHARACTER, " "),
+            Token(TokenType::TT_CHARACTER, "\\"),
+        };
+
+        return string2tokens(input, exp);
+    }
+
+    bool badcharacter()
+    {
+        string const input{ "#\\" };
+        vector<Token> exp {
+            Token(TokenType::TT_SCAN_ERROR, "Malformed Character: {#\\}"),
         };
 
         return string2tokens(input, exp);
@@ -185,11 +197,25 @@ This comment style can span lines!\n\
 
         return string2tokens(input, exp);
     }
+
+    bool integers()
+    {
+        string const input{ "1 +3 -5" };
+        vector<Token> exp {
+            Token(TokenType::TT_INTEGER, "1"),
+            Token(TokenType::TT_INTEGER, "+3"),
+            Token(TokenType::TT_INTEGER, "-5")
+        };
+
+        return string2tokens(input, exp);
+    }
+
 }
 
 bool tokenizertest()
 {
     bool ok { true };
+
     ok &= emptytest();
     ok &= whitespace();
     ok &= simplecomments();
@@ -198,11 +224,17 @@ bool tokenizertest()
     ok &= nestedcommentsbad1();
     ok &= nestedcommentsbad2();
     ok &= nestedcommentsbad3();
+
     ok &= booleans();
     ok &= bad_booleans();
-    ok &= integers();
+    ok &= characters();
     ok &= emptystring();
     ok &= nonemptystring();
     ok &= badstring();
+
+    ok &= integers();
+
+
+
     return ok;
 }

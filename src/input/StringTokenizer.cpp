@@ -47,12 +47,17 @@ Token StringTokenizer::next()
         return rv;
     }
 
-    rv = scanInteger();
+    rv = scanCharacter();
     if ( TokenType::TT_NONE != rv.getType() ) {
         return rv;
     }
 
     rv = scanString();
+    if ( TokenType::TT_NONE != rv.getType() ) {
+        return rv;
+    }
+
+    rv = scanInteger();
     if ( TokenType::TT_NONE != rv.getType() ) {
         return rv;
     }
@@ -143,30 +148,26 @@ Token StringTokenizer::scanBoolean()
     return none;
 }
 
-Token StringTokenizer::scanInteger()
+Token StringTokenizer::scanCharacter()
 {
+    if ( 0 != strncmp(pos, "#\\", 2) ) {
+        return none;
+    }
+
     char const * original = pos;
+    pos += 2;
 
-    if ( *pos == '+' || *pos == '-' ) {
-        ++pos;
+    if ( ! *pos ) {
+        stringstream s;
+        s << "Malformed character: {" << original << "}";
+
+        Token err(TokenType::TT_SCAN_ERROR, s.str());
+        return err;
     }
 
-    if ( ! isdigit(*pos) ) {
-        pos = original;
-        return none;
-    }
-
-    while ( isdigit(*pos) ) {
-        ++pos;
-    }
-
-    if ( ! isDelimiter(*pos) ) {
-        pos = original;
-        return none;
-    }
-
-    string text(original, pos-original);
-    Token token(TokenType::TT_INTEGER, text);
+    string text(pos, 1);
+    Token token(TokenType::TT_CHARACTER, text);
+    ++pos;
     return token;
 }
 
@@ -197,3 +198,32 @@ Token StringTokenizer::scanString()
     ++pos;
     return token;
 }
+
+Token StringTokenizer::scanInteger()
+{
+    char const * original = pos;
+
+    if ( *pos == '+' || *pos == '-' ) {
+        ++pos;
+    }
+
+    if ( ! isdigit(*pos) ) {
+        pos = original;
+        return none;
+    }
+
+    while ( isdigit(*pos) ) {
+        ++pos;
+    }
+
+    if ( ! isDelimiter(*pos) ) {
+        pos = original;
+        return none;
+    }
+
+    string text(original, pos-original);
+    Token token(TokenType::TT_INTEGER, text);
+    return token;
+}
+
+
