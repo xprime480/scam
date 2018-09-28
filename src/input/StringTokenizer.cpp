@@ -57,7 +57,7 @@ Token StringTokenizer::next()
         return rv;
     }
 
-    rv = scanInteger();
+    rv = scanNumeric();
     if ( TokenType::TT_NONE != rv.getType() ) {
         return rv;
     }
@@ -199,7 +199,7 @@ Token StringTokenizer::scanString()
     return token;
 }
 
-Token StringTokenizer::scanInteger()
+Token StringTokenizer::scanNumeric()
 {
     char const * original = pos;
 
@@ -222,7 +222,7 @@ Token StringTokenizer::scanInteger()
     }
 
     string text(original, pos-original);
-    Token token(TokenType::TT_INTEGER, text);
+    Token token(TokenType::TT_NUMERIC, text);
     return token;
 }
 

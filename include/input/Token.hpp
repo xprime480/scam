@@ -12,7 +12,7 @@ namespace scam
             TT_BOOLEAN,
             TT_CHARACTER,
             TT_STRING,
-            TT_INTEGER,
+            TT_NUMERIC,
 
 //            TT_OPEN_PAREN,
 //            TT_CLOSE_PAREN,
@@ -67,8 +67,8 @@ namespace scam
             os << "String";
             break;
 
-        case TokenType::TT_INTEGER:
-            os << "Integer";
+        case TokenType::TT_NUMERIC:
+            os << "Numeric";
             break;
 
         case TokenType::TT_END_OF_INPUT:

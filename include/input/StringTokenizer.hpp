@@ -29,7 +29,7 @@ namespace scam
         Token scanBoolean();
         Token scanCharacter();
         Token scanString();
-        Token scanInteger();
+        Token scanNumeric();
     };
 }
 
