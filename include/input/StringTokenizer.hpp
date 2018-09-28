@@ -28,6 +28,7 @@ namespace scam
 
         Token scanBoolean();
         Token scanInteger();
+        Token scanString();
     };
 }
 

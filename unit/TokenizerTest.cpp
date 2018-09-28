@@ -156,6 +156,35 @@ This comment style can span lines!\n\
 
         return string2tokens(input, exp);
     }
+
+    bool emptystring()
+    {
+        string const input{ "\"\"" };
+        vector<Token> exp {
+            Token(TokenType::TT_STRING, "")
+        };
+
+        return string2tokens(input, exp);
+    }
+
+    bool nonemptystring()
+    {
+        string const input{ "\"Hello, World\"" };
+        vector<Token> exp {
+            Token(TokenType::TT_STRING, "Hello, World")
+        };
+
+        return string2tokens(input, exp);
+    }
+
+    bool badstring()
+    {
+        string const input{ "\"" };
+        string const msg{ "End of input in string: {\"}" };
+        vector<Token> exp { Token(TokenType::TT_SCAN_ERROR, msg) };
+
+        return string2tokens(input, exp);
+    }
 }
 
 bool tokenizertest()
@@ -172,5 +201,8 @@ bool tokenizertest()
     ok &= booleans();
     ok &= bad_booleans();
     ok &= integers();
+    ok &= emptystring();
+    ok &= nonemptystring();
+    ok &= badstring();
     return ok;
 }

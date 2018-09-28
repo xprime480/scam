@@ -52,6 +52,11 @@ Token StringTokenizer::next()
         return rv;
     }
 
+    rv = scanString();
+    if ( TokenType::TT_NONE != rv.getType() ) {
+        return rv;
+    }
+
     stringstream s;
     s << "Unable to scan input: {" << pos << "}";
     Token err(TokenType::TT_SCAN_ERROR, s.str());
@@ -162,5 +167,33 @@ Token StringTokenizer::scanInteger()
 
     string text(original, pos-original);
     Token token(TokenType::TT_INTEGER, text);
+    return token;
+}
+
+Token StringTokenizer::scanString()
+{
+    if ( *pos != '"' ) {
+        return none;
+    }
+
+    char const * original = pos;
+    ++pos;
+    char const * start = pos;
+
+    while ( *pos && '"' != *pos ) {
+        ++pos;
+    }
+
+    if ( ! *pos ) {
+        stringstream s;
+        s << "End of input in string: {" << original << "}";
+
+        Token err(TokenType::TT_SCAN_ERROR, s.str());
+        return err;
+    }
+
+    string text(start, pos-start);
+    Token token(TokenType::TT_STRING, text);
+    ++pos;
     return token;
 }

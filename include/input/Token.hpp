@@ -11,6 +11,7 @@ namespace scam
 
             TT_BOOLEAN,
             TT_INTEGER,
+            TT_STRING,
 
 //            TT_OPEN_PAREN,
 //            TT_CLOSE_PAREN,
@@ -18,7 +19,6 @@ namespace scam
 //            TT_TICK,
 //            TT_COMMA,
 //
-//            TT_STRING,
 //            TT_DOUBLE,
 //            TT_SYMBOL,
 //
@@ -60,6 +60,10 @@ namespace scam
 
         case TokenType::TT_INTEGER:
             os << "Integer";
+            break;
+
+        case TokenType::TT_STRING:
+            os << "String";
             break;
 
         case TokenType::TT_END_OF_INPUT:
