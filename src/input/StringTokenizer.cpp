@@ -22,14 +22,23 @@ Token StringTokenizer::next()
     if ( ! pos ) {
         return none;
     }
-    skipWhitespace();
+
+    while ( skipWhitespace() || skipComments() ) {
+    }
+
     if ( ! *pos ) {
         static const Token eof(TokenType::TT_END_OF_INPUT, "");
         return eof;
     }
 
     Token rv;
+
     rv = scanBoolean();
+    if ( TokenType::TT_NONE != rv.getType() ) {
+        return rv;
+    }
+
+    rv = scanInteger();
     if ( TokenType::TT_NONE != rv.getType() ) {
         return rv;
     }
@@ -41,11 +50,26 @@ Token StringTokenizer::next()
     return err;
 }
 
-void StringTokenizer::skipWhitespace()
+bool StringTokenizer::skipWhitespace()
 {
+    char const * original = pos;
     while ( pos && isspace(*pos) ) {
         ++pos;
     }
+    return pos != original;
+}
+
+bool StringTokenizer::skipComments()
+{
+    char const * original = pos;
+    if ( ';' != *pos ) {
+        return false;
+    }
+
+    while ( *pos && '\n' != *pos ) {
+        ++pos;
+    }
+    return pos != original;
 }
 
 bool StringTokenizer::isDelimiter(char c) const
@@ -74,18 +98,30 @@ Token StringTokenizer::scanBoolean()
     return none;
 }
 
-TokenType StringTokenizer::scanNumericToken(string & contents)
+Token StringTokenizer::scanInteger()
 {
-    return TokenType::TT_NONE;
-}
+    char const * original = pos;
 
-TokenType StringTokenizer::scanString(string & contents)
-{
-    return TokenType::TT_NONE;
-}
+    if ( *pos == '+' || *pos == '-' ) {
+        ++pos;
+    }
 
-TokenType StringTokenizer::scanSymbol(string & contents)
-{
-    return TokenType::TT_NONE;
+    if ( ! isdigit(*pos) ) {
+        pos = original;
+        return none;
+    }
+
+    while ( isdigit(*pos) ) {
+        ++pos;
+    }
+
+    if ( ! isDelimiter(*pos) ) {
+        pos = original;
+        return none;
+    }
+
+    string text(original, pos-original);
+    Token token(TokenType::TT_INTEGER, text);
+    return token;
 }
 

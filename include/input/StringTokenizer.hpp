@@ -20,14 +20,13 @@ namespace scam
         std::string const & input;
         char const * pos;
 
-        void skipWhitespace();
+        bool skipWhitespace();
+        bool skipComments();
+
         bool isDelimiter(char c) const;
 
         Token scanBoolean();
-
-        TokenType scanNumericToken(std::string & contents);
-        TokenType scanString(std::string & contents);
-        TokenType scanSymbol(std::string & contents);
+        Token scanInteger();
     };
 }
 

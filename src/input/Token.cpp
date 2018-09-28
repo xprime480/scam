@@ -25,3 +25,15 @@ string const & Token::getText() const
 {
     return text;
 }
+
+bool Token::operator==(Token const & rhs) const
+{
+    return ( ( getType() == rhs.getType() )
+             && ( getText() == rhs.getText() ) );
+}
+
+bool Token::operator!=(Token const & rhs) const
+{
+    return ! (*this == rhs);
+}
+

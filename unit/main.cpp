@@ -1,59 +1,47 @@
 
-#include "Trampoline.hpp"
-#include "WorkQueue.hpp"
-#include "Worker.hpp"
+#include "tests.hpp"
 
-#include <iostream>
+#include <functional>
 
 using namespace std;
-using namespace scam;
 
-namespace
-{
-    WorkQueue queue;
-}
-
-class OneShotWorker : public Worker
+class UnitTestMain
 {
 public:
-    void run() override
-    {
-        cout << "OneShotWorker here\n";
-    }
-};
-
-class Countdown : public Worker
-{
-public:
-    Countdown(size_t n)
-        : n(n)
+    UnitTestMain(int argc, char ** argv)
+	: count(0)
+	, pass(0)
     {
     }
 
-    void run() override
+    void run() 
     {
-        if ( 0 == n ) {
-            cout << "go!!\n";
-        }
-        else {
-            cout << n << "... ";
-
-            WorkerHandle next = std::make_shared<Countdown>(n-1);
-            queue.put(next);
-        }
+	test(trampolinetest);
+	test(tokenizertest);
     }
 
+    int rc() const
+    {
+	return (count == pass) ? 0 : 1;
+    }
+
+    
 private:
-    size_t n;
+    size_t count;
+    size_t pass;
+
+    void test(function<bool()> t)
+    {
+	++count;
+	if ( t() ) {
+	    ++pass;
+	}
+    }
 };
 
 int main(int argc, char ** argv)
 {
-    WorkerHandle count = std::make_shared<Countdown>(3);
-    queue.put(count);
-
-    WorkerHandle start = std::make_shared<OneShotWorker>();
-    queue.put(start);
-
-    Trampoline(queue);
+    UnitTestMain unit(argc, argv);
+    unit.run();
+    return unit.rc();
 }

@@ -10,6 +10,7 @@ namespace scam
         TT_NONE = 0,
 
             TT_BOOLEAN,
+            TT_INTEGER,
 
 //            TT_OPEN_PAREN,
 //            TT_CLOSE_PAREN,
@@ -18,7 +19,6 @@ namespace scam
 //            TT_COMMA,
 //
 //            TT_STRING,
-//            TT_INTEGER,
 //            TT_DOUBLE,
 //            TT_SYMBOL,
 //
@@ -38,10 +38,52 @@ namespace scam
         TokenType getType() const;
         std::string const & getText() const;
 
+        bool operator==(Token const & rhs) const;
+        bool operator!=(Token const & rhs) const;
+
     private:
         TokenType type;
         std::string text;
     };
+
+    template <typename OS>
+    OS & operator<<(OS & os, TokenType tt)
+    {
+        switch ( tt ) {
+        case TokenType::TT_NONE:
+            os << "None";
+            break;
+
+        case TokenType::TT_BOOLEAN:
+            os << "Boolean";
+            break;
+
+        case TokenType::TT_INTEGER:
+            os << "Integer";
+            break;
+
+        case TokenType::TT_END_OF_INPUT:
+            os << "EOF";
+            break;
+
+        case TokenType::TT_SCAN_ERROR:
+            os << "ERR";
+            break;
+
+        default:
+            os << "Unknown";
+            break;
+        }
+
+        return os;
+    }
+
+    template <typename OS>
+    OS & operator<<(OS & os, Token const & t)
+    {
+        os << "{Token: " << (t.getType()) << "; <" << (t.getText()) << ">}";
+        return os;
+    }
 }
 
 #endif
