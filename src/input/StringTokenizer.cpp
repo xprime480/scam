@@ -296,6 +296,14 @@ Token StringTokenizer::scanNumeric()
         ++pos;
     }
 
+    if ( '.' == *pos ) {
+        ++pos;
+    }
+
+    while ( isdigit(*pos) ) {
+        ++pos;
+    }
+
     if ( ! isDelimiter(*pos) ) {
         pos = original;
         return none;

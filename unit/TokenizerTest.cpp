@@ -276,7 +276,7 @@ bool tokenizertest()
     ok &= badstring();
 
     ok &= integers();
-    //    ok &= floats();
+    ok &= floats();
 
     return ok;
 }
