@@ -77,6 +77,7 @@ shared_ptr<ScamExpr> ScamParser::tokenToExpr(Token const & token) const
 //        break;
 
     case TokenType::TT_END_OF_INPUT:
+        rv = ExpressionFactory::makeNull();
         break;
 
     case TokenType::TT_SCAN_ERROR:

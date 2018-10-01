@@ -6,6 +6,12 @@
 using namespace scam;
 using namespace std;
 
+shared_ptr<ScamExpr> ExpressionFactory::makeNull()
+{
+    static const shared_ptr<ScamExpr> expr = make_shared<ScamExpr>();
+    return expr;
+}
+
 shared_ptr<ScamExpr> ExpressionFactory::makeError(char const * msg)
 {
     shared_ptr<ScamExpr> expr = make_shared<ScamError>(msg);

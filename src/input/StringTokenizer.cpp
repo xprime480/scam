@@ -298,7 +298,7 @@ Token StringTokenizer::scanNumeric()
 
     TokenType type = TokenType::TT_INTEGER;
     if ( '.' == *pos ) {
-	type = TokenType::TT_FLOAT;
+        type = TokenType::TT_FLOAT;
         ++pos;
     }
 

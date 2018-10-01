@@ -13,6 +13,8 @@ namespace scam
         ScamError(char const * msg);
         std::string toString() const override;
         void eval(ScamContext & context) override;
+
+        bool isNull() const override;
         bool error() const override;
 
     private:

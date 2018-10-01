@@ -9,33 +9,34 @@ class UnitTestMain
 {
 public:
     UnitTestMain(int argc, char ** argv)
-	: count(0)
-	, pass(0)
+        : count(0)
+        , pass(0)
     {
     }
 
-    void run() 
+    void run()
     {
-	test(trampolinetest);
-	test(tokenizertest);
+        test(trampolinetest);
+        test(tokenizertest);
+        test(parsertest);
     }
 
     int rc() const
     {
-	return (count == pass) ? 0 : 1;
+        return (count == pass) ? 0 : 1;
     }
 
-    
+
 private:
     size_t count;
     size_t pass;
 
     void test(function<bool()> t)
     {
-	++count;
-	if ( t() ) {
-	    ++pass;
-	}
+        ++count;
+        if ( t() ) {
+            ++pass;
+        }
     }
 };
 

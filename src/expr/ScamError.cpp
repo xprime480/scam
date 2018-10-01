@@ -25,6 +25,11 @@ void ScamError::eval(ScamContext & context)
     context.cont->run(expr);
 }
 
+bool ScamError::isNull() const
+{
+    return false;
+}
+
 bool ScamError::error() const
 {
     return true;

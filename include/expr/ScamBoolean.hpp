@@ -10,7 +10,10 @@ namespace scam
     public:
         ScamBoolean(bool value);
         std::string toString() const override;
+
         void eval(ScamContext & context) override;
+
+        bool isNull() const override;
 
     private:
         bool value;
