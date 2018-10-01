@@ -250,6 +250,16 @@ This comment style can span lines!\n\
         return string2tokens(input, exp);
     }
 
+    bool falsefloats()
+    {
+        string const input{ ".2" };
+        vector<Token> exp {
+            Token(TokenType::TT_DOT, "."),
+            Token(TokenType::TT_NUMERIC, "2")
+        };
+
+        return string2tokens(input, exp);
+    }
 }
 
 bool tokenizertest()
@@ -277,6 +287,7 @@ bool tokenizertest()
 
     ok &= integers();
     ok &= floats();
+    ok &= falsefloats();
 
     return ok;
 }
