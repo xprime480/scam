@@ -122,6 +122,24 @@ This comment style can span lines!\n\
         return string2tokens(input, exp);
     }
 
+    bool specials()
+    {
+        string const input{ "()[].'`,,@" };
+        vector<Token> exp {
+            Token(TokenType::TT_OPEN_PAREN,    "(") ,
+            Token(TokenType::TT_CLOSE_PAREN,   ")") ,
+            Token(TokenType::TT_OPEN_BRACKET,  "[") ,
+            Token(TokenType::TT_CLOSE_BRACKET, "]") ,
+            Token(TokenType::TT_DOT,           ".") ,
+            Token(TokenType::TT_QUOTE,         "'") ,
+            Token(TokenType::TT_QUASIQUOTE,    "`") ,
+            Token(TokenType::TT_UNQUOTE,       ",") ,
+            Token(TokenType::TT_SPLICE,        ",@") ,
+       };
+
+        return string2tokens(input, exp);
+    }
+
     bool booleans()
     {
         string const input{ "#t #f #T #F" };
@@ -247,6 +265,7 @@ bool tokenizertest()
     ok &= nestedcommentsbad2();
     ok &= nestedcommentsbad3();
 
+    ok &= specials();
     ok &= booleans();
     ok &= bad_booleans();
     ok &= characters();

@@ -35,6 +35,11 @@ Token StringTokenizer::next()
         return eof;
     }
 
+    rv = scanSpecial();
+    if ( TokenType::TT_NONE != rv.getType() ) {
+        return rv;
+    }
+
     rv = scanBoolean();
     if ( TokenType::TT_NONE != rv.getType() ) {
         return rv;
@@ -136,6 +141,66 @@ bool StringTokenizer::isDelimiter(char c) const
 {
     static const string delimiters("\"()[];#");
     return ( c == '\0' || isspace(c) || string::npos != delimiters.find(c) );
+}
+
+Token StringTokenizer::scanSpecial()
+{
+    if ( '(' == *pos ) {
+        static const Token token(TokenType::TT_OPEN_PAREN, "(");
+        ++pos;
+        return token;
+    }
+
+    if ( ')' == *pos ) {
+        static const Token token(TokenType::TT_CLOSE_PAREN, ")");
+        ++pos;
+        return token;
+    }
+
+    if ( '[' == *pos ) {
+        static const Token token(TokenType::TT_OPEN_BRACKET, "[");
+        ++pos;
+        return token;
+    }
+
+    if ( ']' == *pos ) {
+        static const Token token(TokenType::TT_CLOSE_BRACKET, "]");
+        ++pos;
+        return token;
+    }
+
+    if ( '.' == *pos ) {
+        static const Token token(TokenType::TT_DOT, ".");
+        ++pos;
+        return token;
+    }
+
+    if ( '\'' == *pos ) {
+        static const Token token(TokenType::TT_QUOTE, "'");
+        ++pos;
+        return token;
+    }
+
+    if ( '`' == *pos ) {
+        static const Token token(TokenType::TT_QUASIQUOTE, "`");
+        ++pos;
+        return token;
+    }
+
+    if ( ',' == *pos ) {
+        ++pos;
+
+        if ( '@' == *pos ) {
+            static const Token token(TokenType::TT_SPLICE, ",@");
+            ++pos;
+            return token;
+        }
+
+        static const Token token(TokenType::TT_UNQUOTE, ",");
+        return token;
+    }
+
+    return none;
 }
 
 Token StringTokenizer::scanBoolean()

@@ -9,13 +9,21 @@ namespace scam
     {
         TT_NONE = 0,
 
+            TT_OPEN_PAREN,
+            TT_CLOSE_PAREN,
+            TT_OPEN_BRACKET,
+            TT_CLOSE_BRACKET,
+            TT_DOT,
+            TT_QUOTE,
+            TT_QUASIQUOTE,
+            TT_UNQUOTE,
+            TT_SPLICE,
+
             TT_BOOLEAN,
             TT_CHARACTER,
             TT_STRING,
             TT_NUMERIC,
 
-//            TT_OPEN_PAREN,
-//            TT_CLOSE_PAREN,
 //            TT_DOT,
 //            TT_TICK,
 //            TT_COMMA,
@@ -53,6 +61,42 @@ namespace scam
         switch ( tt ) {
         case TokenType::TT_NONE:
             os << "None";
+            break;
+
+        case TokenType::TT_OPEN_PAREN:
+            os << "Open Paren";
+            break;
+
+        case TokenType::TT_CLOSE_PAREN:
+            os << "Close Paren";
+            break;
+
+        case TokenType::TT_OPEN_BRACKET:
+            os << "Open Bracket";
+            break;
+
+        case TokenType::TT_CLOSE_BRACKET:
+            os << "Close Bracket";
+            break;
+
+        case TokenType::TT_DOT:
+            os << "Dot";
+            break;
+
+        case TokenType::TT_QUOTE:
+            os << "Quote";
+            break;
+
+        case TokenType::TT_QUASIQUOTE:
+            os << "Quasiquote";
+            break;
+
+        case TokenType::TT_UNQUOTE:
+            os << "Unquote";
+            break;
+
+        case TokenType::TT_SPLICE:
+            os << "Splice";
             break;
 
         case TokenType::TT_BOOLEAN:

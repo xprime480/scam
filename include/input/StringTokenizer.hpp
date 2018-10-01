@@ -27,6 +27,7 @@ namespace scam
 
         bool isDelimiter(char c) const;
 
+        Token scanSpecial();
         Token scanBoolean();
         Token scanCharacter();
         Token scanString();
