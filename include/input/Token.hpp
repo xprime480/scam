@@ -22,15 +22,11 @@ namespace scam
             TT_BOOLEAN,
             TT_CHARACTER,
             TT_STRING,
-            TT_NUMERIC,
 
-//            TT_DOT,
-//            TT_TICK,
-//            TT_COMMA,
-//
-//            TT_DOUBLE,
-//            TT_SYMBOL,
-//
+            TT_FLOAT,
+            TT_INTEGER,
+
+
             TT_END_OF_INPUT = 254,
             TT_SCAN_ERROR = 255
     };
@@ -111,8 +107,12 @@ namespace scam
             os << "String";
             break;
 
-        case TokenType::TT_NUMERIC:
-            os << "Numeric";
+        case TokenType::TT_FLOAT:
+            os << "Float";
+            break;
+
+        case TokenType::TT_INTEGER:
+            os << "Integer";
             break;
 
         case TokenType::TT_END_OF_INPUT:

@@ -296,7 +296,9 @@ Token StringTokenizer::scanNumeric()
         ++pos;
     }
 
+    TokenType type = TokenType::TT_INTEGER;
     if ( '.' == *pos ) {
+	type = TokenType::TT_FLOAT;
         ++pos;
     }
 
@@ -310,6 +312,6 @@ Token StringTokenizer::scanNumeric()
     }
 
     string text(original, pos-original);
-    Token token(TokenType::TT_NUMERIC, text);
+    Token token(type, text);
     return token;
 }

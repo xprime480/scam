@@ -230,9 +230,9 @@ This comment style can span lines!\n\
     {
         string const input{ "1 +3 -5" };
         vector<Token> exp {
-            Token(TokenType::TT_NUMERIC, "1"),
-            Token(TokenType::TT_NUMERIC, "+3"),
-            Token(TokenType::TT_NUMERIC, "-5")
+            Token(TokenType::TT_INTEGER, "1"),
+            Token(TokenType::TT_INTEGER, "+3"),
+            Token(TokenType::TT_INTEGER, "-5")
         };
 
         return string2tokens(input, exp);
@@ -242,9 +242,9 @@ This comment style can span lines!\n\
     {
         string const input{ "0.0001 +3.2 -5.01" };
         vector<Token> exp {
-            Token(TokenType::TT_NUMERIC, "0.0001"),
-            Token(TokenType::TT_NUMERIC, "+3.2"),
-            Token(TokenType::TT_NUMERIC, "-5.01")
+            Token(TokenType::TT_FLOAT, "0.0001"),
+            Token(TokenType::TT_FLOAT, "+3.2"),
+            Token(TokenType::TT_FLOAT, "-5.01")
         };
 
         return string2tokens(input, exp);
@@ -255,7 +255,7 @@ This comment style can span lines!\n\
         string const input{ ".2" };
         vector<Token> exp {
             Token(TokenType::TT_DOT, "."),
-            Token(TokenType::TT_NUMERIC, "2")
+            Token(TokenType::TT_INTEGER, "2")
         };
 
         return string2tokens(input, exp);
