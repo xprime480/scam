@@ -1,14 +1,15 @@
 #include "expr/ExpressionFactory.hpp"
 
-#include "expr/ScamError.hpp"
 #include "expr/ScamBoolean.hpp"
+#include "expr/ScamError.hpp"
+#include "expr/ScamNull.hpp"
 
 using namespace scam;
 using namespace std;
 
 shared_ptr<ScamExpr> ExpressionFactory::makeNull()
 {
-    static const shared_ptr<ScamExpr> expr = make_shared<ScamExpr>();
+    static const shared_ptr<ScamExpr> expr = make_shared<ScamNull>();
     return expr;
 }
 

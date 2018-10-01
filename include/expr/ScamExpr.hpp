@@ -11,11 +11,13 @@ namespace scam
     {
     public:
         virtual ~ScamExpr() {};
-        virtual std::string toString() const;
-        virtual void eval(ScamContext & context);
 
-        virtual bool isNull() const;
-        virtual bool error() const;
+        virtual std::string toString() const = 0;
+        virtual void eval(ScamContext & context) = 0;
+
+        virtual bool isNull() const { return false; }
+        virtual bool error() const { return false; }
+        virtual bool truth() const { return true; }
     };
 }
 

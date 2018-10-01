@@ -13,7 +13,7 @@ namespace scam
 
         void eval(ScamContext & context) override;
 
-        bool isNull() const override;
+        bool truth() const override;
 
     private:
         bool value;

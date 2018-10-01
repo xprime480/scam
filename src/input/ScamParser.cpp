@@ -29,7 +29,7 @@ shared_ptr<ScamExpr> ScamParser::parseSubExpr() const
 shared_ptr<ScamExpr> ScamParser::tokenToExpr(Token const & token) const
 {
     stringstream s;
-    shared_ptr<ScamExpr> rv;
+    shared_ptr<ScamExpr> rv = ExpressionFactory::makeNull();
 
     switch ( token.getType() ) {
     case TokenType::TT_NONE:

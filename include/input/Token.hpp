@@ -26,7 +26,6 @@ namespace scam
             TT_FLOAT,
             TT_INTEGER,
 
-
             TT_END_OF_INPUT = 254,
             TT_SCAN_ERROR = 255
     };

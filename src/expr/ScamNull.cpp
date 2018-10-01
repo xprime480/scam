@@ -1,4 +1,4 @@
-#include "expr/ScamExpr.hpp"
+#include "expr/ScamNull.hpp"
 
 #include "ScamContext.hpp"
 
@@ -7,24 +7,24 @@
 using namespace scam;
 using namespace std;
 
-std::string ScamExpr::toString() const
+std::string ScamNull::toString() const
 {
     static const std::string null{ "null" };
     return null;
 }
 
-void ScamExpr::eval(ScamContext & context)
+void ScamNull::eval(ScamContext & context)
 {
     static const shared_ptr<ScamExpr> null = ExpressionFactory::makeNull();
     context.cont->run(null);
 }
 
-bool ScamExpr::isNull() const
+bool ScamNull::isNull() const
 {
     return true;
 }
 
-bool ScamExpr::error() const
+bool ScamNull::truth() const
 {
     return false;
 }

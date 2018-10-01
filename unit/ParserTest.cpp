@@ -80,6 +80,9 @@ namespace
         };
 
         runTest(tokens, check);
+        if ( ! pass ) {
+            cerr << "Test noinput failed.\n";
+        }
         return pass;
     }
 
@@ -98,8 +101,43 @@ namespace
         };
 
         runTest(tokens, check);
+        if ( ! pass ) {
+            cerr << "Test scanerror failed.\n";
+        }
         return pass;
     }
+
+    bool booltest(string const & msg, bool value, string const & name)
+    {
+        bool pass { false };
+
+        vector<Token> tokens {
+            Token(TokenType::TT_BOOLEAN, msg)
+        };
+        auto check = [&](ScamExpr const & expr) {
+            pass  = ! expr.isNull();
+            pass &= ! expr.error();
+            pass &= (msg == expr.toString());
+            pass &=   (value == expr.truth());
+        };
+
+        runTest(tokens, check);
+        if ( ! pass ) {
+            cerr << "Test " << name << " failed.\n";
+        }
+        return pass;
+    }
+
+    bool booltrue()
+    {
+        return booltest("#t", true, "booltrue");
+    }
+
+    bool boolfalse()
+    {
+        return booltest("#f", false, "boolfalse");
+    }
+
 
 }
 
@@ -110,7 +148,8 @@ bool parsertest()
     ok &= noinput();
     ok &= scanerror();
 
-    
+    ok &= booltrue();
+    ok &= boolfalse();
 
     return ok;
 }

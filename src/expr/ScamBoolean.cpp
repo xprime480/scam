@@ -26,7 +26,7 @@ void ScamBoolean::eval(ScamContext & context)
     context.cont->run(expr);
 }
 
-bool ScamBoolean::isNull() const
+bool ScamBoolean::truth() const
 {
-    return false;
+    return value;
 }
