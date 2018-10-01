@@ -82,6 +82,25 @@ namespace
         runTest(tokens, check);
         return pass;
     }
+
+    bool scanerror()
+    {
+        bool pass { false };
+        string const msg{ "blah" };
+
+        vector<Token> tokens {
+            Token(TokenType::TT_SCAN_ERROR, msg)
+        };
+        auto check = [&](ScamExpr const & expr) {
+            pass = ! expr.isNull();
+            pass &= expr.error();
+            pass &= (msg == expr.toString());
+        };
+
+        runTest(tokens, check);
+        return pass;
+    }
+
 }
 
 bool parsertest()
@@ -89,6 +108,9 @@ bool parsertest()
     bool ok { true };
 
     ok &= noinput();
+    ok &= scanerror();
+
+    
 
     return ok;
 }
