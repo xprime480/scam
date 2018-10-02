@@ -22,11 +22,6 @@ string ScamFloat::toString() const
     return s.str();
 }
 
-void ScamFloat::eval(ScamContext & context)
-{
-    context.cont->run(ExpressionFactory::makeFloat(value));
-}
-
 bool ScamFloat::isFloat() const
 {
     return true;
@@ -35,4 +30,9 @@ bool ScamFloat::isFloat() const
 double ScamFloat::toFloat() const
 {
     return value;
+}
+
+shared_ptr<ScamExpr> ScamFloat::clone()
+{
+    return ExpressionFactory::makeFloat(value);
 }

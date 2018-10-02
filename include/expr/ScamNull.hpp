@@ -13,10 +13,11 @@ namespace scam
     {
     public:
         virtual std::string toString() const;
-        virtual void eval(ScamContext & context);
 
         virtual bool isNull() const;
         virtual bool truth() const;
+
+	std::shared_ptr<ScamExpr> clone() override;
     };
 }
 

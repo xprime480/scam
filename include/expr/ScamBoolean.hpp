@@ -11,9 +11,9 @@ namespace scam
         ScamBoolean(bool value);
         std::string toString() const override;
 
-        void eval(ScamContext & context) override;
-
         bool truth() const override;
+
+	std::shared_ptr<ScamExpr> clone() override;
 
     private:
         bool value;

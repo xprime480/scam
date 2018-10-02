@@ -20,13 +20,12 @@ string ScamBoolean::toString() const
     return "#f";
 }
 
-void ScamBoolean::eval(ScamContext & context)
-{
-    auto expr = ExpressionFactory::makeBoolean(value);
-    context.cont->run(expr);
-}
-
 bool ScamBoolean::truth() const
 {
     return value;
+}
+
+shared_ptr<ScamExpr> ScamBoolean::clone()
+{
+    return ExpressionFactory::makeBoolean(value);
 }

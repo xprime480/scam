@@ -1,6 +1,7 @@
 #if ! defined(SCAMEXPR_H)
 #define SCAMEXPR_H 1
 
+#include <memory>
 #include <string>
 
 namespace scam
@@ -10,18 +11,20 @@ namespace scam
     class ScamExpr
     {
     public:
-        virtual ~ScamExpr() {};
+        virtual ~ScamExpr();
 
         virtual std::string toString() const = 0;
-        virtual void eval(ScamContext & context) = 0;
+        virtual void eval(ScamContext & context);
 
-        virtual bool isNull() const { return false; }
-        virtual bool error() const { return false; }
-        virtual bool truth() const { return true; }
+        virtual bool isNull() const;
+        virtual bool error() const;
+        virtual bool truth() const;
 
-        virtual bool isNumeric() const { return false; }
-        virtual bool isFloat() const { return false; }
-        virtual double toFloat() const { throw "Fail"; return 0.0; }
+        virtual bool isNumeric() const;
+        virtual bool isFloat() const;
+        virtual double toFloat() const;
+
+        virtual std::shared_ptr<ScamExpr> clone() = 0;
     };
 }
 

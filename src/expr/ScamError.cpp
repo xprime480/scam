@@ -19,12 +19,6 @@ string ScamError::toString() const
     return msg;
 }
 
-void ScamError::eval(ScamContext & context)
-{
-    auto expr = ExpressionFactory::makeError(msg);
-    context.cont->run(expr);
-}
-
 bool ScamError::isNull() const
 {
     return false;
@@ -35,3 +29,7 @@ bool ScamError::error() const
     return true;
 }
 
+shared_ptr<ScamExpr> ScamError::clone()
+{
+    return ExpressionFactory::makeError(msg);
+}

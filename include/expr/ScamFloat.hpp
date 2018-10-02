@@ -12,10 +12,11 @@ namespace scam
     public:
         ScamFloat(double value);
         std::string toString() const override;
-        void eval(ScamContext & context) override;
 
         bool isFloat() const override;
         double toFloat() const override;
+
+        std::shared_ptr<ScamExpr> clone() override;
 
     private:
         double value;

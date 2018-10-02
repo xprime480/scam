@@ -7,6 +7,8 @@
 #include "input/ScamParser.hpp"
 #include "input/Tokenizer.hpp"
 
+#include "Extractor.hpp"
+
 #include "gtest/gtest.h"
 
 #include <functional>
@@ -42,23 +44,6 @@ namespace
     private:
         vector<Token> const & tokens;
         size_t index;
-    };
-
-    class Extractor : public Continuation
-    {
-    public:
-        void run(std::shared_ptr<ScamExpr> e) const override
-        {
-            expr = e;
-        }
-
-        shared_ptr<ScamExpr> getExpr() const
-        {
-            return expr;
-        }
-
-    private:
-        mutable shared_ptr<ScamExpr> expr;
     };
 
     shared_ptr<ScamExpr> runTest(vector<Token> const & tokens)
