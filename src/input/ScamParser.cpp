@@ -60,20 +60,21 @@ shared_ptr<ScamExpr> ScamParser::tokenToExpr(Token const & token) const
         rv = ExpressionFactory::makeBoolean(token.getText() == "#t");
         break;
 
+    case TokenType::TT_FLOAT:
+        rv = ExpressionFactory::makeFloat(std::atof(token.getText().c_str()));
+        break;
+
+
 //    case TokenType::TT_INTEGER:
-//        rv = CellFactory::makeInteger(std::atoi(token.getText().c_str()));
-//        break;
-//
-//    case TokenType::TT_DOUBLE:
-//        rv = CellFactory::makeDouble(std::atof(token.getText().c_str()));
+//        rv = ExpressionFactory::makeInteger(std::atoi(token.getText().c_str()));
 //        break;
 //
 //    case TokenType::TT_STRING:
-//        rv = CellFactory::makeString(token.getText());
+//        rv = ExpressionFactory::makeString(token.getText());
 //        break;
 //
 //    case TokenType::TT_SYMBOL:
-//        rv = CellFactory::makeSymbol(token.getText());
+//        rv = ExpressionFactory::makeSymbol(token.getText());
 //        break;
 
     case TokenType::TT_END_OF_INPUT:
@@ -124,7 +125,7 @@ shared_ptr<ScamExpr> ScamParser::tokenToExpr(Token const & token) const
 //        }
 //    }
 //
-//    return CellFactory::makeVector(contents);
+//    return ExpressionFactory::makeVector(contents);
 //}
 //
 //Cell ScamParser::parseDotContext() const
@@ -166,9 +167,9 @@ shared_ptr<ScamExpr> ScamParser::tokenToExpr(Token const & token) const
 //    }
 //
 //    ScamVector macro;
-//    macro.append(CellFactory::makeSymbol(symbolName));
+//    macro.append(ExpressionFactory::makeSymbol(symbolName));
 //    macro.append(expr);
-//    return CellFactory::makeVector(macro);
+//    return ExpressionFactory::makeVector(macro);
 //}
 //
 //

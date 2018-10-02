@@ -1,6 +1,8 @@
 
 #include "input/StringTokenizer.hpp"
 
+#include "gtest/gtest.h"
+
 #include <vector>
 
 using namespace scam;
@@ -16,7 +18,7 @@ namespace
         }
     }
 
-    bool string2tokens(string const & s, vector<Token> const & exp)
+    void string2tokens(string const & s, vector<Token> const & exp)
     {
         vector<Token> act;
 
@@ -29,54 +31,45 @@ namespace
             act.push_back(t);
         }
 
-        if ( act.size() != exp.size() ) {
-            cerr << "Expected " << exp.size()
-                 << "; got " << act.size()
-                 << " tokens\n";
-            dump("actual", act);
-            dump("expected", exp);
-            return false;
-        }
+        EXPECT_EQ(exp.size(), act.size())
+            << "Number of tokens scanned ";
 
-        bool ok { true };
+        /**
         for ( size_t idx = 0 ; idx < act.size() ; ++idx ) {
-            if ( act[idx] != exp[idx] ) {
-                cerr << "Token #" << (1+idx)
-                     << ": expected " << exp[idx]
-                     << " got: " << act[idx] << "\n";
-                ok = false;
-            }
+            EXPECT_EQ(exp[idx].getType(), act[idx].getType())
+                << "Token types differ at position " << idx;
+            EXPECT_EQ(exp[idx].getText(), act[idx].getText())
+                << "Token text differ at position " << idx;
         }
-
-        return ok;
+        **/
     }
 
-    bool emptytest()
+    TEST(TokenizerTest, EmptyInput)
     {
         string const input{ "" };
         vector<Token> exp { };
 
-        return string2tokens(input, exp);
+        string2tokens(input, exp);
     }
 
-    bool whitespace()
+    TEST(TokenizerTest, Whitespace)
     {
         string const input{ "   \
                 " };
         vector<Token> exp { };
 
-        return string2tokens(input, exp);
+        string2tokens(input, exp);
     }
 
-    bool simplecomments()
+    TEST(TokenizerTest, SimpleComments)
     {
         string const input{ "; ignore me!!" };
         vector<Token> exp { };
 
-        return string2tokens(input, exp);
+        string2tokens(input, exp);
     }
 
-    bool nestedcomments1()
+    TEST(TokenizerTest, NestedCommentsSpanLines)
     {
         string const input{ "\n\
 #| ignore me!! \n\
@@ -84,45 +77,45 @@ This comment style can span lines!\n\
 |#" };
         vector<Token> exp { };
 
-        return string2tokens(input, exp);
+        string2tokens(input, exp);
     }
 
-    bool nestedcomments2()
+    TEST(TokenizerTest, NestedComments2Deep)
     {
         string const input{ "#| nesting #| works! |don't get fooled||# |#" };
         vector<Token> exp { };
 
-        return string2tokens(input, exp);
+        string2tokens(input, exp);
     }
 
-    bool nestedcommentsbad1()
+    TEST(TokenizerTest, NestedCommentsUnterminated)
     {
         string const input{ "#| simple unterminated." };
         string const msg{ "End of input in nested comment: {#| simple unterminated.}" };
         vector<Token> exp { Token(TokenType::TT_SCAN_ERROR, msg) };
 
-        return string2tokens(input, exp);
+        string2tokens(input, exp);
     }
 
-    bool nestedcommentsbad2()
+    TEST(TokenizerTest, NestedCommentsOpen2Close1)
     {
         string const input{ "#| #| two in |# one out." };
         string const msg { "End of input in nested comment: {#| #| two in |# one out.}" };
         vector<Token> exp { Token(TokenType::TT_SCAN_ERROR, msg) };
 
-        return string2tokens(input, exp);
+        string2tokens(input, exp);
     }
 
-    bool nestedcommentsbad3()
+    TEST(TokenizerTest, NestedCommentsOpen2Close0)
     {
         string const input{ "#| #| double plus ungood." };
         string const msg { "End of input in nested comment: {#| double plus ungood.}" };
         vector<Token> exp { Token(TokenType::TT_SCAN_ERROR, msg) };
 
-        return string2tokens(input, exp);
+        string2tokens(input, exp);
     }
 
-    bool specials()
+    TEST(TokenizerTest, SpecialSymbols)
     {
         string const input{ "()[].'`,,@" };
         vector<Token> exp {
@@ -137,10 +130,10 @@ This comment style can span lines!\n\
             Token(TokenType::TT_SPLICE,        ",@") ,
        };
 
-        return string2tokens(input, exp);
+       string2tokens(input, exp);
     }
 
-    bool booleans()
+    TEST(TokenizerTest, Boolean)
     {
         string const input{ "#t #f #T #F" };
         vector<Token> exp {
@@ -150,20 +143,20 @@ This comment style can span lines!\n\
             Token(TokenType::TT_BOOLEAN, "#f"),
         };
 
-        return string2tokens(input, exp);
+        string2tokens(input, exp);
     }
 
-    bool bad_booleans()
+    TEST(TokenizerTest, BooleanUnterminated)
     {
         string const input{ "#tjunk" };
         vector<Token> exp {
             Token(TokenType::TT_SCAN_ERROR, "Unable to scan input: {#tjunk}"),
         };
 
-        return string2tokens(input, exp);
+        string2tokens(input, exp);
     }
 
-    bool characters()
+    TEST(TokenizerTest, Characters)
     {
         string const input{ "#\\a#\\Z    #\\+#\\ #\\\\" };
         vector<Token> exp {
@@ -174,59 +167,59 @@ This comment style can span lines!\n\
             Token(TokenType::TT_CHARACTER, "\\"),
         };
 
-        return string2tokens(input, exp);
+        string2tokens(input, exp);
     }
 
-    bool badcharacter1()
+    TEST(TokenizerTest, CharacterPrefixWithoutValue)
     {
         string const input{ "#\\" };
         vector<Token> exp {
             Token(TokenType::TT_SCAN_ERROR, "Malformed character: {#\\}"),
         };
 
-        return string2tokens(input, exp);
+        string2tokens(input, exp);
     }
 
-    bool badcharacter2()
+    TEST(TokenizerTest, CharacterUnterminated)
     {
         string const input{ "#\\a23" };
         vector<Token> exp {
             Token(TokenType::TT_SCAN_ERROR, "Unable to scan input: {#\\a23}"),
         };
 
-        return string2tokens(input, exp);
+        string2tokens(input, exp);
     }
 
-    bool emptystring()
+    TEST(TokenizerTest, EmptyString)
     {
         string const input{ "\"\"" };
         vector<Token> exp {
             Token(TokenType::TT_STRING, "")
         };
 
-        return string2tokens(input, exp);
+        string2tokens(input, exp);
     }
 
-    bool nonemptystring()
+    TEST(TokenizerTest, NonEmptyString)
     {
         string const input{ "\"Hello, World\"" };
         vector<Token> exp {
             Token(TokenType::TT_STRING, "Hello, World")
         };
 
-        return string2tokens(input, exp);
+        string2tokens(input, exp);
     }
 
-    bool badstring()
+    TEST(TokenizerTest, StringUnterminated)
     {
         string const input{ "\"" };
         string const msg{ "End of input in string: {\"}" };
         vector<Token> exp { Token(TokenType::TT_SCAN_ERROR, msg) };
 
-        return string2tokens(input, exp);
+        string2tokens(input, exp);
     }
 
-    bool integers()
+    TEST(TokenizerTest, Integers)
     {
         string const input{ "1 +3 -5" };
         vector<Token> exp {
@@ -235,10 +228,10 @@ This comment style can span lines!\n\
             Token(TokenType::TT_INTEGER, "-5")
         };
 
-        return string2tokens(input, exp);
+        string2tokens(input, exp);
     }
 
-    bool floats()
+    TEST(TokenizerTest, Floats)
     {
         string const input{ "0.0001 +3.2 -5.01" };
         vector<Token> exp {
@@ -250,7 +243,7 @@ This comment style can span lines!\n\
         return string2tokens(input, exp);
     }
 
-    bool falsefloats()
+    TEST(TokenizerTest, FalseFloats)
     {
         string const input{ ".2" };
         vector<Token> exp {
@@ -260,34 +253,4 @@ This comment style can span lines!\n\
 
         return string2tokens(input, exp);
     }
-}
-
-bool tokenizertest()
-{
-    bool ok { true };
-
-    ok &= emptytest();
-    ok &= whitespace();
-    ok &= simplecomments();
-    ok &= nestedcomments1();
-    ok &= nestedcomments2();
-    ok &= nestedcommentsbad1();
-    ok &= nestedcommentsbad2();
-    ok &= nestedcommentsbad3();
-
-    ok &= specials();
-    ok &= booleans();
-    ok &= bad_booleans();
-    ok &= characters();
-    ok &= badcharacter1();
-    ok &= badcharacter2();
-    ok &= emptystring();
-    ok &= nonemptystring();
-    ok &= badstring();
-
-    ok &= integers();
-    ok &= floats();
-    ok &= falsefloats();
-
-    return ok;
 }

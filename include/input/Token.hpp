@@ -51,7 +51,7 @@ namespace scam
     };
 
     template <typename OS>
-    OS & operator<<(OS & os, TokenType tt)
+    OS & operator<<(OS & os, TokenType const & tt)
     {
         switch ( tt ) {
         case TokenType::TT_NONE:

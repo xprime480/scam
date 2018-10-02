@@ -7,6 +7,8 @@
 #include "input/ScamParser.hpp"
 #include "input/Tokenizer.hpp"
 
+#include "gtest/gtest.h"
+
 #include <functional>
 #include <vector>
 
@@ -15,8 +17,6 @@ using namespace std;
 
 namespace
 {
-    using CheckFunc = function<bool(ScamExpr const &)>;
-
     static const Token eof(TokenType::TT_END_OF_INPUT, "");
 
     class StaticTokenizer : public Tokenizer
@@ -44,112 +44,107 @@ namespace
         size_t index;
     };
 
-    template <typename T>
-    class ExtractionContinuation : public Continuation
+    class Extractor : public Continuation
     {
     public:
-        ExtractionContinuation(T check)
-            : check(check)
+        void run(std::shared_ptr<ScamExpr> e) const override
         {
+            expr = e;
         }
 
-        void run(std::shared_ptr<ScamExpr> expr) const override
+        shared_ptr<ScamExpr> getExpr() const
         {
-            check(*expr);
+            return expr;
         }
 
     private:
-        T check;
+        mutable shared_ptr<ScamExpr> expr;
     };
 
-    template <typename T>
-    void runTest(vector<Token> const & tokens, T check)
+    shared_ptr<ScamExpr> runTest(vector<Token> const & tokens)
     {
         StaticTokenizer tokenizer(tokens);
         ScamParser parser(tokenizer);
-        ScamContext sc { make_shared<ExtractionContinuation<T>>(check) };
+        shared_ptr<Extractor> ec = make_shared<Extractor>();
+        ScamContext sc { ec };
         parser.parseExpr(sc);
+
+        shared_ptr<ScamExpr> expr = ec->getExpr();
+        EXPECT_NE(nullptr, expr.get());
+        return expr;
     }
 
-    bool noinput()
+    TEST(ParserTest, NoneToken)
     {
-        bool pass { false };
-        vector<Token> tokens {  };
-        auto check = [&pass](ScamExpr const & expr) {
-            pass = expr.isNull();
+        vector<Token> tokens {
+            Token(TokenType::TT_NONE, "")
         };
 
-        runTest(tokens, check);
-        if ( ! pass ) {
-            cerr << "Test noinput failed.\n";
-        }
-        return pass;
+        shared_ptr<ScamExpr> expr = runTest(tokens);
+
+        EXPECT_FALSE(expr->isNull());
+        EXPECT_TRUE(expr->error());
     }
 
-    bool scanerror()
+    TEST(ParserTest, EndOfInput)
     {
-        bool pass { false };
-        string const msg{ "blah" };
+        vector<Token> tokens {
+        };
 
+        shared_ptr<ScamExpr> expr = runTest(tokens);
+        EXPECT_TRUE(expr->isNull());
+    }
+
+    TEST(ParserTest, ScanError)
+    {
+        string const msg{ "blah" };
         vector<Token> tokens {
             Token(TokenType::TT_SCAN_ERROR, msg)
         };
-        auto check = [&](ScamExpr const & expr) {
-            pass = ! expr.isNull();
-            pass &= expr.error();
-            pass &= (msg == expr.toString());
-        };
 
-        runTest(tokens, check);
-        if ( ! pass ) {
-            cerr << "Test scanerror failed.\n";
-        }
-        return pass;
+        shared_ptr<ScamExpr> expr = runTest(tokens);
+        EXPECT_FALSE(expr->isNull());
+        EXPECT_TRUE(expr->error());
+        EXPECT_EQ(msg, expr->toString());
     }
 
-    bool booltest(string const & msg, bool value, string const & name)
+    void booltest(string const & msg, bool value)
     {
-        bool pass { false };
-
         vector<Token> tokens {
             Token(TokenType::TT_BOOLEAN, msg)
         };
-        auto check = [&](ScamExpr const & expr) {
-            pass  = ! expr.isNull();
-            pass &= ! expr.error();
-            pass &= (msg == expr.toString());
-            pass &=   (value == expr.truth());
+
+        shared_ptr<ScamExpr> expr = runTest(tokens);
+        EXPECT_FALSE(expr->isNull());
+        EXPECT_FALSE(expr->error());
+        EXPECT_EQ(msg, expr->toString());
+        EXPECT_EQ(value, expr->truth());
+    }
+
+    TEST(ParserTest, BoolTrue)
+    {
+        booltest("#t", true);
+    }
+
+    TEST(ParserTest, BoolFalse)
+    {
+        booltest("#f", false);
+    }
+
+    TEST(ParserTest, FloatTest)
+    {
+        static const string msg{ "-17.5" };
+        vector<Token> tokens {
+            Token(TokenType::TT_FLOAT, msg)
         };
 
-        runTest(tokens, check);
-        if ( ! pass ) {
-            cerr << "Test " << name << " failed.\n";
-        }
-        return pass;
+        shared_ptr<ScamExpr> expr = runTest(tokens);
+
+        EXPECT_FALSE(expr->isNull());
+        EXPECT_FALSE(expr->error());
+        EXPECT_TRUE(expr->isNumeric());
+        EXPECT_TRUE(expr->isFloat());
+        EXPECT_EQ(msg, expr->toString());
+        EXPECT_EQ(-17.5, expr->toFloat());
     }
-
-    bool booltrue()
-    {
-        return booltest("#t", true, "booltrue");
-    }
-
-    bool boolfalse()
-    {
-        return booltest("#f", false, "boolfalse");
-    }
-
-
-}
-
-bool parsertest()
-{
-    bool ok { true };
-
-    ok &= noinput();
-    ok &= scanerror();
-
-    ok &= booltrue();
-    ok &= boolfalse();
-
-    return ok;
 }

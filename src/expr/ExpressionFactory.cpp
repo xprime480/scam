@@ -2,6 +2,7 @@
 
 #include "expr/ScamBoolean.hpp"
 #include "expr/ScamError.hpp"
+#include "expr/ScamFloat.hpp"
 #include "expr/ScamNull.hpp"
 
 using namespace scam;
@@ -31,4 +32,10 @@ shared_ptr<ScamExpr> ExpressionFactory::makeBoolean(bool value)
     static const shared_ptr<ScamExpr> scamF = make_shared<ScamBoolean>(false);
 
     return value ? scamT : scamF;
+}
+
+shared_ptr<ScamExpr> ExpressionFactory::makeFloat(double value)
+{
+    shared_ptr<ScamExpr> expr = make_shared<ScamFloat>(value);
+    return expr;
 }
