@@ -12,10 +12,11 @@ namespace scam
     class ScamNull : public ScamExpr
     {
     public:
-        virtual std::string toString() const;
+        std::string toString() const override;
+        void eval(ScamContext & context) override;
 
-        virtual bool isNull() const;
-        virtual bool truth() const;
+        bool isNull() const override;
+        bool truth() const override;
 
 	std::shared_ptr<ScamExpr> clone() override;
     };

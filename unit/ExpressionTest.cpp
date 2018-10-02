@@ -41,8 +41,7 @@ TEST(ExpressionTest, NullExpression)
 
     shared_ptr<ScamExpr> evaled = evaluate(expr);
     ASSERT_NE(nullptr, evaled.get());
-    EXPECT_EQ(expr.get(), evaled.get());
-    EXPECT_TRUE(evaled->isNull());
+    EXPECT_TRUE(evaled->error());
 }
 
 TEST(ExpressionTest, ErrorExpression)
