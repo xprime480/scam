@@ -24,6 +24,8 @@ namespace scam
 
         static std::shared_ptr<ScamExpr> makeFloat(double value);
         static std::shared_ptr<ScamExpr> makeInteger(int value);
+
+        static std::shared_ptr<ScamExpr> makeNil();
     };
 }
 

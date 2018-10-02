@@ -5,6 +5,7 @@
 #include "expr/ScamError.hpp"
 #include "expr/ScamFloat.hpp"
 #include "expr/ScamInteger.hpp"
+#include "expr/ScamNil.hpp"
 #include "expr/ScamNull.hpp"
 #include "expr/ScamString.hpp"
 
@@ -59,4 +60,10 @@ shared_ptr<ScamExpr> ExpressionFactory::makeInteger(int value)
 {
     shared_ptr<ScamExpr> expr = make_shared<ScamInteger>(value);
     return expr;
+}
+
+std::shared_ptr<ScamExpr> ExpressionFactory::makeNil()
+{
+    static const shared_ptr<ScamExpr> nil = make_shared<ScamNil>();
+    return nil;
 }

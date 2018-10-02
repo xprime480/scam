@@ -85,3 +85,8 @@ int ScamExpr::toInteger() const
 
     return 0;
 }
+
+bool ScamExpr::isNil() const
+{
+    return false;
+}

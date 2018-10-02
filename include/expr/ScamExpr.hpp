@@ -30,6 +30,8 @@ namespace scam
         virtual bool isInteger() const;
         virtual int toInteger() const;
 
+        virtual bool isNil() const;
+
         virtual std::shared_ptr<ScamExpr> clone() = 0;
     };
 }
