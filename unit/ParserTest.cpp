@@ -124,6 +124,19 @@ namespace
         EXPECT_EQ('Z', expr->toChar());
     }
 
+    TEST(ParserTest, StringTest)
+    {
+        static const string msg{ "Holy Test Coverage, Batman!" };
+        vector<Token> tokens {
+            Token(TokenType::TT_STRING, msg)
+        };
+
+        shared_ptr<ScamExpr> expr = runTest(tokens);
+
+        EXPECT_TRUE(expr->isString());
+	EXPECT_EQ(msg, expr->toString());
+    }
+
     TEST(ParserTest, FloatTest)
     {
         static const string msg{ "-17.5" };

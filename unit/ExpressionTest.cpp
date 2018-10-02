@@ -37,6 +37,7 @@ TEST(ExpressionTest, NullExpression)
     EXPECT_FALSE(expr->isInteger());
     EXPECT_THROW(expr->toFloat(), ScamException);
     EXPECT_THROW(expr->toInteger(), ScamException);
+    EXPECT_FALSE(expr->isString());
 
     shared_ptr<ScamExpr> evaled = evaluate(expr);
     ASSERT_NE(nullptr, evaled.get());
@@ -62,6 +63,7 @@ TEST(ExpressionTest, ErrorExpression)
     EXPECT_FALSE(expr->isInteger());
     EXPECT_THROW(expr->toFloat(), ScamException);
     EXPECT_THROW(expr->toInteger(), ScamException);
+    EXPECT_FALSE(expr->isString());
 
     shared_ptr<ScamExpr> evaled = evaluate(expr);
 
@@ -83,6 +85,7 @@ void booleanTest(shared_ptr<ScamExpr> expr, bool value, string const & repr)
     EXPECT_FALSE(expr->isInteger());
     EXPECT_THROW(expr->toFloat(), ScamException);
     EXPECT_THROW(expr->toInteger(), ScamException);
+    EXPECT_FALSE(expr->isString());
 
     shared_ptr<ScamExpr> evaled = evaluate(expr);
     ASSERT_NE(nullptr, evaled.get());
@@ -121,6 +124,7 @@ TEST(ExpressionTest, FloatTest)
     EXPECT_FALSE(expr->isInteger());
     EXPECT_EQ(value, expr->toFloat());
     EXPECT_THROW(expr->toInteger(), ScamException);
+    EXPECT_FALSE(expr->isString());
 
     shared_ptr<ScamExpr> evaled = evaluate(expr);
 
@@ -147,6 +151,7 @@ TEST(ExpressionTest, IntegerTest)
     EXPECT_TRUE(expr->isInteger());
     EXPECT_EQ((double)value, expr->toFloat());
     EXPECT_EQ(value, expr->toInteger());
+    EXPECT_FALSE(expr->isString());
 
     shared_ptr<ScamExpr> evaled = evaluate(expr);
 
@@ -171,10 +176,37 @@ TEST(ExpressionTest, CharacterTest)
     EXPECT_FALSE(expr->isFloat());
     EXPECT_FALSE(expr->isInteger());
     EXPECT_TRUE(expr->isChar());
+    EXPECT_FALSE(expr->isString());
     EXPECT_EQ('Q', expr->toChar());
 
     shared_ptr<ScamExpr> evaled = evaluate(expr);
 
     ASSERT_NE(nullptr, evaled.get());
     EXPECT_EQ(expr->toChar(), evaled->toChar());
+}
+
+TEST(ExpressionTest, StringTest)
+{
+    string const value { "Fnord!" };
+
+    shared_ptr<ScamExpr> expr = ExpressionFactory::makeString(value);
+
+    ASSERT_NE(nullptr, expr.get());
+
+    EXPECT_EQ(value, expr->toString());
+
+    EXPECT_FALSE(expr->isNull());
+    EXPECT_FALSE(expr->error());
+    EXPECT_TRUE(expr->truth());
+    EXPECT_FALSE(expr->isNumeric());
+    EXPECT_FALSE(expr->isFloat());
+    EXPECT_FALSE(expr->isInteger());
+    EXPECT_FALSE(expr->isChar());
+    EXPECT_TRUE(expr->isString());
+    EXPECT_EQ(value, expr->toString());
+
+    shared_ptr<ScamExpr> evaled = evaluate(expr);
+
+    ASSERT_NE(nullptr, evaled.get());
+    EXPECT_EQ(expr->toString(), evaled->toString());
 }

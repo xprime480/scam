@@ -48,6 +48,11 @@ char ScamExpr::toChar() const
     return '\0';
 }
 
+bool ScamExpr::isString() const
+{
+    return false;
+}
+
 bool ScamExpr::isNumeric() const
 {
     return false;

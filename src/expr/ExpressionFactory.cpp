@@ -6,6 +6,7 @@
 #include "expr/ScamFloat.hpp"
 #include "expr/ScamInteger.hpp"
 #include "expr/ScamNull.hpp"
+#include "expr/ScamString.hpp"
 
 using namespace scam;
 using namespace std;
@@ -39,6 +40,12 @@ shared_ptr<ScamExpr> ExpressionFactory::makeBoolean(bool value)
 shared_ptr<ScamExpr> ExpressionFactory::makeCharacter(string const & value)
 {
     shared_ptr<ScamExpr> expr = make_shared<ScamCharacter>(value);
+    return expr;
+}
+
+shared_ptr<ScamExpr> ExpressionFactory::makeString(string const & value)
+{
+    shared_ptr<ScamExpr> expr = make_shared<ScamString>(value);
     return expr;
 }
 
