@@ -66,8 +66,6 @@ namespace
         };
 
         shared_ptr<ScamExpr> expr = runTest(tokens);
-
-        EXPECT_FALSE(expr->isNull());
         EXPECT_TRUE(expr->error());
     }
 
@@ -88,7 +86,6 @@ namespace
         };
 
         shared_ptr<ScamExpr> expr = runTest(tokens);
-        EXPECT_FALSE(expr->isNull());
         EXPECT_TRUE(expr->error());
         EXPECT_EQ(msg, expr->toString());
     }
@@ -100,9 +97,6 @@ namespace
         };
 
         shared_ptr<ScamExpr> expr = runTest(tokens);
-        EXPECT_FALSE(expr->isNull());
-        EXPECT_FALSE(expr->error());
-        EXPECT_EQ(msg, expr->toString());
         EXPECT_EQ(value, expr->truth());
     }
 
@@ -125,11 +119,21 @@ namespace
 
         shared_ptr<ScamExpr> expr = runTest(tokens);
 
-        EXPECT_FALSE(expr->isNull());
-        EXPECT_FALSE(expr->error());
-        EXPECT_TRUE(expr->isNumeric());
         EXPECT_TRUE(expr->isFloat());
-        EXPECT_EQ(msg, expr->toString());
         EXPECT_EQ(-17.5, expr->toFloat());
+    }
+
+    TEST(ParserTest, IntegerTest)
+    {
+        static const string msg{ "99" };
+        vector<Token> tokens {
+            Token(TokenType::TT_INTEGER, msg)
+        };
+
+        shared_ptr<ScamExpr> expr = runTest(tokens);
+
+        EXPECT_TRUE(expr->isFloat());
+        EXPECT_TRUE(expr->isInteger());
+        EXPECT_EQ(99, expr->toInteger());
     }
 }

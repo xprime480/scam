@@ -19,7 +19,7 @@ namespace scam
         std::shared_ptr<ScamExpr> clone() override;
 
     private:
-        double value;
+        double const value;
     };
 }
 

@@ -34,7 +34,9 @@ TEST(ExpressionTest, NullExpression)
     EXPECT_FALSE(expr->truth());
     EXPECT_FALSE(expr->isNumeric());
     EXPECT_FALSE(expr->isFloat());
+    EXPECT_FALSE(expr->isInteger());
     EXPECT_THROW(expr->toFloat(), ScamException);
+    EXPECT_THROW(expr->toInteger(), ScamException);
 
     shared_ptr<ScamExpr> evaled = evaluate(expr);
     ASSERT_NE(nullptr, evaled.get());
@@ -57,7 +59,9 @@ TEST(ExpressionTest, ErrorExpression)
     EXPECT_TRUE(expr->truth());
     EXPECT_FALSE(expr->isNumeric());
     EXPECT_FALSE(expr->isFloat());
+    EXPECT_FALSE(expr->isInteger());
     EXPECT_THROW(expr->toFloat(), ScamException);
+    EXPECT_THROW(expr->toInteger(), ScamException);
 
     shared_ptr<ScamExpr> evaled = evaluate(expr);
 
@@ -76,7 +80,9 @@ void booleanTest(shared_ptr<ScamExpr> expr, bool value, string const & repr)
     EXPECT_EQ(value, expr->truth());
     EXPECT_FALSE(expr->isNumeric());
     EXPECT_FALSE(expr->isFloat());
+    EXPECT_FALSE(expr->isInteger());
     EXPECT_THROW(expr->toFloat(), ScamException);
+    EXPECT_THROW(expr->toInteger(), ScamException);
 
     shared_ptr<ScamExpr> evaled = evaluate(expr);
     ASSERT_NE(nullptr, evaled.get());
@@ -112,10 +118,38 @@ TEST(ExpressionTest, FloatTest)
     EXPECT_TRUE(expr->truth());
     EXPECT_TRUE(expr->isNumeric());
     EXPECT_TRUE(expr->isFloat());
+    EXPECT_FALSE(expr->isInteger());
     EXPECT_EQ(value, expr->toFloat());
+    EXPECT_THROW(expr->toInteger(), ScamException);
 
     shared_ptr<ScamExpr> evaled = evaluate(expr);
 
     ASSERT_NE(nullptr, evaled.get());
     EXPECT_EQ(expr->toFloat(), evaled->toFloat());
+}
+
+TEST(ExpressionTest, IntegerTest)
+{
+    int value { 42 };
+    string const repr{ "42" };
+
+    shared_ptr<ScamExpr> expr = ExpressionFactory::makeInteger(value);
+
+    ASSERT_NE(nullptr, expr.get());
+
+    EXPECT_EQ(repr, expr->toString());
+
+    EXPECT_FALSE(expr->isNull());
+    EXPECT_FALSE(expr->error());
+    EXPECT_TRUE(expr->truth());
+    EXPECT_TRUE(expr->isNumeric());
+    EXPECT_TRUE(expr->isFloat());
+    EXPECT_TRUE(expr->isInteger());
+    EXPECT_EQ((double)value, expr->toFloat());
+    EXPECT_EQ(value, expr->toInteger());
+
+    shared_ptr<ScamExpr> evaled = evaluate(expr);
+
+    ASSERT_NE(nullptr, evaled.get());
+    EXPECT_EQ(expr->toInteger(), evaled->toInteger());
 }

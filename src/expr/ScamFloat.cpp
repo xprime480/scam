@@ -1,8 +1,6 @@
 
 #include "expr/ScamFloat.hpp"
 
-#include "ScamContext.hpp"
-
 #include "expr/ExpressionFactory.hpp"
 
 #include <sstream>

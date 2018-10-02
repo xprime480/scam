@@ -52,3 +52,17 @@ double ScamExpr::toFloat() const
 
     return 0.0;
 }
+
+bool ScamExpr::isInteger() const
+{
+    return false;
+}
+
+int ScamExpr::toInteger() const
+{
+    stringstream s;
+    s << "Cannot convert <" << this->toString() << "> to integer";
+    throw ScamException(s.str());
+
+    return 0;
+}

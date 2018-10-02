@@ -28,7 +28,7 @@ do_it_manually :
 	make -C gmock all
 
 test : unittests
-	@./unittests
+	@./unittests 
 
 clean :
 	make -C ../src clean

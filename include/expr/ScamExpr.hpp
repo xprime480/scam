@@ -23,6 +23,8 @@ namespace scam
         virtual bool isNumeric() const;
         virtual bool isFloat() const;
         virtual double toFloat() const;
+        virtual bool isInteger() const;
+        virtual int toInteger() const;
 
         virtual std::shared_ptr<ScamExpr> clone() = 0;
     };
