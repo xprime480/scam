@@ -20,6 +20,9 @@ namespace scam
         virtual bool error() const;
         virtual bool truth() const;
 
+        virtual bool isChar() const;
+        virtual char toChar() const;
+
         virtual bool isNumeric() const;
         virtual bool isFloat() const;
         virtual double toFloat() const;

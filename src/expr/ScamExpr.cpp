@@ -34,6 +34,20 @@ bool ScamExpr::truth() const
     return true;
 }
 
+bool ScamExpr::isChar() const
+{
+    return false;
+}
+
+char ScamExpr::toChar() const
+{
+    stringstream s;
+    s << "Cannot convert <" << this->toString() << "> to character";
+    throw ScamException(s.str());
+
+    return '\0';
+}
+
 bool ScamExpr::isNumeric() const
 {
     return false;

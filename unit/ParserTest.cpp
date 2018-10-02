@@ -110,6 +110,20 @@ namespace
         booltest("#f", false);
     }
 
+    TEST(ParserTest, CharacterTest)
+    {
+        static const string msg{ "\\#Z" };
+        vector<Token> tokens {
+            Token(TokenType::TT_CHARACTER, msg)
+        };
+
+        shared_ptr<ScamExpr> expr = runTest(tokens);
+
+        EXPECT_TRUE(expr->isChar());
+	EXPECT_EQ(msg, expr->toString());
+        EXPECT_EQ('Z', expr->toChar());
+    }
+
     TEST(ParserTest, FloatTest)
     {
         static const string msg{ "-17.5" };

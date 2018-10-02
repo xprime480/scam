@@ -153,3 +153,28 @@ TEST(ExpressionTest, IntegerTest)
     ASSERT_NE(nullptr, evaled.get());
     EXPECT_EQ(expr->toInteger(), evaled->toInteger());
 }
+
+TEST(ExpressionTest, CharacterTest)
+{
+    string const value { "\\#Q" };
+
+    shared_ptr<ScamExpr> expr = ExpressionFactory::makeCharacter(value);
+
+    ASSERT_NE(nullptr, expr.get());
+
+    EXPECT_EQ(value, expr->toString());
+
+    EXPECT_FALSE(expr->isNull());
+    EXPECT_FALSE(expr->error());
+    EXPECT_TRUE(expr->truth());
+    EXPECT_FALSE(expr->isNumeric());
+    EXPECT_FALSE(expr->isFloat());
+    EXPECT_FALSE(expr->isInteger());
+    EXPECT_TRUE(expr->isChar());
+    EXPECT_EQ('Q', expr->toChar());
+
+    shared_ptr<ScamExpr> evaled = evaluate(expr);
+
+    ASSERT_NE(nullptr, evaled.get());
+    EXPECT_EQ(expr->toChar(), evaled->toChar());
+}
