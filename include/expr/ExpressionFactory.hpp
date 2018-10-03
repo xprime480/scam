@@ -21,6 +21,7 @@ namespace scam
         makeCharacter(std::string const & value);
 
         static std::shared_ptr<ScamExpr> makeString(std::string const & value);
+        static std::shared_ptr<ScamExpr> makeSymbol(std::string const & value);
 
         static std::shared_ptr<ScamExpr> makeFloat(double value);
         static std::shared_ptr<ScamExpr> makeInteger(int value);

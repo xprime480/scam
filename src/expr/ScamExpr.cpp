@@ -53,6 +53,11 @@ bool ScamExpr::isString() const
     return false;
 }
 
+bool ScamExpr::isSymbol() const
+{
+    return false;
+}
+
 bool ScamExpr::isNumeric() const
 {
     return false;

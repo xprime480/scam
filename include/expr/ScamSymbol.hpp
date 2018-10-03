@@ -1,0 +1,23 @@
+#if ! defined(SCAMSYMBOL_H)
+#define SCAMSYMBOL_H 1
+
+#include "expr/ScamExpr.hpp"
+
+namespace scam
+{
+    class ScamSymbol : public ScamExpr
+    {
+    public:
+        ScamSymbol(std::string const & value);
+        std::string toString() const override;
+
+        bool isSymbol() const override;
+
+        std::shared_ptr<ScamExpr> clone() override;
+
+    private:
+        std::string const value;
+    };
+}
+
+#endif

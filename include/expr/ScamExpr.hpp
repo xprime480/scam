@@ -23,6 +23,7 @@ namespace scam
         virtual bool isChar() const;
         virtual char toChar() const;
         virtual bool isString() const;
+        virtual bool isSymbol() const;
 
         virtual bool isNumeric() const;
         virtual bool isFloat() const;

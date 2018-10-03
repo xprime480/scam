@@ -267,12 +267,12 @@ This comment style can span lines!\n\
         return string2tokens(input, exp);
     }
 
-    TEST(TokenizerTest, Identifiers)
+    TEST(TokenizerTest, Symbols)
     {
-        string const input{ "Two Identifiers " };
+        string const input{ "Two Symbols " };
         vector<Token> exp {
-            Token(TokenType::TT_IDENTIFIER, "Two"),
-            Token(TokenType::TT_IDENTIFIER, "Identifiers")
+            Token(TokenType::TT_SYMBOL, "Two"),
+            Token(TokenType::TT_SYMBOL, "Symbols")
         };
 
         return string2tokens(input, exp);
