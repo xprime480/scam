@@ -29,6 +29,19 @@ namespace scam
             table[key] = val;
         }
 
+        bool check(shared_ptr<ScamExpr> key) const
+        {
+            auto const iter = table.find(key);
+            if ( iter != table.end() ) {
+                return true;
+            }
+            if ( parent ) {
+                return parent->check(key);
+            }
+
+	    return false;
+	}
+
         shared_ptr<ScamExpr> get(shared_ptr<ScamExpr> key) const
         {
             auto const iter = table.find(key);
@@ -86,6 +99,11 @@ Env::Env()
 void Env::put(shared_ptr<ScamExpr> key, shared_ptr<ScamExpr> val)
 {
     data->put(key, val);
+}
+
+bool Env::check(std::shared_ptr<ScamExpr> key) const
+{
+    return data->check(key);
 }
 
 shared_ptr<ScamExpr> Env::get(shared_ptr<ScamExpr> key) const

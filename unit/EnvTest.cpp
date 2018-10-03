@@ -99,3 +99,11 @@ TEST_F(EnvTest, AssignTraversesFrames)
     act = env.get(key);
     EXPECT_EQ(newExp->toInteger(), act->toInteger());
 }
+
+TEST_F(EnvTest, Check)
+{
+    shared_ptr<ScamExpr> key2 = ExpressionFactory::makeSymbol("bad");
+
+    EXPECT_TRUE(env.check(key));
+    EXPECT_FALSE(env.check(key2));
+}
