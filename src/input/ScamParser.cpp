@@ -77,9 +77,9 @@ shared_ptr<ScamExpr> ScamParser::tokenToExpr(Token const & token) const
         rv = ExpressionFactory::makeInteger(std::atoi(token.getText().c_str()));
         break;
 
-//    case TokenType::TT_SYMBOL:
-//        rv = ExpressionFactory::makeSymbol(token.getText());
-//        break;
+    case TokenType::TT_SYMBOL:
+        rv = ExpressionFactory::makeSymbol(token.getText());
+        break;
 
     case TokenType::TT_END_OF_INPUT:
         rv = ExpressionFactory::makeNull();

@@ -137,6 +137,19 @@ namespace
         EXPECT_EQ(msg, expr->toString());
     }
 
+    TEST(ParserTest, SymbolTest)
+    {
+        static const string msg{ "nil?" };
+        vector<Token> tokens {
+            Token(TokenType::TT_SYMBOL, msg)
+        };
+
+        shared_ptr<ScamExpr> expr = runTest(tokens);
+
+        EXPECT_TRUE(expr->isSymbol());
+        EXPECT_EQ(msg, expr->toString());
+    }
+
     TEST(ParserTest, FloatTest)
     {
         static const string msg{ "-17.5" };
