@@ -60,6 +60,11 @@ Token StringTokenizer::next()
         return rv;
     }
 
+    rv = scanIdentifier();
+    if ( TokenType::TT_NONE != rv.getType() ) {
+        return rv;
+    }
+
     stringstream s;
     s << "Unable to scan input: {" << pos << "}";
     Token err(TokenType::TT_SCAN_ERROR, s.str());
@@ -209,17 +214,43 @@ Token StringTokenizer::scanBoolean()
         return none;
     }
 
-    if ( ( 't' == pos[1] || 'T' == pos[1] ) && isDelimiter(pos[2]) ) {
-        static const Token tokenTrue(TokenType::TT_BOOLEAN, "#t");
-        pos += 2;
-        return tokenTrue;
-    }
-    else if ( ( 'f' == pos[1] || 'F' == pos[1] ) && isDelimiter(pos[2]) ) {
-        static const Token tokenFalse(TokenType::TT_BOOLEAN, "#f");
-        pos += 2;
-        return tokenFalse;
+    char const * original = pos;
+    ++pos;
+
+    while ( ! isDelimiter(*pos) ) {
+        ++pos;
     }
 
+    string text(original, pos-original);
+    if ( 1u == text.size() ) {
+        pos = original;
+        return none;
+    }
+
+    if ( 2u == text.size() ) {
+        if ( ( 't' == text[1] || 'T' == text[1] ) ) {
+            static const Token tokenTrue(TokenType::TT_BOOLEAN, "#t");
+            return tokenTrue;
+        }
+        if ( ( 'f' == text[1] || 'F' == text[1] ) ) {
+            static const Token tokenFalse(TokenType::TT_BOOLEAN, "#f");
+            return tokenFalse;
+        }
+
+        pos = original;
+        return none;
+    }
+
+    if ( ( 't' == text[1] || 'T' == text[1] ) ||
+         ( 'f' == text[1] || 'F' == text[1] ) ) {
+        stringstream s;
+        s << "Malformed boolean: {" << text << "}";
+
+        Token err(TokenType::TT_SCAN_ERROR, s.str());
+        return err;
+    }
+
+    pos = original;
     return none;
 }
 
@@ -231,23 +262,25 @@ Token StringTokenizer::scanCharacter()
 
     char const * original = pos;
     pos += 2;
+    if ( *pos ) {
+        ++pos;
+    }
 
-    if ( ! *pos ) {
+    while ( ! isDelimiter(*pos) ) {
+        ++pos;
+    }
+
+    if ( 3u != (pos-original) ) {
+        string text(original, pos-original);
         stringstream s;
-        s << "Malformed character: {" << original << "}";
+        s << "Malformed character: {" << text << "}";
 
         Token err(TokenType::TT_SCAN_ERROR, s.str());
         return err;
     }
 
-    if ( ! isDelimiter(pos[1]) ) {
-        pos = original;
-        return none;
-    }
-
-    string text(pos, 1);
+    string text(pos-1, 1);
     Token token(TokenType::TT_CHARACTER, text);
-    ++pos;
     return token;
 }
 
@@ -313,5 +346,18 @@ Token StringTokenizer::scanNumeric()
 
     string text(original, pos-original);
     Token token(type, text);
+    return token;
+}
+
+Token StringTokenizer::scanIdentifier()
+{
+    char const * original = pos;
+
+    while ( ! isDelimiter(*pos) ) {
+        ++pos;
+    }
+
+    string text(original, pos-original);
+    Token token(TokenType::TT_IDENTIFIER, text);
     return token;
 }

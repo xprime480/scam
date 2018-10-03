@@ -222,3 +222,7 @@ TEST(ExpressionTest, NilTest)
     ASSERT_NE(nullptr, evaled.get());
     EXPECT_EQ(expr->toString(), evaled->toString());
 }
+
+TEST(ExpressionTest, SymbolTest)
+{
+}

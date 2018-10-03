@@ -120,7 +120,7 @@ namespace
         shared_ptr<ScamExpr> expr = runTest(tokens);
 
         EXPECT_TRUE(expr->isChar());
-	EXPECT_EQ(msg, expr->toString());
+        EXPECT_EQ(msg, expr->toString());
         EXPECT_EQ('Z', expr->toChar());
     }
 
@@ -134,7 +134,7 @@ namespace
         shared_ptr<ScamExpr> expr = runTest(tokens);
 
         EXPECT_TRUE(expr->isString());
-	EXPECT_EQ(msg, expr->toString());
+        EXPECT_EQ(msg, expr->toString());
     }
 
     TEST(ParserTest, FloatTest)

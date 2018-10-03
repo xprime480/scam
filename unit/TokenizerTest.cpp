@@ -7,15 +7,38 @@
 
 using namespace scam;
 using namespace std;
+using namespace ::testing;
 
 namespace
 {
-    void dump(string const & tag, vector<Token> const & tokens)
+    string dump(vector<Token> const & tokens)
     {
-        cerr << tag << "\n";
+        stringstream s;
         for ( Token const & t : tokens ) {
-            cerr << "\t" << t << "\n";
+            s << "\t" << t << "\n";
         }
+        return s.str();
+    }
+
+    AssertionResult
+    compareTokenVector(vector<Token> const & exp, vector<Token> const & act)
+    {
+        bool ok = ( exp.size() == act.size() );
+
+        for ( size_t idx = 0 ; ok && idx < act.size() ; ++idx ) {
+            if ( exp[idx] != act[idx] ) {
+                ok = false;
+            }
+        }
+
+        if ( ok ) {
+            return AssertionSuccess();
+        }
+
+        return AssertionFailure() << "expected " << exp.size()
+                                  << " tokens; got " << act.size()
+                                  << "\nexpected tokens:\n" << dump(exp)
+                                  << "\nactual tokens:\n" << dump(act);
     }
 
     void string2tokens(string const & s, vector<Token> const & exp)
@@ -31,17 +54,7 @@ namespace
             act.push_back(t);
         }
 
-        EXPECT_EQ(exp.size(), act.size())
-            << "Number of tokens scanned ";
-
-        /**
-        for ( size_t idx = 0 ; idx < act.size() ; ++idx ) {
-            EXPECT_EQ(exp[idx].getType(), act[idx].getType())
-                << "Token types differ at position " << idx;
-            EXPECT_EQ(exp[idx].getText(), act[idx].getText())
-                << "Token text differ at position " << idx;
-        }
-        **/
+        EXPECT_TRUE(compareTokenVector(exp, act));
     }
 
     TEST(TokenizerTest, EmptyInput)
@@ -150,7 +163,7 @@ This comment style can span lines!\n\
     {
         string const input{ "#tjunk" };
         vector<Token> exp {
-            Token(TokenType::TT_SCAN_ERROR, "Unable to scan input: {#tjunk}"),
+            Token(TokenType::TT_SCAN_ERROR, "Malformed boolean: {#tjunk}"),
         };
 
         string2tokens(input, exp);
@@ -184,7 +197,7 @@ This comment style can span lines!\n\
     {
         string const input{ "#\\a23" };
         vector<Token> exp {
-            Token(TokenType::TT_SCAN_ERROR, "Unable to scan input: {#\\a23}"),
+            Token(TokenType::TT_SCAN_ERROR, "Malformed character: {#\\a23}"),
         };
 
         string2tokens(input, exp);
@@ -249,6 +262,17 @@ This comment style can span lines!\n\
         vector<Token> exp {
             Token(TokenType::TT_DOT, "."),
             Token(TokenType::TT_INTEGER, "2")
+        };
+
+        return string2tokens(input, exp);
+    }
+
+    TEST(TokenizerTest, Identifiers)
+    {
+        string const input{ "Two Identifiers " };
+        vector<Token> exp {
+            Token(TokenType::TT_IDENTIFIER, "Two"),
+            Token(TokenType::TT_IDENTIFIER, "Identifiers")
         };
 
         return string2tokens(input, exp);

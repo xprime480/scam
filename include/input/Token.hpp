@@ -22,6 +22,7 @@ namespace scam
             TT_BOOLEAN,
             TT_CHARACTER,
             TT_STRING,
+            TT_IDENTIFIER,
 
             TT_FLOAT,
             TT_INTEGER,
@@ -104,6 +105,10 @@ namespace scam
 
         case TokenType::TT_STRING:
             os << "String";
+            break;
+
+        case TokenType::TT_IDENTIFIER:
+            os << "Identifier";
             break;
 
         case TokenType::TT_FLOAT:
