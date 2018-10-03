@@ -28,7 +28,7 @@ do_it_manually :
 	make -C gmock all
 
 test : unittests
-	@./unittests
+	@./unittests --gtest_filter=ParserTest.NilTest
 
 clean :
 	make -C ../src clean

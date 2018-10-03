@@ -176,4 +176,18 @@ namespace
         EXPECT_TRUE(expr->isInteger());
         EXPECT_EQ(99, expr->toInteger());
     }
+
+    TEST(ParserTest, NilTest)
+    {
+        static const string msg{ "()" };
+        vector<Token> tokens {
+            Token(TokenType::TT_OPEN_PAREN, "("),
+            Token(TokenType::TT_CLOSE_PAREN, ")")
+        };
+
+        shared_ptr<ScamExpr> expr = runTest(tokens);
+
+        EXPECT_TRUE(expr->isNil());
+        EXPECT_EQ(msg, expr->toString());
+    }
 }

@@ -47,11 +47,11 @@ shared_ptr<ScamExpr> ScamParser::tokenToExpr(Token const & token) const
 //    case TokenType::TT_COMMA:
 //        rv = expand_reader_macro("unquote");
 //        break;
-//
-//    case TokenType::TT_OPEN_PAREN:
-//        rv = parseList();
-//        break;
-//
+
+    case TokenType::TT_OPEN_PAREN:
+        rv = parseList();
+        break;
+
 //    case TokenType::TT_CLOSE_PAREN:
 //        throw ScamError("Extra ')' in input");
 //        break;
@@ -97,42 +97,49 @@ shared_ptr<ScamExpr> ScamParser::tokenToExpr(Token const & token) const
     return rv;
 }
 
-//Cell ScamParser::parseList() const
-//{
-//    ScamVector contents;
+shared_ptr<ScamExpr> ScamParser::parseList() const
+{
+    Token token = tokenizer.next();
+    if ( TokenType::TT_CLOSE_PAREN == token.getType() ) {
+        return ExpressionFactory::makeNil();
+    }
+
+    return ExpressionFactory::makeError("I haven't figured this part out yet");
+
+    //    ScamVector contents;
+    //
+    //    while ( true ) {
+    //        Token token = tokenizer.next();
+    //
+    //        TokenType type = token.getType();
+    //        if ( TokenType::TT_DOT == type )  {
+    //            shared_ptr<ScamExpr> last = parseDotContext();
+    //            if ( last.null() ) {
+    //                return last;
+    //            }
+    //            contents.append(last);
+    //            contents.set_proper(false);
+    //            break;
+    //        }
+    //        else if  {
+    //            break;
+    //        }
+    //        else if ( TokenType::TT_END_OF_INPUT == type ) {
+    //            throw ScamError("Unterminated List");
+    //        }
+    //        else {
+    //            shared_ptr<ScamExpr> form = tokenToCell(token);
+    //            if ( form.null() ) {
+    //                return form;
+    //            }
+    //            contents.append(form);
+    //        }
+    //    }
+    //
+    //    return ExpressionFactory::makeVector(contents);
+}
 //
-//    while ( true ) {
-//        Token token = tokenizer.next();
-//
-//        TokenType type = token.getType();
-//        if ( TokenType::TT_DOT == type )  {
-//            Cell last = parseDotContext();
-//            if ( last.null() ) {
-//                return last;
-//            }
-//            contents.append(last);
-//            contents.set_proper(false);
-//            break;
-//        }
-//        else if ( TokenType::TT_CLOSE_PAREN == type ) {
-//            break;
-//        }
-//        else if ( TokenType::TT_END_OF_INPUT == type ) {
-//            throw ScamError("Unterminated List");
-//        }
-//        else {
-//            Cell form = tokenToCell(token);
-//            if ( form.null() ) {
-//                return form;
-//            }
-//            contents.append(form);
-//        }
-//    }
-//
-//    return ExpressionFactory::makeVector(contents);
-//}
-//
-//Cell ScamParser::parseDotContext() const
+//shared_ptr<ScamExpr> ScamParser::parseDotContext() const
 //{
 //    Token token = tokenizer.next();
 //    TokenType type = token.getType();
@@ -144,7 +151,7 @@ shared_ptr<ScamExpr> ScamParser::tokenToExpr(Token const & token) const
 //        throw ScamError("Unterminated List");
 //    }
 //
-//    Cell next = tokenToCell(token);
+//    shared_ptr<ScamExpr> next = tokenToCell(token);
 //    if ( next.null() ) {
 //        return next;
 //    }
@@ -161,9 +168,9 @@ shared_ptr<ScamExpr> ScamParser::tokenToExpr(Token const & token) const
 //    return next;
 //}
 //
-//Cell ScamParser::expand_reader_macro(std::string const & symbolName) const
+//shared_ptr<ScamExpr> ScamParser::expand_reader_macro(std::string const & symbolName) const
 //{
-//    Cell expr = parseSubExpr();
+//    shared_ptr<ScamExpr> expr = parseSubExpr();
 //    if ( expr.null() ) {
 //        std::stringstream s;
 //        s << "Error getting form for " << symbolName << " macro";
