@@ -13,6 +13,8 @@ namespace scam
 
         bool truth() const override;
 
+        bool isBoolean() const override;
+
         std::shared_ptr<ScamExpr> clone() override;
 
     private:

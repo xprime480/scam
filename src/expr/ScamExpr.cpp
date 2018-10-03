@@ -34,6 +34,11 @@ bool ScamExpr::truth() const
     return true;
 }
 
+bool ScamExpr::isBoolean() const
+{
+    return false;
+}
+
 bool ScamExpr::isChar() const
 {
     return false;

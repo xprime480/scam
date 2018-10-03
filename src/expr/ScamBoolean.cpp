@@ -23,6 +23,11 @@ bool ScamBoolean::truth() const
     return value;
 }
 
+bool ScamBoolean::isBoolean() const
+{
+    return true;
+}
+
 shared_ptr<ScamExpr> ScamBoolean::clone()
 {
     return ExpressionFactory::makeBoolean(value);
