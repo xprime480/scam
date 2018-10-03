@@ -2,6 +2,7 @@
 #define SCAMCONTEXT_H 1
 
 #include "Continuation.hpp"
+#include "Env.hpp"
 
 #include <memory>
 
@@ -10,6 +11,7 @@ namespace scam
     struct ScamContext
     {
         std::shared_ptr<Continuation> cont;
+        Env env;
     };
 }
 

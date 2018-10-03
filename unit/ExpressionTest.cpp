@@ -11,17 +11,50 @@
 using namespace std;
 using namespace scam;
 
-ScamContext nullContext;
-
-std::shared_ptr<ScamExpr> evaluate(shared_ptr<ScamExpr> input)
+class ExpressionTest : public ::testing::Test
 {
-    shared_ptr<Extractor> ec = make_shared<Extractor>();
-    ScamContext sc { ec };
-    input->eval(sc);
-    return ec->getExpr();
-}
+protected:
+    ExpressionTest()
+        : extractor(make_shared<Extractor>())
+    {
+        context.cont = extractor;
+    }
 
-TEST(ExpressionTest, NullExpression)
+    shared_ptr<Extractor> extractor;
+    ScamContext context;
+
+    std::shared_ptr<ScamExpr> evaluate(shared_ptr<ScamExpr> input)
+    {
+        input->eval(context);
+        return extractor->getExpr();
+    }
+
+    void booleanTest(shared_ptr<ScamExpr> expr, bool value, string const & repr)
+    {
+        ASSERT_NE(nullptr, expr.get());
+
+        EXPECT_EQ(repr, expr->toString());
+
+        EXPECT_FALSE(expr->isNull());
+        EXPECT_FALSE(expr->error());
+        EXPECT_EQ(value, expr->truth());
+        EXPECT_FALSE(expr->isNumeric());
+        EXPECT_FALSE(expr->isFloat());
+        EXPECT_FALSE(expr->isInteger());
+        EXPECT_THROW(expr->toFloat(), ScamException);
+        EXPECT_THROW(expr->toInteger(), ScamException);
+        EXPECT_FALSE(expr->isString());
+        EXPECT_FALSE(expr->isSymbol());
+
+        shared_ptr<ScamExpr> evaled = evaluate(expr);
+        ASSERT_NE(nullptr, evaled.get());
+        EXPECT_EQ(expr.get(), evaled.get());
+        EXPECT_EQ(value, evaled->truth());
+    }
+
+};
+
+TEST_F(ExpressionTest, NullExpression)
 {
     shared_ptr<ScamExpr> expr = ExpressionFactory::makeNull();
 
@@ -45,7 +78,7 @@ TEST(ExpressionTest, NullExpression)
     EXPECT_TRUE(evaled->error());
 }
 
-TEST(ExpressionTest, ErrorExpression)
+TEST_F(ExpressionTest, ErrorExpression)
 {
     string const msg("Test message");
 
@@ -71,42 +104,19 @@ TEST(ExpressionTest, ErrorExpression)
     EXPECT_EQ(expr->toString(), evaled->toString());
 }
 
-void booleanTest(shared_ptr<ScamExpr> expr, bool value, string const & repr)
-{
-    ASSERT_NE(nullptr, expr.get());
-
-    EXPECT_EQ(repr, expr->toString());
-
-    EXPECT_FALSE(expr->isNull());
-    EXPECT_FALSE(expr->error());
-    EXPECT_EQ(value, expr->truth());
-    EXPECT_FALSE(expr->isNumeric());
-    EXPECT_FALSE(expr->isFloat());
-    EXPECT_FALSE(expr->isInteger());
-    EXPECT_THROW(expr->toFloat(), ScamException);
-    EXPECT_THROW(expr->toInteger(), ScamException);
-    EXPECT_FALSE(expr->isString());
-    EXPECT_FALSE(expr->isSymbol());
-
-    shared_ptr<ScamExpr> evaled = evaluate(expr);
-    ASSERT_NE(nullptr, evaled.get());
-    EXPECT_EQ(expr.get(), evaled.get());
-    EXPECT_EQ(value, evaled->truth());
-}
-
-TEST(ExpressionTest, BooleanTrue)
+TEST_F(ExpressionTest, BooleanTrue)
 {
     shared_ptr<ScamExpr> expr = ExpressionFactory::makeBoolean(true);
     booleanTest(expr, true, "#t");
 }
 
-TEST(ExpressionTest, BooleanFalse)
+TEST_F(ExpressionTest, BooleanFalse)
 {
     shared_ptr<ScamExpr> expr = ExpressionFactory::makeBoolean(false);
     booleanTest(expr, false, "#f");
 }
 
-TEST(ExpressionTest, FloatTest)
+TEST_F(ExpressionTest, FloatTest)
 {
     double value { 33.2 };
     string const repr{ "33.2" };
@@ -133,7 +143,7 @@ TEST(ExpressionTest, FloatTest)
     EXPECT_EQ(expr->toFloat(), evaled->toFloat());
 }
 
-TEST(ExpressionTest, IntegerTest)
+TEST_F(ExpressionTest, IntegerTest)
 {
     int value { 42 };
     string const repr{ "42" };
@@ -160,7 +170,7 @@ TEST(ExpressionTest, IntegerTest)
     EXPECT_EQ(expr->toInteger(), evaled->toInteger());
 }
 
-TEST(ExpressionTest, CharacterTest)
+TEST_F(ExpressionTest, CharacterTest)
 {
     string const value { "\\#Q" };
 
@@ -186,7 +196,7 @@ TEST(ExpressionTest, CharacterTest)
     EXPECT_EQ(expr->toChar(), evaled->toChar());
 }
 
-TEST(ExpressionTest, StringTest)
+TEST_F(ExpressionTest, StringTest)
 {
     string const value { "Fnord!" };
 
@@ -212,33 +222,40 @@ TEST(ExpressionTest, StringTest)
     EXPECT_EQ(expr->toString(), evaled->toString());
 }
 
-TEST(ExpressionTest, SymbolTest)
+TEST_F(ExpressionTest, SymbolTest)
 {
-    string const value { "Fnord!" };
+    string const name { "Fnord!" };
 
-    shared_ptr<ScamExpr> expr = ExpressionFactory::makeSymbol(value);
+    shared_ptr<ScamExpr> sym = ExpressionFactory::makeSymbol(name);
 
-    ASSERT_NE(nullptr, expr.get());
+    ASSERT_NE(nullptr, sym.get());
 
-    EXPECT_EQ(value, expr->toString());
+    EXPECT_EQ(name, sym->toString());
 
-    EXPECT_FALSE(expr->isNull());
-    EXPECT_FALSE(expr->error());
-    EXPECT_TRUE(expr->truth());
-    EXPECT_FALSE(expr->isNumeric());
-    EXPECT_FALSE(expr->isFloat());
-    EXPECT_FALSE(expr->isInteger());
-    EXPECT_FALSE(expr->isChar());
-    EXPECT_FALSE(expr->isString());
-    EXPECT_TRUE(expr->isSymbol());
-    EXPECT_EQ(value, expr->toString());
+    EXPECT_FALSE(sym->isNull());
+    EXPECT_FALSE(sym->error());
+    EXPECT_TRUE(sym->truth());
+    EXPECT_FALSE(sym->isNumeric());
+    EXPECT_FALSE(sym->isFloat());
+    EXPECT_FALSE(sym->isInteger());
+    EXPECT_FALSE(sym->isChar());
+    EXPECT_FALSE(sym->isString());
+    EXPECT_TRUE(sym->isSymbol());
+    EXPECT_EQ(name, sym->toString());
 
-    //    shared_ptr<ScamExpr> evaled = evaluate(expr);
-    //    ASSERT_NE(nullptr, evaled.get());
-    //    EXPECT_EQ(expr->toString(), evaled->toString());
+    shared_ptr<ScamExpr> evaled = evaluate(sym);
+    ASSERT_NE(nullptr, evaled.get());
+    EXPECT_TRUE(evaled->error());
+
+    shared_ptr<ScamExpr> value = ExpressionFactory::makeInteger(1899);
+    context.env.put(sym, value);
+    evaled = evaluate(sym);
+    ASSERT_NE(nullptr, evaled.get());
+    EXPECT_FALSE(evaled->error());
+    EXPECT_EQ(value->toInteger(), evaled->toInteger());
 }
 
-TEST(ExpressionTest, NilTest)
+TEST_F(ExpressionTest, NilTest)
 {
     string const value { "()" };
     shared_ptr<ScamExpr> expr = ExpressionFactory::makeNil();

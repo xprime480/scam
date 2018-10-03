@@ -15,7 +15,7 @@ namespace scam
         Env();
 
         void put(std::shared_ptr<ScamExpr> key, std::shared_ptr<ScamExpr> val);
-	bool check(std::shared_ptr<ScamExpr> key) const;
+        bool check(std::shared_ptr<ScamExpr> key) const;
         std::shared_ptr<ScamExpr> get(std::shared_ptr<ScamExpr> key) const;
 
         Env extend();

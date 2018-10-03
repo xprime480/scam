@@ -107,3 +107,11 @@ TEST_F(EnvTest, Check)
     EXPECT_TRUE(env.check(key));
     EXPECT_FALSE(env.check(key2));
 }
+
+TEST_F(EnvTest, NonSymbolKey)
+{
+    EXPECT_THROW(env.put(exp, exp), ScamException);
+    EXPECT_THROW(env.check(exp), ScamException);
+    EXPECT_THROW(env.get(exp), ScamException);
+    EXPECT_THROW(env.assign(exp, exp), ScamException);
+}

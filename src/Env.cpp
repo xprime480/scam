@@ -14,22 +14,21 @@ namespace scam
 {
     struct EnvData
     {
-        map<shared_ptr<ScamExpr>, shared_ptr<ScamExpr>> table;
+        map<string, shared_ptr<ScamExpr>> table;
         shared_ptr<EnvData> parent;
 
-        void put(shared_ptr<ScamExpr> key, shared_ptr<ScamExpr> val)
+        void put(string const & key, shared_ptr<ScamExpr> val)
         {
             auto const iter = table.find(key);
             if ( iter != table.end() ) {
                 stringstream s;
-                s << "Key: " << key->toString()
-                  << " already exists in current frame";
+                s << "Key: " << key << " already exists in current frame";
                 throw ScamException(s.str());
             }
             table[key] = val;
         }
 
-        bool check(shared_ptr<ScamExpr> key) const
+        bool check(string const & key) const
         {
             auto const iter = table.find(key);
             if ( iter != table.end() ) {
@@ -39,10 +38,10 @@ namespace scam
                 return parent->check(key);
             }
 
-	    return false;
-	}
+            return false;
+        }
 
-        shared_ptr<ScamExpr> get(shared_ptr<ScamExpr> key) const
+        shared_ptr<ScamExpr> get(string const & key) const
         {
             auto const iter = table.find(key);
             if ( iter != table.end() ) {
@@ -53,11 +52,11 @@ namespace scam
             }
 
             stringstream s;
-            s << "Key: " << key->toString() << " does not exist for reading";
+            s << "Key: " << key << " does not exist for reading";
             throw ScamException(s.str());
         }
 
-        void assign(shared_ptr<ScamExpr> key, shared_ptr<ScamExpr> val)
+        void assign(string const & key, shared_ptr<ScamExpr> val)
         {
             auto const iter = table.find(key);
             if ( iter == table.end() ) {
@@ -66,8 +65,7 @@ namespace scam
                 }
                 else {
                     stringstream s;
-                    s << "Key: " << key->toString()
-                      << " does not exist for assignment";
+                    s << "Key: " << key << " does not exist for assignment";
                     throw ScamException(s.str());
                 }
             }
@@ -91,6 +89,16 @@ namespace scam
     };
 }
 
+string checkKey(shared_ptr<ScamExpr> key)
+{
+    if ( ! key->isSymbol() ) {
+        stringstream s;
+        s << "Environment key : " << key->toString() << " must be a symbol";
+        throw ScamException(s.str());
+    }
+    return  key->toString();
+}
+
 Env::Env()
     : data(make_shared<EnvData>())
 {
@@ -98,17 +106,17 @@ Env::Env()
 
 void Env::put(shared_ptr<ScamExpr> key, shared_ptr<ScamExpr> val)
 {
-    data->put(key, val);
+    data->put(checkKey(key), val);
 }
 
 bool Env::check(std::shared_ptr<ScamExpr> key) const
 {
-    return data->check(key);
+    return data->check(checkKey(key));
 }
 
 shared_ptr<ScamExpr> Env::get(shared_ptr<ScamExpr> key) const
 {
-    return data->get(key);
+    return data->get(checkKey(key));
 }
 
 Env Env::extend()
@@ -120,7 +128,7 @@ Env Env::extend()
 
 void Env::assign(shared_ptr<ScamExpr> key, shared_ptr<ScamExpr> val)
 {
-    data->assign(key, val);
+    data->assign(checkKey(key), val);
 }
 
 void Env::dump(size_t max) const
