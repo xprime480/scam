@@ -208,6 +208,30 @@ namespace
         EXPECT_EQ(msg, expr->toString());
     }
 
+    TEST(ParserTest, UnterminatedList)
+    {
+        vector<Token> tokens {
+            Token(TokenType::TT_OPEN_PAREN, "("),
+        };
+
+        shared_ptr<ScamExpr> expr = runTest(tokens);
+        EXPECT_TRUE(expr->error());
+    }
+
+    TEST(ParserTest, ListWithTokenError)
+    {
+        string const msg { "A message from our sponsors" };
+        vector<Token> tokens {
+            Token(TokenType::TT_OPEN_PAREN, "("),
+            Token(TokenType::TT_SCAN_ERROR, msg),
+            Token(TokenType::TT_CLOSE_PAREN, ")")
+        };
+
+        shared_ptr<ScamExpr> expr = runTest(tokens);
+        EXPECT_TRUE(expr->error());
+        EXPECT_EQ(msg, expr->toString());
+    }
+
     TEST(ParserTest, DottedPairTest)
     {
         static const string msg{ "(5 17 . 2)" };
@@ -227,4 +251,48 @@ namespace
         EXPECT_EQ(msg, expr->toString());
     }
 
+    TEST(ParserTest, DottedPairNoCdr)
+    {
+        static const string msg{ "(5 17 . 2)" };
+        vector<Token> tokens {
+            Token(TokenType::TT_OPEN_PAREN, "("),
+            Token(TokenType::TT_INTEGER, "5"),
+            Token(TokenType::TT_INTEGER, "17"),
+            Token(TokenType::TT_DOT, "."),
+            Token(TokenType::TT_CLOSE_PAREN, ")")
+        };
+
+        shared_ptr<ScamExpr> expr = runTest(tokens);
+        EXPECT_TRUE(expr->error());
+    }
+
+    TEST(ParserTest, DottedPairNoClose)
+    {
+        static const string msg{ "(5 17 . 2)" };
+        vector<Token> tokens {
+            Token(TokenType::TT_OPEN_PAREN, "("),
+            Token(TokenType::TT_INTEGER, "5"),
+            Token(TokenType::TT_DOT, "."),
+            Token(TokenType::TT_INTEGER, "17"),
+        };
+
+        shared_ptr<ScamExpr> expr = runTest(tokens);
+        EXPECT_TRUE(expr->error());
+    }
+
+    TEST(ParserTest, DottedPairExcessForms)
+    {
+        static const string msg{ "(5 17 . 2)" };
+        vector<Token> tokens {
+            Token(TokenType::TT_OPEN_PAREN, "("),
+            Token(TokenType::TT_INTEGER, "5"),
+            Token(TokenType::TT_DOT, "."),
+            Token(TokenType::TT_INTEGER, "17"),
+            Token(TokenType::TT_INTEGER, "42"),
+            Token(TokenType::TT_CLOSE_PAREN, ")")
+        };
+
+        shared_ptr<ScamExpr> expr = runTest(tokens);
+        EXPECT_TRUE(expr->error());
+    }
 }

@@ -2,7 +2,7 @@
 #define SCAMPARSER_H 1
 
 #include "Continuation.hpp"
-#include "ScamExpr.hpp"
+#include "expr/ScamExpr.hpp"
 
 #include "input/Tokenizer.hpp"
 

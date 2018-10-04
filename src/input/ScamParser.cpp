@@ -1,3 +1,4 @@
+
 #include "input/ScamParser.hpp"
 
 #include "ScamContext.hpp"
@@ -119,25 +120,14 @@ shared_ptr<ScamExpr> ScamParser::parseList() const
     }
 
     shared_ptr<ScamExpr> car = tokenToExpr(token);
+    if ( car->error() ) {
+	return car;
+    }
     shared_ptr<ScamExpr> cdr = parseList();
+    if ( cdr->error() ) {
+	return cdr;
+    }
     return ExpressionFactory::makeCons(car, cdr);
-
-    //    ScamVector contents;
-    //
-    //    while ( true ) {
-    //        Token token = tokenizer.next();
-    //
-    //        TokenType type = token.getType();
-    //        else if  {
-    //            break;
-    //        }
-    //        else if ( TokenType::TT_END_OF_INPUT == type ) {
-    //            throw ScamError("Unterminated List");
-    //        }
-    //        }
-    //    }
-    //
-    //    return ExpressionFactory::makeVector(contents);
 }
 
 shared_ptr<ScamExpr> ScamParser::parseDotContext() const

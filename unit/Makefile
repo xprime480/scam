@@ -28,7 +28,7 @@ do_it_manually :
 	make -C gmock all
 
 test : unittests
-	@./unittests --gtest_filter=ParserTest.*
+	@./unittests --gtest_filter=*.*
 
 xx :
 	@./unittests --gtest_filter=ExpressionTest.ConsEvalTest
