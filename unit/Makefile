@@ -30,6 +30,10 @@ do_it_manually :
 test : unittests
 	@./unittests --gtest_filter=*.*
 
+xx :
+	@./unittests --gtest_filter=ExpressionTest.ConsEvalTest
+	@./unittests --gtest_filter=ExpressionTest.SpecialFormQuote
+
 clean :
 	make -C ../src clean
 	-@rm -f *.o *.d unittests

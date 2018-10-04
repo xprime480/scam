@@ -29,6 +29,12 @@ namespace scam
         static std::shared_ptr<ScamExpr> makeNil();
         static std::shared_ptr<ScamExpr>
         makeCons(std::shared_ptr<ScamExpr> car, std::shared_ptr<ScamExpr> cdr);
+
+        template <typename T, typename... Args>
+        static std::shared_ptr<ScamExpr> makeForm(Args... args)
+        {
+            return std::make_shared<T>(args...);
+        }
     };
 }
 

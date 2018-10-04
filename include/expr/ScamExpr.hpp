@@ -16,6 +16,10 @@ namespace scam
         virtual std::string toString() const = 0;
         virtual void eval(ScamContext & context);
 
+        virtual bool hasApply() const;
+        virtual void apply(std::shared_ptr<ScamExpr> const & args,
+                           ScamContext const & context);
+
         virtual bool isNull() const;
         virtual bool error() const;
         virtual bool truth() const;

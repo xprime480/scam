@@ -1,6 +1,7 @@
 
 #include "expr/ScamCons.hpp"
 
+#include "Continuation.hpp"
 #include "ScamContext.hpp"
 
 #include "expr/ExpressionFactory.hpp"
@@ -9,6 +10,28 @@
 
 using namespace scam;
 using namespace std;
+
+namespace
+{
+    class Evaluator : public Continuation
+    {
+    public:
+        Evaluator(shared_ptr<ScamExpr> args, ScamContext & context)
+            : args(args)
+            , context(context)
+        {
+        }
+
+        void run(shared_ptr<ScamExpr> e) const override
+        {
+            e->apply(args, context);
+        }
+
+    private:
+        shared_ptr<ScamExpr> args;
+        ScamContext context;
+    };
+}
 
 ScamCons::ScamCons(shared_ptr<ScamExpr> car, shared_ptr<ScamExpr> cdr)
     : car(car)
@@ -39,9 +62,10 @@ string ScamCons::toString() const
 
 void ScamCons::eval(ScamContext & context)
 {
-    static string const msg { "ScamCons::eval NOT IMPLEMENTED" };
-    static shared_ptr<ScamExpr> err = ExpressionFactory::makeError(msg);
-    context.cont->run(err);
+    shared_ptr<Continuation> newCont = make_shared<Evaluator>(cdr, context);
+    ScamContext newContext = context;
+    newContext.cont = newCont;
+    car->eval(newContext);
 }
 
 bool ScamCons::isCons() const
@@ -60,12 +84,12 @@ bool ScamCons::isList() const
     return cdr->isList();
 }
 
-std::shared_ptr<ScamExpr> ScamCons::getCar() const
+shared_ptr<ScamExpr> ScamCons::getCar() const
 {
     return car;
 }
 
-std::shared_ptr<ScamExpr> ScamCons::getCdr() const
+shared_ptr<ScamExpr> ScamCons::getCdr() const
 {
     return cdr;
 }

@@ -19,6 +19,21 @@ void ScamExpr::eval(ScamContext & context)
     context.cont->run(clone());
 }
 
+bool ScamExpr::hasApply() const
+{
+    return false;
+}
+
+void
+ScamExpr::apply(shared_ptr<ScamExpr> const & args, ScamContext const & context)
+{
+    stringstream s;
+    s << "Not possible to apply <" << this->toString()
+      << " to args " << args->toString();
+    shared_ptr<ScamExpr> err = ExpressionFactory::makeError(s.str());
+    context.cont->run(err);
+}
+
 bool ScamExpr::isNull() const
 {
     return false;
@@ -111,7 +126,7 @@ bool ScamExpr::isList() const
     return false;
 }
 
-std::shared_ptr<ScamExpr> ScamExpr::getCar() const
+shared_ptr<ScamExpr> ScamExpr::getCar() const
 {
     stringstream s;
     s << "Cannot take cons of <" << this->toString() << ">";
@@ -120,7 +135,7 @@ std::shared_ptr<ScamExpr> ScamExpr::getCar() const
     return ExpressionFactory::makeNull();
 }
 
-std::shared_ptr<ScamExpr> ScamExpr::getCdr() const
+shared_ptr<ScamExpr> ScamExpr::getCdr() const
 {
     stringstream s;
     s << "Cannot take cdr of <" << this->toString() << ">";
@@ -128,4 +143,3 @@ std::shared_ptr<ScamExpr> ScamExpr::getCdr() const
 
     return ExpressionFactory::makeNull();
 }
-

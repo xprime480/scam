@@ -3,6 +3,7 @@
 #include "ScamException.hpp"
 
 #include "expr/ExpressionFactory.hpp"
+#include "form/Quote.hpp"
 
 #include "Extractor.hpp"
 
@@ -26,6 +27,7 @@ namespace
     static const unsigned long SELECT_NIL     { 1 << 10 };
     static const unsigned long SELECT_CONS    { 1 << 11 };
     static const unsigned long SELECT_LIST    { 1 << 12 };
+    static const unsigned long SELECT_APPLY   { 1 << 13 };
 
     static const unsigned long ALL_FLOAT   = SELECT_NUMERIC | SELECT_FLOAT;
     static const unsigned long ALL_INTEGER = ALL_FLOAT | SELECT_INTEGER;
@@ -89,6 +91,8 @@ protected:
         doCheck(expr->isNil(),  selector, SELECT_NIL);
         doCheck(expr->isCons(), selector, SELECT_CONS);
         doCheck(expr->isList(), selector, SELECT_LIST);
+
+        doCheck(expr->hasApply(), selector, SELECT_APPLY);
     }
 };
 
@@ -263,4 +267,41 @@ TEST_F(ExpressionTest, ConsDottedPair)
 
     checkPredicates(expr, SELECT_TRUTH | SELECT_CONS);
     EXPECT_EQ(value, expr->toString());
+}
+
+TEST_F(ExpressionTest, ConsEvalTest)
+{
+    string const value { "(quote 2)" };
+
+    shared_ptr<ScamExpr> car  = ExpressionFactory::makeSymbol("quote");
+    shared_ptr<ScamExpr> cadr = ExpressionFactory::makeInteger(2);
+    shared_ptr<ScamExpr> cddr = ExpressionFactory::makeNil();
+    shared_ptr<ScamExpr> cdr  = ExpressionFactory::makeCons(cadr, cddr);;
+    shared_ptr<ScamExpr> expr = ExpressionFactory::makeCons(car, cdr);
+
+    checkPredicates(expr, SELECT_TRUTH | SELECT_CONS | SELECT_LIST);
+    EXPECT_EQ(value, expr->toString());
+
+    shared_ptr<ScamExpr> car2 = expr->getCar();
+    checkPredicates(car2, SELECT_TRUTH | SELECT_SYMBOL);
+    EXPECT_EQ("quote", car2->toString());
+
+    shared_ptr<ScamExpr> quote = ExpressionFactory::makeForm<Quote>();
+    context.env.put(car, quote);
+    shared_ptr<ScamExpr> evaled = evaluate(expr);
+    checkPredicates(evaled, SELECT_TRUTH | ALL_INTEGER);
+    EXPECT_EQ("2", evaled->toString());
+}
+
+TEST_F(ExpressionTest, SpecialFormQuote)
+{
+    string const value { "Special Form quote" };
+
+    shared_ptr<ScamExpr> quote  = ExpressionFactory::makeForm<Quote>();
+
+    checkPredicates(quote, SELECT_TRUTH | SELECT_APPLY);
+    EXPECT_EQ(value, quote->toString());
+
+    shared_ptr<ScamExpr> evaled = evaluate(quote);
+    checkPredicates(evaled, SELECT_TRUTH | SELECT_APPLY);
 }
