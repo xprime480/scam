@@ -253,7 +253,6 @@ namespace
 
     TEST(ParserTest, DottedPairNoCdr)
     {
-        static const string msg{ "(5 17 . 2)" };
         vector<Token> tokens {
             Token(TokenType::TT_OPEN_PAREN, "("),
             Token(TokenType::TT_INTEGER, "5"),
@@ -268,7 +267,6 @@ namespace
 
     TEST(ParserTest, DottedPairNoClose)
     {
-        static const string msg{ "(5 17 . 2)" };
         vector<Token> tokens {
             Token(TokenType::TT_OPEN_PAREN, "("),
             Token(TokenType::TT_INTEGER, "5"),
@@ -282,7 +280,6 @@ namespace
 
     TEST(ParserTest, DottedPairExcessForms)
     {
-        static const string msg{ "(5 17 . 2)" };
         vector<Token> tokens {
             Token(TokenType::TT_OPEN_PAREN, "("),
             Token(TokenType::TT_INTEGER, "5"),
@@ -294,5 +291,107 @@ namespace
 
         shared_ptr<ScamExpr> expr = runTest(tokens);
         EXPECT_TRUE(expr->error());
+    }
+
+    TEST(ParserTest, ExtraDot)
+    {
+        vector<Token> tokens {
+            Token(TokenType::TT_DOT, "."),
+        };
+
+        shared_ptr<ScamExpr> expr = runTest(tokens);
+        EXPECT_TRUE(expr->error());
+    }
+
+    TEST(ParserTest, CloseWithoutOpenParen)
+    {
+        vector<Token> tokens {
+            Token(TokenType::TT_CLOSE_PAREN, ")")
+        };
+
+        shared_ptr<ScamExpr> expr = runTest(tokens);
+        EXPECT_TRUE(expr->error());
+    }
+
+    TEST(ParserTest, ReaderMacroQuote)
+    {
+        static const string msg{ "(quote foo)" };
+
+        vector<Token> tokens {
+            Token(TokenType::TT_QUOTE, "'"),
+            Token(TokenType::TT_SYMBOL, "foo")
+        };
+
+        shared_ptr<ScamExpr> expr = runTest(tokens);
+        EXPECT_TRUE(expr->isList());
+        EXPECT_EQ(msg, expr->toString());
+    }
+
+    TEST(ParserTest, ReaderMacroQuasiquote)
+    {
+        static const string msg{ "(quasiquote foo)" };
+
+        vector<Token> tokens {
+            Token(TokenType::TT_QUASIQUOTE, "`"),
+            Token(TokenType::TT_SYMBOL, "foo")
+        };
+
+        shared_ptr<ScamExpr> expr = runTest(tokens);
+        EXPECT_TRUE(expr->isList());
+        EXPECT_EQ(msg, expr->toString());
+    }
+
+    TEST(ParserTest, ReaderMacroUnquote)
+    {
+        static const string msg{ "(unquote foo)" };
+
+        vector<Token> tokens {
+            Token(TokenType::TT_UNQUOTE, ","),
+            Token(TokenType::TT_SYMBOL, "foo")
+        };
+
+        shared_ptr<ScamExpr> expr = runTest(tokens);
+        EXPECT_TRUE(expr->isList());
+        EXPECT_EQ(msg, expr->toString());
+    }
+
+    TEST(ParserTest, ReaderMacroUnquoteSplice)
+    {
+        static const string msg{ "(splice foo)" };
+
+        vector<Token> tokens {
+            Token(TokenType::TT_SPLICE, ",@"),
+            Token(TokenType::TT_SYMBOL, "foo")
+        };
+
+        shared_ptr<ScamExpr> expr = runTest(tokens);
+        EXPECT_TRUE(expr->isList());
+        EXPECT_EQ(msg, expr->toString());
+    }
+
+    TEST(ParserTest, ReaderMacroNoForm)
+    {
+        vector<Token> tokens {
+            Token(TokenType::TT_SPLICE, ",@"),
+        };
+
+        shared_ptr<ScamExpr> expr = runTest(tokens);
+        EXPECT_TRUE(expr->error());
+    }
+
+    TEST(ParserTest, ReaderMacroListForm)
+    {
+        string const msg { "(quote (5 42))" };
+        vector<Token> tokens {
+            Token(TokenType::TT_QUOTE, "'"),
+            Token(TokenType::TT_OPEN_PAREN, "("),
+            Token(TokenType::TT_INTEGER, "5"),
+            Token(TokenType::TT_INTEGER, "42"),
+            Token(TokenType::TT_CLOSE_PAREN, ")")
+        };
+
+        shared_ptr<ScamExpr> expr = runTest(tokens);
+        EXPECT_TRUE(expr->isList());
+        EXPECT_EQ(msg, expr->toString());
     }
 }

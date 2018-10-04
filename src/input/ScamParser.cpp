@@ -36,26 +36,21 @@ shared_ptr<ScamExpr> ScamParser::tokenToExpr(Token const & token) const
     case TokenType::TT_NONE:
         rv = ExpressionFactory::makeError("**Internal Error: No Tokens");
         break;
-//
-//    case TokenType::TT_DOT:
-//        throw ScamError("Dot (.) outside list");
-//        break;
-//
-//    case TokenType::TT_TICK:
-//        rv = expand_reader_macro("quote");
-//        break;
-//
-//    case TokenType::TT_COMMA:
-//        rv = expand_reader_macro("unquote");
-//        break;
+
+// // //            TT_OPEN_BRACKET,
+// // //            TT_CLOSE_BRACKET,
+
+    case TokenType::TT_DOT:
+        rv = ExpressionFactory::makeError("Dot (.) outside list");
+        break;
 
     case TokenType::TT_OPEN_PAREN:
         rv = parseList();
         break;
 
-//    case TokenType::TT_CLOSE_PAREN:
-//        throw ScamError("Extra ')' in input");
-//        break;
+    case TokenType::TT_CLOSE_PAREN:
+        rv = ExpressionFactory::makeError("Extra ')' in input");
+        break;
 
     case TokenType::TT_BOOLEAN:
         rv = ExpressionFactory::makeBoolean(token.getText() == "#t");
@@ -73,13 +68,19 @@ shared_ptr<ScamExpr> ScamParser::tokenToExpr(Token const & token) const
         rv = ExpressionFactory::makeFloat(std::atof(token.getText().c_str()));
         break;
 
-
     case TokenType::TT_INTEGER:
         rv = ExpressionFactory::makeInteger(std::atoi(token.getText().c_str()));
         break;
 
     case TokenType::TT_SYMBOL:
         rv = ExpressionFactory::makeSymbol(token.getText());
+        break;
+
+    case TokenType::TT_QUOTE:
+    case TokenType::TT_QUASIQUOTE:
+    case TokenType::TT_UNQUOTE:
+    case TokenType::TT_SPLICE:
+        rv = expand_reader_macro(token.getText());
         break;
 
     case TokenType::TT_END_OF_INPUT:
@@ -104,11 +105,11 @@ shared_ptr<ScamExpr> ScamParser::parseList() const
     TokenType type = token.getType();
 
     if ( TokenType::TT_END_OF_INPUT == type ) {
-	return ExpressionFactory::makeError("Unterminated List");
+        return ExpressionFactory::makeError("Unterminated List");
     }
 
     if ( TokenType::TT_SCAN_ERROR == type ) {
-	return ExpressionFactory::makeError(token.getText());
+        return ExpressionFactory::makeError(token.getText());
     }
 
     if ( TokenType::TT_CLOSE_PAREN == type ) {
@@ -116,16 +117,16 @@ shared_ptr<ScamExpr> ScamParser::parseList() const
     }
 
     if ( TokenType::TT_DOT == type ) {
-	return parseDotContext();
+        return parseDotContext();
     }
 
     shared_ptr<ScamExpr> car = tokenToExpr(token);
     if ( car->error() ) {
-	return car;
+        return car;
     }
     shared_ptr<ScamExpr> cdr = parseList();
     if ( cdr->error() ) {
-	return cdr;
+        return cdr;
     }
     return ExpressionFactory::makeCons(car, cdr);
 }
@@ -136,15 +137,15 @@ shared_ptr<ScamExpr> ScamParser::parseDotContext() const
     TokenType type = token.getType();
 
     if ( TokenType::TT_END_OF_INPUT == type ) {
-	return ExpressionFactory::makeError("Unterminated List");
+        return ExpressionFactory::makeError("Unterminated List");
     }
 
     if ( TokenType::TT_SCAN_ERROR == type ) {
-	return ExpressionFactory::makeError(token.getText());
+        return ExpressionFactory::makeError(token.getText());
     }
 
     if ( TokenType::TT_CLOSE_PAREN == type ) {
-	return ExpressionFactory::makeError("No form after '.'");
+        return ExpressionFactory::makeError("No form after '.'");
     }
 
     shared_ptr<ScamExpr> final = tokenToExpr(token);
@@ -153,33 +154,57 @@ shared_ptr<ScamExpr> ScamParser::parseDotContext() const
     TokenType checkType = check.getType();
 
     if ( TokenType::TT_END_OF_INPUT == checkType ) {
-	return ExpressionFactory::makeError("Unterminated List");
+        return ExpressionFactory::makeError("Unterminated List");
     }
 
     if ( TokenType::TT_SCAN_ERROR == checkType ) {
-	return ExpressionFactory::makeError(token.getText());
+        return ExpressionFactory::makeError(token.getText());
     }
 
     if ( TokenType::TT_CLOSE_PAREN != checkType ) {
-	return ExpressionFactory::makeError("Too many forms after '.'");
+        return ExpressionFactory::makeError("Too many forms after '.'");
     }
 
     return final;
 }
 
-//shared_ptr<ScamExpr> ScamParser::expand_reader_macro(std::string const & symbolName) const
-//{
-//    shared_ptr<ScamExpr> expr = parseSubExpr();
-//    if ( expr.null() ) {
-//        std::stringstream s;
-//        s << "Error getting form for " << symbolName << " macro";
-//        throw ScamError(s.str());
-//    }
-//
-//    ScamVector macro;
-//    macro.append(ExpressionFactory::makeSymbol(symbolName));
-//    macro.append(expr);
-//    return ExpressionFactory::makeVector(macro);
-//}
-//
-//
+shared_ptr<ScamExpr>
+ScamParser::expand_reader_macro(std::string const & text) const
+{
+    string name;
+    if ( text == "'" ) {
+        name = "quote";
+    }
+    else if ( text == "`" ) {
+        name = "quasiquote";
+    }
+    else if ( text == "," ) {
+        name = "unquote";
+    }
+    else if ( text == ",@" ) {
+        name = "splice";
+    }
+    else {
+        stringstream s;
+        s <<  "Unknown reader macro: " << text;
+        return ExpressionFactory::makeError(s.str());
+    }
+
+    shared_ptr<ScamExpr> expr = parseSubExpr();
+    if ( expr->isNull() ) {
+        stringstream s;
+        s << "Unterminated macro: " << name;
+        return ExpressionFactory::makeError(s.str());
+    }
+    if ( expr->error() ) {
+        stringstream s;
+        s << "Error getting form for " << name << " macro";
+        s << "\t" << expr->toString();
+        return ExpressionFactory::makeError(s.str());
+    }
+
+    shared_ptr<ScamExpr> sym = ExpressionFactory::makeSymbol(name);
+    shared_ptr<ScamExpr> nil = ExpressionFactory::makeNil();
+    shared_ptr<ScamExpr> listed = ExpressionFactory::makeCons(expr, nil);
+    return ExpressionFactory::makeCons(sym, listed);
+}

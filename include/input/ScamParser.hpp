@@ -32,7 +32,7 @@ namespace scam
         std::shared_ptr<ScamExpr> parseDotContext() const;
 
         std::shared_ptr<ScamExpr>
-        expand_reader_macro(std::string const & symbolName) const;
+        expand_reader_macro(std::string const & text) const;
     };
 }
 
