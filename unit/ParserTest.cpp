@@ -190,4 +190,22 @@ namespace
         EXPECT_TRUE(expr->isNil());
         EXPECT_EQ(msg, expr->toString());
     }
+
+    TEST(ParserTest, ListTest)
+    {
+        static const string msg{ "(quote 2)" };
+        vector<Token> tokens {
+            Token(TokenType::TT_OPEN_PAREN, "("),
+            Token(TokenType::TT_SYMBOL, "quote"),
+            Token(TokenType::TT_INTEGER, "2"),
+            Token(TokenType::TT_CLOSE_PAREN, ")")
+        };
+
+        shared_ptr<ScamExpr> expr = runTest(tokens);
+
+        EXPECT_TRUE(expr->isList());
+        EXPECT_TRUE(expr->isCons());
+        EXPECT_EQ(msg, expr->toString());
+    }
+
 }

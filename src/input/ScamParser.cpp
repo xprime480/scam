@@ -103,6 +103,11 @@ shared_ptr<ScamExpr> ScamParser::parseList() const
     if ( TokenType::TT_CLOSE_PAREN == token.getType() ) {
         return ExpressionFactory::makeNil();
     }
+    else {
+        shared_ptr<ScamExpr> car = tokenToExpr(token);
+        shared_ptr<ScamExpr> cdr = parseList();
+        return ExpressionFactory::makeCons(car, cdr);
+    }
 
     return ExpressionFactory::makeError("I haven't figured this part out yet");
 
