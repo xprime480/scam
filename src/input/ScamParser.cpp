@@ -6,6 +6,7 @@
 #include "expr/ExpressionFactory.hpp"
 
 #include <sstream>
+#include <vector>
 
 using namespace scam;
 using namespace std;
@@ -37,9 +38,6 @@ shared_ptr<ScamExpr> ScamParser::tokenToExpr(Token const & token) const
         rv = ExpressionFactory::makeError("**Internal Error: No Tokens");
         break;
 
-// // //            TT_OPEN_BRACKET,
-// // //            TT_CLOSE_BRACKET,
-
     case TokenType::TT_DOT:
         rv = ExpressionFactory::makeError("Dot (.) outside list");
         break;
@@ -50,6 +48,14 @@ shared_ptr<ScamExpr> ScamParser::tokenToExpr(Token const & token) const
 
     case TokenType::TT_CLOSE_PAREN:
         rv = ExpressionFactory::makeError("Extra ')' in input");
+        break;
+
+    case TokenType::TT_OPEN_BRACKET:
+        rv = parseVector();
+        break;
+
+    case TokenType::TT_CLOSE_BRACKET:
+        rv = ExpressionFactory::makeError("Extra ']' in input");
         break;
 
     case TokenType::TT_BOOLEAN:
@@ -166,6 +172,35 @@ shared_ptr<ScamExpr> ScamParser::parseDotContext() const
     }
 
     return final;
+}
+
+std::shared_ptr<ScamExpr> ScamParser::parseVector() const
+{
+    vector<shared_ptr<ScamExpr>> vec;
+
+    while ( true ) {
+        Token token = tokenizer.next();
+        TokenType type = token.getType();
+
+        if ( TokenType::TT_END_OF_INPUT == type ) {
+            return ExpressionFactory::makeError("Unterminated Vector");
+        }
+
+        if ( TokenType::TT_SCAN_ERROR == type ) {
+            return ExpressionFactory::makeError(token.getText());
+        }
+
+        if ( TokenType::TT_CLOSE_BRACKET == type ) {
+            return ExpressionFactory::makeVector(vec);
+        }
+
+        shared_ptr<ScamExpr> expr = tokenToExpr(token);
+        if ( expr->error() ) {
+            return expr;
+        }
+
+        vec.push_back(expr);
+    }
 }
 
 shared_ptr<ScamExpr>

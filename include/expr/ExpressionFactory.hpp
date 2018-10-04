@@ -5,6 +5,7 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 
 namespace scam
 {
@@ -29,6 +30,9 @@ namespace scam
         static std::shared_ptr<ScamExpr> makeNil();
         static std::shared_ptr<ScamExpr>
         makeCons(std::shared_ptr<ScamExpr> car, std::shared_ptr<ScamExpr> cdr);
+
+        static std::shared_ptr<ScamExpr>
+        makeVector(std::vector<std::shared_ptr<ScamExpr>> elts);
 
         template <typename T, typename... Args>
         static std::shared_ptr<ScamExpr> makeForm(Args... args)

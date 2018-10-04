@@ -143,3 +143,26 @@ shared_ptr<ScamExpr> ScamExpr::getCdr() const
 
     return ExpressionFactory::makeNull();
 }
+
+bool ScamExpr::isVector() const
+{
+    return false;
+}
+
+size_t ScamExpr::length() const
+{
+    stringstream s;
+    s << "Cannot take the length of <" << this->toString() << ">";
+    throw ScamException(s.str());
+
+    return 0u;
+}
+
+std::shared_ptr<ScamExpr> ScamExpr::nth(size_t n) const
+{
+    stringstream s;
+    s << "Cannot index <" << this->toString() << ">";
+    throw ScamException(s.str());
+
+    return ExpressionFactory::makeNull();
+}

@@ -27,7 +27,8 @@ namespace
     static const unsigned long SELECT_NIL     { 1 << 10 };
     static const unsigned long SELECT_CONS    { 1 << 11 };
     static const unsigned long SELECT_LIST    { 1 << 12 };
-    static const unsigned long SELECT_APPLY   { 1 << 13 };
+    static const unsigned long SELECT_VECTOR  { 1 << 13 };
+    static const unsigned long SELECT_APPLY   { 1 << 14 };
 
     static const unsigned long ALL_FLOAT   = SELECT_NUMERIC | SELECT_FLOAT;
     static const unsigned long ALL_INTEGER = ALL_FLOAT | SELECT_INTEGER;
@@ -88,9 +89,10 @@ protected:
         doCheck(expr->isFloat(),   selector, SELECT_FLOAT);
         doCheck(expr->isInteger(), selector, SELECT_INTEGER);
 
-        doCheck(expr->isNil(),  selector, SELECT_NIL);
-        doCheck(expr->isCons(), selector, SELECT_CONS);
-        doCheck(expr->isList(), selector, SELECT_LIST);
+        doCheck(expr->isNil(),    selector, SELECT_NIL);
+        doCheck(expr->isCons(),   selector, SELECT_CONS);
+        doCheck(expr->isList(),   selector, SELECT_LIST);
+        doCheck(expr->isVector(), selector, SELECT_VECTOR);
 
         doCheck(expr->hasApply(), selector, SELECT_APPLY);
     }
@@ -237,6 +239,10 @@ TEST_F(ExpressionTest, ConsSingletonTest)
 
     checkPredicates(expr, SELECT_TRUTH | SELECT_CONS | SELECT_LIST);
     EXPECT_EQ(value, expr->toString());
+
+    EXPECT_EQ(1, expr->length());
+    shared_ptr<ScamExpr> first = expr->nth(0);
+    EXPECT_EQ("works", first->toString());
 }
 
 TEST_F(ExpressionTest, ConsDoubletonTest)
@@ -304,4 +310,43 @@ TEST_F(ExpressionTest, SpecialFormQuote)
 
     shared_ptr<ScamExpr> evaled = evaluate(quote);
     checkPredicates(evaled, SELECT_TRUTH | SELECT_APPLY);
+}
+
+TEST_F(ExpressionTest, VectorEmpty)
+{
+    string const value { "[]" };
+    vector<shared_ptr<ScamExpr>> vec;
+    shared_ptr<ScamExpr> expr  = ExpressionFactory::makeVector(vec);
+
+    checkPredicates(expr, SELECT_TRUTH | SELECT_VECTOR);
+    EXPECT_EQ(value, expr->toString());
+
+    shared_ptr<ScamExpr> evaled = evaluate(expr);
+    checkPredicates(evaled, SELECT_TRUTH | SELECT_VECTOR);
+    EXPECT_EQ(value, evaled->toString());
+}
+
+TEST_F(ExpressionTest, VectorNonEmpty)
+{
+    string const value { "[1 2 3]" };
+    vector<shared_ptr<ScamExpr>> vec;
+    for ( auto i : { 1, 2, 3 } ) {
+        vec.push_back(ExpressionFactory::makeInteger(i));
+    }
+    shared_ptr<ScamExpr> expr  = ExpressionFactory::makeVector(vec);
+
+    checkPredicates(expr, SELECT_TRUTH | SELECT_VECTOR);
+    EXPECT_EQ(value, expr->toString());
+    EXPECT_EQ(3, expr->length());
+
+    shared_ptr<ScamExpr> evaled = evaluate(expr);
+    checkPredicates(evaled, SELECT_TRUTH | SELECT_VECTOR);
+    EXPECT_EQ(value, evaled->toString());
+
+    shared_ptr<ScamExpr> third = expr->nth(2);
+    checkPredicates(third, SELECT_TRUTH | ALL_INTEGER);
+    EXPECT_EQ(3, third->toInteger());
+
+    shared_ptr<ScamExpr> fourth = expr->nth(3);
+    checkPredicates(fourth, SELECT_TRUTH | SELECT_ERROR);
 }

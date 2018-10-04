@@ -19,6 +19,9 @@ namespace scam
         std::shared_ptr<ScamExpr> getCar() const override;
         std::shared_ptr<ScamExpr> getCdr() const override;
 
+        size_t length() const override;
+        std::shared_ptr<ScamExpr> nth(size_t n) const override;
+
         std::shared_ptr<ScamExpr> clone() override;
 
     private:

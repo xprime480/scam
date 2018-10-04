@@ -42,6 +42,11 @@ namespace scam
         virtual std::shared_ptr<ScamExpr> getCar() const;
         virtual std::shared_ptr<ScamExpr> getCdr() const;
 
+        virtual bool isVector() const;
+
+        virtual size_t length() const;
+        virtual std::shared_ptr<ScamExpr> nth(size_t n) const;
+
         virtual std::shared_ptr<ScamExpr> clone() = 0;
     };
 }

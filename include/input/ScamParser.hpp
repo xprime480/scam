@@ -31,6 +31,8 @@ namespace scam
         std::shared_ptr<ScamExpr> parseList() const;
         std::shared_ptr<ScamExpr> parseDotContext() const;
 
+        std::shared_ptr<ScamExpr> parseVector() const;
+
         std::shared_ptr<ScamExpr>
         expand_reader_macro(std::string const & text) const;
     };

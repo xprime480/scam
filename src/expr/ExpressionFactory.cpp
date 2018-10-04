@@ -10,6 +10,7 @@
 #include "expr/ScamNull.hpp"
 #include "expr/ScamString.hpp"
 #include "expr/ScamSymbol.hpp"
+#include "expr/ScamVector.hpp"
 
 using namespace scam;
 using namespace std;
@@ -80,5 +81,12 @@ shared_ptr<ScamExpr>
 ExpressionFactory::makeCons(shared_ptr<ScamExpr> car, shared_ptr<ScamExpr> cdr)
 {
     shared_ptr<ScamExpr> expr = make_shared<ScamCons>(car, cdr);
+    return expr;
+}
+
+shared_ptr<ScamExpr>
+ExpressionFactory::makeVector(vector<shared_ptr<ScamExpr>> elts)
+{
+    shared_ptr<ScamExpr> expr = make_shared<ScamVector>(elts);
     return expr;
 }
