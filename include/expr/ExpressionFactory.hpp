@@ -27,6 +27,8 @@ namespace scam
         static std::shared_ptr<ScamExpr> makeInteger(int value);
 
         static std::shared_ptr<ScamExpr> makeNil();
+        static std::shared_ptr<ScamExpr>
+        makeCons(std::shared_ptr<ScamExpr> car, std::shared_ptr<ScamExpr> cdr);
     };
 }
 

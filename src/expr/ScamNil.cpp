@@ -16,6 +16,11 @@ bool ScamNil::isNil() const
     return true;
 }
 
+bool ScamNil::isList() const
+{
+    return true;
+}
+
 shared_ptr<ScamExpr> ScamNil::clone()
 {
     return ExpressionFactory::makeNil();

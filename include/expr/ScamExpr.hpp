@@ -33,6 +33,10 @@ namespace scam
         virtual int toInteger() const;
 
         virtual bool isNil() const;
+        virtual bool isCons() const;
+        virtual bool isList() const;
+        virtual std::shared_ptr<ScamExpr> getCar() const;
+        virtual std::shared_ptr<ScamExpr> getCdr() const;
 
         virtual std::shared_ptr<ScamExpr> clone() = 0;
     };

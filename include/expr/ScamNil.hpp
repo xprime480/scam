@@ -11,6 +11,7 @@ namespace scam
         std::string toString() const override;
 
         bool isNil() const override;
+        bool isList() const override;
 
         std::shared_ptr<ScamExpr> clone() override;
     };

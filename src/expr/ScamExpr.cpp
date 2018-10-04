@@ -100,3 +100,32 @@ bool ScamExpr::isNil() const
 {
     return false;
 }
+
+bool ScamExpr::isCons() const
+{
+    return false;
+}
+
+bool ScamExpr::isList() const
+{
+    return false;
+}
+
+std::shared_ptr<ScamExpr> ScamExpr::getCar() const
+{
+    stringstream s;
+    s << "Cannot take cons of <" << this->toString() << ">";
+    throw ScamException(s.str());
+
+    return ExpressionFactory::makeNull();
+}
+
+std::shared_ptr<ScamExpr> ScamExpr::getCdr() const
+{
+    stringstream s;
+    s << "Cannot take cdr of <" << this->toString() << ">";
+    throw ScamException(s.str());
+
+    return ExpressionFactory::makeNull();
+}
+

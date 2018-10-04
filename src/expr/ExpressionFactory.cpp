@@ -2,6 +2,7 @@
 
 #include "expr/ScamBoolean.hpp"
 #include "expr/ScamCharacter.hpp"
+#include "expr/ScamCons.hpp"
 #include "expr/ScamError.hpp"
 #include "expr/ScamFloat.hpp"
 #include "expr/ScamInteger.hpp"
@@ -69,8 +70,15 @@ shared_ptr<ScamExpr> ExpressionFactory::makeInteger(int value)
     return expr;
 }
 
-std::shared_ptr<ScamExpr> ExpressionFactory::makeNil()
+shared_ptr<ScamExpr> ExpressionFactory::makeNil()
 {
     static const shared_ptr<ScamExpr> nil = make_shared<ScamNil>();
     return nil;
+}
+
+shared_ptr<ScamExpr>
+ExpressionFactory::makeCons(shared_ptr<ScamExpr> car, shared_ptr<ScamExpr> cdr)
+{
+    shared_ptr<ScamExpr> expr = make_shared<ScamCons>(car, cdr);
+    return expr;
 }

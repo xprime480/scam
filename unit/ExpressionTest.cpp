@@ -24,9 +24,12 @@ namespace
     static const unsigned long SELECT_INTEGER { 1 << 8 };
     static const unsigned long SELECT_BOOLEAN { 1 << 9 };
     static const unsigned long SELECT_NIL     { 1 << 10 };
+    static const unsigned long SELECT_CONS    { 1 << 11 };
+    static const unsigned long SELECT_LIST    { 1 << 12 };
 
     static const unsigned long ALL_FLOAT   = SELECT_NUMERIC | SELECT_FLOAT;
     static const unsigned long ALL_INTEGER = ALL_FLOAT | SELECT_INTEGER;
+    static const unsigned long ALL_NIL     = SELECT_NIL | SELECT_LIST;
 }
 
 class ExpressionTest : public ::testing::Test
@@ -83,7 +86,9 @@ protected:
         doCheck(expr->isFloat(),   selector, SELECT_FLOAT);
         doCheck(expr->isInteger(), selector, SELECT_INTEGER);
 
-        doCheck(expr->isNil(), selector, SELECT_NIL);
+        doCheck(expr->isNil(),  selector, SELECT_NIL);
+        doCheck(expr->isCons(), selector, SELECT_CONS);
+        doCheck(expr->isList(), selector, SELECT_LIST);
     }
 };
 
@@ -210,10 +215,52 @@ TEST_F(ExpressionTest, NilTest)
     string const value { "()" };
 
     shared_ptr<ScamExpr> expr = ExpressionFactory::makeNil();
-    checkPredicates(expr, SELECT_TRUTH | SELECT_NIL);
+    checkPredicates(expr, SELECT_TRUTH | ALL_NIL);
     EXPECT_EQ(value, expr->toString());
 
     shared_ptr<ScamExpr> evaled = evaluate(expr);
-    checkPredicates(evaled, SELECT_TRUTH | SELECT_NIL);
+    checkPredicates(evaled, SELECT_TRUTH | ALL_NIL);
     EXPECT_EQ(expr->toString(), evaled->toString());
+}
+
+TEST_F(ExpressionTest, ConsSingletonTest)
+{
+    string const value { "(works)" };
+
+    shared_ptr<ScamExpr> car = ExpressionFactory::makeSymbol("works");
+    shared_ptr<ScamExpr> cdr = ExpressionFactory::makeNil();
+    shared_ptr<ScamExpr> expr = ExpressionFactory::makeCons(car, cdr);
+
+    checkPredicates(expr, SELECT_TRUTH | SELECT_CONS | SELECT_LIST);
+    EXPECT_EQ(value, expr->toString());
+}
+
+TEST_F(ExpressionTest, ConsDoubletonTest)
+{
+    string const value { "(works also)" };
+
+    shared_ptr<ScamExpr> car  = ExpressionFactory::makeSymbol("works");
+    shared_ptr<ScamExpr> cadr = ExpressionFactory::makeSymbol("also");
+    shared_ptr<ScamExpr> cddr = ExpressionFactory::makeNil();
+    shared_ptr<ScamExpr> cdr  = ExpressionFactory::makeCons(cadr, cddr);;
+    shared_ptr<ScamExpr> expr = ExpressionFactory::makeCons(car, cdr);
+
+    checkPredicates(expr, SELECT_TRUTH | SELECT_CONS | SELECT_LIST);
+    EXPECT_EQ(value, expr->toString());
+
+    shared_ptr<ScamExpr> car2 = expr->getCar();
+    checkPredicates(car2, SELECT_TRUTH | SELECT_SYMBOL);
+    EXPECT_EQ("works", car2->toString());
+}
+
+TEST_F(ExpressionTest, ConsDottedPair)
+{
+    string const value { "(1 . 2)" };
+
+    shared_ptr<ScamExpr> car = ExpressionFactory::makeInteger(1);
+    shared_ptr<ScamExpr> cdr = ExpressionFactory::makeInteger(2);
+    shared_ptr<ScamExpr> expr = ExpressionFactory::makeCons(car, cdr);
+
+    checkPredicates(expr, SELECT_TRUTH | SELECT_CONS);
+    EXPECT_EQ(value, expr->toString());
 }
