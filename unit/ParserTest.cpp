@@ -394,4 +394,33 @@ namespace
         EXPECT_TRUE(expr->isList());
         EXPECT_EQ(msg, expr->toString());
     }
+
+    TEST(ParserTest, VectorEmpty)
+    {
+        string const msg { "[]" };
+        vector<Token> tokens {
+            Token(TokenType::TT_OPEN_BRACKET, "["),
+            Token(TokenType::TT_CLOSE_BRACKET, "]")
+        };
+
+        shared_ptr<ScamExpr> expr = runTest(tokens);
+        EXPECT_TRUE(expr->isVector());
+        EXPECT_EQ(msg, expr->toString());
+    }
+
+    TEST(ParserTest, VectorNonEmpty)
+    {
+        string const msg { "[5 42]" };
+        vector<Token> tokens {
+            Token(TokenType::TT_OPEN_BRACKET, "["),
+            Token(TokenType::TT_INTEGER, "5"),
+            Token(TokenType::TT_INTEGER, "42"),
+            Token(TokenType::TT_CLOSE_BRACKET, "]")
+        };
+
+        shared_ptr<ScamExpr> expr = runTest(tokens);
+        EXPECT_TRUE(expr->isVector());
+        EXPECT_EQ(msg, expr->toString());
+	EXPECT_EQ(42, expr->nth(1)->toInteger());
+    }
 }
