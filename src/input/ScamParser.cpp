@@ -100,16 +100,27 @@ shared_ptr<ScamExpr> ScamParser::tokenToExpr(Token const & token) const
 shared_ptr<ScamExpr> ScamParser::parseList() const
 {
     Token token = tokenizer.next();
-    if ( TokenType::TT_CLOSE_PAREN == token.getType() ) {
-        return ExpressionFactory::makeNil();
-    }
-    else {
-        shared_ptr<ScamExpr> car = tokenToExpr(token);
-        shared_ptr<ScamExpr> cdr = parseList();
-        return ExpressionFactory::makeCons(car, cdr);
+    TokenType type = token.getType();
+
+    if ( TokenType::TT_END_OF_INPUT == type ) {
+	return ExpressionFactory::makeError("Unterminated List");
     }
 
-    return ExpressionFactory::makeError("I haven't figured this part out yet");
+    if ( TokenType::TT_SCAN_ERROR == type ) {
+	return ExpressionFactory::makeError(token.getText());
+    }
+
+    if ( TokenType::TT_CLOSE_PAREN == type ) {
+        return ExpressionFactory::makeNil();
+    }
+
+    if ( TokenType::TT_DOT == type ) {
+	return parseDotContext();
+    }
+
+    shared_ptr<ScamExpr> car = tokenToExpr(token);
+    shared_ptr<ScamExpr> cdr = parseList();
+    return ExpressionFactory::makeCons(car, cdr);
 
     //    ScamVector contents;
     //
@@ -117,62 +128,55 @@ shared_ptr<ScamExpr> ScamParser::parseList() const
     //        Token token = tokenizer.next();
     //
     //        TokenType type = token.getType();
-    //        if ( TokenType::TT_DOT == type )  {
-    //            shared_ptr<ScamExpr> last = parseDotContext();
-    //            if ( last.null() ) {
-    //                return last;
-    //            }
-    //            contents.append(last);
-    //            contents.set_proper(false);
-    //            break;
-    //        }
     //        else if  {
     //            break;
     //        }
     //        else if ( TokenType::TT_END_OF_INPUT == type ) {
     //            throw ScamError("Unterminated List");
     //        }
-    //        else {
-    //            shared_ptr<ScamExpr> form = tokenToCell(token);
-    //            if ( form.null() ) {
-    //                return form;
-    //            }
-    //            contents.append(form);
     //        }
     //    }
     //
     //    return ExpressionFactory::makeVector(contents);
 }
-//
-//shared_ptr<ScamExpr> ScamParser::parseDotContext() const
-//{
-//    Token token = tokenizer.next();
-//    TokenType type = token.getType();
-//
-//    if ( TokenType::TT_CLOSE_PAREN == type ) {
-//        throw ScamError("No form after '.'");
-//    }
-//    else if ( TokenType::TT_END_OF_INPUT == type ) {
-//        throw ScamError("Unterminated List");
-//    }
-//
-//    shared_ptr<ScamExpr> next = tokenToCell(token);
-//    if ( next.null() ) {
-//        return next;
-//    }
-//
-//    Token check = tokenizer.next();
-//    TokenType checkType = check.getType();
-//    if ( TokenType::TT_END_OF_INPUT == checkType ) {
-//        throw ScamError("Unterminated List");
-//    }
-//    else if ( TokenType::TT_CLOSE_PAREN != checkType ) {
-//        throw ScamError("Too many forms after '.'");
-//    }
-//
-//    return next;
-//}
-//
+
+shared_ptr<ScamExpr> ScamParser::parseDotContext() const
+{
+    Token token = tokenizer.next();
+    TokenType type = token.getType();
+
+    if ( TokenType::TT_END_OF_INPUT == type ) {
+	return ExpressionFactory::makeError("Unterminated List");
+    }
+
+    if ( TokenType::TT_SCAN_ERROR == type ) {
+	return ExpressionFactory::makeError(token.getText());
+    }
+
+    if ( TokenType::TT_CLOSE_PAREN == type ) {
+	return ExpressionFactory::makeError("No form after '.'");
+    }
+
+    shared_ptr<ScamExpr> final = tokenToExpr(token);
+
+    Token check = tokenizer.next();
+    TokenType checkType = check.getType();
+
+    if ( TokenType::TT_END_OF_INPUT == checkType ) {
+	return ExpressionFactory::makeError("Unterminated List");
+    }
+
+    if ( TokenType::TT_SCAN_ERROR == checkType ) {
+	return ExpressionFactory::makeError(token.getText());
+    }
+
+    if ( TokenType::TT_CLOSE_PAREN != checkType ) {
+	return ExpressionFactory::makeError("Too many forms after '.'");
+    }
+
+    return final;
+}
+
 //shared_ptr<ScamExpr> ScamParser::expand_reader_macro(std::string const & symbolName) const
 //{
 //    shared_ptr<ScamExpr> expr = parseSubExpr();

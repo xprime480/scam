@@ -208,4 +208,23 @@ namespace
         EXPECT_EQ(msg, expr->toString());
     }
 
+    TEST(ParserTest, DottedPairTest)
+    {
+        static const string msg{ "(5 17 . 2)" };
+        vector<Token> tokens {
+            Token(TokenType::TT_OPEN_PAREN, "("),
+            Token(TokenType::TT_INTEGER, "5"),
+            Token(TokenType::TT_INTEGER, "17"),
+            Token(TokenType::TT_DOT, "."),
+            Token(TokenType::TT_INTEGER, "2"),
+            Token(TokenType::TT_CLOSE_PAREN, ")")
+        };
+
+        shared_ptr<ScamExpr> expr = runTest(tokens);
+
+        EXPECT_FALSE(expr->isList());
+        EXPECT_TRUE(expr->isCons());
+        EXPECT_EQ(msg, expr->toString());
+    }
+
 }
