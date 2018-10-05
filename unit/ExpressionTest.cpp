@@ -1,12 +1,15 @@
 
+#include "Extractor.hpp"
 #include "ScamException.hpp"
+#include "Trampoline.hpp"
+#include "WorkQueue.hpp"
 
 #include "Env.hpp"
 #include "Extractor.hpp"
 
 #include "expr/ExpressionFactory.hpp"
-#include "form/Quote.hpp"
 
+#include "form/Quote.hpp"
 
 #include "gtest/gtest.h"
 
@@ -50,6 +53,7 @@ protected:
     std::shared_ptr<ScamExpr> evaluate(shared_ptr<ScamExpr> input)
     {
         input->eval(extractor, env);
+        Trampoline(GlobalWorkQueue);
         return extractor->getExpr();
     }
 

@@ -17,7 +17,8 @@ ScamExpr::~ScamExpr()
 
 void ScamExpr::eval(std::shared_ptr<Continuation> cont, Env & env)
 {
-    cont->run(clone());
+    shared_ptr<ScamExpr> dup = clone();
+    cont->run(dup);
 }
 
 bool ScamExpr::hasApply() const

@@ -29,10 +29,11 @@ namespace scam
 
         static std::shared_ptr<ScamExpr> makeNil();
         static std::shared_ptr<ScamExpr>
-        makeCons(std::shared_ptr<ScamExpr> car, std::shared_ptr<ScamExpr> cdr);
+        makeCons(std::shared_ptr<ScamExpr> const & car,
+                 std::shared_ptr<ScamExpr> const & cdr);
 
         static std::shared_ptr<ScamExpr>
-        makeVector(std::vector<std::shared_ptr<ScamExpr>> elts);
+        makeVector(std::vector<std::shared_ptr<ScamExpr>> const & elts);
 
         template <typename T, typename... Args>
         static std::shared_ptr<ScamExpr> makeForm(Args... args)

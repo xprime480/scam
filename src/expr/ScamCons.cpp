@@ -37,7 +37,8 @@ namespace
     };
 }
 
-ScamCons::ScamCons(shared_ptr<ScamExpr> car, shared_ptr<ScamExpr> cdr)
+ScamCons::ScamCons(shared_ptr<ScamExpr> const & car,
+                   shared_ptr<ScamExpr> const & cdr)
     : car(car)
     , cdr(cdr)
 {

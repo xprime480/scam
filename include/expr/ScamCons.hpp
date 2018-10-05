@@ -8,7 +8,8 @@ namespace scam
     class ScamCons : public ScamExpr
     {
     public:
-        ScamCons(std::shared_ptr<ScamExpr> car, std::shared_ptr<ScamExpr> cdr);
+        ScamCons(std::shared_ptr<ScamExpr> const & car,
+                 std::shared_ptr<ScamExpr> const & cdr);
 
         std::string toString() const override;
         void eval(std::shared_ptr<Continuation> cont, Env & env) override;

@@ -10,7 +10,7 @@ namespace scam
     class ScamVector : public ScamExpr
     {
     public:
-        ScamVector(std::vector<std::shared_ptr<ScamExpr>> elts);
+        ScamVector(std::vector<std::shared_ptr<ScamExpr>> const & elts);
 
         std::string toString() const override;
 

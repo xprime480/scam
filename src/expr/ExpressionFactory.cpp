@@ -78,14 +78,15 @@ shared_ptr<ScamExpr> ExpressionFactory::makeNil()
 }
 
 shared_ptr<ScamExpr>
-ExpressionFactory::makeCons(shared_ptr<ScamExpr> car, shared_ptr<ScamExpr> cdr)
+ExpressionFactory::makeCons(shared_ptr<ScamExpr> const & car, 
+			    shared_ptr<ScamExpr> const & cdr)
 {
     shared_ptr<ScamExpr> expr = make_shared<ScamCons>(car, cdr);
     return expr;
 }
 
 shared_ptr<ScamExpr>
-ExpressionFactory::makeVector(vector<shared_ptr<ScamExpr>> elts)
+ExpressionFactory::makeVector(vector<shared_ptr<ScamExpr>> const & elts)
 {
     shared_ptr<ScamExpr> expr = make_shared<ScamVector>(elts);
     return expr;
