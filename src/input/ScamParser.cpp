@@ -1,8 +1,6 @@
 
 #include "input/ScamParser.hpp"
 
-#include "ScamContext.hpp"
-
 #include "expr/ExpressionFactory.hpp"
 
 #include <sstream>
@@ -16,10 +14,10 @@ ScamParser::ScamParser(Tokenizer & tokenizer)
 {
 }
 
-void ScamParser::parseExpr(ScamContext & context) const
+void ScamParser::parseExpr(std::shared_ptr<Continuation> cont) const
 {
     shared_ptr<ScamExpr> expr = parseSubExpr();
-    context.cont->run(expr);
+    cont->run(expr);
 }
 
 shared_ptr<ScamExpr> ScamParser::parseSubExpr() const

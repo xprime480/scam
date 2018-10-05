@@ -1,7 +1,7 @@
 
 #include "form/Quote.hpp"
 
-#include "ScamContext.hpp"
+#include "Continuation.hpp"
 
 #include "expr/ExpressionFactory.hpp"
 
@@ -13,11 +13,12 @@ Quote::Quote()
 {
 }
 
-void
-Quote::apply(shared_ptr<ScamExpr> const & args, ScamContext const & context)
+void Quote::apply(std::shared_ptr<ScamExpr> const & args,
+                  std::shared_ptr<Continuation> cont,
+                  Env & env)
 {
     shared_ptr<ScamExpr> expr = args->getCar();
-    context.cont->run(expr);
+    cont->run(expr);
 }
 
 std::shared_ptr<ScamExpr> Quote::clone()

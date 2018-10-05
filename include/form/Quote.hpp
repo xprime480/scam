@@ -11,7 +11,8 @@ namespace scam
         Quote();
 
         void apply(std::shared_ptr<ScamExpr> const & args,
-                   ScamContext const & context) override;
+                   std::shared_ptr<Continuation> cont,
+                   Env & env) override;
 
         std::shared_ptr<ScamExpr> clone() override;
     };

@@ -2,7 +2,7 @@
 #include "expr/ScamCons.hpp"
 
 #include "Continuation.hpp"
-#include "ScamContext.hpp"
+#include "Env.hpp"
 
 #include "expr/ExpressionFactory.hpp"
 
@@ -16,20 +16,24 @@ namespace
     class Evaluator : public Continuation
     {
     public:
-        Evaluator(shared_ptr<ScamExpr> args, ScamContext & context)
+        Evaluator(shared_ptr<ScamExpr> args,
+                  std::shared_ptr<Continuation> cont,
+                  Env env)
             : args(args)
-            , context(context)
+            , cont(cont)
+            , env(env)
         {
         }
 
         void run(shared_ptr<ScamExpr> e) const override
         {
-            e->apply(args, context);
+            e->apply(args, cont, env);
         }
 
     private:
-        shared_ptr<ScamExpr> args;
-        ScamContext context;
+        mutable shared_ptr<ScamExpr> args;
+        mutable std::shared_ptr<Continuation> cont;
+        mutable Env env;
     };
 }
 
@@ -60,12 +64,10 @@ string ScamCons::toString() const
     return s.str();
 }
 
-void ScamCons::eval(ScamContext & context)
+void ScamCons::eval(std::shared_ptr<Continuation> cont, Env & env)
 {
-    shared_ptr<Continuation> newCont = make_shared<Evaluator>(cdr, context);
-    ScamContext newContext = context;
-    newContext.cont = newCont;
-    car->eval(newContext);
+    shared_ptr<Continuation> newCont = make_shared<Evaluator>(cdr, cont, env);
+    car->eval(newCont, env);
 }
 
 bool ScamCons::isCons() const

@@ -11,7 +11,7 @@ namespace scam
         ScamCons(std::shared_ptr<ScamExpr> car, std::shared_ptr<ScamExpr> cdr);
 
         std::string toString() const override;
-        void eval(ScamContext & context) override;
+        void eval(std::shared_ptr<Continuation> cont, Env & env) override;
 
         bool isCons() const override;
         bool isList() const override;

@@ -6,7 +6,8 @@
 
 namespace scam
 {
-    class ScamContext;
+    class Continuation;
+    class Env;
 
     class ScamExpr
     {
@@ -14,11 +15,12 @@ namespace scam
         virtual ~ScamExpr();
 
         virtual std::string toString() const = 0;
-        virtual void eval(ScamContext & context);
+        virtual void eval(std::shared_ptr<Continuation> cont, Env & env);
 
         virtual bool hasApply() const;
         virtual void apply(std::shared_ptr<ScamExpr> const & args,
-                           ScamContext const & context);
+                           std::shared_ptr<Continuation> cont,
+                           Env & env);
 
         virtual bool isNull() const;
         virtual bool error() const;

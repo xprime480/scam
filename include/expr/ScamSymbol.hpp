@@ -10,7 +10,7 @@ namespace scam
     public:
         ScamSymbol(std::string const & value);
         std::string toString() const override;
-        void eval(ScamContext & context) override;
+        void eval(std::shared_ptr<Continuation> cont, Env & env) override;
 
         bool isSymbol() const override;
 

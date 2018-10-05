@@ -1,8 +1,8 @@
 #include "ScamEngine.hpp"
 
 #include "Continuation.hpp"
+#include "Env.hpp"
 #include "Trampoline.hpp"
-#include "ScamContext.hpp"
 #include "WorkQueue.hpp"
 #include "Worker.hpp"
 
@@ -102,37 +102,38 @@ namespace
         OutputHandler & output;
         ReplState state;
         shared_ptr<ScamExpr> expr;
+        Env env;
 
         void do_read()
         {
-            ScamContext context;
-            context.cont = make_shared<ReadContinuation>(*this);
-            parser.parseExpr(context);
+            std::shared_ptr<Continuation> cont
+                = make_shared<ReadContinuation>(*this);
+            parser.parseExpr(cont);
         }
 
         void do_eval()
         {
-            ScamContext context;
-            context.cont = make_shared<EvalContinuation>(*this);
-            expr->eval(context);
+            std::shared_ptr<Continuation> cont
+                = make_shared<EvalContinuation>(*this);
+            expr->eval(cont, env);
         }
 
         void do_print()
         {
-            ScamContext context;
-            context.cont = make_shared<PrintContinuation>(*this);
+            std::shared_ptr<Continuation> cont
+                = make_shared<PrintContinuation>(*this);
             string value = expr->toString();
             output.handleResult(value);
-            context.cont->run(expr);
+            cont->run(expr);
         }
 
         void do_error()
         {
-            ScamContext context;
-            context.cont = make_shared<PrintContinuation>(*this);
+            std::shared_ptr<Continuation> cont
+                = make_shared<PrintContinuation>(*this);
             string value = expr->toString();
             output.handleError(value);
-            context.cont->run(expr);
+            cont->run(expr);
         }
     };
 

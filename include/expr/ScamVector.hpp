@@ -14,7 +14,7 @@ namespace scam
 
         std::string toString() const override;
 
-        void eval(ScamContext & context);
+        void eval(std::shared_ptr<Continuation> cont, Env & env);
 
         bool isVector() const override;
 

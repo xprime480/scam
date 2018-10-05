@@ -1,11 +1,12 @@
 
-#include "ScamContext.hpp"
 #include "ScamException.hpp"
+
+#include "Env.hpp"
+#include "Extractor.hpp"
 
 #include "expr/ExpressionFactory.hpp"
 #include "form/Quote.hpp"
 
-#include "Extractor.hpp"
 
 #include "gtest/gtest.h"
 
@@ -41,15 +42,14 @@ protected:
     ExpressionTest()
         : extractor(make_shared<Extractor>())
     {
-        context.cont = extractor;
     }
 
     shared_ptr<Extractor> extractor;
-    ScamContext context;
+    Env env;
 
     std::shared_ptr<ScamExpr> evaluate(shared_ptr<ScamExpr> input)
     {
-        input->eval(context);
+        input->eval(extractor, env);
         return extractor->getExpr();
     }
 
@@ -210,7 +210,7 @@ TEST_F(ExpressionTest, SymbolTest)
     checkPredicates(evaled, SELECT_TRUTH | SELECT_ERROR);
 
     shared_ptr<ScamExpr> value = ExpressionFactory::makeInteger(1899);
-    context.env.put(sym, value);
+    env.put(sym, value);
     evaled = evaluate(sym);
     checkPredicates(evaled, SELECT_TRUTH | ALL_INTEGER);
     EXPECT_EQ(value->toInteger(), evaled->toInteger());
@@ -293,7 +293,7 @@ TEST_F(ExpressionTest, ConsEvalTest)
     EXPECT_EQ("quote", car2->toString());
 
     shared_ptr<ScamExpr> quote = ExpressionFactory::makeForm<Quote>();
-    context.env.put(car, quote);
+    env.put(car, quote);
     shared_ptr<ScamExpr> evaled = evaluate(expr);
     checkPredicates(evaled, SELECT_TRUTH | ALL_INTEGER);
     EXPECT_EQ("2", evaled->toString());

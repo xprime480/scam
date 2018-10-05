@@ -1,6 +1,7 @@
 
-#include "ScamContext.hpp"
 #include "ScamException.hpp"
+
+#include "Continuation.hpp"
 
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamExpr.hpp"
@@ -14,9 +15,9 @@ ScamExpr::~ScamExpr()
 {
 }
 
-void ScamExpr::eval(ScamContext & context)
+void ScamExpr::eval(std::shared_ptr<Continuation> cont, Env & env)
 {
-    context.cont->run(clone());
+    cont->run(clone());
 }
 
 bool ScamExpr::hasApply() const
@@ -24,14 +25,15 @@ bool ScamExpr::hasApply() const
     return false;
 }
 
-void
-ScamExpr::apply(shared_ptr<ScamExpr> const & args, ScamContext const & context)
+void ScamExpr::apply(std::shared_ptr<ScamExpr> const & args,
+                     std::shared_ptr<Continuation> cont,
+                     Env & env)
 {
     stringstream s;
     s << "Not possible to apply <" << this->toString()
       << " to args " << args->toString();
     shared_ptr<ScamExpr> err = ExpressionFactory::makeError(s.str());
-    context.cont->run(err);
+    cont->run(err);
 }
 
 bool ScamExpr::isNull() const

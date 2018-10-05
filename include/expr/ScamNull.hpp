@@ -7,13 +7,11 @@
 
 namespace scam
 {
-    class ScamContext;
-
     class ScamNull : public ScamExpr
     {
     public:
         std::string toString() const override;
-        void eval(ScamContext & context) override;
+        void eval(std::shared_ptr<Continuation> cont, Env & env) override;
 
         bool isNull() const override;
         bool truth() const override;

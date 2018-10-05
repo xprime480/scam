@@ -1,6 +1,6 @@
 #include "expr/ScamNull.hpp"
 
-#include "ScamContext.hpp"
+#include "Continuation.hpp"
 
 #include "expr/ExpressionFactory.hpp"
 
@@ -13,11 +13,11 @@ std::string ScamNull::toString() const
     return null;
 }
 
-void ScamNull::eval(ScamContext & context)
+void ScamNull::eval(std::shared_ptr<Continuation> cont, Env & env)
 {
     static const string msg{ "The null type cannot be evaluated." };
     static const shared_ptr<ScamExpr> expr = ExpressionFactory::makeError(msg);
-    context.cont->run(expr);
+    cont->run(expr);
 }
 
 bool ScamNull::isNull() const

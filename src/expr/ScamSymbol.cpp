@@ -1,6 +1,7 @@
 #include "expr/ScamSymbol.hpp"
 
-#include "ScamContext.hpp"
+#include "Continuation.hpp"
+#include "Env.hpp"
 
 #include "expr/ExpressionFactory.hpp"
 
@@ -19,13 +20,13 @@ string ScamSymbol::toString() const
     return value;
 }
 
-void ScamSymbol::eval(ScamContext & context)
+void ScamSymbol::eval(std::shared_ptr<Continuation> cont, Env & env)
 {
     shared_ptr<ScamExpr> me = clone();
     shared_ptr<ScamExpr> evaluated;
 
-    if ( context.env.check(me) ) {
-        evaluated = context.env.get(me);
+    if ( env.check(me) ) {
+        evaluated = env.get(me);
     }
     else {
         stringstream s;
@@ -33,7 +34,7 @@ void ScamSymbol::eval(ScamContext & context)
         evaluated = ExpressionFactory::makeError(s.str());
     }
 
-    context.cont->run(evaluated);
+    cont->run(evaluated);
 }
 
 bool ScamSymbol::isSymbol() const

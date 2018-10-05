@@ -1,5 +1,4 @@
 
-#include "ScamContext.hpp"
 #include "Continuation.hpp"
 
 #include "expr/ScamExpr.hpp"
@@ -51,8 +50,7 @@ namespace
         StaticTokenizer tokenizer(tokens);
         ScamParser parser(tokenizer);
         shared_ptr<Extractor> ec = make_shared<Extractor>();
-        ScamContext sc { ec };
-        parser.parseExpr(sc);
+        parser.parseExpr(ec);
 
         shared_ptr<ScamExpr> expr = ec->getExpr();
         EXPECT_NE(nullptr, expr.get());
@@ -421,6 +419,6 @@ namespace
         shared_ptr<ScamExpr> expr = runTest(tokens);
         EXPECT_TRUE(expr->isVector());
         EXPECT_EQ(msg, expr->toString());
-	EXPECT_EQ(42, expr->nth(1)->toInteger());
+        EXPECT_EQ(42, expr->nth(1)->toInteger());
     }
 }

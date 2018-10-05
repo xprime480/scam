@@ -1,7 +1,5 @@
 #include "expr/ScamError.hpp"
 
-#include "ScamContext.hpp"
-
 #include "expr/ExpressionFactory.hpp"
 
 #include <string>

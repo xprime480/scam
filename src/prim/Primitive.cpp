@@ -23,8 +23,9 @@ bool Primitive::hasApply() const
     return true;
 }
 
-void
-Primitive::apply(shared_ptr<ScamExpr> const & args, ScamContext const & context)
+void Primitive::apply(std::shared_ptr<ScamExpr> const & args,
+                      std::shared_ptr<Continuation> cont,
+                      Env & env)
 {
 }
 

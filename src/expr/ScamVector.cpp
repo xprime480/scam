@@ -1,7 +1,6 @@
 #include "expr/ScamVector.hpp"
 
 #include "Extractor.hpp"
-#include "ScamContext.hpp"
 
 #include "expr/ExpressionFactory.hpp"
 
@@ -30,18 +29,16 @@ string ScamVector::toString() const
     return s.str();
 }
 
-void ScamVector::eval(ScamContext & context)
+void ScamVector::eval(std::shared_ptr<Continuation> cont, Env & env)
 {
-    ScamContext newContext = context;
     shared_ptr<Extractor> newCont = make_shared<Extractor>();
-    newContext.cont = newCont;
 
     vector<shared_ptr<ScamExpr>> evaled;
     for ( auto const & e : elts ) {
-        e->eval(newContext);
+        e->eval(newCont, env);
         shared_ptr<ScamExpr> expr = newCont->getExpr();
         if ( expr->error() ) {
-            context.cont->run(expr);
+            cont->run(expr);
             return;
         }
         else {
@@ -50,7 +47,7 @@ void ScamVector::eval(ScamContext & context)
     }
 
     shared_ptr<ScamExpr> final = ExpressionFactory::makeVector(evaled);
-    context.cont->run(final);
+    cont->run(final);
 }
 
 bool ScamVector::isVector() const

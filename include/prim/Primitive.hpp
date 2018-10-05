@@ -14,11 +14,12 @@ namespace scam
 
         bool hasApply() const override;
         void apply(std::shared_ptr<ScamExpr> const & args,
-                   ScamContext const & context) override;
+                   std::shared_ptr<Continuation> cont,
+                   Env & env) override;
 
     protected:
         virtual void applyArgs(std::shared_ptr<ScamExpr> const & args,
-                               ScamContext const & context) = 0;
+                               std::shared_ptr<Continuation> cont) = 0;
 
     private:
         std::string const name;

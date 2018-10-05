@@ -11,7 +11,6 @@
 namespace scam
 {
     class Token;
-    class ScamContext;
 
     class ScamParser
     {
@@ -19,7 +18,7 @@ namespace scam
 
         ScamParser(Tokenizer & tokenizer);
 
-        void parseExpr(ScamContext & context) const;
+        void parseExpr(std::shared_ptr<Continuation> cont) const;
 
     private:
         Tokenizer & tokenizer;
