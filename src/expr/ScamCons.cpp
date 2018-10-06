@@ -3,6 +3,8 @@
 
 #include "Continuation.hpp"
 #include "Env.hpp"
+#include "WorkQueue.hpp"
+#include "Worker.hpp"
 
 #include "expr/ExpressionFactory.hpp"
 
@@ -13,27 +15,22 @@ using namespace std;
 
 namespace
 {
-    class Evaluator : public Continuation
+    struct ConsWorkerData;
+
+    class  ConsWorker : public Worker
     {
     public:
-        Evaluator(shared_ptr<ScamExpr> args,
-                  std::shared_ptr<Continuation> cont,
-                  Env env)
-            : args(args)
-            , cont(cont)
-            , env(env)
-        {
-        }
+        ConsWorker(shared_ptr<ScamExpr> & car,
+                   shared_ptr<ScamExpr> & cdr,
+                   std::shared_ptr<Continuation> cont,
+                   Env & env);
 
-        void run(shared_ptr<ScamExpr> e) const override
-        {
-            e->apply(args, cont, env);
-        }
+        ConsWorker(shared_ptr<ConsWorkerData> data);
+
+        void run() override;
 
     private:
-        mutable shared_ptr<ScamExpr> args;
-        mutable std::shared_ptr<Continuation> cont;
-        mutable Env env;
+        shared_ptr<ConsWorkerData> data;
     };
 }
 
@@ -67,8 +64,9 @@ string ScamCons::toString() const
 
 void ScamCons::eval(std::shared_ptr<Continuation> cont, Env & env)
 {
-    shared_ptr<Continuation> newCont = make_shared<Evaluator>(cdr, cont, env);
-    car->eval(newCont, env);
+    shared_ptr<ConsWorker> thunk = make_shared<ConsWorker>(car, cdr, cont, env);
+    WorkerHandle start = thunk;
+    GlobalWorkQueue.put(start);
 }
 
 bool ScamCons::isCons() const
@@ -142,4 +140,101 @@ std::shared_ptr<ScamExpr> ScamCons::nth(size_t n) const
 shared_ptr<ScamExpr> ScamCons::clone()
 {
     return ExpressionFactory::makeCons(car, cdr);
+}
+
+namespace
+{
+    class Evaluator : public Continuation
+    {
+    public:
+        Evaluator(shared_ptr<ScamExpr> args,
+                  std::shared_ptr<Continuation> cont,
+                  Env env)
+            : args(args)
+            , cont(cont)
+            , env(env)
+        {
+        }
+
+        void run(shared_ptr<ScamExpr> e) const override
+        {
+            e->apply(args, cont, env);
+        }
+
+    private:
+        mutable shared_ptr<ScamExpr> args;
+        mutable std::shared_ptr<Continuation> cont;
+        mutable Env env;
+    };
+}
+
+namespace
+{
+    struct ConsWorkerData
+    {
+        ConsWorkerData(shared_ptr<ScamExpr> car,
+                       shared_ptr<ScamExpr> cdr,
+                       std::shared_ptr<Continuation> original,
+                       Env & env)
+            : car(car)
+            , cdr(cdr)
+            , original(original)
+            , env(env)
+        {
+        }
+
+        shared_ptr<ScamExpr> car;
+        shared_ptr<ScamExpr> cdr;
+        shared_ptr<Continuation> original;
+        shared_ptr<Continuation> cont;
+        Env & env;
+    };
+
+    class EvalContinuation : public Continuation
+    {
+    public:
+        EvalContinuation(shared_ptr<ConsWorkerData> data);
+
+        void run(shared_ptr<ScamExpr> expr) const override;
+
+    private:
+        shared_ptr<ConsWorkerData> data;
+    };
+
+    ConsWorker::ConsWorker(shared_ptr<ScamExpr> & car,
+                           shared_ptr<ScamExpr> & cdr,
+                           std::shared_ptr<Continuation> cont,
+                           Env & env)
+        : data(make_shared<ConsWorkerData>(car,
+                                           cdr,
+                                           cont,
+                                           env))
+    {
+        data->cont = make_shared<EvalContinuation>(data);
+    }
+
+    ConsWorker::ConsWorker(shared_ptr<ConsWorkerData> data)
+        : data(data)
+    {
+    }
+
+    void ConsWorker::run()
+    {
+        data->car->eval(data->cont, data->env);
+    }
+
+    EvalContinuation::EvalContinuation(shared_ptr<ConsWorkerData> data)
+        : data(data)
+    {
+    }
+
+    void EvalContinuation::run(shared_ptr<ScamExpr> expr) const
+    {
+        if ( expr->error() ) {
+            data->original->run(expr);
+        }
+        else {
+            expr->apply(data->cdr, data->original, data->env);
+        }
+    }
 }
