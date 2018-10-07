@@ -3,7 +3,9 @@
 
 #include "Continuation.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "util/ArgListHelper.hpp"
 
+#include <numeric>
 #include <sstream>
 
 using namespace scam;
@@ -16,46 +18,24 @@ Sub::Sub()
 
 void Sub::applyArgs(ExprHandle const & args, ContHandle cont)
 {
-    if ( ! args->isList() ) {
-        stringstream s;
-        s << toString() << " expects list of numeric, got " << args->toString();
-        ExprHandle err = ExpressionFactory::makeError(s.str());
-        cont->run(err);
-        return;
-    }
+    string const context = toString();
+    NumericalAlgorithm algo = [] ( vector<double> const & ns ) -> double {
+        double total { 0 };
+        switch ( ns.size() ) {
+        case 0:
+            break;
 
-    double total { 0 };
-    bool floaty { false };
+        case 1:
+            total = - ns[0];
+            break;
 
-    const size_t len = args->length();
-    for ( size_t idx = 0u ; idx < len ; ++idx ) {
-        ExprHandle const arg = args->nth(idx);
-        if ( ! arg->isNumeric() ) {
-            stringstream s;
-            s << toString() << " expects numeric, got " << arg->toString();
-            ExprHandle err = ExpressionFactory::makeError(s.str());
-            cont->run(err);
-            return;
+        default:
+            total = ns[0] - accumulate(++(ns.begin()), ns.end(), 0.0);
+            break;
         }
-
-        if ( ! arg->isInteger() ) {
-            floaty = true;
-        }
-        if ( len > 1u && 0 == idx ) {
-            total = arg->toFloat();
-        }
-        else {
-            total -=  arg->toFloat();
-        }
-    }
-
-    ExprHandle rv;
-    if ( floaty ) {
-        rv = ExpressionFactory::makeFloat((int)total);
-    }
-    else {
-        rv = ExpressionFactory::makeInteger((int)total);
-    }
+        return total;
+    };
+    ExprHandle rv = numericAlgorithm(args, context, algo);
     cont->run(rv);
 }
 

@@ -64,8 +64,8 @@ TEST_F(MathTest, AddManyArgs)
 
 TEST_F(MathTest, AddTypeUnification)
 {
-    ExprHandle expr = evalExpression("(+ 2 2.0)");
-    expectFloat(expr, 4, "4");
+    ExprHandle expr = evalExpression("(+ 2 2.5)");
+    expectFloat(expr, 4.5, "4.5");
 }
 
 TEST_F(MathTest, AddBadArgument)
@@ -100,8 +100,8 @@ TEST_F(MathTest, SubManyArgs)
 
 TEST_F(MathTest, SubTypeUnification)
 {
-    ExprHandle expr = evalExpression("(- 2 1.0)");
-    expectFloat(expr, 1, "1");
+    ExprHandle expr = evalExpression("(- 2 1.5)");
+    expectFloat(expr, 0.5, "0.5");
 }
 
 TEST_F(MathTest, SubBadArgument)
