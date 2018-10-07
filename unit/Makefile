@@ -28,7 +28,7 @@ do_it_manually :
 	make -C gmock all
 
 test : unittests
-	-@./unittests --gtest_filter=MathTest.*
+	@./unittests --gtest_filter=*.*
 
 clean :
 	make -C ../src clean
