@@ -187,3 +187,15 @@ TEST_F(MathTest, DivByZero)
     ExprHandle expr = evalExpression("(/ 2 0)");
     expectError(expr);
 }
+
+TEST_F(MathTest, Nested)
+{
+    ExprHandle expr = evalExpression("(+ (* 2 3) (/ 1 5) (- 3))");
+    expectFloat(expr, 3.2, "3.2");
+}
+
+TEST_F(MathTest, NestedWithError)
+{
+    ExprHandle expr = evalExpression("(+ (* 2 3) (/ 1 (+ 5 -5)) (- 3))");
+    expectError(expr);
+}

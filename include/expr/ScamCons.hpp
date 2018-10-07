@@ -12,6 +12,7 @@ namespace scam
 
         std::string toString() const override;
         void eval(ContHandle cont, Env & env) override;
+        void mapEval(ContHandle cont, Env & env) override;
 
         bool isCons() const override;
         bool isList() const override;
