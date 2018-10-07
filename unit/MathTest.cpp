@@ -38,39 +38,75 @@ protected:
     }
 };
 
-TEST_F(MathTest, PlusZeroArgs)
+TEST_F(MathTest, AddZeroArgs)
 {
     ExprHandle expr = evalExpression("(+)");
     expectInteger(expr, 0, "0");
 }
 
-TEST_F(MathTest, PlusOneArg)
+TEST_F(MathTest, AddOneArg)
 {
     ExprHandle expr = evalExpression("(+ 2)");
     expectInteger(expr, 2, "2");
 }
 
-TEST_F(MathTest, PlusTwoArgs)
+TEST_F(MathTest, AddTwoArgs)
 {
     ExprHandle expr = evalExpression("(+ 2 2)");
     expectInteger(expr, 4, "4");
 }
 
-TEST_F(MathTest, PlusManyArgs)
+TEST_F(MathTest, AddManyArgs)
 {
     ExprHandle expr = evalExpression("(+ 2 2 -1 -3 4)");
     expectInteger(expr, 4, "4");
 }
 
-TEST_F(MathTest, PlusTypeUnification)
+TEST_F(MathTest, AddTypeUnification)
 {
     ExprHandle expr = evalExpression("(+ 2 2.0)");
     expectFloat(expr, 4, "4");
 }
 
-TEST_F(MathTest, PlusBadArgument)
+TEST_F(MathTest, AddBadArgument)
 {
     ExprHandle expr = evalExpression("(+ 2 #f)");
+    expectError(expr);
+}
+
+TEST_F(MathTest, SubZeroArgs)
+{
+    ExprHandle expr = evalExpression("(-)");
+    expectInteger(expr, 0, "0");
+}
+
+TEST_F(MathTest, SubOneArg)
+{
+    ExprHandle expr = evalExpression("(- 2)");
+    expectInteger(expr, -2, "-2");
+}
+
+TEST_F(MathTest, SubTwoArgs)
+{
+    ExprHandle expr = evalExpression("(- 2 2)");
+    expectInteger(expr, 0, "0");
+}
+
+TEST_F(MathTest, SubManyArgs)
+{
+    ExprHandle expr = evalExpression("(- 2 2 -1 -3 4)");
+    expectInteger(expr, 0, "0");
+}
+
+TEST_F(MathTest, SubTypeUnification)
+{
+    ExprHandle expr = evalExpression("(- 2 1.0)");
+    expectFloat(expr, 1, "1");
+}
+
+TEST_F(MathTest, SubBadArgument)
+{
+    ExprHandle expr = evalExpression("(- 2 #f)");
     expectError(expr);
 }
 
