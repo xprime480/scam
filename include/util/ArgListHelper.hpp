@@ -10,7 +10,7 @@
 namespace scam
 {
     using NumericalAlgorithm =
-        std::function<double(std::vector<double> const &)>;
+        std::function<double(std::vector<double> const &, ExprHandle & state)>;
 
     extern ExprHandle numericAlgorithm(ExprHandle const & args,
                                        std::string const & context,

@@ -16,10 +16,10 @@ Sub::Sub()
 {
 }
 
-void Sub::applyArgs(ExprHandle const & args, ContHandle cont)
+namespace
 {
-    string const context = toString();
-    NumericalAlgorithm algo = [] ( vector<double> const & ns ) -> double {
+    double do_sub(vector<double> const & ns, ExprHandle & state)
+    {
         double total { 0 };
         switch ( ns.size() ) {
         case 0:
@@ -34,8 +34,13 @@ void Sub::applyArgs(ExprHandle const & args, ContHandle cont)
             break;
         }
         return total;
-    };
-    ExprHandle rv = numericAlgorithm(args, context, algo);
+    }
+}
+
+void Sub::applyArgs(ExprHandle const & args, ContHandle cont)
+{
+    string const context = toString();
+    ExprHandle rv = numericAlgorithm(args, context, do_sub);
     cont->run(rv);
 }
 

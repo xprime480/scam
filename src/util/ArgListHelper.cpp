@@ -29,7 +29,11 @@ ExprHandle scam::numericAlgorithm(ExprHandle const & args,
         return state;
     }
 
-    double total = algo(ns);
+    double total = algo(ns, state);
+    if ( state->error() ) {
+        return state;
+    }
+
     return makeNumeric(state, total);
 }
 
@@ -90,7 +94,8 @@ namespace
         return rv;
     }
 
-    ExprHandle makeNumeric(ExprHandle const & state, double value)
+    ExprHandle
+    makeNumeric(ExprHandle const & state, double value)
     {
         if ( state->truth() ) {
             return ExpressionFactory::makeInteger((int)value);

@@ -110,3 +110,80 @@ TEST_F(MathTest, SubBadArgument)
     expectError(expr);
 }
 
+TEST_F(MathTest, MulZeroArgs)
+{
+    ExprHandle expr = evalExpression("(*)");
+    expectInteger(expr, 1, "1");
+}
+
+TEST_F(MathTest, MulOneArg)
+{
+    ExprHandle expr = evalExpression("(* 2)");
+    expectInteger(expr, 2, "2");
+}
+
+TEST_F(MathTest, MulTwoArgs)
+{
+    ExprHandle expr = evalExpression("(* 2 3)");
+    expectInteger(expr, 6, "6");
+}
+
+TEST_F(MathTest, MulManyArgs)
+{
+    ExprHandle expr = evalExpression("(* 2 2 -1 4)");
+    expectInteger(expr, -16, "-16");
+}
+
+TEST_F(MathTest, MulTypeUnification)
+{
+    ExprHandle expr = evalExpression("(* 2 2.125)");
+    expectFloat(expr, 4.25, "4.25");
+}
+
+TEST_F(MathTest, MulBadArgument)
+{
+    ExprHandle expr = evalExpression("(* 2 #f)");
+    expectError(expr);
+}
+
+TEST_F(MathTest, DivZeroArgs)
+{
+    ExprHandle expr = evalExpression("(/)");
+    expectFloat(expr, 1, "1");
+}
+
+TEST_F(MathTest, DivOneArg)
+{
+    ExprHandle expr = evalExpression("(/ 2)");
+    expectFloat(expr, 0.5, "0.5");
+}
+
+TEST_F(MathTest, DivTwoArgs)
+{
+    ExprHandle expr = evalExpression("(/ 2 5)");
+    expectFloat(expr, 0.4, "0.4");
+}
+
+TEST_F(MathTest, DivManyArgs)
+{
+    ExprHandle expr = evalExpression("(/ 1 2 2 2)");
+    expectFloat(expr, 0.125, "0.125");
+}
+
+TEST_F(MathTest, DivTypeUnification)
+{
+    ExprHandle expr = evalExpression("(/ 2.0 1)");
+    expectFloat(expr, 2, "2");
+}
+
+TEST_F(MathTest, DivBadArgument)
+{
+    ExprHandle expr = evalExpression("(/ 2 #f)");
+    expectError(expr);
+}
+
+TEST_F(MathTest, DivByZero)
+{
+    ExprHandle expr = evalExpression("(/ 2 0)");
+    expectError(expr);
+}
