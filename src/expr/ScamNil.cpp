@@ -26,7 +26,7 @@ size_t ScamNil::length() const
     return 0u;
 }
 
-shared_ptr<ScamExpr> ScamNil::clone()
+ExprHandle ScamNil::clone()
 {
     return ExpressionFactory::makeNil();
 }

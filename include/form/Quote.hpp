@@ -10,11 +10,10 @@ namespace scam
     public:
         Quote();
 
-        void apply(std::shared_ptr<ScamExpr> const & args,
-                   std::shared_ptr<Continuation> cont,
-                   Env & env) override;
+        void
+        apply(ExprHandle const & args, ContHandle cont, Env & env) override;
 
-        std::shared_ptr<ScamExpr> clone() override;
+        ExprHandle clone() override;
     };
 }
 

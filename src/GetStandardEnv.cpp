@@ -13,8 +13,8 @@ namespace
     template <typename T>
     void addForm(Env & env, char const * name)
     {
-        shared_ptr<ScamExpr> sym = ExpressionFactory::makeSymbol(name);
-        shared_ptr<ScamExpr> form = ExpressionFactory::makeForm<T>();
+        ExprHandle sym = ExpressionFactory::makeSymbol(name);
+        ExprHandle form = ExpressionFactory::makeForm<T>();
         env.put(sym, form);
     }
 }

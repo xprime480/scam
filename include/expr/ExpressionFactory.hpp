@@ -9,34 +9,33 @@
 
 namespace scam
 {
+    using ExprVec = std::vector<ExprHandle>;
+
     class ExpressionFactory
     {
     public:
-        static std::shared_ptr<ScamExpr> makeNull();
+        static ExprHandle makeNull();
 
-        static std::shared_ptr<ScamExpr> makeError(char const * msg);
-        static std::shared_ptr<ScamExpr> makeError(std::string const & msg);
+        static ExprHandle makeError(char const * msg);
+        static ExprHandle makeError(std::string const & msg);
 
-        static std::shared_ptr<ScamExpr> makeBoolean(bool value);
-        static std::shared_ptr<ScamExpr>
-        makeCharacter(std::string const & value);
+        static ExprHandle makeBoolean(bool value);
+        static ExprHandle makeCharacter(std::string const & value);
 
-        static std::shared_ptr<ScamExpr> makeString(std::string const & value);
-        static std::shared_ptr<ScamExpr> makeSymbol(std::string const & value);
+        static ExprHandle makeString(std::string const & value);
+        static ExprHandle makeSymbol(std::string const & value);
 
-        static std::shared_ptr<ScamExpr> makeFloat(double value);
-        static std::shared_ptr<ScamExpr> makeInteger(int value);
+        static ExprHandle makeFloat(double value);
+        static ExprHandle makeInteger(int value);
 
-        static std::shared_ptr<ScamExpr> makeNil();
-        static std::shared_ptr<ScamExpr>
-        makeCons(std::shared_ptr<ScamExpr> const & car,
-                 std::shared_ptr<ScamExpr> const & cdr);
+        static ExprHandle makeNil();
+        static ExprHandle
+        makeCons(ExprHandle const & car, ExprHandle const & cdr);
 
-        static std::shared_ptr<ScamExpr>
-        makeVector(std::vector<std::shared_ptr<ScamExpr>> const & elts);
+        static ExprHandle makeVector(ExprVec const & elts);
 
         template <typename T, typename... Args>
-        static std::shared_ptr<ScamExpr> makeForm(Args... args)
+        static ExprHandle makeForm(Args... args)
         {
             return std::make_shared<T>(args...);
         }

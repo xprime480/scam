@@ -15,7 +15,7 @@ namespace scam
 
         bool isBoolean() const override;
 
-        std::shared_ptr<ScamExpr> clone() override;
+        ExprHandle clone() override;
 
     private:
         bool value;

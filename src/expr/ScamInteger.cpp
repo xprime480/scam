@@ -31,7 +31,7 @@ int ScamInteger::toInteger() const
     return value;
 }
 
-shared_ptr<ScamExpr> ScamInteger::clone()
+ExprHandle ScamInteger::clone()
 {
     return ExpressionFactory::makeInteger(value);
 }

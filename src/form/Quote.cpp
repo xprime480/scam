@@ -13,15 +13,13 @@ Quote::Quote()
 {
 }
 
-void Quote::apply(std::shared_ptr<ScamExpr> const & args,
-                  std::shared_ptr<Continuation> cont,
-                  Env & env)
+void Quote::apply(ExprHandle const & args, ContHandle cont, Env & env)
 {
-    shared_ptr<ScamExpr> expr = args->getCar();
+    ExprHandle expr = args->getCar();
     cont->run(expr);
 }
 
-std::shared_ptr<ScamExpr> Quote::clone()
+ExprHandle Quote::clone()
 {
     return ExpressionFactory::makeForm<Quote>();
 }

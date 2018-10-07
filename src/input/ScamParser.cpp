@@ -14,22 +14,22 @@ ScamParser::ScamParser(Tokenizer & tokenizer)
 {
 }
 
-void ScamParser::parseExpr(std::shared_ptr<Continuation> cont) const
+void ScamParser::parseExpr(ContHandle cont) const
 {
-    shared_ptr<ScamExpr> expr = parseSubExpr();
+    ExprHandle expr = parseSubExpr();
     cont->run(expr);
 }
 
-shared_ptr<ScamExpr> ScamParser::parseSubExpr() const
+ExprHandle ScamParser::parseSubExpr() const
 {
     Token t = tokenizer.next();
     return tokenToExpr(t);
 }
 
-shared_ptr<ScamExpr> ScamParser::tokenToExpr(Token const & token) const
+ExprHandle ScamParser::tokenToExpr(Token const & token) const
 {
     stringstream s;
-    shared_ptr<ScamExpr> rv = ExpressionFactory::makeNull();
+    ExprHandle rv = ExpressionFactory::makeNull();
 
     switch ( token.getType() ) {
     case TokenType::TT_NONE:
@@ -103,7 +103,7 @@ shared_ptr<ScamExpr> ScamParser::tokenToExpr(Token const & token) const
     return rv;
 }
 
-shared_ptr<ScamExpr> ScamParser::parseList() const
+ExprHandle ScamParser::parseList() const
 {
     Token token = tokenizer.next();
     TokenType type = token.getType();
@@ -124,18 +124,18 @@ shared_ptr<ScamExpr> ScamParser::parseList() const
         return parseDotContext();
     }
 
-    shared_ptr<ScamExpr> car = tokenToExpr(token);
+    ExprHandle car = tokenToExpr(token);
     if ( car->error() ) {
         return car;
     }
-    shared_ptr<ScamExpr> cdr = parseList();
+    ExprHandle cdr = parseList();
     if ( cdr->error() ) {
         return cdr;
     }
     return ExpressionFactory::makeCons(car, cdr);
 }
 
-shared_ptr<ScamExpr> ScamParser::parseDotContext() const
+ExprHandle ScamParser::parseDotContext() const
 {
     Token token = tokenizer.next();
     TokenType type = token.getType();
@@ -152,7 +152,7 @@ shared_ptr<ScamExpr> ScamParser::parseDotContext() const
         return ExpressionFactory::makeError("No form after '.'");
     }
 
-    shared_ptr<ScamExpr> final = tokenToExpr(token);
+    ExprHandle final = tokenToExpr(token);
 
     Token check = tokenizer.next();
     TokenType checkType = check.getType();
@@ -172,9 +172,9 @@ shared_ptr<ScamExpr> ScamParser::parseDotContext() const
     return final;
 }
 
-std::shared_ptr<ScamExpr> ScamParser::parseVector() const
+ExprHandle ScamParser::parseVector() const
 {
-    vector<shared_ptr<ScamExpr>> vec;
+    ExprVec vec;
 
     while ( true ) {
         Token token = tokenizer.next();
@@ -192,7 +192,7 @@ std::shared_ptr<ScamExpr> ScamParser::parseVector() const
             return ExpressionFactory::makeVector(vec);
         }
 
-        shared_ptr<ScamExpr> expr = tokenToExpr(token);
+        ExprHandle expr = tokenToExpr(token);
         if ( expr->error() ) {
             return expr;
         }
@@ -201,8 +201,7 @@ std::shared_ptr<ScamExpr> ScamParser::parseVector() const
     }
 }
 
-shared_ptr<ScamExpr>
-ScamParser::expand_reader_macro(std::string const & text) const
+ExprHandle ScamParser::expand_reader_macro(std::string const & text) const
 {
     string name;
     if ( text == "'" ) {
@@ -223,7 +222,7 @@ ScamParser::expand_reader_macro(std::string const & text) const
         return ExpressionFactory::makeError(s.str());
     }
 
-    shared_ptr<ScamExpr> expr = parseSubExpr();
+    ExprHandle expr = parseSubExpr();
     if ( expr->isNull() ) {
         stringstream s;
         s << "Unterminated macro: " << name;
@@ -236,8 +235,8 @@ ScamParser::expand_reader_macro(std::string const & text) const
         return ExpressionFactory::makeError(s.str());
     }
 
-    shared_ptr<ScamExpr> sym = ExpressionFactory::makeSymbol(name);
-    shared_ptr<ScamExpr> nil = ExpressionFactory::makeNil();
-    shared_ptr<ScamExpr> listed = ExpressionFactory::makeCons(expr, nil);
+    ExprHandle sym = ExpressionFactory::makeSymbol(name);
+    ExprHandle nil = ExpressionFactory::makeNil();
+    ExprHandle listed = ExpressionFactory::makeCons(expr, nil);
     return ExpressionFactory::makeCons(sym, listed);
 }

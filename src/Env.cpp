@@ -14,10 +14,10 @@ namespace scam
 {
     struct EnvData
     {
-        map<string, shared_ptr<ScamExpr>> table;
+        map<string, ExprHandle> table;
         shared_ptr<EnvData> parent;
 
-        void put(string const & key, shared_ptr<ScamExpr> val)
+        void put(string const & key, ExprHandle val)
         {
             auto const iter = table.find(key);
             if ( iter != table.end() ) {
@@ -41,7 +41,7 @@ namespace scam
             return false;
         }
 
-        shared_ptr<ScamExpr> get(string const & key) const
+        ExprHandle get(string const & key) const
         {
             auto const iter = table.find(key);
             if ( iter != table.end() ) {
@@ -56,7 +56,7 @@ namespace scam
             throw ScamException(s.str());
         }
 
-        void assign(string const & key, shared_ptr<ScamExpr> val)
+        void assign(string const & key, ExprHandle val)
         {
             auto const iter = table.find(key);
             if ( iter == table.end() ) {
@@ -89,7 +89,7 @@ namespace scam
     };
 }
 
-string checkKey(shared_ptr<ScamExpr> key)
+string checkKey(ExprHandle key)
 {
     if ( ! key->isSymbol() ) {
         stringstream s;
@@ -104,17 +104,17 @@ Env::Env()
 {
 }
 
-void Env::put(shared_ptr<ScamExpr> key, shared_ptr<ScamExpr> val)
+void Env::put(ExprHandle key, ExprHandle val)
 {
     data->put(checkKey(key), val);
 }
 
-bool Env::check(std::shared_ptr<ScamExpr> key) const
+bool Env::check(ExprHandle key) const
 {
     return data->check(checkKey(key));
 }
 
-shared_ptr<ScamExpr> Env::get(shared_ptr<ScamExpr> key) const
+ExprHandle Env::get(ExprHandle key) const
 {
     return data->get(checkKey(key));
 }
@@ -126,7 +126,7 @@ Env Env::extend()
     return temp;
 }
 
-void Env::assign(shared_ptr<ScamExpr> key, shared_ptr<ScamExpr> val)
+void Env::assign(ExprHandle key, ExprHandle val)
 {
     data->assign(checkKey(key), val);
 }

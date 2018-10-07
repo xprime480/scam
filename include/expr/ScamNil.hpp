@@ -14,7 +14,7 @@ namespace scam
         bool isList() const override;
         size_t length() const override;
 
-        std::shared_ptr<ScamExpr> clone() override;
+        ExprHandle clone() override;
     };
 }
 

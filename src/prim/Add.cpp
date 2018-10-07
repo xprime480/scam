@@ -14,13 +14,12 @@ Add::Add()
 {
 }
 
-void
-Add::applyArgs(shared_ptr<ScamExpr> const & args, shared_ptr<Continuation> cont)
+void Add::applyArgs(ExprHandle const & args, ContHandle cont)
 {
     if ( ! args->isList() ) {
         stringstream s;
         s << toString() << " expects list of numeric, got " << args->toString();
-        shared_ptr<ScamExpr> err = ExpressionFactory::makeError(s.str());
+        ExprHandle err = ExpressionFactory::makeError(s.str());
         cont->run(err);
         return;
     }
@@ -30,11 +29,11 @@ Add::applyArgs(shared_ptr<ScamExpr> const & args, shared_ptr<Continuation> cont)
 
     const size_t len = args->length();
     for ( size_t idx = 0u ; idx < len ; ++idx ) {
-        shared_ptr<ScamExpr> const arg = args->nth(idx);
+        ExprHandle const arg = args->nth(idx);
         if ( ! arg->isNumeric() ) {
             stringstream s;
             s << toString() << " expects numeric, got " << arg->toString();
-            shared_ptr<ScamExpr> err = ExpressionFactory::makeError(s.str());
+            ExprHandle err = ExpressionFactory::makeError(s.str());
             cont->run(err);
             return;
         }
@@ -45,7 +44,7 @@ Add::applyArgs(shared_ptr<ScamExpr> const & args, shared_ptr<Continuation> cont)
         sum += arg->toFloat();
     }
 
-    shared_ptr<ScamExpr> rv;
+    ExprHandle rv;
     if ( floaty ) {
         rv = ExpressionFactory::makeFloat((int)sum);
     }
@@ -55,7 +54,7 @@ Add::applyArgs(shared_ptr<ScamExpr> const & args, shared_ptr<Continuation> cont)
     cont->run(rv);
 }
 
-shared_ptr<ScamExpr> Add::clone()
+ExprHandle Add::clone()
 {
     return ExpressionFactory::makeForm<Add>();
 }

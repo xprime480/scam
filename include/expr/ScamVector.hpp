@@ -7,24 +7,26 @@
 
 namespace scam
 {
+    using ExprVec = std::vector<ExprHandle>;
+
     class ScamVector : public ScamExpr
     {
     public:
-        ScamVector(std::vector<std::shared_ptr<ScamExpr>> const & elts);
+        ScamVector(ExprVec const & elts);
 
         std::string toString() const override;
 
-        void eval(std::shared_ptr<Continuation> cont, Env & env);
+        void eval(ContHandle cont, Env & env);
 
         bool isVector() const override;
 
         size_t length() const override;
-        std::shared_ptr<ScamExpr> nth(size_t n) const override;
+        ExprHandle nth(size_t n) const override;
 
-        std::shared_ptr<ScamExpr> clone() override;
+        ExprHandle clone() override;
 
     private:
-        std::vector<std::shared_ptr<ScamExpr>> elts;
+        ExprVec elts;
     };
 }
 

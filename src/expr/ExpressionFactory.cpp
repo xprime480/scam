@@ -15,79 +15,77 @@
 using namespace scam;
 using namespace std;
 
-shared_ptr<ScamExpr> ExpressionFactory::makeNull()
+ExprHandle ExpressionFactory::makeNull()
 {
-    static const shared_ptr<ScamExpr> expr = make_shared<ScamNull>();
+    static const ExprHandle expr = make_shared<ScamNull>();
     return expr;
 }
 
-shared_ptr<ScamExpr> ExpressionFactory::makeError(char const * msg)
+ExprHandle ExpressionFactory::makeError(char const * msg)
 {
-    shared_ptr<ScamExpr> expr = make_shared<ScamError>(msg);
+    ExprHandle expr = make_shared<ScamError>(msg);
     return expr;
 }
 
-shared_ptr<ScamExpr> ExpressionFactory::makeError(string const & msg)
+ExprHandle ExpressionFactory::makeError(string const & msg)
 {
-    shared_ptr<ScamExpr> expr = make_shared<ScamError>(msg.c_str());
+    ExprHandle expr = make_shared<ScamError>(msg.c_str());
     return expr;
 }
 
-shared_ptr<ScamExpr> ExpressionFactory::makeBoolean(bool value)
+ExprHandle ExpressionFactory::makeBoolean(bool value)
 {
-    static const shared_ptr<ScamExpr> scamT = make_shared<ScamBoolean>(true);
-    static const shared_ptr<ScamExpr> scamF = make_shared<ScamBoolean>(false);
+    static const ExprHandle scamT = make_shared<ScamBoolean>(true);
+    static const ExprHandle scamF = make_shared<ScamBoolean>(false);
 
     return value ? scamT : scamF;
 }
 
-shared_ptr<ScamExpr> ExpressionFactory::makeCharacter(string const & value)
+ExprHandle ExpressionFactory::makeCharacter(string const & value)
 {
-    shared_ptr<ScamExpr> expr = make_shared<ScamCharacter>(value);
+    ExprHandle expr = make_shared<ScamCharacter>(value);
     return expr;
 }
 
-shared_ptr<ScamExpr> ExpressionFactory::makeString(string const & value)
+ExprHandle ExpressionFactory::makeString(string const & value)
 {
-    shared_ptr<ScamExpr> expr = make_shared<ScamString>(value);
+    ExprHandle expr = make_shared<ScamString>(value);
     return expr;
 }
 
-shared_ptr<ScamExpr> ExpressionFactory::makeSymbol(string const & value)
+ExprHandle ExpressionFactory::makeSymbol(string const & value)
 {
-    shared_ptr<ScamExpr> expr = make_shared<ScamSymbol>(value);
+    ExprHandle expr = make_shared<ScamSymbol>(value);
     return expr;
 }
 
-shared_ptr<ScamExpr> ExpressionFactory::makeFloat(double value)
+ExprHandle ExpressionFactory::makeFloat(double value)
 {
-    shared_ptr<ScamExpr> expr = make_shared<ScamFloat>(value);
+    ExprHandle expr = make_shared<ScamFloat>(value);
     return expr;
 }
 
-shared_ptr<ScamExpr> ExpressionFactory::makeInteger(int value)
+ExprHandle ExpressionFactory::makeInteger(int value)
 {
-    shared_ptr<ScamExpr> expr = make_shared<ScamInteger>(value);
+    ExprHandle expr = make_shared<ScamInteger>(value);
     return expr;
 }
 
-shared_ptr<ScamExpr> ExpressionFactory::makeNil()
+ExprHandle ExpressionFactory::makeNil()
 {
-    static const shared_ptr<ScamExpr> nil = make_shared<ScamNil>();
+    static const ExprHandle nil = make_shared<ScamNil>();
     return nil;
 }
 
-shared_ptr<ScamExpr>
-ExpressionFactory::makeCons(shared_ptr<ScamExpr> const & car, 
-			    shared_ptr<ScamExpr> const & cdr)
+ExprHandle
+ExpressionFactory::makeCons(ExprHandle const & car, ExprHandle const & cdr)
 {
-    shared_ptr<ScamExpr> expr = make_shared<ScamCons>(car, cdr);
+    ExprHandle expr = make_shared<ScamCons>(car, cdr);
     return expr;
 }
 
-shared_ptr<ScamExpr>
-ExpressionFactory::makeVector(vector<shared_ptr<ScamExpr>> const & elts)
+ExprHandle ExpressionFactory::makeVector(ExprVec const & elts)
 {
-    shared_ptr<ScamExpr> expr = make_shared<ScamVector>(elts);
+    ExprHandle expr = make_shared<ScamVector>(elts);
     return expr;
 }

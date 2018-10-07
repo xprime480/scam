@@ -27,7 +27,7 @@ bool ScamError::error() const
     return true;
 }
 
-shared_ptr<ScamExpr> ScamError::clone()
+ExprHandle ScamError::clone()
 {
     return ExpressionFactory::makeError(msg);
 }

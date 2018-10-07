@@ -20,10 +20,10 @@ string ScamSymbol::toString() const
     return value;
 }
 
-void ScamSymbol::eval(std::shared_ptr<Continuation> cont, Env & env)
+void ScamSymbol::eval(ContHandle cont, Env & env)
 {
-    shared_ptr<ScamExpr> me = clone();
-    shared_ptr<ScamExpr> evaluated;
+    ExprHandle me = clone();
+    ExprHandle evaluated;
 
     if ( env.check(me) ) {
         evaluated = env.get(me);
@@ -42,7 +42,7 @@ bool ScamSymbol::isSymbol() const
     return true;
 }
 
-shared_ptr<ScamExpr> ScamSymbol::clone()
+ExprHandle ScamSymbol::clone()
 {
     return ExpressionFactory::makeSymbol(value);
 }

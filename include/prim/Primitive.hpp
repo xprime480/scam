@@ -13,12 +13,10 @@ namespace scam
         std::string toString() const override;
 
         bool hasApply() const override;
-        void apply(std::shared_ptr<ScamExpr> const & args,
-                   std::shared_ptr<Continuation> cont,
-                   Env & env) override;
+        void
+        apply(ExprHandle const & args, ContHandle cont, Env & env) override;
 
-        virtual void applyArgs(std::shared_ptr<ScamExpr> const & args,
-                               std::shared_ptr<Continuation> cont) = 0;
+        virtual void applyArgs(ExprHandle const & args, ContHandle cont) = 0;
 
     private:
         std::string const name;

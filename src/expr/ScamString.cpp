@@ -20,7 +20,7 @@ bool ScamString::isString() const
     return true;
 }
 
-shared_ptr<ScamExpr> ScamString::clone()
+ExprHandle ScamString::clone()
 {
     return ExpressionFactory::makeString(value);
 }

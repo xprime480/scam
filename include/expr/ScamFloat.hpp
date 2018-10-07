@@ -16,7 +16,7 @@ namespace scam
         bool isFloat() const override;
         double toFloat() const override;
 
-        std::shared_ptr<ScamExpr> clone() override;
+        ExprHandle clone() override;
 
     private:
         double const value;

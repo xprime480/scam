@@ -14,14 +14,13 @@ namespace scam
     public:
         Env();
 
-        void put(std::shared_ptr<ScamExpr> key, std::shared_ptr<ScamExpr> val);
-        bool check(std::shared_ptr<ScamExpr> key) const;
-        std::shared_ptr<ScamExpr> get(std::shared_ptr<ScamExpr> key) const;
+        void put(ExprHandle key, ExprHandle val);
+        bool check(ExprHandle key) const;
+        ExprHandle get(ExprHandle key) const;
 
         Env extend();
 
-        void
-        assign(std::shared_ptr<ScamExpr> key, std::shared_ptr<ScamExpr> val);
+        void assign(ExprHandle key, ExprHandle val);
 
         void dump(size_t max) const;
 

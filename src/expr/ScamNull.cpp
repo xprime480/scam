@@ -13,10 +13,10 @@ std::string ScamNull::toString() const
     return null;
 }
 
-void ScamNull::eval(std::shared_ptr<Continuation> cont, Env & env)
+void ScamNull::eval(ContHandle cont, Env & env)
 {
     static const string msg{ "The null type cannot be evaluated." };
-    static const shared_ptr<ScamExpr> expr = ExpressionFactory::makeError(msg);
+    static const ExprHandle expr = ExpressionFactory::makeError(msg);
     cont->run(expr);
 }
 
@@ -30,8 +30,8 @@ bool ScamNull::truth() const
     return false;
 }
 
-shared_ptr<ScamExpr> ScamNull::clone()
+ExprHandle ScamNull::clone()
 {
-    static const shared_ptr<ScamExpr> null = ExpressionFactory::makeNull();
+    static const ExprHandle null = ExpressionFactory::makeNull();
     return null;
 }

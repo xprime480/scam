@@ -11,12 +11,12 @@ namespace scam
     {
     public:
         std::string toString() const override;
-        void eval(std::shared_ptr<Continuation> cont, Env & env) override;
+        void eval(ContHandle cont, Env & env) override;
 
         bool isNull() const override;
         bool truth() const override;
 
-        std::shared_ptr<ScamExpr> clone() override;
+        ExprHandle clone() override;
     };
 }
 

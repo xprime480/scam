@@ -10,10 +10,9 @@ namespace scam
     public:
         Add();
 
-        std::shared_ptr<ScamExpr> clone();
+        ExprHandle clone();
 
-        void applyArgs(std::shared_ptr<ScamExpr> const & args,
-                       std::shared_ptr<Continuation> cont) override;
+        void applyArgs(ExprHandle const & args, ContHandle cont) override;
     };
 }
 

@@ -15,25 +15,23 @@ namespace scam
     class ScamParser
     {
     public:
-
         ScamParser(Tokenizer & tokenizer);
 
-        void parseExpr(std::shared_ptr<Continuation> cont) const;
+        void parseExpr(ContHandle cont) const;
 
     private:
         Tokenizer & tokenizer;
 
-        std::shared_ptr<ScamExpr> tokenToExpr(Token const & token) const;
+        ExprHandle tokenToExpr(Token const & token) const;
 
-        std::shared_ptr<ScamExpr> parseSubExpr() const;
+        ExprHandle parseSubExpr() const;
 
-        std::shared_ptr<ScamExpr> parseList() const;
-        std::shared_ptr<ScamExpr> parseDotContext() const;
+        ExprHandle parseList() const;
+        ExprHandle parseDotContext() const;
 
-        std::shared_ptr<ScamExpr> parseVector() const;
+        ExprHandle parseVector() const;
 
-        std::shared_ptr<ScamExpr>
-        expand_reader_macro(std::string const & text) const;
+        ExprHandle expand_reader_macro(std::string const & text) const;
     };
 }
 

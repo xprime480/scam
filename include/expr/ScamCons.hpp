@@ -8,26 +8,25 @@ namespace scam
     class ScamCons : public ScamExpr
     {
     public:
-        ScamCons(std::shared_ptr<ScamExpr> const & car,
-                 std::shared_ptr<ScamExpr> const & cdr);
+        ScamCons(ExprHandle const & car, ExprHandle const & cdr);
 
         std::string toString() const override;
-        void eval(std::shared_ptr<Continuation> cont, Env & env) override;
+        void eval(ContHandle cont, Env & env) override;
 
         bool isCons() const override;
         bool isList() const override;
 
-        std::shared_ptr<ScamExpr> getCar() const override;
-        std::shared_ptr<ScamExpr> getCdr() const override;
+        ExprHandle getCar() const override;
+        ExprHandle getCdr() const override;
 
         size_t length() const override;
-        std::shared_ptr<ScamExpr> nth(size_t n) const override;
+        ExprHandle nth(size_t n) const override;
 
-        std::shared_ptr<ScamExpr> clone() override;
+        ExprHandle clone() override;
 
     private:
-        std::shared_ptr<ScamExpr> car;
-        std::shared_ptr<ScamExpr> cdr;
+        ExprHandle car;
+        ExprHandle cdr;
     };
 }
 

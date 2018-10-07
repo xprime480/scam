@@ -16,7 +16,7 @@ namespace scam
         bool isInteger() const override;
         int toInteger() const override;
 
-        std::shared_ptr<ScamExpr> clone() override;
+        ExprHandle clone() override;
 
     private:
         int const value;

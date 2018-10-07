@@ -12,18 +12,18 @@ namespace scam
     class Extractor : public Continuation
     {
     public:
-        void run(std::shared_ptr<ScamExpr> e) const override
+        void run(ExprHandle e) const override
         {
             expr = e;
         }
 
-        std::shared_ptr<ScamExpr> getExpr() const
+        ExprHandle getExpr() const
         {
             return expr;
         }
 
     private:
-        mutable std::shared_ptr<ScamExpr> expr;
+        mutable ExprHandle expr;
     };
 }
 

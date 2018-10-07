@@ -16,7 +16,7 @@ namespace scam
         bool isNull() const override;
         bool error() const override;
 
-        std::shared_ptr<ScamExpr> clone() override;
+        ExprHandle clone() override;
 
     private:
         std::string const msg;

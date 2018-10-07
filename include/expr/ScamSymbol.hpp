@@ -10,11 +10,11 @@ namespace scam
     public:
         ScamSymbol(std::string const & value);
         std::string toString() const override;
-        void eval(std::shared_ptr<Continuation> cont, Env & env) override;
+        void eval(ContHandle cont, Env & env) override;
 
         bool isSymbol() const override;
 
-        std::shared_ptr<ScamExpr> clone() override;
+        ExprHandle clone() override;
 
     private:
         std::string const value;

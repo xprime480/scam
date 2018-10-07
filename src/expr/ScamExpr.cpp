@@ -15,9 +15,9 @@ ScamExpr::~ScamExpr()
 {
 }
 
-void ScamExpr::eval(std::shared_ptr<Continuation> cont, Env & env)
+void ScamExpr::eval(ContHandle cont, Env & env)
 {
-    shared_ptr<ScamExpr> dup = clone();
+    ExprHandle dup = clone();
     cont->run(dup);
 }
 
@@ -26,20 +26,18 @@ bool ScamExpr::hasApply() const
     return false;
 }
 
-void ScamExpr::apply(std::shared_ptr<ScamExpr> const & args,
-                     std::shared_ptr<Continuation> cont,
-                     Env & env)
+void ScamExpr::apply(ExprHandle const & args, ContHandle cont, Env & env)
 {
     stringstream s;
     s << "Not possible to apply <" << this->toString()
       << " to args " << args->toString();
-    shared_ptr<ScamExpr> err = ExpressionFactory::makeError(s.str());
+    ExprHandle err = ExpressionFactory::makeError(s.str());
     cont->run(err);
 }
 
-void ScamExpr::mapEval(std::shared_ptr<Continuation> cont, Env & env)
+void ScamExpr::mapEval(ContHandle cont, Env & env)
 {
-    shared_ptr<ScamExpr> dup = clone();
+    ExprHandle dup = clone();
     cont->run(dup);
 }
 
@@ -135,7 +133,7 @@ bool ScamExpr::isList() const
     return false;
 }
 
-shared_ptr<ScamExpr> ScamExpr::getCar() const
+ExprHandle ScamExpr::getCar() const
 {
     stringstream s;
     s << "Cannot take cons of <" << this->toString() << ">";
@@ -144,7 +142,7 @@ shared_ptr<ScamExpr> ScamExpr::getCar() const
     return ExpressionFactory::makeNull();
 }
 
-shared_ptr<ScamExpr> ScamExpr::getCdr() const
+ExprHandle ScamExpr::getCdr() const
 {
     stringstream s;
     s << "Cannot take cdr of <" << this->toString() << ">";
@@ -167,7 +165,7 @@ size_t ScamExpr::length() const
     return 0u;
 }
 
-std::shared_ptr<ScamExpr> ScamExpr::nth(size_t n) const
+ExprHandle ScamExpr::nth(size_t n) const
 {
     stringstream s;
     s << "Cannot index <" << this->toString() << ">";

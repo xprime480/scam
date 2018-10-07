@@ -8,6 +8,10 @@ namespace scam
 {
     class Continuation;
     class Env;
+    class ScamExpr;
+
+    using ExprHandle = std::shared_ptr<ScamExpr>;
+    using ContHandle = std::shared_ptr<Continuation> ;
 
     class ScamExpr
     {
@@ -15,13 +19,11 @@ namespace scam
         virtual ~ScamExpr();
 
         virtual std::string toString() const = 0;
-        virtual void eval(std::shared_ptr<Continuation> cont, Env & env);
+        virtual void eval(ContHandle cont, Env & env);
 
         virtual bool hasApply() const;
-        virtual void apply(std::shared_ptr<ScamExpr> const & args,
-                           std::shared_ptr<Continuation> cont,
-                           Env & env);
-        virtual void mapEval(std::shared_ptr<Continuation> cont, Env & env);
+        virtual void apply(ExprHandle const & args, ContHandle cont, Env & env);
+        virtual void mapEval(ContHandle cont, Env & env);
 
         virtual bool isNull() const;
         virtual bool error() const;
@@ -42,15 +44,15 @@ namespace scam
         virtual bool isNil() const;
         virtual bool isCons() const;
         virtual bool isList() const;
-        virtual std::shared_ptr<ScamExpr> getCar() const;
-        virtual std::shared_ptr<ScamExpr> getCdr() const;
+        virtual ExprHandle getCar() const;
+        virtual ExprHandle getCdr() const;
 
         virtual bool isVector() const;
 
         virtual size_t length() const;
-        virtual std::shared_ptr<ScamExpr> nth(size_t n) const;
+        virtual ExprHandle nth(size_t n) const;
 
-        virtual std::shared_ptr<ScamExpr> clone() = 0;
+        virtual ExprHandle clone() = 0;
     };
 }
 

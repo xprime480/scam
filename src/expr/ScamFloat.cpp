@@ -30,7 +30,7 @@ double ScamFloat::toFloat() const
     return value;
 }
 
-shared_ptr<ScamExpr> ScamFloat::clone()
+ExprHandle ScamFloat::clone()
 {
     return ExpressionFactory::makeFloat(value);
 }

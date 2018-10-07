@@ -13,7 +13,7 @@ namespace scam
 
         bool isString() const override;
 
-        std::shared_ptr<ScamExpr> clone() override;
+        ExprHandle clone() override;
 
     private:
         std::string const value;

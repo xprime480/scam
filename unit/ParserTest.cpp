@@ -45,14 +45,14 @@ namespace
         size_t index;
     };
 
-    shared_ptr<ScamExpr> runTest(vector<Token> const & tokens)
+    ExprHandle runTest(vector<Token> const & tokens)
     {
         StaticTokenizer tokenizer(tokens);
         ScamParser parser(tokenizer);
         shared_ptr<Extractor> ec = make_shared<Extractor>();
         parser.parseExpr(ec);
 
-        shared_ptr<ScamExpr> expr = ec->getExpr();
+        ExprHandle expr = ec->getExpr();
         EXPECT_NE(nullptr, expr.get());
         return expr;
     }
@@ -63,7 +63,7 @@ namespace
             Token(TokenType::TT_NONE, "")
         };
 
-        shared_ptr<ScamExpr> expr = runTest(tokens);
+        ExprHandle expr = runTest(tokens);
         EXPECT_TRUE(expr->error());
     }
 
@@ -72,7 +72,7 @@ namespace
         vector<Token> tokens {
         };
 
-        shared_ptr<ScamExpr> expr = runTest(tokens);
+        ExprHandle expr = runTest(tokens);
         EXPECT_TRUE(expr->isNull());
     }
 
@@ -83,7 +83,7 @@ namespace
             Token(TokenType::TT_SCAN_ERROR, msg)
         };
 
-        shared_ptr<ScamExpr> expr = runTest(tokens);
+        ExprHandle expr = runTest(tokens);
         EXPECT_TRUE(expr->error());
         EXPECT_EQ(msg, expr->toString());
     }
@@ -94,7 +94,7 @@ namespace
             Token(TokenType::TT_BOOLEAN, msg)
         };
 
-        shared_ptr<ScamExpr> expr = runTest(tokens);
+        ExprHandle expr = runTest(tokens);
         EXPECT_EQ(value, expr->truth());
     }
 
@@ -115,7 +115,7 @@ namespace
             Token(TokenType::TT_CHARACTER, msg)
         };
 
-        shared_ptr<ScamExpr> expr = runTest(tokens);
+        ExprHandle expr = runTest(tokens);
 
         EXPECT_TRUE(expr->isChar());
         EXPECT_EQ(msg, expr->toString());
@@ -129,7 +129,7 @@ namespace
             Token(TokenType::TT_STRING, msg)
         };
 
-        shared_ptr<ScamExpr> expr = runTest(tokens);
+        ExprHandle expr = runTest(tokens);
 
         EXPECT_TRUE(expr->isString());
         EXPECT_EQ(msg, expr->toString());
@@ -142,7 +142,7 @@ namespace
             Token(TokenType::TT_SYMBOL, msg)
         };
 
-        shared_ptr<ScamExpr> expr = runTest(tokens);
+        ExprHandle expr = runTest(tokens);
 
         EXPECT_TRUE(expr->isSymbol());
         EXPECT_EQ(msg, expr->toString());
@@ -155,7 +155,7 @@ namespace
             Token(TokenType::TT_FLOAT, msg)
         };
 
-        shared_ptr<ScamExpr> expr = runTest(tokens);
+        ExprHandle expr = runTest(tokens);
 
         EXPECT_TRUE(expr->isFloat());
         EXPECT_EQ(-17.5, expr->toFloat());
@@ -168,7 +168,7 @@ namespace
             Token(TokenType::TT_INTEGER, msg)
         };
 
-        shared_ptr<ScamExpr> expr = runTest(tokens);
+        ExprHandle expr = runTest(tokens);
 
         EXPECT_TRUE(expr->isFloat());
         EXPECT_TRUE(expr->isInteger());
@@ -183,7 +183,7 @@ namespace
             Token(TokenType::TT_CLOSE_PAREN, ")")
         };
 
-        shared_ptr<ScamExpr> expr = runTest(tokens);
+        ExprHandle expr = runTest(tokens);
 
         EXPECT_TRUE(expr->isNil());
         EXPECT_EQ(msg, expr->toString());
@@ -199,7 +199,7 @@ namespace
             Token(TokenType::TT_CLOSE_PAREN, ")")
         };
 
-        shared_ptr<ScamExpr> expr = runTest(tokens);
+        ExprHandle expr = runTest(tokens);
 
         EXPECT_TRUE(expr->isList());
         EXPECT_TRUE(expr->isCons());
@@ -212,7 +212,7 @@ namespace
             Token(TokenType::TT_OPEN_PAREN, "("),
         };
 
-        shared_ptr<ScamExpr> expr = runTest(tokens);
+        ExprHandle expr = runTest(tokens);
         EXPECT_TRUE(expr->error());
     }
 
@@ -225,7 +225,7 @@ namespace
             Token(TokenType::TT_CLOSE_PAREN, ")")
         };
 
-        shared_ptr<ScamExpr> expr = runTest(tokens);
+        ExprHandle expr = runTest(tokens);
         EXPECT_TRUE(expr->error());
         EXPECT_EQ(msg, expr->toString());
     }
@@ -242,7 +242,7 @@ namespace
             Token(TokenType::TT_CLOSE_PAREN, ")")
         };
 
-        shared_ptr<ScamExpr> expr = runTest(tokens);
+        ExprHandle expr = runTest(tokens);
 
         EXPECT_FALSE(expr->isList());
         EXPECT_TRUE(expr->isCons());
@@ -259,7 +259,7 @@ namespace
             Token(TokenType::TT_CLOSE_PAREN, ")")
         };
 
-        shared_ptr<ScamExpr> expr = runTest(tokens);
+        ExprHandle expr = runTest(tokens);
         EXPECT_TRUE(expr->error());
     }
 
@@ -272,7 +272,7 @@ namespace
             Token(TokenType::TT_INTEGER, "17"),
         };
 
-        shared_ptr<ScamExpr> expr = runTest(tokens);
+        ExprHandle expr = runTest(tokens);
         EXPECT_TRUE(expr->error());
     }
 
@@ -287,7 +287,7 @@ namespace
             Token(TokenType::TT_CLOSE_PAREN, ")")
         };
 
-        shared_ptr<ScamExpr> expr = runTest(tokens);
+        ExprHandle expr = runTest(tokens);
         EXPECT_TRUE(expr->error());
     }
 
@@ -297,7 +297,7 @@ namespace
             Token(TokenType::TT_DOT, "."),
         };
 
-        shared_ptr<ScamExpr> expr = runTest(tokens);
+        ExprHandle expr = runTest(tokens);
         EXPECT_TRUE(expr->error());
     }
 
@@ -307,7 +307,7 @@ namespace
             Token(TokenType::TT_CLOSE_PAREN, ")")
         };
 
-        shared_ptr<ScamExpr> expr = runTest(tokens);
+        ExprHandle expr = runTest(tokens);
         EXPECT_TRUE(expr->error());
     }
 
@@ -320,7 +320,7 @@ namespace
             Token(TokenType::TT_SYMBOL, "foo")
         };
 
-        shared_ptr<ScamExpr> expr = runTest(tokens);
+        ExprHandle expr = runTest(tokens);
         EXPECT_TRUE(expr->isList());
         EXPECT_EQ(msg, expr->toString());
     }
@@ -334,7 +334,7 @@ namespace
             Token(TokenType::TT_SYMBOL, "foo")
         };
 
-        shared_ptr<ScamExpr> expr = runTest(tokens);
+        ExprHandle expr = runTest(tokens);
         EXPECT_TRUE(expr->isList());
         EXPECT_EQ(msg, expr->toString());
     }
@@ -348,7 +348,7 @@ namespace
             Token(TokenType::TT_SYMBOL, "foo")
         };
 
-        shared_ptr<ScamExpr> expr = runTest(tokens);
+        ExprHandle expr = runTest(tokens);
         EXPECT_TRUE(expr->isList());
         EXPECT_EQ(msg, expr->toString());
     }
@@ -362,7 +362,7 @@ namespace
             Token(TokenType::TT_SYMBOL, "foo")
         };
 
-        shared_ptr<ScamExpr> expr = runTest(tokens);
+        ExprHandle expr = runTest(tokens);
         EXPECT_TRUE(expr->isList());
         EXPECT_EQ(msg, expr->toString());
     }
@@ -373,7 +373,7 @@ namespace
             Token(TokenType::TT_SPLICE, ",@"),
         };
 
-        shared_ptr<ScamExpr> expr = runTest(tokens);
+        ExprHandle expr = runTest(tokens);
         EXPECT_TRUE(expr->error());
     }
 
@@ -388,7 +388,7 @@ namespace
             Token(TokenType::TT_CLOSE_PAREN, ")")
         };
 
-        shared_ptr<ScamExpr> expr = runTest(tokens);
+        ExprHandle expr = runTest(tokens);
         EXPECT_TRUE(expr->isList());
         EXPECT_EQ(msg, expr->toString());
     }
@@ -401,7 +401,7 @@ namespace
             Token(TokenType::TT_CLOSE_BRACKET, "]")
         };
 
-        shared_ptr<ScamExpr> expr = runTest(tokens);
+        ExprHandle expr = runTest(tokens);
         EXPECT_TRUE(expr->isVector());
         EXPECT_EQ(msg, expr->toString());
     }
@@ -416,7 +416,7 @@ namespace
             Token(TokenType::TT_CLOSE_BRACKET, "]")
         };
 
-        shared_ptr<ScamExpr> expr = runTest(tokens);
+        ExprHandle expr = runTest(tokens);
         EXPECT_TRUE(expr->isVector());
         EXPECT_EQ(msg, expr->toString());
         EXPECT_EQ(42, expr->nth(1)->toInteger());

@@ -25,7 +25,7 @@ char ScamCharacter::toChar() const
     return value[2];
 }
 
-shared_ptr<ScamExpr> ScamCharacter::clone()
+ExprHandle ScamCharacter::clone()
 {
     return ExpressionFactory::makeCharacter(value);
 }

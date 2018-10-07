@@ -20,9 +20,9 @@ namespace
     class  ConsWorker : public Worker
     {
     public:
-        ConsWorker(shared_ptr<ScamExpr> & car,
-                   shared_ptr<ScamExpr> & cdr,
-                   std::shared_ptr<Continuation> cont,
+        ConsWorker(ExprHandle & car,
+                   ExprHandle & cdr,
+                   ContHandle cont,
                    Env & env);
 
         ConsWorker(shared_ptr<ConsWorkerData> data);
@@ -34,8 +34,7 @@ namespace
     };
 }
 
-ScamCons::ScamCons(shared_ptr<ScamExpr> const & car,
-                   shared_ptr<ScamExpr> const & cdr)
+ScamCons::ScamCons(ExprHandle const & car, ExprHandle const & cdr)
     : car(car)
     , cdr(cdr)
 {
@@ -46,7 +45,7 @@ string ScamCons::toString() const
     stringstream s;
     s << "(";
     s << car->toString();
-    shared_ptr<ScamExpr> next = cdr;
+    ExprHandle next = cdr;
     while ( ! next->isNil() ) {
         if ( next->isCons() ) {
             s << " " << next->getCar()->toString();
@@ -62,7 +61,7 @@ string ScamCons::toString() const
     return s.str();
 }
 
-void ScamCons::eval(std::shared_ptr<Continuation> cont, Env & env)
+void ScamCons::eval(ContHandle cont, Env & env)
 {
     shared_ptr<ConsWorker> thunk = make_shared<ConsWorker>(car, cdr, cont, env);
     WorkerHandle start = thunk;
@@ -85,12 +84,12 @@ bool ScamCons::isList() const
     return cdr->isList();
 }
 
-shared_ptr<ScamExpr> ScamCons::getCar() const
+ExprHandle ScamCons::getCar() const
 {
     return car;
 }
 
-shared_ptr<ScamExpr> ScamCons::getCdr() const
+ExprHandle ScamCons::getCdr() const
 {
     return cdr;
 }
@@ -108,15 +107,15 @@ size_t ScamCons::length() const
     return len;
 }
 
-std::shared_ptr<ScamExpr> ScamCons::nth(size_t n) const
+ExprHandle ScamCons::nth(size_t n) const
 {
-    auto f = [=] () -> std::shared_ptr<ScamExpr> {
+    auto f = [=] () -> ExprHandle {
         stringstream s;
         s << "Index " << n << " requested for " << toString();
         return ExpressionFactory::makeError(s.str());
     };
 
-    std::shared_ptr<ScamExpr> rv;
+    ExprHandle rv;
 
     if ( 0 == n ) {
         rv = car;
@@ -137,7 +136,7 @@ std::shared_ptr<ScamExpr> ScamCons::nth(size_t n) const
     return rv;
 }
 
-shared_ptr<ScamExpr> ScamCons::clone()
+ExprHandle ScamCons::clone()
 {
     return ExpressionFactory::makeCons(car, cdr);
 }
@@ -147,23 +146,21 @@ namespace
     class Evaluator : public Continuation
     {
     public:
-        Evaluator(shared_ptr<ScamExpr> args,
-                  std::shared_ptr<Continuation> cont,
-                  Env env)
+        Evaluator(ExprHandle args, ContHandle cont, Env env)
             : args(args)
             , cont(cont)
             , env(env)
         {
         }
 
-        void run(shared_ptr<ScamExpr> e) const override
+        void run(ExprHandle e) const override
         {
             e->apply(args, cont, env);
         }
 
     private:
-        mutable shared_ptr<ScamExpr> args;
-        mutable std::shared_ptr<Continuation> cont;
+        mutable ExprHandle args;
+        mutable ContHandle cont;
         mutable Env env;
     };
 }
@@ -172,9 +169,9 @@ namespace
 {
     struct ConsWorkerData
     {
-        ConsWorkerData(shared_ptr<ScamExpr> car,
-                       shared_ptr<ScamExpr> cdr,
-                       std::shared_ptr<Continuation> original,
+        ConsWorkerData(ExprHandle car,
+                       ExprHandle cdr,
+                       ContHandle original,
                        Env & env)
             : car(car)
             , cdr(cdr)
@@ -183,10 +180,10 @@ namespace
         {
         }
 
-        shared_ptr<ScamExpr> car;
-        shared_ptr<ScamExpr> cdr;
-        shared_ptr<Continuation> original;
-        shared_ptr<Continuation> cont;
+        ExprHandle car;
+        ExprHandle cdr;
+        ContHandle original;
+        ContHandle cont;
         Env & env;
     };
 
@@ -195,15 +192,15 @@ namespace
     public:
         EvalContinuation(shared_ptr<ConsWorkerData> data);
 
-        void run(shared_ptr<ScamExpr> expr) const override;
+        void run(ExprHandle expr) const override;
 
     private:
         shared_ptr<ConsWorkerData> data;
     };
 
-    ConsWorker::ConsWorker(shared_ptr<ScamExpr> & car,
-                           shared_ptr<ScamExpr> & cdr,
-                           std::shared_ptr<Continuation> cont,
+    ConsWorker::ConsWorker(ExprHandle & car,
+                           ExprHandle & cdr,
+                           ContHandle cont,
                            Env & env)
         : data(make_shared<ConsWorkerData>(car, cdr, cont, env))
     {
@@ -225,7 +222,7 @@ namespace
     {
     }
 
-    void EvalContinuation::run(shared_ptr<ScamExpr> expr) const
+    void EvalContinuation::run(ExprHandle expr) const
     {
         if ( expr->error() ) {
             data->original->run(expr);

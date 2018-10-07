@@ -31,7 +31,7 @@ namespace
     {
     public:
         ReadContinuation(ReplWorker & repl);
-        void run(shared_ptr<ScamExpr> expr) const override;
+        void run(ExprHandle expr) const override;
 
     private:
         ReplWorker & repl;
@@ -41,7 +41,7 @@ namespace
     {
     public:
         EvalContinuation(ReplWorker & repl);
-        void run(shared_ptr<ScamExpr> expr) const override;
+        void run(ExprHandle expr) const override;
 
     private:
         ReplWorker & repl;
@@ -51,13 +51,13 @@ namespace
     {
     public:
         PrintContinuation(ReplWorker & repl);
-        void run(shared_ptr<ScamExpr> expr) const override;
+        void run(ExprHandle expr) const override;
 
     private:
         ReplWorker & repl;
     };
 
-    class  ReplWorker : public Worker
+    class ReplWorker : public Worker
     {
     public:
         friend class ReadContinuation;
@@ -101,27 +101,24 @@ namespace
         ScamParser & parser;
         OutputHandler & output;
         ReplState state;
-        shared_ptr<ScamExpr> expr;
+        ExprHandle expr;
         Env env;
 
         void do_read()
         {
-            std::shared_ptr<Continuation> cont
-                = make_shared<ReadContinuation>(*this);
+            ContHandle cont = make_shared<ReadContinuation>(*this);
             parser.parseExpr(cont);
         }
 
         void do_eval()
         {
-            std::shared_ptr<Continuation> cont
-                = make_shared<EvalContinuation>(*this);
+            ContHandle cont = make_shared<EvalContinuation>(*this);
             expr->eval(cont, env);
         }
 
         void do_print()
         {
-            std::shared_ptr<Continuation> cont
-                = make_shared<PrintContinuation>(*this);
+            ContHandle cont = make_shared<PrintContinuation>(*this);
             string value = expr->toString();
             output.handleResult(value);
             cont->run(expr);
@@ -129,8 +126,7 @@ namespace
 
         void do_error()
         {
-            std::shared_ptr<Continuation> cont
-                = make_shared<PrintContinuation>(*this);
+            ContHandle cont = make_shared<PrintContinuation>(*this);
             string value = expr->toString();
             output.handleError(value);
             cont->run(expr);
@@ -142,7 +138,7 @@ namespace
     {
     }
 
-    void ReadContinuation::run(shared_ptr<ScamExpr> expr) const
+    void ReadContinuation::run(ExprHandle expr) const
     {
         shared_ptr<ReplWorker> replNext = make_shared<ReplWorker>(repl);
         WorkerHandle next = replNext;
@@ -166,7 +162,7 @@ namespace
     {
     }
 
-    void EvalContinuation::run(shared_ptr<ScamExpr> expr) const
+    void EvalContinuation::run(ExprHandle expr) const
     {
         shared_ptr<ReplWorker> replNext = make_shared<ReplWorker>(repl);
         WorkerHandle next = replNext;
@@ -185,7 +181,7 @@ namespace
     {
     }
 
-    void PrintContinuation::run(shared_ptr<ScamExpr> expr) const
+    void PrintContinuation::run(ExprHandle expr) const
     {
         shared_ptr<ReplWorker> replNext = make_shared<ReplWorker>(repl);
         WorkerHandle next = replNext;
@@ -199,13 +195,12 @@ void ScamEngine::repl(Tokenizer & input, OutputHandler & output)
 {
     ScamParser parser(input);
     WorkerHandle theRepl = make_shared<ReplWorker>(parser, output);
-
     GlobalWorkQueue.put(theRepl);
     Trampoline(GlobalWorkQueue);
 }
 
 void ScamEngine::extend(std::string const & name,
-                          Tokenizer & input,
-                          OutputHandler & output)
+                        Tokenizer & input,
+                        OutputHandler & output)
 {
 }

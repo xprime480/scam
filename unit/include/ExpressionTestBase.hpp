@@ -16,46 +16,46 @@ namespace scam
         std::shared_ptr<Extractor> extractor;
         Env env;
 
-        std::shared_ptr<ScamExpr> evaluate(std::shared_ptr<ScamExpr> input);
+        ExprHandle evaluate(ExprHandle input);
 
         void doCheck(bool act, unsigned selector, unsigned which);
 
-        void checkPredicates(std::shared_ptr<ScamExpr> expr, unsigned selector);
+        void checkPredicates(ExprHandle expr, unsigned selector);
 
-        void expectNull(std::shared_ptr<ScamExpr> expr);
-        void expectError(std::shared_ptr<ScamExpr> expr,
+        void expectNull(ExprHandle expr);
+        void expectError(ExprHandle expr,
                          std::string const msg = "");
 
-        void expectBoolean(std::shared_ptr<ScamExpr> expr,
+        void expectBoolean(ExprHandle expr,
                            bool value,
                            std::string const & repr);
-        void booleanTest(std::shared_ptr<ScamExpr> expr,
+        void booleanTest(ExprHandle expr,
                          bool value,
                          std::string const & repr);
 
-        void expectFloat(std::shared_ptr<ScamExpr> expr,
+        void expectFloat(ExprHandle expr,
                          double value,
                          std::string const & repr);
-        void expectInteger(std::shared_ptr<ScamExpr> expr,
+        void expectInteger(ExprHandle expr,
                            int value,
                            std::string const & repr);
-        void expectChar(std::shared_ptr<ScamExpr> expr,
+        void expectChar(ExprHandle expr,
                         char value,
                         std::string const & repr);
-        void expectString(std::shared_ptr<ScamExpr> expr,
+        void expectString(ExprHandle expr,
                           std::string const & value);
-        void expectSymbol(std::shared_ptr<ScamExpr> expr,
+        void expectSymbol(ExprHandle expr,
                           std::string const & name);
-        void expectNil(std::shared_ptr<ScamExpr> expr,
+        void expectNil(ExprHandle expr,
                        std::string const & repr);
-        void expectList(std::shared_ptr<ScamExpr> expr,
+        void expectList(ExprHandle expr,
                         std::string const & repr,
                         size_t len);
-        void expectCons(std::shared_ptr<ScamExpr> expr,
+        void expectCons(ExprHandle expr,
                         std::string const & repr);
-        void expectApplicable(std::shared_ptr<ScamExpr> expr,
+        void expectApplicable(ExprHandle expr,
                               std::string const & repr);
-        void expectVector(std::shared_ptr<ScamExpr> expr,
+        void expectVector(ExprHandle expr,
                           std::string const & repr,
                           size_t len);
     };

@@ -18,9 +18,7 @@ namespace
     class  VectorWorker : public Worker
     {
     public:
-        VectorWorker(vector<shared_ptr<ScamExpr>> const & forms,
-                     shared_ptr<Continuation> cont,
-                     Env & env);
+        VectorWorker(ExprVec const & forms, ContHandle cont, Env & env);
 
         VectorWorker(shared_ptr<VectorWorkerData> data);
 
@@ -31,7 +29,7 @@ namespace
     };
 }
 
-ScamVector::ScamVector(vector<shared_ptr<ScamExpr>> const & elts)
+ScamVector::ScamVector(ExprVec const & elts)
     : elts(elts)
 {
 }
@@ -51,7 +49,7 @@ string ScamVector::toString() const
     return s.str();
 }
 
-void ScamVector::eval(shared_ptr<Continuation> cont, Env & env)
+void ScamVector::eval(ContHandle cont, Env & env)
 {
     shared_ptr<VectorWorker> thunk = make_shared<VectorWorker>(elts, cont, env);
     WorkerHandle start = thunk;
@@ -68,7 +66,7 @@ size_t ScamVector::length() const
     return elts.size();
 }
 
-shared_ptr<ScamExpr> ScamVector::nth(size_t n) const
+ExprHandle ScamVector::nth(size_t n) const
 {
     if ( n >= length() ) {
         stringstream s;
@@ -80,7 +78,7 @@ shared_ptr<ScamExpr> ScamVector::nth(size_t n) const
     return elts[n];
 }
 
-shared_ptr<ScamExpr> ScamVector::clone()
+ExprHandle ScamVector::clone()
 {
     return ExpressionFactory::makeVector(elts);
 }
@@ -89,9 +87,7 @@ namespace
 {
     struct VectorWorkerData
     {
-        VectorWorkerData(vector<shared_ptr<ScamExpr>> const & forms,
-                         shared_ptr<Continuation> original,
-                         Env & env)
+        VectorWorkerData(ExprVec const & forms, ContHandle original, Env & env)
             : forms(forms)
             , original(original)
             , env(env)
@@ -100,12 +96,12 @@ namespace
         {
         }
 
-        vector<shared_ptr<ScamExpr>> forms;
-        shared_ptr<Continuation> original;
-        shared_ptr<Continuation> cont;
+        ExprVec forms;
+        ContHandle original;
+        ContHandle cont;
         Env & env;
 
-        vector<shared_ptr<ScamExpr>> evaled;
+        ExprVec evaled;
         size_t index;
     };
 
@@ -114,18 +110,16 @@ namespace
     public:
         EvalContinuation(shared_ptr<VectorWorkerData> data);
 
-        void run(shared_ptr<ScamExpr> expr) const override;
+        void run(ExprHandle expr) const override;
 
     private:
         shared_ptr<VectorWorkerData> data;
     };
 
-    VectorWorker::VectorWorker(vector<shared_ptr<ScamExpr>> const & forms,
-                               shared_ptr<Continuation> cont,
+    VectorWorker::VectorWorker(ExprVec const & forms,
+                               ContHandle cont,
                                Env & env)
-        : data(make_shared<VectorWorkerData>(forms,
-                                             cont,
-                                             env))
+        : data(make_shared<VectorWorkerData>(forms, cont, env))
     {
         data->cont = make_shared<EvalContinuation>(data);
     }
@@ -138,12 +132,11 @@ namespace
     void VectorWorker::run()
     {
         if ( data->index >= data->forms.size() ) {
-            shared_ptr<ScamExpr> value
-                = ExpressionFactory::makeVector(data->evaled);
+            ExprHandle value = ExpressionFactory::makeVector(data->evaled);
             data->original->run(value);
         }
         else {
-            shared_ptr<ScamExpr> expr = data->forms[data->index];
+            ExprHandle expr = data->forms[data->index];
             expr->eval(data->cont, data->env);
         }
     }
@@ -153,7 +146,7 @@ namespace
     {
     }
 
-    void EvalContinuation::run(shared_ptr<ScamExpr> expr) const
+    void EvalContinuation::run(ExprHandle expr) const
     {
         if ( expr->error() ) {
             data->original->run(expr);
