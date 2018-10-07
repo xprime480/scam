@@ -85,21 +85,21 @@ void ExpressionTestBase::expectNull(shared_ptr<ScamExpr> expr)
 }
 
 void ExpressionTestBase::expectError(shared_ptr<ScamExpr> expr,
-				     string const msg)
+                                     string const msg)
 {
     checkPredicates(expr, SELECT_TRUTH | SELECT_ERROR );
 
     if ( ! msg.empty() ) {
-	EXPECT_EQ(msg, expr->toString());
+        EXPECT_EQ(msg, expr->toString());
     }
 
     EXPECT_THROW(expr->toFloat(), ScamException);
     EXPECT_THROW(expr->toInteger(), ScamException);
 }
 
-void ExpressionTestBase::expectBoolean(shared_ptr<ScamExpr> expr, 
-				       bool value, 
-				       string const & repr)
+void ExpressionTestBase::expectBoolean(shared_ptr<ScamExpr> expr,
+                                       bool value,
+                                       string const & repr)
 {
     EXPECT_EQ(repr, expr->toString());
     checkPredicates(expr, SELECT_BOOLEAN | (value ? SELECT_TRUTH : 0));
@@ -108,18 +108,18 @@ void ExpressionTestBase::expectBoolean(shared_ptr<ScamExpr> expr,
     EXPECT_THROW(expr->toInteger(), ScamException);
 }
 
-void ExpressionTestBase::booleanTest(shared_ptr<ScamExpr> expr, 
-				     bool value, 
-				     string const & repr)
+void ExpressionTestBase::booleanTest(shared_ptr<ScamExpr> expr,
+                                     bool value,
+                                     string const & repr)
 {
     expectBoolean(expr, value, repr);
     shared_ptr<ScamExpr> evaled = evaluate(expr);
     expectBoolean(evaled, value, repr);
 }
 
-void ExpressionTestBase::expectFloat(shared_ptr<ScamExpr> expr, 
-				     double value, 
-				     string const & repr)
+void ExpressionTestBase::expectFloat(shared_ptr<ScamExpr> expr,
+                                     double value,
+                                     string const & repr)
 {
     checkPredicates(expr, SELECT_TRUTH | ALL_FLOAT);
     EXPECT_EQ(repr, expr->toString());
@@ -128,9 +128,9 @@ void ExpressionTestBase::expectFloat(shared_ptr<ScamExpr> expr,
     EXPECT_THROW(expr->toInteger(), ScamException);
 }
 
-void ExpressionTestBase::expectInteger(shared_ptr<ScamExpr> expr, 
-				       int value, 
-				       string const & repr)
+void ExpressionTestBase::expectInteger(shared_ptr<ScamExpr> expr,
+                                       int value,
+                                       string const & repr)
 {
     checkPredicates(expr, SELECT_TRUTH | ALL_INTEGER);
     EXPECT_EQ(repr, expr->toString());
@@ -138,62 +138,62 @@ void ExpressionTestBase::expectInteger(shared_ptr<ScamExpr> expr,
     EXPECT_EQ(value, expr->toInteger());
 }
 
-void ExpressionTestBase::expectChar(shared_ptr<ScamExpr> expr, 
-				    char value, 
-				    string const & repr)
+void ExpressionTestBase::expectChar(shared_ptr<ScamExpr> expr,
+                                    char value,
+                                    string const & repr)
 {
     checkPredicates(expr, SELECT_TRUTH | SELECT_CHAR);
     EXPECT_EQ(repr, expr->toString());
     EXPECT_EQ(value, expr->toChar());
 }
 
-void ExpressionTestBase::expectString(shared_ptr<ScamExpr> expr, 
-				      string const & value)
+void ExpressionTestBase::expectString(shared_ptr<ScamExpr> expr,
+                                      string const & value)
 {
     checkPredicates(expr, SELECT_TRUTH | SELECT_STRING);
     EXPECT_EQ(value, expr->toString());
 }
 
-void ExpressionTestBase::expectSymbol(shared_ptr<ScamExpr> expr, 
-				      string const & name)
+void ExpressionTestBase::expectSymbol(shared_ptr<ScamExpr> expr,
+                                      string const & name)
 {
     checkPredicates(expr, SELECT_TRUTH | SELECT_SYMBOL);
     EXPECT_EQ(name, expr->toString());
 }
 
-void ExpressionTestBase::expectNil(shared_ptr<ScamExpr> expr, 
-				   string const & repr)
+void ExpressionTestBase::expectNil(shared_ptr<ScamExpr> expr,
+                                   string const & repr)
 {
     checkPredicates(expr, SELECT_TRUTH | ALL_NIL);
     EXPECT_EQ(repr, expr->toString());
 }
 
-void ExpressionTestBase::expectList(shared_ptr<ScamExpr> expr, 
-				    string const & repr, 
-				    size_t len)
+void ExpressionTestBase::expectList(shared_ptr<ScamExpr> expr,
+                                    string const & repr,
+                                    size_t len)
 {
     checkPredicates(expr, SELECT_TRUTH | SELECT_CONS | SELECT_LIST);
     EXPECT_EQ(repr, expr->toString());
     EXPECT_EQ(len, expr->length());
 }
 
-void ExpressionTestBase::expectCons(shared_ptr<ScamExpr> expr, 
-				    string const & repr)
+void ExpressionTestBase::expectCons(shared_ptr<ScamExpr> expr,
+                                    string const & repr)
 {
     checkPredicates(expr, SELECT_TRUTH | SELECT_CONS);
     EXPECT_EQ(repr, expr->toString());
 }
 
-void ExpressionTestBase::expectApplicable(shared_ptr<ScamExpr> expr, 
-					  string const & repr)
+void ExpressionTestBase::expectApplicable(shared_ptr<ScamExpr> expr,
+                                          string const & repr)
 {
     checkPredicates(expr, SELECT_TRUTH | SELECT_APPLY);
     EXPECT_EQ(repr, expr->toString());
 }
 
-void ExpressionTestBase::expectVector(shared_ptr<ScamExpr> expr, 
-				      string const & repr, 
-				      size_t len)
+void ExpressionTestBase::expectVector(shared_ptr<ScamExpr> expr,
+                                      string const & repr,
+                                      size_t len)
 {
     checkPredicates(expr, SELECT_TRUTH | SELECT_VECTOR);
     EXPECT_EQ(repr, expr->toString());

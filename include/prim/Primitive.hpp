@@ -17,7 +17,6 @@ namespace scam
                    std::shared_ptr<Continuation> cont,
                    Env & env) override;
 
-    protected:
         virtual void applyArgs(std::shared_ptr<ScamExpr> const & args,
                                std::shared_ptr<Continuation> cont) = 0;
 

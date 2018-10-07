@@ -37,6 +37,12 @@ void ScamExpr::apply(std::shared_ptr<ScamExpr> const & args,
     cont->run(err);
 }
 
+void ScamExpr::mapEval(std::shared_ptr<Continuation> cont, Env & env)
+{
+    shared_ptr<ScamExpr> dup = clone();
+    cont->run(dup);
+}
+
 bool ScamExpr::isNull() const
 {
     return false;

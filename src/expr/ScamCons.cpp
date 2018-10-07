@@ -205,10 +205,7 @@ namespace
                            shared_ptr<ScamExpr> & cdr,
                            std::shared_ptr<Continuation> cont,
                            Env & env)
-        : data(make_shared<ConsWorkerData>(car,
-                                           cdr,
-                                           cont,
-                                           env))
+        : data(make_shared<ConsWorkerData>(car, cdr, cont, env))
     {
         data->cont = make_shared<EvalContinuation>(data);
     }

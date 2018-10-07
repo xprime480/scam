@@ -21,6 +21,7 @@ namespace scam
         virtual void apply(std::shared_ptr<ScamExpr> const & args,
                            std::shared_ptr<Continuation> cont,
                            Env & env);
+        virtual void mapEval(std::shared_ptr<Continuation> cont, Env & env);
 
         virtual bool isNull() const;
         virtual bool error() const;
