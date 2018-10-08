@@ -2,7 +2,7 @@
 #include "ScamEngine.hpp"
 
 #include "expr/ExpressionFactory.hpp"
-#include "form/Quote.hpp"
+#include "form/AllSpecialForms.hpp"
 #include "prim/AllPrimitives.hpp"
 
 using namespace scam;
@@ -24,6 +24,8 @@ Env ScamEngine::getStandardEnv()
     Env env;
 
     addForm<Quote>(env, "quote");
+
+    addForm<If>(env, "if");
 
     addForm<Add>(env, "+");
     addForm<Sub>(env, "-");

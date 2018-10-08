@@ -1,9 +1,13 @@
 
 #include "ExpressionTestBase.hpp"
 
+#include "ScamEngine.hpp"
 #include "ScamException.hpp"
 #include "Trampoline.hpp"
 #include "WorkQueue.hpp"
+#include "expr/ExpressionFactory.hpp"
+#include "input/ScamParser.hpp"
+#include "input/StringTokenizer.hpp"
 
 using namespace scam;
 using namespace std;
@@ -33,6 +37,8 @@ namespace
 
 ExpressionTestBase::ExpressionTestBase()
     : extractor(make_shared<Extractor>())
+    , env(ScamEngine::getStandardEnv())
+
 {
 }
 
@@ -43,36 +49,109 @@ ExprHandle ExpressionTestBase::evaluate(ExprHandle input)
     return extractor->getExpr();
 }
 
-void ExpressionTestBase::doCheck(bool act, unsigned selector, unsigned which)
+ExprHandle ExpressionTestBase::parseAndEvaluate(string const & input)
 {
-    bool exp = (selector & which) == which;
-    EXPECT_EQ(exp, act) << "failed for " << which;
+    StringTokenizer tokenizer(input);
+    ScamParser parser(tokenizer);
+
+    parser.parseExpr(extractor);
+    ExprHandle expr = extractor->getExpr();
+
+    ExprHandle rv;
+    try {
+        rv = evaluate(expr);
+    }
+    catch ( ScamException e ) {
+        stringstream s;
+        s << "Unhandled exception: " << e.getMessage();
+        rv = ExpressionFactory::makeError(s.str());
+    }
+    return rv;
+}
+
+void decodeBit(unsigned mismatch,
+               unsigned exp,
+               unsigned sel,
+               char const * tag,
+               stringstream & s)
+{
+    if ( mismatch & sel ) {
+        if ( exp & sel ) {
+            s << "\n\tUnexpected " << tag << " flag set";
+        }
+        else {
+            s << "\n\tExpected " << tag << " flag not set";
+        }
+    }
+}
+
+string decodePredicate(unsigned exp, unsigned act)
+{
+    stringstream s;
+
+    if ( exp != act ) {
+        unsigned mismatch = (exp ^ act);
+
+#define DECODER(B) \
+        decodeBit(mismatch, exp, SELECT_ ## B, #B, s)
+
+        DECODER(NULL);
+        DECODER(ERROR);
+        DECODER(TRUTH);
+
+        DECODER(CHAR);
+        DECODER(STRING);
+        DECODER(SYMBOL);
+
+        DECODER(NUMERIC);
+        DECODER(FLOAT);
+        DECODER(BOOLEAN);
+
+        DECODER(NIL);
+        DECODER(CONS);
+        DECODER(LIST);
+        DECODER(VECTOR);
+
+        DECODER(APPLY);
+#undef DECODER
+    }
+
+    return s.str();
 }
 
 void
-ExpressionTestBase::checkPredicates(ExprHandle expr, unsigned selector)
+ExpressionTestBase::checkPredicates(ExprHandle expr, unsigned exp)
 {
     ASSERT_NE(nullptr, expr.get());
+    unsigned act { 0 };
 
-    doCheck(expr->isNull(), selector, SELECT_NULL);
-    doCheck(expr->error(),  selector, SELECT_ERROR);
-    doCheck(expr->truth(),  selector, SELECT_TRUTH);
+    act |= (expr->isNull() ? SELECT_NULL : 0);
+    act |= (expr->error() ? SELECT_ERROR : 0);
+    act |= (expr->truth() ? SELECT_TRUTH : 0);
 
-    doCheck(expr->isBoolean(), selector, SELECT_BOOLEAN);
-    doCheck(expr->isChar(),    selector, SELECT_CHAR);
-    doCheck(expr->isString(),  selector, SELECT_STRING);
-    doCheck(expr->isSymbol(),  selector, SELECT_SYMBOL);
+    act |= (expr->isBoolean() ? SELECT_BOOLEAN : 0);
+    act |= (expr->isChar() ? SELECT_CHAR : 0);
+    act |= (expr->isString() ? SELECT_STRING : 0);
+    act |= (expr->isSymbol() ? SELECT_SYMBOL : 0);
 
-    doCheck(expr->isNumeric(), selector, SELECT_NUMERIC);
-    doCheck(expr->isFloat(),   selector, SELECT_FLOAT);
-    doCheck(expr->isInteger(), selector, SELECT_INTEGER);
+    act |= (expr->isNumeric() ? SELECT_NUMERIC : 0);
+    act |= (expr->isFloat() ? SELECT_FLOAT : 0);
+    act |= (expr->isInteger() ? SELECT_INTEGER : 0);
 
-    doCheck(expr->isNil(),    selector, SELECT_NIL);
-    doCheck(expr->isCons(),   selector, SELECT_CONS);
-    doCheck(expr->isList(),   selector, SELECT_LIST);
-    doCheck(expr->isVector(), selector, SELECT_VECTOR);
+    act |= (expr->isNil() ? SELECT_NIL : 0);
+    act |= (expr->isCons() ? SELECT_CONS : 0);
+    act |= (expr->isList() ? SELECT_LIST : 0);
+    act |= (expr->isVector() ? SELECT_VECTOR : 0);
 
-    doCheck(expr->hasApply(), selector, SELECT_APPLY);
+    act |= (expr->hasApply() ? SELECT_APPLY : 0);
+
+    EXPECT_EQ(exp, act) << decodePredicate(act, exp);
+}
+
+void expectNonNumeric(ExprHandle expr)
+{
+    EXPECT_THROW(expr->toFloat(), ScamException) << "got " << expr->toFloat();
+    EXPECT_THROW(expr->toInteger(), ScamException) << "got "  << expr->toInteger();
 }
 
 void ExpressionTestBase::expectNull(ExprHandle expr)
@@ -80,8 +159,7 @@ void ExpressionTestBase::expectNull(ExprHandle expr)
     checkPredicates(expr, SELECT_NULL);
     EXPECT_EQ("null", expr->toString());
 
-    EXPECT_THROW(expr->toFloat(), ScamException);
-    EXPECT_THROW(expr->toInteger(), ScamException);
+    expectNonNumeric(expr);
 }
 
 void ExpressionTestBase::expectError(ExprHandle expr, string const msg)
@@ -92,8 +170,7 @@ void ExpressionTestBase::expectError(ExprHandle expr, string const msg)
         EXPECT_EQ(msg, expr->toString());
     }
 
-    EXPECT_THROW(expr->toFloat(), ScamException);
-    EXPECT_THROW(expr->toInteger(), ScamException);
+    expectNonNumeric(expr);
 }
 
 void ExpressionTestBase::expectBoolean(ExprHandle expr,
@@ -103,8 +180,7 @@ void ExpressionTestBase::expectBoolean(ExprHandle expr,
     EXPECT_EQ(repr, expr->toString());
     checkPredicates(expr, SELECT_BOOLEAN | (value ? SELECT_TRUTH : 0));
 
-    EXPECT_THROW(expr->toFloat(), ScamException);
-    EXPECT_THROW(expr->toInteger(), ScamException);
+    expectNonNumeric(expr);
 }
 
 void ExpressionTestBase::booleanTest(ExprHandle expr,
@@ -157,8 +233,9 @@ void ExpressionTestBase::expectSymbol(ExprHandle expr, string const & name)
     EXPECT_EQ(name, expr->toString());
 }
 
-void ExpressionTestBase::expectNil(ExprHandle expr, string const & repr)
+void ExpressionTestBase::expectNil(ExprHandle expr)
 {
+    static const string repr { "()" };
     checkPredicates(expr, SELECT_TRUTH | ALL_NIL);
     EXPECT_EQ(repr, expr->toString());
 }

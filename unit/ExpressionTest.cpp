@@ -109,13 +109,11 @@ TEST_F(ExpressionTest, SymbolTest)
 
 TEST_F(ExpressionTest, NilTest)
 {
-    string const value { "()" };
-
     ExprHandle expr = ExpressionFactory::makeNil();
-    expectNil(expr, value);
+    expectNil(expr);
 
     ExprHandle evaled = evaluate(expr);
-    expectNil(evaled, value);
+    expectNil(evaled);
 }
 
 TEST_F(ExpressionTest, ConsSingletonTest)
@@ -187,10 +185,7 @@ TEST_F(ExpressionTest, ConsEvalTest)
     expectList(expr, value, 2);
     expectSymbol(expr->getCar(), "quote");
 
-    ExprHandle quote = ExpressionFactory::makeForm<Quote>();
-    env.put(car, quote);
     ExprHandle evaled = evaluate(expr);
-
     expectInteger(evaled, 2, "2");
 }
 

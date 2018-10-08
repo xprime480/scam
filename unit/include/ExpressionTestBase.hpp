@@ -3,6 +3,7 @@
 #include "Extractor.hpp"
 
 #include <memory>
+#include <string>
 
 #include "gtest/gtest.h"
 
@@ -17,6 +18,7 @@ namespace scam
         Env env;
 
         ExprHandle evaluate(ExprHandle input);
+        ExprHandle parseAndEvaluate(std::string const & input);
 
         void doCheck(bool act, unsigned selector, unsigned which);
 
@@ -46,8 +48,7 @@ namespace scam
                           std::string const & value);
         void expectSymbol(ExprHandle expr,
                           std::string const & name);
-        void expectNil(ExprHandle expr,
-                       std::string const & repr);
+        void expectNil(ExprHandle expr);
         void expectList(ExprHandle expr,
                         std::string const & repr,
                         size_t len);

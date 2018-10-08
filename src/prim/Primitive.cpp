@@ -31,7 +31,6 @@ namespace
     };
 }
 
-
 Primitive::Primitive(string const & name)
     : name(name)
 {
