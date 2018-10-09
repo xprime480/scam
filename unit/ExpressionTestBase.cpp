@@ -145,7 +145,8 @@ ExpressionTestBase::checkPredicates(ExprHandle expr, unsigned exp)
 
     act |= (expr->hasApply() ? SELECT_APPLY : 0);
 
-    EXPECT_EQ(exp, act) << decodePredicate(act, exp);
+    EXPECT_EQ(exp, act) << decodePredicate(act, exp)
+                        << "\n\tvalue: " << expr->toString();
 }
 
 void expectNonNumeric(ExprHandle expr)
