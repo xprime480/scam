@@ -17,75 +17,75 @@ using namespace std;
 
 ExprHandle ExpressionFactory::makeNull()
 {
-    static const ExprHandle expr = make_shared<ScamNull>();
+    static const ExprHandle expr = makeForm<ScamNull>();
     return expr;
 }
 
 ExprHandle ExpressionFactory::makeError(char const * msg)
 {
-    ExprHandle expr = make_shared<ScamError>(msg);
+    ExprHandle expr = makeForm<ScamError>(msg);
     return expr;
 }
 
 ExprHandle ExpressionFactory::makeError(string const & msg)
 {
-    ExprHandle expr = make_shared<ScamError>(msg.c_str());
+    ExprHandle expr = makeForm<ScamError>(msg.c_str());
     return expr;
 }
 
 ExprHandle ExpressionFactory::makeBoolean(bool value)
 {
-    static const ExprHandle scamT = make_shared<ScamBoolean>(true);
-    static const ExprHandle scamF = make_shared<ScamBoolean>(false);
+    static const ExprHandle scamT = makeForm<ScamBoolean>(true);
+    static const ExprHandle scamF = makeForm<ScamBoolean>(false);
 
     return value ? scamT : scamF;
 }
 
 ExprHandle ExpressionFactory::makeCharacter(string const & value)
 {
-    ExprHandle expr = make_shared<ScamCharacter>(value);
+    ExprHandle expr = makeForm<ScamCharacter>(value);
     return expr;
 }
 
 ExprHandle ExpressionFactory::makeString(string const & value)
 {
-    ExprHandle expr = make_shared<ScamString>(value);
+    ExprHandle expr = makeForm<ScamString>(value);
     return expr;
 }
 
 ExprHandle ExpressionFactory::makeSymbol(string const & value)
 {
-    ExprHandle expr = make_shared<ScamSymbol>(value);
+    ExprHandle expr = makeForm<ScamSymbol>(value);
     return expr;
 }
 
 ExprHandle ExpressionFactory::makeFloat(double value)
 {
-    ExprHandle expr = make_shared<ScamFloat>(value);
+    ExprHandle expr = makeForm<ScamFloat>(value);
     return expr;
 }
 
 ExprHandle ExpressionFactory::makeInteger(int value)
 {
-    ExprHandle expr = make_shared<ScamInteger>(value);
+    ExprHandle expr = makeForm<ScamInteger>(value);
     return expr;
 }
 
 ExprHandle ExpressionFactory::makeNil()
 {
-    static const ExprHandle nil = make_shared<ScamNil>();
+    static const ExprHandle nil = makeForm<ScamNil>();
     return nil;
 }
 
 ExprHandle
 ExpressionFactory::makeCons(ExprHandle const & car, ExprHandle const & cdr)
 {
-    ExprHandle expr = make_shared<ScamCons>(car, cdr);
+    ExprHandle expr = makeForm<ScamCons>(car, cdr);
     return expr;
 }
 
 ExprHandle ExpressionFactory::makeVector(ExprVec const & elts)
 {
-    ExprHandle expr = make_shared<ScamVector>(elts);
+    ExprHandle expr = makeForm<ScamVector>(elts);
     return expr;
 }
