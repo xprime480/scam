@@ -16,8 +16,6 @@ namespace scam
         bool isNull() const override;
         bool error() const override;
 
-        ExprHandle clone() const override;
-
     private:
         std::string const msg;
     };

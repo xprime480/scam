@@ -14,8 +14,6 @@ namespace scam
         bool isChar() const override;
         char toChar() const override;
 
-        ExprHandle clone() const override;
-
     private:
         std::string const value;
     };

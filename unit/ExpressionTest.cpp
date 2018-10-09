@@ -1,8 +1,8 @@
 
 #include "ExpressionTestBase.hpp"
 
+#include "ScamException.hpp"
 #include "expr/ExpressionFactory.hpp"
-
 #include "form/Quote.hpp"
 
 using namespace std;
@@ -232,4 +232,25 @@ TEST_F(ExpressionTest, VectorNonEmpty)
 
     ExprHandle evaled = evaluate(expr);
     f(evaled);
+}
+
+TEST_F(ExpressionTest, CloneTest)
+{
+    ExprHandle e1 = ExpressionFactory::makeInteger(2932);
+    ExprHandle e2 = e1->clone();
+
+    EXPECT_EQ(e1.get(), e2.get());
+}
+
+TEST_F(ExpressionTest, GarbageCollection)
+{
+    try {
+	unsigned i = 2 + ExpressionFactory::getMaxHandles();
+	while ( i > 0 ) {
+	    ExpressionFactory::makeInteger(--i);
+	}
+    }
+    catch ( ScamException e ) {
+	FAIL() << "Unexpected scam exception: " << e.getMessage();
+    }
 }

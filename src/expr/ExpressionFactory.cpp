@@ -1,5 +1,6 @@
 #include "expr/ExpressionFactory.hpp"
 
+#include "ScamException.hpp"
 #include "expr/ScamBoolean.hpp"
 #include "expr/ScamCharacter.hpp"
 #include "expr/ScamCons.hpp"
@@ -87,5 +88,63 @@ ExpressionFactory::makeCons(ExprHandle const & car, ExprHandle const & cdr)
 ExprHandle ExpressionFactory::makeVector(ExprVec const & elts)
 {
     ExprHandle expr = makeForm<ScamVector>(elts);
+    return expr;
+}
+
+namespace
+{
+    static const unsigned MAX_HANDLES = 1 << 10;
+    weak_ptr<ScamExpr> HLIST[MAX_HANDLES];
+
+    static unsigned nextHandle = 0;
+
+    unsigned getNextHandle()
+    {
+	for ( unsigned i = 0 ; i < MAX_HANDLES ; ++i ) {
+	    unsigned h = (nextHandle + i) % MAX_HANDLES;
+	    if ( HLIST[h].expired() ) {
+		nextHandle = h;
+		return h;
+	    }
+	}
+
+	throw ScamException("***Internal Error:  No more handles");
+	return 0u;
+    }
+}
+
+ExprHandle ExpressionFactory::clone(ScamExpr const * expr)
+{
+    if ( ! expr ) {
+	throw ScamException("Internal Error:  nullptr to clone");
+    }
+
+    unsigned h = expr->handle;
+    if ( h >= MAX_HANDLES ) {
+	throw ScamException("Internal Error:  invalid handle to clone");
+    }
+
+    if ( HLIST[h].expired() ) {
+	throw ScamException("Internal Error:  handle is expired");
+    }
+
+    ExprHandle rv = HLIST[h].lock();
+    if ( ! rv ) {
+	throw ScamException("Internal Error:  handle is nullptr");
+    }
+
+    return rv;
+}
+
+unsigned ExpressionFactory::getMaxHandles()
+{
+    return MAX_HANDLES;
+}
+
+ExprHandle ExpressionFactory::intern(ExprHandle expr)
+{
+    unsigned h = getNextHandle();
+    expr->setHandle(h);
+    HLIST[h] = expr;
     return expr;
 }

@@ -13,8 +13,6 @@ namespace scam
 
         bool isString() const override;
 
-        ExprHandle clone() const override;
-
     private:
         std::string const value;
     };

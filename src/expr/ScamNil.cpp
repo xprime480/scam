@@ -25,8 +25,3 @@ size_t ScamNil::length() const
 {
     return 0u;
 }
-
-ExprHandle ScamNil::clone() const
-{
-    return ExpressionFactory::makeNil();
-}

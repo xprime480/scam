@@ -30,8 +30,3 @@ int ScamInteger::toInteger() const
 {
     return value;
 }
-
-ExprHandle ScamInteger::clone() const
-{
-    return ExpressionFactory::makeInteger(value);
-}

@@ -78,11 +78,6 @@ ExprHandle ScamVector::nth(size_t n) const
     return elts[n];
 }
 
-ExprHandle ScamVector::clone() const
-{
-    return ExpressionFactory::makeVector(elts);
-}
-
 namespace
 {
     struct VectorWorkerData

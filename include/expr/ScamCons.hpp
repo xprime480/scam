@@ -23,8 +23,6 @@ namespace scam
         size_t length() const override;
         ExprHandle nth(size_t n) const override;
 
-        ExprHandle clone() const override;
-
     private:
         ExprHandle car;
         ExprHandle cdr;

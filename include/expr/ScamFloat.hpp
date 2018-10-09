@@ -16,8 +16,6 @@ namespace scam
         bool isFloat() const override;
         double toFloat() const override;
 
-        ExprHandle clone() const override;
-
     private:
         double const value;
     };

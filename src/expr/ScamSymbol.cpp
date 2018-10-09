@@ -41,8 +41,3 @@ bool ScamSymbol::isSymbol() const
 {
     return true;
 }
-
-ExprHandle ScamSymbol::clone() const
-{
-    return ExpressionFactory::makeSymbol(value);
-}

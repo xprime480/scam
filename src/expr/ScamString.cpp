@@ -19,8 +19,3 @@ bool ScamString::isString() const
 {
     return true;
 }
-
-ExprHandle ScamString::clone() const
-{
-    return ExpressionFactory::makeString(value);
-}

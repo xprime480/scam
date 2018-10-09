@@ -24,8 +24,3 @@ char ScamCharacter::toChar() const
 {
     return value[2];
 }
-
-ExprHandle ScamCharacter::clone() const
-{
-    return ExpressionFactory::makeCharacter(value);
-}

@@ -173,3 +173,8 @@ ExprHandle ScamExpr::nth(size_t n) const
 
     return ExpressionFactory::makeNull();
 }
+
+ExprHandle ScamExpr::clone() const
+{
+    return ExpressionFactory::clone(this);
+}

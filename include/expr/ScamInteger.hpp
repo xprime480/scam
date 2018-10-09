@@ -16,8 +16,6 @@ namespace scam
         bool isInteger() const override;
         int toInteger() const override;
 
-        ExprHandle clone() const override;
-
     private:
         int const value;
     };

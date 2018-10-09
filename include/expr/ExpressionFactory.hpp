@@ -37,8 +37,15 @@ namespace scam
         template <typename T, typename... Args>
         static ExprHandle makeForm(Args... args)
         {
-            return std::make_shared<T>(args...);
+            return intern(std::make_shared<T>(args...));
         }
+
+	static ExprHandle clone(ScamExpr const *);
+
+	static unsigned getMaxHandles();
+
+    private:
+	static ExprHandle intern(ExprHandle expr);
     };
 }
 #endif

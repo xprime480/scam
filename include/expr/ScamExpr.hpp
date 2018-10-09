@@ -8,6 +8,7 @@ namespace scam
 {
     class Continuation;
     class Env;
+    class ExpressionFactory;
     class ScamExpr;
 
     using ExprHandle = std::shared_ptr<ScamExpr>;
@@ -52,7 +53,12 @@ namespace scam
         virtual size_t length() const;
         virtual ExprHandle nth(size_t n) const;
 
-        virtual ExprHandle clone() const = 0;
+        virtual ExprHandle clone() const;
+
+    private:
+	friend class ExpressionFactory;
+	unsigned handle;
+	void setHandle(unsigned h) { handle = h; }
     };
 }
 
