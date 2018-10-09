@@ -27,7 +27,7 @@ void Or::apply(ExprHandle const & args, ContHandle cont, Env & env)
     apply_impl(args, cont, env);
 }
 
-ExprHandle Or::clone()
+ExprHandle Or::clone() const
 {
     return ExpressionFactory::makeForm<Or>();
 }

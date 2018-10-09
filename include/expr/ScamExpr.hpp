@@ -52,7 +52,7 @@ namespace scam
         virtual size_t length() const;
         virtual ExprHandle nth(size_t n) const;
 
-        virtual ExprHandle clone() = 0;
+        virtual ExprHandle clone() const = 0;
     };
 }
 

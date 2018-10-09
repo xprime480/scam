@@ -30,7 +30,7 @@ bool ScamNull::truth() const
     return false;
 }
 
-ExprHandle ScamNull::clone()
+ExprHandle ScamNull::clone() const
 {
     static const ExprHandle null = ExpressionFactory::makeNull();
     return null;

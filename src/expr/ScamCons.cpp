@@ -127,7 +127,7 @@ ExprHandle ScamCons::nth(size_t n) const
     return rv;
 }
 
-ExprHandle ScamCons::clone()
+ExprHandle ScamCons::clone() const
 {
     return ExpressionFactory::makeCons(car, cdr);
 }

@@ -31,7 +31,7 @@ void Add::applyArgs(ExprHandle const & args, ContHandle cont)
     cont->run(rv);
 }
 
-ExprHandle Add::clone()
+ExprHandle Add::clone() const
 {
     return ExpressionFactory::makeForm<Add>();
 }

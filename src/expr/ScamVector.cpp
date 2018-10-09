@@ -78,7 +78,7 @@ ExprHandle ScamVector::nth(size_t n) const
     return elts[n];
 }
 
-ExprHandle ScamVector::clone()
+ExprHandle ScamVector::clone() const
 {
     return ExpressionFactory::makeVector(elts);
 }

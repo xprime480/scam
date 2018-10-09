@@ -44,7 +44,7 @@ void Sub::applyArgs(ExprHandle const & args, ContHandle cont)
     cont->run(rv);
 }
 
-ExprHandle Sub::clone()
+ExprHandle Sub::clone() const
 {
     return ExpressionFactory::makeForm<Sub>();
 }

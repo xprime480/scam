@@ -28,7 +28,7 @@ bool ScamBoolean::isBoolean() const
     return true;
 }
 
-ExprHandle ScamBoolean::clone()
+ExprHandle ScamBoolean::clone() const
 {
     return ExpressionFactory::makeBoolean(value);
 }

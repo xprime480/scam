@@ -27,7 +27,7 @@ void And::apply(ExprHandle const & args, ContHandle cont, Env & env)
     apply_impl(args, cont, env);
 }
 
-ExprHandle And::clone()
+ExprHandle And::clone() const
 {
     return ExpressionFactory::makeForm<And>();
 }

@@ -27,7 +27,7 @@ void Not::apply(ExprHandle const & args, ContHandle cont, Env & env)
     apply_impl(args, cont, env);
 }
 
-ExprHandle Not::clone()
+ExprHandle Not::clone() const
 {
     return ExpressionFactory::makeForm<Not>();
 }
@@ -58,9 +58,9 @@ namespace
 
     void apply_impl(ExprHandle const & args, ContHandle cont, Env & env)
     {
-	shared_ptr<NotWorker> thunk = make_shared<NotWorker>(args, cont, env);
-	WorkerHandle start = thunk;
-	GlobalWorkQueue.put(start);
+        shared_ptr<NotWorker> thunk = make_shared<NotWorker>(args, cont, env);
+        WorkerHandle start = thunk;
+        GlobalWorkQueue.put(start);
     }
 }
 

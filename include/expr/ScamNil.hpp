@@ -14,7 +14,7 @@ namespace scam
         bool isList() const override;
         size_t length() const override;
 
-        ExprHandle clone() override;
+        ExprHandle clone() const override;
     };
 }
 

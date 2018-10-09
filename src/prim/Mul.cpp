@@ -32,7 +32,7 @@ void Mul::applyArgs(ExprHandle const & args, ContHandle cont)
     cont->run(rv);
 }
 
-ExprHandle Mul::clone()
+ExprHandle Mul::clone() const
 {
     return ExpressionFactory::makeForm<Mul>();
 }

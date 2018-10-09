@@ -16,7 +16,7 @@ namespace scam
         bool isNull() const override;
         bool truth() const override;
 
-        ExprHandle clone() override;
+        ExprHandle clone() const override;
     };
 }
 

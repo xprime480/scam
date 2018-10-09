@@ -15,7 +15,7 @@ namespace scam
 
         bool isBoolean() const override;
 
-        ExprHandle clone() override;
+        ExprHandle clone() const override;
 
     private:
         bool value;

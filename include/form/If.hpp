@@ -13,7 +13,7 @@ namespace scam
         void
         apply(ExprHandle const & args, ContHandle cont, Env & env) override;
 
-        ExprHandle clone() override;
+        ExprHandle clone() const override;
     };
 }
 

@@ -29,8 +29,7 @@ double ScamFloat::toFloat() const
 {
     return value;
 }
-
-ExprHandle ScamFloat::clone()
+ExprHandle ScamFloat::clone() const
 {
     return ExpressionFactory::makeFloat(value);
 }

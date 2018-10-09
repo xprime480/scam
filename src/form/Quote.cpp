@@ -19,7 +19,7 @@ void Quote::apply(ExprHandle const & args, ContHandle cont, Env & env)
     cont->run(expr);
 }
 
-ExprHandle Quote::clone()
+ExprHandle Quote::clone() const
 {
     return ExpressionFactory::makeForm<Quote>();
 }

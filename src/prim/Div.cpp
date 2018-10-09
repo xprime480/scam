@@ -54,7 +54,7 @@ void Div::applyArgs(ExprHandle const & args, ContHandle cont)
     cont->run(rv);
 }
 
-ExprHandle Div::clone()
+ExprHandle Div::clone() const
 {
     return ExpressionFactory::makeForm<Div>();
 }

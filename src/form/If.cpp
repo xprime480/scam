@@ -39,7 +39,7 @@ void If::apply(ExprHandle const & args, ContHandle cont, Env & env)
     GlobalWorkQueue.put(start);
 }
 
-ExprHandle If::clone()
+ExprHandle If::clone() const
 {
     return ExpressionFactory::makeForm<If>();
 }
