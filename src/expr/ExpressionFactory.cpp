@@ -133,6 +133,10 @@ ExprHandle ExpressionFactory::clone(ScamExpr const * expr)
 	throw ScamException("Internal Error:  handle is nullptr");
     }
 
+    if ( rv.get() != expr ) {
+	throw ScamException("Internal Error:  inconsistent clone");
+    }
+
     return rv;
 }
 
