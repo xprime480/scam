@@ -119,10 +119,17 @@ ExprHandle Env::get(ExprHandle key) const
     return data->get(checkKey(key));
 }
 
-Env Env::extend()
+Env Env::extend() const
 {
     Env temp;
     temp.data->parent = this->data;
+    return temp;
+}
+
+Env Env::parent() const
+{
+    Env temp;
+    temp.data = this->data->parent;
     return temp;
 }
 

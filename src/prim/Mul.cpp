@@ -31,8 +31,3 @@ void Mul::applyArgs(ExprHandle const & args, ContHandle cont)
     ExprHandle rv = numericAlgorithm(args, context, do_mul);
     cont->run(rv);
 }
-
-ExprHandle Mul::clone() const
-{
-    return ExpressionFactory::makeForm<Mul>();
-}

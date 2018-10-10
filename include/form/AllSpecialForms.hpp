@@ -1,4 +1,5 @@
 
+#include "form/Define.hpp"
 #include "form/Quote.hpp"
 
 #include "form/And.hpp"

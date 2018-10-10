@@ -112,18 +112,22 @@ namespace
     VectorWorker::VectorWorker(ContHandle cont,
                                Env & env,
                                ExprVec const & forms)
-        : data(make_shared<VectorWorkerData>(forms, cont, env))
+        : Worker("Vector")
+        , data(make_shared<VectorWorkerData>(forms, cont, env))
     {
         data->cont = make_shared<EvalContinuation>(data);
     }
 
     VectorWorker::VectorWorker(shared_ptr<VectorWorkerData> data)
-        : data(data)
+        : Worker("Vector copy")
+        , data(data)
     {
     }
 
     void VectorWorker::run()
     {
+        Worker::run();
+
         if ( data->index >= data->forms.size() ) {
             ExprHandle value = ExpressionFactory::makeVector(data->evaled);
             data->original->run(value);
@@ -135,12 +139,15 @@ namespace
     }
 
     EvalContinuation::EvalContinuation(shared_ptr<VectorWorkerData> data)
-        : data(data)
+        : Continuation("Vector Eval")
+        , data(data)
     {
     }
 
     void EvalContinuation::run(ExprHandle expr) const
     {
+        Continuation::run(expr);
+
         if ( expr->error() ) {
             data->original->run(expr);
         }

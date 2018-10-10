@@ -3,6 +3,7 @@
 
 #include "Continuation.hpp"
 
+#include "expr/ExpressionFactory.hpp"
 #include "expr/ScamExpr.hpp"
 
 #include <memory>
@@ -12,8 +13,15 @@ namespace scam
     class Extractor : public Continuation
     {
     public:
+        Extractor()
+            : Continuation("Extractor")
+            , expr(ExpressionFactory::makeNull())
+        {
+        }
+
         void run(ExprHandle e) const override
         {
+            Continuation::run(e);
             expr = e;
         }
 

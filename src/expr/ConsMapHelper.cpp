@@ -25,12 +25,12 @@ namespace
                   ExprHandle & car,
                   ExprHandle & cdr);
 
-        MapWorker(std::shared_ptr<WorkerData> data);
+        MapWorker(WorkerData const & data);
 
         void run() override;
 
     private:
-        std::shared_ptr<WorkerData> data;
+        WorkerData data;
     };
 }
 
@@ -53,39 +53,37 @@ namespace
     class  MapCdr : public Worker
     {
     public:
-        MapCdr(ExprHandle & car,
-               ExprHandle & cdr,
+        MapCdr(ExprHandle const & car,
+               ExprHandle const & cdr,
                ContHandle cont,
                Env & env);
-
-        MapCdr(std::shared_ptr<WorkerData> data);
 
         void run() override;
 
     private:
-        std::shared_ptr<WorkerData> data;
+        WorkerData data;
     };
 
     class CarContinuation : public Continuation
     {
     public:
-        CarContinuation(shared_ptr<WorkerData> data);
+        CarContinuation(WorkerData const & data);
 
         void run(ExprHandle expr) const override;
 
     private:
-        shared_ptr<WorkerData> data;
+        WorkerData data;
     };
 
     class CdrContinuation : public Continuation
     {
     public:
-        CdrContinuation(shared_ptr<WorkerData> data);
+        CdrContinuation(WorkerData const & data);
 
         void run(ExprHandle expr) const override;
 
     private:
-        shared_ptr<WorkerData> data;
+        WorkerData data;
     };
 }
 
@@ -93,62 +91,68 @@ MapWorker::MapWorker(ContHandle cont,
                      Env & env,
                      ExprHandle & car,
                      ExprHandle & cdr)
-    : data(make_shared<WorkerData>(car, cdr, cont, env))
+    : Worker("Cons Map")
+    , data(car, cdr, cont, env)
 {
-    data->cont = make_shared<CarContinuation>(data);
+    data.cont = make_shared<CarContinuation>(data);
 }
 
-MapWorker::MapWorker(shared_ptr<WorkerData> data)
-    : data(data)
+MapWorker::MapWorker(WorkerData const & data)
+    : Worker("Cons Map Copy")
+    , data(data)
 {
 }
 
 void MapWorker::run()
 {
-    data->car->eval(data->cont, data->env);
+    Worker::run();
+    data.car->eval(data.cont, data.env);
 }
 
-CarContinuation::CarContinuation(shared_ptr<WorkerData> data)
-    : data(data)
+CarContinuation::CarContinuation(WorkerData const & data)
+    : Continuation("Cons Map Car")
+    , data(data)
 {
 }
 
 void CarContinuation::run(ExprHandle expr) const
 {
+    Continuation::run(expr);
+
     if ( expr->error() ) {
-        data->original->run(expr);
+        data.original->run(expr);
     }
     else {
-        workQueueHelper<MapCdr>(expr, data->cdr, data->original, data->env);
+        workQueueHelper<MapCdr>(expr, data.cdr, data.original, data.env);
     }
 }
 
-MapCdr::MapCdr(ExprHandle & car, ExprHandle & cdr, ContHandle cont, Env & env)
-    : data(make_shared<WorkerData>(car, cdr, cont, env))
+MapCdr::MapCdr(ExprHandle const & car, ExprHandle const & cdr, ContHandle cont, Env & env)
+    : Worker("Cons Map Cdr")
+    , data(car, cdr, cont, env)
 {
-    data->cont = make_shared<CdrContinuation>(data);
-}
-
-MapCdr::MapCdr(shared_ptr<WorkerData> data)
-    : data(data)
-{
+    data.cont = make_shared<CdrContinuation>(data);
 }
 
 void MapCdr::run()
 {
-    data->cdr->mapEval(data->cont, data->env);
+    Worker::run();
+    data.cdr->mapEval(data.cont, data.env);
 }
 
-CdrContinuation::CdrContinuation(shared_ptr<WorkerData> data)
-    : data(data)
+CdrContinuation::CdrContinuation(WorkerData const & data)
+    : Continuation("Cons Map Cdr")
+    , data(data)
 {
 }
 
 void CdrContinuation::run(ExprHandle expr) const
 {
+    Continuation::run(expr);
+
     if ( ! expr->error() ) {
-        expr = ExpressionFactory::makeCons(data->car, expr);
+        expr = ExpressionFactory::makeCons(data.car, expr);
     }
-    data->original->run(expr);
+    data.original->run(expr);
 }
 

@@ -53,8 +53,3 @@ void Div::applyArgs(ExprHandle const & args, ContHandle cont)
     ExprHandle rv = numericAlgorithm(args, context, do_div);
     cont->run(rv);
 }
-
-ExprHandle Div::clone() const
-{
-    return ExpressionFactory::makeForm<Div>();
-}

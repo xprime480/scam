@@ -245,12 +245,12 @@ TEST_F(ExpressionTest, CloneTest)
 TEST_F(ExpressionTest, GarbageCollection)
 {
     try {
-	unsigned i = 2 + ExpressionFactory::getMaxHandles();
-	while ( i > 0 ) {
-	    ExpressionFactory::makeInteger(--i);
-	}
+        unsigned i = 2 + ExpressionFactory::getMaxHandles();
+        while ( i > 0 ) {
+            ExpressionFactory::makeInteger(--i);
+        }
     }
     catch ( ScamException e ) {
-	FAIL() << "Unexpected scam exception: " << e.getMessage();
+        FAIL() << "Unexpected scam exception: " << e.getMessage();
     }
 }

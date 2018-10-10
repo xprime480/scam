@@ -44,9 +44,10 @@ ExpressionTestBase::ExpressionTestBase()
 
 ExprHandle ExpressionTestBase::evaluate(ExprHandle input)
 {
-    input->eval(extractor, env);
+    auto y = make_shared<Extractor>();
+    input->eval(y, env);
     Trampoline(GlobalWorkQueue);
-    return extractor->getExpr();
+    return y->getExpr();
 }
 
 ExprHandle ExpressionTestBase::parseAndEvaluate(string const & input)
@@ -57,15 +58,7 @@ ExprHandle ExpressionTestBase::parseAndEvaluate(string const & input)
     parser.parseExpr(extractor);
     ExprHandle expr = extractor->getExpr();
 
-    ExprHandle rv;
-    try {
-        rv = evaluate(expr);
-    }
-    catch ( ScamException e ) {
-        stringstream s;
-        s << "Unhandled exception: " << e.getMessage();
-        rv = ExpressionFactory::makeError(s.str());
-    }
+    ExprHandle rv = evaluate(expr);
     return rv;
 }
 

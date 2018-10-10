@@ -6,7 +6,6 @@
 #include "Worker.hpp"
 #include "expr/ExpressionFactory.hpp"
 
-#include <iostream>
 #include <sstream>
 
 using namespace scam;
@@ -27,11 +26,6 @@ void Not::apply(ExprHandle const & args, ContHandle cont, Env & env)
     apply_impl(args, cont, env);
 }
 
-ExprHandle Not::clone() const
-{
-    return ExpressionFactory::makeForm<Not>();
-}
-
 namespace
 {
     class NotWorker : public Worker
@@ -41,7 +35,7 @@ namespace
         void run() override;
 
     private:
-        ExprHandle const & args;
+        ExprHandle const args;
         ContHandle cont;
         Env & env;
     };
@@ -63,7 +57,8 @@ namespace
 }
 
 NotWorker::NotWorker(ContHandle cont, Env & env, ExprHandle const & args)
-    : args(args)
+    : Worker("Not")
+    , args(args)
     , cont(cont)
     , env(env)
 {
@@ -71,6 +66,8 @@ NotWorker::NotWorker(ContHandle cont, Env & env, ExprHandle const & args)
 
 void NotWorker::run()
 {
+    Worker::run();
+
     if ( ! args->isList() || 1u != args->length() ) {
         stringstream s;
         s << "Not expects 1 form; got: " << args->toString();
@@ -85,12 +82,15 @@ void NotWorker::run()
 }
 
 NotCont::NotCont(ContHandle cont)
-    : cont(cont)
+    : Continuation("Not")
+    , cont(cont)
 {
 }
 
 void NotCont::run(ExprHandle expr) const
 {
+    Continuation::run(expr);
+
     if ( expr->error() ) {
         cont->run(expr);
     }

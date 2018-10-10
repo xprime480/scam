@@ -6,7 +6,6 @@
 #include "Worker.hpp"
 #include "expr/ExpressionFactory.hpp"
 
-#include <iostream>
 #include <sstream>
 
 using namespace scam;
@@ -21,7 +20,7 @@ namespace
         void run() override;
 
     private:
-        ExprHandle const & args;
+        ExprHandle const args;
         ContHandle cont;
         Env & env;
     };
@@ -37,11 +36,6 @@ void If::apply(ExprHandle const & args, ContHandle cont, Env & env)
     workQueueHelper<IfWorker>(cont, env, args);
 }
 
-ExprHandle If::clone() const
-{
-    return ExpressionFactory::makeForm<If>();
-}
-
 namespace
 {
     class IfCont : public Continuation
@@ -51,14 +45,15 @@ namespace
         void run(ExprHandle expr) const override;
 
     private:
-        ExprHandle const & args;
+        ExprHandle const args;
         ContHandle cont;
         Env & env;
     };
 }
 
 IfWorker::IfWorker(ContHandle cont, Env & env, ExprHandle const & args)
-    : args(args)
+    : Worker("If")
+    , args(args)
     , cont(cont)
     , env(env)
 {
@@ -66,6 +61,8 @@ IfWorker::IfWorker(ContHandle cont, Env & env, ExprHandle const & args)
 
 void IfWorker::run()
 {
+    Worker::run();
+
     if ( ! args->isList() || args->length() < 2 || args->length() > 3 ) {
         stringstream s;
         s << "If expects 2 or 3 forms; got: " << args->toString();
@@ -80,7 +77,8 @@ void IfWorker::run()
 }
 
 IfCont::IfCont(ExprHandle const & args, ContHandle cont, Env & env)
-    : args(args)
+    : Continuation("If")
+    , args(args)
     , cont(cont)
     , env(env)
 {
@@ -88,6 +86,8 @@ IfCont::IfCont(ExprHandle const & args, ContHandle cont, Env & env)
 
 void IfCont::run(ExprHandle expr) const
 {
+    Continuation::run(expr);
+
     if ( expr->error() ) {
         cont->run(expr);
     }

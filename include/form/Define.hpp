@@ -1,14 +1,14 @@
-#if ! defined(SCAMOR_H)
-#define SCAMOR_H 1
+#if ! defined(SCAMDEFINE_H)
+#define SCAMDEFINE_H 1
 
 #include "form/SpecialForm.hpp"
 
 namespace scam
 {
-    class Or : public SpecialForm
+    class Define : public SpecialForm
     {
     public:
-        Or();
+        Define();
 
         void
         apply(ExprHandle const & args, ContHandle cont, Env & env) override;

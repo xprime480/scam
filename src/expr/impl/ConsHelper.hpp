@@ -32,6 +32,9 @@ namespace scam
             {
             }
 
+            WorkerData(const WorkerData &) = default;
+            WorkerData & operator=(const WorkerData &) = default;
+
             ExprHandle car;
             ExprHandle cdr;
             ContHandle original;

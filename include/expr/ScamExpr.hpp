@@ -53,12 +53,12 @@ namespace scam
         virtual size_t length() const;
         virtual ExprHandle nth(size_t n) const;
 
-        virtual ExprHandle clone() const;
+        ExprHandle clone() const;
 
     private:
-	friend class ExpressionFactory;
-	unsigned handle;
-	void setHandle(unsigned h) { handle = h; }
+        friend class ExpressionFactory;
+        unsigned handle;
+        void setHandle(unsigned h) { handle = h; }
     };
 }
 

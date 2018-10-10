@@ -7,6 +7,7 @@
 #include "Worker.hpp"
 #include "expr/ExpressionFactory.hpp"
 
+#include <iostream>
 #include <sstream>
 
 using namespace scam;
@@ -27,11 +28,6 @@ void And::apply(ExprHandle const & args, ContHandle cont, Env & env)
     apply_impl(args, cont, env);
 }
 
-ExprHandle And::clone() const
-{
-    return ExpressionFactory::makeForm<And>();
-}
-
 namespace
 {
     class AndWorker : public Worker
@@ -41,7 +37,7 @@ namespace
         void run() override;
 
     private:
-        ExprHandle const & args;
+        ExprHandle const args;
         ContHandle cont;
         Env env;
         size_t n;
@@ -54,7 +50,7 @@ namespace
         void run(ExprHandle expr) const override;
 
     private:
-        ExprHandle const & args;
+        ExprHandle const args;
         ContHandle cont;
         Env & env;
         size_t n;
@@ -71,7 +67,8 @@ AndWorker::AndWorker(ContHandle cont,
                      Env env,
                      ExprHandle const & args,
                      size_t n)
-    : args(args)
+    : Worker("And")
+    , args(args)
     , cont(cont)
     , env(env)
     , n(n)
@@ -80,6 +77,8 @@ AndWorker::AndWorker(ContHandle cont,
 
 void AndWorker::run()
 {
+    Worker::run();
+
     if ( ! args->isList() ) {
         stringstream s;
         s << "And expects a list of forms; got: " << args->toString();
@@ -104,7 +103,8 @@ void AndWorker::run()
 }
 
 AndCont::AndCont(ExprHandle const & args, ContHandle cont, Env & env, size_t n)
-    : args(args)
+    : Continuation("And")
+    , args(args)
     , cont(cont)
     , env(env)
     , n(n)
@@ -113,6 +113,8 @@ AndCont::AndCont(ExprHandle const & args, ContHandle cont, Env & env, size_t n)
 
 void AndCont::run(ExprHandle expr) const
 {
+    Continuation::run(expr);
+
     if ( expr->error() ) {
         cont->run(expr);
     }

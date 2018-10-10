@@ -2,6 +2,7 @@
 #define CONTINUATION_H
 
 #include <memory>
+#include <string>
 
 namespace scam
 {
@@ -14,9 +15,15 @@ namespace scam
     class Continuation
     {
     public:
-        virtual ~Continuation() {};
+        Continuation(char const * name);
+        virtual ~Continuation();
 
-        virtual void run(ExprHandle expr) const = 0;
+        virtual void run(ExprHandle expr) const;
+        std::string id() const;
+
+    private:
+        std::string const name;
+        static std::string makeName(char const * id);
     };
 }
 

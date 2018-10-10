@@ -2,6 +2,7 @@
 #define SCAM_WORKER_H
 
 #include <memory>
+#include <string>
 
 namespace scam
 {
@@ -12,9 +13,15 @@ namespace scam
     class Worker
     {
     public:
-        virtual ~Worker() {}
+        Worker(char const * id);
+        virtual ~Worker();
 
-        virtual void run() = 0;
+        virtual void run();
+        std::string id() const;
+
+    private:
+        std::string const name;
+        static std::string makeName(char const * id);
     };
 }
 

@@ -10,8 +10,6 @@ namespace scam
     public:
         Sub();
 
-        ExprHandle clone() const;
-
         void applyArgs(ExprHandle const & args, ContHandle cont) override;
     };
 }

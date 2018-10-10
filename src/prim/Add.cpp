@@ -30,8 +30,3 @@ void Add::applyArgs(ExprHandle const & args, ContHandle cont)
     ExprHandle rv = numericAlgorithm(args, context, do_add);
     cont->run(rv);
 }
-
-ExprHandle Add::clone() const
-{
-    return ExpressionFactory::makeForm<Add>();
-}

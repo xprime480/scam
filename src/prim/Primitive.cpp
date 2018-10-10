@@ -105,28 +105,33 @@ namespace
                            Env & env,
                            ExprHandle const & args,
                            Primitive * caller)
-        : data(make_shared<PrimWorkerData>(args, cont, env, caller))
+        : Worker("Primitive")
+        , data(make_shared<PrimWorkerData>(args, cont, env, caller))
     {
         data->cont = make_shared<EvalContinuation>(data);
     }
 
     PrimWorker::PrimWorker(shared_ptr<PrimWorkerData> data)
-        : data(data)
+        : Worker("Primitive Copy")
+        , data(data)
     {
     }
 
     void PrimWorker::run()
     {
+        Worker::run();
         data->mapEval();
     }
 
     EvalContinuation::EvalContinuation(shared_ptr<PrimWorkerData> data)
-        : data(data)
+        : Continuation("Primitive Eval")
+        , data(data)
     {
     }
 
     void EvalContinuation::run(ExprHandle expr) const
     {
+        Continuation::run(expr);
         data->handleResult(expr);
     }
 }

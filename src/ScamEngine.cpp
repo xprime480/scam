@@ -12,8 +12,6 @@
 
 #include "output/OutputHandler.hpp"
 
-#include <iostream>
-
 using namespace std;
 using namespace scam;
 
@@ -65,7 +63,8 @@ namespace
         friend class PrintContinuation;
 
         ReplWorker(ScamParser & parser, OutputHandler & output)
-            : parser(parser)
+            : Worker("Engine REPL")
+            , parser(parser)
             , output(output)
             , state(ReplState::READ)
         {
@@ -78,6 +77,8 @@ namespace
 
         void run() override
         {
+            Worker::run();
+
             switch ( state ) {
             case ReplState::READ:
                 do_read();
@@ -134,12 +135,15 @@ namespace
     };
 
     ReadContinuation::ReadContinuation(ReplWorker & repl)
-        : repl(repl)
+        : Continuation("Engine Read")
+        , repl(repl)
     {
     }
 
     void ReadContinuation::run(ExprHandle expr) const
     {
+        Continuation::run(expr);
+
         if ( ! expr ) {
             return;
         }
@@ -157,12 +161,15 @@ namespace
     }
 
     EvalContinuation::EvalContinuation(ReplWorker & repl)
-        : repl(repl)
+        : Continuation("Engine Eval")
+        , repl(repl)
     {
     }
 
     void EvalContinuation::run(ExprHandle expr) const
     {
+        Continuation::run(expr);
+
         shared_ptr<ReplWorker> replNext = workQueueHelper<ReplWorker>(repl);
         replNext->expr  = expr;
 
@@ -175,12 +182,15 @@ namespace
     }
 
     PrintContinuation::PrintContinuation(ReplWorker & repl)
-        : repl(repl)
+        : Continuation("Engine Print")
+        , repl(repl)
     {
     }
 
     void PrintContinuation::run(ExprHandle expr) const
     {
+        Continuation::run(expr);
+
         shared_ptr<ReplWorker> replNext = workQueueHelper<ReplWorker>(repl);
         replNext->state = ReplState::READ;
         replNext->expr  = expr;

@@ -3,8 +3,6 @@
 
 #include "input/Token.hpp"
 
-#include <iostream>
-
 namespace scam
 {
     class Tokenizer

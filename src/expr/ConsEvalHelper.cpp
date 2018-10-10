@@ -22,12 +22,12 @@ namespace scam
                        ExprHandle & car,
                        ExprHandle & cdr);
 
-            ConsWorker(std::shared_ptr<WorkerData> data);
+            ConsWorker(WorkerData const & data);
 
             void run() override;
 
         private:
-            std::shared_ptr<WorkerData> data;
+            WorkerData data;
         };
     }
 
@@ -48,12 +48,12 @@ namespace
     class EvalContinuation : public Continuation
     {
     public:
-        EvalContinuation(shared_ptr<WorkerData> data);
+        EvalContinuation(WorkerData const & data);
 
         void run(ExprHandle expr) const override;
 
     private:
-        shared_ptr<WorkerData> data;
+        WorkerData data;
     };
 }
 
@@ -62,32 +62,38 @@ ConsWorker::ConsWorker(ContHandle cont,
                        ExprHandle & car,
                        ExprHandle & cdr)
 
-    : data(make_shared<WorkerData>(car, cdr, cont, env))
+    : Worker("Cons Eval")
+    , data(car, cdr, cont, env)
 {
-    data->cont = make_shared<EvalContinuation>(data);
+    data.cont = make_shared<EvalContinuation>(data);
 }
 
-ConsWorker::ConsWorker(shared_ptr<WorkerData> data)
-    : data(data)
+ConsWorker::ConsWorker(WorkerData const & data)
+    : Worker("Cons Eval Copy")
+    , data(data)
 {
 }
 
 void ConsWorker::run()
 {
-    data->car->eval(data->cont, data->env);
+    Worker::run();
+    data.car->eval(data.cont, data.env);
 }
 
-EvalContinuation::EvalContinuation(shared_ptr<WorkerData> data)
-    : data(data)
+EvalContinuation::EvalContinuation(WorkerData const & data)
+    : Continuation("Cons Eval Eval")
+    , data(data)
 {
 }
 
 void EvalContinuation::run(ExprHandle expr) const
 {
+    Continuation::run(expr);
+
     if ( expr->error() ) {
-        data->original->run(expr);
+        data.original->run(expr);
     }
     else {
-        expr->apply(data->cdr, data->original, data->env);
+        expr->apply(data.cdr, data.original, data.env);
     }
 }

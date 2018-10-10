@@ -18,7 +18,8 @@ namespace scam
         bool check(ExprHandle key) const;
         ExprHandle get(ExprHandle key) const;
 
-        Env extend();
+        Env extend() const;
+        Env parent() const;
 
         void assign(ExprHandle key, ExprHandle val);
 

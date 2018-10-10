@@ -43,8 +43,3 @@ void Sub::applyArgs(ExprHandle const & args, ContHandle cont)
     ExprHandle rv = numericAlgorithm(args, context, do_sub);
     cont->run(rv);
 }
-
-ExprHandle Sub::clone() const
-{
-    return ExpressionFactory::makeForm<Sub>();
-}

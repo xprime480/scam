@@ -5,8 +5,6 @@
 
 #include "gtest/gtest.h"
 
-#include <iostream>
-
 using namespace std;
 using namespace scam;
 
@@ -18,13 +16,15 @@ namespace
 class TestWorker : public Worker
 {
 public:
-    TestWorker(size_t * counter)
-        : counter(counter)
+    TestWorker(size_t * counter, char const *name)
+        : Worker(name)
+        , counter(counter)
     {
     }
 
     void run() override
     {
+        Worker::run();
         ++*counter;
     }
 
@@ -37,7 +37,7 @@ class OneShotWorker : public TestWorker
 {
 public:
     OneShotWorker(size_t * counter)
-        : TestWorker(counter)
+        : TestWorker(counter, "OneShotWorker")
     {
     }
 
@@ -52,7 +52,7 @@ class Countdown : public TestWorker
 {
 public:
     Countdown(size_t n, size_t * counter)
-        : TestWorker(counter)
+        : TestWorker(counter, "CountDown")
         , n(n)
     {
     }

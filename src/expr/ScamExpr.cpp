@@ -136,7 +136,7 @@ bool ScamExpr::isList() const
 ExprHandle ScamExpr::getCar() const
 {
     stringstream s;
-    s << "Cannot take cons of <" << this->toString() << ">";
+    s << "Cannot take car of <" << this->toString() << ">";
     throw ScamException(s.str());
 
     return ExpressionFactory::makeNull();

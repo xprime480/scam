@@ -1,8 +1,8 @@
 
 #include "Env.hpp"
 
+#include "ExpressionTestBase.hpp"
 #include "ScamException.hpp"
-
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamExpr.hpp"
 
@@ -13,18 +13,15 @@
 using namespace std;
 using namespace scam;
 
-class EnvTest : public ::testing::Test
+class EnvTest : public ExpressionTestBase
 {
 protected:
     ExprHandle key;
     ExprHandle exp;
 
-    Env env;
-
     EnvTest()
         : key(ExpressionFactory::makeSymbol("key"))
         , exp(ExpressionFactory::makeInteger(1))
-        , env(Env())
     {
         env.put(key, exp);
     }
@@ -114,4 +111,44 @@ TEST_F(EnvTest, NonSymbolKey)
     EXPECT_THROW(env.check(exp), ScamException);
     EXPECT_THROW(env.get(exp), ScamException);
     EXPECT_THROW(env.assign(exp, exp), ScamException);
+}
+
+TEST_F(EnvTest, DefineConstant)
+{
+    ExprHandle expr = parseAndEvaluate("(define x 1)");
+    expectInteger(expr, 1, "1");
+
+    ExprHandle sym = ExpressionFactory::makeSymbol("x");
+    ExprHandle val = env.get(sym);
+    expectInteger(val, 1, "1");
+}
+
+TEST_F(EnvTest, DefineEvaluated)
+{
+    try {
+        ExprHandle expr = parseAndEvaluate("(define x (- 3 2))");
+        expectInteger(expr, 1, "1");
+
+        ExprHandle sym = ExpressionFactory::makeSymbol("x");
+        ExprHandle val = env.get(sym);
+        expectInteger(val, 1, "1");
+    }
+    catch ( ScamException e ) {
+        FAIL() << "Unexpected exception: " << e.getMessage();
+    }
+}
+
+TEST_F(EnvTest, DefineScope)
+{
+    env = env.extend();
+    ExprHandle expr = parseAndEvaluate("(define x 1)");
+    env = env.parent();
+    ExprHandle sym = ExpressionFactory::makeSymbol("x");
+    EXPECT_THROW(env.get(sym), ScamException);
+}
+
+TEST_F(EnvTest, DefineTwice)
+{
+    parseAndEvaluate("(define x 1)");
+    EXPECT_THROW(parseAndEvaluate("(define x 2)"), ScamException);
 }

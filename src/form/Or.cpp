@@ -27,11 +27,6 @@ void Or::apply(ExprHandle const & args, ContHandle cont, Env & env)
     apply_impl(args, cont, env);
 }
 
-ExprHandle Or::clone() const
-{
-    return ExpressionFactory::makeForm<Or>();
-}
-
 namespace
 {
     class OrWorker : public Worker
@@ -41,7 +36,7 @@ namespace
         void run() override;
 
     private:
-        ExprHandle const & args;
+        ExprHandle const args;
         ContHandle cont;
         Env env;
         size_t n;
@@ -54,7 +49,7 @@ namespace
         void run(ExprHandle expr) const override;
 
     private:
-        ExprHandle const & args;
+        ExprHandle const args;
         ContHandle cont;
         Env & env;
         size_t n;
@@ -71,7 +66,8 @@ OrWorker::OrWorker(ContHandle cont,
                    Env env,
                    ExprHandle const & args,
                    size_t n)
-    : args(args)
+    : Worker("Or")
+    , args(args)
     , cont(cont)
     , env(env)
     , n(n)
@@ -80,6 +76,8 @@ OrWorker::OrWorker(ContHandle cont,
 
 void OrWorker::run()
 {
+    Worker::run();
+
     if ( ! args->isList() ) {
         stringstream s;
         s << "Or expects a list of forms; got: " << args->toString();
@@ -104,7 +102,8 @@ void OrWorker::run()
 }
 
 OrCont::OrCont(ExprHandle const & args, ContHandle cont, Env & env, size_t n)
-    : args(args)
+    : Continuation("Or")
+    , args(args)
     , cont(cont)
     , env(env)
     , n(n)
@@ -113,6 +112,8 @@ OrCont::OrCont(ExprHandle const & args, ContHandle cont, Env & env, size_t n)
 
 void OrCont::run(ExprHandle expr) const
 {
+    Continuation::run(expr);
+
     if ( expr->error() ) {
         cont->run(expr);
     }

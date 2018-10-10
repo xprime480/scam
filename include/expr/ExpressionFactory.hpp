@@ -40,12 +40,12 @@ namespace scam
             return intern(std::make_shared<T>(args...));
         }
 
-	static ExprHandle clone(ScamExpr const *);
+        static ExprHandle clone(ScamExpr const *);
 
-	static unsigned getMaxHandles();
+        static unsigned getMaxHandles();
 
     private:
-	static ExprHandle intern(ExprHandle expr);
+        static ExprHandle intern(ExprHandle expr);
     };
 }
 #endif
