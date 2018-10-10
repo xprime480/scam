@@ -100,41 +100,41 @@ namespace
 
     unsigned getNextHandle()
     {
-	for ( unsigned i = 0 ; i < MAX_HANDLES ; ++i ) {
-	    unsigned h = (nextHandle + i) % MAX_HANDLES;
-	    if ( HLIST[h].expired() ) {
-		nextHandle = h;
-		return h;
-	    }
-	}
+        for ( unsigned i = 0 ; i < MAX_HANDLES ; ++i ) {
+            unsigned h = (nextHandle + i) % MAX_HANDLES;
+            if ( HLIST[h].expired() ) {
+                nextHandle = h;
+                return h;
+            }
+        }
 
-	throw ScamException("***Internal Error:  No more handles");
-	return 0u;
+        throw ScamException("***Internal Error:  No more handles");
+        return 0u;
     }
 }
 
 ExprHandle ExpressionFactory::clone(ScamExpr const * expr)
 {
     if ( ! expr ) {
-	throw ScamException("Internal Error:  nullptr to clone");
+        throw ScamException("Internal Error:  nullptr to clone");
     }
 
     unsigned h = expr->handle;
     if ( h >= MAX_HANDLES ) {
-	throw ScamException("Internal Error:  invalid handle to clone");
+        throw ScamException("Internal Error:  invalid handle to clone");
     }
 
     if ( HLIST[h].expired() ) {
-	throw ScamException("Internal Error:  handle is expired");
+        throw ScamException("Internal Error:  handle is expired");
     }
 
     ExprHandle rv = HLIST[h].lock();
     if ( ! rv ) {
-	throw ScamException("Internal Error:  handle is nullptr");
+        throw ScamException("Internal Error:  handle is nullptr");
     }
 
     if ( rv.get() != expr ) {
-	throw ScamException("Internal Error:  inconsistent clone");
+        throw ScamException("Internal Error:  inconsistent clone");
     }
 
     return rv;

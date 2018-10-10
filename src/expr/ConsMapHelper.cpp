@@ -1,59 +1,71 @@
 
-#include "impl/ConsMapHelper.hpp"
+#include "impl/ConsHelper.hpp"
 
 #include "Continuation.hpp"
 #include "Env.hpp"
 #include "WorkQueue.hpp"
+#include "Worker.hpp"
 #include "expr/ExpressionFactory.hpp"
 
 using namespace scam;
 using namespace scam::cons_impl;
 using namespace std;
 
+#include "Worker.hpp"
+
+#include <memory>
+
+namespace
+{
+    class  MapWorker : public Worker
+    {
+    public:
+        MapWorker(ContHandle cont,
+                  Env & env,
+                  ExprHandle & car,
+                  ExprHandle & cdr);
+
+        MapWorker(std::shared_ptr<WorkerData> data);
+
+        void run() override;
+
+    private:
+        std::shared_ptr<WorkerData> data;
+    };
+}
+
 namespace scam
 {
     namespace cons_impl
     {
-        struct WorkerData
+        void scamConsMapHelper(ExprHandle & car,
+                               ExprHandle & cdr,
+                               ContHandle cont,
+                               Env & env)
         {
-            WorkerData(ExprHandle car,
-                       ExprHandle cdr,
-                       ContHandle original,
-                       Env & env)
-                : car(car)
-                , cdr(cdr)
-                , original(original)
-                , env(env)
-            {
-            }
-
-            ExprHandle car;
-            ExprHandle cdr;
-            ContHandle original;
-            ContHandle cont;
-            Env & env;
-        };
-
-        class  MapCdr : public Worker
-        {
-        public:
-            MapCdr(ExprHandle & car,
-                      ExprHandle & cdr,
-                      ContHandle cont,
-                      Env & env);
-
-            MapCdr(std::shared_ptr<WorkerData> data);
-
-            void run() override;
-
-        private:
-            std::shared_ptr<WorkerData> data;
-        };
+            workQueueHelper<MapWorker>(cont, env, car, cdr);
+        }
     }
 }
 
 namespace
 {
+    class  MapCdr : public Worker
+    {
+    public:
+        MapCdr(ExprHandle & car,
+               ExprHandle & cdr,
+               ContHandle cont,
+               Env & env);
+
+        MapCdr(std::shared_ptr<WorkerData> data);
+
+        void run() override;
+
+    private:
+        std::shared_ptr<WorkerData> data;
+    };
+
     class CarContinuation : public Continuation
     {
     public:
@@ -77,10 +89,10 @@ namespace
     };
 }
 
-MapWorker::MapWorker(ExprHandle & car,
-                     ExprHandle & cdr,
-                     ContHandle cont,
-                     Env & env)
+MapWorker::MapWorker(ContHandle cont,
+                     Env & env,
+                     ExprHandle & car,
+                     ExprHandle & cdr)
     : data(make_shared<WorkerData>(car, cdr, cont, env))
 {
     data->cont = make_shared<CarContinuation>(data);
@@ -107,10 +119,7 @@ void CarContinuation::run(ExprHandle expr) const
         data->original->run(expr);
     }
     else {
-        shared_ptr<MapCdr> thunk
-            = make_shared<MapCdr>(expr, data->cdr, data->original, data->env);
-        WorkerHandle start = thunk;
-        GlobalWorkQueue.put(start);
+        workQueueHelper<MapCdr>(expr, data->cdr, data->original, data->env);
     }
 }
 

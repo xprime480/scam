@@ -17,9 +17,9 @@ namespace
     class  PrimWorker : public Worker
     {
     public:
-        PrimWorker(ExprHandle const & args,
-                   ContHandle cont,
+        PrimWorker(ContHandle cont,
                    Env & env,
+                   ExprHandle const & args,
                    Primitive * caller);
 
         PrimWorker(shared_ptr<PrimWorkerData> data);
@@ -50,10 +50,7 @@ bool Primitive::hasApply() const
 
 void Primitive::apply(ExprHandle const & args, ContHandle cont, Env & env)
 {
-    shared_ptr<PrimWorker> thunk
-        = make_shared<PrimWorker>(args, cont, env, this);
-    WorkerHandle start = thunk;
-    GlobalWorkQueue.put(start);
+    workQueueHelper<PrimWorker>(cont, env, args, this);
 }
 
 namespace
@@ -104,9 +101,9 @@ namespace
         shared_ptr<PrimWorkerData> data;
     };
 
-    PrimWorker::PrimWorker(ExprHandle const & args,
-                           ContHandle cont,
+    PrimWorker::PrimWorker(ContHandle cont,
                            Env & env,
+                           ExprHandle const & args,
                            Primitive * caller)
         : data(make_shared<PrimWorkerData>(args, cont, env, caller))
     {

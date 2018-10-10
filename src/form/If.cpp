@@ -17,7 +17,7 @@ namespace
     class IfWorker : public Worker
     {
     public:
-        IfWorker(ExprHandle const & args, ContHandle cont, Env & env);
+        IfWorker(ContHandle cont, Env & env, ExprHandle const & args);
         void run() override;
 
     private:
@@ -34,9 +34,7 @@ If::If()
 
 void If::apply(ExprHandle const & args, ContHandle cont, Env & env)
 {
-    shared_ptr<IfWorker> thunk = make_shared<IfWorker>(args, cont, env);
-    WorkerHandle start = thunk;
-    GlobalWorkQueue.put(start);
+    workQueueHelper<IfWorker>(cont, env, args);
 }
 
 ExprHandle If::clone() const
@@ -59,7 +57,7 @@ namespace
     };
 }
 
-IfWorker::IfWorker(ExprHandle const & args, ContHandle cont, Env & env)
+IfWorker::IfWorker(ContHandle cont, Env & env, ExprHandle const & args)
     : args(args)
     , cont(cont)
     , env(env)

@@ -2,21 +2,15 @@
 #include "expr/ScamCons.hpp"
 
 #include "Continuation.hpp"
-#include "WorkQueue.hpp"
 #include "expr/ExpressionFactory.hpp"
 
-#include "impl/ConsEvalHelper.hpp"
-#include "impl/ConsMapHelper.hpp"
+#include "impl/ConsHelper.hpp"
 
 #include <sstream>
 
 using namespace scam;
 using namespace scam::cons_impl;
 using namespace std;
-
-namespace
-{
-}
 
 ScamCons::ScamCons(ExprHandle const & car, ExprHandle const & cdr)
     : car(car)
@@ -47,16 +41,12 @@ string ScamCons::toString() const
 
 void ScamCons::eval(ContHandle cont, Env & env)
 {
-    shared_ptr<ConsWorker> thunk = make_shared<ConsWorker>(car, cdr, cont, env);
-    WorkerHandle start = thunk;
-    GlobalWorkQueue.put(start);
+    scamConsEvalHelper(car, cdr, cont, env);
 }
 
 void ScamCons::mapEval(ContHandle cont, Env & env)
 {
-    shared_ptr<MapWorker> thunk = make_shared<MapWorker>(car, cdr, cont, env);
-    WorkerHandle start = thunk;
-    GlobalWorkQueue.put(start);
+    scamConsMapHelper(car, cdr, cont, env);
 }
 
 bool ScamCons::isCons() const

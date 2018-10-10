@@ -37,7 +37,7 @@ namespace
     class NotWorker : public Worker
     {
     public:
-        NotWorker(ExprHandle const & args, ContHandle cont, Env & env);
+        NotWorker(ContHandle cont, Env & env, ExprHandle const & args);
         void run() override;
 
     private:
@@ -58,13 +58,11 @@ namespace
 
     void apply_impl(ExprHandle const & args, ContHandle cont, Env & env)
     {
-        shared_ptr<NotWorker> thunk = make_shared<NotWorker>(args, cont, env);
-        WorkerHandle start = thunk;
-        GlobalWorkQueue.put(start);
+        workQueueHelper<NotWorker>(cont, env, args);
     }
 }
 
-NotWorker::NotWorker(ExprHandle const & args, ContHandle cont, Env & env)
+NotWorker::NotWorker(ContHandle cont, Env & env, ExprHandle const & args)
     : args(args)
     , cont(cont)
     , env(env)

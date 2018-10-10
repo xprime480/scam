@@ -37,7 +37,7 @@ namespace
     class OrWorker : public Worker
     {
     public:
-        OrWorker(ExprHandle const & args, ContHandle cont, Env env, size_t n);
+        OrWorker(ContHandle cont, Env env, ExprHandle const & args, size_t n);
         void run() override;
 
     private:
@@ -62,17 +62,15 @@ namespace
 
     void apply_impl(ExprHandle const & args, ContHandle cont, Env & env)
     {
-        shared_ptr<OrWorker> thunk
-            = make_shared<OrWorker>(args, cont, env, 0u);
-        WorkerHandle start = thunk;
-        GlobalWorkQueue.put(start);
+        unsigned pos { 0 };
+        workQueueHelper<OrWorker>(cont, env, args, pos);
     }
 }
 
-OrWorker::OrWorker(ExprHandle const & args,
-                     ContHandle cont,
-                     Env env,
-                     size_t n)
+OrWorker::OrWorker(ContHandle cont,
+                   Env env,
+                   ExprHandle const & args,
+                   size_t n)
     : args(args)
     , cont(cont)
     , env(env)
@@ -122,9 +120,6 @@ void OrCont::run(ExprHandle expr) const
         cont->run(expr);
     }
     else {
-        shared_ptr<OrWorker> thunk
-            = make_shared<OrWorker>(args, cont, env, n);
-        WorkerHandle start = thunk;
-        GlobalWorkQueue.put(start);
+        workQueueHelper<OrWorker>(cont, env, args, n);
     }
 }

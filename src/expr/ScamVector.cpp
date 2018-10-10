@@ -18,7 +18,7 @@ namespace
     class  VectorWorker : public Worker
     {
     public:
-        VectorWorker(ExprVec const & forms, ContHandle cont, Env & env);
+        VectorWorker(ContHandle cont, Env & env, ExprVec const & forms);
 
         VectorWorker(shared_ptr<VectorWorkerData> data);
 
@@ -51,9 +51,7 @@ string ScamVector::toString() const
 
 void ScamVector::eval(ContHandle cont, Env & env)
 {
-    shared_ptr<VectorWorker> thunk = make_shared<VectorWorker>(elts, cont, env);
-    WorkerHandle start = thunk;
-    GlobalWorkQueue.put(start);
+    workQueueHelper<VectorWorker>(cont, env, elts);
 }
 
 bool ScamVector::isVector() const
@@ -111,9 +109,9 @@ namespace
         shared_ptr<VectorWorkerData> data;
     };
 
-    VectorWorker::VectorWorker(ExprVec const & forms,
-                               ContHandle cont,
-                               Env & env)
+    VectorWorker::VectorWorker(ContHandle cont,
+                               Env & env,
+                               ExprVec const & forms)
         : data(make_shared<VectorWorkerData>(forms, cont, env))
     {
         data->cont = make_shared<EvalContinuation>(data);
@@ -145,14 +143,11 @@ namespace
     {
         if ( expr->error() ) {
             data->original->run(expr);
-            return;
         }
-
-        data->evaled[data->index] = expr;
-        data->index += 1;
-
-        shared_ptr<VectorWorker> nextThunk = make_shared<VectorWorker>(data);
-        WorkerHandle next = nextThunk;
-        GlobalWorkQueue.put(next);
+        else {
+            data->evaled[data->index] = expr;
+            data->index += 1;
+            workQueueHelper<VectorWorker>(data);
+        }
     }
 }

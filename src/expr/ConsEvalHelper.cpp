@@ -1,60 +1,45 @@
 
-#include "impl/ConsEvalHelper.hpp"
+#include "impl/ConsHelper.hpp"
 
 #include "Continuation.hpp"
 #include "Env.hpp"
+#include "WorkQueue.hpp"
+#include "Worker.hpp"
 
 using namespace scam;
 using namespace scam::cons_impl;
 using namespace std;
 
-namespace
-{
-    class Evaluator : public Continuation
-    {
-    public:
-        Evaluator(ExprHandle args, ContHandle cont, Env env)
-            : args(args)
-            , cont(cont)
-            , env(env)
-        {
-        }
-
-        void run(ExprHandle e) const override
-        {
-            e->apply(args, cont, env);
-        }
-
-    private:
-        mutable ExprHandle args;
-        mutable ContHandle cont;
-        mutable Env env;
-    };
-}
-
 namespace scam
 {
     namespace cons_impl
     {
-        struct WorkerData
+        class  ConsWorker : public Worker
         {
-            WorkerData(ExprHandle car,
-                           ExprHandle cdr,
-                           ContHandle original,
-                           Env & env)
-                : car(car)
-                , cdr(cdr)
-                , original(original)
-                , env(env)
-            {
-            }
+        public:
+            ConsWorker(ContHandle cont,
+                       Env & env,
+                       ExprHandle & car,
+                       ExprHandle & cdr);
 
-            ExprHandle car;
-            ExprHandle cdr;
-            ContHandle original;
-            ContHandle cont;
-            Env & env;
+            ConsWorker(std::shared_ptr<WorkerData> data);
+
+            void run() override;
+
+        private:
+            std::shared_ptr<WorkerData> data;
         };
+    }
+
+    namespace cons_impl
+    {
+        void scamConsEvalHelper(ExprHandle car,
+                                ExprHandle cdr,
+                                ContHandle cont,
+                                Env & env)
+        {
+            workQueueHelper<ConsWorker>(cont, env, car, cdr);
+        }
     }
 }
 
@@ -72,10 +57,11 @@ namespace
     };
 }
 
-ConsWorker::ConsWorker(ExprHandle & car,
-                       ExprHandle & cdr,
-                       ContHandle cont,
-                       Env & env)
+ConsWorker::ConsWorker(ContHandle cont,
+                       Env & env,
+                       ExprHandle & car,
+                       ExprHandle & cdr)
+
     : data(make_shared<WorkerData>(car, cdr, cont, env))
 {
     data->cont = make_shared<EvalContinuation>(data);

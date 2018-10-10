@@ -37,7 +37,7 @@ namespace
     class AndWorker : public Worker
     {
     public:
-        AndWorker(ExprHandle const & args, ContHandle cont, Env env, size_t n);
+        AndWorker(ContHandle cont, Env env, ExprHandle const & args, size_t n);
         void run() override;
 
     private:
@@ -62,16 +62,14 @@ namespace
 
     void apply_impl(ExprHandle const & args, ContHandle cont, Env & env)
     {
-        shared_ptr<AndWorker> thunk
-            = make_shared<AndWorker>(args, cont, env, 0u);
-        WorkerHandle start = thunk;
-        GlobalWorkQueue.put(start);
+        unsigned pos { 0 };
+        workQueueHelper<AndWorker>(cont, env, args, pos);
     }
 }
 
-AndWorker::AndWorker(ExprHandle const & args,
-                     ContHandle cont,
+AndWorker::AndWorker(ContHandle cont,
                      Env env,
+                     ExprHandle const & args,
                      size_t n)
     : args(args)
     , cont(cont)
@@ -122,9 +120,6 @@ void AndCont::run(ExprHandle expr) const
         cont->run(expr);
     }
     else {
-        shared_ptr<AndWorker> thunk
-            = make_shared<AndWorker>(args, cont, env, n);
-        WorkerHandle start = thunk;
-        GlobalWorkQueue.put(start);
+        workQueueHelper<AndWorker>(cont, env, args, n);
     }
 }

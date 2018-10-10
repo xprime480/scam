@@ -140,21 +140,20 @@ namespace
 
     void ReadContinuation::run(ExprHandle expr) const
     {
-        shared_ptr<ReplWorker> replNext = make_shared<ReplWorker>(repl);
-        WorkerHandle next = replNext;
-
         if ( ! expr ) {
             return;
         }
-        else if ( expr->error() ) {
+
+        shared_ptr<ReplWorker> replNext = workQueueHelper<ReplWorker>(repl);
+        replNext->expr  = expr;
+
+        if ( expr->error() ) {
             replNext->state = ReplState::ERROR;
         }
         else {
             replNext->state = ReplState::EVAL;
         }
 
-        replNext->expr  = expr;
-        GlobalWorkQueue.put(next);
     }
 
     EvalContinuation::EvalContinuation(ReplWorker & repl)
@@ -164,16 +163,15 @@ namespace
 
     void EvalContinuation::run(ExprHandle expr) const
     {
-        shared_ptr<ReplWorker> replNext = make_shared<ReplWorker>(repl);
-        WorkerHandle next = replNext;
+        shared_ptr<ReplWorker> replNext = workQueueHelper<ReplWorker>(repl);
+        replNext->expr  = expr;
+
         if ( expr->error() ) {
             replNext->state = ReplState::ERROR;
         }
         else {
             replNext->state = ReplState::PRINT;
         }
-        replNext->expr  = expr;
-        GlobalWorkQueue.put(next);
     }
 
     PrintContinuation::PrintContinuation(ReplWorker & repl)
@@ -183,20 +181,16 @@ namespace
 
     void PrintContinuation::run(ExprHandle expr) const
     {
-        shared_ptr<ReplWorker> replNext = make_shared<ReplWorker>(repl);
-        WorkerHandle next = replNext;
+        shared_ptr<ReplWorker> replNext = workQueueHelper<ReplWorker>(repl);
         replNext->state = ReplState::READ;
         replNext->expr  = expr;
-        GlobalWorkQueue.put(next);
     }
 }
 
 void ScamEngine::repl(Tokenizer & input, OutputHandler & output)
 {
     ScamParser parser(input);
-    WorkerHandle theRepl = make_shared<ReplWorker>(parser, output);
-    GlobalWorkQueue.put(theRepl);
-    Trampoline(GlobalWorkQueue);
+    workQueueHelper<ReplWorker>(parser, output);
 }
 
 void ScamEngine::extend(std::string const & name,
