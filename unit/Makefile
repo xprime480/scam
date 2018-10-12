@@ -28,7 +28,7 @@ do_it_manually :
 	make -C gmock all
 
 test : unittests
-	@./unittests --gtest_filter=ComparisonTest.EqZeroForms
+	@./unittests --gtest_filter=ComparisonTest.*
 
 clean :
 	make -C ../src clean
