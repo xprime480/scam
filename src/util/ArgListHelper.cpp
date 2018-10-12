@@ -37,6 +37,15 @@ ExprHandle scam::numericAlgorithm(ExprHandle const & args,
     return makeNumeric(state, total);
 }
 
+ExprHandle scam::compareAlgorithm(ExprHandle const & args,
+				  string const & context,
+				  shared_ptr<OpImpl> impl)
+{
+    vector<double> x;
+    bool rv = impl->apply(x);
+    return ExpressionFactory::makeBoolean(rv);
+}
+
 namespace
 {
     bool argToNumeric(ExprHandle const & arg,

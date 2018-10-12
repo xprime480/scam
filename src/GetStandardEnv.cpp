@@ -37,5 +37,12 @@ Env ScamEngine::getStandardEnv()
     addForm<Mul>(env, "*");
     addForm<Div>(env, "/");
 
+    addForm<Eq>(env, "=");
+    addForm<Ne>(env, "<>");
+    addForm<Lt>(env, "<");
+    addForm<Le>(env, "<=");
+    addForm<Gt>(env, ">");
+    addForm<Ge>(env, ">=");
+    
     return env;
 }

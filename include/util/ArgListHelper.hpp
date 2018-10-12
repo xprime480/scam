@@ -9,12 +9,23 @@
 
 namespace scam
 {
+    class OpImpl
+    {
+    public:
+        virtual bool apply(std::vector<double> const & args) const = 0 ;
+        virtual bool apply(std::vector<std::string> const & args) const = 0;
+    };
+
     using NumericalAlgorithm =
         std::function<double(std::vector<double> const &, ExprHandle & state)>;
 
     extern ExprHandle numericAlgorithm(ExprHandle const & args,
                                        std::string const & context,
                                        NumericalAlgorithm algo);
+
+    extern ExprHandle compareAlgorithm(ExprHandle const & args,
+                                       std::string const & context,
+                                       std::shared_ptr<OpImpl> impl);
 }
 
 #endif
