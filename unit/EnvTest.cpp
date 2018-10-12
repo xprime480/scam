@@ -125,17 +125,12 @@ TEST_F(EnvTest, DefineConstant)
 
 TEST_F(EnvTest, DefineEvaluated)
 {
-    try {
-        ExprHandle expr = parseAndEvaluate("(define x (- 3 2))");
-        expectInteger(expr, 1, "1");
+    ExprHandle expr = parseAndEvaluate("(define x (- 3 2))");
+    expectInteger(expr, 1, "1");
 
-        ExprHandle sym = ExpressionFactory::makeSymbol("x");
-        ExprHandle val = env.get(sym);
-        expectInteger(val, 1, "1");
-    }
-    catch ( ScamException e ) {
-        FAIL() << "Unexpected exception: " << e.getMessage();
-    }
+    ExprHandle sym = ExpressionFactory::makeSymbol("x");
+    ExprHandle val = env.get(sym);
+    expectInteger(val, 1, "1");
 }
 
 TEST_F(EnvTest, DefineScope)
@@ -152,3 +147,27 @@ TEST_F(EnvTest, DefineTwice)
     parseAndEvaluate("(define x 1)");
     EXPECT_THROW(parseAndEvaluate("(define x 2)"), ScamException);
 }
+
+TEST_F(EnvTest, AssignKeyword)
+{
+    parseAndEvaluate("(define x (- 3 2))");
+    parseAndEvaluate("(assign x 77)");
+
+    ExprHandle sym = ExpressionFactory::makeSymbol("x");
+    ExprHandle val = env.get(sym);
+    expectInteger(val, 77, "77");
+}
+
+TEST_F(EnvTest, AssignScope)
+{
+    parseAndEvaluate("(define x (- 3 2))");
+
+    env = env.extend();
+    parseAndEvaluate("(assign x 77)");
+    env = env.parent();
+
+    ExprHandle sym = ExpressionFactory::makeSymbol("x");
+    ExprHandle val = env.get(sym);
+    expectInteger(val, 77, "77");
+}
+
