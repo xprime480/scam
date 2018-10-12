@@ -94,8 +94,7 @@ namespace
         return rv;
     }
 
-    ExprHandle
-    makeNumeric(ExprHandle const & state, double value)
+    ExprHandle makeNumeric(ExprHandle const & state, double value)
     {
         if ( state->truth() ) {
             return ExpressionFactory::makeInteger((int)value);
