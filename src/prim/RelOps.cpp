@@ -45,25 +45,19 @@ namespace
     {
     public:
         bool apply(vector<double> const & args) const override
-        {
-            const unsigned len = args.size();
-
-            if ( len < 2 ) {
-                return true;
-            }
-
-            const unsigned lim = len - 1;
-            for ( unsigned idx = 0 ; idx < lim ; ++idx ) {
-                if ( args[idx] != args[idx+1] ) {
-                    return false;
-                }
-            }
-
-            return true;
-        }
+	{
+	    return check(args);
+	}
 
         bool apply(vector<string> const & args) const override
         {
+	    return check(args);
+	}
+
+    private:
+	template <typename T>
+	bool check(vector<T> const & args) const
+	{
             const unsigned len = args.size();
 
             if ( len < 2 ) {
