@@ -6,6 +6,7 @@
 
 #include "impl/ConsHelper.hpp"
 
+#include <iostream>
 #include <sstream>
 
 using namespace scam;

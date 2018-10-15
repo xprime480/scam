@@ -68,6 +68,13 @@ ExprHandle ExpressionTestBase::evaluate(ExprHandle input)
     return y->getExpr();
 }
 
+ExprHandle ExpressionTestBase::apply(ExprHandle expr, ExprHandle args)
+{
+    expr->apply(args.get(), extractor, env);
+    Trampoline(GlobalWorkQueue);
+    return extractor->getExpr();
+}
+
 ExprHandle ExpressionTestBase::parseAndEvaluate(string const & input)
 {
     StringTokenizer tokenizer(input);

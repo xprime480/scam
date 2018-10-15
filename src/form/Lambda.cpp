@@ -13,8 +13,10 @@ Lambda::Lambda()
 {
 }
 
-void Lambda::apply(ExprHandle const & args, ContHandle cont, Env & env)
+void Lambda::apply(ScamExpr * args, ContHandle cont, Env env)
 {
-    ExprHandle expr = ExpressionFactory::makeClosure(args->getCar(), args->getCdr(), env);
-    cont->run(expr);
+    ExprHandle expr = ExpressionFactory::makeClosure(args->getCar().get(),
+                                                     args->getCdr().get(),
+                                                     env);
+    cont->run(expr.get());
 }

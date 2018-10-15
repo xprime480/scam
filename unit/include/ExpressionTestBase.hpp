@@ -22,6 +22,7 @@ namespace scam
         Env env;
 
         ExprHandle evaluate(ExprHandle input);
+	ExprHandle apply(ExprHandle expr, ExprHandle args);
         ExprHandle parseAndEvaluate(std::string const & input);
 
         void doCheck(bool act, unsigned selector, unsigned which);

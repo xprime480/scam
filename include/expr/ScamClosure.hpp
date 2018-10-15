@@ -10,20 +10,17 @@ namespace scam
     class ScamClosure : public ScamExpr
     {
     public:
-        ScamClosure(ExprHandle const & args,
-                    ExprHandle const & forms,
-                    Env & env);
+        ScamClosure(ScamExpr *formals, ScamExpr * forms, Env env);
 
         std::string toString() const override;
 
         bool hasApply() const override;
-        void
-        apply(ExprHandle const & args, ContHandle cont, Env & env) override;
+        void apply(ScamExpr * args, ContHandle cont, Env env) override;
 
         bool isProcedure() const override;
 
     private:
-        ExprHandle args;
+        ExprHandle formals;
         ExprHandle forms;
         Env env;
     };

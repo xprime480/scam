@@ -92,11 +92,11 @@ ExprHandle ExpressionFactory::makeVector(ExprVec const & elts)
     return expr;
 }
 
-ExprHandle ExpressionFactory::makeClosure(ExprHandle const & args,
-                                          ExprHandle const & forms,
+ExprHandle ExpressionFactory::makeClosure(ScamExpr *formals,
+                                          ScamExpr *forms,
                                           Env & env)
 {
-    ExprHandle expr = makeForm<ScamClosure>(args, forms, env);
+    ExprHandle expr = makeForm<ScamClosure>(formals, forms, env);
     return expr;
 }
 

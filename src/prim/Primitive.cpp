@@ -2,9 +2,11 @@
 #include "prim/Primitive.hpp"
 
 #include "Continuation.hpp"
+#include "Env.hpp"
 #include "WorkQueue.hpp"
 #include "Worker.hpp"
 
+#include <iostream>
 #include <sstream>
 
 using namespace scam;
@@ -12,7 +14,22 @@ using namespace std;
 
 namespace
 {
-    struct PrimWorkerData;
+    struct PrimWorkerData
+    {
+        PrimWorkerData(ScamExpr * args,
+                       ContHandle original,
+                       Env env,
+                       Primitive * caller);
+
+        ExprHandle args;
+        ContHandle original;
+        ContHandle cont;
+        Env env;
+        Primitive * caller;
+
+        void mapEval();
+        void handleResult(ScamExpr * expr);
+    };
 
     class  PrimWorker : public Worker
     {
@@ -22,12 +39,10 @@ namespace
                    ScamExpr * args,
                    Primitive * caller);
 
-        PrimWorker(shared_ptr<PrimWorkerData> data);
-
         void run() override;
 
     private:
-        shared_ptr<PrimWorkerData> data;
+        PrimWorkerData data;
     };
 }
 
@@ -55,50 +70,41 @@ void Primitive::apply(ScamExpr * args, ContHandle cont, Env env)
 
 namespace
 {
-    struct PrimWorkerData
+    PrimWorkerData::PrimWorkerData(ScamExpr * args,
+                                   ContHandle original,
+                                   Env env,
+                                   Primitive * caller)
+        : args(args->clone())
+        , original(original)
+        , env(env)
+        , caller(caller)
     {
-        PrimWorkerData(ScamExpr * args,
-                       ContHandle original,
-                       Env env,
-                       Primitive * caller)
-            : args(args->clone())
-            , original(original)
-            , env(env)
-            , caller(caller)
-        {
-        }
+    }
 
-        ExprHandle args;
-        ContHandle original;
-        ContHandle cont;
-        Env env;
-        Primitive * caller;
+    void PrimWorkerData::mapEval()
+    {
+        args->mapEval(cont, env);
+    }
 
-        void mapEval()
-        {
-            args->mapEval(cont, env);
+    void PrimWorkerData::handleResult(ScamExpr * expr)
+    {
+        if ( expr->error() ) {
+            original->run(expr);
         }
-
-        void handleResult(ScamExpr * expr)
-        {
-            if ( expr->error() ) {
-                original->run(expr);
-            }
-            else {
-                caller->applyArgs(expr, original);
-            }
+        else {
+            caller->applyArgs(expr, original);
         }
-    };
+    }
 
     class EvalContinuation : public Continuation
     {
     public:
-        EvalContinuation(shared_ptr<PrimWorkerData> data);
+        EvalContinuation(PrimWorkerData const & data);
 
         void run(ScamExpr * expr) override;
 
     private:
-        shared_ptr<PrimWorkerData> data;
+        PrimWorkerData data;
     };
 
     PrimWorker::PrimWorker(ContHandle cont,
@@ -106,32 +112,26 @@ namespace
                            ScamExpr * args,
                            Primitive * caller)
         : Worker("Primitive")
-        , data(make_shared<PrimWorkerData>(args, cont, env, caller))
+        , data(args, cont, env, caller)
     {
-        data->cont = make_shared<EvalContinuation>(data);
-    }
-
-    PrimWorker::PrimWorker(shared_ptr<PrimWorkerData> data)
-        : Worker("Primitive Copy")
-        , data(data)
-    {
+        data.cont = make_shared<EvalContinuation>(data);
     }
 
     void PrimWorker::run()
     {
         Worker::run();
-        data->mapEval();
+        data.mapEval();
     }
 
-    EvalContinuation::EvalContinuation(shared_ptr<PrimWorkerData> data)
+    EvalContinuation::EvalContinuation(PrimWorkerData const & data)
         : Continuation("Primitive Eval")
-        , data(data)
+        , data(data.args.get(), data.original, data.env, data.caller)
     {
     }
 
     void EvalContinuation::run(ScamExpr * expr)
     {
         Continuation::run(expr);
-        data->handleResult(expr);
+        data.handleResult(expr);
     }
 }

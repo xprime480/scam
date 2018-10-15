@@ -7,6 +7,8 @@
 #include "Worker.hpp"
 #include "expr/ExpressionFactory.hpp"
 
+#include <iostream>
+
 using namespace scam;
 using namespace scam::cons_impl;
 using namespace std;
