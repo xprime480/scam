@@ -52,6 +52,8 @@ namespace scam
 
         virtual bool isVector() const;
 
+        virtual bool isProcedure() const;
+
         virtual size_t length() const;
         virtual ExprHandle nth(size_t n) const;
 

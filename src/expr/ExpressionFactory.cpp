@@ -3,6 +3,7 @@
 #include "ScamException.hpp"
 #include "expr/ScamBoolean.hpp"
 #include "expr/ScamCharacter.hpp"
+#include "expr/ScamClosure.hpp"
 #include "expr/ScamCons.hpp"
 #include "expr/ScamError.hpp"
 #include "expr/ScamFloat.hpp"
@@ -88,6 +89,14 @@ ExpressionFactory::makeCons(ScamExpr * car, ScamExpr * cdr)
 ExprHandle ExpressionFactory::makeVector(ExprVec const & elts)
 {
     ExprHandle expr = makeForm<ScamVector>(elts);
+    return expr;
+}
+
+ExprHandle ExpressionFactory::makeClosure(ExprHandle const & args,
+                                          ExprHandle const & forms,
+                                          Env & env)
+{
+    ExprHandle expr = makeForm<ScamClosure>(args, forms, env);
     return expr;
 }
 

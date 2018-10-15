@@ -34,6 +34,10 @@ namespace scam
 
         static ExprHandle makeVector(ExprVec const & elts);
 
+        static ExprHandle makeClosure(ExprHandle const & args,
+                                      ExprHandle const & forms,
+                                      Env & env);
+
         template <typename T, typename... Args>
         static ExprHandle makeForm(Args... args)
         {

@@ -63,5 +63,7 @@ namespace scam
         void expectVector(ExprHandle expr,
                           std::string const & repr,
                           size_t len);
+        void expectProcedure(ExprHandle expr,
+                             std::string const & repr);
     };
 }

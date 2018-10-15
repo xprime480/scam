@@ -154,6 +154,11 @@ bool ScamExpr::isVector() const
     return false;
 }
 
+bool ScamExpr::isProcedure() const
+{
+    return false;
+}
+
 size_t ScamExpr::length() const
 {
     stringstream s;

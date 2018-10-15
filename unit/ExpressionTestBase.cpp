@@ -29,10 +29,12 @@ namespace
     static const unsigned long SELECT_LIST    { 1 << 12 };
     static const unsigned long SELECT_VECTOR  { 1 << 13 };
     static const unsigned long SELECT_APPLY   { 1 << 14 };
+    static const unsigned long SELECT_PROC    { 1 << 15 };
 
     static const unsigned long ALL_FLOAT   = SELECT_NUMERIC | SELECT_FLOAT;
     static const unsigned long ALL_INTEGER = ALL_FLOAT | SELECT_INTEGER;
     static const unsigned long ALL_NIL     = SELECT_NIL | SELECT_LIST;
+    static const unsigned long ALL_PROC    = SELECT_APPLY | SELECT_PROC;
 }
 
 ExpressionTestBase::ExpressionTestBase()
@@ -122,6 +124,7 @@ string decodePredicate(unsigned exp, unsigned act)
         DECODER(VECTOR);
 
         DECODER(APPLY);
+        DECODER(PROC);
 #undef DECODER
     }
 
@@ -153,6 +156,7 @@ ExpressionTestBase::checkPredicates(ExprHandle expr, unsigned exp)
     act |= (expr->isVector() ? SELECT_VECTOR : 0);
 
     act |= (expr->hasApply() ? SELECT_APPLY : 0);
+    act |= (expr->isProcedure() ? SELECT_PROC : 0);
 
     EXPECT_EQ(exp, act) << decodePredicate(act, exp)
                         << "\n\tvalue: " << expr->toString();
@@ -278,4 +282,10 @@ void ExpressionTestBase::expectVector(ExprHandle expr,
     checkPredicates(expr, SELECT_TRUTH | SELECT_VECTOR);
     EXPECT_EQ(repr, expr->toString());
     EXPECT_EQ(len, expr->length());
+}
+
+void ExpressionTestBase::expectProcedure(ExprHandle expr, string const & repr)
+{
+    checkPredicates(expr, SELECT_TRUTH | ALL_PROC);
+    EXPECT_EQ(repr, expr->toString());
 }

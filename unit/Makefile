@@ -38,6 +38,7 @@ test : unittests
 	@./unittests --gtest_filter=ParserTest.*
 	@./unittests --gtest_filter=TokenizerTest.*
 	@./unittests --gtest_filter=TrampolineTest.*
+	@./unittests --gtest_filter=ClosureTest.*
 
 clean :
 	make -C ../src clean
