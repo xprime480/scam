@@ -21,9 +21,9 @@ namespace
     {
     public:
         MapWorker(ContHandle cont,
-                  Env & env,
-                  ExprHandle & car,
-                  ExprHandle & cdr);
+                  Env env,
+                  ScamExpr * car,
+                  ScamExpr * cdr);
 
         MapWorker(WorkerData const & data);
 
@@ -38,10 +38,10 @@ namespace scam
 {
     namespace cons_impl
     {
-        void scamConsMapHelper(ExprHandle & car,
-                               ExprHandle & cdr,
+        void scamConsMapHelper(ScamExpr * car,
+                               ScamExpr * cdr,
                                ContHandle cont,
-                               Env & env)
+                               Env env)
         {
             workQueueHelper<MapWorker>(cont, env, car, cdr);
         }
@@ -53,10 +53,10 @@ namespace
     class  MapCdr : public Worker
     {
     public:
-        MapCdr(ExprHandle const & car,
-               ExprHandle const & cdr,
+        MapCdr(ScamExpr * car,
+               ScamExpr * cdr,
                ContHandle cont,
-               Env & env);
+               Env env);
 
         void run() override;
 
@@ -69,7 +69,7 @@ namespace
     public:
         CarContinuation(WorkerData const & data);
 
-        void run(ExprHandle expr) const override;
+        void run(ScamExpr * expr) override;
 
     private:
         WorkerData data;
@@ -80,7 +80,7 @@ namespace
     public:
         CdrContinuation(WorkerData const & data);
 
-        void run(ExprHandle expr) const override;
+        void run(ScamExpr * expr) override;
 
     private:
         WorkerData data;
@@ -88,9 +88,9 @@ namespace
 }
 
 MapWorker::MapWorker(ContHandle cont,
-                     Env & env,
-                     ExprHandle & car,
-                     ExprHandle & cdr)
+                     Env env,
+                     ScamExpr * car,
+                     ScamExpr * cdr)
     : Worker("Cons Map")
     , data(car, cdr, cont, env)
 {
@@ -115,7 +115,7 @@ CarContinuation::CarContinuation(WorkerData const & data)
 {
 }
 
-void CarContinuation::run(ExprHandle expr) const
+void CarContinuation::run(ScamExpr * expr)
 {
     Continuation::run(expr);
 
@@ -123,11 +123,12 @@ void CarContinuation::run(ExprHandle expr) const
         data.original->run(expr);
     }
     else {
-        workQueueHelper<MapCdr>(expr, data.cdr, data.original, data.env);
+        ScamExpr * e = data.cdr.get();
+        workQueueHelper<MapCdr>(expr, e, data.original, data.env);
     }
 }
 
-MapCdr::MapCdr(ExprHandle const & car, ExprHandle const & cdr, ContHandle cont, Env & env)
+MapCdr::MapCdr(ScamExpr * car, ScamExpr * cdr, ContHandle cont, Env env)
     : Worker("Cons Map Cdr")
     , data(car, cdr, cont, env)
 {
@@ -146,13 +147,17 @@ CdrContinuation::CdrContinuation(WorkerData const & data)
 {
 }
 
-void CdrContinuation::run(ExprHandle expr) const
+void CdrContinuation::run(ScamExpr * expr)
 {
     Continuation::run(expr);
 
-    if ( ! expr->error() ) {
-        expr = ExpressionFactory::makeCons(data.car, expr);
+    if ( expr->error() ) {
+        data.original->run(expr);
     }
-    data.original->run(expr);
+    else {
+        ExprHandle x = ExpressionFactory::makeCons(data.car.get(), expr);
+        ScamExpr * e = x.get();
+        data.original->run(e);
+    }
 }
 

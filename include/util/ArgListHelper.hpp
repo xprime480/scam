@@ -19,11 +19,11 @@ namespace scam
     using NumericalAlgorithm =
         std::function<double(std::vector<double> const &, ExprHandle & state)>;
 
-    extern ExprHandle numericAlgorithm(ExprHandle const & args,
+    extern ExprHandle numericAlgorithm(ScamExpr * args,
                                        std::string const & context,
                                        NumericalAlgorithm algo);
 
-    extern ExprHandle compareAlgorithm(ExprHandle const & args,
+    extern ExprHandle compareAlgorithm(ScamExpr * args,
                                        std::string const & context,
                                        std::shared_ptr<OpImpl> impl);
 }

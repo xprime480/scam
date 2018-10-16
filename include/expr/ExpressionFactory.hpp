@@ -30,7 +30,7 @@ namespace scam
 
         static ExprHandle makeNil();
         static ExprHandle
-        makeCons(ExprHandle const & car, ExprHandle const & cdr);
+        makeCons(ScamExpr * car, ScamExpr * cdr);
 
         static ExprHandle makeVector(ExprVec const & elts);
 

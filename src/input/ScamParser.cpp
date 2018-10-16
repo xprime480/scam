@@ -17,7 +17,7 @@ ScamParser::ScamParser(Tokenizer & tokenizer)
 void ScamParser::parseExpr(ContHandle cont) const
 {
     ExprHandle expr = parseSubExpr();
-    cont->run(expr);
+    cont->run(expr.get());
 }
 
 ExprHandle ScamParser::parseSubExpr() const
@@ -132,7 +132,7 @@ ExprHandle ScamParser::parseList() const
     if ( cdr->error() ) {
         return cdr;
     }
-    return ExpressionFactory::makeCons(car, cdr);
+    return ExpressionFactory::makeCons(car.get(), cdr.get());
 }
 
 ExprHandle ScamParser::parseDotContext() const
@@ -237,6 +237,6 @@ ExprHandle ScamParser::expand_reader_macro(std::string const & text) const
 
     ExprHandle sym = ExpressionFactory::makeSymbol(name);
     ExprHandle nil = ExpressionFactory::makeNil();
-    ExprHandle listed = ExpressionFactory::makeCons(expr, nil);
-    return ExpressionFactory::makeCons(sym, listed);
+    ExprHandle listed = ExpressionFactory::makeCons(expr.get(), nil.get());
+    return ExpressionFactory::makeCons(sym.get(), listed.get());
 }

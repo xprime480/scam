@@ -15,23 +15,23 @@ namespace scam
     public:
         Extractor()
             : Continuation("Extractor")
-            , expr(ExpressionFactory::makeNull())
+            , e(ExpressionFactory::makeNull())
         {
         }
 
-        void run(ExprHandle e) const override
+        void run(ScamExpr * expr) override
         {
-            Continuation::run(e);
-            expr = e;
+            Continuation::run(expr);
+            e = expr->clone();
         }
 
         ExprHandle getExpr() const
         {
-            return expr;
+            return e;
         }
 
     private:
-        mutable ExprHandle expr;
+        ExprHandle e;
     };
 }
 

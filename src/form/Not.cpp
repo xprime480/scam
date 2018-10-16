@@ -13,7 +13,7 @@ using namespace std;
 
 namespace
 {
-    extern void apply_impl(ExprHandle const & args, ContHandle cont, Env & env);
+    extern void apply_impl(ScamExpr * args, ContHandle cont, Env env);
 }
 
 Not::Not()
@@ -21,7 +21,7 @@ Not::Not()
 {
 }
 
-void Not::apply(ExprHandle const & args, ContHandle cont, Env & env)
+void Not::apply(ScamExpr * args, ContHandle cont, Env env)
 {
     apply_impl(args, cont, env);
 }
@@ -31,34 +31,34 @@ namespace
     class NotWorker : public Worker
     {
     public:
-        NotWorker(ContHandle cont, Env & env, ExprHandle const & args);
+        NotWorker(ContHandle cont, Env env, ScamExpr * args);
         void run() override;
 
     private:
-        ExprHandle const args;
+        ExprHandle args;
         ContHandle cont;
-        Env & env;
+        Env env;
     };
 
     class NotCont : public Continuation
     {
     public:
         NotCont(ContHandle cont);
-        void run(ExprHandle expr) const override;
+        void run(ScamExpr * expr) override;
 
     private:
         ContHandle cont;
     };
 
-    void apply_impl(ExprHandle const & args, ContHandle cont, Env & env)
+    void apply_impl(ScamExpr * args, ContHandle cont, Env env)
     {
         workQueueHelper<NotWorker>(cont, env, args);
     }
 }
 
-NotWorker::NotWorker(ContHandle cont, Env & env, ExprHandle const & args)
+NotWorker::NotWorker(ContHandle cont, Env env, ScamExpr * args)
     : Worker("Not")
-    , args(args)
+    , args(args->clone())
     , cont(cont)
     , env(env)
 {
@@ -72,7 +72,7 @@ void NotWorker::run()
         stringstream s;
         s << "Not expects 1 form; got: " << args->toString();
         ExprHandle err = ExpressionFactory::makeError(s.str());
-        cont->run(err);
+        cont->run(err.get());
     }
     else {
         ContHandle newCont = make_shared<NotCont>(cont);
@@ -87,7 +87,7 @@ NotCont::NotCont(ContHandle cont)
 {
 }
 
-void NotCont::run(ExprHandle expr) const
+void NotCont::run(ScamExpr * expr)
 {
     Continuation::run(expr);
 
@@ -95,6 +95,6 @@ void NotCont::run(ExprHandle expr) const
         cont->run(expr);
     }
     else {
-        cont->run(ExpressionFactory::makeBoolean(! expr->truth()));
+        cont->run(ExpressionFactory::makeBoolean(! expr->truth()).get());
     }
 }

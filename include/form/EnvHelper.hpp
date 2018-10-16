@@ -16,8 +16,7 @@ namespace scam
     public:
         Define();
 
-        void
-        apply(ExprHandle const & args, ContHandle cont, Env & env) override;
+        void apply(ScamExpr * args, ContHandle cont, Env env) override;
     };
 
     class Assign : public EnvHelper
@@ -25,8 +24,7 @@ namespace scam
     public:
         Assign();
 
-        void
-        apply(ExprHandle const & args, ContHandle cont, Env & env) override;
+        void apply(ScamExpr * args, ContHandle cont, Env env) override;
     };
 }
 

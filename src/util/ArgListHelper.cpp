@@ -15,26 +15,26 @@ namespace
     template <typename T>
     struct TypeChecks
     {
-        static bool isType(ExprHandle const & arg) { return false; }
-        static bool isSubType(ExprHandle const & arg) { return false; }
-        static T convert(ExprHandle const & arg) { return T(); }
+        static bool isType(ScamExpr * arg) { return false; }
+        static bool isSubType(ScamExpr * arg) { return false; }
+        static T convert(ScamExpr * arg) { return T(); }
         static string id() { return ""; }
     };
 
     template <>
     struct TypeChecks<double>
     {
-        static bool isType(ExprHandle const & arg)
+        static bool isType(ScamExpr * arg)
         {
             return arg->isNumeric();
         }
 
-        static bool isSubType(ExprHandle const & arg)
+        static bool isSubType(ScamExpr * arg)
         {
             return arg->isInteger();
         }
 
-        static double convert(ExprHandle const & arg)
+        static double convert(ScamExpr * arg)
         {
             return arg->toFloat();
         }
@@ -47,17 +47,17 @@ namespace
     template <>
     struct TypeChecks<string>
     {
-        static bool isType(ExprHandle const & arg)
+        static bool isType(ScamExpr * arg)
         {
             return arg->isString();
         }
 
-        static bool isSubType(ExprHandle const & arg)
+        static bool isSubType(ScamExpr * arg)
         {
             return arg->isString();
         }
 
-        static string convert(ExprHandle const & arg)
+        static string convert(ScamExpr * arg)
         {
             return arg->toString();
         }
@@ -68,7 +68,7 @@ namespace
     };
 
     template <typename T>
-    bool argToType(ExprHandle const & arg,
+    bool argToType(ScamExpr * arg,
                    vector<T> & ns,
                    string const & context,
                    ExprHandle & rv)
@@ -92,7 +92,7 @@ namespace
     }
 
     template <typename T>
-    ExprHandle argsToType(ExprHandle const & args,
+    ExprHandle argsToType(ScamExpr * args,
                           vector<T> & ns,
                           string const & context)
     {
@@ -100,8 +100,8 @@ namespace
 
         const size_t len = args->length();
         for ( size_t idx = 0u ; idx < len ; ++idx ) {
-            ExprHandle const arg = args->nth(idx);
-            if ( ! argToType(arg, ns, context, rv) ) {
+            ExprHandle arg = args->nth(idx);
+            if ( ! argToType(arg.get(), ns, context, rv) ) {
                 break;
             }
         }
@@ -109,10 +109,10 @@ namespace
         return rv;
     }
 
-    extern ExprHandle makeNumeric(ExprHandle const & state, double value);
+    extern ExprHandle makeNumeric(ExprHandle & state, double value);
 
     template <typename T>
-    ExprHandle compareType(ExprHandle const & args,
+    ExprHandle compareType(ScamExpr * args,
                            string const & context,
                            shared_ptr<OpImpl> impl)
     {
@@ -129,7 +129,7 @@ namespace
     }
 }
 
-ExprHandle scam::numericAlgorithm(ExprHandle const & args,
+ExprHandle scam::numericAlgorithm(ScamExpr * args,
                                   string const & context,
                                   NumericalAlgorithm algo)
 {
@@ -148,7 +148,7 @@ ExprHandle scam::numericAlgorithm(ExprHandle const & args,
     return makeNumeric(state, total);
 }
 
-ExprHandle scam::compareAlgorithm(ExprHandle const & args,
+ExprHandle scam::compareAlgorithm(ScamExpr * args,
                                   string const & context,
                                   shared_ptr<OpImpl> impl)
 {
@@ -172,7 +172,7 @@ ExprHandle scam::compareAlgorithm(ExprHandle const & args,
 
 namespace
 {
-    ExprHandle makeNumeric(ExprHandle const & state, double value)
+    ExprHandle makeNumeric(ExprHandle & state, double value)
     {
         if ( state->truth() ) {
             return ExpressionFactory::makeInteger((int)value);

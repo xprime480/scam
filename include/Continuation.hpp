@@ -7,10 +7,6 @@
 namespace scam
 {
     class ScamExpr;
-    class Continuation;
-
-    using ExprHandle = std::shared_ptr<ScamExpr>;
-    using ContHandle = std::shared_ptr<Continuation> ;
 
     class Continuation
     {
@@ -18,7 +14,7 @@ namespace scam
         Continuation(char const * name);
         virtual ~Continuation();
 
-        virtual void run(ExprHandle expr) const;
+        virtual void run(ScamExpr * expr);
         std::string id() const;
 
     private:

@@ -13,11 +13,11 @@ std::string ScamNull::toString() const
     return null;
 }
 
-void ScamNull::eval(ContHandle cont, Env & env)
+void ScamNull::eval(ContHandle cont, Env env)
 {
     static const string msg{ "The null type cannot be evaluated." };
     static const ExprHandle expr = ExpressionFactory::makeError(msg);
-    cont->run(expr);
+    cont->run(expr.get());
 }
 
 bool ScamNull::isNull() const

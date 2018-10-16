@@ -36,9 +36,25 @@ namespace
 }
 
 ExpressionTestBase::ExpressionTestBase()
-    : extractor(make_shared<Extractor>())
-    , env(ScamEngine::getStandardEnv())
+{
+}
 
+ExpressionTestBase::~ExpressionTestBase()
+{
+}
+
+void ExpressionTestBase::SetUp()
+{
+    extractor = make_shared<Extractor>();
+    try {
+        env = ScamEngine::getStandardEnv();
+    }
+    catch ( ScamException e ) {
+        FAIL() << e.getMessage() << "creating standard env";
+    }
+}
+
+void ExpressionTestBase::TearDown()
 {
 }
 

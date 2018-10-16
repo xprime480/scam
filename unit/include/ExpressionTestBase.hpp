@@ -13,6 +13,10 @@ namespace scam
     {
     protected:
         ExpressionTestBase();
+        virtual ~ExpressionTestBase();
+
+        void SetUp() override;
+        void TearDown() override;
 
         std::shared_ptr<Extractor> extractor;
         Env env;

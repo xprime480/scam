@@ -16,13 +16,13 @@ namespace
     class IfWorker : public Worker
     {
     public:
-        IfWorker(ContHandle cont, Env & env, ExprHandle const & args);
+        IfWorker(ContHandle cont, Env env, ScamExpr * args);
         void run() override;
 
     private:
-        ExprHandle const args;
+        ExprHandle args;
         ContHandle cont;
-        Env & env;
+        Env env;
     };
 }
 
@@ -31,7 +31,7 @@ If::If()
 {
 }
 
-void If::apply(ExprHandle const & args, ContHandle cont, Env & env)
+void If::apply(ScamExpr * args, ContHandle cont, Env env)
 {
     workQueueHelper<IfWorker>(cont, env, args);
 }
@@ -41,19 +41,19 @@ namespace
     class IfCont : public Continuation
     {
     public:
-        IfCont(ExprHandle const & args, ContHandle cont, Env & env);
-        void run(ExprHandle expr) const override;
+        IfCont(ScamExpr * args, ContHandle cont, Env env);
+        void run(ScamExpr * expr) override;
 
     private:
-        ExprHandle const args;
+        ExprHandle args;
         ContHandle cont;
-        Env & env;
+        Env env;
     };
 }
 
-IfWorker::IfWorker(ContHandle cont, Env & env, ExprHandle const & args)
+IfWorker::IfWorker(ContHandle cont, Env env, ScamExpr * args)
     : Worker("If")
-    , args(args)
+    , args(args->clone())
     , cont(cont)
     , env(env)
 {
@@ -67,24 +67,24 @@ void IfWorker::run()
         stringstream s;
         s << "If expects 2 or 3 forms; got: " << args->toString();
         ExprHandle err = ExpressionFactory::makeError(s.str());
-        cont->run(err);
+        cont->run(err.get());
     }
     else {
-        ContHandle newCont = make_shared<IfCont>(args, cont, env);
+        ContHandle newCont = make_shared<IfCont>(args.get(), cont, env);
         ExprHandle test = args->nth(0);
         test->eval(newCont, env);
     }
 }
 
-IfCont::IfCont(ExprHandle const & args, ContHandle cont, Env & env)
+IfCont::IfCont(ScamExpr * args, ContHandle cont, Env env)
     : Continuation("If")
-    , args(args)
+    , args(args->clone())
     , cont(cont)
     , env(env)
 {
 }
 
-void IfCont::run(ExprHandle expr) const
+void IfCont::run(ScamExpr * expr)
 {
     Continuation::run(expr);
 
@@ -98,6 +98,6 @@ void IfCont::run(ExprHandle expr) const
         args->nth(2)->eval(cont, env);
     }
     else {
-        cont->run(ExpressionFactory::makeNil());
+        cont->run(ExpressionFactory::makeNil().get());
     }
 }

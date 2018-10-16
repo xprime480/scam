@@ -15,10 +15,9 @@ ScamExpr::~ScamExpr()
 {
 }
 
-void ScamExpr::eval(ContHandle cont, Env & env)
+void ScamExpr::eval(ContHandle cont, Env env)
 {
-    ExprHandle dup = clone();
-    cont->run(dup);
+    cont->run(this);
 }
 
 bool ScamExpr::hasApply() const
@@ -26,19 +25,18 @@ bool ScamExpr::hasApply() const
     return false;
 }
 
-void ScamExpr::apply(ExprHandle const & args, ContHandle cont, Env & env)
+void ScamExpr::apply(ScamExpr * args, ContHandle cont, Env env)
 {
     stringstream s;
     s << "Not possible to apply <" << this->toString()
       << " to args " << args->toString();
     ExprHandle err = ExpressionFactory::makeError(s.str());
-    cont->run(err);
+    cont->run(err.get());
 }
 
-void ScamExpr::mapEval(ContHandle cont, Env & env)
+void ScamExpr::mapEval(ContHandle cont, Env env)
 {
-    ExprHandle dup = clone();
-    cont->run(dup);
+    cont->run(this);
 }
 
 bool ScamExpr::isNull() const

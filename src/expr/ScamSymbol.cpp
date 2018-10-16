@@ -20,13 +20,12 @@ string ScamSymbol::toString() const
     return value;
 }
 
-void ScamSymbol::eval(ContHandle cont, Env & env)
+void ScamSymbol::eval(ContHandle cont, Env env)
 {
-    ExprHandle me = clone();
     ExprHandle evaluated;
 
-    if ( env.check(me) ) {
-        evaluated = env.get(me);
+    if ( env.check(this) ) {
+        evaluated = env.get(this);
     }
     else {
         stringstream s;
@@ -34,7 +33,7 @@ void ScamSymbol::eval(ContHandle cont, Env & env)
         evaluated = ExpressionFactory::makeError(s.str());
     }
 
-    cont->run(evaluated);
+    cont->run(evaluated.get());
 }
 
 bool ScamSymbol::isSymbol() const

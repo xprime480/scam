@@ -102,7 +102,7 @@ TEST_F(ExpressionTest, SymbolTest)
     expectError(evaled);
 
     ExprHandle value = ExpressionFactory::makeInteger(1899);
-    env.put(sym, value);
+    env.put(sym.get(), value.get());
     evaled = evaluate(sym);
     expectInteger(evaled, 1899, "1899");
 }
@@ -122,7 +122,7 @@ TEST_F(ExpressionTest, ConsSingletonTest)
 
     ExprHandle car = ExpressionFactory::makeSymbol("works");
     ExprHandle cdr = ExpressionFactory::makeNil();
-    ExprHandle expr = ExpressionFactory::makeCons(car, cdr);
+    ExprHandle expr = ExpressionFactory::makeCons(car.get(), cdr.get());
 
     expectList(expr, value, 1);
 
@@ -137,8 +137,8 @@ TEST_F(ExpressionTest, ConsDoubletonTest)
     ExprHandle car  = ExpressionFactory::makeSymbol("works");
     ExprHandle cadr = ExpressionFactory::makeSymbol("also");
     ExprHandle cddr = ExpressionFactory::makeNil();
-    ExprHandle cdr  = ExpressionFactory::makeCons(cadr, cddr);;
-    ExprHandle expr = ExpressionFactory::makeCons(car, cdr);
+    ExprHandle cdr  = ExpressionFactory::makeCons(cadr.get(), cddr.get());;
+    ExprHandle expr = ExpressionFactory::makeCons(car.get(), cdr.get());
 
     expectList(expr, value, 2);
 
@@ -164,7 +164,7 @@ TEST_F(ExpressionTest, ConsDottedPair)
 
     ExprHandle car = ExpressionFactory::makeInteger(1);
     ExprHandle cdr = ExpressionFactory::makeInteger(2);
-    ExprHandle expr = ExpressionFactory::makeCons(car, cdr);
+    ExprHandle expr = ExpressionFactory::makeCons(car.get(), cdr.get());
 
     expectCons(expr, value);
 
@@ -179,8 +179,8 @@ TEST_F(ExpressionTest, ConsEvalTest)
     ExprHandle car  = ExpressionFactory::makeSymbol("quote");
     ExprHandle cadr = ExpressionFactory::makeInteger(2);
     ExprHandle cddr = ExpressionFactory::makeNil();
-    ExprHandle cdr  = ExpressionFactory::makeCons(cadr, cddr);;
-    ExprHandle expr = ExpressionFactory::makeCons(car, cdr);
+    ExprHandle cdr  = ExpressionFactory::makeCons(cadr.get(), cddr.get());;
+    ExprHandle expr = ExpressionFactory::makeCons(car.get(), cdr.get());
 
     expectList(expr, value, 2);
     expectSymbol(expr->getCar(), "quote");
@@ -219,7 +219,7 @@ TEST_F(ExpressionTest, VectorNonEmpty)
         vec.push_back(ExpressionFactory::makeInteger(i));
     }
 
-    auto f = [this, &value](ExprHandle & expr) {
+    auto f = [this, &value](ExprHandle expr) {
         expectVector(expr, value, 3u);
         expectInteger(expr->nth(0), 1, "1");
         expectInteger(expr->nth(1), 2, "2");

@@ -17,11 +17,11 @@ MathOp::MathOp(MathOpDef const & def)
 {
 }
 
-void MathOp::applyArgs(ExprHandle const & args, ContHandle cont)
+void MathOp::applyArgs(ScamExpr * args, ContHandle cont)
 {
     string const context = toString();
     ExprHandle rv = numericAlgorithm(args, context, algo);
-    cont->run(rv);
+    cont->run(rv.get());
 }
 
 namespace

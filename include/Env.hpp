@@ -1,12 +1,13 @@
 #if ! defined(ENV_H)
 #define ENV_H 1
 
-#include "expr/ScamExpr.hpp"
-
 #include <memory>
 
 namespace scam
 {
+    class ScamExpr;
+    using ExprHandle = std::shared_ptr<ScamExpr>;
+
     struct EnvData;
 
     class Env
@@ -14,14 +15,14 @@ namespace scam
     public:
         Env();
 
-        void put(ExprHandle key, ExprHandle val);
-        bool check(ExprHandle key) const;
-        ExprHandle get(ExprHandle key) const;
+        void put(ScamExpr * key, ScamExpr * val);
+        bool check(ScamExpr * key) const;
+        ExprHandle get(ScamExpr * key) const;
 
         Env extend() const;
         Env parent() const;
 
-        void assign(ExprHandle key, ExprHandle val);
+        void assign(ScamExpr * key, ScamExpr * val);
 
         void dump(size_t max) const;
 

@@ -2,6 +2,7 @@
 #include "Env.hpp"
 
 #include "ScamException.hpp"
+#include "expr/ScamExpr.hpp"
 
 #include <iostream>
 #include <map>
@@ -17,7 +18,7 @@ namespace scam
         map<string, ExprHandle> table;
         shared_ptr<EnvData> parent;
 
-        void put(string const & key, ExprHandle val)
+        void put(string const & key, ScamExpr * val)
         {
             auto const iter = table.find(key);
             if ( iter != table.end() ) {
@@ -25,7 +26,7 @@ namespace scam
                 s << "Key: " << key << " already exists in current frame";
                 throw ScamException(s.str());
             }
-            table[key] = val;
+            table[key] = val->clone();
         }
 
         bool check(string const & key) const
@@ -56,7 +57,7 @@ namespace scam
             throw ScamException(s.str());
         }
 
-        void assign(string const & key, ExprHandle val)
+        void assign(string const & key, ScamExpr * val)
         {
             auto const iter = table.find(key);
             if ( iter == table.end() ) {
@@ -70,7 +71,7 @@ namespace scam
                 }
             }
             else {
-                table[key] = val;
+                table[key] = val->clone();
             }
         }
 
@@ -89,7 +90,7 @@ namespace scam
     };
 }
 
-string checkKey(ExprHandle key)
+string checkKey(ScamExpr * key)
 {
     if ( ! key->isSymbol() ) {
         stringstream s;
@@ -104,17 +105,17 @@ Env::Env()
 {
 }
 
-void Env::put(ExprHandle key, ExprHandle val)
+void Env::put(ScamExpr * key, ScamExpr * val)
 {
     data->put(checkKey(key), val);
 }
 
-bool Env::check(ExprHandle key) const
+bool Env::check(ScamExpr * key) const
 {
     return data->check(checkKey(key));
 }
 
-ExprHandle Env::get(ExprHandle key) const
+ExprHandle Env::get(ScamExpr * key) const
 {
     return data->get(checkKey(key));
 }
@@ -133,7 +134,7 @@ Env Env::parent() const
     return temp;
 }
 
-void Env::assign(ExprHandle key, ExprHandle val)
+void Env::assign(ScamExpr * key, ScamExpr * val)
 {
     data->assign(checkKey(key), val);
 }

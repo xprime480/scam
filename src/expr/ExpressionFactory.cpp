@@ -79,7 +79,7 @@ ExprHandle ExpressionFactory::makeNil()
 }
 
 ExprHandle
-ExpressionFactory::makeCons(ExprHandle const & car, ExprHandle const & cdr)
+ExpressionFactory::makeCons(ScamExpr * car, ScamExpr * cdr)
 {
     ExprHandle expr = makeForm<ScamCons>(car, cdr);
     return expr;

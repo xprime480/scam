@@ -11,11 +11,11 @@ using namespace std;
 namespace
 {
     template <typename T>
-    void addForm(Env & env, char const * name)
+    void addForm(Env env, char const * name)
     {
         ExprHandle sym = ExpressionFactory::makeSymbol(name);
         ExprHandle form = ExpressionFactory::makeForm<T>();
-        env.put(sym, form);
+        env.put(sym.get(), form.get());
     }
 }
 

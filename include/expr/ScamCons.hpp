@@ -8,11 +8,11 @@ namespace scam
     class ScamCons : public ScamExpr
     {
     public:
-        ScamCons(ExprHandle const & car, ExprHandle const & cdr);
+        ScamCons(ScamExpr * car, ScamExpr * cdr);
 
         std::string toString() const override;
-        void eval(ContHandle cont, Env & env) override;
-        void mapEval(ContHandle cont, Env & env) override;
+        void eval(ContHandle cont, Env env) override;
+        void mapEval(ContHandle cont, Env env) override;
 
         bool isCons() const override;
         bool isList() const override;

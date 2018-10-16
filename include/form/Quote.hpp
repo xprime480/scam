@@ -10,8 +10,7 @@ namespace scam
     public:
         Quote();
 
-        void
-        apply(ExprHandle const & args, ContHandle cont, Env & env) override;
+        void apply(ScamExpr * args, ContHandle cont, Env env) override;
     };
 }
 

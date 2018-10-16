@@ -11,7 +11,7 @@ namespace scam
     {
     public:
         std::string toString() const override;
-        void eval(ContHandle cont, Env & env) override;
+        void eval(ContHandle cont, Env env) override;
 
         bool isNull() const override;
         bool truth() const override;

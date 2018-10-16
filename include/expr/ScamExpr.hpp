@@ -1,18 +1,20 @@
 #if ! defined(SCAMEXPR_H)
 #define SCAMEXPR_H 1
 
+#include "Env.hpp"
+
 #include <memory>
 #include <string>
 
 namespace scam
 {
     class Continuation;
-    class Env;
-    class ExpressionFactory;
-    class ScamExpr;
-
-    using ExprHandle = std::shared_ptr<ScamExpr>;
     using ContHandle = std::shared_ptr<Continuation> ;
+
+    class ScamExpr;
+    using ExprHandle = std::shared_ptr<ScamExpr>;
+
+    class ExpressionFactory;
 
     class ScamExpr
     {
@@ -20,11 +22,11 @@ namespace scam
         virtual ~ScamExpr();
 
         virtual std::string toString() const = 0;
-        virtual void eval(ContHandle cont, Env & env);
+        virtual void eval(ContHandle cont, Env env);
 
         virtual bool hasApply() const;
-        virtual void apply(ExprHandle const & args, ContHandle cont, Env & env);
-        virtual void mapEval(ContHandle cont, Env & env);
+        virtual void apply(ScamExpr * args, ContHandle cont, Env env);
+        virtual void mapEval(ContHandle cont, Env env);
 
         virtual bool isNull() const;
         virtual bool error() const;

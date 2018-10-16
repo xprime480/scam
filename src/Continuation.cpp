@@ -1,6 +1,8 @@
 
 #include "Continuation.hpp"
 
+#include "expr/ScamExpr.hpp"
+
 //#include <iostream>
 #include <sstream>
 
@@ -23,7 +25,7 @@ Continuation::~Continuation()
     //cerr << "Deleting continuation " << name << "\n";
 };
 
-void Continuation::run(ExprHandle expr) const
+void Continuation::run(ScamExpr * expr)
 {
     //cerr << "Executing continuation " << name << "\n";
 }

@@ -27,8 +27,17 @@ gmocklib :
 do_it_manually :
 	make -C gmock all
 
+## Until the memory issue is fixed, run the tests in batches
+##
 test : unittests
-	@./unittests --gtest_filter=*.*
+	@./unittests --gtest_filter=ComparisonTest.*
+	@./unittests --gtest_filter=EnvTest.*
+	@./unittests --gtest_filter=ExpressionTest.*
+	@./unittests --gtest_filter=LogicTest.*
+	@./unittests --gtest_filter=MathTest.*
+	@./unittests --gtest_filter=ParserTest.*
+	@./unittests --gtest_filter=TokenizerTest.*
+	@./unittests --gtest_filter=TrampolineTest.*
 
 clean :
 	make -C ../src clean

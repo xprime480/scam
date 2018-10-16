@@ -1,6 +1,8 @@
 #if ! defined(CONS_HELPER_HPP)
 # define CONS_HELPER_HPP 1
 
+#include "Env.hpp"
+#include "expr/ScamExpr.hpp"
 #include "WorkQueue.hpp"
 
 #include <memory>
@@ -9,24 +11,24 @@ namespace scam
 {
     namespace cons_impl
     {
-        void scamConsEvalHelper(ExprHandle car,
-                                ExprHandle cdr,
+        void scamConsEvalHelper(ScamExpr * car,
+                                ScamExpr * cdr,
                                 ContHandle cont,
-                                Env & env);
+                                Env env);
 
-        void scamConsMapHelper(ExprHandle & car,
-                               ExprHandle & cdr,
+        void scamConsMapHelper(ScamExpr * car,
+                               ScamExpr * cdr,
                                ContHandle cont,
-                               Env & env);
+                               Env env);
 
         struct WorkerData
         {
-            WorkerData(ExprHandle car,
-                       ExprHandle cdr,
+            WorkerData(ScamExpr * car,
+                       ScamExpr * cdr,
                        ContHandle original,
-                       Env & env)
-                : car(car)
-                , cdr(cdr)
+                       Env env)
+                : car(car->clone())
+                , cdr(cdr->clone())
                 , original(original)
                 , env(env)
             {
@@ -39,7 +41,7 @@ namespace scam
             ExprHandle cdr;
             ContHandle original;
             ContHandle cont;
-            Env & env;
+            Env env;
         };
     }
 }

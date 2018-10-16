@@ -15,38 +15,38 @@ namespace
     class EnvHelperWorker : public Worker
     {
     public:
-        EnvHelperWorker(ExprHandle const & args,
-                        ContHandle & cont,
-                        Env & env,
+        EnvHelperWorker(ScamExpr * args,
+                        ContHandle cont,
+                        Env env,
                         char const * name);
         void run() override;
 
     protected:
         ContHandle cont;
-        Env & env;
+        Env env;
 
-        virtual ContHandle getCont(ExprHandle const & sym) const = 0;
+        virtual ContHandle getCont(ScamExpr * sym) const = 0;
 
     private:
-        ExprHandle const args;
+        ExprHandle args;
     };
 
     class AssignWorker : public EnvHelperWorker
     {
     public:
-        AssignWorker(ExprHandle const & args, ContHandle & cont, Env & env);
+        AssignWorker(ScamExpr * args, ContHandle cont, Env env);
 
     protected:
-        ContHandle getCont(ExprHandle const & sym) const override;
+        ContHandle getCont(ScamExpr * sym) const override;
     };
 
     class DefineWorker : public EnvHelperWorker
     {
     public:
-        DefineWorker(ExprHandle const & args, ContHandle & cont, Env & env);
+        DefineWorker(ScamExpr * args, ContHandle cont, Env env);
 
     protected:
-        ContHandle getCont(ExprHandle const & sym) const override;
+        ContHandle getCont(ScamExpr * sym) const override;
     };
 }
 
@@ -60,7 +60,7 @@ Assign::Assign()
 {
 }
 
-void Assign::apply(ExprHandle const & args, ContHandle cont, Env & env)
+void Assign::apply(ScamExpr * args, ContHandle cont, Env env)
 {
     workQueueHelper<AssignWorker>(args, cont, env);
 }
@@ -70,7 +70,7 @@ Define::Define()
 {
 }
 
-void Define::apply(ExprHandle const & args, ContHandle cont, Env & env)
+void Define::apply(ScamExpr * args, ContHandle cont, Env env)
 {
     workQueueHelper<DefineWorker>(args, cont, env);
 }
@@ -80,30 +80,28 @@ namespace
     class EnvHelperCont : public Continuation
     {
     public:
-        EnvHelperCont(ExprHandle const & sym,
+        EnvHelperCont(ScamExpr * sym,
                       ContHandle cont,
-                      Env & env,
+                      Env env,
                       char const * name)
             : Continuation(name)
-            , sym(sym)
+            , sym(sym->clone())
             , env(env)
             , cont(cont)
         {
         }
 
-        void run(ExprHandle expr) const override
+        void run(ScamExpr * expr) override
         {
-            Continuation::run(expr);
-            ExprHandle key = sym;
             finish(expr);
             cont->run(expr);
         }
 
     protected:
-        ExprHandle const sym;
-        Env & env;
+        ExprHandle sym;
+        mutable Env env;
 
-        virtual void finish(ExprHandle const & expr) const = 0;
+        virtual void finish(ScamExpr * expr) const = 0;
 
     private:
         ContHandle cont;
@@ -112,41 +110,41 @@ namespace
     class AssignCont : public EnvHelperCont
     {
     public:
-        AssignCont(ExprHandle const & sym, ContHandle cont, Env & env)
+        AssignCont(ScamExpr * sym, ContHandle cont, Env env)
             : EnvHelperCont(sym, cont, env, "Assign")
         {
         }
 
     protected:
-        void finish(ExprHandle const & expr) const override
+        void finish(ScamExpr * expr) const override
         {
-            env.assign(sym, expr);
+            env.assign(sym.get(), expr);
         }
     };
 
     class DefineCont : public EnvHelperCont
     {
     public:
-        DefineCont(ExprHandle const & sym, ContHandle cont, Env & env)
+        DefineCont(ScamExpr * sym, ContHandle cont, Env env)
             : EnvHelperCont(sym, cont, env, "Define")
         {
         }
 
     protected:
-        void finish(ExprHandle const & expr) const override
+        void finish(ScamExpr * expr) const override
         {
-            env.put(sym, expr);
+            env.put(sym.get(), expr);
         }
     };
 
-    EnvHelperWorker::EnvHelperWorker(ExprHandle const & args,
-                                     ContHandle & cont,
-                                     Env & env,
+    EnvHelperWorker::EnvHelperWorker(ScamExpr * args,
+                                     ContHandle cont,
+                                     Env env,
                                      char const * name)
         : Worker(name)
         , cont(cont)
         , env(env)
-        , args(args)
+        , args(args->clone())
     {
     }
 
@@ -157,30 +155,30 @@ namespace
         ExprHandle expr = args->getCdr()->getCar();
         ExprHandle sym = args->getCar();
 
-        ContHandle c = getCont(sym);
+        ContHandle c = getCont(sym.get());
         expr->eval(c, env);
     }
 
-    AssignWorker::AssignWorker(ExprHandle const & args,
-                               ContHandle & cont,
-                               Env & env)
+    AssignWorker::AssignWorker(ScamExpr * args,
+                               ContHandle cont,
+                               Env env)
         : EnvHelperWorker(args, cont, env, "Assign")
     {
     }
 
-    ContHandle AssignWorker::getCont(ExprHandle const & sym) const
+    ContHandle AssignWorker::getCont(ScamExpr * sym) const
     {
         return make_shared<AssignCont>(sym, cont, env);
     }
 
-    DefineWorker::DefineWorker(ExprHandle const & args,
-                               ContHandle & cont,
-                               Env & env)
+    DefineWorker::DefineWorker(ScamExpr * args,
+                               ContHandle cont,
+                               Env env)
         : EnvHelperWorker(args, cont, env, "Define")
     {
     }
 
-    ContHandle DefineWorker::getCont(ExprHandle const & sym) const
+    ContHandle DefineWorker::getCont(ScamExpr * sym) const
     {
         return make_shared<DefineCont>(sym, cont, env);
     }

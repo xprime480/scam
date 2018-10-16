@@ -5,6 +5,7 @@
 #include "Env.hpp"
 #include "WorkQueue.hpp"
 #include "Worker.hpp"
+#include "expr/ScamExpr.hpp"
 
 using namespace scam;
 using namespace scam::cons_impl;
@@ -18,9 +19,9 @@ namespace scam
         {
         public:
             ConsWorker(ContHandle cont,
-                       Env & env,
-                       ExprHandle & car,
-                       ExprHandle & cdr);
+                       Env env,
+                       ScamExpr * car,
+                       ScamExpr * cdr);
 
             ConsWorker(WorkerData const & data);
 
@@ -33,10 +34,10 @@ namespace scam
 
     namespace cons_impl
     {
-        void scamConsEvalHelper(ExprHandle car,
-                                ExprHandle cdr,
+        void scamConsEvalHelper(ScamExpr * car,
+                                ScamExpr * cdr,
                                 ContHandle cont,
-                                Env & env)
+                                Env env)
         {
             workQueueHelper<ConsWorker>(cont, env, car, cdr);
         }
@@ -50,7 +51,7 @@ namespace
     public:
         EvalContinuation(WorkerData const & data);
 
-        void run(ExprHandle expr) const override;
+        void run(ScamExpr * expr) override;
 
     private:
         WorkerData data;
@@ -58,9 +59,9 @@ namespace
 }
 
 ConsWorker::ConsWorker(ContHandle cont,
-                       Env & env,
-                       ExprHandle & car,
-                       ExprHandle & cdr)
+                       Env env,
+                       ScamExpr * car,
+                       ScamExpr * cdr)
 
     : Worker("Cons Eval")
     , data(car, cdr, cont, env)
@@ -86,7 +87,7 @@ EvalContinuation::EvalContinuation(WorkerData const & data)
 {
 }
 
-void EvalContinuation::run(ExprHandle expr) const
+void EvalContinuation::run(ScamExpr * expr)
 {
     Continuation::run(expr);
 
@@ -94,6 +95,6 @@ void EvalContinuation::run(ExprHandle expr) const
         data.original->run(expr);
     }
     else {
-        expr->apply(data.cdr, data.original, data.env);
+        expr->apply(data.cdr.get(), data.original, data.env);
     }
 }

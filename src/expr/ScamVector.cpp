@@ -18,7 +18,7 @@ namespace
     class  VectorWorker : public Worker
     {
     public:
-        VectorWorker(ContHandle cont, Env & env, ExprVec const & forms);
+        VectorWorker(ContHandle cont, Env env, ExprVec const & forms);
 
         VectorWorker(shared_ptr<VectorWorkerData> data);
 
@@ -49,7 +49,7 @@ string ScamVector::toString() const
     return s.str();
 }
 
-void ScamVector::eval(ContHandle cont, Env & env)
+void ScamVector::eval(ContHandle cont, Env env)
 {
     workQueueHelper<VectorWorker>(cont, env, elts);
 }
@@ -80,7 +80,7 @@ namespace
 {
     struct VectorWorkerData
     {
-        VectorWorkerData(ExprVec const & forms, ContHandle original, Env & env)
+        VectorWorkerData(ExprVec const & forms, ContHandle original, Env env)
             : forms(forms)
             , original(original)
             , env(env)
@@ -92,7 +92,7 @@ namespace
         ExprVec forms;
         ContHandle original;
         ContHandle cont;
-        Env & env;
+        Env env;
 
         ExprVec evaled;
         size_t index;
@@ -103,14 +103,14 @@ namespace
     public:
         EvalContinuation(shared_ptr<VectorWorkerData> data);
 
-        void run(ExprHandle expr) const override;
+        void run(ScamExpr * expr) override;
 
     private:
         shared_ptr<VectorWorkerData> data;
     };
 
     VectorWorker::VectorWorker(ContHandle cont,
-                               Env & env,
+                               Env env,
                                ExprVec const & forms)
         : Worker("Vector")
         , data(make_shared<VectorWorkerData>(forms, cont, env))
@@ -130,7 +130,7 @@ namespace
 
         if ( data->index >= data->forms.size() ) {
             ExprHandle value = ExpressionFactory::makeVector(data->evaled);
-            data->original->run(value);
+            data->original->run(value.get());
         }
         else {
             ExprHandle expr = data->forms[data->index];
@@ -144,7 +144,7 @@ namespace
     {
     }
 
-    void EvalContinuation::run(ExprHandle expr) const
+    void EvalContinuation::run(ScamExpr * expr)
     {
         Continuation::run(expr);
 
@@ -152,7 +152,7 @@ namespace
             data->original->run(expr);
         }
         else {
-            data->evaled[data->index] = expr;
+            data->evaled[data->index] = expr->clone();
             data->index += 1;
             workQueueHelper<VectorWorker>(data);
         }

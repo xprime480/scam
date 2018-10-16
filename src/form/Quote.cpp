@@ -13,8 +13,8 @@ Quote::Quote()
 {
 }
 
-void Quote::apply(ExprHandle const & args, ContHandle cont, Env & env)
+void Quote::apply(ScamExpr * args, ContHandle cont, Env env)
 {
     ExprHandle expr = args->getCar();
-    cont->run(expr);
+    cont->run(expr.get());
 }

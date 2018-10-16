@@ -12,9 +12,9 @@ using namespace scam;
 using namespace scam::cons_impl;
 using namespace std;
 
-ScamCons::ScamCons(ExprHandle const & car, ExprHandle const & cdr)
-    : car(car)
-    , cdr(cdr)
+ScamCons::ScamCons(ScamExpr * car, ScamExpr * cdr)
+    : car(car->clone())
+    , cdr(cdr->clone())
 {
 }
 
@@ -39,14 +39,14 @@ string ScamCons::toString() const
     return s.str();
 }
 
-void ScamCons::eval(ContHandle cont, Env & env)
+void ScamCons::eval(ContHandle cont, Env env)
 {
-    scamConsEvalHelper(car, cdr, cont, env);
+    scamConsEvalHelper(car.get(), cdr.get(), cont, env);
 }
 
-void ScamCons::mapEval(ContHandle cont, Env & env)
+void ScamCons::mapEval(ContHandle cont, Env env)
 {
-    scamConsMapHelper(car, cdr, cont, env);
+    scamConsMapHelper(car.get(), cdr.get(), cont, env);
 }
 
 bool ScamCons::isCons() const

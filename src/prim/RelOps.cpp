@@ -15,11 +15,11 @@ CompareOp::CompareOp(char const * name, shared_ptr<OpImpl> impl)
 {
 }
 
-void CompareOp::applyArgs(ExprHandle const & args, ContHandle cont)
+void CompareOp::applyArgs(ScamExpr * args, ContHandle cont)
 {
     string const context = toString();
     ExprHandle rv = compareAlgorithm(args, context, impl);
-    cont->run(rv);
+    cont->run(rv.get());
 }
 
 namespace

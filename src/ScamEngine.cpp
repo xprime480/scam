@@ -29,7 +29,7 @@ namespace
     {
     public:
         ReadContinuation(ReplWorker & repl);
-        void run(ExprHandle expr) const override;
+        void run(ScamExpr * expr) override;
 
     private:
         ReplWorker & repl;
@@ -39,7 +39,7 @@ namespace
     {
     public:
         EvalContinuation(ReplWorker & repl);
-        void run(ExprHandle expr) const override;
+        void run(ScamExpr * expr) override;
 
     private:
         ReplWorker & repl;
@@ -49,7 +49,7 @@ namespace
     {
     public:
         PrintContinuation(ReplWorker & repl);
-        void run(ExprHandle expr) const override;
+        void run(ScamExpr * expr) override;
 
     private:
         ReplWorker & repl;
@@ -122,7 +122,7 @@ namespace
             ContHandle cont = make_shared<PrintContinuation>(*this);
             string value = expr->toString();
             output.handleResult(value);
-            cont->run(expr);
+            cont->run(expr.get());
         }
 
         void do_error()
@@ -130,7 +130,7 @@ namespace
             ContHandle cont = make_shared<PrintContinuation>(*this);
             string value = expr->toString();
             output.handleError(value);
-            cont->run(expr);
+            cont->run(expr.get());
         }
     };
 
@@ -140,7 +140,7 @@ namespace
     {
     }
 
-    void ReadContinuation::run(ExprHandle expr) const
+    void ReadContinuation::run(ScamExpr * expr)
     {
         Continuation::run(expr);
 
@@ -149,7 +149,7 @@ namespace
         }
 
         shared_ptr<ReplWorker> replNext = workQueueHelper<ReplWorker>(repl);
-        replNext->expr  = expr;
+        replNext->expr  = expr->clone();
 
         if ( expr->error() ) {
             replNext->state = ReplState::ERROR;
@@ -157,7 +157,6 @@ namespace
         else {
             replNext->state = ReplState::EVAL;
         }
-
     }
 
     EvalContinuation::EvalContinuation(ReplWorker & repl)
@@ -166,12 +165,12 @@ namespace
     {
     }
 
-    void EvalContinuation::run(ExprHandle expr) const
+    void EvalContinuation::run(ScamExpr * expr)
     {
         Continuation::run(expr);
 
         shared_ptr<ReplWorker> replNext = workQueueHelper<ReplWorker>(repl);
-        replNext->expr  = expr;
+        replNext->expr  = expr->clone();
 
         if ( expr->error() ) {
             replNext->state = ReplState::ERROR;
@@ -187,13 +186,13 @@ namespace
     {
     }
 
-    void PrintContinuation::run(ExprHandle expr) const
+    void PrintContinuation::run(ScamExpr * expr)
     {
         Continuation::run(expr);
 
         shared_ptr<ReplWorker> replNext = workQueueHelper<ReplWorker>(repl);
         replNext->state = ReplState::READ;
-        replNext->expr  = expr;
+        replNext->expr  = expr->clone();
     }
 }
 
