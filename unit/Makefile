@@ -30,6 +30,9 @@ do_it_manually :
 ## Until the memory issue is fixed, run the tests in batches
 ##
 test : unittests
+	@./unittests --gtest_filter=*.*
+
+by_module :
 	@./unittests --gtest_filter=TrampolineTest.*
 	@./unittests --gtest_filter=EnvTest.*
 	@./unittests --gtest_filter=TokenizerTest.*

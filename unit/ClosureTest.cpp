@@ -81,3 +81,40 @@ TEST_F(ClosureTest, LambdaBasic)
     ExprHandle expr = parseAndEvaluate("(lambda () 2)");
     expectProcedure(expr, "(proc () (2))");
 }
+
+TEST_F(ClosureTest, LambdaEvalConst)
+{
+    ExprHandle expr = parseAndEvaluate("((lambda () 2))");
+    expectInteger(expr, 2, "2");
+}
+
+TEST_F(ClosureTest, LambdaEvalWithArg)
+{
+    ExprHandle expr = parseAndEvaluate("((lambda (x) (* x 2)) (+ 1 3))");
+    expectInteger(expr, 8, "8");
+}
+
+TEST_F(ClosureTest, LambdaCaptures)
+{
+    Env old = env;
+    parseAndEvaluate("(define f ())");
+
+    env = env.extend();
+    parseAndEvaluate("(define y 5)");
+    parseAndEvaluate("(assign f (lambda (x) (* x y)))");
+    env = old;
+
+    ExprHandle expr = parseAndEvaluate("(f (+ 1 3))");
+    expectInteger(expr, 20, "20");
+}
+
+TEST_F(ClosureTest, LambdaFormalsMaskEnv)
+{
+    parseAndEvaluate("(define x 0.0)");
+    parseAndEvaluate("(define f (lambda (x) (/ 1.0 x)))");
+    ExprHandle expr = parseAndEvaluate("(f 2)");
+    expectFloat(expr, 0.5, "0.5");
+
+    expr = parseAndEvaluate("x");
+    expectFloat(expr, 0.0, "0");
+}
