@@ -118,3 +118,43 @@ TEST_F(ClosureTest, LambdaFormalsMaskEnv)
     expr = parseAndEvaluate("x");
     expectFloat(expr, 0.0, "0");
 }
+
+TEST_F(ClosureTest, LambdaTooFewActuals)
+{
+    parseAndEvaluate("(define x 0.0)");
+    parseAndEvaluate("(define f (lambda (x) (/ 1.0 x)))");
+    ExprHandle expr = parseAndEvaluate("(f)");
+    expectError(expr);
+}
+
+TEST_F(ClosureTest, LambdaTooManyActuals)
+{
+    parseAndEvaluate("(define x 0.0)");
+    parseAndEvaluate("(define f (lambda (x) (/ 1.0 x)))");
+    ExprHandle expr = parseAndEvaluate("(f 1 2 3 4)");
+    expectError(expr);
+}
+
+TEST_F(ClosureTest, LambdaDottedParmListZero)
+{
+    parseAndEvaluate("(define x 0.0)");
+    parseAndEvaluate("(define f (lambda (x . y) y))");
+    ExprHandle expr = parseAndEvaluate("(f 1)");
+    expectNil(expr);
+}
+
+TEST_F(ClosureTest, LambdaDottedParmListOne)
+{
+    parseAndEvaluate("(define x 0.0)");
+    parseAndEvaluate("(define f (lambda (x . y) y))");
+    ExprHandle expr = parseAndEvaluate("(f 1 2)");
+    expectList(expr, "(2)", 1);
+}
+
+TEST_F(ClosureTest, LambdaDottedParmListSeveral)
+{
+    parseAndEvaluate("(define x 0.0)");
+    parseAndEvaluate("(define f (lambda (x . y) y))");
+    ExprHandle expr = parseAndEvaluate("(f 1 2 (+ 2 2) #t)");
+    expectList(expr, "(2 4 #t)", 3);
+}

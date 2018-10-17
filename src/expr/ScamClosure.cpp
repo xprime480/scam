@@ -121,33 +121,11 @@ namespace
             if ( expr->error() ) {
                 cont->run(expr);
             }
-            else if ( ! expr->isList() ) {
-                stringstream s;
-                ExprHandle err = ExpressionFactory::makeError(s.str());
-                cont->run(err.get());
+            else if ( ! expr->isCons() && ! expr->isNil() ) {
+                malformedActuals(expr);
             }
-            else {
-                unsigned formalsLen = formals->length();
-                unsigned actualsLen = expr->length();
-                if ( formalsLen != actualsLen ) {
-                    stringstream s;
-                    s << "Expected " << formalsLen << " parameters; "
-                      << "got " << actualsLen;
-                    ExprHandle err = ExpressionFactory::makeError(s.str());
-                    cont->run(err.get());
-                }
-                else {
-                    Env extended = capture.extend();
-                    for ( unsigned idx = 0 ; idx < formalsLen ; ++idx ) {
-                        ExprHandle sym = formals->nth(idx);
-                        ExprHandle val = expr->nth(idx);
-                        extended.put(sym.get(), val.get());
-                    }
-
-                    using WT = ClosureFinalWorker;
-                    ScamExpr * f = forms.get();
-                    workQueueHelper<WT>(f, extended, cont);
-                }
+            else if ( checkArgLength(expr) ) {
+                finalize(expr);
             }
         }
 
@@ -156,6 +134,75 @@ namespace
         ExprHandle forms;
         Env capture;
         ContHandle cont;
+
+        void malformedActuals(ScamExpr * expr) const
+        {
+            stringstream s;
+            s << "Expected a paramter list, got: " << expr->toString();
+            ExprHandle err = ExpressionFactory::makeError(s.str());
+            cont->run(err.get());
+        }
+
+        bool describeFormals(unsigned & len) const
+        {
+            len = formals->length();
+            if ( ! formals->isList() ) {
+                --len;
+                return true;
+            }
+            return false;
+        }
+
+        void
+        wrongNumberOfParameters(unsigned formalsLen, unsigned actualsLen) const
+        {
+            stringstream s;
+            s << "Expected " << formalsLen << " parameters; "
+              << "got " << actualsLen;
+            ExprHandle err = ExpressionFactory::makeError(s.str());
+            cont->run(err.get());
+        }
+
+        bool checkArgLength(ScamExpr * expr) const
+        {
+            unsigned exp { 0 };
+            bool optFinal = describeFormals(exp);
+            unsigned act = expr->length();
+
+            if ( (act < exp) || ((! optFinal) && (act > exp)) ) {
+                wrongNumberOfParameters(exp, act);
+                return false;
+            }
+
+            return true;
+        }
+
+        void finalize(ScamExpr * actuals)  const
+        {
+            Env extended = bind(actuals);
+
+            using WT = ClosureFinalWorker;
+            ScamExpr * f = forms.get();
+            workQueueHelper<WT>(f, extended, cont);
+        }
+
+        Env bind(ScamExpr * actuals)  const
+        {
+            Env extended = capture.extend();
+            bindOne(extended, formals.get(), actuals);
+            return extended;
+        }
+
+        void bindOne(Env env, ScamExpr * syms, ScamExpr * vals) const
+        {
+            if ( syms->isCons() ) {
+                env.put(syms->getCar().get(), vals->getCar().get());
+                bindOne(env, syms->getCdr().get(), vals->getCdr().get());
+            }
+            else if ( ! syms->isNil() ) {
+                env.put(syms, vals);
+            }
+        }
     };
 
     class ClosureWorker : public Worker
