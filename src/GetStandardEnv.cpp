@@ -27,6 +27,7 @@ Env ScamEngine::getStandardEnv()
     addForm<Define>(env, "define");
     addForm<Lambda>(env, "lambda");
     addForm<Quote>(env, "quote");
+    addForm<Let>(env, "let");
 
     addForm<If>(env, "if");
     addForm<And>(env, "and");

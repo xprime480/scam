@@ -1,7 +1,9 @@
 
 #include "expr/ScamClosure.hpp"
 
+#include "Binder.hpp"
 #include "Continuation.hpp"
+#include "EvalWorker.hpp"
 #include "Extractor.hpp"
 #include "WorkQueue.hpp"
 #include "Worker.hpp"
@@ -53,54 +55,6 @@ bool ScamClosure::isProcedure() const
 
 namespace
 {
-    class ClosureFinalCont : public Continuation
-    {
-    public:
-        ClosureFinalCont(ContHandle cont)
-            : Continuation("proc")
-            , cont(cont)
-        {
-        }
-
-        void run(ScamExpr * expr) override
-        {
-            if ( expr->isList() ) {
-                unsigned len = expr->length();
-                ExprHandle last = expr->nth(len - 1);
-                cont->run(last.get());
-            }
-            else {
-                cont->run(expr);
-            }
-        }
-
-    private:
-        ContHandle cont;
-    };
-
-    class ClosureFinalWorker : public Worker
-    {
-    public:
-        ClosureFinalWorker(ScamExpr * forms, Env extended, ContHandle cont)
-            : Worker("proc - eval")
-            , forms(forms->clone())
-            , extended(extended)
-            , cont(cont)
-        {
-        }
-
-        void run() override
-        {
-            ContHandle newCont = make_shared<ClosureFinalCont>(cont);
-            forms->mapEval(newCont, extended);
-        }
-
-    private:
-        ExprHandle forms;
-        Env extended;
-        ContHandle cont;
-    };
-
     class ClosureBindCont : public Continuation
     {
     public:
@@ -132,7 +86,7 @@ namespace
     private:
         ExprHandle formals;
         ExprHandle forms;
-        Env capture;
+        Env        capture;
         ContHandle cont;
 
         void malformedActuals(ScamExpr * expr) const
@@ -179,29 +133,12 @@ namespace
 
         void finalize(ScamExpr * actuals)  const
         {
-            Env extended = bind(actuals);
+            Binder binder(capture);
+            Env extended = binder.bind(formals.get(), actuals);
 
-            using WT = ClosureFinalWorker;
+            using WT = EvalWorker;
             ScamExpr * f = forms.get();
             workQueueHelper<WT>(f, extended, cont);
-        }
-
-        Env bind(ScamExpr * actuals)  const
-        {
-            Env extended = capture.extend();
-            bindOne(extended, formals.get(), actuals);
-            return extended;
-        }
-
-        void bindOne(Env env, ScamExpr * syms, ScamExpr * vals) const
-        {
-            if ( syms->isCons() ) {
-                env.put(syms->getCar().get(), vals->getCar().get());
-                bindOne(env, syms->getCdr().get(), vals->getCdr().get());
-            }
-            else if ( ! syms->isNil() ) {
-                env.put(syms, vals);
-            }
         }
     };
 

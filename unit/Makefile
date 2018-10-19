@@ -42,6 +42,7 @@ by_module :
 	@./unittests --gtest_filter=LogicTest.*
 	@./unittests --gtest_filter=MathTest.*
 	@./unittests --gtest_filter=ClosureTest.*
+	@./unittests --gtest_filter=LetTest.*
 
 clean :
 	make -C ../src clean
