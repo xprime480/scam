@@ -88,3 +88,10 @@ TEST_F(LetTest, LetBadBindings4)
     expectError(expr);
 }
 
+TEST_F(LetTest, LetStarIsSequential)
+{
+    parseAndEvaluate("(define x 2)");
+    parseAndEvaluate("(define y 0)");
+    ExprHandle expr = parseAndEvaluate("(let* ((x 1) (y x)) y)");
+    expectInteger(expr, 1, "1");
+}

@@ -15,7 +15,8 @@ using namespace std;
 
 namespace
 {
-    extern void apply_impl(ScamExpr * args, ContHandle cont, Env env);
+    extern void let_impl(ScamExpr * args, ContHandle cont, Env env);
+    extern void letstar_impl(ScamExpr * args, ContHandle cont, Env env);
 }
 
 Let::Let()
@@ -25,24 +26,41 @@ Let::Let()
 
 void Let::apply(ScamExpr * args, ContHandle cont, Env env)
 {
-    apply_impl(args, cont, env);
+    let_impl(args, cont, env);
+}
+
+LetStar::LetStar()
+    : SpecialForm("let*")
+{
+}
+
+void LetStar::apply(ScamExpr * args, ContHandle cont, Env env)
+{
+    letstar_impl(args, cont, env);
 }
 
 namespace
 {
-    class LetCont : public Continuation
+    ExprHandle safeCons(ScamExpr * expr)
+    {
+        if ( expr->isCons() ) {
+            return expr->clone();
+        }
+        return ExpressionFactory::makeCons(expr,
+                                           ExpressionFactory::makeNil().get());
+    }
+
+    class LetCommonCont : public Continuation
     {
     public:
-        LetCont(ScamExpr * formals, ScamExpr * forms, ContHandle cont, Env env)
-            : Continuation("Let")
-            , formals(formals->clone())
+        LetCommonCont(char const * name, ScamExpr * forms, ContHandle cont)
+            : Continuation(name)
             , forms(forms->clone())
             , cont(cont)
-            , env(env)
         {
         }
 
-        void run(ScamExpr * expr)
+        void run(ScamExpr * expr) override
         {
             if ( expr->error() ) {
                 cont->run(expr);
@@ -52,34 +70,97 @@ namespace
             }
         }
 
-    private:
-        ExprHandle formals;
+    protected:
         ExprHandle forms;
         ContHandle cont;
-        Env        env;
 
-        void do_let(ScamExpr * expr)
+        virtual void do_let(ScamExpr * expr) = 0;
+
+        void final_eval(Env env)
+        {
+            using WT = EvalWorker;
+            ScamExpr * f = forms.get();
+            workQueueHelper<WT>(f, env, cont);
+        }
+    };
+
+    class LetCont : public LetCommonCont
+    {
+    public:
+        LetCont(ScamExpr * formals, ScamExpr * forms, ContHandle cont, Env env)
+            : LetCommonCont("Let", forms, cont)
+            , formals(formals->clone())
+            , env(env)
+        {
+        }
+
+    protected:
+        void do_let(ScamExpr * expr) override
         {
             Binder binder(env);
             ScamExpr * ff = formals.get();
             Env extended = binder.bind(ff, expr);
 
-
-            using WT = EvalWorker;
-            ScamExpr * f = forms.get();
-            workQueueHelper<WT>(f, extended, cont);
+            final_eval(extended);
         }
 
+    private:
+        ExprHandle formals;
+        Env        env;
     };
 
-    class LetWorker : public Worker
+    class LetStarCont : public LetCommonCont
     {
     public:
-        LetWorker(ScamExpr * args, ContHandle cont, Env env)
-            : Worker("Let")
-            , args(args->clone())
+        LetStarCont(ScamExpr * formals,
+                    ScamExpr * rest,
+                    ScamExpr * forms,
+                    ContHandle cont,
+                    Env env)
+            : LetCommonCont("Let*", forms, cont)
+            , formals(formals->clone())
+            , rest(rest->clone())
+            , env(env)
+        {
+        }
+
+    protected:
+        void do_let(ScamExpr * expr) override
+        {
+            if ( formals->isNil() ) {
+                final_eval(env);
+            }
+            else {
+                env.put(formals->getCar().get(), expr);
+                ExprHandle safe = safeCons(rest.get());
+
+                using C = LetStarCont;
+                ContHandle ch = make_shared<C>(formals->getCdr().get(),
+                                               safe->getCdr().get(),
+                                               forms.get(),
+                                               cont,
+                                               env);
+                safe->getCar()->eval(ch, env);
+            }
+        }
+
+    private:
+        ExprHandle formals;
+        ExprHandle rest;
+        Env        env;
+    };
+
+    class LetBaseWorker : public Worker
+    {
+    public:
+        LetBaseWorker(char const * name,
+                      ScamExpr * args,
+                      ContHandle cont,
+                      Env env)
+            : Worker(name)
             , cont(cont)
             , env(env)
+            , args(args->clone())
         {
         }
 
@@ -94,14 +175,18 @@ namespace
             ScamExpr * values  = parsed->getCar()->getCdr().get();
             ScamExpr * forms   = parsed->getCdr().get();
 
-            ContHandle ch = make_shared<LetCont>(formals, forms, cont, env);
-            values->mapEval(ch, env);
+            do_next(formals, values, forms);
         }
+
+    protected:
+        ContHandle cont;
+        Env env;
+
+        virtual void
+        do_next(ScamExpr * formals, ScamExpr * values, ScamExpr * forms) = 0;
 
     private:
         ExprHandle args;
-        ContHandle cont;
-        Env env;
 
         void report_error()
         {
@@ -211,11 +296,63 @@ namespace
 
             return ExpressionFactory::makeCons(separated.get(), forms);
         }
-
     };
 
-    void apply_impl(ScamExpr * args, ContHandle cont, Env env)
+    class LetWorker : public LetBaseWorker
+    {
+    public:
+        LetWorker(ScamExpr * args, ContHandle cont, Env env)
+            : LetBaseWorker("Let", args, cont, env)
+        {
+        }
+
+    protected:
+        void do_next(ScamExpr * formals,
+                     ScamExpr * values,
+                     ScamExpr * forms) override
+        {
+            ContHandle ch = make_shared<LetCont>(formals, forms, cont, env);
+            values->mapEval(ch, env);
+        }
+
+    private:
+    };
+
+    class LetStarWorker : public LetBaseWorker
+    {
+    public:
+        LetStarWorker(ScamExpr * args, ContHandle cont, Env env)
+            : LetBaseWorker("LetStar", args, cont, env)
+        {
+        }
+
+    protected:
+        void do_next(ScamExpr * formals,
+                     ScamExpr * values,
+                     ScamExpr * forms) override
+        {
+            Env extended = env.extend();
+            ExprHandle safe = safeCons(values);
+
+            using C = LetStarCont;
+            ContHandle ch = make_shared<C>(formals,
+                                           safe->getCdr().get(),
+                                           forms,
+                                           cont,
+                                           extended);
+            safe->getCar()->eval(ch, env);
+        }
+
+    private:
+    };
+
+    void let_impl(ScamExpr * args, ContHandle cont, Env env)
     {
         workQueueHelper<LetWorker>(args, cont, env);
+    }
+
+    void letstar_impl(ScamExpr * args, ContHandle cont, Env env)
+    {
+        workQueueHelper<LetStarWorker>(args, cont, env);
     }
 }

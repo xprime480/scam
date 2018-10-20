@@ -12,6 +12,14 @@ namespace scam
 
         void apply(ScamExpr * args, ContHandle cont, Env env) override;
     };
+
+    class LetStar : public SpecialForm
+    {
+    public:
+        LetStar();
+
+        void apply(ScamExpr * args, ContHandle cont, Env env) override;
+    };
 }
 
 #endif
