@@ -7,91 +7,94 @@ using namespace std;
 using namespace scam;
 
 class LetTest : public ExpressionTestBase
+                , public ::testing::WithParamInterface<const char *>
 {
+protected:
+    ExprHandle runTest(char const * fmt)
+    {
+        char buf[256];
+        sprintf(buf, fmt, GetParam());
+        return parseAndEvaluate(buf);
+    }
 };
 
-TEST_F(LetTest, LetSimple)
+TEST_P(LetTest, LetSimple)
 {
-    ExprHandle expr = parseAndEvaluate("(let ((x 1)) (* x 2))");
+    ExprHandle expr = runTest("(%s ((x 1)) (* x 2))");
     expectInteger(expr, 2, "2");
 }
 
-TEST_F(LetTest, LetNoBindings)
+TEST_P(LetTest, LetNoBindings)
 {
-    ExprHandle expr = parseAndEvaluate("(let () 3)");
+    ExprHandle expr = runTest("(%s () 3)");
     expectInteger(expr, 3, "3");
 }
 
-TEST_F(LetTest, LetSeveralBindings)
+TEST_P(LetTest, LetSeveralBindings)
 {
-    ExprHandle expr = parseAndEvaluate("(let ((a 3) (b 5)) (* a b))");
+    ExprHandle expr = runTest("(%s ((a 3) (b 5)) (* a b))");
     expectInteger(expr, 15, "15");
 }
 
-TEST_F(LetTest, LetSeveralForms)
+TEST_P(LetTest, LetSeveralForms)
 {
-    ExprHandle expr = parseAndEvaluate("(let () 3 5 9)");
+    ExprHandle expr = runTest("(%s () 3 5 9)");
     expectInteger(expr, 9, "9");
 }
 
-TEST_F(LetTest, LetCreatesNewEnv)
+TEST_P(LetTest, LetCreatesNewEnv)
 {
     parseAndEvaluate("(define x 2)");
     parseAndEvaluate("(define y 0)");
-    ExprHandle expr = parseAndEvaluate("(let ((y 1.0)) (/ x y))");
+    ExprHandle expr = runTest("(%s ((y 1.0)) (/ x y))");
     expectFloat(expr, 2.0, "2");
 
     expr = parseAndEvaluate("y");
     expectInteger(expr, 0, "0");
 }
 
-TEST_F(LetTest, LetParallelEvaluation)
+TEST_P(LetTest, LetNoForms)
 {
-    parseAndEvaluate("(define x 2)");
-    parseAndEvaluate("(define y 0)");
-    ExprHandle expr = parseAndEvaluate("(let ((x 1) (y x)) y)");
-    expectInteger(expr, 2, "2");
-}
-
-TEST_F(LetTest, LetNoForms)
-{
-    ExprHandle expr = parseAndEvaluate("(let ())");
+    ExprHandle expr = runTest("(%s ())");
     expectNil(expr);
 }
 
-TEST_F(LetTest, LetBadBindings1)
+TEST_P(LetTest, LetBadBindings1)
 {
-    try {
-    ExprHandle expr = parseAndEvaluate("(let x 2)");
-    expectError(expr);
-    }
-    catch ( ScamException e ) {
-	FAIL() << e.getMessage();
-    }
-}
-
-TEST_F(LetTest, LetBadBindings2)
-{
-    ExprHandle expr = parseAndEvaluate("(let (3 2) \"foo\")");
+    ExprHandle expr = runTest("(%s x 2)");
     expectError(expr);
 }
 
-TEST_F(LetTest, LetBadBindings3)
+TEST_P(LetTest, LetBadBindings2)
 {
-    ExprHandle expr = parseAndEvaluate("(let ((3 2)) \"foo\")");
+    ExprHandle expr = runTest("(%s (3 2) \"foo\")");
     expectError(expr);
 }
 
-TEST_F(LetTest, LetBadBindings4)
+TEST_P(LetTest, LetBadBindings3)
 {
-    ExprHandle expr = parseAndEvaluate("(let ((x)) \"foo\")");
+    ExprHandle expr = runTest("(%s ((3 2)) \"foo\")");
     expectError(expr);
 }
 
-TEST_F(LetTest, LetStarIsSequential)
+TEST_P(LetTest, LetBadBindings4)
+{
+    ExprHandle expr = runTest("(%s ((x)) \"foo\")");
+    expectError(expr);
+}
+
+TEST_P(LetTest, LetDependentForms)
 {
     parseAndEvaluate("(define x 2)");
     parseAndEvaluate("(define y 0)");
-    ExprHandle expr = parseAndEvaluate("(let* ((x 1) (y x)) y)");
-    expectInteger(expr, 1, "1");
+    ExprHandle expr = runTest("(%s ((x 1) (y x)) y)");
+
+    if ( 0 == strcmp("let", GetParam()) ) {
+        expectInteger(expr, 2, "2");
+    }
+    else {
+        expectInteger(expr, 1, "1");
+    }
 }
+
+INSTANTIATE_TEST_CASE_P(Let, LetTest, ::testing::Values("let", "let*"));
