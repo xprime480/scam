@@ -12,6 +12,14 @@ namespace scam
 
         void apply(ScamExpr * args, ContHandle cont, Env env) override;
     };
+
+    class QuasiQuote : public SpecialForm
+    {
+    public:
+        QuasiQuote();
+
+        void apply(ScamExpr * args, ContHandle cont, Env env) override;
+    };
 }
 
 #endif

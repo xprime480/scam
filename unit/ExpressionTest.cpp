@@ -298,6 +298,17 @@ TEST_F(ExpressionTest, SpecialFormQuote)
     expectApplicable(evaled, value);
 }
 
+TEST_F(ExpressionTest, SpecialFormQuasiQuote)
+{
+    string const value { "Special Form quasiquote" };
+
+    ExprHandle quote  = ExpressionFactory::makeForm<QuasiQuote>();
+    expectApplicable(quote, value);
+
+    ExprHandle evaled = evaluate(quote);
+    expectApplicable(evaled, value);
+}
+
 TEST_F(ExpressionTest, VectorEmpty)
 {
     string const value { "[]" };

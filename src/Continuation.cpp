@@ -17,17 +17,18 @@ namespace
 Continuation::Continuation(char const * id)
     : name(makeName(id))
 {
-    //cerr << "Creating continuation " << name << "\n";
+    //    cerr << "Creating continuation " << name << "\n";
 }
 
 Continuation::~Continuation()
 {
-    //cerr << "Deleting continuation " << name << "\n";
+    //    cerr << "Deleting continuation " << name << "\n";
 };
 
 void Continuation::run(ScamExpr * expr)
 {
-    //cerr << "Executing continuation " << name << "\n";
+    //    cerr << "Executing continuation " << name << "\n";
+    //    cerr << "\tExpr: " << expr->toString() << "\n";
 }
 
 string Continuation::id() const
