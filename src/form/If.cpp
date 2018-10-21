@@ -71,7 +71,7 @@ void IfWorker::run()
     }
     else {
         ContHandle newCont = make_shared<IfCont>(args.get(), cont, env);
-        ExprHandle test = args->nth(0);
+        ExprHandle test = args->nthcar(0);
         test->eval(newCont, env);
     }
 }
@@ -92,10 +92,10 @@ void IfCont::run(ScamExpr * expr)
         cont->run(expr);
     }
     else if ( expr->truth() ) {
-        args->nth(1)->eval(cont, env);
+        args->nthcar(1)->eval(cont, env);
     }
     else if ( args->length() > 2 ) {
-        args->nth(2)->eval(cont, env);
+        args->nthcar(2)->eval(cont, env);
     }
     else {
         cont->run(ExpressionFactory::makeNil().get());

@@ -29,8 +29,16 @@ namespace scam
         static ExprHandle makeInteger(int value);
 
         static ExprHandle makeNil();
-        static ExprHandle
-        makeCons(ScamExpr * car, ScamExpr * cdr);
+        static ExprHandle makeCons(ScamExpr * car, ScamExpr * cdr);
+
+        static ExprHandle makeList();
+        static ExprHandle makeList(ScamExpr * item);
+
+        template <typename... Args>
+        static ExprHandle makeList(ScamExpr * car, Args... args)
+        {
+            return makeCons(car, makeList(args...).get());
+        }
 
         static ExprHandle makeVector(ExprVec const & elts);
 

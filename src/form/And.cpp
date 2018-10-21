@@ -92,11 +92,11 @@ void AndWorker::run()
         cont->run(ExpressionFactory::makeBoolean(true).get());
     }
     else if ( n == (len - 1) ) {
-        args->nth(len-1)->eval(cont, env);
+        args->nthcar(len-1)->eval(cont, env);
     }
     else {
-        ExprHandle test = args->nth(n);
-	ScamExpr * a = args.get();
+        ExprHandle test = args->nthcar(n);
+        ScamExpr * a = args.get();
         ContHandle newCont = make_shared<AndCont>(a, cont, env, n+1);
         test->eval(newCont, env);
     }
@@ -122,7 +122,7 @@ void AndCont::run(ScamExpr * expr)
         cont->run(expr);
     }
     else {
-	ScamExpr * a = args.get();
+        ScamExpr * a = args.get();
         workQueueHelper<AndWorker>(cont, env, a, n);
     }
 }

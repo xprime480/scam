@@ -89,7 +89,7 @@ size_t ScamCons::length() const
     return len;
 }
 
-ExprHandle ScamCons::nth(size_t n) const
+ExprHandle ScamCons::nthcar(size_t n) const
 {
     auto f = [=] () -> ExprHandle {
         stringstream s;
@@ -103,7 +103,7 @@ ExprHandle ScamCons::nth(size_t n) const
         rv = car;
     }
     else if ( cdr->isCons() ) {
-        rv = cdr->nth(n-1);
+        rv = cdr->nthcar(n-1);
         if ( rv->error() ) {
             rv = f();
         }
@@ -117,3 +117,35 @@ ExprHandle ScamCons::nth(size_t n) const
 
     return rv;
 }
+
+ExprHandle ScamCons::nthcdr(size_t n) const
+{
+    cerr << "nthcdr: " << n << " of " << cdr->toString() << "\n";
+
+    auto f = [=] () -> ExprHandle {
+        stringstream s;
+        s << "Index " << n << " requested for " << toString();
+        return ExpressionFactory::makeError(s.str());
+    };
+
+    ExprHandle rv;
+
+    if ( 0 == n ) {
+        rv = cdr;
+    }
+    else if ( cdr->isCons() ) {
+        rv = cdr->nthcdr(n-1);
+        if ( rv->error() ) {
+            rv = f();
+        }
+    }
+    else if ( n >= 1 ) {
+        rv = f();
+    }
+    else {
+        rv = cdr;
+    }
+
+    return rv;
+}
+

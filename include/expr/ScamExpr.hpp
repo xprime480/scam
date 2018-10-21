@@ -55,7 +55,8 @@ namespace scam
         virtual bool isProcedure() const;
 
         virtual size_t length() const;
-        virtual ExprHandle nth(size_t n) const;
+        virtual ExprHandle nthcar(size_t n) const;
+        virtual ExprHandle nthcdr(size_t n) const;
 
         ExprHandle clone() const;
 

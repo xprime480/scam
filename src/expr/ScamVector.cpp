@@ -64,7 +64,7 @@ size_t ScamVector::length() const
     return elts.size();
 }
 
-ExprHandle ScamVector::nth(size_t n) const
+ExprHandle ScamVector::nthcar(size_t n) const
 {
     if ( n >= length() ) {
         stringstream s;

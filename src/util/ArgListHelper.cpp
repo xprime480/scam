@@ -100,7 +100,7 @@ namespace
 
         const size_t len = args->length();
         for ( size_t idx = 0u ; idx < len ; ++idx ) {
-            ExprHandle arg = args->nth(idx);
+            ExprHandle arg = args->nthcar(idx);
             if ( ! argToType(arg.get(), ns, context, rv) ) {
                 break;
             }

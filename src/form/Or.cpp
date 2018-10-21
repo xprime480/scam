@@ -91,10 +91,10 @@ void OrWorker::run()
         cont->run(ExpressionFactory::makeBoolean(false).get());
     }
     else if ( n == (len - 1) ) {
-        args->nth(len-1)->eval(cont, env);
+        args->nthcar(len-1)->eval(cont, env);
     }
     else {
-        ExprHandle test = args->nth(n);
+        ExprHandle test = args->nthcar(n);
 
         ContHandle newCont = make_shared<OrCont>(args.get(), cont, env, n+1);
         test->eval(newCont, env);

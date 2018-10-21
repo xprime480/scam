@@ -168,7 +168,16 @@ size_t ScamExpr::length() const
     return 0u;
 }
 
-ExprHandle ScamExpr::nth(size_t n) const
+ExprHandle ScamExpr::nthcar(size_t n) const
+{
+    stringstream s;
+    s << "Cannot index <" << this->toString() << ">";
+    throw ScamException(s.str());
+
+    return ExpressionFactory::makeNull();
+}
+
+ExprHandle ScamExpr::nthcdr(size_t n) const
 {
     stringstream s;
     s << "Cannot index <" << this->toString() << ">";

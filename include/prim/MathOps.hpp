@@ -9,19 +9,19 @@ namespace scam
 {
     struct MathOpDef
     {
-	char const * name;
-	NumericalAlgorithm algo;
+        char const * name;
+        NumericalAlgorithm algo;
     };
 
     class MathOp : public Primitive
     {
     public:
-	MathOp(MathOpDef const & def);
+        MathOp(MathOpDef const & def);
 
         void applyArgs(ScamExpr * args, ContHandle cont) override;
 
     private:
-	NumericalAlgorithm algo;
+        NumericalAlgorithm algo;
     };
 
 #define MATH_OP_DECL(Name) \

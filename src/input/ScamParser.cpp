@@ -235,8 +235,7 @@ ExprHandle ScamParser::expand_reader_macro(std::string const & text) const
         return ExpressionFactory::makeError(s.str());
     }
 
-    ExprHandle sym = ExpressionFactory::makeSymbol(name);
-    ExprHandle nil = ExpressionFactory::makeNil();
-    ExprHandle listed = ExpressionFactory::makeCons(expr.get(), nil.get());
+    ExprHandle sym    = ExpressionFactory::makeSymbol(name);
+    ExprHandle listed = ExpressionFactory::makeList(expr.get());
     return ExpressionFactory::makeCons(sym.get(), listed.get());
 }

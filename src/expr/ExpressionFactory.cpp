@@ -86,6 +86,16 @@ ExpressionFactory::makeCons(ScamExpr * car, ScamExpr * cdr)
     return expr;
 }
 
+ExprHandle ExpressionFactory::makeList()
+{
+    return makeNil();
+}
+
+ExprHandle ExpressionFactory::makeList(ScamExpr * item)
+{
+    return makeCons(item, makeNil().get());
+}
+
 ExprHandle ExpressionFactory::makeVector(ExprVec const & elts)
 {
     ExprHandle expr = makeForm<ScamVector>(elts);

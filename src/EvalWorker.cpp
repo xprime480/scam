@@ -22,7 +22,7 @@ namespace
         {
             if ( expr->isList() && ! expr->isNil() ) {
                 unsigned len = expr->length();
-                ExprHandle last = expr->nth(len - 1);
+                ExprHandle last = expr->nthcar(len - 1);
                 cont->run(last.get());
             }
             else {

@@ -419,6 +419,6 @@ namespace
         ExprHandle expr = runTest(tokens);
         EXPECT_TRUE(expr->isVector());
         EXPECT_EQ(msg, expr->toString());
-        EXPECT_EQ(42, expr->nth(1)->toInteger());
+        EXPECT_EQ(42, expr->nthcar(1)->toInteger());
     }
 }

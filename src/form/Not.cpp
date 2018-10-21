@@ -76,7 +76,7 @@ void NotWorker::run()
     }
     else {
         ContHandle newCont = make_shared<NotCont>(cont);
-        ExprHandle test = args->nth(0);
+        ExprHandle test = args->nthcar(0);
         test->eval(newCont, env);
     }
 }

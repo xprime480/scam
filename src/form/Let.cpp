@@ -46,8 +46,7 @@ namespace
         if ( expr->isCons() ) {
             return expr->clone();
         }
-        return ExpressionFactory::makeCons(expr,
-                                           ExpressionFactory::makeNil().get());
+        return ExpressionFactory::makeList(expr);
     }
 
     class LetCommonCont : public Continuation

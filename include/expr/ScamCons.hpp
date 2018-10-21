@@ -21,7 +21,8 @@ namespace scam
         ExprHandle getCdr() const override;
 
         size_t length() const override;
-        ExprHandle nth(size_t n) const override;
+        ExprHandle nthcar(size_t n) const override;
+        ExprHandle nthcdr(size_t n) const override;
 
     private:
         ExprHandle car;

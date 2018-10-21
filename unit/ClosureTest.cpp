@@ -13,10 +13,11 @@ class ClosureTest : public ExpressionTestBase
 TEST_F(ClosureTest, ClosureBasic)
 {
     ExprHandle parm = ExpressionFactory::makeNil();
-    ExprHandle nil  = ExpressionFactory::makeNil();
     ExprHandle two  = ExpressionFactory::makeInteger(2);
-    ExprHandle forms = ExpressionFactory::makeCons(two.get(), nil.get());
-    ExprHandle expr = ExpressionFactory::makeClosure(parm.get(), forms.get(), env);
+    ExprHandle forms = ExpressionFactory::makeList(two.get());
+    ExprHandle expr = ExpressionFactory::makeClosure(parm.get(),
+                                                     forms.get(),
+                                                     env);
 
     expectProcedure(expr, "(proc () (2))");
 
@@ -29,11 +30,10 @@ TEST_F(ClosureTest, ClosureBasic)
 TEST_F(ClosureTest, ClosureMultipleForms)
 {
     ExprHandle parm = ExpressionFactory::makeNil();
-    ExprHandle nil  = ExpressionFactory::makeNil();
+
     ExprHandle two  = ExpressionFactory::makeInteger(2);
     ExprHandle zed  = ExpressionFactory::makeCharacter("\\#z");
-    ExprHandle cdr  = ExpressionFactory::makeCons(zed.get(), nil.get());
-    ExprHandle forms = ExpressionFactory::makeCons(two.get(), cdr.get());
+    ExprHandle forms = ExpressionFactory::makeList(two.get(), zed.get());
     ExprHandle expr = ExpressionFactory::makeClosure(parm.get(),
                                                      forms.get(),
                                                      env);
@@ -50,14 +50,14 @@ TEST_F(ClosureTest, ClosureWithArg)
 {
     ExprHandle nil  = ExpressionFactory::makeNil();
     ExprHandle argx = ExpressionFactory::makeSymbol("x");
-    ExprHandle parm = ExpressionFactory::makeCons(argx.get(), nil.get());
+    ExprHandle parm = ExpressionFactory::makeList(argx.get());
 
     ExprHandle plus = ExpressionFactory::makeSymbol("+");
 
-    ExprHandle forms = ExpressionFactory::makeCons(argx.get(), nil.get());
-    forms = ExpressionFactory::makeCons(argx.get(), forms.get());
-    forms = ExpressionFactory::makeCons(plus.get(), forms.get());
-    forms = ExpressionFactory::makeCons(forms.get(), nil.get());
+    ExprHandle form1 = ExpressionFactory::makeList(plus.get(),
+                                                   argx.get(),
+                                                   argx.get());
+    ExprHandle forms = ExpressionFactory::makeList(form1.get());
 
     ExprHandle expr = ExpressionFactory::makeClosure(parm.get(),
                                                      forms.get(),
@@ -66,7 +66,7 @@ TEST_F(ClosureTest, ClosureWithArg)
     expectProcedure(expr, "(proc (x) ((+ x x)))");
 
     ExprHandle arg3 = ExpressionFactory::makeInteger(3);
-    ExprHandle args = ExpressionFactory::makeCons(arg3.get(), nil.get());
+    ExprHandle args = ExpressionFactory::makeList(arg3.get());
     try {
         ExprHandle final = apply(expr, args);
         expectInteger(final, 6, "6");

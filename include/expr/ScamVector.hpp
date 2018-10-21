@@ -21,7 +21,7 @@ namespace scam
         bool isVector() const override;
 
         size_t length() const override;
-        ExprHandle nth(size_t n) const override;
+        ExprHandle nthcar(size_t n) const override;
 
     private:
         ExprVec elts;
