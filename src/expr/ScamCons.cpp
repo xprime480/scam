@@ -6,7 +6,6 @@
 
 #include "impl/ConsHelper.hpp"
 
-#include <iostream>
 #include <sstream>
 
 using namespace scam;
@@ -120,8 +119,6 @@ ExprHandle ScamCons::nthcar(size_t n) const
 
 ExprHandle ScamCons::nthcdr(size_t n) const
 {
-    cerr << "nthcdr: " << n << " of " << cdr->toString() << "\n";
-
     auto f = [=] () -> ExprHandle {
         stringstream s;
         s << "Index " << n << " requested for " << toString();

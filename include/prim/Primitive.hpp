@@ -17,7 +17,7 @@ namespace scam
 
         virtual void applyArgs(ScamExpr * args, ContHandle cont) = 0;
 
-    private:
+    protected:
         std::string const name;
     };
 }

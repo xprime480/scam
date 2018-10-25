@@ -30,7 +30,7 @@ do_it_manually :
 ## Until the memory issue is fixed, run the tests in batches
 ##
 test : unittests
-	@./unittests --gtest_filter=*.*
+	@./unittests --gtest_filter=ListTest.*
 
 by_module :
 	@./unittests --gtest_filter=TrampolineTest.*
@@ -43,6 +43,7 @@ by_module :
 	@./unittests --gtest_filter=MathTest.*
 	@./unittests --gtest_filter=ClosureTest.*
 	@./unittests --gtest_filter=LetTest.*
+	@./unittests --gtest_filter=ListTest.*
 
 clean :
 	make -C ../src clean

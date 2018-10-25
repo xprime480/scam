@@ -47,5 +47,10 @@ Env ScamEngine::getStandardEnv()
     addForm<Gt>(env, ">");
     addForm<Ge>(env, ">=");
 
-    return env;
+    addForm<List>(env, "list");
+    addForm<Cons>(env, "cons");
+    addForm<Car>(env, "car");
+    addForm<Cdr>(env, "cdr");
+
+   return env;
 }
