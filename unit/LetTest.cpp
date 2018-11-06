@@ -7,7 +7,7 @@ using namespace std;
 using namespace scam;
 
 class LetTest : public ExpressionTestBase
-                , public ::testing::WithParamInterface<const char *>
+              , public ::testing::WithParamInterface<const char *>
 {
 protected:
     ExprHandle runTest(char const * fmt)
@@ -89,12 +89,32 @@ TEST_P(LetTest, LetDependentForms)
     parseAndEvaluate("(define y 0)");
     ExprHandle expr = runTest("(%s ((x 1) (y x)) y)");
 
-    if ( 0 == strcmp("let", GetParam()) ) {
-        expectInteger(expr, 2, "2");
+    if ( 0 == strcmp("let*", GetParam()) ) {
+        expectInteger(expr, 1, "1");
     }
     else {
-        expectInteger(expr, 1, "1");
+        expectInteger(expr, 2, "2");
     }
 }
 
-INSTANTIATE_TEST_CASE_P(Let, LetTest, ::testing::Values("let", "let*"));
+TEST_P(LetTest, LetRecursiveLambda)
+{
+    ExprHandle expr = runTest("\
+(%s  ((factorial\
+      (lambda (n)\
+              (if (> n 1)\
+                  (* n (factorial (- n 1)))\
+                  1))))\
+     (factorial 3))\
+");
+
+    if ( 0 == strcmp("letrec", GetParam()) ) {
+        expectInteger(expr, 6, "6");
+    }
+    else {
+        expectError(expr);
+    }
+}
+
+auto values = ::testing::Values("let", "let*", "letrec");
+INSTANTIATE_TEST_CASE_P(Let, LetTest, values);

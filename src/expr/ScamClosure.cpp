@@ -7,6 +7,7 @@
 #include "Extractor.hpp"
 #include "WorkQueue.hpp"
 #include "Worker.hpp"
+#include "expr/ExpressionFactory.hpp"
 
 #include <iostream>
 #include <sstream>
@@ -34,7 +35,7 @@ ScamClosure::ScamClosure(ScamExpr *formals, ScamExpr * forms, Env env)
 string ScamClosure::toString() const
 {
     stringstream s;
-    s << "(proc " << formals->toString() << " " << forms->toString() << ")";
+    s << "(lambda " << formals->toString() << " " << forms->toString() << ")";
     return s.str();
 }
 
@@ -51,6 +52,11 @@ void ScamClosure::apply(ScamExpr * args, ContHandle cont, Env env)
 bool ScamClosure::isProcedure() const
 {
     return true;
+}
+
+ExprHandle ScamClosure::withEnvUpdate(Env updated) const
+{
+    return ExpressionFactory::makeClosure(formals.get(), forms.get(), updated);
 }
 
 namespace

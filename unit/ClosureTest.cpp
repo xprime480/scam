@@ -19,7 +19,7 @@ TEST_F(ClosureTest, ClosureBasic)
                                                      forms.get(),
                                                      env);
 
-    expectProcedure(expr, "(proc () (2))");
+    expectProcedure(expr, "(lambda () (2))");
 
     ExprHandle args = ExpressionFactory::makeNil();
     ExprHandle final = apply(expr, args);
@@ -38,7 +38,7 @@ TEST_F(ClosureTest, ClosureMultipleForms)
                                                      forms.get(),
                                                      env);
 
-    expectProcedure(expr, "(proc () (2 \\#z))");
+    expectProcedure(expr, "(lambda () (2 \\#z))");
 
     ExprHandle args = ExpressionFactory::makeNil();
     ExprHandle final = apply(expr, args);
@@ -63,7 +63,7 @@ TEST_F(ClosureTest, ClosureWithArg)
                                                      forms.get(),
                                                      env);
 
-    expectProcedure(expr, "(proc (x) ((+ x x)))");
+    expectProcedure(expr, "(lambda (x) ((+ x x)))");
 
     ExprHandle arg3 = ExpressionFactory::makeInteger(3);
     ExprHandle args = ExpressionFactory::makeList(arg3.get());
@@ -79,7 +79,7 @@ TEST_F(ClosureTest, ClosureWithArg)
 TEST_F(ClosureTest, LambdaBasic)
 {
     ExprHandle expr = parseAndEvaluate("(lambda () 2)");
-    expectProcedure(expr, "(proc () (2))");
+    expectProcedure(expr, "(lambda () (2))");
 }
 
 TEST_F(ClosureTest, LambdaEvalConst)

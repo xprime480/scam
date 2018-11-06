@@ -58,6 +58,8 @@ namespace scam
         virtual ExprHandle nthcar(size_t n) const;
         virtual ExprHandle nthcdr(size_t n) const;
 
+        virtual ExprHandle withEnvUpdate(Env updated) const;
+
         ExprHandle clone() const;
 
     private:

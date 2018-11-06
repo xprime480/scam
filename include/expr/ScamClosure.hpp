@@ -19,6 +19,8 @@ namespace scam
 
         bool isProcedure() const override;
 
+        ExprHandle withEnvUpdate(Env updated) const override;
+
     private:
         ExprHandle formals;
         ExprHandle forms;

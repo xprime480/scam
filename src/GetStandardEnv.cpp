@@ -30,6 +30,7 @@ Env ScamEngine::getStandardEnv()
     addForm<Quote>(env, "quote");
     addForm<Let>(env, "let");
     addForm<LetStar>(env, "let*");
+    addForm<LetRec>(env, "letrec");
 
     addForm<If>(env, "if");
     addForm<And>(env, "and");

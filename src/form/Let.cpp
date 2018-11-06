@@ -15,8 +15,13 @@ using namespace std;
 
 namespace
 {
-    extern void let_impl(ScamExpr * args, ContHandle cont, Env env);
-    extern void letstar_impl(ScamExpr * args, ContHandle cont, Env env);
+    extern void let_impl(ScamExpr * args,
+                         ContHandle cont,
+                         Env env,
+                         bool rebind);
+    extern void letstar_impl(ScamExpr * args,
+                             ContHandle cont,
+                             Env env);
 }
 
 Let::Let()
@@ -26,7 +31,7 @@ Let::Let()
 
 void Let::apply(ScamExpr * args, ContHandle cont, Env env)
 {
-    let_impl(args, cont, env);
+    let_impl(args, cont, env, false);
 }
 
 LetStar::LetStar()
@@ -37,6 +42,17 @@ LetStar::LetStar()
 void LetStar::apply(ScamExpr * args, ContHandle cont, Env env)
 {
     letstar_impl(args, cont, env);
+}
+
+
+LetRec::LetRec()
+    : SpecialForm("letrec")
+{
+}
+
+void LetRec::apply(ScamExpr * args, ContHandle cont, Env env)
+{
+    let_impl(args, cont, env, true);
 }
 
 namespace
@@ -86,10 +102,15 @@ namespace
     class LetCont : public LetCommonCont
     {
     public:
-        LetCont(ScamExpr * formals, ScamExpr * forms, ContHandle cont, Env env)
+        LetCont(ScamExpr * formals,
+                ScamExpr * forms,
+                ContHandle cont,
+                Env env,
+                bool rebind)
             : LetCommonCont("Let", forms, cont)
             , formals(formals->clone())
             , env(env)
+            , rebind(rebind)
         {
         }
 
@@ -100,12 +121,31 @@ namespace
             ScamExpr * ff = formals.get();
             Env extended = binder.bind(ff, expr);
 
+            rebind_procs(extended);
             final_eval(extended);
         }
 
     private:
         ExprHandle formals;
         Env        env;
+        bool       rebind;
+
+        void rebind_procs(Env extended)
+        {
+            if ( ! rebind ) {
+                return;
+            }
+
+            const size_t len = formals->length();
+            for ( size_t n = 0 ; n < len ; ++n ) {
+                ScamExpr * k = formals->nthcar(n).get();
+                ScamExpr * v = extended.get(k).get();
+                if ( v->isProcedure() ) {
+                    ExprHandle newV = v->withEnvUpdate(extended);
+                    extended.assign(k, newV.get());
+                }
+            }
+        }
     };
 
     class LetStarCont : public LetCommonCont
@@ -300,8 +340,9 @@ namespace
     class LetWorker : public LetBaseWorker
     {
     public:
-        LetWorker(ScamExpr * args, ContHandle cont, Env env)
+        LetWorker(ScamExpr * args, ContHandle cont, Env env, bool rebind)
             : LetBaseWorker("Let", args, cont, env)
+            , rebind(rebind)
         {
         }
 
@@ -310,11 +351,13 @@ namespace
                      ScamExpr * values,
                      ScamExpr * forms) override
         {
-            ContHandle ch = make_shared<LetCont>(formals, forms, cont, env);
+            ContHandle ch
+                = make_shared<LetCont>(formals, forms, cont, env, rebind);
             values->mapEval(ch, env);
         }
 
     private:
+        const bool rebind;
     };
 
     class LetStarWorker : public LetBaseWorker
@@ -345,9 +388,9 @@ namespace
     private:
     };
 
-    void let_impl(ScamExpr * args, ContHandle cont, Env env)
+    void let_impl(ScamExpr * args, ContHandle cont, Env env, bool rebind)
     {
-        workQueueHelper<LetWorker>(args, cont, env);
+        workQueueHelper<LetWorker>(args, cont, env, rebind);
     }
 
     void letstar_impl(ScamExpr * args, ContHandle cont, Env env)

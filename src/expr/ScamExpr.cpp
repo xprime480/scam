@@ -186,6 +186,15 @@ ExprHandle ScamExpr::nthcdr(size_t n) const
     return ExpressionFactory::makeNull();
 }
 
+ExprHandle ScamExpr::withEnvUpdate(Env updated) const
+{
+    stringstream s;
+    s << "Cannot update env of <" << this->toString() << ">";
+    throw ScamException(s.str());
+
+    return ExpressionFactory::makeNull();
+}
+
 ExprHandle ScamExpr::clone() const
 {
     return ExpressionFactory::clone(this);

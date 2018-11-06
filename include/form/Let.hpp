@@ -20,6 +20,14 @@ namespace scam
 
         void apply(ScamExpr * args, ContHandle cont, Env env) override;
     };
+
+    class LetRec : public SpecialForm
+    {
+    public:
+        LetRec();
+
+        void apply(ScamExpr * args, ContHandle cont, Env env) override;
+    };
 }
 
 #endif

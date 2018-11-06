@@ -220,7 +220,13 @@ void ExpressionTestBase::expectFloat(ExprHandle expr,
     checkPredicates(expr, SELECT_TRUTH | ALL_FLOAT);
     EXPECT_EQ(repr, expr->toString());
 
-    EXPECT_EQ(value, expr->toFloat());
+    try {
+        EXPECT_EQ(value, expr->toFloat());
+    }
+    catch ( ScamException e ) {
+        FAIL() << e.getMessage() << "\n";
+    }
+
     EXPECT_THROW(expr->toInteger(), ScamException);
 }
 
@@ -230,8 +236,13 @@ void ExpressionTestBase::expectInteger(ExprHandle expr,
 {
     checkPredicates(expr, SELECT_TRUTH | ALL_INTEGER);
     EXPECT_EQ(repr, expr->toString());
-    EXPECT_EQ((double)value, expr->toFloat());
-    EXPECT_EQ(value, expr->toInteger());
+    try {
+        EXPECT_EQ((double)value, expr->toFloat());
+        EXPECT_EQ(value, expr->toInteger());
+    }
+    catch ( ScamException e ) {
+        FAIL() << e.getMessage() << "\n";
+    }
 }
 
 void
