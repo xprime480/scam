@@ -180,3 +180,9 @@ TEST_F(ClosureTest, LambdaSymbolParmListSeveral)
     ExprHandle expr = parseAndEvaluate("(f 5 10 15)");
     expectList(expr, "(5 10 15)", 3);
 }
+
+TEST_F(ClosureTest, MacroBasic)
+{
+    ExprHandle expr = parseAndEvaluate("(macro () 2)");
+    expectProcedure(expr, "(macro () (2))");
+}

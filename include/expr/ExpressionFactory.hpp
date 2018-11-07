@@ -44,7 +44,8 @@ namespace scam
 
         static ExprHandle makeClosure(ScamExpr *formals,
                                       ScamExpr * forms,
-                                      Env & env);
+                                      Env & env,
+                                      bool macrolike = false);
 
         template <typename T, typename... Args>
         static ExprHandle makeForm(Args... args)

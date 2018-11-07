@@ -104,9 +104,10 @@ ExprHandle ExpressionFactory::makeVector(ExprVec const & elts)
 
 ExprHandle ExpressionFactory::makeClosure(ScamExpr *formals,
                                           ScamExpr *forms,
-                                          Env & env)
+                                          Env & env,
+                                          bool macrolike)
 {
-    ExprHandle expr = makeForm<ScamClosure>(formals, forms, env);
+    ExprHandle expr = makeForm<ScamClosure>(formals, forms, env, macrolike);
     return expr;
 }
 

@@ -10,7 +10,10 @@ namespace scam
     class ScamClosure : public ScamExpr
     {
     public:
-        ScamClosure(ScamExpr *formals, ScamExpr * forms, Env env);
+        ScamClosure(ScamExpr *formals,
+                    ScamExpr * forms,
+                    Env env,
+                    bool macrolike = false);
 
         std::string toString() const override;
 
@@ -25,6 +28,7 @@ namespace scam
         ExprHandle formals;
         ExprHandle forms;
         Env env;
+        bool macrolike;
     };
 }
 

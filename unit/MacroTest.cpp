@@ -81,3 +81,18 @@ TEST_F(MacroTest, QuasiQuoteSpliceEmpty)
     ExprHandle expr = parseAndEvaluate("`(+ x ,@(list) 2)");
     expectList(expr, "(+ x 2)", 3);
 }
+
+TEST_F(MacroTest, MacroLiteralForm)
+{
+    parseAndEvaluate("(define test (macro () 2))");
+    ExprHandle expr = parseAndEvaluate("(test)");
+    expectInteger(expr, 2, "2");
+}
+
+TEST_F(MacroTest, MacroFormNeedsEvaluation)
+{
+    parseAndEvaluate("(define var 5)");
+    parseAndEvaluate("(define test (macro (x) `(+ ,x 2)))");
+    ExprHandle expr = parseAndEvaluate("(test var)");
+    expectInteger(expr, 7, "7");
+}
