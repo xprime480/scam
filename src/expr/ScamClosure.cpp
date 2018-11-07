@@ -81,8 +81,8 @@ namespace
             if ( expr->error() ) {
                 cont->run(expr);
             }
-            else if ( ! expr->isCons() && ! expr->isNil() ) {
-                malformedActuals(expr);
+            else if ( malformedActuals(expr) ) {
+                /* do  nothing */
             }
             else if ( checkArgLength(expr) ) {
                 finalize(expr);
@@ -95,16 +95,27 @@ namespace
         Env        capture;
         ContHandle cont;
 
-        void malformedActuals(ScamExpr * expr) const
+        bool malformedActuals(ScamExpr * expr) const
         {
+            if ( expr->isCons() || expr->isNil() || expr->isSymbol() ) {
+                return false;
+            }
+
             stringstream s;
             s << "Expected a paramter list, got: " << expr->toString();
             ExprHandle err = ExpressionFactory::makeError(s.str());
             cont->run(err.get());
+
+            return true;
         }
 
         bool describeFormals(unsigned & len) const
         {
+            if ( formals->isSymbol() ) {
+                len = 0;
+                return true;
+            }
+
             len = formals->length();
             if ( ! formals->isList() ) {
                 --len;

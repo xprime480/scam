@@ -158,3 +158,25 @@ TEST_F(ClosureTest, LambdaDottedParmListSeveral)
     ExprHandle expr = parseAndEvaluate("(f 1 2 (+ 2 2) #t)");
     expectList(expr, "(2 4 #t)", 3);
 }
+
+TEST_F(ClosureTest, LambdaSymbolParmListNone)
+{
+    parseAndEvaluate("(define x 0.0)");
+    parseAndEvaluate("(define f (lambda x x))");
+    ExprHandle expr = parseAndEvaluate("(f)");
+    expectNil(expr);
+}
+
+TEST_F(ClosureTest, LambdaSymbolParmListOne)
+{
+    parseAndEvaluate("(define f (lambda x x))");
+    ExprHandle expr = parseAndEvaluate("(f 5)");
+    expectList(expr, "(5)", 1);
+}
+
+TEST_F(ClosureTest, LambdaSymbolParmListSeveral)
+{
+    parseAndEvaluate("(define f (lambda x x))");
+    ExprHandle expr = parseAndEvaluate("(f 5 10 15)");
+    expectList(expr, "(5 10 15)", 3);
+}

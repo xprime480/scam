@@ -77,14 +77,19 @@ ExprHandle ExpressionTestBase::apply(ExprHandle expr, ExprHandle args)
 
 ExprHandle ExpressionTestBase::parseAndEvaluate(string const & input)
 {
-    StringTokenizer tokenizer(input);
-    ScamParser parser(tokenizer);
+    try {
+        StringTokenizer tokenizer(input);
+        ScamParser parser(tokenizer);
 
-    parser.parseExpr(extractor);
-    ExprHandle expr = extractor->getExpr();
+        parser.parseExpr(extractor);
+        ExprHandle expr = extractor->getExpr();
 
-    ExprHandle rv = evaluate(expr);
-    return rv;
+        ExprHandle rv = evaluate(expr);
+        return rv;
+    }
+    catch ( ScamException e ) {
+        return ExpressionFactory::makeError(e.getMessage());
+    }
 }
 
 void decodeBit(unsigned mismatch,

@@ -150,7 +150,8 @@ TEST_F(EnvTest, DefineScope)
 TEST_F(EnvTest, DefineTwice)
 {
     parseAndEvaluate("(define x 1)");
-    EXPECT_THROW(parseAndEvaluate("(define x 2)"), ScamException);
+    ExprHandle expr = parseAndEvaluate("(define x 2)");
+    expectError(expr);
 }
 
 TEST_F(EnvTest, AssignKeyword)
