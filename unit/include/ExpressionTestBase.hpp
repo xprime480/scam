@@ -9,6 +9,9 @@
 
 namespace scam
 {
+    class ScamParser;
+    class Tokenizer;
+
     class ExpressionTestBase : public ::testing::Test
     {
     protected:
@@ -22,8 +25,9 @@ namespace scam
         Env env;
 
         ExprHandle evaluate(ExprHandle input);
-	ExprHandle apply(ExprHandle expr, ExprHandle args);
+        ExprHandle apply(ExprHandle expr, ExprHandle args);
         ExprHandle parseAndEvaluate(std::string const & input);
+        ExprHandle parseAndEvaluateFile(char const * filename);
 
         void doCheck(bool act, unsigned selector, unsigned which);
 
@@ -66,5 +70,9 @@ namespace scam
                           size_t len);
         void expectProcedure(ExprHandle expr,
                              std::string const & repr);
+
+    private:
+        ExprHandle evaluateAll(Tokenizer & tokenizer);
+        ExprHandle evaluateNext(ScamParser & parser);
     };
 }

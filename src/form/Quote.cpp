@@ -2,7 +2,6 @@
 #include "form/Quote.hpp"
 
 #include "Continuation.hpp"
-#include "Extractor.hpp"
 #include "WorkQueue.hpp"
 #include "Worker.hpp"
 #include "expr/ExpressionFactory.hpp"

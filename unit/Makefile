@@ -37,6 +37,7 @@ by_module :
 	@./unittests --gtest_filter=ParserTest.*
 	@./unittests --gtest_filter=ExpressionTest.*
 	@./unittests --gtest_filter=ComparisonTest.*
+	@./unittests --gtest_filter=PredicateTest.*
 	@./unittests --gtest_filter=LogicTest.*
 	@./unittests --gtest_filter=MathTest.*
 	@./unittests --gtest_filter=ClosureTest.*

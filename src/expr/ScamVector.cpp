@@ -1,9 +1,8 @@
 #include "expr/ScamVector.hpp"
 
-#include "Extractor.hpp"
+#include "Continuation.hpp"
 #include "WorkQueue.hpp"
 #include "Worker.hpp"
-
 #include "expr/ExpressionFactory.hpp"
 
 #include <sstream>

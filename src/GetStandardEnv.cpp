@@ -55,5 +55,7 @@ Env ScamEngine::getStandardEnv()
     addForm<Car>(env, "car");
     addForm<Cdr>(env, "cdr");
 
+    addForm<NilP>(env, "nil?");
+
    return env;
 }

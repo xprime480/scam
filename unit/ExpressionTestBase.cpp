@@ -9,6 +9,8 @@
 #include "input/ScamParser.hpp"
 #include "input/StringTokenizer.hpp"
 
+#include <fstream>
+
 using namespace scam;
 using namespace std;
 
@@ -62,10 +64,9 @@ void ExpressionTestBase::TearDown()
 
 ExprHandle ExpressionTestBase::evaluate(ExprHandle input)
 {
-    auto y = make_shared<Extractor>();
-    input->eval(y, env);
+    input->eval(extractor, env);
     Trampoline(GlobalWorkQueue);
-    return y->getExpr();
+    return extractor->getExpr();
 }
 
 ExprHandle ExpressionTestBase::apply(ExprHandle expr, ExprHandle args)
@@ -77,20 +78,32 @@ ExprHandle ExpressionTestBase::apply(ExprHandle expr, ExprHandle args)
 
 ExprHandle ExpressionTestBase::parseAndEvaluate(string const & input)
 {
-    try {
-        StringTokenizer tokenizer(input);
-        ScamParser parser(tokenizer);
-
-        parser.parseExpr(extractor);
-        ExprHandle expr = extractor->getExpr();
-
-        ExprHandle rv = evaluate(expr);
-        return rv;
-    }
-    catch ( ScamException e ) {
-        return ExpressionFactory::makeError(e.getMessage());
-    }
+    StringTokenizer tokenizer(input);
+    return evaluateAll(tokenizer);
 }
+
+ExprHandle ExpressionTestBase::parseAndEvaluateFile(char const * filename)
+{
+    ifstream source;
+    source.open(filename);
+
+    if ( ! source.good() ) {
+        stringstream s;
+        s << "Unable to open file " << filename;
+        return ExpressionFactory::makeError(s.str());
+    }
+
+    char buf[1024];
+    stringstream text;
+
+    while ( source.good() && ! source.eof() ) {
+        source.getline(buf, sizeof ( buf ));
+        text << buf;
+    }
+
+    return parseAndEvaluate(text.str());
+}
+
 
 void decodeBit(unsigned mismatch,
                unsigned exp,
@@ -283,7 +296,12 @@ void ExpressionTestBase::expectList(ExprHandle expr,
 {
     checkPredicates(expr, SELECT_TRUTH | SELECT_CONS | SELECT_LIST);
     EXPECT_EQ(repr, expr->toString());
-    EXPECT_EQ(len, expr->length());
+    try {
+        EXPECT_EQ(len, expr->length());
+    }
+    catch ( ScamException e ) {
+        FAIL() << e.getMessage() << "\n";
+    }
 }
 
 void ExpressionTestBase::expectCons(ExprHandle expr, string const & repr)
@@ -311,4 +329,38 @@ void ExpressionTestBase::expectProcedure(ExprHandle expr, string const & repr)
 {
     checkPredicates(expr, SELECT_TRUTH | ALL_PROC);
     EXPECT_EQ(repr, expr->toString());
+}
+
+
+ExprHandle ExpressionTestBase::evaluateAll(Tokenizer & tokenizer)
+{
+    ScamParser parser(tokenizer);
+    ExprHandle rv = ExpressionFactory::makeNull();
+
+    for ( ;; ) {
+        try {
+            ExprHandle expr = evaluateNext(parser);
+            if ( expr->isNull() ) {
+                break;
+            }
+            rv = expr;
+        }
+        catch ( ScamException e ) {
+            rv = ExpressionFactory::makeError(e.getMessage());
+            break;
+        }
+    }
+
+    return rv;
+}
+
+ExprHandle ExpressionTestBase::evaluateNext(ScamParser & parser)
+{
+    parser.parseExpr(extractor);
+    ExprHandle expr = extractor->getExpr();
+
+    if ( expr->isNull() ) {
+        return expr;
+    }
+    return evaluate(expr);
 }

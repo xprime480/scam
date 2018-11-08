@@ -4,7 +4,6 @@
 #include "Binder.hpp"
 #include "Continuation.hpp"
 #include "EvalWorker.hpp"
-#include "Extractor.hpp"
 #include "WorkQueue.hpp"
 #include "Worker.hpp"
 #include "expr/ExpressionFactory.hpp"

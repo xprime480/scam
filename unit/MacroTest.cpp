@@ -96,3 +96,9 @@ TEST_F(MacroTest, MacroFormNeedsEvaluation)
     ExprHandle expr = parseAndEvaluate("(test var)");
     expectInteger(expr, 7, "7");
 }
+
+TEST_F(MacroTest, MacroMyLetTest)
+{
+    ExprHandle expr = parseAndEvaluateFile("scripts/macro/mylet.scm");
+    expectList(expr, "(1 2)", 2);
+}
