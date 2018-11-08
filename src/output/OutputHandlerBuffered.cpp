@@ -1,20 +1,22 @@
 
 #include "output/OutputHandlerBuffered.hpp"
 
+#include "expr/ScamExpr.hpp"
+
 using namespace scam;
 
 OutputHandlerBuffered::OutputHandlerBuffered()
 {
 }
 
-void OutputHandlerBuffered::handleResult(std::string const & result)
+void OutputHandlerBuffered::handleResult(ExprHandle expr)
 {
-    buffer << result << "\n";
+    buffer << expr->toString() << "\n";
 }
 
-void OutputHandlerBuffered::handleError(std::string const & error)
+void OutputHandlerBuffered::handleError(ExprHandle expr)
 {
-    buffer << error << "\n";
+    buffer << expr->toString() << "\n";
 }
 
 void OutputHandlerBuffered::handleTrace(std::string const & msg)
@@ -30,4 +32,3 @@ void OutputHandlerBuffered::reset()
 {
     buffer.str("");
 }
-

@@ -12,8 +12,8 @@ namespace scam
     public:
         OutputHandlerBuffered();
 
-        void handleResult(std::string const & result) override;
-        void handleError(std::string const & error) override;
+        void handleResult(ExprHandle) override;
+        void handleError(ExprHandle) override;
         void handleTrace(std::string const & msg) override;
 
         std::string get() const;

@@ -2,6 +2,8 @@
 #include "Extractor.hpp"
 #include "ScamEngine.hpp"
 
+#include "OutputHandlerTest.hpp"
+
 #include <memory>
 #include <string>
 
