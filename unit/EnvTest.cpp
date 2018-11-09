@@ -177,3 +177,14 @@ TEST_F(EnvTest, AssignScope)
     expectInteger(val, 77, "77");
 }
 
+TEST_F(EnvTest, GetTopLevel)
+{
+    parseAndEvaluate("(define x 1)");
+    env = env.extend();
+    parseAndEvaluate("(define x 2)");
+
+    ExprHandle sym = ExpressionFactory::makeSymbol("x");
+    ExprHandle val = env.top().get(sym.get());
+    expectInteger(val, 1, "1");
+}
+

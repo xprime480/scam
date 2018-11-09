@@ -1,5 +1,6 @@
 
 #include "form/EnvHelper.hpp"
+#include "form/Eval.hpp"
 #include "form/Lambda.hpp"
 #include "form/Let.hpp"
 #include "form/Macro.hpp"

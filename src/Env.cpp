@@ -134,6 +134,14 @@ Env Env::parent() const
     return temp;
 }
 
+Env Env::top() const
+{
+    if ( ! this->data->parent ) {
+        return *this;
+    }
+    return parent().top();
+}
+
 void Env::assign(ScamExpr * key, ScamExpr * val)
 {
     data->assign(checkKey(key), val);

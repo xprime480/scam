@@ -28,6 +28,7 @@ do_it_manually :
 	make -C gmock all
 
 test : unittests
+	@./unittests --gtest_filter=EvalTest.EvalForm
 	@./unittests
 
 by_module :
@@ -43,7 +44,7 @@ by_module :
 	@./unittests --gtest_filter=ClosureTest.*
 	@./unittests --gtest_filter=LetTest.*
 	@./unittests --gtest_filter=ListTest.*
-	@./unittests --gtest_filter=MacroTest.*
+	@./unittests --gtest_filter=EvalTest.*
 
 clean :
 	make -C ../src clean

@@ -21,6 +21,7 @@ namespace scam
 
         Env extend() const;
         Env parent() const;
+        Env top() const;
 
         void assign(ScamExpr * key, ScamExpr * val);
 
