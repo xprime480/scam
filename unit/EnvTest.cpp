@@ -157,7 +157,7 @@ TEST_F(EnvTest, DefineTwice)
 TEST_F(EnvTest, AssignKeyword)
 {
     parseAndEvaluate("(define x (- 3 2))");
-    parseAndEvaluate("(assign x 77)");
+    parseAndEvaluate("(assign! x 77)");
 
     ExprHandle sym = ExpressionFactory::makeSymbol("x");
     ExprHandle val = env.get(sym.get());
@@ -169,7 +169,7 @@ TEST_F(EnvTest, AssignScope)
     parseAndEvaluate("(define x (- 3 2))");
 
     env = env.extend();
-    parseAndEvaluate("(assign x 77)");
+    parseAndEvaluate("(assign! x 77)");
     env = env.parent();
 
     ExprHandle sym = ExpressionFactory::makeSymbol("x");

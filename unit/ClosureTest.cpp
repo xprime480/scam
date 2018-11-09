@@ -101,7 +101,7 @@ TEST_F(ClosureTest, LambdaCaptures)
 
     env = env.extend();
     parseAndEvaluate("(define y 5)");
-    parseAndEvaluate("(assign f (lambda (x) (* x y)))");
+    parseAndEvaluate("(assign! f (lambda (x) (* x y)))");
     env = old;
 
     ExprHandle expr = parseAndEvaluate("(f (+ 1 3))");

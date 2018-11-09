@@ -56,7 +56,7 @@ EnvHelper::EnvHelper(char const * name)
 }
 
 Assign::Assign()
-    : EnvHelper("assign")
+    : EnvHelper("assign!")
 {
 }
 
