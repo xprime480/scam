@@ -28,7 +28,6 @@ do_it_manually :
 	make -C gmock all
 
 test : unittests
-	@./unittests --gtest_filter=EvalTest.EvalForm
 	@./unittests
 
 by_module :

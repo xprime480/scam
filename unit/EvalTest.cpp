@@ -114,3 +114,21 @@ TEST_F(EvalTest, EvalForm)
     expr = parseAndEvaluate("(eval '(+ x 3))");
     expectInteger(expr, 4, "4");
 }
+
+TEST_F(EvalTest, Progn)
+{
+    ExprHandle expr = parseAndEvaluate("(progn 1 2 3 (* 5 4) 99)");
+    expectInteger(expr, 99, "99");
+}
+
+TEST_F(EvalTest, PrognOne)
+{
+    ExprHandle expr = parseAndEvaluate("(progn 99)");
+    expectInteger(expr, 99, "99");
+}
+
+TEST_F(EvalTest, PrognZero)
+{
+    ExprHandle expr = parseAndEvaluate("(progn)");
+    expectNil(expr);
+}

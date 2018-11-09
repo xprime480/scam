@@ -58,5 +58,7 @@ Env ScamEngine::getStandardEnv()
 
     addForm<NilP>(env, "nil?");
 
+    addForm<Progn>(env, "progn");
+
    return env;
 }
