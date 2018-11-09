@@ -149,32 +149,20 @@ TEST_F(EnvTest, DefineScope)
 
 TEST_F(EnvTest, DefineTwice)
 {
-    parseAndEvaluate("(define x 1)");
-    ExprHandle expr = parseAndEvaluate("(define x 2)");
+    ExprHandle expr = parseAndEvaluateFile("scripts/env/definetwice.scm");
     expectError(expr);
 }
 
 TEST_F(EnvTest, AssignKeyword)
 {
-    parseAndEvaluate("(define x (- 3 2))");
-    parseAndEvaluate("(assign! x 77)");
-
-    ExprHandle sym = ExpressionFactory::makeSymbol("x");
-    ExprHandle val = env.get(sym.get());
-    expectInteger(val, 77, "77");
+    ExprHandle expr = parseAndEvaluateFile("scripts/env/assign.scm");
+    expectInteger(expr, 77, "77");
 }
 
 TEST_F(EnvTest, AssignScope)
 {
-    parseAndEvaluate("(define x (- 3 2))");
-
-    env = env.extend();
-    parseAndEvaluate("(assign! x 77)");
-    env = env.parent();
-
-    ExprHandle sym = ExpressionFactory::makeSymbol("x");
-    ExprHandle val = env.get(sym.get());
-    expectInteger(val, 77, "77");
+    ExprHandle expr = parseAndEvaluateFile("scripts/env/assignscope.scm");
+    expectInteger(expr, 77, "77");
 }
 
 TEST_F(EnvTest, GetTopLevel)

@@ -96,23 +96,13 @@ TEST_F(ClosureTest, LambdaEvalWithArg)
 
 TEST_F(ClosureTest, LambdaCaptures)
 {
-    Env old = env;
-    parseAndEvaluate("(define f ())");
-
-    env = env.extend();
-    parseAndEvaluate("(define y 5)");
-    parseAndEvaluate("(assign! f (lambda (x) (* x y)))");
-    env = old;
-
-    ExprHandle expr = parseAndEvaluate("(f (+ 1 3))");
+    ExprHandle expr = parseAndEvaluateFile("scripts/closure/capture.scm");
     expectInteger(expr, 20, "20");
 }
 
 TEST_F(ClosureTest, LambdaFormalsMaskEnv)
 {
-    parseAndEvaluate("(define x 0.0)");
-    parseAndEvaluate("(define f (lambda (x) (/ 1.0 x)))");
-    ExprHandle expr = parseAndEvaluate("(f 2)");
+    ExprHandle expr = parseAndEvaluateFile("scripts/closure/formalsmask.scm");
     expectFloat(expr, 0.5, "0.5");
 
     expr = parseAndEvaluate("x");
@@ -121,63 +111,49 @@ TEST_F(ClosureTest, LambdaFormalsMaskEnv)
 
 TEST_F(ClosureTest, LambdaTooFewActuals)
 {
-    parseAndEvaluate("(define x 0.0)");
-    parseAndEvaluate("(define f (lambda (x) (/ 1.0 x)))");
-    ExprHandle expr = parseAndEvaluate("(f)");
+    ExprHandle expr = parseAndEvaluateFile("scripts/closure/toofew.scm");
     expectError(expr);
 }
 
 TEST_F(ClosureTest, LambdaTooManyActuals)
 {
-    parseAndEvaluate("(define x 0.0)");
-    parseAndEvaluate("(define f (lambda (x) (/ 1.0 x)))");
-    ExprHandle expr = parseAndEvaluate("(f 1 2 3 4)");
+    ExprHandle expr = parseAndEvaluateFile("scripts/closure/toomany.scm");
     expectError(expr);
 }
 
 TEST_F(ClosureTest, LambdaDottedParmListZero)
 {
-    parseAndEvaluate("(define x 0.0)");
-    parseAndEvaluate("(define f (lambda (x . y) y))");
-    ExprHandle expr = parseAndEvaluate("(f 1)");
+    ExprHandle expr = parseAndEvaluateFile("scripts/closure/dottedzero.scm");
     expectNil(expr);
 }
 
 TEST_F(ClosureTest, LambdaDottedParmListOne)
 {
-    parseAndEvaluate("(define x 0.0)");
-    parseAndEvaluate("(define f (lambda (x . y) y))");
-    ExprHandle expr = parseAndEvaluate("(f 1 2)");
+    ExprHandle expr = parseAndEvaluateFile("scripts/closure/dottedone.scm");
     expectList(expr, "(2)", 1);
 }
 
 TEST_F(ClosureTest, LambdaDottedParmListSeveral)
 {
-    parseAndEvaluate("(define x 0.0)");
-    parseAndEvaluate("(define f (lambda (x . y) y))");
-    ExprHandle expr = parseAndEvaluate("(f 1 2 (+ 2 2) #t)");
+    ExprHandle expr = parseAndEvaluateFile("scripts/closure/dottedmany.scm");
     expectList(expr, "(2 4 #t)", 3);
 }
 
 TEST_F(ClosureTest, LambdaSymbolParmListNone)
 {
-    parseAndEvaluate("(define x 0.0)");
-    parseAndEvaluate("(define f (lambda x x))");
-    ExprHandle expr = parseAndEvaluate("(f)");
+    ExprHandle expr = parseAndEvaluateFile("scripts/closure/listnone.scm");
     expectNil(expr);
 }
 
 TEST_F(ClosureTest, LambdaSymbolParmListOne)
 {
-    parseAndEvaluate("(define f (lambda x x))");
-    ExprHandle expr = parseAndEvaluate("(f 5)");
+    ExprHandle expr = parseAndEvaluateFile("scripts/closure/listone.scm");
     expectList(expr, "(5)", 1);
 }
 
 TEST_F(ClosureTest, LambdaSymbolParmListSeveral)
 {
-    parseAndEvaluate("(define f (lambda x x))");
-    ExprHandle expr = parseAndEvaluate("(f 5 10 15)");
+    ExprHandle expr = parseAndEvaluateFile("scripts/closure/listmany.scm");
     expectList(expr, "(5 10 15)", 3);
 }
 

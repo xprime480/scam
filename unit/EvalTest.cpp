@@ -49,50 +49,43 @@ TEST_F(EvalTest, QuasiQuoteWithUnquote)
 
 TEST_F(EvalTest, QuasiQuoteWithNestedUnquote)
 {
-    parseAndEvaluate("(define x 99)");
-    ExprHandle expr = parseAndEvaluate("`(+ (+ 3 (+ ,x 1 2 3)) 2)");
+    ExprHandle expr = parseAndEvaluateFile("scripts/eval/nestedunquote.scm");
     expectList(expr, "(+ (+ 3 (+ 99 1 2 3)) 2)", 3);
 }
 
 TEST_F(EvalTest, QuasiQuoteSpliceInternal)
 {
-    parseAndEvaluate("(define x 99)");
-    ExprHandle expr = parseAndEvaluate("`(+ x ,@(list 3 (+ x 1)) 2)");
+    ExprHandle expr = parseAndEvaluateFile("scripts/eval/spliceinternal.scm");
     expectList(expr, "(+ x 3 100 2)", 5);
 }
 
 TEST_F(EvalTest, QuasiQuoteSpliceOnly)
 {
-    parseAndEvaluate("(define x 99)");
-    ExprHandle expr = parseAndEvaluate("`(,@(list 3 (+ x 1)))");
+    ExprHandle expr = parseAndEvaluateFile("scripts/eval/spliceonly.scm");
     expectList(expr, "(3 100)", 2);
 }
 
 TEST_F(EvalTest, QuasiQuoteSpliceEmpty)
 {
-    parseAndEvaluate("(define x 99)");
     ExprHandle expr = parseAndEvaluate("`(+ x ,@(list) 2)");
     expectList(expr, "(+ x 2)", 3);
 }
 
 TEST_F(EvalTest, MacroLiteralForm)
 {
-    parseAndEvaluate("(define test (macro () 2))");
-    ExprHandle expr = parseAndEvaluate("(test)");
+    ExprHandle expr = parseAndEvaluateFile("scripts/eval/macroliteral.scm");
     expectInteger(expr, 2, "2");
 }
 
 TEST_F(EvalTest, MacroFormNeedsEvaluation)
 {
-    parseAndEvaluate("(define var 5)");
-    parseAndEvaluate("(define test (macro (x) `(+ ,x 2)))");
-    ExprHandle expr = parseAndEvaluate("(test var)");
+    ExprHandle expr = parseAndEvaluateFile("scripts/eval/macroeval.scm");
     expectInteger(expr, 7, "7");
 }
 
 TEST_F(EvalTest, MacroMyLetTest)
 {
-    ExprHandle expr = parseAndEvaluateFile("scripts/macro/mylet.scm");
+    ExprHandle expr = parseAndEvaluateFile("scripts/eval/mylet.scm");
     expectList(expr, "(1 2)", 2);
 }
 
@@ -104,15 +97,8 @@ TEST_F(EvalTest, EvalSelfEvaluating)
 
 TEST_F(EvalTest, EvalForm)
 {
-    parseAndEvaluate("(define x 1)");
-    env = env.extend();
-    parseAndEvaluate("(define x 2)");
-
-    ExprHandle expr = parseAndEvaluate("x");
-    expectInteger(expr, 2, "2");
-
-    expr = parseAndEvaluate("(eval '(+ x 3))");
-    expectInteger(expr, 4, "4");
+    ExprHandle expr = parseAndEvaluateFile("scripts/eval/evalsattop.scm");
+    expectList(expr, "(2 4)", 2);
 }
 
 TEST_F(EvalTest, Progn)
