@@ -53,12 +53,16 @@ namespace scam
         virtual bool isVector() const;
 
         virtual bool isProcedure() const;
+        virtual bool isClass() const;
+        virtual bool isInstance() const;
 
         virtual size_t length() const;
         virtual ExprHandle nthcar(size_t n) const;
         virtual ExprHandle nthcdr(size_t n) const;
 
         virtual ExprHandle withEnvUpdate(Env updated) const;
+
+        virtual void setSelf(ScamExpr * expr) const;
 
         ExprHandle clone() const;
 

@@ -10,3 +10,5 @@
 #include "form/If.hpp"
 #include "form/Not.hpp"
 #include "form/Or.hpp"
+
+#include "form/ClassMaker.hpp"

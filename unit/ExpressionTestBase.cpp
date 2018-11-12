@@ -16,27 +16,31 @@ using namespace std;
 
 namespace
 {
-    static const unsigned long SELECT_NULL    { 1 << 0 };
-    static const unsigned long SELECT_ERROR   { 1 << 1 };
-    static const unsigned long SELECT_TRUTH   { 1 << 2 };
-    static const unsigned long SELECT_CHAR    { 1 << 3 };
-    static const unsigned long SELECT_STRING  { 1 << 4 };
-    static const unsigned long SELECT_SYMBOL  { 1 << 5 };
-    static const unsigned long SELECT_NUMERIC { 1 << 6 };
-    static const unsigned long SELECT_FLOAT   { 1 << 7 };
-    static const unsigned long SELECT_INTEGER { 1 << 8 };
-    static const unsigned long SELECT_BOOLEAN { 1 << 9 };
-    static const unsigned long SELECT_NIL     { 1 << 10 };
-    static const unsigned long SELECT_CONS    { 1 << 11 };
-    static const unsigned long SELECT_LIST    { 1 << 12 };
-    static const unsigned long SELECT_VECTOR  { 1 << 13 };
-    static const unsigned long SELECT_APPLY   { 1 << 14 };
-    static const unsigned long SELECT_PROC    { 1 << 15 };
+    static const unsigned long SELECT_NULL     { 1 << 0 };
+    static const unsigned long SELECT_ERROR    { 1 << 1 };
+    static const unsigned long SELECT_TRUTH    { 1 << 2 };
+    static const unsigned long SELECT_CHAR     { 1 << 3 };
+    static const unsigned long SELECT_STRING   { 1 << 4 };
+    static const unsigned long SELECT_SYMBOL   { 1 << 5 };
+    static const unsigned long SELECT_NUMERIC  { 1 << 6 };
+    static const unsigned long SELECT_FLOAT    { 1 << 7 };
+    static const unsigned long SELECT_INTEGER  { 1 << 8 };
+    static const unsigned long SELECT_BOOLEAN  { 1 << 9 };
+    static const unsigned long SELECT_NIL      { 1 << 10 };
+    static const unsigned long SELECT_CONS     { 1 << 11 };
+    static const unsigned long SELECT_LIST     { 1 << 12 };
+    static const unsigned long SELECT_VECTOR   { 1 << 13 };
+    static const unsigned long SELECT_APPLY    { 1 << 14 };
+    static const unsigned long SELECT_PROC     { 1 << 15 };
+    static const unsigned long SELECT_CLASS    { 1 << 16 };
+    static const unsigned long SELECT_INSTANCE { 1 << 17 };
 
-    static const unsigned long ALL_FLOAT   = SELECT_NUMERIC | SELECT_FLOAT;
-    static const unsigned long ALL_INTEGER = ALL_FLOAT | SELECT_INTEGER;
-    static const unsigned long ALL_NIL     = SELECT_NIL | SELECT_LIST;
-    static const unsigned long ALL_PROC    = SELECT_APPLY | SELECT_PROC;
+    static const unsigned long ALL_FLOAT      = SELECT_NUMERIC | SELECT_FLOAT;
+    static const unsigned long ALL_INTEGER    = ALL_FLOAT | SELECT_INTEGER;
+    static const unsigned long ALL_NIL        = SELECT_NIL | SELECT_LIST;
+    static const unsigned long ALL_PROC       = SELECT_APPLY | SELECT_PROC;
+    static const unsigned long ALL_CLASS      = SELECT_CLASS | ALL_PROC;
+    static const unsigned long ALL_INSTANCE   = SELECT_INSTANCE | ALL_PROC;
 }
 
 ExpressionTestBase::ExpressionTestBase()
@@ -150,6 +154,10 @@ string decodePredicate(unsigned exp, unsigned act)
 
         DECODER(APPLY);
         DECODER(PROC);
+
+        DECODER(CLASS);
+        DECODER(INSTANCE);
+
 #undef DECODER
     }
 
@@ -182,6 +190,9 @@ ExpressionTestBase::checkPredicates(ExprHandle expr, unsigned exp)
 
     act |= (expr->hasApply() ? SELECT_APPLY : 0);
     act |= (expr->isProcedure() ? SELECT_PROC : 0);
+
+    act |= (expr->isClass() ? SELECT_CLASS : 0);
+    act |= (expr->isInstance() ? SELECT_INSTANCE : 0);
 
     EXPECT_EQ(exp, act) << decodePredicate(act, exp)
                         << "\n\tvalue: " << expr->toString();
@@ -331,6 +342,17 @@ void ExpressionTestBase::expectProcedure(ExprHandle expr, string const & repr)
     EXPECT_EQ(repr, expr->toString());
 }
 
+void ExpressionTestBase::expectClass(ExprHandle expr)
+{
+    checkPredicates(expr, SELECT_TRUTH | ALL_CLASS);
+    EXPECT_EQ("class", expr->toString());
+}
+
+void ExpressionTestBase::expectInstance(ExprHandle expr)
+{
+    checkPredicates(expr, SELECT_TRUTH | ALL_INSTANCE);
+    EXPECT_EQ("instance", expr->toString());
+}
 
 ExprHandle ExpressionTestBase::evaluateAll(Tokenizer & tokenizer)
 {

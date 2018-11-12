@@ -3,16 +3,20 @@
 #include "ScamException.hpp"
 #include "expr/ScamBoolean.hpp"
 #include "expr/ScamCharacter.hpp"
+#include "expr/ScamClass.hpp"
 #include "expr/ScamClosure.hpp"
 #include "expr/ScamCons.hpp"
 #include "expr/ScamError.hpp"
 #include "expr/ScamFloat.hpp"
+#include "expr/ScamInstance.hpp"
 #include "expr/ScamInteger.hpp"
 #include "expr/ScamNil.hpp"
 #include "expr/ScamNull.hpp"
 #include "expr/ScamString.hpp"
 #include "expr/ScamSymbol.hpp"
 #include "expr/ScamVector.hpp"
+
+#include <iostream>
 
 using namespace scam;
 using namespace std;
@@ -108,6 +112,23 @@ ExprHandle ExpressionFactory::makeClosure(ScamExpr *formals,
                                           bool macrolike)
 {
     ExprHandle expr = makeForm<ScamClosure>(formals, forms, env, macrolike);
+    return expr;
+}
+
+ExprHandle ExpressionFactory::makeClass(ScamExpr * base,
+                                        ScamExpr * vars,
+                                        ScamExpr * funs)
+{
+    ExprHandle expr = makeForm<ScamClass>(base, vars, funs);
+    return expr;
+}
+
+ExprHandle ExpressionFactory::makeInstance(ScamExpr * base,
+                                           ScamExpr * vars,
+                                           ScamExpr * funs,
+                                           Env env)
+{
+    ExprHandle expr = makeForm<ScamInstance>(base, vars, funs, env);
     return expr;
 }
 

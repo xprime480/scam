@@ -42,10 +42,18 @@ namespace scam
 
         static ExprHandle makeVector(ExprVec const & elts);
 
-        static ExprHandle makeClosure(ScamExpr *formals,
+        static ExprHandle makeClosure(ScamExpr * formals,
                                       ScamExpr * forms,
                                       Env & env,
                                       bool macrolike = false);
+
+        static ExprHandle makeClass(ScamExpr * base,
+                                    ScamExpr * vars,
+                                    ScamExpr * funs);
+        static ExprHandle makeInstance(ScamExpr * base,
+                                       ScamExpr * vars,
+                                       ScamExpr * funs,
+                                       Env env);
 
         template <typename T, typename... Args>
         static ExprHandle makeForm(Args... args)

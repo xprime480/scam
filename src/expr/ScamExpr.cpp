@@ -159,6 +159,16 @@ bool ScamExpr::isProcedure() const
     return false;
 }
 
+bool ScamExpr::isClass() const
+{
+    return false;
+}
+
+bool ScamExpr::isInstance() const
+{
+    return false;
+}
+
 size_t ScamExpr::length() const
 {
     stringstream s;
@@ -193,6 +203,13 @@ ExprHandle ScamExpr::withEnvUpdate(Env updated) const
     throw ScamException(s.str());
 
     return ExpressionFactory::makeNull();
+}
+
+void ScamExpr::setSelf(ScamExpr * expr) const
+{
+    stringstream s;
+    s << "Cannot set self of <" << this->toString() << ">";
+    throw ScamException(s.str());
 }
 
 ExprHandle ScamExpr::clone() const

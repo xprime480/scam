@@ -70,6 +70,8 @@ namespace scam
                           size_t len);
         void expectProcedure(ExprHandle expr,
                              std::string const & repr);
+        void expectClass(ExprHandle expr);
+        void expectInstance(ExprHandle expr);
 
     private:
         ExprHandle evaluateAll(Tokenizer & tokenizer);

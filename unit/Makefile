@@ -44,6 +44,7 @@ by_module :
 	@./unittests --gtest_filter=LetTest.*
 	@./unittests --gtest_filter=ListTest.*
 	@./unittests --gtest_filter=EvalTest.*
+	@./unittests --gtest_filter=ClassTest.*
 
 clean :
 	make -C ../src clean
