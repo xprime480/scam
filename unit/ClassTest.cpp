@@ -73,3 +73,9 @@ TEST_F(ClassTest, DirectToBase)
     ExprHandle expr = parseAndEvaluateFile("scripts/class/callbase.scm");
     expectInteger(expr, -1, "-1");
 }
+
+TEST_F(ClassTest, FunctionInvocationEnv)
+{
+    ExprHandle expr = parseAndEvaluateFile("scripts/class/invokeenv.scm");
+    expectList(expr, "(2 3 5)", 3);
+}

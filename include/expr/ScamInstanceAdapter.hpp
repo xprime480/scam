@@ -14,6 +14,7 @@ namespace scam
         ScamInstanceAdapter(ScamExpr const * expr);
 
         Env getFunctionMap() const;
+        Env getEnv() const;
         ExprHandle getParent() const;
 
     private:

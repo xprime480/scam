@@ -26,6 +26,11 @@ Env ScamInstanceAdapter::getFunctionMap() const
     return instance->priv;
 }
 
+Env ScamInstanceAdapter::getEnv() const
+{
+    return instance->local;
+}
+
 ExprHandle ScamInstanceAdapter::getParent() const
 {
     static const ExprHandle p = ExpressionFactory::makeSymbol("parent");

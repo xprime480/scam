@@ -44,12 +44,14 @@ namespace scam
 
         static ExprHandle makeClosure(ScamExpr * formals,
                                       ScamExpr * forms,
-                                      Env & env,
+                                      Env env,
                                       bool macrolike = false);
 
         static ExprHandle makeClass(ScamExpr * base,
                                     ScamExpr * vars,
-                                    ScamExpr * funs);
+                                    ScamExpr * funs,
+                                    Env env);
+
         static ExprHandle makeInstance(ScamExpr * vars,
                                        ScamExpr * funs,
                                        Env env);

@@ -75,16 +75,24 @@ namespace scam
             }
         }
 
-        void dump(size_t max)
+        void dump(size_t max, bool full)
         {
             if ( 0 == max ) {
                 return;
             }
 
-            cout << "[" << max << "]: " << this
+            cerr << "[" << max << "]: " << this
                  << "\t" << parent.get() << "\n";
+
+            if ( full ) {
+                for ( const auto kv : table ) {
+                    cerr << "\t" << kv.first << "\t"
+                         << kv.second->toString() << "\n";
+                }
+            }
+
             if ( parent ) {
-                parent->dump(max - 1 );
+                parent->dump(max - 1, full);
             }
         }
     };
@@ -147,7 +155,7 @@ void Env::assign(ScamExpr const * key, ScamExpr * val)
     data->assign(checkKey(key), val);
 }
 
-void Env::dump(size_t max) const
+void Env::dump(size_t max, bool full) const
 {
-    data->dump(max);
+    data->dump(max, full);
 }

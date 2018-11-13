@@ -33,3 +33,8 @@ ScamExpr * ScamClassAdapter::getFuns() const
 {
     return cls->funs.get();
 }
+
+Env ScamClassAdapter::getCapture() const
+{
+    return cls->capture;
+}

@@ -16,8 +16,6 @@
 #include "expr/ScamSymbol.hpp"
 #include "expr/ScamVector.hpp"
 
-#include <iostream>
-
 using namespace scam;
 using namespace std;
 
@@ -108,7 +106,7 @@ ExprHandle ExpressionFactory::makeVector(ExprVec const & elts)
 
 ExprHandle ExpressionFactory::makeClosure(ScamExpr *formals,
                                           ScamExpr *forms,
-                                          Env & env,
+                                          Env env,
                                           bool macrolike)
 {
     ExprHandle expr = makeForm<ScamClosure>(formals, forms, env, macrolike);
@@ -117,9 +115,10 @@ ExprHandle ExpressionFactory::makeClosure(ScamExpr *formals,
 
 ExprHandle ExpressionFactory::makeClass(ScamExpr * base,
                                         ScamExpr * vars,
-                                        ScamExpr * funs)
+                                        ScamExpr * funs,
+                                        Env env)
 {
-    ExprHandle expr = makeForm<ScamClass>(base, vars, funs);
+    ExprHandle expr = makeForm<ScamClass>(base, vars, funs, env);
     return expr;
 }
 

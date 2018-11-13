@@ -25,7 +25,7 @@ namespace scam
 
         void assign(ScamExpr const * key, ScamExpr * val);
 
-        void dump(size_t max) const;
+        void dump(size_t max, bool full = false) const;
 
     private:
         std::shared_ptr<EnvData> data;

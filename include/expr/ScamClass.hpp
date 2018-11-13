@@ -12,7 +12,10 @@ namespace scam
     class ScamClass : public ScamExpr
     {
     public:
-        ScamClass(ScamExpr * base, ScamExpr * vars, ScamExpr * funs);
+        ScamClass(ScamExpr * base,
+                  ScamExpr * vars,
+                  ScamExpr * funs,
+                  Env capture);
 
         std::string toString() const override;
 
@@ -28,6 +31,7 @@ namespace scam
         ExprHandle base;
         ExprHandle vars;
         ExprHandle funs;
+        Env        capture;
     };
 }
 

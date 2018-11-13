@@ -60,7 +60,10 @@ namespace
         ExprHandle funcs = args->nthcdr(1);
 
         ExprHandle cls =
-            ExpressionFactory::makeClass(base.get(), parms.get(), funcs.get());
+            ExpressionFactory::makeClass(base.get(),
+                                         parms.get(),
+                                         funcs.get(),
+                                         env);
         cont->run(cls.get());
     }
 }

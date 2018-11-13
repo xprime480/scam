@@ -5,7 +5,6 @@
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamInstanceAdapter.hpp"
 
-#include <iostream>
 #include <sstream>
 
 using namespace scam;
@@ -41,6 +40,7 @@ ScamInstance::ScamInstance(ScamExpr * vars, ScamExpr * funs, Env env)
                                              forms.get(),
                                              local,
                                              false);
+
         priv.put(name.get(), impl.get());
     }
 }
@@ -82,42 +82,76 @@ void ScamInstance::setParent(ScamExpr * expr) const
 
 namespace
 {
-    ExprHandle function_not_found(ScamExpr * func, ContHandle cont)
+    class InstanceCont : public Continuation
     {
-        stringstream s;
-        s << "Instance method " << func->toString() << " not found";
-        ExprHandle err = ExpressionFactory::makeError(s.str());
-        cont->run(err.get());
-        return nil;
-    }
-
-    ExprHandle find_func(ScamExpr * obj, ScamExpr * func, ContHandle cont)
-    {
-        ExprHandle temp = obj->clone();
-
-        while ( obj->isInstance() ) {
-            ScamInstanceAdapter adapter(obj);
-            Env env = adapter.getFunctionMap();
-            if ( env.check(func) ) {
-                return env.get(func);
-            }
-
-            temp = adapter.getParent();
-            obj  = temp.get();
+    public:
+        InstanceCont(ScamExpr * obj, ScamExpr * name, ContHandle cont)
+            : Continuation("InstanceCont")
+            , obj(obj->clone())
+            , name(name->clone())
+            , cont(cont)
+        {
         }
 
-        return function_not_found(func, cont);
-    }
+        void run(ScamExpr * expr) override
+        {
+            Continuation::run(expr);
+
+            if ( expr->error() ) {
+                cont->run(expr);
+                return;
+            }
+
+            ExprHandle func = find_func(obj.get());
+            if ( func->isNil() ) {
+                return;
+            }
+
+            ScamInstanceAdapter adapter(obj.get());
+            Env env = adapter.getEnv();
+            func->apply(expr, cont, env);
+        }
+
+    private:
+        ExprHandle obj;
+        ExprHandle name;
+        ContHandle cont;
+
+        ExprHandle find_func(ScamExpr * o) const
+        {
+            ExprHandle temp = o->clone();
+
+            while ( o->isInstance() ) {
+                ScamInstanceAdapter adapter(o);
+                Env env = adapter.getFunctionMap();
+                if ( env.check(name.get()) ) {
+                    return env.get(name.get());
+                }
+
+                temp = adapter.getParent();
+                o    = temp.get();
+            }
+
+            return function_not_found();
+        }
+
+        ExprHandle function_not_found() const
+        {
+            stringstream s;
+            s << "Instance method " << name->toString() << " not found";
+            ExprHandle err = ExpressionFactory::makeError(s.str());
+            cont->run(err.get());
+            return nil;
+        }
+    };
 
     void do_apply(ScamExpr * obj, ScamExpr * args, ContHandle cont, Env env)
     {
         ScamExpr * name = args->nthcar(0).get();
-        ExprHandle func = find_func(obj, name, cont);
-        if ( func->isNil() ) {
-            return;
-        }
+        ScamExpr * funargs = args->nthcdr(0).get();
 
-        ScamExpr * farg = args->nthcdr(0).get();
-        func->apply(farg, cont, env);
+        ContHandle newCont = make_shared<InstanceCont>(obj, name, cont);
+        funargs->mapEval(newCont, env);
     }
+
 }

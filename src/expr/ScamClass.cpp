@@ -7,7 +7,6 @@
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamClassAdapter.hpp"
 
-#include <iostream>
 #include <sstream>
 
 using namespace scam;
@@ -24,10 +23,14 @@ namespace
                          Env env);
 }
 
-ScamClass::ScamClass(ScamExpr * base, ScamExpr * vars, ScamExpr * funs)
+ScamClass::ScamClass(ScamExpr * base,
+                     ScamExpr * vars,
+                     ScamExpr * funs,
+                     Env capture)
     : base(base->clone())
     , vars(vars->clone())
     , funs(funs->clone())
+    , capture(capture)
 {
 }
 
@@ -116,12 +119,13 @@ namespace
     class ClassCont : public Continuation
     {
     public:
-        ClassCont(ScamExpr * cls, ContHandle cont, Env env)
+        ClassCont(ScamExpr * cls, ContHandle cont)
             : Continuation("ClassCont")
             , cls(cls->clone())
             , cont(cont)
-            , env(env)
         {
+            ScamClassAdapter adapter(cls);
+            env = adapter.getCapture();
         }
 
         void run(ScamExpr * expr) override
@@ -258,7 +262,7 @@ namespace
         void run() override
         {
             Worker::run();
-            ContHandle newCont = make_shared<ClassCont>(cls.get(), cont, env);
+            ContHandle newCont = make_shared<ClassCont>(cls.get(), cont);
             args->mapEval(newCont, env);
         }
 
