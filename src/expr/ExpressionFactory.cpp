@@ -123,12 +123,11 @@ ExprHandle ExpressionFactory::makeClass(ScamExpr * base,
     return expr;
 }
 
-ExprHandle ExpressionFactory::makeInstance(ScamExpr * base,
-                                           ScamExpr * vars,
+ExprHandle ExpressionFactory::makeInstance(ScamExpr * vars,
                                            ScamExpr * funs,
                                            Env env)
 {
-    ExprHandle expr = makeForm<ScamInstance>(base, vars, funs, env);
+    ExprHandle expr = makeForm<ScamInstance>(vars, funs, env);
     return expr;
 }
 

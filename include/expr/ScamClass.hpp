@@ -7,6 +7,8 @@
 
 namespace scam
 {
+    class ScamClassAdapter;
+
     class ScamClass : public ScamExpr
     {
     public:
@@ -19,6 +21,8 @@ namespace scam
 
         bool isProcedure() const override;
         bool isClass() const override;
+
+        friend class ScamClassAdapter;
 
     private:
         ExprHandle base;

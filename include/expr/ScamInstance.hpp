@@ -7,13 +7,12 @@
 
 namespace scam
 {
+    class ScamInstanceAdapter;
+
     class ScamInstance : public ScamExpr
     {
     public:
-        ScamInstance(ScamExpr * base,
-                     ScamExpr * vars,
-                     ScamExpr * funs,
-                     Env env);
+        ScamInstance(ScamExpr * vars, ScamExpr * funs, Env env);
 
         std::string toString() const override;
 
@@ -24,9 +23,11 @@ namespace scam
         bool isInstance() const override;
 
         void setSelf(ScamExpr * expr) const override;
+        void setParent(ScamExpr * expr) const override;
+
+        friend class ScamInstanceAdapter;
 
     private:
-        ExprHandle  base;
         Env         priv;
         mutable Env local;
     };

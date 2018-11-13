@@ -63,6 +63,7 @@ namespace scam
         virtual ExprHandle withEnvUpdate(Env updated) const;
 
         virtual void setSelf(ScamExpr * expr) const;
+        virtual void setParent(ScamExpr * expr) const;
 
         ExprHandle clone() const;
 

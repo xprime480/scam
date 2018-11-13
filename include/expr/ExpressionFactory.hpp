@@ -50,8 +50,7 @@ namespace scam
         static ExprHandle makeClass(ScamExpr * base,
                                     ScamExpr * vars,
                                     ScamExpr * funs);
-        static ExprHandle makeInstance(ScamExpr * base,
-                                       ScamExpr * vars,
+        static ExprHandle makeInstance(ScamExpr * vars,
                                        ScamExpr * funs,
                                        Env env);
 

@@ -15,15 +15,15 @@ namespace scam
     public:
         Env();
 
-        void put(ScamExpr * key, ScamExpr * val);
-        bool check(ScamExpr * key) const;
-        ExprHandle get(ScamExpr * key) const;
+        void put(ScamExpr const * key, ScamExpr * val);
+        bool check(ScamExpr const * key) const;
+        ExprHandle get(ScamExpr const * key) const;
 
         Env extend() const;
         Env parent() const;
         Env top() const;
 
-        void assign(ScamExpr * key, ScamExpr * val);
+        void assign(ScamExpr const * key, ScamExpr * val);
 
         void dump(size_t max) const;
 

@@ -212,6 +212,13 @@ void ScamExpr::setSelf(ScamExpr * expr) const
     throw ScamException(s.str());
 }
 
+void ScamExpr::setParent(ScamExpr * expr) const
+{
+    stringstream s;
+    s << "Cannot set parent of <" << this->toString() << ">";
+    throw ScamException(s.str());
+}
+
 ExprHandle ScamExpr::clone() const
 {
     return ExpressionFactory::clone(this);

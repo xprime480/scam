@@ -90,7 +90,7 @@ namespace scam
     };
 }
 
-string checkKey(ScamExpr * key)
+string checkKey(ScamExpr const * key)
 {
     if ( ! key->isSymbol() ) {
         stringstream s;
@@ -105,17 +105,17 @@ Env::Env()
 {
 }
 
-void Env::put(ScamExpr * key, ScamExpr * val)
+void Env::put(ScamExpr const * key, ScamExpr * val)
 {
     data->put(checkKey(key), val);
 }
 
-bool Env::check(ScamExpr * key) const
+bool Env::check(ScamExpr const * key) const
 {
     return data->check(checkKey(key));
 }
 
-ExprHandle Env::get(ScamExpr * key) const
+ExprHandle Env::get(ScamExpr const * key) const
 {
     return data->get(checkKey(key));
 }
@@ -142,7 +142,7 @@ Env Env::top() const
     return parent().top();
 }
 
-void Env::assign(ScamExpr * key, ScamExpr * val)
+void Env::assign(ScamExpr const * key, ScamExpr * val)
 {
     data->assign(checkKey(key), val);
 }

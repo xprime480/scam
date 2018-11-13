@@ -55,3 +55,21 @@ TEST_F(ClassTest, CallMemberFunction)
     ExprHandle expr = parseAndEvaluateFile("scripts/class/callmember.scm");
     expectInteger(expr, 17, "17");
 }
+
+TEST_F(ClassTest, CallParentFunction)
+{
+    ExprHandle expr = parseAndEvaluateFile("scripts/class/callparent.scm");
+    expectInteger(expr, 17, "17");
+}
+
+TEST_F(ClassTest, CallSelfFunction)
+{
+    ExprHandle expr = parseAndEvaluateFile("scripts/class/callself.scm");
+    expectInteger(expr, 34, "34");
+}
+
+TEST_F(ClassTest, DirectToBase)
+{
+    ExprHandle expr = parseAndEvaluateFile("scripts/class/callbase.scm");
+    expectInteger(expr, -1, "-1");
+}

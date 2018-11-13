@@ -30,7 +30,7 @@ do_it_manually :
 test : unittests
 	@./unittests
 
-by_module :
+by_module : unittests
 	@./unittests --gtest_filter=TrampolineTest.*
 	@./unittests --gtest_filter=EnvTest.*
 	@./unittests --gtest_filter=TokenizerTest.*
