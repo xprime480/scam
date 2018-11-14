@@ -62,6 +62,13 @@ namespace scam
             return intern(std::make_shared<T>(args...));
         }
 
+        template <typename T>
+        static ExprHandle makeForm()
+        {
+            static const ExprHandle cached = intern(std::make_shared<T>());
+            return cached;
+        }
+
         static ExprHandle clone(ScamExpr const *);
 
         static unsigned getMaxHandles();

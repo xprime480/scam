@@ -16,6 +16,8 @@
 #include "expr/ScamSymbol.hpp"
 #include "expr/ScamVector.hpp"
 
+#include <iostream>
+
 using namespace scam;
 using namespace std;
 
@@ -133,19 +135,45 @@ ExprHandle ExpressionFactory::makeInstance(ScamExpr * vars,
 namespace
 {
     static const unsigned MAX_HANDLES = 1 << 10;
-    weak_ptr<ScamExpr> HLIST[MAX_HANDLES];
+
+    unsigned long long HANDLE_COUNTER { 0 };
+    struct HANDLE_ENTRY
+    {
+	unsigned long long  sequence;
+	weak_ptr<ScamExpr>  handle;
+    };
+
+    HANDLE_ENTRY HLIST[MAX_HANDLES];
 
     static unsigned nextHandle = 0;
+
+    void dumpHandles()
+    {
+        for ( unsigned i = 0 ; i < MAX_HANDLES ; ++i ) {
+            if ( ! HLIST[i].handle.expired() ) {
+		unsigned c = HLIST[i].handle.use_count();
+		ExprHandle rv = HLIST[i].handle.lock();
+		cerr << i
+		     << "\t" << HLIST[i].sequence
+		     << "\t" << c
+		     << "\t" << rv->toString()
+		     << "\n";
+            }
+        }
+    }
 
     unsigned getNextHandle()
     {
         for ( unsigned i = 0 ; i < MAX_HANDLES ; ++i ) {
             unsigned h = (nextHandle + i) % MAX_HANDLES;
-            if ( HLIST[h].expired() ) {
+            if ( HLIST[h].handle.expired() ) {
+		HLIST[h].sequence = ++HANDLE_COUNTER;
                 nextHandle = h;
                 return h;
             }
         }
+
+	dumpHandles();
 
         throw ScamException("***Internal Error:  No more handles");
         return 0u;
@@ -163,11 +191,11 @@ ExprHandle ExpressionFactory::clone(ScamExpr const * expr)
         throw ScamException("Internal Error:  invalid handle to clone");
     }
 
-    if ( HLIST[h].expired() ) {
+    if ( HLIST[h].handle.expired() ) {
         throw ScamException("Internal Error:  handle is expired");
     }
 
-    ExprHandle rv = HLIST[h].lock();
+    ExprHandle rv = HLIST[h].handle.lock();
     if ( ! rv ) {
         throw ScamException("Internal Error:  handle is nullptr");
     }
@@ -188,6 +216,6 @@ ExprHandle ExpressionFactory::intern(ExprHandle expr)
 {
     unsigned h = getNextHandle();
     expr->setHandle(h);
-    HLIST[h] = expr;
+    HLIST[h].handle = expr;
     return expr;
 }

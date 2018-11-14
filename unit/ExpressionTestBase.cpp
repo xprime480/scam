@@ -58,12 +58,14 @@ void ExpressionTestBase::SetUp()
         env = ScamEngine::getStandardEnv();
     }
     catch ( ScamException e ) {
-        FAIL() << e.getMessage() << "creating standard env";
+        FAIL() << e.getMessage() << " while creating standard env";
     }
 }
 
 void ExpressionTestBase::TearDown()
 {
+    Env empty;
+    env = empty;
 }
 
 ExprHandle ExpressionTestBase::evaluate(ExprHandle input)
