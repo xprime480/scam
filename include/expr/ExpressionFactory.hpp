@@ -9,6 +9,9 @@
 
 namespace scam
 {
+    class Continuation;
+    using ContHandle = std::shared_ptr<Continuation>;
+
     using ExprVec = std::vector<ExprHandle>;
 
     class ExpressionFactory
@@ -55,6 +58,8 @@ namespace scam
         static ExprHandle makeInstance(ScamExpr * vars,
                                        ScamExpr * funs,
                                        Env env);
+
+        static ExprHandle makeContinuation(ContHandle cont);
 
         template <typename T, typename... Args>
         static ExprHandle makeForm(Args... args)

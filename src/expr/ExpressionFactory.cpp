@@ -6,6 +6,7 @@
 #include "expr/ScamClass.hpp"
 #include "expr/ScamClosure.hpp"
 #include "expr/ScamCons.hpp"
+#include "expr/ScamContinuation.hpp"
 #include "expr/ScamError.hpp"
 #include "expr/ScamFloat.hpp"
 #include "expr/ScamInstance.hpp"
@@ -132,6 +133,12 @@ ExprHandle ExpressionFactory::makeInstance(ScamExpr * vars,
     return expr;
 }
 
+ExprHandle ExpressionFactory::makeContinuation(ContHandle cont)
+{
+    ExprHandle expr = makeForm<ScamContinuation>(cont);
+    return expr;
+}
+
 namespace
 {
     static const unsigned MAX_HANDLES = 1 << 10;
@@ -139,8 +146,8 @@ namespace
     unsigned long long HANDLE_COUNTER { 0 };
     struct HANDLE_ENTRY
     {
-	unsigned long long  sequence;
-	weak_ptr<ScamExpr>  handle;
+        unsigned long long  sequence;
+        weak_ptr<ScamExpr>  handle;
     };
 
     HANDLE_ENTRY HLIST[MAX_HANDLES];
@@ -151,13 +158,13 @@ namespace
     {
         for ( unsigned i = 0 ; i < MAX_HANDLES ; ++i ) {
             if ( ! HLIST[i].handle.expired() ) {
-		unsigned c = HLIST[i].handle.use_count();
-		ExprHandle rv = HLIST[i].handle.lock();
-		cerr << i
-		     << "\t" << HLIST[i].sequence
-		     << "\t" << c
-		     << "\t" << rv->toString()
-		     << "\n";
+                unsigned c = HLIST[i].handle.use_count();
+                ExprHandle rv = HLIST[i].handle.lock();
+                cerr << i
+                     << "\t" << HLIST[i].sequence
+                     << "\t" << c
+                     << "\t" << rv->toString()
+                     << "\n";
             }
         }
     }
@@ -167,13 +174,13 @@ namespace
         for ( unsigned i = 0 ; i < MAX_HANDLES ; ++i ) {
             unsigned h = (nextHandle + i) % MAX_HANDLES;
             if ( HLIST[h].handle.expired() ) {
-		HLIST[h].sequence = ++HANDLE_COUNTER;
+                HLIST[h].sequence = ++HANDLE_COUNTER;
                 nextHandle = h;
                 return h;
             }
         }
 
-	dumpHandles();
+        dumpHandles();
 
         throw ScamException("***Internal Error:  No more handles");
         return 0u;

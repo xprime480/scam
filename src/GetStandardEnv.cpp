@@ -34,6 +34,7 @@ Env ScamEngine::getStandardEnv()
     addForm<LetRec>(env, "letrec");
     addForm<Eval>(env, "eval");
     addForm<ClassMaker>(env, "make-class");
+    addForm<CallCC>(env, "call/cc");
 
     addForm<If>(env, "if");
     addForm<And>(env, "and");
