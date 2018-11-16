@@ -17,7 +17,7 @@ TEST_F(ExpressionTest, NullExpression)
     ExprHandle expr = ExpressionFactory::makeNull();
     expectNull(expr);
 
-    ExprHandle evaled = evaluate(expr);
+    ExprHandle evaled = evaluate(expr.get());
     expectError(evaled);
 }
 
@@ -28,7 +28,7 @@ TEST_F(ExpressionTest, ErrorExpression)
     ExprHandle expr = ExpressionFactory::makeError(msg);
     expectError(expr, msg);
 
-    ExprHandle evaled = evaluate(expr);
+    ExprHandle evaled = evaluate(expr.get());
     expectError(evaled, msg);
 }
 
@@ -52,7 +52,7 @@ TEST_F(ExpressionTest, FloatTest)
     ExprHandle expr = ExpressionFactory::makeFloat(value);
     expectFloat(expr, value, repr);
 
-    ExprHandle evaled = evaluate(expr);
+    ExprHandle evaled = evaluate(expr.get());
     expectFloat(evaled, value, repr);
 }
 
@@ -64,7 +64,7 @@ TEST_F(ExpressionTest, IntegerTest)
     ExprHandle expr = ExpressionFactory::makeInteger(value);
     expectInteger(expr, value, repr);
 
-    ExprHandle evaled = evaluate(expr);
+    ExprHandle evaled = evaluate(expr.get());
     expectInteger(evaled, value, repr);
 }
 
@@ -76,7 +76,7 @@ TEST_F(ExpressionTest, CharacterTest)
     ExprHandle expr = ExpressionFactory::makeCharacter(repr);
     expectChar(expr, value, repr);
 
-    ExprHandle evaled = evaluate(expr);
+    ExprHandle evaled = evaluate(expr.get());
     expectChar(evaled, value, repr);
 }
 
@@ -87,7 +87,7 @@ TEST_F(ExpressionTest, StringTest)
     ExprHandle expr = ExpressionFactory::makeString(value);
     expectString(expr, value);
 
-    ExprHandle evaled = evaluate(expr);
+    ExprHandle evaled = evaluate(expr.get());
     expectString(evaled, value);
 }
 
@@ -98,12 +98,12 @@ TEST_F(ExpressionTest, SymbolTest)
     ExprHandle sym = ExpressionFactory::makeSymbol(name);
     expectSymbol(sym, name);
 
-    ExprHandle evaled = evaluate(sym);
+    ExprHandle evaled = evaluate(sym.get());
     expectError(evaled);
 
     ExprHandle value = ExpressionFactory::makeInteger(1899);
-    env.put(sym.get(), value.get());
-    evaled = evaluate(sym);
+    engine.addBinding(sym.get(), value.get());
+    evaled = evaluate(sym.get());
     expectInteger(evaled, 1899, "1899");
 }
 
@@ -112,7 +112,7 @@ TEST_F(ExpressionTest, NilTest)
     ExprHandle expr = ExpressionFactory::makeNil();
     expectNil(expr);
 
-    ExprHandle evaled = evaluate(expr);
+    ExprHandle evaled = evaluate(expr.get());
     expectNil(evaled);
 }
 
@@ -166,7 +166,7 @@ TEST_F(ExpressionTest, ListEmptyTest)
     ExprHandle expr = ExpressionFactory::makeList();
     expectNil(expr);
 
-    ExprHandle evaled = evaluate(expr);
+    ExprHandle evaled = evaluate(expr.get());
     expectNil(evaled);
 }
 
@@ -236,7 +236,7 @@ TEST_F(ExpressionTest, ConsEvalTest)
     expectList(expr, value, 2);
     expectSymbol(expr->getCar(), "quote");
 
-    ExprHandle evaled = evaluate(expr);
+    ExprHandle evaled = evaluate(expr.get());
     expectInteger(evaled, 2, "2");
 }
 
@@ -294,7 +294,7 @@ TEST_F(ExpressionTest, SpecialFormQuote)
     ExprHandle quote  = ExpressionFactory::makeForm<Quote>();
     expectApplicable(quote, value);
 
-    ExprHandle evaled = evaluate(quote);
+    ExprHandle evaled = evaluate(quote.get());
     expectApplicable(evaled, value);
 }
 
@@ -305,7 +305,7 @@ TEST_F(ExpressionTest, SpecialFormQuasiQuote)
     ExprHandle quote  = ExpressionFactory::makeForm<QuasiQuote>();
     expectApplicable(quote, value);
 
-    ExprHandle evaled = evaluate(quote);
+    ExprHandle evaled = evaluate(quote.get());
     expectApplicable(evaled, value);
 }
 
@@ -316,7 +316,7 @@ TEST_F(ExpressionTest, VectorEmpty)
     ExprHandle expr  = ExpressionFactory::makeVector(vec);
     expectVector(expr, value, 0);
 
-    ExprHandle evaled = evaluate(expr);
+    ExprHandle evaled = evaluate(expr.get());
     expectVector(evaled, value, 0);
 }
 
@@ -339,7 +339,7 @@ TEST_F(ExpressionTest, VectorNonEmpty)
     ExprHandle expr  = ExpressionFactory::makeVector(vec);
     f(expr);
 
-    ExprHandle evaled = evaluate(expr);
+    ExprHandle evaled = evaluate(expr.get());
     f(evaled);
 }
 

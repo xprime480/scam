@@ -17,12 +17,12 @@ TEST_F(ClosureTest, ClosureBasic)
     ExprHandle forms = ExpressionFactory::makeList(two.get());
     ExprHandle expr = ExpressionFactory::makeClosure(parm.get(),
                                                      forms.get(),
-                                                     env);
+                                                     engine.getFrame());
 
     expectProcedure(expr, "(lambda () (2))");
 
     ExprHandle args = ExpressionFactory::makeNil();
-    ExprHandle final = apply(expr, args);
+    ExprHandle final = apply(expr.get(), args.get());
 
     expectInteger(final, 2, "2");
 }
@@ -36,12 +36,12 @@ TEST_F(ClosureTest, ClosureMultipleForms)
     ExprHandle forms = ExpressionFactory::makeList(two.get(), zed.get());
     ExprHandle expr = ExpressionFactory::makeClosure(parm.get(),
                                                      forms.get(),
-                                                     env);
+                                                     engine.getFrame());
 
     expectProcedure(expr, "(lambda () (2 \\#z))");
 
     ExprHandle args = ExpressionFactory::makeNil();
-    ExprHandle final = apply(expr, args);
+    ExprHandle final = apply(expr.get(), args.get());
 
     expectChar(final, 'z', "\\#z");
 }
@@ -61,14 +61,14 @@ TEST_F(ClosureTest, ClosureWithArg)
 
     ExprHandle expr = ExpressionFactory::makeClosure(parm.get(),
                                                      forms.get(),
-                                                     env);
+                                                     engine.getFrame());
 
     expectProcedure(expr, "(lambda (x) ((+ x x)))");
 
     ExprHandle arg3 = ExpressionFactory::makeInteger(3);
     ExprHandle args = ExpressionFactory::makeList(arg3.get());
     try {
-        ExprHandle final = apply(expr, args);
+        ExprHandle final = apply(expr.get(), args.get());
         expectInteger(final, 6, "6");
     }
     catch ( ScamException e ) {

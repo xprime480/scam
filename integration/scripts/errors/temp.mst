@@ -9,6 +9,6 @@ Bad Input
 :x
 
 [result]
-Unable to scan input: {:x}
+Symbol :x does not exist in the current environment
 
 

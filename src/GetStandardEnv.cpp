@@ -19,10 +19,8 @@ namespace
     }
 }
 
-Env ScamEngine::getStandardEnv()
+void ScamEngine::getStandardEnv()
 {
-    Env env;
-
     addForm<Assign>(env, "assign!");
     addForm<Define>(env, "define");
     addForm<Lambda>(env, "lambda");
@@ -63,6 +61,4 @@ Env ScamEngine::getStandardEnv()
     addForm<Progn>(env, "progn");
 
     addForm<Load>(env, "load");
-
-   return env;
 }

@@ -9,4 +9,4 @@ Negative Tests for Tokenizing
 #tt
 
 [result]
-Unable to scan input: {#tt}
+Malformed boolean: {#tt}

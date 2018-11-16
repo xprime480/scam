@@ -52,10 +52,7 @@ protected:
     {
         StaticTokenizer tokenizer(tokens);
         ScamParser parser(tokenizer);
-        shared_ptr<Extractor> ec = make_shared<Extractor>();
-        parser.parseExpr(ec);
-
-        ExprHandle expr = ec->getExpr();
+        ExprHandle expr = parser.parseExpr();
         EXPECT_NE(nullptr, expr.get());
         return expr;
     }

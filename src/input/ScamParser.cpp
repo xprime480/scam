@@ -14,10 +14,10 @@ ScamParser::ScamParser(Tokenizer & tokenizer)
 {
 }
 
-void ScamParser::parseExpr(ContHandle cont) const
+ExprHandle ScamParser::parseExpr() const
 {
     ExprHandle expr = parseSubExpr();
-    cont->run(expr.get());
+    return expr;
 }
 
 ExprHandle ScamParser::parseSubExpr() const

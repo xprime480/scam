@@ -8,6 +8,7 @@
 #include "expr/ExpressionFactory.hpp"
 #include "input/ScamParser.hpp"
 #include "input/StringTokenizer.hpp"
+#include "util/EvalString.hpp"
 
 #include <fstream>
 
@@ -44,6 +45,7 @@ namespace
 }
 
 ExpressionTestBase::ExpressionTestBase()
+    : engine(true)
 {
 }
 
@@ -54,38 +56,30 @@ ExpressionTestBase::~ExpressionTestBase()
 void ExpressionTestBase::SetUp()
 {
     extractor = make_shared<Extractor>();
-    try {
-        env = ScamEngine::getStandardEnv();
-    }
-    catch ( ScamException e ) {
-        FAIL() << e.getMessage() << " while creating standard env";
-    }
 }
 
 void ExpressionTestBase::TearDown()
 {
-    Env empty;
-    env = empty;
 }
 
-ExprHandle ExpressionTestBase::evaluate(ExprHandle input)
+ExprHandle ExpressionTestBase::evaluate(ScamExpr * input)
 {
-    input->eval(extractor, env);
+    engine.eval(input, extractor);
     Trampoline(GlobalWorkQueue);
     return extractor->getExpr();
 }
 
-ExprHandle ExpressionTestBase::apply(ExprHandle expr, ExprHandle args)
+ExprHandle ExpressionTestBase::apply(ScamExpr * expr, ScamExpr * args)
 {
-    expr->apply(args.get(), extractor, env);
+    engine.apply(expr, args, extractor);
     Trampoline(GlobalWorkQueue);
     return extractor->getExpr();
 }
 
 ExprHandle ExpressionTestBase::parseAndEvaluate(string const & input)
 {
-    StringTokenizer tokenizer(input);
-    return evaluateAll(tokenizer);
+    EvalString helper(engine, input);
+    return helper.getLast();
 }
 
 ExprHandle ExpressionTestBase::parseAndEvaluateFile(char const * filename)
@@ -105,11 +99,12 @@ ExprHandle ExpressionTestBase::parseAndEvaluateFile(char const * filename)
     while ( source.good() && ! source.eof() ) {
         source.getline(buf, sizeof ( buf ));
         text << buf;
+        text << "\n";
     }
 
-    return parseAndEvaluate(text.str());
+    ExprHandle rv = parseAndEvaluate(text.str());
+    return rv;
 }
-
 
 void decodeBit(unsigned mismatch,
                unsigned exp,
@@ -166,10 +161,9 @@ string decodePredicate(unsigned exp, unsigned act)
     return s.str();
 }
 
-void
-ExpressionTestBase::checkPredicates(ExprHandle expr, unsigned exp)
+void ExpressionTestBase::checkPredicates(ScamExpr * expr, unsigned exp)
 {
-    ASSERT_NE(nullptr, expr.get());
+    ASSERT_NE(nullptr, expr);
     unsigned act { 0 };
 
     act |= (expr->isNull() ? SELECT_NULL : 0);
@@ -208,7 +202,7 @@ void expectNonNumeric(ExprHandle expr)
 
 void ExpressionTestBase::expectNull(ExprHandle expr)
 {
-    checkPredicates(expr, SELECT_NULL);
+    checkPredicates(expr.get(), SELECT_NULL);
     EXPECT_EQ("null", expr->toString());
 
     expectNonNumeric(expr);
@@ -216,7 +210,7 @@ void ExpressionTestBase::expectNull(ExprHandle expr)
 
 void ExpressionTestBase::expectError(ExprHandle expr, string const msg)
 {
-    checkPredicates(expr, SELECT_TRUTH | SELECT_ERROR );
+    checkPredicates(expr.get(), SELECT_TRUTH | SELECT_ERROR );
 
     if ( ! msg.empty() ) {
         EXPECT_EQ(msg, expr->toString());
@@ -230,7 +224,7 @@ void ExpressionTestBase::expectBoolean(ExprHandle expr,
                                        string const & repr)
 {
     EXPECT_EQ(repr, expr->toString());
-    checkPredicates(expr, SELECT_BOOLEAN | (value ? SELECT_TRUTH : 0));
+    checkPredicates(expr.get(), SELECT_BOOLEAN | (value ? SELECT_TRUTH : 0));
 
     expectNonNumeric(expr);
 }
@@ -240,7 +234,7 @@ void ExpressionTestBase::booleanTest(ExprHandle expr,
                                      string const & repr)
 {
     expectBoolean(expr, value, repr);
-    ExprHandle evaled = evaluate(expr);
+    ExprHandle evaled = evaluate(expr.get());
     expectBoolean(evaled, value, repr);
 }
 
@@ -248,7 +242,7 @@ void ExpressionTestBase::expectFloat(ExprHandle expr,
                                      double value,
                                      string const & repr)
 {
-    checkPredicates(expr, SELECT_TRUTH | ALL_FLOAT);
+    checkPredicates(expr.get(), SELECT_TRUTH | ALL_FLOAT);
     EXPECT_EQ(repr, expr->toString());
 
     try {
@@ -265,7 +259,7 @@ void ExpressionTestBase::expectInteger(ExprHandle expr,
                                        int value,
                                        string const & repr)
 {
-    checkPredicates(expr, SELECT_TRUTH | ALL_INTEGER);
+    checkPredicates(expr.get(), SELECT_TRUTH | ALL_INTEGER);
     EXPECT_EQ(repr, expr->toString());
     try {
         EXPECT_EQ((double)value, expr->toFloat());
@@ -279,27 +273,27 @@ void ExpressionTestBase::expectInteger(ExprHandle expr,
 void
 ExpressionTestBase::expectChar(ExprHandle expr, char value, string const & repr)
 {
-    checkPredicates(expr, SELECT_TRUTH | SELECT_CHAR);
+    checkPredicates(expr.get(), SELECT_TRUTH | SELECT_CHAR);
     EXPECT_EQ(repr, expr->toString());
     EXPECT_EQ(value, expr->toChar());
 }
 
 void ExpressionTestBase::expectString(ExprHandle expr, string const & value)
 {
-    checkPredicates(expr, SELECT_TRUTH | SELECT_STRING);
+    checkPredicates(expr.get(), SELECT_TRUTH | SELECT_STRING);
     EXPECT_EQ(value, expr->toString());
 }
 
 void ExpressionTestBase::expectSymbol(ExprHandle expr, string const & name)
 {
-    checkPredicates(expr, SELECT_TRUTH | SELECT_SYMBOL);
+    checkPredicates(expr.get(), SELECT_TRUTH | SELECT_SYMBOL);
     EXPECT_EQ(name, expr->toString());
 }
 
 void ExpressionTestBase::expectNil(ExprHandle expr)
 {
     static const string repr { "()" };
-    checkPredicates(expr, SELECT_TRUTH | ALL_NIL);
+    checkPredicates(expr.get(), SELECT_TRUTH | ALL_NIL);
     EXPECT_EQ(repr, expr->toString());
 }
 
@@ -307,7 +301,7 @@ void ExpressionTestBase::expectList(ExprHandle expr,
                                     string const & repr,
                                     size_t len)
 {
-    checkPredicates(expr, SELECT_TRUTH | SELECT_CONS | SELECT_LIST);
+    checkPredicates(expr.get(), SELECT_TRUTH | SELECT_CONS | SELECT_LIST);
     EXPECT_EQ(repr, expr->toString());
     try {
         EXPECT_EQ(len, expr->length());
@@ -319,13 +313,13 @@ void ExpressionTestBase::expectList(ExprHandle expr,
 
 void ExpressionTestBase::expectCons(ExprHandle expr, string const & repr)
 {
-    checkPredicates(expr, SELECT_TRUTH | SELECT_CONS);
+    checkPredicates(expr.get(), SELECT_TRUTH | SELECT_CONS);
     EXPECT_EQ(repr, expr->toString());
 }
 
 void ExpressionTestBase::expectApplicable(ExprHandle expr, string const & repr)
 {
-    checkPredicates(expr, SELECT_TRUTH | SELECT_APPLY);
+    checkPredicates(expr.get(), SELECT_TRUTH | SELECT_APPLY);
     EXPECT_EQ(repr, expr->toString());
 }
 
@@ -333,58 +327,25 @@ void ExpressionTestBase::expectVector(ExprHandle expr,
                                       string const & repr,
                                       size_t len)
 {
-    checkPredicates(expr, SELECT_TRUTH | SELECT_VECTOR);
+    checkPredicates(expr.get(), SELECT_TRUTH | SELECT_VECTOR);
     EXPECT_EQ(repr, expr->toString());
     EXPECT_EQ(len, expr->length());
 }
 
 void ExpressionTestBase::expectProcedure(ExprHandle expr, string const & repr)
 {
-    checkPredicates(expr, SELECT_TRUTH | ALL_PROC);
+    checkPredicates(expr.get(), SELECT_TRUTH | ALL_PROC);
     EXPECT_EQ(repr, expr->toString());
 }
 
 void ExpressionTestBase::expectClass(ExprHandle expr)
 {
-    checkPredicates(expr, SELECT_TRUTH | ALL_CLASS);
+    checkPredicates(expr.get(), SELECT_TRUTH | ALL_CLASS);
     EXPECT_EQ("class", expr->toString());
 }
 
 void ExpressionTestBase::expectInstance(ExprHandle expr)
 {
-    checkPredicates(expr, SELECT_TRUTH | ALL_INSTANCE);
+    checkPredicates(expr.get(), SELECT_TRUTH | ALL_INSTANCE);
     EXPECT_EQ("instance", expr->toString());
-}
-
-ExprHandle ExpressionTestBase::evaluateAll(Tokenizer & tokenizer)
-{
-    ScamParser parser(tokenizer);
-    ExprHandle rv = ExpressionFactory::makeNull();
-
-    for ( ;; ) {
-        try {
-            ExprHandle expr = evaluateNext(parser);
-            if ( expr->isNull() ) {
-                break;
-            }
-            rv = expr;
-        }
-        catch ( ScamException e ) {
-            rv = ExpressionFactory::makeError(e.getMessage());
-            break;
-        }
-    }
-
-    return rv;
-}
-
-ExprHandle ExpressionTestBase::evaluateNext(ScamParser & parser)
-{
-    parser.parseExpr(extractor);
-    ExprHandle expr = extractor->getExpr();
-
-    if ( expr->isNull() ) {
-        return expr;
-    }
-    return evaluate(expr);
 }

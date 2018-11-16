@@ -1,7 +1,6 @@
 #if ! defined(SCAMPARSER_H)
 #define SCAMPARSER_H 1
 
-#include "Continuation.hpp"
 #include "expr/ScamExpr.hpp"
 
 #include "input/Tokenizer.hpp"
@@ -17,7 +16,7 @@ namespace scam
     public:
         ScamParser(Tokenizer & tokenizer);
 
-        void parseExpr(ContHandle cont) const;
+        ExprHandle parseExpr() const;
 
     private:
         Tokenizer & tokenizer;

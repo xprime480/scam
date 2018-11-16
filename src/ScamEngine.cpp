@@ -5,205 +5,94 @@
 #include "Trampoline.hpp"
 #include "WorkQueue.hpp"
 #include "Worker.hpp"
-
+#include "expr/ExpressionFactory.hpp"
 #include "expr/ScamExpr.hpp"
-
 #include "input/ScamParser.hpp"
-
 #include "output/OutputHandler.hpp"
 
 using namespace std;
 using namespace scam;
 
-ScamEngine::ScamEngine()
+ScamEngine::ScamEngine(bool initEnv)
 {
+    reset(initEnv);
 }
 
-namespace
+void ScamEngine::reset(bool initEnv)
 {
-    class ReplWorker;
+    Env newEnv;
+    env = newEnv;
 
-    enum class ReplState : unsigned char { READ, EVAL, PRINT, ERROR };
-
-    class ReadContinuation : public Continuation
-    {
-    public:
-        ReadContinuation(ReplWorker & repl);
-        void run(ScamExpr * expr) override;
-
-    private:
-        ReplWorker & repl;
-    };
-
-    class EvalContinuation : public Continuation
-    {
-    public:
-        EvalContinuation(ReplWorker & repl);
-        void run(ScamExpr * expr) override;
-
-    private:
-        ReplWorker & repl;
-    };
-
-    class PrintContinuation : public Continuation
-    {
-    public:
-        PrintContinuation(ReplWorker & repl);
-        void run(ScamExpr * expr) override;
-
-    private:
-        ReplWorker & repl;
-    };
-
-    class ReplWorker : public Worker
-    {
-    public:
-        friend class ReadContinuation;
-        friend class EvalContinuation;
-        friend class PrintContinuation;
-
-        ReplWorker(ScamParser & parser, OutputHandler & output)
-            : Worker("Engine REPL")
-            , parser(parser)
-            , output(output)
-            , state(ReplState::READ)
-        {
-        }
-
-        ReplWorker(ReplWorker const &) = default;
-        ReplWorker & operator=(ReplWorker const &) = default;
-        ReplWorker(ReplWorker &&) = delete;
-        ReplWorker & operator=(ReplWorker &&) = delete;
-
-        void run() override
-        {
-            Worker::run();
-
-            switch ( state ) {
-            case ReplState::READ:
-                do_read();
-                break;
-
-            case ReplState::EVAL:
-                do_eval();
-                break;
-
-            case ReplState::PRINT:
-                do_print();
-                break;
-
-            case ReplState::ERROR:
-                do_error();
-                break;
-            }
-        }
-
-    private:
-        ScamParser & parser;
-        OutputHandler & output;
-        ReplState state;
-        ExprHandle expr;
-        Env env;
-
-        void do_read()
-        {
-            ContHandle cont = make_shared<ReadContinuation>(*this);
-            parser.parseExpr(cont);
-        }
-
-        void do_eval()
-        {
-            ContHandle cont = make_shared<EvalContinuation>(*this);
-            expr->eval(cont, env);
-        }
-
-        void do_print()
-        {
-            ContHandle cont = make_shared<PrintContinuation>(*this);
-            string value = expr->toString();
-            output.handleResult(value);
-            cont->run(expr.get());
-        }
-
-        void do_error()
-        {
-            ContHandle cont = make_shared<PrintContinuation>(*this);
-            string value = expr->toString();
-            output.handleError(value);
-            cont->run(expr.get());
-        }
-    };
-
-    ReadContinuation::ReadContinuation(ReplWorker & repl)
-        : Continuation("Engine Read")
-        , repl(repl)
-    {
-    }
-
-    void ReadContinuation::run(ScamExpr * expr)
-    {
-        Continuation::run(expr);
-
-        if ( ! expr ) {
-            return;
-        }
-
-        shared_ptr<ReplWorker> replNext = workQueueHelper<ReplWorker>(repl);
-        replNext->expr  = expr->clone();
-
-        if ( expr->error() ) {
-            replNext->state = ReplState::ERROR;
-        }
-        else {
-            replNext->state = ReplState::EVAL;
-        }
-    }
-
-    EvalContinuation::EvalContinuation(ReplWorker & repl)
-        : Continuation("Engine Eval")
-        , repl(repl)
-    {
-    }
-
-    void EvalContinuation::run(ScamExpr * expr)
-    {
-        Continuation::run(expr);
-
-        shared_ptr<ReplWorker> replNext = workQueueHelper<ReplWorker>(repl);
-        replNext->expr  = expr->clone();
-
-        if ( expr->error() ) {
-            replNext->state = ReplState::ERROR;
-        }
-        else {
-            replNext->state = ReplState::PRINT;
-        }
-    }
-
-    PrintContinuation::PrintContinuation(ReplWorker & repl)
-        : Continuation("Engine Print")
-        , repl(repl)
-    {
-    }
-
-    void PrintContinuation::run(ScamExpr * expr)
-    {
-        Continuation::run(expr);
-
-        shared_ptr<ReplWorker> replNext = workQueueHelper<ReplWorker>(repl);
-        replNext->state = ReplState::READ;
-        replNext->expr  = expr->clone();
+    if ( initEnv ) {
+        getStandardEnv();
     }
 }
 
-void ScamEngine::repl(Tokenizer & input, OutputHandler & output)
+void ScamEngine::pushFrame()
 {
-    ScamParser parser(input);
-    workQueueHelper<ReplWorker>(parser, output);
+    env = env.extend();
 }
 
-void ScamEngine::extend(std::string const & name,
-                        Tokenizer & input,
-                        OutputHandler & output)
+Env ScamEngine::getFrame()
 {
+    return env;
+}
+
+void ScamEngine::popFrame()
+{
+    env = env.parent();
+}
+
+void ScamEngine::addBinding(ScamExpr * key, ScamExpr * val)
+{
+    env.put(key, val);
+}
+
+bool ScamEngine::hasBinding(ScamExpr * key)
+{
+    return env.check(key);
+}
+
+ExprHandle ScamEngine::getBinding(ScamExpr * key, bool top)
+{
+    Env temp = top ? env.top() : env;
+    return temp.get(key);
+}
+
+void ScamEngine::rebind(ScamExpr * key, ScamExpr * val)
+{
+    env.assign(key, val);
+}
+
+void ScamEngine::pushInput(Tokenizer & tokenizer)
+{
+    shared_ptr<ScamParser> p = make_shared<ScamParser>(tokenizer);
+    input.push_back(p);
+}
+
+void ScamEngine::popInput()
+{
+    if ( ! input.empty() ) {
+        input.pop_back();
+    }
+}
+
+ExprHandle ScamEngine::read()
+{
+    if ( input.empty() ) {
+        return ExpressionFactory::makeNull();
+    }
+
+    shared_ptr<ScamParser> p = input.back();
+    return p->parseExpr();
+}
+
+void ScamEngine::eval(ScamExpr * expr, ContHandle cont)
+{
+    expr->eval(cont, env);
+}
+
+void ScamEngine::apply(ScamExpr * expr, ScamExpr * args, ContHandle cont)
+{
+    expr->apply(args, cont, env);
 }

@@ -1,6 +1,6 @@
 
-#include "Env.hpp"
 #include "Extractor.hpp"
+#include "ScamEngine.hpp"
 
 #include <memory>
 #include <string>
@@ -22,16 +22,16 @@ namespace scam
         void TearDown() override;
 
         std::shared_ptr<Extractor> extractor;
-        Env env;
+        ScamEngine engine;
 
-        ExprHandle evaluate(ExprHandle input);
-        ExprHandle apply(ExprHandle expr, ExprHandle args);
+        ExprHandle evaluate(ScamExpr * input);
+        ExprHandle apply(ScamExpr * expr, ScamExpr * args);
         ExprHandle parseAndEvaluate(std::string const & input);
         ExprHandle parseAndEvaluateFile(char const * filename);
 
         void doCheck(bool act, unsigned selector, unsigned which);
 
-        void checkPredicates(ExprHandle expr, unsigned selector);
+        void checkPredicates(ScamExpr * expr, unsigned selector);
 
         void expectNull(ExprHandle expr);
         void expectError(ExprHandle expr,
@@ -72,9 +72,5 @@ namespace scam
                              std::string const & repr);
         void expectClass(ExprHandle expr);
         void expectInstance(ExprHandle expr);
-
-    private:
-        ExprHandle evaluateAll(Tokenizer & tokenizer);
-        ExprHandle evaluateNext(ScamParser & parser);
     };
 }

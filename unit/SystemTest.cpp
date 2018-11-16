@@ -11,6 +11,6 @@ class SystemTest : public ExpressionTestBase
 TEST_F(SystemTest, LoadTest)
 {
     ExprHandle expr
-	= parseAndEvaluate("(load \"scripts/system/loadtest.scm\")");
+        = parseAndEvaluate("(load \"scripts/system/loadtest.scm\")");
     expectString(expr, "Success");
 }

@@ -28,7 +28,6 @@ do_it_manually :
 	make -C gmock all
 
 test : unittests
-	@./unittests --gtest_filter=SystemTest.*
 	@./unittests
 
 by_module : unittests
@@ -47,6 +46,7 @@ by_module : unittests
 	@./unittests --gtest_filter=EvalTest.*
 	@./unittests --gtest_filter=ClassTest.*
 	@./unittests --gtest_filter=ContinuationTest.*
+	@./unittests --gtest_filter=SystemTest.*
 
 clean :
 	make -C ../src clean
