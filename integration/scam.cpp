@@ -2,7 +2,6 @@
 #include "scam.hpp"
 
 #include "ScamEngine.hpp"
-#include "output/OutputHandlerBuffered.hpp"
 #include "input/StringTokenizer.hpp"
 #include "util/EvalString.hpp"
 
@@ -19,30 +18,6 @@ namespace
 (define sub -)\
 (define two 2)\
 ");
-
-    class OutputHandlerCheck : public OutputHandler
-    {
-    public:
-        OutputHandlerCheck()
-            : OutputHandler()
-            , ok(true)
-        {
-        }
-
-        void handleResult(string const & result) {}
-
-        void handleError(string const & error) { ok = false; }
-
-        void handleTrace(string const & msg) {}
-
-        operator bool() const
-        {
-            return ok;
-        }
-
-    private:
-        bool ok;
-    };
 
     bool extend_for_testing(ScamEngine & engine)
     {

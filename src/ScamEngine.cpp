@@ -8,7 +8,6 @@
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamExpr.hpp"
 #include "input/ScamParser.hpp"
-#include "output/OutputHandler.hpp"
 
 #include <iostream>
 

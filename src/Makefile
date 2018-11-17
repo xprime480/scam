@@ -6,7 +6,7 @@ OBJ = $(SRC:.cpp=.o)
 DEP = $(SRC:.cpp=.d)
 
 CPP = /usr/bin/g++ -g -std=c++11 -Wall
-SUBOBJ = input/*.o output/*.o expr/*.o prim/*.o form/*.o util/*.o
+SUBOBJ = input/*.o expr/*.o prim/*.o form/*.o util/*.o
 
 libscam.a : $(OBJ) subs
 	ar crf	$@ $(OBJ) $(SUBOBJ)
@@ -23,7 +23,6 @@ clean :
 	make -C prim clean
 	make -C form clean
 	make -C input clean
-	make -C output clean
 	make -C util clean
 
 subs :
@@ -31,7 +30,6 @@ subs :
 	make -C prim all
 	make -C form all
 	make -C input all
-	make -C output all
 	make -C util all
 
 include $(DEP)
