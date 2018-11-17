@@ -13,11 +13,12 @@ namespace scam
     {
     public:
         StringTokenizer(std::string const & input);
+        ~StringTokenizer();
 
         Token next() override;
 
     private:
-        std::string const & input;
+        std::string const input;
         char const * pos;
 
         Token scanAtmosphere();

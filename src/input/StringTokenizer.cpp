@@ -17,6 +17,10 @@ StringTokenizer::StringTokenizer(string const & input)
 {
 }
 
+StringTokenizer::~StringTokenizer()
+{
+}
+
 Token StringTokenizer::next()
 {
     if ( ! pos ) {

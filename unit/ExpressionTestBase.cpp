@@ -78,7 +78,7 @@ ExprHandle ExpressionTestBase::apply(ScamExpr * expr, ScamExpr * args)
 
 ExprHandle ExpressionTestBase::parseAndEvaluate(string const & input)
 {
-    EvalString helper(engine, input);
+    EvalString helper(&engine, input);
     return helper.getLast();
 }
 

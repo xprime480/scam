@@ -10,6 +10,8 @@
 #include "input/ScamParser.hpp"
 #include "output/OutputHandler.hpp"
 
+#include <iostream>
+
 using namespace std;
 using namespace scam;
 
@@ -66,8 +68,7 @@ void ScamEngine::rebind(ScamExpr * key, ScamExpr * val)
 
 void ScamEngine::pushInput(Tokenizer & tokenizer)
 {
-    shared_ptr<ScamParser> p = make_shared<ScamParser>(tokenizer);
-    input.push_back(p);
+    input.emplace_back(ScamParser(tokenizer));
 }
 
 void ScamEngine::popInput()
@@ -83,8 +84,8 @@ ExprHandle ScamEngine::read()
         return ExpressionFactory::makeNull();
     }
 
-    shared_ptr<ScamParser> p = input.back();
-    return p->parseExpr();
+    ScamParser & p = input.back();
+    return p.parseExpr();
 }
 
 void ScamEngine::eval(ScamExpr * expr, ContHandle cont)

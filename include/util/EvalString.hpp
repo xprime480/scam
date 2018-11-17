@@ -13,14 +13,14 @@ namespace scam
     class EvalString
     {
     public:
-        EvalString(ScamEngine & engine, std::string const & text);
+        EvalString(ScamEngine * engine, std::string const & text);
         ~EvalString();
 
         ExprHandle getLast();
         void getAll(std::vector<ExprHandle> & exprs,  bool stopOnError);
 
     private:
-        ScamEngine & engine;
+        ScamEngine * engine;
         StringTokenizer tokenizer;
         std::shared_ptr<Extractor> cont;
 

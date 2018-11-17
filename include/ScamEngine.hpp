@@ -43,7 +43,7 @@ namespace scam
 
     private:
         Env env;
-        std::vector<std::shared_ptr<ScamParser>> input;
+        std::vector<ScamParser> input;
 
         void getStandardEnv();
     };

@@ -3,6 +3,7 @@
 
 #include "Continuation.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "util/EvalString.hpp"
 
 #include <fstream>
 #include <iostream>
@@ -13,25 +14,26 @@ using namespace std;
 
 namespace
 {
-    extern void apply_args(ScamExpr * args, ContHandle cont);
+    extern void apply_args(ScamExpr * args,
+                           ContHandle cont,
+                           ScamEngine * engine);
 }
 
-Load::Load()
+Load::Load(ScamEngine * engine)
     : Primitive("load")
+    , engine(engine)
 {
 }
 
 void Load::applyArgs(ScamExpr * args, ContHandle cont)
 {
-    apply_args(args, cont);
+    apply_args(args, cont, engine);
 }
 
 namespace
 {
-
-    void apply_args(ScamExpr * args, ContHandle cont)
+    void apply_args(ScamExpr * args, ContHandle cont, ScamEngine * engine)
     {
-        cerr << "Load::applyArgs: " << args->toString() << "\n";
         string filename = args->nthcar(0)->toString();
         ifstream source;
 
@@ -49,11 +51,13 @@ namespace
 
         while ( source.good() && ! source.eof() ) {
             source.getline(buf, sizeof ( buf ));
-            text << buf;
+            text << buf << "\n";
         }
 
-	ExprHandle data = ExpressionFactory::makeString(text.str());
-        cont->run(data.get());
+        string data = text.str();
+        EvalString helper(engine, data);
+        ExprHandle result = helper.getLast();
+        cont->run(result.get());
     }
 }
 

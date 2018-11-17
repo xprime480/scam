@@ -28,6 +28,7 @@ do_it_manually :
 	make -C gmock all
 
 test : unittests
+	@./unittests --gtest_filter=SystemTest.LoadTest
 	@./unittests
 
 by_module : unittests

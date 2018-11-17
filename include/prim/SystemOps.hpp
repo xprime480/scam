@@ -5,12 +5,17 @@
 
 namespace scam
 {
+    class ScamEngine;
+
     class Load : public Primitive
     {
     public:
-        Load();
+        Load(ScamEngine * engine);
 
         void applyArgs(ScamExpr * args, ContHandle cont) override;
+
+    private:
+        ScamEngine * engine;
     };
 }
 

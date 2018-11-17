@@ -11,17 +11,17 @@
 using namespace scam;
 using namespace std;
 
-EvalString::EvalString(ScamEngine & engine, std::string const & text)
+EvalString::EvalString(ScamEngine * engine, std::string const & text)
     : engine(engine)
     , tokenizer(text)
     , cont(make_shared<Extractor>())
 {
-    engine.pushInput(tokenizer);
+    engine->pushInput(tokenizer);
 }
 
 EvalString::~EvalString()
 {
-    engine.popInput();
+    engine->popInput();
 }
 
 ExprHandle EvalString::getLast()
@@ -55,11 +55,11 @@ void EvalString::getAll(vector<ExprHandle> & exprs,  bool stopOnError)
 
 ExprHandle EvalString::getNext()
 {
-    ExprHandle expr = engine.read();
+    ExprHandle expr = engine->read();
     if ( expr->isNull() || expr->error() ) {
         return expr;
     }
-    engine.eval(expr.get(), cont);
+    engine->eval(expr.get(), cont);
     Trampoline(GlobalWorkQueue);
     ExprHandle rv = cont->getExpr();
     return rv;

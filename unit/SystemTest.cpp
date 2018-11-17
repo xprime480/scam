@@ -12,5 +12,5 @@ TEST_F(SystemTest, LoadTest)
 {
     ExprHandle expr
         = parseAndEvaluate("(load \"scripts/system/loadtest.scm\")");
-    expectString(expr, "Success");
+    expectInteger(expr, 66, "66");
 }

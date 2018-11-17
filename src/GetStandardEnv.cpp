@@ -10,11 +10,11 @@ using namespace std;
 
 namespace
 {
-    template <typename T>
-    void addForm(Env env, char const * name)
+    template <typename T, typename... Args>
+    void addForm(Env env, char const * name, Args... args)
     {
         ExprHandle sym = ExpressionFactory::makeSymbol(name);
-        ExprHandle form = ExpressionFactory::makeForm<T>();
+        ExprHandle form = ExpressionFactory::makeForm<T>(args...);
         env.put(sym.get(), form.get());
     }
 }
@@ -60,5 +60,5 @@ void ScamEngine::getStandardEnv()
 
     addForm<Progn>(env, "progn");
 
-    addForm<Load>(env, "load");
+    addForm<Load>(env, "load", this);
 }
