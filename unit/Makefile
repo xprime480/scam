@@ -28,7 +28,7 @@ do_it_manually :
 	make -C gmock all
 
 test : unittests
-	@./unittests --gtest_filter=ClassTest.ClassWithComputation
+	@./unittests
 
 by_module : unittests
 	@./unittests --gtest_filter=TrampolineTest.*

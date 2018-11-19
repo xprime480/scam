@@ -14,3 +14,9 @@ TEST_F(SystemTest, LoadTest)
         = parseAndEvaluate("(load \"scripts/system/loadtest.scm\")");
     expectInteger(expr, 66, "66");
 }
+
+TEST_F(SystemTest, PreludeTest)
+{
+    ExprHandle expr = parseAndEvaluate("(max 123 -123)");
+    expectInteger(expr, 123, "123");
+}

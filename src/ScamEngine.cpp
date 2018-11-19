@@ -14,15 +14,14 @@
 using namespace std;
 using namespace scam;
 
-ScamEngine::ScamEngine(bool initEnv)
+ScamEngine::ScamEngine()
 {
-    reset(initEnv);
 }
 
 void ScamEngine::reset(bool initEnv)
 {
-    Env newEnv;
-    env = newEnv;
+    env.reset();
+    env = env.top();
 
     if ( initEnv ) {
         getStandardEnv();

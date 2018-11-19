@@ -45,7 +45,6 @@ namespace
 }
 
 ExpressionTestBase::ExpressionTestBase()
-    : engine(true)
 {
 }
 
@@ -55,6 +54,7 @@ ExpressionTestBase::~ExpressionTestBase()
 
 void ExpressionTestBase::SetUp()
 {
+    engine.reset(true);
     extractor = make_shared<Extractor>();
     ExprHandle result = parseAndEvaluate("(load \"lib/prelude.scm\")");
     expectInteger(result, 1, "1");
@@ -62,6 +62,7 @@ void ExpressionTestBase::SetUp()
 
 void ExpressionTestBase::TearDown()
 {
+    engine.reset(false);
 }
 
 ExprHandle ExpressionTestBase::evaluate(ScamExpr * input)

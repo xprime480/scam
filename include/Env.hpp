@@ -19,6 +19,7 @@ namespace scam
         bool check(ScamExpr const * key) const;
         ExprHandle get(ScamExpr const * key) const;
 
+        void reset();
         Env extend() const;
         Env parent() const;
         Env top() const;

@@ -18,6 +18,15 @@ namespace scam
         map<string, ExprHandle> table;
         shared_ptr<EnvData> parent;
 
+        void reset()
+        {
+            map<string, ExprHandle> temp;
+            table.swap(temp);
+            if ( parent.get() ) {
+                parent->reset();
+            }
+        }
+
         void put(string const & key, ScamExpr * val)
         {
             auto const iter = table.find(key);
@@ -98,14 +107,17 @@ namespace scam
     };
 }
 
-string checkKey(ScamExpr const * key)
+namespace
 {
-    if ( ! key->isSymbol() ) {
-        stringstream s;
-        s << "Environment key : " << key->toString() << " must be a symbol";
-        throw ScamException(s.str());
+    string checkKey(ScamExpr const * key)
+    {
+        if ( ! key->isSymbol() ) {
+            stringstream s;
+            s << "Environment key : " << key->toString() << " must be a symbol";
+            throw ScamException(s.str());
+        }
+        return  key->toString();
     }
-    return  key->toString();
 }
 
 Env::Env()
@@ -126,6 +138,11 @@ bool Env::check(ScamExpr const * key) const
 ExprHandle Env::get(ScamExpr const * key) const
 {
     return data->get(checkKey(key));
+}
+
+void Env::reset()
+{
+    data->reset();
 }
 
 Env Env::extend() const

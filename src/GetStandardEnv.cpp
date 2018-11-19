@@ -11,7 +11,7 @@ using namespace std;
 namespace
 {
     template <typename T, typename... Args>
-    void addForm(Env env, char const * name, Args... args)
+    void addForm(Env & env, char const * name, Args... args)
     {
         ExprHandle sym = ExpressionFactory::makeSymbol(name);
         ExprHandle form = ExpressionFactory::makeForm<T>(args...);

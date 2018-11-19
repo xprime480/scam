@@ -21,6 +21,7 @@ namespace
 
     bool extend_for_testing(ScamEngine & engine)
     {
+        engine.reset(true);
         engine.pushFrame();
         EvalString helper(&engine, testforms);
         ExprHandle status = helper.getLast();
@@ -30,7 +31,7 @@ namespace
 
 string call_scam(string const & input)
 {
-    ScamEngine engine(true);
+    ScamEngine engine;
     bool check = extend_for_testing(engine);
     if ( ! check ) {
         return "** Internal Test Error initializing test environment";
@@ -44,6 +45,8 @@ string call_scam(string const & input)
     for ( auto v : values ) {
         s << v->toString() << "\n";
     }
+
+    engine.reset(false);
     return s.str();
 }
 

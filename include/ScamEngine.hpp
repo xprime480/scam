@@ -15,7 +15,7 @@ namespace scam
     class ScamEngine
     {
     public:
-        explicit ScamEngine(bool initEnv);
+        ScamEngine();
 
         /***  functions to manage the frame stack ***/
 
