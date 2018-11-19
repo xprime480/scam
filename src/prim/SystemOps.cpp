@@ -2,6 +2,8 @@
 #include "prim/SystemOps.hpp"
 
 #include "Continuation.hpp"
+#include "WorkQueue.hpp"
+#include "Worker.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "util/EvalString.hpp"
 
@@ -16,9 +18,11 @@ using namespace std;
 
 namespace
 {
-    extern void apply_args(ScamExpr * args,
+    extern void apply_load(ScamExpr * args,
                            ContHandle cont,
                            ScamEngine * engine);
+
+    extern void apply_spawn(ContHandle cont);
 }
 
 Load::Load(ScamEngine * engine)
@@ -29,7 +33,17 @@ Load::Load(ScamEngine * engine)
 
 void Load::applyArgs(ScamExpr * args, ContHandle cont)
 {
-    apply_args(args, cont, engine);
+    apply_load(args, cont, engine);
+}
+
+Spawn::Spawn()
+    : Primitive("spawn")
+{
+}
+
+void Spawn::applyArgs(ScamExpr * args, ContHandle cont)
+{
+    apply_spawn(cont);
 }
 
 namespace
@@ -142,7 +156,7 @@ namespace
         return text.str();
     }
 
-    void apply_args(ScamExpr * args, ContHandle cont, ScamEngine * engine)
+    void apply_load(ScamExpr * args, ContHandle cont, ScamEngine * engine)
     {
         string filename = args->nthcar(0)->toString();
         ifstream source;
@@ -156,5 +170,34 @@ namespace
         EvalString helper(engine, data);
         ExprHandle result = helper.getLast();
         cont->run(result.get());
+    }
+
+    class SpawnWorker : public Worker
+    {
+    public:
+        SpawnWorker(ContHandle cont, bool value)
+            : Worker("SpawnWorker")
+            , cont(cont)
+            , value(value)
+        {
+        }
+
+        void run() override
+        {
+            ExprHandle flag = ExpressionFactory::makeBoolean(value);
+            cont->run(flag.get());
+        }
+
+    private:
+        ContHandle cont;
+        bool       value;
+    };
+
+    void apply_spawn(ContHandle cont)
+    {
+        bool t { true };
+        workQueueHelper<SpawnWorker>(cont, t);
+        bool f { false };
+        workQueueHelper<SpawnWorker>(cont, f);
     }
 }

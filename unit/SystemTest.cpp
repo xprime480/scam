@@ -34,3 +34,10 @@ TEST_F(SystemTest, MapTest)
         = parseAndEvaluate("(load \"scripts/system/maptest.scm\")");
    expectList(expr, "(2 4 6)", 3);
 }
+
+TEST_F(SystemTest, SpawnTest)
+{
+   ExprHandle expr
+        = parseAndEvaluate("(load \"scripts/system/spawntest.scm\")");
+   expectList(expr, "(1 2)", 2);
+}

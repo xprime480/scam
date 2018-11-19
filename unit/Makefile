@@ -28,7 +28,7 @@ do_it_manually :
 	make -C gmock all
 
 test : unittests
-	@./unittests --gtest_filter=SystemTest.WhileTest
+	@./unittests --gtest_filter=SystemTest.SpawnTest
 	@./unittests
 
 by_module : unittests

@@ -61,4 +61,5 @@ void ScamEngine::getStandardEnv()
     addForm<Progn>(env, "progn");
 
     addForm<Load>(env, "load", this);
+    addForm<Spawn>(env, "spawn");
 }

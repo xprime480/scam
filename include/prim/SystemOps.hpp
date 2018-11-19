@@ -17,6 +17,14 @@ namespace scam
     private:
         ScamEngine * engine;
     };
+
+    class Spawn : public Primitive
+    {
+    public:
+        Spawn();
+
+        void applyArgs(ScamExpr * args, ContHandle cont) override;
+    };
 }
 
 #endif
