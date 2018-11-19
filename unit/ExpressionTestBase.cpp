@@ -56,6 +56,8 @@ ExpressionTestBase::~ExpressionTestBase()
 void ExpressionTestBase::SetUp()
 {
     extractor = make_shared<Extractor>();
+    ExprHandle result = parseAndEvaluate("(load \"lib/prelude.scm\")");
+    expectInteger(result, 1, "1");
 }
 
 void ExpressionTestBase::TearDown()
@@ -84,26 +86,9 @@ ExprHandle ExpressionTestBase::parseAndEvaluate(string const & input)
 
 ExprHandle ExpressionTestBase::parseAndEvaluateFile(char const * filename)
 {
-    ifstream source;
-    source.open(filename);
-
-    if ( ! source.good() ) {
-        stringstream s;
-        s << "Unable to open file " << filename;
-        return ExpressionFactory::makeError(s.str());
-    }
-
-    char buf[1024];
-    stringstream text;
-
-    while ( source.good() && ! source.eof() ) {
-        source.getline(buf, sizeof ( buf ));
-        text << buf;
-        text << "\n";
-    }
-
-    ExprHandle rv = parseAndEvaluate(text.str());
-    return rv;
+    stringstream s;
+    s << "(load \"" << filename << "\")";
+    return parseAndEvaluate(s.str());
 }
 
 void decodeBit(unsigned mismatch,
