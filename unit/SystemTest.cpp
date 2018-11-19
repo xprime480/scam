@@ -20,3 +20,17 @@ TEST_F(SystemTest, PreludeTest)
     ExprHandle expr = parseAndEvaluate("(max 123 -123)");
     expectInteger(expr, 123, "123");
 }
+
+TEST_F(SystemTest, WhileTest)
+{
+   ExprHandle expr
+        = parseAndEvaluate("(load \"scripts/system/whiletest.scm\")");
+    expectInteger(expr, 15, "15");
+}
+
+TEST_F(SystemTest, MapTest)
+{
+   ExprHandle expr
+        = parseAndEvaluate("(load \"scripts/system/maptest.scm\")");
+   expectList(expr, "(2 4 6)", 3);
+}

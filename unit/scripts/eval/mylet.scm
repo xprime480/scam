@@ -1,8 +1,3 @@
-(define map
-  (lambda (fn lst)
-    (if (nil? lst)
-        ()
-        (cons (fn (car lst)) (map fn (cdr lst))))))
 
 (define cars
   (lambda (lst)
