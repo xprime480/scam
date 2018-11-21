@@ -57,6 +57,19 @@ void ScamEngine::getStandardEnv()
     addForm<Cdr>(env, "cdr");
 
     addForm<NilP>(env, "nil?");
+    addForm<ConsP>(env, "cons?");
+    addForm<ListP>(env, "list?");
+    addForm<VectorP>(env, "vector?");
+    addForm<BoolP>(env, "bool?");
+    addForm<CharP>(env, "char?");
+    addForm<StringP>(env, "string?");
+    addForm<SymbolP>(env, "symbol?");
+    addForm<NumericP>(env, "numeric?");
+    addForm<FloatP>(env, "float?");
+    addForm<IntegerP>(env, "integer?");
+    addForm<ProcP>(env, "proc?");
+    addForm<ClassP>(env, "class?");
+    addForm<InstanceP>(env, "instance?");
 
     addForm<Progn>(env, "progn");
 
