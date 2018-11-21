@@ -18,11 +18,12 @@ using namespace std;
 
 namespace
 {
-    extern void apply_load(ScamExpr * args,
-                           ContHandle cont,
-                           ScamEngine * engine);
+    extern void
+    apply_load(ScamExpr * args, ContHandle cont, ScamEngine * engine);
 
     extern void apply_spawn(ContHandle cont);
+
+    extern void apply_error(ScamExpr * args, ContHandle cont);
 }
 
 Load::Load(ScamEngine * engine)
@@ -44,6 +45,16 @@ Spawn::Spawn()
 void Spawn::applyArgs(ScamExpr * args, ContHandle cont)
 {
     apply_spawn(cont);
+}
+
+Error::Error()
+    : Primitive("error")
+{
+}
+
+void Error::applyArgs(ScamExpr * args, ContHandle cont)
+{
+    apply_error(args, cont);
 }
 
 namespace
@@ -199,5 +210,26 @@ namespace
         workQueueHelper<SpawnWorker>(cont, t);
         bool f { false };
         workQueueHelper<SpawnWorker>(cont, f);
+    }
+
+    void apply_error(ScamExpr * args, ContHandle cont)
+    {
+        stringstream s;
+        unsigned len = args->length();
+        if ( 0 == len ) {
+            s << "Error detected";
+        }
+        else if ( 1 == len ) {
+            s << args->nthcar(0)->toString();
+        }
+        else {
+            for ( unsigned i = 0 ; i < len ; ++i ) {
+                s << "[" << (i+1) << "] "
+                  << args->nthcar(i)->toString() << "\n";
+            }
+        }
+
+        ExprHandle err = ExpressionFactory::makeError(s.str());
+        cont->run(err.get());
     }
 }

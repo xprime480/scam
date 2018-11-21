@@ -41,3 +41,21 @@ TEST_F(SystemTest, SpawnTest)
         = parseAndEvaluate("(load \"scripts/system/spawntest.scm\")");
    expectList(expr, "(1 2)", 2);
 }
+
+TEST_F(SystemTest, ErrorTestZero)
+{
+   ExprHandle expr = parseAndEvaluate("(error)");
+   expectError(expr, "Error detected");
+}
+
+TEST_F(SystemTest, ErrorTestOne)
+{
+   ExprHandle expr = parseAndEvaluate("(error \"bagels are not donughts\")");
+   expectError(expr, "bagels are not donughts");
+}
+
+TEST_F(SystemTest, ErrorTestThree)
+{
+   ExprHandle expr = parseAndEvaluate("(error 1 2 3)");
+   expectError(expr, "[1] 1\n[2] 2\n[3] 3\n");
+}

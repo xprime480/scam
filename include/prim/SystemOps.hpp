@@ -25,6 +25,14 @@ namespace scam
 
         void applyArgs(ScamExpr * args, ContHandle cont) override;
     };
+
+    class Error : public Primitive
+    {
+    public:
+        Error();
+
+        void applyArgs(ScamExpr * args, ContHandle cont) override;
+    };
 }
 
 #endif

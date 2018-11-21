@@ -62,4 +62,5 @@ void ScamEngine::getStandardEnv()
 
     addForm<Load>(env, "load", this);
     addForm<Spawn>(env, "spawn");
+    addForm<Error>(env, "error");
 }
