@@ -66,8 +66,7 @@ TEST_F(ListTest, CdrSingleton)
 
 TEST_F(ListTest, CdrOfDottedPair)
 {
-    ExprHandle expr = parseAndEvaluate("(cdr '(#t . #f))");
-    expectBoolean(expr, false, "#f");
+    expectFalse("(cdr '(#t . #f))");
 }
 
 TEST_F(ListTest, CdrEmptyList)

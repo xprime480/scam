@@ -65,8 +65,7 @@ TEST_F(LogicTest, IfTooManyClauses)
 
 TEST_F(LogicTest, AndZeroForms)
 {
-    ExprHandle expr = parseAndEvaluate("(and)");
-    expectBoolean(expr, true, "#t");
+    expectTrue("(and)");
 }
 
 TEST_F(LogicTest, AndOneTrue)
@@ -77,8 +76,7 @@ TEST_F(LogicTest, AndOneTrue)
 
 TEST_F(LogicTest, AndOneFalse)
 {
-    ExprHandle expr = parseAndEvaluate("(and #f)");
-    expectBoolean(expr, false, "#f");
+    expectFalse("(and #f)");
 }
 
 TEST_F(LogicTest, AndManyTrue)
@@ -89,8 +87,7 @@ TEST_F(LogicTest, AndManyTrue)
 
 TEST_F(LogicTest, AndShortCircuits)
 {
-    ExprHandle expr = parseAndEvaluate("(and #f (/ 1 0))");
-    expectBoolean(expr, false, "#f");
+    expectFalse("(and #f (/ 1 0))");
 }
 
 TEST_F(LogicTest, AndComplex1)
@@ -107,8 +104,7 @@ TEST_F(LogicTest, AndComplex2)
 
 TEST_F(LogicTest, OrZeroForms)
 {
-    ExprHandle expr = parseAndEvaluate("(or)");
-    expectBoolean(expr, false, "#f");
+    expectFalse("(or)");
 }
 
 TEST_F(LogicTest, OrOneTrue)
@@ -119,20 +115,17 @@ TEST_F(LogicTest, OrOneTrue)
 
 TEST_F(LogicTest, OrOneFalse)
 {
-    ExprHandle expr = parseAndEvaluate("(or #f)");
-    expectBoolean(expr, false, "#f");
+    expectFalse("(or #f)");
 }
 
 TEST_F(LogicTest, OrManyTrue)
 {
-    ExprHandle expr = parseAndEvaluate("(or #t #t 3)");
-    expectBoolean(expr, true, "#t");
+    expectTrue("(or #t #t 3)");
 }
 
 TEST_F(LogicTest, OrShortCircuits)
 {
-    ExprHandle expr = parseAndEvaluate("(or #t (/ 1 0))");
-    expectBoolean(expr, true, "#t");
+    expectTrue("(or #t (/ 1 0))");
 }
 
 TEST_F(LogicTest, OrComplex1)
@@ -155,14 +148,12 @@ TEST_F(LogicTest, NotZeroForms)
 
 TEST_F(LogicTest, NotOneTrue)
 {
-    ExprHandle expr = parseAndEvaluate("(not 3)");
-    expectBoolean(expr, false, "#f");
+    expectFalse("(not 3)");
 }
 
 TEST_F(LogicTest, NotOneFalse)
 {
-    ExprHandle expr = parseAndEvaluate("(not #f)");
-    expectBoolean(expr, true, "#t");
+    expectTrue("(not #f)");
 }
 
 TEST_F(LogicTest, NotManyTrue)

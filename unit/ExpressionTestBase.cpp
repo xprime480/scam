@@ -215,6 +215,18 @@ void ExpressionTestBase::expectBoolean(ExprHandle expr,
     expectNonNumeric(expr);
 }
 
+void ExpressionTestBase::expectTrue(string const & input)
+{
+    ExprHandle expr = parseAndEvaluate(input);
+    expectBoolean(expr, true, "#t");
+}
+
+void ExpressionTestBase::expectFalse(string const & input)
+{
+    ExprHandle expr = parseAndEvaluate(input);
+    expectBoolean(expr, false, "#f");
+}
+
 void ExpressionTestBase::booleanTest(ExprHandle expr,
                                      bool value,
                                      string const & repr)

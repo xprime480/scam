@@ -6,18 +6,6 @@ using namespace scam;
 
 class ComparisonTest : public ExpressionTestBase
 {
-protected:
-    void expectTrue(string const & input)
-    {
-        ExprHandle expr = parseAndEvaluate(input);
-        expectBoolean(expr, true, "#t");
-    }
-
-    void expectFalse(string const & input)
-    {
-        ExprHandle expr = parseAndEvaluate(input);
-        expectBoolean(expr, false, "#f");
-    }
 };
 
 TEST_F(ComparisonTest, CmpZeroForms)

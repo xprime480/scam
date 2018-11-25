@@ -40,6 +40,8 @@ namespace scam
         void expectBoolean(ExprHandle expr,
                            bool value,
                            std::string const & repr);
+        void expectTrue(std::string const & input);
+        void expectFalse(std::string const & input);
         void booleanTest(ExprHandle expr,
                          bool value,
                          std::string const & repr);
