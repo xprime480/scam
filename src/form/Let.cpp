@@ -7,7 +7,9 @@
 #include "WorkQueue.hpp"
 #include "Worker.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "expr/ScamListAdapter.hpp"
 
+#include <iostream>
 #include <sstream>
 
 using namespace scam;
@@ -19,6 +21,7 @@ namespace
                          ContHandle cont,
                          Env env,
                          bool rebind);
+
     extern void letstar_impl(ScamExpr * args,
                              ContHandle cont,
                              Env env);
@@ -68,35 +71,16 @@ namespace
     class LetCommonCont : public Continuation
     {
     public:
-        LetCommonCont(char const * name, ScamExpr * forms, ContHandle cont)
-            : Continuation(name)
-            , forms(forms->clone())
-            , cont(cont)
-        {
-        }
+        LetCommonCont(char const * name, ScamExpr * forms, ContHandle cont);
 
-        void run(ScamExpr * expr) override
-        {
-            if ( expr->error() ) {
-                cont->run(expr);
-            }
-            else {
-                do_let(expr);
-            }
-        }
+        void run(ScamExpr * expr) override;
 
     protected:
         ExprHandle forms;
         ContHandle cont;
 
         virtual void do_let(ScamExpr * expr) = 0;
-
-        void final_eval(Env env)
-        {
-            using WT = EvalWorker;
-            ScamExpr * f = forms.get();
-            workQueueHelper<WT>(f, env, cont);
-        }
+        void final_eval(Env env);
     };
 
     class LetCont : public LetCommonCont
@@ -106,46 +90,17 @@ namespace
                 ScamExpr * forms,
                 ContHandle cont,
                 Env env,
-                bool rebind)
-            : LetCommonCont("Let", forms, cont)
-            , formals(formals->clone())
-            , env(env)
-            , rebind(rebind)
-        {
-        }
+                bool rebind);
 
     protected:
-        void do_let(ScamExpr * expr) override
-        {
-            Binder binder(env);
-            ScamExpr * ff = formals.get();
-            Env extended = binder.bind(ff, expr);
-
-            rebind_procs(extended);
-            final_eval(extended);
-        }
+        void do_let(ScamExpr * expr) override;
 
     private:
         ExprHandle formals;
         Env        env;
         bool       rebind;
 
-        void rebind_procs(Env extended)
-        {
-            if ( ! rebind ) {
-                return;
-            }
-
-            const size_t len = formals->length();
-            for ( size_t n = 0 ; n < len ; ++n ) {
-                ScamExpr * k = formals->nthcar(n).get();
-                ScamExpr * v = extended.get(k).get();
-                if ( v->isProcedure() ) {
-                    ExprHandle newV = v->withEnvUpdate(extended);
-                    extended.assign(k, newV.get());
-                }
-            }
-        }
+        void rebind_procs(Env extended);
     };
 
     class LetStarCont : public LetCommonCont
@@ -155,38 +110,38 @@ namespace
                     ScamExpr * rest,
                     ScamExpr * forms,
                     ContHandle cont,
-                    Env env)
-            : LetCommonCont("Let*", forms, cont)
-            , formals(formals->clone())
-            , rest(rest->clone())
-            , env(env)
-        {
-        }
+                    Env env);
 
     protected:
-        void do_let(ScamExpr * expr) override
-        {
-            if ( formals->isNil() ) {
-                final_eval(env);
-            }
-            else {
-                env.put(formals->getCar().get(), expr);
-                ExprHandle safe = safeCons(rest.get());
-
-                using C = LetStarCont;
-                ContHandle ch = make_shared<C>(formals->getCdr().get(),
-                                               safe->getCdr().get(),
-                                               forms.get(),
-                                               cont,
-                                               env);
-                safe->getCar()->eval(ch, env);
-            }
-        }
+        void do_let(ScamExpr * expr) override;
 
     private:
         ExprHandle formals;
         ExprHandle rest;
         Env        env;
+    };
+
+    class LetStepCont : public Continuation
+    {
+    public:
+        LetStepCont(ScamExpr * formals,
+                    ScamExpr * forms,
+                    ScamExpr * evaled,
+                    ScamExpr * args,
+                    ContHandle cont,
+                    Env env,
+                    bool rebind);
+
+        void run(ScamExpr * expr) override;
+
+    private:
+        ExprHandle formals;
+        ExprHandle forms;
+        ExprHandle evaled;
+        ExprHandle args;
+        ContHandle cont;
+        Env env;
+        bool rebind;
     };
 
     class LetBaseWorker : public Worker
@@ -195,27 +150,9 @@ namespace
         LetBaseWorker(char const * name,
                       ScamExpr * args,
                       ContHandle cont,
-                      Env env)
-            : Worker(name)
-            , cont(cont)
-            , env(env)
-            , args(args->clone())
-        {
-        }
+                      Env env);
 
-        void run()
-        {
-            if ( ! verify_args() ) {
-                return;
-            }
-
-            ExprHandle parsed  = parse_args();
-            ScamExpr * formals = parsed->getCar()->getCar().get();
-            ScamExpr * values  = parsed->getCar()->getCdr().get();
-            ScamExpr * forms   = parsed->getCdr().get();
-
-            do_next(formals, values, forms);
-        }
+        void run() override;
 
     protected:
         ContHandle cont;
@@ -227,15 +164,7 @@ namespace
     private:
         ExprHandle args;
 
-        void report_error()
-        {
-            stringstream s;
-            s << "Expected (((sym form)...) forms...); got "
-              << args->toString();
-            ExprHandle err = ExpressionFactory::makeError(s.str());
-
-            cont->run(err.get());
-        }
+        void report_error();
 
         /**
          * verify_single
@@ -243,20 +172,7 @@ namespace
          * Verify that the given expression is a list of the form
          * "(sym expr)"
          */
-        bool verify_single(ScamExpr * arg)
-        {
-            if ( ! arg->isList() || 2 != arg->length() ) {
-                report_error();
-                return false;
-            }
-
-            if ( ! arg->getCar()->isSymbol() ) {
-                report_error();
-                return false;
-            }
-
-            return true;
-        }
+        bool verify_single(ScamExpr * arg);
 
         /**
          * verify_next
@@ -266,23 +182,7 @@ namespace
          * If so, continue checking the rest of list.
          *
          */
-        bool verify_list(ScamExpr * check)
-        {
-            if ( check->isNil() ) {
-                return true;
-            }
-
-            if ( ! check->isList() ) {
-                report_error();
-                return false;
-            }
-
-            if ( ! verify_single(check->getCar().get()) ) {
-                return false;
-            }
-
-            return verify_list(check->getCdr().get());
-        }
+        bool verify_list(ScamExpr * check);
 
         /**
          * Verify the argument list is structurally sound.
@@ -293,68 +193,21 @@ namespace
          *
          * @return true iff the args is structurally correct.
          */
-        bool verify_args()
-        {
-            if ( ! args->isList() || args->isNil() ) {
-                report_error();
-                return false;
-            }
+        bool verify_args();
 
-            ScamExpr * check = args->getCar().get();
-            return verify_list(check);
-        }
-
-        ExprHandle parse_bindings(ScamExpr * bindings)
-        {
-            if ( bindings->isNil() ) {
-                ScamExpr * nil = ExpressionFactory::makeNil().get();
-                return ExpressionFactory::makeCons(nil, nil);
-            }
-
-            ScamExpr * one  = bindings->getCar().get();
-            ScamExpr * rest = bindings->getCdr().get();
-
-            ExprHandle separated = parse_bindings(rest);
-
-            ExprHandle symList
-                = ExpressionFactory::makeCons(one->getCar().get(),
-                                              separated->getCar().get());
-            ExprHandle valList
-                = ExpressionFactory::makeCons(one->getCdr()->getCar().get(),
-                                              separated->getCdr().get());
-
-            return ExpressionFactory::makeCons(symList.get(), valList.get());
-        }
-
-        ExprHandle parse_args()
-        {
-            ScamExpr * forms    = args->getCdr().get();
-            ScamExpr * bindings = args->getCar().get();
-
-            ExprHandle separated = parse_bindings(bindings);
-
-            return ExpressionFactory::makeCons(separated.get(), forms);
-        }
+        ExprHandle parse_bindings(ScamExpr * bindings);
+        ExprHandle parse_args();
     };
 
     class LetWorker : public LetBaseWorker
     {
     public:
-        LetWorker(ScamExpr * args, ContHandle cont, Env env, bool rebind)
-            : LetBaseWorker("Let", args, cont, env)
-            , rebind(rebind)
-        {
-        }
+        LetWorker(ScamExpr * args, ContHandle cont, Env env, bool rebind);
 
     protected:
         void do_next(ScamExpr * formals,
                      ScamExpr * values,
-                     ScamExpr * forms) override
-        {
-            ContHandle ch
-                = make_shared<LetCont>(formals, forms, cont, env, rebind);
-            values->mapEval(ch, env);
-        }
+                     ScamExpr * forms) override;
 
     private:
         const bool rebind;
@@ -363,29 +216,35 @@ namespace
     class LetStarWorker : public LetBaseWorker
     {
     public:
-        LetStarWorker(ScamExpr * args, ContHandle cont, Env env)
-            : LetBaseWorker("LetStar", args, cont, env)
-        {
-        }
+        LetStarWorker(ScamExpr * args, ContHandle cont, Env env);
 
     protected:
         void do_next(ScamExpr * formals,
                      ScamExpr * values,
-                     ScamExpr * forms) override
-        {
-            Env extended = env.extend();
-            ExprHandle safe = safeCons(values);
+                     ScamExpr * forms) override;
+    };
 
-            using C = LetStarCont;
-            ContHandle ch = make_shared<C>(formals,
-                                           safe->getCdr().get(),
-                                           forms,
-                                           cont,
-                                           extended);
-            safe->getCar()->eval(ch, env);
-        }
+    class LetEvalWorker : public Worker
+    {
+    public:
+        LetEvalWorker(ScamExpr * formals,
+                      ScamExpr * evaled,
+                      ScamExpr * args,
+                      ScamExpr * forms,
+                      ContHandle cont,
+                      Env env,
+                      bool rebind);
+
+        void run() override;
 
     private:
+        ExprHandle formals;
+        ExprHandle evaled;
+        ExprHandle args;
+        ExprHandle forms;
+        ContHandle cont;
+        Env env;
+        bool rebind;
     };
 
     void let_impl(ScamExpr * args, ContHandle cont, Env env, bool rebind)
@@ -396,5 +255,350 @@ namespace
     void letstar_impl(ScamExpr * args, ContHandle cont, Env env)
     {
         workQueueHelper<LetStarWorker>(args, cont, env);
+    }
+
+    //** class implementations **//
+
+    LetCommonCont::LetCommonCont(char const * name,
+                                 ScamExpr * forms,
+                                 ContHandle cont)
+        : Continuation(name)
+        , forms(forms->clone())
+        , cont(cont)
+    {
+    }
+
+    void LetCommonCont::run(ScamExpr * expr)
+    {
+	Continuation::run(expr);
+
+        if ( expr->error() ) {
+            cont->run(expr);
+        }
+        else {
+            do_let(expr);
+        }
+    }
+
+    void LetCommonCont::final_eval(Env env)
+    {
+        using WT = EvalWorker;
+        ScamExpr * f = forms.get();
+        workQueueHelper<WT>(f, env, cont);
+    }
+
+    ////////////
+
+    LetCont::LetCont(ScamExpr * formals,
+                     ScamExpr * forms,
+                     ContHandle cont,
+                     Env env,
+                     bool rebind)
+        : LetCommonCont("Let", forms, cont)
+        , formals(formals->clone())
+        , env(env)
+        , rebind(rebind)
+    {
+    }
+
+    void LetCont::do_let(ScamExpr * expr)
+    {
+        Binder binder(env);
+        ScamExpr * ff = formals.get();
+        Env extended = binder.bind(ff, expr);
+
+        rebind_procs(extended);
+        final_eval(extended);
+    }
+
+    void LetCont::rebind_procs(Env extended)
+    {
+        if ( ! rebind ) {
+            return;
+        }
+
+        const size_t len = formals->length();
+        for ( size_t n = 0 ; n < len ; ++n ) {
+            ScamExpr * k = formals->nthcar(n).get();
+            ScamExpr * v = extended.get(k).get();
+            if ( v->isProcedure() ) {
+                ExprHandle newV = v->withEnvUpdate(extended);
+                extended.assign(k, newV.get());
+            }
+        }
+    }
+
+    /////////////////////////
+
+    LetStarCont::LetStarCont(ScamExpr * formals,
+                             ScamExpr * rest,
+                             ScamExpr * forms,
+                             ContHandle cont,
+                             Env env)
+        : LetCommonCont("Let*", forms, cont)
+        , formals(formals->clone())
+        , rest(rest->clone())
+        , env(env)
+    {
+    }
+
+    void LetStarCont::do_let(ScamExpr * expr)
+    {
+        if ( formals->isNil() ) {
+            final_eval(env);
+        }
+        else {
+            env.put(formals->getCar().get(), expr);
+            ExprHandle safe = safeCons(rest.get());
+
+            using C = LetStarCont;
+            ContHandle ch = make_shared<C>(formals->getCdr().get(),
+                                           safe->getCdr().get(),
+                                           forms.get(),
+                                           cont,
+                                           env);
+            safe->getCar()->eval(ch, env);
+        }
+    }
+
+    ///////////
+
+    LetBaseWorker::LetBaseWorker(char const * name,
+                                 ScamExpr * args,
+                                 ContHandle cont,
+                                 Env env)
+        : Worker(name)
+        , cont(cont)
+        , env(env)
+        , args(args->clone())
+    {
+    }
+
+    void LetBaseWorker::run()
+    {
+        Worker::run();
+
+        if ( ! verify_args() ) {
+            return;
+        }
+
+        ExprHandle parsed  = parse_args();
+        ScamExpr * formals = parsed->getCar()->getCar().get();
+        ScamExpr * values  = parsed->getCar()->getCdr().get();
+        ScamExpr * forms   = parsed->getCdr().get();
+
+        do_next(formals, values, forms);
+    }
+
+    void LetBaseWorker::report_error()
+    {
+        stringstream s;
+        s << "Expected (((sym form)...) forms...); got "
+          << args->toString();
+        ExprHandle err = ExpressionFactory::makeError(s.str());
+
+        cont->run(err.get());
+    }
+
+    bool LetBaseWorker::verify_single(ScamExpr * arg)
+    {
+        if ( ! arg->isList() || 2 != arg->length() ) {
+            report_error();
+            return false;
+        }
+
+        if ( ! arg->getCar()->isSymbol() ) {
+            report_error();
+            return false;
+        }
+
+        return true;
+    }
+
+    bool LetBaseWorker::verify_list(ScamExpr * check)
+    {
+        if ( check->isNil() ) {
+            return true;
+        }
+
+        if ( ! check->isList() ) {
+            report_error();
+            return false;
+        }
+
+        if ( ! verify_single(check->getCar().get()) ) {
+            return false;
+        }
+
+        return verify_list(check->getCdr().get());
+    }
+
+    bool LetBaseWorker::verify_args()
+    {
+        if ( ! args->isList() || args->isNil() ) {
+            report_error();
+            return false;
+        }
+
+        ScamExpr * check = args->getCar().get();
+        return verify_list(check);
+    }
+
+    ExprHandle LetBaseWorker::parse_bindings(ScamExpr * bindings)
+    {
+        if ( bindings->isNil() ) {
+            ScamExpr * nil = ExpressionFactory::makeNil().get();
+            return ExpressionFactory::makeCons(nil, nil);
+        }
+
+        ScamExpr * one  = bindings->getCar().get();
+        ScamExpr * rest = bindings->getCdr().get();
+
+        ExprHandle separated = parse_bindings(rest);
+
+        ExprHandle symList
+            = ExpressionFactory::makeCons(one->getCar().get(),
+                                          separated->getCar().get());
+        ExprHandle valList
+            = ExpressionFactory::makeCons(one->getCdr()->getCar().get(),
+                                          separated->getCdr().get());
+
+        return ExpressionFactory::makeCons(symList.get(), valList.get());
+    }
+
+    ExprHandle LetBaseWorker::parse_args()
+    {
+        ScamExpr * forms    = args->getCdr().get();
+        ScamExpr * bindings = args->getCar().get();
+
+        ExprHandle separated = parse_bindings(bindings);
+
+        return ExpressionFactory::makeCons(separated.get(), forms);
+    }
+
+    /////////////
+
+    LetWorker::LetWorker(ScamExpr * args, ContHandle cont, Env env, bool rebind)
+        : LetBaseWorker("Let", args, cont, env)
+        , rebind(rebind)
+    {
+    }
+
+    void LetWorker::do_next(ScamExpr * formals,
+                            ScamExpr * values,
+                            ScamExpr * forms)
+    {
+        ExprHandle evaled = ExpressionFactory::makeNil();
+        ScamExpr * e = evaled.get();
+        workQueueHelper<LetEvalWorker>(formals,
+                                       e,
+                                       values,
+                                       forms,
+                                       cont,
+                                       env,
+                                       rebind);
+    }
+
+    ////////////
+
+    LetStarWorker::LetStarWorker(ScamExpr * args, ContHandle cont, Env env)
+        : LetBaseWorker("LetStar", args, cont, env)
+    {
+    }
+
+    void LetStarWorker::do_next(ScamExpr * formals,
+                                ScamExpr * values,
+                                ScamExpr * forms)
+    {
+        Env extended = env.extend();
+        ExprHandle safe = safeCons(values);
+
+        using C = LetStarCont;
+        ContHandle ch = make_shared<C>(formals,
+                                       safe->getCdr().get(),
+                                       forms,
+                                       cont,
+                                       extended);
+        safe->getCar()->eval(ch, env);
+    }
+
+    LetEvalWorker::LetEvalWorker(ScamExpr * formals,
+                                 ScamExpr * evaled,
+                                 ScamExpr * args,
+                                 ScamExpr * forms,
+                                 ContHandle cont,
+                                 Env env,
+                                 bool rebind)
+        : Worker("LetEvalWorker")
+        , formals(formals->clone())
+        , evaled(evaled->clone())
+        , args(args->clone())
+        , forms(forms->clone())
+        , cont(cont)
+        , env(env)
+        , rebind(rebind)
+    {
+    }
+
+    void LetEvalWorker::run()
+    {
+        Worker::run();
+
+        if ( args->length() > 0 ) {
+            ExprHandle car = args->nthcar(0);
+            ExprHandle cdr = args->nthcdr(0);
+
+            ContHandle ch
+                = make_shared<LetStepCont>(formals.get(),
+                                           forms.get(),
+                                           evaled.get(),
+                                           cdr.get(),
+                                           cont,
+                                           env,
+                                           rebind);
+            car->eval(ch, env);
+        }
+        else {
+            ContHandle ch
+                = make_shared<LetCont>(formals.get(),
+                                       forms.get(),
+                                       cont,
+                                       env,
+                                       rebind);
+            ch->run(evaled.get());
+        }
+    }
+
+    LetStepCont::LetStepCont(ScamExpr * formals,
+                             ScamExpr * forms,
+                             ScamExpr * evaled,
+                             ScamExpr * args,
+                             ContHandle cont,
+                             Env env,
+                             bool rebind)
+        : Continuation("LetStepCont")
+        , formals(formals->clone())
+        , forms(forms->clone())
+        , evaled(evaled->clone())
+        , args(args->clone())
+        , cont(cont)
+        , env(env)
+        , rebind(rebind)
+    {
+    }
+
+    void LetStepCont::run(ScamExpr * expr)
+    {
+        if ( expr->error() ) {
+            cont->run(expr);
+        }
+        else {
+            ScamListAdapter a(evaled.get());
+            ExprHandle extend = a.append(expr);
+            ScamExpr * p[] =
+                { formals.get(), extend.get(), args.get(), forms.get() };
+            using WT = LetEvalWorker;
+            workQueueHelper<WT>(p[0], p[1], p[2], p[3], cont, env, rebind);
+        }
     }
 }

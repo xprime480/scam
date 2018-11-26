@@ -33,6 +33,17 @@ namespace scam
 
         void applyArgs(ScamExpr * args, ContHandle cont) override;
     };
+
+    class Backtrack : public Primitive
+    {
+    public:
+        Backtrack(ScamEngine * engine);
+
+        void applyArgs(ScamExpr * args, ContHandle cont) override;
+
+    private:
+        ScamEngine * engine;
+    };
 }
 
 #endif

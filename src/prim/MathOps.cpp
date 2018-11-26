@@ -57,12 +57,19 @@ namespace
 
     double do_div(vector<double> const & ns, ExprHandle & state)
     {
-        if ( ns.end() != find(ns.begin(), ns.end(), 0.0) ) {
-            state = ExpressionFactory::makeError("Division By Zero");
-            return 0.0;
+        state = ExpressionFactory::makeBoolean(false);
+        if ( ns.empty() ) {
+            return 1.0;
         }
         else {
-            state = ExpressionFactory::makeBoolean(false);
+            auto iter = ns.begin();
+            if ( ns.size() > 1 ) {
+                iter++;
+            }
+            if ( ns.end() != find(iter, ns.end(), 0.0) ) {
+                state = ExpressionFactory::makeError("Division By Zero");
+                return 0.0;
+            }
         }
 
         double total { 1.0 };
@@ -82,6 +89,20 @@ namespace
         }
         return total;
     }
+
+    double do_mod(vector<double> const & ns, ExprHandle & state)
+    {
+        state = ExpressionFactory::makeBoolean(false);
+        if ( ns.size() < 2 ) {
+            return 0.0;
+        }
+        if ( 0 == ns[1] ) {
+            state = ExpressionFactory::makeError("Modulus By Zero");
+            return 0.0;
+        }
+
+        return (double) ((int)ns[0] % (int)ns[1]);
+    }
 }
 
 #define MATH_OP_DEFINE(Name, Proc) \
@@ -94,5 +115,6 @@ MATH_OP_DEFINE(Add, do_add);
 MATH_OP_DEFINE(Sub, do_sub);
 MATH_OP_DEFINE(Mul, do_mul);
 MATH_OP_DEFINE(Div, do_div);
+MATH_OP_DEFINE(Mod, do_mod);
 
 #undef MATH_OP_DEFINE

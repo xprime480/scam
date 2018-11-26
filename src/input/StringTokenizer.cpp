@@ -196,6 +196,12 @@ Token StringTokenizer::scanSpecial()
         return token;
     }
 
+    if ( '?' == *pos ) {
+        static const Token token(TokenType::TT_QUESTION, "?");
+        ++pos;
+        return token;
+    }
+
     if ( ',' == *pos ) {
         ++pos;
 

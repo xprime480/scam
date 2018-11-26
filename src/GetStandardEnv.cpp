@@ -21,8 +21,9 @@ namespace
 
 void ScamEngine::getStandardEnv()
 {
-    addForm<Assign>(env, "assign!");
-    addForm<Define>(env, "define");
+    addForm<Assign>(env, "assign!", this);
+    addForm<Define>(env, "define", this);
+    addForm<Undefine>(env, "undefine", this);
     addForm<Lambda>(env, "lambda");
     addForm<QuasiQuote>(env, "quasiquote");
     addForm<Quote>(env, "quote");
@@ -33,6 +34,7 @@ void ScamEngine::getStandardEnv()
     addForm<Eval>(env, "eval");
     addForm<ClassMaker>(env, "make-class");
     addForm<CallCC>(env, "call/cc");
+    addForm<Amb>(env, "amb", this);
 
     addForm<If>(env, "if");
     addForm<And>(env, "and");
@@ -43,6 +45,7 @@ void ScamEngine::getStandardEnv()
     addForm<Sub>(env, "-");
     addForm<Mul>(env, "*");
     addForm<Div>(env, "/");
+    addForm<Mod>(env, "%");
 
     addForm<Eq>(env, "=");
     addForm<Ne>(env, "<>");
@@ -50,6 +53,7 @@ void ScamEngine::getStandardEnv()
     addForm<Le>(env, "<=");
     addForm<Gt>(env, ">");
     addForm<Ge>(env, ">=");
+    addForm<EqualP>(env, "eq?");
 
     addForm<List>(env, "list");
     addForm<Cons>(env, "cons");
@@ -72,8 +76,10 @@ void ScamEngine::getStandardEnv()
     addForm<InstanceP>(env, "instance?");
 
     addForm<Progn>(env, "progn");
+    addForm<Progn>(env, "begin");
 
     addForm<Load>(env, "load", this);
     addForm<Spawn>(env, "spawn");
     addForm<Error>(env, "error");
+    addForm<Backtrack>(env, "backtrack", this);
 }

@@ -6,6 +6,7 @@
 #include "Worker.hpp"
 #include "expr/ExpressionFactory.hpp"
 
+#include <iostream>
 #include <sstream>
 
 using namespace scam;
@@ -72,6 +73,7 @@ void IfWorker::run()
     else {
         ContHandle newCont = make_shared<IfCont>(args.get(), cont, env);
         ExprHandle test = args->nthcar(0);
+
         test->eval(newCont, env);
     }
 }

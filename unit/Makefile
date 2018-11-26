@@ -37,6 +37,7 @@ by_module : unittests
 	@./unittests --gtest_filter=ParserTest.*
 	@./unittests --gtest_filter=ExpressionTest.*
 	@./unittests --gtest_filter=ComparisonTest.*
+	@./unittests --gtest_filter=EqualTest.*
 	@./unittests --gtest_filter=PredicateTest.*
 	@./unittests --gtest_filter=LogicTest.*
 	@./unittests --gtest_filter=MathTest.*
@@ -47,6 +48,7 @@ by_module : unittests
 	@./unittests --gtest_filter=ClassTest.*
 	@./unittests --gtest_filter=ContinuationTest.*
 	@./unittests --gtest_filter=SystemTest.*
+	@./unittests --gtest_filter=PreludeTest.*
 
 clean :
 	make -C ../src clean

@@ -13,3 +13,4 @@
 #include "form/Or.hpp"
 
 #include "form/ClassMaker.hpp"
+#include "form/Amb.hpp"

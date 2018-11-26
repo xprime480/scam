@@ -16,15 +16,11 @@ namespace scam
         EvalString(ScamEngine * engine, std::string const & text);
         ~EvalString();
 
-        ExprHandle getLast();
-        void getAll(std::vector<ExprHandle> & exprs,  bool stopOnError);
+        ExprHandle run();
 
     private:
         ScamEngine * engine;
         StringTokenizer tokenizer;
-        std::shared_ptr<Extractor> cont;
-
-        ExprHandle getNext();
     };
 }
 

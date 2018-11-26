@@ -5,16 +5,29 @@
 
 namespace scam
 {
+    class ScamEngine;
+
     class EnvHelper : public SpecialForm
     {
     public:
-        EnvHelper(char const * name);
+        EnvHelper(char const * name, ScamEngine * engine);
+
+    protected:
+        ScamEngine * engine;
     };
 
     class Define : public EnvHelper
     {
     public:
-        Define();
+        Define(ScamEngine * engine);
+
+        void apply(ScamExpr * args, ContHandle cont, Env env) override;
+    };
+
+    class Undefine : public EnvHelper
+    {
+    public:
+        Undefine(ScamEngine * engine);
 
         void apply(ScamExpr * args, ContHandle cont, Env env) override;
     };
@@ -22,7 +35,7 @@ namespace scam
     class Assign : public EnvHelper
     {
     public:
-        Assign();
+        Assign(ScamEngine * engine);
 
         void apply(ScamExpr * args, ContHandle cont, Env env) override;
     };

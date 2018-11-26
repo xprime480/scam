@@ -1,4 +1,5 @@
 
+#include "prim/EqualP.hpp"
 #include "prim/ListOps.hpp"
 #include "prim/MathOps.hpp"
 #include "prim/Misc.hpp"

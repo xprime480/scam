@@ -158,6 +158,48 @@ TEST_F(MathTest, DivByZero)
     expectError(expr);
 }
 
+TEST_F(MathTest, DivZeroBy)
+{
+    ExprHandle expr = parseAndEvaluate("(/ 0 2)");
+    expectFloat(expr, 0, "0");
+}
+
+TEST_F(MathTest, ModZero)
+{
+    ExprHandle expr = parseAndEvaluate("(%)");
+    expectFloat(expr, 0, "0");
+}
+
+TEST_F(MathTest, ModOne)
+{
+    ExprHandle expr = parseAndEvaluate("(% 5)");
+    expectFloat(expr, 0, "0");
+}
+
+TEST_F(MathTest, ModTwo)
+{
+    ExprHandle expr = parseAndEvaluate("(% 5 2)");
+    expectFloat(expr, 1, "1");
+}
+
+TEST_F(MathTest, ModThreeIgnoresExtra)
+{
+    ExprHandle expr = parseAndEvaluate("(% 5 2 0 0 0)");
+    expectFloat(expr, 1, "1");
+}
+
+TEST_F(MathTest, ModByZero)
+{
+    ExprHandle expr = parseAndEvaluate("(% 5 0)");
+    expectError(expr, "Modulus By Zero");
+}
+
+TEST_F(MathTest, ModZeroBy)
+{
+    ExprHandle expr = parseAndEvaluate("(% 0 5)");
+    expectFloat(expr, 0, "0");
+}
+
 TEST_F(MathTest, Nested)
 {
     ExprHandle expr = parseAndEvaluate("(+ (* 2 3) (/ 1 5) (- 3))");

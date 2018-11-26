@@ -1,6 +1,7 @@
 
 #include "prim/SystemOps.hpp"
 
+#include "Backtracker.hpp"
 #include "Continuation.hpp"
 #include "WorkQueue.hpp"
 #include "Worker.hpp"
@@ -24,6 +25,8 @@ namespace
     extern void apply_spawn(ContHandle cont);
 
     extern void apply_error(ScamExpr * args, ContHandle cont);
+
+    extern void apply_backtrack(ContHandle cont, ScamEngine * engine);
 }
 
 Load::Load(ScamEngine * engine)
@@ -55,6 +58,17 @@ Error::Error()
 void Error::applyArgs(ScamExpr * args, ContHandle cont)
 {
     apply_error(args, cont);
+}
+
+Backtrack::Backtrack(ScamEngine * engine)
+    : Primitive("backtrack")
+    , engine(engine)
+{
+}
+
+void Backtrack::applyArgs(ScamExpr * args, ContHandle cont)
+{
+    apply_backtrack(cont, engine);
 }
 
 namespace
@@ -177,10 +191,9 @@ namespace
         }
 
         string data = get_data(source);
-
         EvalString helper(engine, data);
-        ExprHandle result = helper.getLast();
-        cont->run(result.get());
+        ExprHandle last = helper.run();
+        cont->run(last.get());
     }
 
     class SpawnWorker : public Worker
@@ -231,5 +244,19 @@ namespace
 
         ExprHandle err = ExpressionFactory::makeError(s.str());
         cont->run(err.get());
+    }
+
+    void apply_backtrack(ContHandle cont, ScamEngine * engine)
+    {
+        BacktrackHandle backtracker = engine->getBacktracker();
+
+        if ( nullptr == backtracker.get() ) {
+            static const string msg = "No current backtrack context";
+            ExprHandle rv = ExpressionFactory::makeError(msg);
+            cont->run(rv.get());
+        }
+        else {
+            backtracker->run(cont);
+        }
     }
 }

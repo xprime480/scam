@@ -35,6 +35,7 @@ namespace scam
     MATH_OP_DECL(Sub);
     MATH_OP_DECL(Mul);
     MATH_OP_DECL(Div);
+    MATH_OP_DECL(Mod);
 
 #undef MATH_OP_DECL
 

@@ -118,6 +118,13 @@ TEST_F(EnvTest, Check)
     EXPECT_FALSE(engine.hasBinding(key2.get()));
 }
 
+TEST_F(EnvTest, CheckCurrentOnly)
+{
+    EXPECT_TRUE(engine.hasBinding(key.get(), false));
+    engine.pushFrame();
+    EXPECT_FALSE(engine.hasBinding(key.get(), false));
+}
+
 TEST_F(EnvTest, NonSymbolKey)
 {
     EXPECT_THROW(engine.addBinding(exp.get(), exp.get()), ScamException);
@@ -187,6 +194,30 @@ TEST_F(EnvTest, GetTopLevel)
 
     ExprHandle sym = ExpressionFactory::makeSymbol("x");
     ExprHandle val = engine.getBinding(sym.get(), true);
+    expectInteger(val, 1, "1");
+}
+
+TEST_F(EnvTest, Undefine)
+{
+    reset(true);
+
+    ExprHandle val = parseAndEvaluate("(define test 1) test");
+    expectInteger(val, 1, "1");
+
+    val = parseAndEvaluate("(undefine test)  test");
+    expectError(val);
+}
+
+TEST_F(EnvTest, UndefineOnlyAffectsCurrentFrame)
+{
+    reset(true);
+
+    ExprHandle val = parseAndEvaluate("(define test 1) test");
+    expectInteger(val, 1, "1");
+
+    engine.pushFrame();
+
+    val = parseAndEvaluate("(undefine test)  test");
     expectInteger(val, 1, "1");
 }
 

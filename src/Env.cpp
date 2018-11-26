@@ -38,14 +38,14 @@ namespace scam
             table[key] = val->clone();
         }
 
-        bool check(string const & key) const
+        bool check(string const & key, bool checkParent) const
         {
             auto const iter = table.find(key);
             if ( iter != table.end() ) {
                 return true;
             }
-            if ( parent ) {
-                return parent->check(key);
+            if ( checkParent && parent ) {
+                return parent->check(key, checkParent);
             }
 
             return false;
@@ -81,6 +81,14 @@ namespace scam
             }
             else {
                 table[key] = val->clone();
+            }
+        }
+
+        void remove(string const & key)
+        {
+            auto const iter = table.find(key);
+            if ( iter != table.end() ) {
+                table.erase(iter);
             }
         }
 
@@ -130,9 +138,9 @@ void Env::put(ScamExpr const * key, ScamExpr * val)
     data->put(checkKey(key), val);
 }
 
-bool Env::check(ScamExpr const * key) const
+bool Env::check(ScamExpr const * key, bool checkParent) const
 {
-    return data->check(checkKey(key));
+    return data->check(checkKey(key), checkParent);
 }
 
 ExprHandle Env::get(ScamExpr const * key) const
@@ -170,6 +178,11 @@ Env Env::top() const
 void Env::assign(ScamExpr const * key, ScamExpr * val)
 {
     data->assign(checkKey(key), val);
+}
+
+void Env::remove(ScamExpr const * key)
+{
+    data->remove(checkKey(key));
 }
 
 void Env::dump(size_t max, bool full) const

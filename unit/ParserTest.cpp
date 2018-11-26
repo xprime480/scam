@@ -393,3 +393,14 @@ TEST_F(ParserTest, VectorNonEmpty)
     expectVector(expr, msg, 2);
     EXPECT_EQ(42, expr->nthcar(1)->toInteger());
 }
+
+TEST_F(ParserTest, Backtrack)
+{
+    string const msg { "(backtrack)" };
+    vector<Token> tokens {
+        Token(TokenType::TT_QUESTION, "?")
+    };
+
+    ExprHandle expr = runTest(tokens);
+    expectList(expr, msg, 1);
+}

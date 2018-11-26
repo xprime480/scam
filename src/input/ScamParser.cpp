@@ -87,6 +87,11 @@ ExprHandle ScamParser::tokenToExpr(Token const & token) const
         rv = expand_reader_macro(token.getText());
         break;
 
+    case TokenType::TT_QUESTION:
+	rv = ExpressionFactory::makeSymbol("backtrack");
+	rv = ExpressionFactory::makeList(rv.get());
+	break;
+
     case TokenType::TT_END_OF_INPUT:
         rv = ExpressionFactory::makeNull();
         break;

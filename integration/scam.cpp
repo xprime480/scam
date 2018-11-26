@@ -1,6 +1,8 @@
 
 #include "scam.hpp"
 
+#include "Accumulator.hpp"
+#include "Extractor.hpp"
 #include "ScamEngine.hpp"
 #include "input/StringTokenizer.hpp"
 #include "util/EvalString.hpp"
@@ -17,6 +19,7 @@ namespace
 (define add +)\
 (define sub -)\
 (define two 2)\
+#t\
 ");
 
     bool extend_for_testing(ScamEngine & engine)
@@ -24,7 +27,7 @@ namespace
         engine.reset(true);
         engine.pushFrame();
         EvalString helper(&engine, testforms);
-        ExprHandle status = helper.getLast();
+        ExprHandle status = helper.run();
         return ! ( status->isNull() || status->error() );
     }
 }
@@ -37,16 +40,11 @@ string call_scam(string const & input)
         return "** Internal Test Error initializing test environment";
     }
 
+    shared_ptr<Accumulator> accumulator = make_shared<Accumulator>();
+    engine.setCont(accumulator);
     EvalString helper(&engine, input);
-    vector<ExprHandle> values;
-    helper.getAll(values, false);
+    helper.run();
 
-    stringstream s;
-    for ( auto v : values ) {
-        s << v->toString() << "\n";
-    }
-
-    engine.reset(false);
-    return s.str();
+    return accumulator->getResult();
 }
 

@@ -21,6 +21,8 @@ namespace scam
         std::string const name;
         static std::string makeName(char const * id);
     };
+
+    using ContHandle = std::shared_ptr<Continuation>;
 }
 
 #endif

@@ -12,20 +12,7 @@ using namespace std;
 
 namespace
 {
-    struct VectorWorkerData;
-
-    class  VectorWorker : public Worker
-    {
-    public:
-        VectorWorker(ContHandle cont, Env env, ExprVec const & forms);
-
-        VectorWorker(shared_ptr<VectorWorkerData> data);
-
-        void run() override;
-
-    private:
-        shared_ptr<VectorWorkerData> data;
-    };
+    extern void eval_vector(ContHandle cont, Env env, ExprVec const & elts);
 }
 
 ScamVector::ScamVector(ExprVec const & elts)
@@ -50,7 +37,7 @@ string ScamVector::toString() const
 
 void ScamVector::eval(ContHandle cont, Env env)
 {
-    workQueueHelper<VectorWorker>(cont, env, elts);
+    eval_vector(cont, env, elts);
 }
 
 bool ScamVector::isVector() const
@@ -77,49 +64,63 @@ ExprHandle ScamVector::nthcar(size_t n) const
 
 namespace
 {
-    struct VectorWorkerData
-    {
-        VectorWorkerData(ExprVec const & forms, ContHandle original, Env env)
-            : forms(forms)
-            , original(original)
-            , env(env)
-            , evaled(forms.size(), ExpressionFactory::makeNull())
-            , index(0u)
-        {
-        }
-
-        ExprVec forms;
-        ContHandle original;
-        ContHandle cont;
-        Env env;
-
-        ExprVec evaled;
-        size_t index;
-    };
-
-    class EvalContinuation : public Continuation
+    class VectorCont : public Continuation
     {
     public:
-        EvalContinuation(shared_ptr<VectorWorkerData> data);
+        VectorCont(ExprVec const & forms,
+                   ExprVec const & evaled,
+                   ContHandle original,
+                   Env env);
 
         void run(ScamExpr * expr) override;
 
     private:
-        shared_ptr<VectorWorkerData> data;
+        ExprVec forms;
+        ExprVec evaled;
+        ContHandle original;
+        Env env;
+    };
+
+    class  VectorWorker : public Worker
+    {
+    public:
+        VectorWorker(ContHandle cont,
+                     Env env,
+                     ExprVec const & forms);
+
+        VectorWorker(ContHandle cont,
+                     Env env,
+                     ExprVec const & forms,
+                     ExprVec const & evaled);
+
+        void run() override;
+
+    private:
+        ExprVec    forms;
+        ExprVec    evaled;
+        ContHandle original;
+        Env        env;
     };
 
     VectorWorker::VectorWorker(ContHandle cont,
                                Env env,
                                ExprVec const & forms)
         : Worker("Vector")
-        , data(make_shared<VectorWorkerData>(forms, cont, env))
+        , forms(forms)
+        , original(cont)
+        , env(env)
     {
-        data->cont = make_shared<EvalContinuation>(data);
     }
 
-    VectorWorker::VectorWorker(shared_ptr<VectorWorkerData> data)
-        : Worker("Vector copy")
-        , data(data)
+    VectorWorker::VectorWorker(ContHandle cont,
+                               Env env,
+                               ExprVec const & forms,
+                               ExprVec const & evaled)
+        : Worker("Vector 2")
+        , forms(forms)
+        , evaled(evaled)
+        , original(cont)
+        , env(env)
     {
     }
 
@@ -127,33 +128,47 @@ namespace
     {
         Worker::run();
 
-        if ( data->index >= data->forms.size() ) {
-            ExprHandle value = ExpressionFactory::makeVector(data->evaled);
-            data->original->run(value.get());
+        if ( forms.size() == evaled.size() ) {
+            ExprHandle value = ExpressionFactory::makeVector(evaled);
+            original->run(value.get());
         }
         else {
-            ExprHandle expr = data->forms[data->index];
-            expr->eval(data->cont, data->env);
+            size_t index = evaled.size();
+            ExprHandle expr = forms[index];
+            ContHandle cont
+                = make_shared<VectorCont>(forms, evaled, original, env);
+            expr->eval(cont, env);
         }
     }
 
-    EvalContinuation::EvalContinuation(shared_ptr<VectorWorkerData> data)
-        : Continuation("Vector Eval")
-        , data(data)
+    VectorCont::VectorCont(ExprVec const & forms,
+                           ExprVec const & evaled,
+                           ContHandle original,
+                           Env env)
+        : Continuation("Vector")
+        , forms(forms)
+        , evaled(evaled)
+        , original(original)
+        , env(env)
     {
     }
 
-    void EvalContinuation::run(ScamExpr * expr)
+    void VectorCont::run(ScamExpr * expr)
     {
         Continuation::run(expr);
 
         if ( expr->error() ) {
-            data->original->run(expr);
+            original->run(expr);
         }
         else {
-            data->evaled[data->index] = expr->clone();
-            data->index += 1;
-            workQueueHelper<VectorWorker>(data);
+            ExprVec e2(evaled);
+            e2.push_back(expr->clone());
+            workQueueHelper<VectorWorker>(original, env, forms, e2);
         }
+    }
+
+    void eval_vector(ContHandle cont, Env env, ExprVec const & elts)
+    {
+        workQueueHelper<VectorWorker>(cont, env, elts);
     }
 }

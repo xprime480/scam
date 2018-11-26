@@ -2,6 +2,7 @@
 #include "prim/Misc.hpp"
 
 #include "Continuation.hpp"
+#include "ScamException.hpp"
 #include "expr/ExpressionFactory.hpp"
 
 #include <iostream>
@@ -25,3 +26,4 @@ void Progn::applyArgs(ScamExpr * args, ContHandle cont)
         cont->run(last.get());
     }
 }
+

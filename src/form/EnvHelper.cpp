@@ -1,17 +1,90 @@
 
 #include "form/EnvHelper.hpp"
 
+#include "Backtracker.hpp"
 #include "Continuation.hpp"
 #include "Env.hpp"
+#include "ScamEngine.hpp"
 #include "WorkQueue.hpp"
 #include "Worker.hpp"
 #include "expr/ExpressionFactory.hpp"
+
+#include <sstream>
 
 using namespace scam;
 using namespace std;
 
 namespace
 {
+    extern void apply_assign(ScamExpr * args,
+                             ContHandle cont,
+                             Env env,
+                             ScamEngine * engine);
+    extern void apply_define(ScamExpr * args,
+                             ContHandle cont,
+                             Env env,
+                             ScamEngine * engine);
+    extern void apply_undefine(ScamExpr * args,
+                               ContHandle cont,
+                               Env env,
+                               ScamEngine * engine);
+}
+
+EnvHelper::EnvHelper(char const * name, ScamEngine * engine)
+    : SpecialForm(name)
+    , engine(engine)
+{
+}
+
+Assign::Assign(ScamEngine * engine)
+    : EnvHelper("assign!", engine)
+{
+}
+
+void Assign::apply(ScamExpr * args, ContHandle cont, Env env)
+{
+    apply_assign(args, cont, env, engine);
+}
+
+Define::Define(ScamEngine * engine)
+    : EnvHelper("define", engine)
+{
+}
+
+void Define::apply(ScamExpr * args, ContHandle cont, Env env)
+{
+    apply_define(args, cont, env, engine);
+}
+
+Undefine::Undefine(ScamEngine * engine)
+    : EnvHelper("undefine", engine)
+{
+}
+
+void Undefine::apply(ScamExpr * args, ContHandle cont, Env env)
+{
+    apply_undefine(args, cont, env, engine);
+}
+
+namespace
+{
+    bool checkArgs(ScamExpr * args, ContHandle cont, bool exprNeeded)
+    {
+        const size_t expected = 1u + (exprNeeded ? 1u : 0u);
+        const size_t actual   = args->length();
+
+        if ( expected != actual ) {
+            stringstream s;
+            s << "Expecting " << expected << "forms for argument list; ";
+            s << "got: " << args->toString();
+            ExprHandle err = ExpressionFactory::makeError(s.str());
+            cont->run(err.get());
+            return false;
+        }
+
+        return true;
+    }
+
     class EnvHelperWorker : public Worker
     {
     public:
@@ -34,49 +107,45 @@ namespace
     class AssignWorker : public EnvHelperWorker
     {
     public:
-        AssignWorker(ScamExpr * args, ContHandle cont, Env env);
+        AssignWorker(ScamExpr * args,
+                     ContHandle cont,
+                     Env env,
+                     ScamEngine * engine);
 
     protected:
         ContHandle getCont(ScamExpr * sym) const override;
+
+    private:
+        ScamEngine * engine;
     };
 
     class DefineWorker : public EnvHelperWorker
     {
     public:
-        DefineWorker(ScamExpr * args, ContHandle cont, Env env);
+        DefineWorker(ScamExpr * args,
+                     ContHandle cont,
+                     Env env,
+                     ScamEngine * engine);
+
+    protected:
+        ContHandle getCont(ScamExpr * sym) const override;
+
+    private:
+        ScamEngine * engine;
+    };
+
+    class UndefineWorker : public EnvHelperWorker
+    {
+    public:
+        UndefineWorker(ScamExpr * args,
+                       ContHandle cont,
+                       Env env,
+                       ScamEngine * engine);
 
     protected:
         ContHandle getCont(ScamExpr * sym) const override;
     };
-}
 
-EnvHelper::EnvHelper(char const * name)
-    : SpecialForm(name)
-{
-}
-
-Assign::Assign()
-    : EnvHelper("assign!")
-{
-}
-
-void Assign::apply(ScamExpr * args, ContHandle cont, Env env)
-{
-    workQueueHelper<AssignWorker>(args, cont, env);
-}
-
-Define::Define()
-    : EnvHelper("define")
-{
-}
-
-void Define::apply(ScamExpr * args, ContHandle cont, Env env)
-{
-    workQueueHelper<DefineWorker>(args, cont, env);
-}
-
-namespace
-{
     class EnvHelperCont : public Continuation
     {
     public:
@@ -107,26 +176,113 @@ namespace
         ContHandle cont;
     };
 
+    class AssignBacktracker : public Backtracker
+    {
+    public:
+        AssignBacktracker(ScamExpr * sym,
+                          ScamExpr * old,
+                          Env env,
+                          BacktrackHandle backtracker)
+            : Backtracker("DefineBacktracker")
+            , sym(sym->clone())
+            , old(old->clone())
+            , env(env)
+            , backtracker(backtracker)
+        {
+        }
+
+        void run(ContHandle cont) override
+        {
+            Backtracker::run(cont);
+
+            env.assign(sym.get(), old.get());
+
+            if ( nullptr != backtracker.get() ) {
+                backtracker->run(cont);
+            }
+        }
+
+    private:
+        ExprHandle      sym;
+        ExprHandle      old;
+        Env             env;
+        BacktrackHandle backtracker;
+    };
+
     class AssignCont : public EnvHelperCont
     {
     public:
-        AssignCont(ScamExpr * sym, ContHandle cont, Env env)
+        AssignCont(ScamExpr * sym,
+                   ContHandle cont,
+                   Env env,
+                   ScamEngine * engine)
             : EnvHelperCont(sym, cont, env, "Assign")
+            , engine(engine)
         {
         }
 
     protected:
         void finish(ScamExpr * expr) const override
         {
+            ExprHandle old = env.get(sym.get());
+
             env.assign(sym.get(), expr);
+
+            BacktrackHandle backtracker = engine->getBacktracker();
+            if ( nullptr == backtracker.get() ) {
+                return;
+            }
+
+            shared_ptr<Backtracker> bt =
+                make_shared<AssignBacktracker>(sym.get(),
+                                               old.get(),
+                                               env,
+                                               backtracker);
+            engine->setBacktracker(bt);
         }
+
+    private:
+        ScamEngine * engine;
+    };
+
+    class DefineBacktracker : public Backtracker
+    {
+    public:
+        DefineBacktracker(ScamExpr * sym,
+                          Env env,
+                          BacktrackHandle backtracker)
+            : Backtracker("DefineBacktracker")
+            , sym(sym->clone())
+            , env(env)
+            , backtracker(backtracker)
+        {
+        }
+
+        void run(ContHandle cont) override
+        {
+            Backtracker::run(cont);
+
+            env.remove(sym.get());
+            if ( nullptr != backtracker.get() ) {
+                backtracker->run(cont);
+            }
+        }
+
+    private:
+        ExprHandle      sym;
+        Env             env;
+        BacktrackHandle backtracker;
     };
 
     class DefineCont : public EnvHelperCont
     {
     public:
-        DefineCont(ScamExpr * sym, ContHandle cont, Env env)
+        DefineCont(ScamExpr * sym,
+                   ContHandle cont,
+                   Env env,
+                   ScamEngine * engine)
             : EnvHelperCont(sym, cont, env, "Define")
+            , engine(engine)
         {
         }
 
@@ -134,6 +290,35 @@ namespace
         void finish(ScamExpr * expr) const override
         {
             env.put(sym.get(), expr);
+
+            BacktrackHandle backtracker = engine->getBacktracker();
+            if ( nullptr == backtracker.get() ) {
+                return;
+            }
+
+            shared_ptr<Backtracker> bt =
+                make_shared<DefineBacktracker>(sym.get(),
+                                               env,
+                                               backtracker);
+            engine->setBacktracker(bt);
+        }
+
+    private:
+        ScamEngine * engine;
+    };
+
+    class UndefineCont : public EnvHelperCont
+    {
+    public:
+        UndefineCont(ScamExpr * sym, ContHandle cont, Env env)
+            : EnvHelperCont(sym, cont, env, "Undefine")
+        {
+        }
+
+    protected:
+        void finish(ScamExpr * expr) const override
+        {
+            env.remove(sym.get());
         }
     };
 
@@ -152,34 +337,86 @@ namespace
     {
         Worker::run();
 
-        ExprHandle expr = args->getCdr()->getCar();
         ExprHandle sym = args->getCar();
-
         ContHandle c = getCont(sym.get());
-        expr->eval(c, env);
+        if ( args->length() > 1 ) {
+            ExprHandle expr = args->nthcar(1);
+            expr->eval(c, env);
+        }
+        else {
+            ExprHandle expr = ExpressionFactory::makeNil();
+            c->run(expr.get());
+        }
     }
 
     AssignWorker::AssignWorker(ScamExpr * args,
                                ContHandle cont,
-                               Env env)
+                               Env env,
+                               ScamEngine * engine)
         : EnvHelperWorker(args, cont, env, "Assign")
+        , engine(engine)
     {
     }
 
     ContHandle AssignWorker::getCont(ScamExpr * sym) const
     {
-        return make_shared<AssignCont>(sym, cont, env);
+        return make_shared<AssignCont>(sym, cont, env, engine);
     }
 
     DefineWorker::DefineWorker(ScamExpr * args,
                                ContHandle cont,
-                               Env env)
+                               Env env,
+                               ScamEngine * engine)
         : EnvHelperWorker(args, cont, env, "Define")
+        , engine(engine)
     {
     }
 
     ContHandle DefineWorker::getCont(ScamExpr * sym) const
     {
-        return make_shared<DefineCont>(sym, cont, env);
+        return make_shared<DefineCont>(sym, cont, env, engine);
+    }
+
+    UndefineWorker::UndefineWorker(ScamExpr * args,
+                                   ContHandle cont,
+                                   Env env,
+                                   ScamEngine * engine)
+        : EnvHelperWorker(args, cont, env, "Undefine")
+    {
+    }
+
+    ContHandle UndefineWorker::getCont(ScamExpr * sym) const
+    {
+        return make_shared<UndefineCont>(sym, cont, env);
+    }
+
+    void apply_assign(ScamExpr * args,
+                      ContHandle cont,
+                      Env env,
+                      ScamEngine * engine)
+    {
+        if ( checkArgs(args, cont, true) ) {
+            workQueueHelper<AssignWorker>(args, cont, env, engine);
+        }
+    }
+
+    void apply_define(ScamExpr * args,
+                      ContHandle cont,
+                      Env env,
+                      ScamEngine * engine)
+    {
+        if ( checkArgs(args, cont, true) ) {
+            workQueueHelper<DefineWorker>(args, cont, env, engine);
+        }
+    }
+
+    void apply_undefine(ScamExpr * args,
+                        ContHandle cont,
+                        Env env,
+                        ScamEngine * engine)
+    {
+        if ( checkArgs(args, cont, false) ) {
+            workQueueHelper<UndefineWorker>(args, cont, env, engine);
+        }
     }
 }

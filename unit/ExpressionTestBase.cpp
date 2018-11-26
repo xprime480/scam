@@ -3,7 +3,6 @@
 
 #include "ScamEngine.hpp"
 #include "ScamException.hpp"
-#include "Trampoline.hpp"
 #include "WorkQueue.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "input/ScamParser.hpp"
@@ -56,6 +55,7 @@ void ExpressionTestBase::SetUp()
 {
     engine.reset(true);
     extractor = make_shared<Extractor>();
+    engine.setCont(extractor);
     ExprHandle result = parseAndEvaluate("(load \"lib/prelude.scm\")");
     expectInteger(result, 1, "1");
 }
@@ -67,22 +67,26 @@ void ExpressionTestBase::TearDown()
 
 ExprHandle ExpressionTestBase::evaluate(ScamExpr * input)
 {
-    engine.eval(input, extractor);
-    Trampoline(GlobalWorkQueue);
-    return extractor->getExpr();
+    return engine.eval(input);
 }
 
 ExprHandle ExpressionTestBase::apply(ScamExpr * expr, ScamExpr * args)
 {
-    engine.apply(expr, args, extractor);
-    Trampoline(GlobalWorkQueue);
-    return extractor->getExpr();
+    return engine.apply(expr, args);
 }
 
 ExprHandle ExpressionTestBase::parseAndEvaluate(string const & input)
 {
-    EvalString helper(&engine, input);
-    return helper.getLast();
+    try {
+	EvalString helper(&engine, input);
+	return helper.run();
+    }
+    catch ( ScamException e ) {
+	return ExpressionFactory::makeError(e.getMessage());
+    }
+    catch ( ... ) {
+	return ExpressionFactory::makeError("Unknown exception");
+    }
 }
 
 ExprHandle ExpressionTestBase::parseAndEvaluateFile(char const * filename)

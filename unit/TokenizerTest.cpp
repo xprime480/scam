@@ -277,4 +277,15 @@ This comment style can span lines!\n\
 
         return string2tokens(input, exp);
     }
+
+    TEST(TokenizerTest, QuestionMark)
+    {
+        string const input{ "? ?" };
+        vector<Token> exp {
+            Token(TokenType::TT_QUESTION, "?"),
+            Token(TokenType::TT_QUESTION, "?")
+        };
+
+        return string2tokens(input, exp);
+    }
 }

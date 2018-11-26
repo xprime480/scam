@@ -141,7 +141,7 @@ ExprHandle ExpressionFactory::makeContinuation(ContHandle cont)
 
 namespace
 {
-    static const unsigned MAX_HANDLES = 1 << 10;
+    static const unsigned MAX_HANDLES = 1 << 20;
 
     unsigned long long HANDLE_COUNTER { 0 };
     struct HANDLE_ENTRY

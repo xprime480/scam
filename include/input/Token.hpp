@@ -18,6 +18,7 @@ namespace scam
             TT_QUASIQUOTE,
             TT_UNQUOTE,
             TT_SPLICE,
+            TT_QUESTION,
 
             TT_BOOLEAN,
             TT_CHARACTER,

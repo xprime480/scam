@@ -46,6 +46,8 @@ EvalWorker::EvalWorker(ScamExpr * forms, Env extended, ContHandle cont)
 
 void EvalWorker::run()
 {
+    Worker::run();
+
     ContHandle newCont = make_shared<EvalCont>(cont);
     forms->mapEval(newCont, extended);
 }
