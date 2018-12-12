@@ -137,7 +137,7 @@ TEST_F(EnvTest, DefineConstant)
 {
     reset(true);
     ExprHandle expr = parseAndEvaluate("(define x 1)");
-    expectInteger(expr, 1, "1");
+    expectSymbol(expr, "x");
 
     ExprHandle sym = ExpressionFactory::makeSymbol("x");
     ExprHandle val = engine.getBinding(sym.get());
@@ -148,7 +148,7 @@ TEST_F(EnvTest, DefineEvaluated)
 {
     reset(true);
     ExprHandle expr = parseAndEvaluate("(define x (- 3 2))");
-    expectInteger(expr, 1, "1");
+    expectSymbol(expr, "x");
 
     ExprHandle sym = ExpressionFactory::makeSymbol("x");
     ExprHandle val = engine.getBinding(sym.get());

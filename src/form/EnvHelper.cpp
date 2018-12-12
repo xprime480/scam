@@ -163,7 +163,7 @@ namespace
         void run(ScamExpr * expr) override
         {
             finish(expr);
-            cont->run(expr);
+            cont->run(sym.get());
         }
 
     protected:
