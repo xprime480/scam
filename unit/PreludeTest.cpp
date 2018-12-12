@@ -92,17 +92,17 @@ TEST_F(PreludeTest, RequireTest)
 
 TEST_F(PreludeTest, MempEmptyList)
 {
-    expectFalse("(mem? 1 (list))");
+    expectFalse("(member? 1 (list))");
 }
 
 TEST_F(PreludeTest, MempItemFound)
 {
-    expectTrue("(mem? 1 (list 5 4 3 2 1))");
+    expectTrue("(member? 1 (list 5 4 3 2 1))");
 }
 
 TEST_F(PreludeTest, MempItemNotFound)
 {
-    expectFalse("(mem? 99 (list 5 4 3 2 1))");
+    expectFalse("(member? 99 (list 5 4 3 2 1))");
 }
 
 TEST_F(PreludeTest, DistinctNone)

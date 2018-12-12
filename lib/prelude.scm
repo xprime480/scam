@@ -42,13 +42,13 @@
   (lambda (x)
     (if x x (amb))))
 
-(define mem?
+(define member?
   (lambda (val lst)
     (if (nil? lst)
         #f
         (let ((item (car lst))
               (rest (cdr lst)))
-          (or (eq? val item) (mem? val rest))))))
+          (or (eq? val item) (member? val rest))))))
 
 (define distinct?
   (lambda (lst)
@@ -56,7 +56,7 @@
         #t
         (let ((item (car lst))
               (rest (cdr lst)))
-          (and (not (mem? item rest))
+          (and (not (member? item rest))
                (distinct? rest))))))
 
 (define xor
@@ -78,7 +78,7 @@
         lst
         (let ((item (car lst))
               (rest (cdr lst)))
-          (if (mem? item vals)
+          (if (member? item vals)
               (exclude vals rest)
               (cons item (exclude vals rest)))))))
 
