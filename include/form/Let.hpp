@@ -5,6 +5,8 @@
 
 namespace scam
 {
+    class ScamEngine;
+
     class Let : public SpecialForm
     {
     public:
@@ -16,9 +18,12 @@ namespace scam
     class LetStar : public SpecialForm
     {
     public:
-        LetStar();
+        LetStar(ScamEngine * engine);
 
         void apply(ScamExpr * args, ContHandle cont, Env env) override;
+
+    private:
+        ScamEngine * engine;
     };
 
     class LetRec : public SpecialForm

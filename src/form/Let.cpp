@@ -1,9 +1,11 @@
 
 #include "form/Let.hpp"
 
+#include "Backtracker.hpp"
 #include "Binder.hpp"
 #include "Continuation.hpp"
 #include "EvalWorker.hpp"
+#include "ScamEngine.hpp"
 #include "WorkQueue.hpp"
 #include "Worker.hpp"
 #include "expr/ExpressionFactory.hpp"
@@ -24,7 +26,8 @@ namespace
 
     extern void letstar_impl(ScamExpr * args,
                              ContHandle cont,
-                             Env env);
+                             Env env,
+                             ScamEngine * engine);
 }
 
 Let::Let()
@@ -37,14 +40,15 @@ void Let::apply(ScamExpr * args, ContHandle cont, Env env)
     let_impl(args, cont, env, false);
 }
 
-LetStar::LetStar()
+LetStar::LetStar(ScamEngine * engine)
     : SpecialForm("let*")
+    , engine(engine)
 {
 }
 
 void LetStar::apply(ScamExpr * args, ContHandle cont, Env env)
 {
-    letstar_impl(args, cont, env);
+    letstar_impl(args, cont, env, engine);
 }
 
 
@@ -103,6 +107,21 @@ namespace
         void rebind_procs(Env extended);
     };
 
+    class LetStarBacktracker : public Backtracker
+    {
+    public:
+        LetStarBacktracker(Env env,
+                           ScamExpr * sym,
+                           BacktrackHandle backtracker);
+
+        void run(ContHandle cont) override;
+
+    private:
+        Env             env;
+        ExprHandle      sym;
+        BacktrackHandle backtracker;
+    };
+
     class LetStarCont : public LetCommonCont
     {
     public:
@@ -110,7 +129,8 @@ namespace
                     ScamExpr * rest,
                     ScamExpr * forms,
                     ContHandle cont,
-                    Env env);
+                    Env env,
+                    ScamEngine * engine);
 
     protected:
         void do_let(ScamExpr * expr) override;
@@ -119,6 +139,9 @@ namespace
         ExprHandle formals;
         ExprHandle rest;
         Env        env;
+        ScamEngine * engine;
+
+        void makeBacktracker(ScamExpr * sym) const;
     };
 
     class LetStepCont : public Continuation
@@ -216,12 +239,18 @@ namespace
     class LetStarWorker : public LetBaseWorker
     {
     public:
-        LetStarWorker(ScamExpr * args, ContHandle cont, Env env);
+        LetStarWorker(ScamExpr * args,
+                      ContHandle cont,
+                      Env env,
+                      ScamEngine * engine);
 
     protected:
         void do_next(ScamExpr * formals,
                      ScamExpr * values,
                      ScamExpr * forms) override;
+
+    private:
+        ScamEngine * engine;
     };
 
     class LetEvalWorker : public Worker
@@ -252,9 +281,12 @@ namespace
         workQueueHelper<LetWorker>(args, cont, env, rebind);
     }
 
-    void letstar_impl(ScamExpr * args, ContHandle cont, Env env)
+    void letstar_impl(ScamExpr * args,
+                      ContHandle cont,
+                      Env env,
+                      ScamEngine * engine)
     {
-        workQueueHelper<LetStarWorker>(args, cont, env);
+        workQueueHelper<LetStarWorker>(args, cont, env, engine);
     }
 
     //** class implementations **//
@@ -330,15 +362,39 @@ namespace
 
     /////////////////////////
 
+    LetStarBacktracker::LetStarBacktracker(Env env,
+                                           ScamExpr * sym,
+                                           BacktrackHandle backtracker)
+        : Backtracker("Let*")
+        , env(env)
+        , sym(sym->clone())
+        , backtracker(backtracker)
+    {
+    }
+
+    void LetStarBacktracker::run(ContHandle cont)
+    {
+        Backtracker::run(cont);
+
+        env.remove(sym.get());
+        if ( backtracker.get() ) {
+            backtracker->run(cont);
+        }
+    }
+
+    /////////////////////////
+
     LetStarCont::LetStarCont(ScamExpr * formals,
                              ScamExpr * rest,
                              ScamExpr * forms,
                              ContHandle cont,
-                             Env env)
+                             Env env,
+                             ScamEngine * engine)
         : LetCommonCont("Let*", forms, cont)
         , formals(formals->clone())
         , rest(rest->clone())
         , env(env)
+        , engine(engine)
     {
     }
 
@@ -348,17 +404,31 @@ namespace
             final_eval(env);
         }
         else {
-            env.put(formals->getCar().get(), expr);
-            ExprHandle safe = safeCons(rest.get());
+            ScamExpr * sym = formals->getCar().get();
+            env.put(sym, expr);
 
+            makeBacktracker(sym);
+
+            ExprHandle safe = safeCons(rest.get());
             using C = LetStarCont;
             ContHandle ch = make_shared<C>(formals->getCdr().get(),
                                            safe->getCdr().get(),
                                            forms.get(),
                                            cont,
-                                           env);
+                                           env,
+                                           engine);
             safe->getCar()->eval(ch, env);
         }
+    }
+
+    void LetStarCont::makeBacktracker(ScamExpr * sym) const
+    {
+        BacktrackHandle backtracker = engine->getBacktracker();
+
+        BacktrackHandle newBT =
+            make_shared<LetStarBacktracker>(env, sym, backtracker);
+
+        engine->setBacktracker(newBT);
     }
 
     ///////////
@@ -501,8 +571,12 @@ namespace
 
     ////////////
 
-    LetStarWorker::LetStarWorker(ScamExpr * args, ContHandle cont, Env env)
+    LetStarWorker::LetStarWorker(ScamExpr * args,
+                                 ContHandle cont,
+                                 Env env,
+                                 ScamEngine * engine)
         : LetBaseWorker("LetStar", args, cont, env)
+        , engine(engine)
     {
     }
 
@@ -518,7 +592,8 @@ namespace
                                        safe->getCdr().get(),
                                        forms,
                                        cont,
-                                       extended);
+                                       extended,
+                                       engine);
         safe->getCar()->eval(ch, env);
     }
 

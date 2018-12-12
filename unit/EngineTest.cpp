@@ -48,9 +48,33 @@ TEST_F(EngineTest, AmbManyFormSecond)
     expectInteger(expr, 3, "3");
 }
 
-TEST_F(EngineTest, AmbNested)
+TEST_F(EngineTest, AmbNestedLet)
 {
     ExprHandle expr = parseAndEvaluate("(load \"scripts/system/nestedamb.scm\")");
+    expectList(expr, "(a 1)", 2);
+
+    expr = parseAndEvaluate("?");
+    expectList(expr, "(a 2)", 2);
+
+    expr = parseAndEvaluate("?");
+    expectList(expr, "(b 1)", 2);
+
+    expr = parseAndEvaluate("?");
+    expectList(expr, "(b 2)", 2);
+
+    expr = parseAndEvaluate("?");
+    expectError(expr, "No more choices");
+
+    expr = parseAndEvaluate("?");
+    expectError(expr, "No current backtrack context");
+
+    expr = parseAndEvaluate("?");
+    expectError(expr, "No current backtrack context");
+}
+
+TEST_F(EngineTest, AmbNestedLetStar)
+{
+    ExprHandle expr = parseAndEvaluate("(load \"scripts/system/nestedamb2.scm\")");
     expectList(expr, "(a 1)", 2);
 
     expr = parseAndEvaluate("?");
@@ -135,4 +159,3 @@ TEST_F(EngineTest, RequireTest)
     expr = parseAndEvaluate("?");
     expectInteger(expr, 6, "6");
 }
-
