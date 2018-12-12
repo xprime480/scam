@@ -162,3 +162,10 @@ TEST_F(LogicTest, NotManyTrue)
     expectError(expr);
 }
 
+TEST_F(LogicTest, XorTest)
+{
+    expectTrue("(xor #t #f)");
+    expectTrue("(xor #f #t)");
+    expectFalse("(xor #t #t)");
+    expectFalse("(xor #f #f)");
+}

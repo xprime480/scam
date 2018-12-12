@@ -89,3 +89,38 @@ TEST_F(PreludeTest, RequireTest)
     ExprHandle expr = parseAndEvaluate("(require #f)");
     expectError(expr, "No more choices");
 }
+
+TEST_F(PreludeTest, MempEmptyList)
+{
+    expectFalse("(mem? 1 (list))");
+}
+
+TEST_F(PreludeTest, MempItemFound)
+{
+    expectTrue("(mem? 1 (list 5 4 3 2 1))");
+}
+
+TEST_F(PreludeTest, MempItemNotFound)
+{
+    expectFalse("(mem? 99 (list 5 4 3 2 1))");
+}
+
+TEST_F(PreludeTest, DistinctNone)
+{
+    expectTrue("(distinct? (list))");
+}
+
+TEST_F(PreludeTest, DistinctOne)
+{
+    expectTrue("(distinct? (list 1))");
+}
+
+TEST_F(PreludeTest, DistinctAllDifferent)
+{
+    expectTrue("(distinct? (list 1 5 #f 'cat))");
+}
+
+TEST_F(PreludeTest, DistinctWithDuplicates)
+{
+    expectFalse("(distinct? (list 1 5 #f 'cat 5))");
+}

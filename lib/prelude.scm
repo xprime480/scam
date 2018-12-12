@@ -42,4 +42,26 @@
   (lambda (x)
     (if x x (amb))))
 
+(define mem?
+  (lambda (val lst)
+    (if (nil? lst)
+        #f
+        (let ((item (car lst))
+              (rest (cdr lst)))
+          (or (eq? val item) (mem? val rest))))))
+
+(define distinct?
+  (lambda (lst)
+    (if (nil? lst)
+        #t
+        (let ((item (car lst))
+              (rest (cdr lst)))
+          (and (not (mem? item rest))
+               (distinct? rest))))))
+
+(define xor 
+  (lambda (a b)
+    (or (and a (not b))
+	(and (not a) b))))
+
 1
