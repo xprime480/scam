@@ -156,14 +156,14 @@ namespace
     void AmbWorker::run()
     {
         if ( 0 == args->length() ) {
-	    if ( backtracker.get() ) {
-		backtracker->run(original);
-	    }
-	    else {
-		static const ExprHandle nomore =
-		    ExpressionFactory::makeError("No more choices");
-		original->run(nomore.get());
-	    }
+            if ( backtracker.get() ) {
+                backtracker->run(original);
+            }
+            else {
+                static const ExprHandle nomore =
+                    ExpressionFactory::makeError("No more choices");
+                original->run(nomore.get());
+            }
         }
         else {
             ExprHandle first = args->nthcar(0);

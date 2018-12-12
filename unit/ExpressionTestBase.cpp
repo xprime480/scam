@@ -78,14 +78,14 @@ ExprHandle ExpressionTestBase::apply(ScamExpr * expr, ScamExpr * args)
 ExprHandle ExpressionTestBase::parseAndEvaluate(string const & input)
 {
     try {
-	EvalString helper(&engine, input);
-	return helper.run();
+        EvalString helper(&engine, input);
+        return helper.run();
     }
     catch ( ScamException e ) {
-	return ExpressionFactory::makeError(e.getMessage());
+        return ExpressionFactory::makeError(e.getMessage());
     }
     catch ( ... ) {
-	return ExpressionFactory::makeError("Unknown exception");
+        return ExpressionFactory::makeError("Unknown exception");
     }
 }
 
