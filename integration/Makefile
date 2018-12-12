@@ -24,7 +24,7 @@ test : testscam
 	@./testscam `find . -name '*.mst'`
 
 current : testscam
-	@./testscheme current.mst
+	@./testscam current.mst
 
 clean :
 	-@rm -f *.o *.d testscam

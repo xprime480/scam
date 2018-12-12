@@ -3,6 +3,8 @@
 #include "TestLoader.hpp"
 #include "scam.hpp"
 
+#include "ScamException.hpp"
+
 #include <iostream>
 #include <vector>
 
@@ -61,9 +63,14 @@ void ScamTest::run()
 {
     input = strip_trailing_whitespace(input);
 
-    string raw = call_scam(input);
-    string stripped = strip_trailing_whitespace(raw);
-    actual = get_last_lines(stripped, linesToKeep);
+    try {
+        string raw = call_scam(input);
+        string stripped = strip_trailing_whitespace(raw);
+        actual = get_last_lines(stripped, linesToKeep);
+    }
+    catch ( ScamException e ) {
+        actual = e.getMessage();
+    }
 
     if ( actual == expected ) {
         dopass(SHOW_FAIL);
@@ -140,7 +147,17 @@ namespace
             return buffer.back();
         }
         else {
-            throw "unimplemented";
+            size_t len = buffer.size();
+            size_t fr = len - count;
+            size_t to = len - 1;
+
+            stringstream s;
+            for ( size_t idx = fr ; idx < to ; ++idx ) {
+                s << buffer[idx] << "\n";
+            }
+            s << buffer.back();
+
+            return s.str();
         }
 
         return str;
