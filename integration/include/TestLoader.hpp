@@ -22,6 +22,8 @@ namespace scam
                                std::string & expected
                                ) const;
 
+            size_t getLinesToKeep() const;
+
         private:
             enum Mode { NONE, SKIP, NAME, INPUT, RESULT };
 
@@ -36,6 +38,8 @@ namespace scam
             bool skip;
             bool ok;
 
+            size_t linesToKeep;
+
             bool getNextLine(std::string & line);
             bool setMode(std::string const & line);
             void handleLine(std::string const & line);
@@ -44,4 +48,3 @@ namespace scam
 }
 
 #endif
-

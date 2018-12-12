@@ -4,7 +4,9 @@
 #include "scam.hpp"
 
 #include <iostream>
+#include <vector>
 
+using namespace std;
 using namespace scam;
 using namespace scam::test;
 
@@ -15,13 +17,15 @@ namespace
     int SHOW_FAIL = 0x0002;
     int SHOW_ALL  = 0xFFFF;
 
-    std::string strip_trailing_whitespace(std::string const & str);
+    extern string strip_trailing_whitespace(string const & str);
+    extern string get_last_lines(string const & str, size_t count);
 }
 
 ScamTest::ScamTest(TestLoader & loader)
     : ok(false)
     , skip(false)
     , actual("Test Not Run")
+    , linesToKeep(0u)
 {
     skip = loader.isSkipSet();
     if ( skip ) {
@@ -34,6 +38,7 @@ ScamTest::ScamTest(TestLoader & loader)
     }
 
     loader.getComponents(name, input, expected);
+    linesToKeep = loader.getLinesToKeep();
     expected = strip_trailing_whitespace(expected);
 }
 
@@ -55,7 +60,11 @@ bool ScamTest::isPassed() const
 void ScamTest::run()
 {
     input = strip_trailing_whitespace(input);
-    actual = strip_trailing_whitespace(call_scam(input));
+
+    string raw = call_scam(input);
+    string stripped = strip_trailing_whitespace(raw);
+    actual = get_last_lines(stripped, linesToKeep);
+
     if ( actual == expected ) {
         dopass(SHOW_FAIL);
     }
@@ -67,24 +76,24 @@ void ScamTest::run()
 bool ScamTest::dopass(int mode) const
 {
     if ( mode & SHOW_PASS ) {
-        std::cout << "[PASS] " << name << "\n";
+        cout << "[PASS] " << name << "\n";
     }
     return true;
 }
 
-bool ScamTest::dofail(int mode, std::string const & actual) const
+bool ScamTest::dofail(int mode, string const & actual) const
 {
     if ( mode & SHOW_FAIL ) {
-        std::cout << "[FAIL] " << name << "\n";
-        std::cout << "\texpected: \"" << expected << "\"\n";
-        std::cout << "\t  actual: \"" << actual << "\"\n";
+        cout << "[FAIL] " << name << "\n";
+        cout << "\texpected: \"" << expected << "\"\n";
+        cout << "\t  actual: \"" << actual << "\"\n";
     }
     return false;
 }
 
 namespace
 {
-    std::string strip_trailing_whitespace(std::string const & str)
+    string strip_trailing_whitespace(string const & str)
     {
         char const * beg = str.c_str();
         char const * end = beg + str.size();
@@ -100,7 +109,41 @@ namespace
         }
 
         ++end;
-        return std::string(beg, end);
+        return string(beg, end);
+    }
+
+    string get_last_lines(string const & str, size_t count)
+    {
+        if ( 0 == count || str.empty() ) {
+            return str;
+        }
+
+        vector<string> buffer;
+        size_t whereami { 0u };
+        for ( ;; ) {
+            auto pos = str.find('\n', whereami);
+            if ( pos == string::npos ) {
+                buffer.push_back(str.substr(whereami));
+                break;
+            }
+            else {
+                size_t len = pos - whereami;
+                buffer.push_back(str.substr(whereami, len));
+                whereami = pos + 1;
+            }
+        }
+
+        if ( buffer.size() <= count ) {
+            return str;
+        }
+        else if ( 1u == count ) {
+            return buffer.back();
+        }
+        else {
+            throw "unimplemented";
+        }
+
+        return str;
     }
 }
 

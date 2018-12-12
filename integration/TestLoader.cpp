@@ -3,6 +3,7 @@
 #include <fstream>
 #include <iostream>
 
+using namespace std;
 using namespace scam;
 using namespace scam::test;
 
@@ -10,6 +11,7 @@ TestLoader::TestLoader(char const * script)
     : mode(NONE)
     , skip(false)
     , ok(false)
+    , linesToKeep(0u)
 {
     //    std::cerr << "Script: " << script << "\n";
 
@@ -52,6 +54,11 @@ void TestLoader::getComponents(
     expected = this->expected.str();
 }
 
+size_t TestLoader::getLinesToKeep() const
+{
+    return linesToKeep;
+}
+
 bool TestLoader::getNextLine(std::string & line)
 {
     char buf[1024];
@@ -79,6 +86,9 @@ bool TestLoader::setMode(std::string const & line)
     }
     else if ( line == "[result]" ) {
         mode = Mode::RESULT;
+    }
+    else if ( line.substr(0, 6) == "[keep " ) {
+        linesToKeep = atoi(line.substr(6, line.size() - 7).c_str());
     }
     else {
         return false;

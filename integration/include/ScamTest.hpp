@@ -30,6 +30,8 @@ namespace scam
             std::string expected;
             std::string actual;
 
+            size_t linesToKeep;
+
             bool dopass(int mode) const;
             bool dofail(int mode, std::string const & actual) const;
         };
