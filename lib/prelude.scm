@@ -59,9 +59,27 @@
           (and (not (mem? item rest))
                (distinct? rest))))))
 
-(define xor 
+(define xor
   (lambda (a b)
     (or (and a (not b))
-	(and (not a) b))))
+        (and (not a) b))))
+
+(define one-of
+  (lambda (lst)
+    (begin
+      (require (and (list? lst)
+                    (not (nil? lst))))
+      (amb (car lst)
+           (one-of (cdr lst))))))
+
+(define exclude
+  (lambda (vals lst)
+    (if (nil? lst)
+        lst
+        (let ((item (car lst))
+              (rest (cdr lst)))
+          (if (mem? item vals)
+              (exclude vals rest)
+              (cons item (exclude vals rest)))))))
 
 1

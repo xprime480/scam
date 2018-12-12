@@ -124,3 +124,57 @@ TEST_F(PreludeTest, DistinctWithDuplicates)
 {
     expectFalse("(distinct? (list 1 5 #f 'cat 5))");
 }
+
+TEST_F(PreludeTest, OneofNone)
+{
+    ExprHandle expr = parseAndEvaluate("(one-of (list))");
+    expectError(expr, "No more choices");
+}
+
+TEST_F(PreludeTest, OneofOne)
+{
+    ExprHandle expr = parseAndEvaluate("(one-of (list 2))");
+    expectInteger(expr, 2, "2");
+}
+
+TEST_F(PreludeTest, OneofSecondofThree)
+{
+    ExprHandle expr = parseAndEvaluate("(one-of (list 2 8 22)) ?");
+    expectInteger(expr, 8, "8");
+}
+
+TEST_F(PreludeTest, ExcludeNilFromNil)
+{
+    ExprHandle expr = parseAndEvaluate("(exclude () ())");
+    expectNil(expr);
+}
+
+TEST_F(PreludeTest, ExcludeNilFromList)
+{
+    ExprHandle expr = parseAndEvaluate("(exclude () (list 1 2 3))");
+    expectList(expr, "(1 2 3)", 3);
+}
+
+TEST_F(PreludeTest, ExcludeListFromNil)
+{
+    ExprHandle expr = parseAndEvaluate("(exclude  (list 1 2 3) ())");
+    expectNil(expr);
+}
+
+TEST_F(PreludeTest, ExcludeAllFromList)
+{
+    ExprHandle expr = parseAndEvaluate("(define x (list 1 2 3)) (exclude x x)");
+    expectNil(expr);
+}
+
+TEST_F(PreludeTest, ExcludePartial)
+{
+    ExprHandle expr = parseAndEvaluate("(define x (list 1 2 3)) (exclude (cdr x) x)");
+    expectList(expr, "(1)", 1);
+}
+
+TEST_F(PreludeTest, ExcludeNonOverlapping)
+{
+    ExprHandle expr = parseAndEvaluate("(exclude (list 1 2) (list 3 4))");
+    expectList(expr, "(3 4)", 2);
+}
