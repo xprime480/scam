@@ -1,0 +1,41 @@
+Liars problem from Bill Hails
+
+See liars.mst for description
+
+;[skip] uncomment to skip this test
+
+[name]
+Liars Optimized
+
+[input]
+
+(load "lib/prelude.scm")
+
+(define liar2
+  (lambda ()
+    (let* ((betty (amb 1 2 3 4 5))
+           (ethel (eval `(amb ,@(exclude (list betty)
+                                         (list 1 2 3 4 5)))))
+           (joan (eval `(amb ,@(exclude (list betty ethel)
+                                        (list 1 2 3 4 5)))))
+           (kitty (eval `(amb ,@(exclude (list betty ethel joan)
+                                   (list 1 2 3 4 5)))))
+           (mary (car (exclude (list betty ethel joan kitty)
+                               (list 1 2 3 4 5)))))
+      (begin
+        (require (xor (eq? kitty 2) (eq? betty 3)))
+        (require (xor (eq? ethel 1) (eq? joan 2)))
+        (require (xor (eq? joan 3) (eq? ethel 5)))
+        (require (xor (eq? kitty 2) (eq? mary 4)))
+        (require (xor (eq? mary 4) (eq? betty 1)))
+        `((betty ,betty)
+          (ethel ,ethel)
+          (joan ,joan)
+          (kitty ,kitty)
+          (mary ,mary))))))
+
+(liar2)
+
+[result]
+[keep 1]
+((betty 3) (ethel 5) (joan 2) (kitty 1) (mary 4))

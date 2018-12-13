@@ -23,8 +23,8 @@ namespace scam
         void run(ScamExpr * expr) override
         {
 #if 0
-	    std::cerr << "Extractor " << id()
-		      << " getting " << expr->toString() << "\n";
+            std::cerr << "Extractor " << id()
+                      << " getting " << expr->toString() << "\n";
 #endif
             Continuation::run(expr);
             e = expr->clone();

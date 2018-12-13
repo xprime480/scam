@@ -9,6 +9,7 @@
 #include "Worker.hpp"
 #include "expr/ExpressionFactory.hpp"
 
+#include <iostream>
 #include <sstream>
 
 using namespace scam;
@@ -183,30 +184,24 @@ namespace
                           ScamExpr * old,
                           Env env,
                           BacktrackHandle backtracker)
-            : Backtracker("DefineBacktracker")
+            : Backtracker("DefineBacktracker", backtracker)
             , sym(sym->clone())
             , old(old->clone())
             , env(env)
-            , backtracker(backtracker)
         {
         }
 
         void run(ContHandle cont) override
         {
             Backtracker::run(cont);
-
             env.assign(sym.get(), old.get());
-
-            if ( nullptr != backtracker.get() ) {
-                backtracker->run(cont);
-            }
+            runParent(cont);
         }
 
     private:
         ExprHandle      sym;
         ExprHandle      old;
         Env             env;
-        BacktrackHandle backtracker;
     };
 
     class AssignCont : public EnvHelperCont
@@ -251,27 +246,22 @@ namespace
         DefineBacktracker(ScamExpr * sym,
                           Env env,
                           BacktrackHandle backtracker)
-            : Backtracker("DefineBacktracker")
+            : Backtracker("DefineBacktracker", backtracker)
             , sym(sym->clone())
             , env(env)
-            , backtracker(backtracker)
         {
         }
 
         void run(ContHandle cont) override
         {
             Backtracker::run(cont);
-
             env.remove(sym.get());
-            if ( nullptr != backtracker.get() ) {
-                backtracker->run(cont);
-            }
+            runParent(cont);
         }
 
     private:
         ExprHandle      sym;
         Env             env;
-        BacktrackHandle backtracker;
     };
 
     class DefineCont : public EnvHelperCont

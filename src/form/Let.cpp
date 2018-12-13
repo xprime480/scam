@@ -119,7 +119,6 @@ namespace
     private:
         Env             env;
         ExprHandle      sym;
-        BacktrackHandle backtracker;
     };
 
     class LetStarCont : public LetCommonCont
@@ -365,21 +364,17 @@ namespace
     LetStarBacktracker::LetStarBacktracker(Env env,
                                            ScamExpr * sym,
                                            BacktrackHandle backtracker)
-        : Backtracker("Let*")
+        : Backtracker("Let*", backtracker)
         , env(env)
         , sym(sym->clone())
-        , backtracker(backtracker)
     {
     }
 
     void LetStarBacktracker::run(ContHandle cont)
     {
         Backtracker::run(cont);
-
         env.remove(sym.get());
-        if ( backtracker.get() ) {
-            backtracker->run(cont);
-        }
+        runParent(cont);
     }
 
     /////////////////////////
@@ -424,10 +419,8 @@ namespace
     void LetStarCont::makeBacktracker(ScamExpr * sym) const
     {
         BacktrackHandle backtracker = engine->getBacktracker();
-
         BacktrackHandle newBT =
             make_shared<LetStarBacktracker>(env, sym, backtracker);
-
         engine->setBacktracker(newBT);
     }
 

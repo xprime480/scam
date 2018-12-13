@@ -249,7 +249,6 @@ namespace
     void apply_backtrack(ContHandle cont, ScamEngine * engine)
     {
         BacktrackHandle backtracker = engine->getBacktracker();
-
         if ( nullptr == backtracker.get() ) {
             static const string msg = "No current backtrack context";
             ExprHandle rv = ExpressionFactory::makeError(msg);

@@ -28,7 +28,6 @@ do_it_manually :
 	make -C gmock all
 
 test : unittests
-	@./unittests --gtest_filter=PreludeTest.X
 	@./unittests
 
 by_module : unittests

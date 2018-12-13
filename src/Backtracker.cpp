@@ -13,6 +13,8 @@ using namespace std;
 namespace
 {
     static unsigned counter { 0 };
+    static const ExprHandle nomore =
+        ExpressionFactory::makeError("No more choices");
 }
 
 Backtracker::Backtracker(char const * id, BacktrackHandle parent)
@@ -47,6 +49,16 @@ string Backtracker::safeID(BacktrackHandle bt)
     return bt->id();
 }
 
+void Backtracker::safeRun(BacktrackHandle bt, ContHandle cont)
+{
+    if ( bt.get() ) {
+        bt->run(cont);
+    }
+    else {
+        cont->run(nomore.get());
+    }
+}
+
 void Backtracker::run(ContHandle cont)
 {
     //    cerr << "Executing backtracker " << name << "\n";
@@ -65,8 +77,6 @@ BacktrackHandle Backtracker::getParent() const
 void Backtracker::runParent(ContHandle cont) const
 {
     if ( nullptr == parent.get() ) {
-        static const ExprHandle nomore =
-            ExpressionFactory::makeError("No more choices");
         cont->run(nomore.get());
     }
     else {

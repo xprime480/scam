@@ -60,12 +60,11 @@ namespace
                        Env env,
                        ScamEngine * engine,
                        BacktrackHandle backtracker)
-            : Backtracker("AmbBacktracker")
+            : Backtracker("AmbBacktracker", backtracker)
             , args(args->clone())
             , original(original)
             , env(env)
             , engine(engine)
-            , backtracker(backtracker)
         {
         }
 
@@ -74,22 +73,17 @@ namespace
             Backtracker::run(cont);
 
             if ( 0 == args->length() ) {
-                if ( nullptr == backtracker.get() ) {
-                    static const ExprHandle nomore =
-                        ExpressionFactory::makeError("No more choices");
-                    cont->run(nomore.get());
-                }
-                else {
-                    backtracker->run(cont);
-                }
+                runParent(cont);
             }
             else {
                 ScamExpr * argp = args.get();
+                BacktrackHandle parent = getParent();
+                engine->setBacktracker(parent);
                 workQueueHelper<AmbWorker>(argp,
                                            original,
                                            env,
                                            engine,
-                                           backtracker);
+                                           parent);
             }
         }
 
@@ -98,7 +92,6 @@ namespace
         ContHandle      original;
         Env             env;
         ScamEngine    * engine;
-        BacktrackHandle backtracker;
     };
 
     class AmbContinuation : public Continuation
@@ -156,14 +149,7 @@ namespace
     void AmbWorker::run()
     {
         if ( 0 == args->length() ) {
-            if ( backtracker.get() ) {
-                backtracker->run(original);
-            }
-            else {
-                static const ExprHandle nomore =
-                    ExpressionFactory::makeError("No more choices");
-                original->run(nomore.get());
-            }
+            Backtracker::safeRun(backtracker, original);
         }
         else {
             ExprHandle first = args->nthcar(0);

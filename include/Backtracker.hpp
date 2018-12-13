@@ -19,6 +19,7 @@ namespace scam
 
         static void dumpStack(BacktrackHandle bt);
         static std::string safeID(BacktrackHandle bt);
+        static void safeRun(BacktrackHandle bt, ContHandle cont);
 
         virtual void run(ContHandle cont);
         std::string id() const;
@@ -33,7 +34,6 @@ namespace scam
 
         static std::string makeName(char const * id);
     };
-
 }
 
 #endif
