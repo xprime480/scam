@@ -32,6 +32,7 @@ void ScamEngine::getStandardEnv()
     addForm<LetStar>(env, "let*", this);
     addForm<LetRec>(env, "letrec");
     addForm<Eval>(env, "eval");
+    addForm<Apply>(env, "apply");
     addForm<ClassMaker>(env, "make-class");
     addForm<CallCC>(env, "call/cc");
     addForm<Amb>(env, "amb", this);

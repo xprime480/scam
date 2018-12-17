@@ -29,7 +29,7 @@ void ScamExpr::apply(ScamExpr * args, ContHandle cont, Env env)
 {
     stringstream s;
     s << "Not possible to apply <" << this->toString()
-      << " to args " << args->toString();
+      << "> to args " << args->toString();
     ExprHandle err = ExpressionFactory::makeError(s.str());
     cont->run(err.get());
 }

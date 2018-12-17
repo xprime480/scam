@@ -118,3 +118,9 @@ TEST_F(EvalTest, PrognZero)
     ExprHandle expr = parseAndEvaluate("(progn)");
     expectNil(expr);
 }
+
+TEST_F(EvalTest, ApplyPlus)
+{
+    ExprHandle expr = parseAndEvaluate("(apply * (list 3 33))");
+    expectInteger(expr, 99, "99");
+}
