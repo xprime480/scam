@@ -1,3 +1,27 @@
+(define map
+  (lambda (fn seq)
+    (if (nil? seq)
+        ()
+        (cons (fn (car seq)) (map fn (cdr seq))))))
+
+(define reduce
+  (lambda (fn init seq)
+    (letrec ((helper (lambda (acc tail)
+                       (if (nil? tail)
+                           acc
+                           (helper (fn acc (car tail)) (cdr tail))))))
+      (helper init seq))))
+
+(define filter
+  (lambda (fn lst)
+    (if (nil? lst)
+        lst
+        (let ((head (car lst))
+              (tail (cdr lst)))
+          (if (fn head)
+              (cons head (filter fn tail))
+              (filter fn tail))))))
+
 (define max
   (lambda (x y)
     (if (> x y)
@@ -22,11 +46,19 @@
                  ()))))
        (loop))))
 
-(define map
-  (lambda (fn seq)
-    (if (nil? seq)
-        ()
-        (cons (fn (car seq)) (map fn (cdr seq))))))
+(define length
+  (lambda (lst)
+    (if (nil? lst)
+        0
+        (+ 1 (length (cdr lst))))))
+
+(define append
+  (lambda (fst snd)
+    (if (nil? fst)
+        snd
+        (if (= 1 (length fst))
+            (cons (car fst) snd)
+            (cons (car fst) (append (cdr fst) snd))))))
 
 (define even?
   (lambda (x)
@@ -47,17 +79,17 @@
     (if (nil? lst)
         #f
         (let ((item (car lst))
-              (rest (cdr lst)))
-          (or (eq? val item) (member? val rest))))))
+              (tail (cdr lst)))
+          (or (eq? val item) (member? val tail))))))
 
 (define distinct?
   (lambda (lst)
     (if (nil? lst)
         #t
         (let ((item (car lst))
-              (rest (cdr lst)))
-          (and (not (member? item rest))
-               (distinct? rest))))))
+              (tail (cdr lst)))
+          (and (not (member? item tail))
+               (distinct? tail))))))
 
 (define xor
   (lambda (a b)
@@ -72,14 +104,45 @@
       (amb (car lst)
            (one-of (cdr lst))))))
 
+(define cross
+  (lambda (fn fst snd)
+    (if (or (nil? fst) (nil? snd))
+        '()
+        (reduce append
+                '()
+                (map (lambda (fitem)
+                       (map (lambda (sitem)
+                              (fn fitem sitem))
+                            snd))
+                     fst)))))
+
+(define power-set
+  (lambda (elts)
+    (if (nil? elts)
+        (list '())
+        (let ((first (list (car elts)))
+              (pscdr (power-set (cdr elts))))
+          (append pscdr
+                  (cross (lambda (item elts) (cons item elts))
+                         first
+                         pscdr))))))
+
+(define some-of
+  (lambda (lst)
+    (let ((ffn (lambda (item)
+                 (not (nil? item))))
+          (mfn (lambda (item)
+                 `(quote ,item))))
+      (eval `(amb ,@(map mfn (filter ffn (power-set lst))))))))
+
 (define exclude
   (lambda (vals lst)
     (if (nil? lst)
         lst
         (let ((item (car lst))
-              (rest (cdr lst)))
+              (tail (cdr lst)))
           (if (member? item vals)
-              (exclude vals rest)
-              (cons item (exclude vals rest)))))))
+              (exclude vals tail)
+              (cons item (exclude vals tail)))))))
 
 1

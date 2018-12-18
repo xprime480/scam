@@ -57,7 +57,8 @@ bool ScamRepl::load_prelude()
         return false;
     }
 
-    return true;
+    ExprHandle final = eval(expr.get());
+    return final->isInteger() && 1 == final->toInteger();
 }
 
 int ScamRepl::repl()
