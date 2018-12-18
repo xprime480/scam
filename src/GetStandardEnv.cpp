@@ -83,4 +83,5 @@ void ScamEngine::getStandardEnv()
     addForm<Spawn>(env, "spawn");
     addForm<Error>(env, "error");
     addForm<Backtrack>(env, "backtrack", this);
+    addForm<Trace>(env, "trace");
 }

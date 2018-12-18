@@ -27,6 +27,8 @@ namespace
     extern void apply_error(ScamExpr * args, ContHandle cont);
 
     extern void apply_backtrack(ContHandle cont, ScamEngine * engine);
+
+    extern void apply_trace(ScamExpr * args, ContHandle cont);
 }
 
 Load::Load(ScamEngine * engine)
@@ -69,6 +71,16 @@ Backtrack::Backtrack(ScamEngine * engine)
 void Backtrack::applyArgs(ScamExpr * args, ContHandle cont)
 {
     apply_backtrack(cont, engine);
+}
+
+Trace::Trace()
+    : Primitive("trace")
+{
+}
+
+void Trace::applyArgs(ScamExpr * args, ContHandle cont)
+{
+    apply_trace(args, cont);
 }
 
 namespace
@@ -258,4 +270,12 @@ namespace
             backtracker->run(cont);
         }
     }
+
+
+    void apply_trace(ScamExpr * args, ContHandle cont)
+    {
+	cerr << args->toString() << "\n";
+	cont->run(args);
+    }
+
 }

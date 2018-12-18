@@ -44,6 +44,17 @@ namespace scam
     private:
         ScamEngine * engine;
     };
+
+
+    class Trace : public Primitive
+    {
+    public:
+        Trace();
+
+        void applyArgs(ScamExpr * args, ContHandle cont) override;
+    };
+
+
 }
 
 #endif
