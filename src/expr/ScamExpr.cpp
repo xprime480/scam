@@ -219,6 +219,38 @@ void ScamExpr::setParent(ScamExpr * expr) const
     throw ScamException(s.str());
 }
 
+void ScamExpr::setMeta(string const & key, ScamExpr * value)
+{
+    ExprHandle ksym = ExpressionFactory::makeSymbol(key);
+    ScamExpr * k = ksym.get();
+
+    if ( metadata.check(k) ) {
+        metadata.assign(k, value);
+    }
+    else {
+        metadata.put(k, value);
+    }
+}
+
+bool ScamExpr::hasMeta(string const & key) const
+{
+    ExprHandle k = ExpressionFactory::makeSymbol(key);
+    return metadata.check(k.get());
+}
+
+ExprHandle ScamExpr::getMeta(string const & key) const
+{
+    ExprHandle ksym = ExpressionFactory::makeSymbol(key);
+    ScamExpr * k = ksym.get();
+
+    ExprHandle rv = ExpressionFactory::makeNil();
+    if ( metadata.check(k) ) {
+        rv = metadata.get(k);
+    }
+
+    return rv;
+}
+
 ExprHandle ScamExpr::clone() const
 {
     return ExpressionFactory::clone(this);

@@ -65,12 +65,18 @@ namespace scam
         virtual void setSelf(ScamExpr * expr) const;
         virtual void setParent(ScamExpr * expr) const;
 
+        void setMeta(std::string const & key, ScamExpr * value);
+        bool hasMeta(std::string const & key) const;
+        ExprHandle getMeta(std::string const & key) const;
+
         ExprHandle clone() const;
 
     private:
         friend class ExpressionFactory;
         unsigned handle;
         void setHandle(unsigned h) { handle = h; }
+
+        Env metadata;
     };
 }
 

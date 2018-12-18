@@ -1,5 +1,5 @@
 
-all : 
+all : scam
 
 clean :
 	make -C src clean
@@ -12,6 +12,9 @@ int :
 unit :
 	make -C unit test
 
+scam :
+	make -C scam
+
 include $(DEP)
 
-.PHONY : clean int unit
+.PHONY : clean int unit scam

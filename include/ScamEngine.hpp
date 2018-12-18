@@ -23,7 +23,7 @@ namespace scam
         void reset(bool initEnv);
 
         void pushFrame();
-        Env getFrame();
+        Env  getFrame();
         void popFrame();
 
         void addBinding(ScamExpr * key, ScamExpr * val);
