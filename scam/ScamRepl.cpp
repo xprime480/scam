@@ -1,9 +1,11 @@
 
 #include "ScamRepl.hpp"
 
+#include "ScamException.hpp"
 #include "expr/ExpressionFactory.hpp"
 
 #include <iostream>
+#include <sstream>
 
 using namespace scam;
 using namespace std;
@@ -110,7 +112,14 @@ ExprHandle ScamRepl::read()
 
 ExprHandle ScamRepl::eval(ScamExpr * form)
 {
-    return engine.eval(form);
+    try {
+        return engine.eval(form);
+    }
+    catch ( ScamException e ) {
+        stringstream s;
+        s << "Caught exception: " << e.getMessage();
+        return ExpressionFactory::makeError(s.str());
+    }
 }
 
 void ScamRepl::print(ScamExpr * value)

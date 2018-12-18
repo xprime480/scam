@@ -32,7 +32,7 @@ namespace scam
             auto const iter = table.find(key);
             if ( iter != table.end() ) {
                 stringstream s;
-                s << "Key: " << key << " already exists in current frame";
+                s << "Key: '" << key << "' already exists in current frame";
                 throw ScamException(s.str());
             }
             table[key] = val->clone();
