@@ -14,8 +14,7 @@ Five barrels are filled with wine and one with beer. The first customer
 purchases two barrels of wine. The second customer purchases twice as much
 wine as the firrst customer. Which barrel contains beer?
 
-[skip]
-this test does not work because of one-of
+;[skip]
 
 [name]
 Barrels
@@ -31,20 +30,18 @@ Barrels
 (define barrels-of-fun
   (lambda ()
     (let* ((barrels (list 30 32 36 38 40 62))
-           (beer (one-of barrels))
+           (beer (eval `(amb ,@barrels)))
            (wine (exclude (list beer) barrels))
-           (barrel-1 (one-of wine))
-           (barrel-2 (one-of (exclude (list barrel-1) wine)))
+           (barrel-1 (eval `(amb ,@wine)))
+           (barrel-2 (eval `(amb ,@(exclude (list barrel-1) wine))))
            (purchase (some-of (exclude (list barrel-1 barrel-2) wine))))
       (begin
-        (trace (list barrel-1 barrel-2 (sum purchase)))
         (require (eq? (* 2 (+ barrel-1 barrel-2))
                       (sum purchase)))
-	(trace (list "solution: " beer))
         beer))))
 
 (barrels-of-fun)
 
 [result]
 [keep 1]
-99
+40
