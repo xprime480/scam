@@ -164,14 +164,22 @@ namespace
 
     bool open_file(ifstream & source, string const & filename, ContHandle cont)
     {
-        ExprHandle path = get_path();
-
-        size_t n = path->length();
-        for ( size_t i = 0 ; i < n ; ++i ) {
-            string fullpath = make_path(path->nthcar(i)->toString(), filename);
-            if ( file_exists(fullpath) ) {
-                source.open(fullpath);
+        if ( '/' == filename.at(0) ) {
+            if ( file_exists(filename) ) {
+                source.open(filename);
                 return true;
+            }
+        }
+        else {
+            ExprHandle path = get_path();
+
+            size_t n = path->length();
+            for ( size_t i = 0 ; i < n ; ++i ) {
+                string fullpath = make_path(path->nthcar(i)->toString(), filename);
+                if ( file_exists(fullpath) ) {
+                    source.open(fullpath);
+                    return true;
+                }
             }
         }
 
@@ -274,8 +282,8 @@ namespace
 
     void apply_trace(ScamExpr * args, ContHandle cont)
     {
-	cerr << args->toString() << "\n";
-	cont->run(args);
+        cerr << args->toString() << "\n";
+        cont->run(args);
     }
 
 }
