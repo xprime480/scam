@@ -44,6 +44,8 @@ void ScamEngine::reset(bool initEnv)
 {
     cont = make_shared<HistoryCont>(1);
 
+    loaded.clear();
+
     env.reset();
     env = env.top();
 
@@ -163,6 +165,16 @@ BacktrackHandle ScamEngine::getBacktracker()
 void ScamEngine::setBacktracker(BacktrackHandle backtracker_in)
 {
     backtracker = backtracker_in;
+}
+
+bool ScamEngine::isLoaded(std::string const & filename) const
+{
+    return loaded.find(filename) != loaded.end();
+}
+
+void ScamEngine::setLoaded(std::string const & filename)
+{
+    loaded.insert(filename);
 }
 
 namespace

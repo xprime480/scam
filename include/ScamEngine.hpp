@@ -7,6 +7,7 @@
 #include "expr/ScamExpr.hpp"
 #include "input/ScamParser.hpp"
 
+#include <set>
 #include <vector>
 
 namespace scam
@@ -52,11 +53,17 @@ namespace scam
         BacktrackHandle getBacktracker();
         void setBacktracker(BacktrackHandle backtracker);
 
+        /*** functions to manage loading */
+
+        bool isLoaded(std::string const & filename) const;
+        void setLoaded(std::string const & filename);
+
     private:
         Env env;
         std::vector<ScamParser> input;
         BacktrackHandle backtracker;
         ContHandle cont;
+        std::set<std::string> loaded;
 
         void getStandardEnv();
     };

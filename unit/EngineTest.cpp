@@ -159,3 +159,9 @@ TEST_F(EngineTest, RequireTest)
     expr = parseAndEvaluate("?");
     expectInteger(expr, 6, "6");
 }
+
+TEST_F(EngineTest, LoadTwiceTest)
+{
+    ExprHandle expr = parseAndEvaluate("(load \"lib/prelude.scm\")");
+    expectError(expr,  "file \"lib/prelude.scm\" already loaded");
+}

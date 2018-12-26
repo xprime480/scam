@@ -204,6 +204,14 @@ namespace
     void apply_load(ScamExpr * args, ContHandle cont, ScamEngine * engine)
     {
         string filename = args->nthcar(0)->toString();
+        if ( engine->isLoaded(filename) ) {
+            stringstream s;
+            s << "file \"" << filename << "\" already loaded";
+            ExprHandle err = ExpressionFactory::makeError(s.str());
+            cont->run(err.get());
+            return;
+        }
+
         ifstream source;
 
         if ( ! open_file(source, filename, cont) ) {
@@ -213,6 +221,8 @@ namespace
         string data = get_data(source);
         EvalString helper(engine, data);
         ExprHandle last = helper.run();
+
+        engine->setLoaded(filename);
         cont->run(last.get());
     }
 
