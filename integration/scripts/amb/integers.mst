@@ -1,0 +1,29 @@
+Generate integers between lower and upper bounds.
+
+;[skip]
+
+[name]
+Integers
+
+[input]
+
+(load "lib/prelude.scm")
+
+(define integers-between
+  (lambda (lower upper)
+    (begin
+      (require (<= lower upper))
+      (amb lower
+           (integers-between (+ lower 1) upper)))))
+
+(integers-between 1 3)
+?
+?
+?
+
+[result]
+[keep 4]
+1
+2
+3
+No more choices

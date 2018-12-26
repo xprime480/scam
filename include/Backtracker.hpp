@@ -21,11 +21,11 @@ namespace scam
         static std::string safeID(BacktrackHandle bt);
         static void safeRun(BacktrackHandle bt, ContHandle cont);
 
-        virtual void run(ContHandle cont);
+        virtual void run();
         std::string id() const;
 
     protected:
-        void runParent(ContHandle) const;
+        void runParent(ContHandle cont) const;
         BacktrackHandle getParent() const;
 
     private:

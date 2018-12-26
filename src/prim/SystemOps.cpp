@@ -275,7 +275,7 @@ namespace
             cont->run(rv.get());
         }
         else {
-            backtracker->run(cont);
+            backtracker->run();
         }
     }
 

@@ -114,7 +114,7 @@ namespace
                            ScamExpr * sym,
                            BacktrackHandle backtracker);
 
-        void run(ContHandle cont) override;
+        void run() override;
 
     private:
         Env             env;
@@ -370,10 +370,12 @@ namespace
     {
     }
 
-    void LetStarBacktracker::run(ContHandle cont)
+    void LetStarBacktracker::run()
     {
-        Backtracker::run(cont);
+        Backtracker::run();
         env.remove(sym.get());
+        shared_ptr<Continuation> cont
+            = make_shared<Continuation>("Assign Backtrack");
         runParent(cont);
     }
 

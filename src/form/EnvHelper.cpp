@@ -191,10 +191,12 @@ namespace
         {
         }
 
-        void run(ContHandle cont) override
+        void run() override
         {
-            Backtracker::run(cont);
+            Backtracker::run();
             env.assign(sym.get(), old.get());
+            shared_ptr<Continuation> cont
+                = make_shared<Continuation>("Assign Backtrack");
             runParent(cont);
         }
 
@@ -219,6 +221,10 @@ namespace
     protected:
         void finish(ScamExpr * expr) const override
         {
+            if ( expr->error() && expr->hasMeta("amb-error") ) {
+                return;
+            }
+
             ExprHandle old = env.get(sym.get());
 
             env.assign(sym.get(), expr);
@@ -252,10 +258,12 @@ namespace
         {
         }
 
-        void run(ContHandle cont) override
+        void run() override
         {
-            Backtracker::run(cont);
+            Backtracker::run();
             env.remove(sym.get());
+            shared_ptr<Continuation> cont
+                = make_shared<Continuation>("Define Backtrack");
             runParent(cont);
         }
 
@@ -279,6 +287,10 @@ namespace
     protected:
         void finish(ScamExpr * expr) const override
         {
+            if ( expr->error() && expr->hasMeta("amb-error") ) {
+                return;
+            }
+
             env.put(sym.get(), expr);
 
             BacktrackHandle backtracker = engine->getBacktracker();

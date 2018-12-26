@@ -15,6 +15,9 @@ namespace
     static unsigned counter { 0 };
     static const ExprHandle nomore =
         ExpressionFactory::makeError("No more choices");
+    static bool init =
+        (nomore->setMeta("amb-error", ExpressionFactory::makeNil().get()),
+         true);
 }
 
 Backtracker::Backtracker(char const * id, BacktrackHandle parent)
@@ -52,14 +55,14 @@ string Backtracker::safeID(BacktrackHandle bt)
 void Backtracker::safeRun(BacktrackHandle bt, ContHandle cont)
 {
     if ( bt.get() ) {
-        bt->run(cont);
+        bt->run();
     }
     else {
         cont->run(nomore.get());
     }
 }
 
-void Backtracker::run(ContHandle cont)
+void Backtracker::run()
 {
     //    cerr << "Executing backtracker " << name << "\n";
 }
@@ -80,7 +83,7 @@ void Backtracker::runParent(ContHandle cont) const
         cont->run(nomore.get());
     }
     else {
-        parent->run(cont);
+        parent->run();
     }
 }
 
