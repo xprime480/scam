@@ -23,6 +23,7 @@ Barrels
 [input]
 
 (load "lib/prelude.scm")
+(load "lib/numeric.scm")
 
 (define barrels-of-fun
   (lambda ()
