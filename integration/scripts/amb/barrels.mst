@@ -24,10 +24,6 @@ Barrels
 
 (load "lib/prelude.scm")
 
-(define sum
-  (lambda (lst)
-    (apply + lst)))
-
 (define barrels-of-fun
   (lambda ()
     (let* ((barrels (list 30 32 36 38 40 62))

@@ -11,13 +11,6 @@ Liars Optimized
 
 (load "lib/prelude.scm")
 
-#|
-This version does not work because of somthing int the
-one-of call tree.
-
-Address later
-|#
-
 (define liars
   (lambda ()
     (let* ((betty (amb 1 2 3 4 5))

@@ -10,14 +10,14 @@ Integers
 (load "lib/prelude.scm")
 (load "lib/numeric.scm")
 
-(integers-between 1 3)
+(integers-from 23)
 ?
 ?
 ?
 
 [result]
 [keep 4]
-1
-2
-3
-No more choices
+23
+24
+25
+26
