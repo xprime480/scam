@@ -34,6 +34,7 @@ namespace
     static const unsigned long SELECT_PROC     { 1 << 15 };
     static const unsigned long SELECT_CLASS    { 1 << 16 };
     static const unsigned long SELECT_INSTANCE { 1 << 17 };
+    static const unsigned long SELECT_KEYWORD  { 1 << 18 };
 
     static const unsigned long ALL_FLOAT      = SELECT_NUMERIC | SELECT_FLOAT;
     static const unsigned long ALL_INTEGER    = ALL_FLOAT | SELECT_INTEGER;
@@ -129,6 +130,7 @@ string decodePredicate(unsigned exp, unsigned act)
         DECODER(CHAR);
         DECODER(STRING);
         DECODER(SYMBOL);
+        DECODER(KEYWORD);
 
         DECODER(NUMERIC);
         DECODER(FLOAT);
@@ -164,6 +166,7 @@ void ExpressionTestBase::checkPredicates(ScamExpr * expr, unsigned exp)
     act |= (expr->isChar() ? SELECT_CHAR : 0);
     act |= (expr->isString() ? SELECT_STRING : 0);
     act |= (expr->isSymbol() ? SELECT_SYMBOL : 0);
+    act |= (expr->isKeyword() ? SELECT_KEYWORD : 0);
 
     act |= (expr->isNumeric() ? SELECT_NUMERIC : 0);
     act |= (expr->isFloat() ? SELECT_FLOAT : 0);
@@ -289,6 +292,12 @@ void ExpressionTestBase::expectString(ExprHandle expr, string const & value)
 void ExpressionTestBase::expectSymbol(ExprHandle expr, string const & name)
 {
     checkPredicates(expr.get(), SELECT_TRUTH | SELECT_SYMBOL);
+    EXPECT_EQ(name, expr->toString());
+}
+
+void ExpressionTestBase::expectKeyword(ExprHandle expr, string const & name)
+{
+    checkPredicates(expr.get(), SELECT_TRUTH | SELECT_KEYWORD);
     EXPECT_EQ(name, expr->toString());
 }
 

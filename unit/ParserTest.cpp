@@ -404,3 +404,14 @@ TEST_F(ParserTest, Backtrack)
     ExprHandle expr = runTest(tokens);
     expectList(expr, msg, 1);
 }
+
+TEST_F(ParserTest, Keyword)
+{
+    string const msg { ":test" };
+    vector<Token> tokens {
+        Token(TokenType::TT_KEYWORD, ":test")
+    };
+
+    ExprHandle expr = runTest(tokens);
+    expectKeyword(expr, msg);
+}

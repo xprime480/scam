@@ -59,6 +59,8 @@ namespace scam
                           std::string const & value);
         void expectSymbol(ExprHandle expr,
                           std::string const & name);
+        void expectKeyword(ExprHandle expr,
+                           std::string const & name);
         void expectNil(ExprHandle expr);
         void expectList(ExprHandle expr,
                         std::string const & repr,

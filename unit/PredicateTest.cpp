@@ -138,7 +138,7 @@ TEST_F(PredicateTest, StringTestNotString)
 
 TEST_F(PredicateTest, SymbolTestSymbol)
 {
-    ExprHandle expr = parseAndEvaluate("(symbol? (quote :a-symbol))");
+    ExprHandle expr = parseAndEvaluate("(symbol? (quote a-symbol))");
     booleanTest(expr, true, "#t");
 }
 
@@ -248,4 +248,14 @@ TEST_F(PredicateTest, InstanceTestNotInstance)
 {
     ExprHandle expr = parseAndEvaluate("(instance? ())");
     booleanTest(expr, false, "#f");
+}
+
+TEST_F(PredicateTest, KeywordTestKeyword)
+{
+    expectTrue("(keyword? :yesiam)");
+}
+
+TEST_F(PredicateTest, KeywordTestNotKeyword)
+{
+    expectFalse("(keyword? 3)");
 }

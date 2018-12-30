@@ -288,4 +288,14 @@ This comment style can span lines!\n\
 
         return string2tokens(input, exp);
     }
+
+    TEST(TokenizerTest, Keyword)
+    {
+        string const input{ ":name" };
+        vector<Token> exp {
+            Token(TokenType::TT_KEYWORD, ":name")
+        };
+
+        return string2tokens(input, exp);
+    }
 }

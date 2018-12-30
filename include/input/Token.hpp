@@ -24,6 +24,7 @@ namespace scam
             TT_CHARACTER,
             TT_STRING,
             TT_SYMBOL,
+            TT_KEYWORD,
 
             TT_FLOAT,
             TT_INTEGER,
@@ -110,6 +111,10 @@ namespace scam
 
         case TokenType::TT_SYMBOL:
             os << "Symbol";
+            break;
+
+        case TokenType::TT_KEYWORD:
+            os << "Keyword";
             break;
 
         case TokenType::TT_FLOAT:

@@ -85,6 +85,10 @@ ExprHandle ScamParser::tokenToExpr(Token const & token) const
         rv = ExpressionFactory::makeSymbol(token.getText());
         break;
 
+    case TokenType::TT_KEYWORD:
+        rv = ExpressionFactory::makeKeyword(token.getText());
+        break;
+
     case TokenType::TT_QUOTE:
     case TokenType::TT_QUASIQUOTE:
     case TokenType::TT_UNQUOTE:

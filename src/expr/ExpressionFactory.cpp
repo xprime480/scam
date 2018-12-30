@@ -11,6 +11,7 @@
 #include "expr/ScamFloat.hpp"
 #include "expr/ScamInstance.hpp"
 #include "expr/ScamInteger.hpp"
+#include "expr/ScamKeyword.hpp"
 #include "expr/ScamNil.hpp"
 #include "expr/ScamNull.hpp"
 #include "expr/ScamString.hpp"
@@ -63,6 +64,12 @@ ExprHandle ExpressionFactory::makeString(string const & value)
 ExprHandle ExpressionFactory::makeSymbol(string const & value)
 {
     ExprHandle expr = makeForm<ScamSymbol>(value);
+    return expr;
+}
+
+ExprHandle ExpressionFactory::makeKeyword(string const & value)
+{
+    ExprHandle expr = makeForm<ScamKeyword>(value);
     return expr;
 }
 

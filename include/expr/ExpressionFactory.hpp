@@ -27,6 +27,7 @@ namespace scam
 
         static ExprHandle makeString(std::string const & value);
         static ExprHandle makeSymbol(std::string const & value);
+        static ExprHandle makeKeyword(std::string const & value);
 
         static ExprHandle makeFloat(double value);
         static ExprHandle makeInteger(int value);

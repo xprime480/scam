@@ -33,6 +33,7 @@ namespace scam
         Token scanCharacter();
         Token scanString();
         Token scanNumeric();
+        Token scanKeyword();
         Token scanSymbol();
     };
 }

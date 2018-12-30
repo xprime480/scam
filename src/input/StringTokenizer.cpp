@@ -64,6 +64,11 @@ Token StringTokenizer::next()
         return rv;
     }
 
+    rv = scanKeyword();
+    if ( TokenType::TT_NONE != rv.getType() ) {
+        return rv;
+    }
+
     rv = scanSymbol();
     if ( TokenType::TT_NONE != rv.getType() ) {
         return rv;
@@ -356,6 +361,24 @@ Token StringTokenizer::scanNumeric()
 
     string text(original, pos-original);
     Token token(type, text);
+    return token;
+}
+
+Token StringTokenizer::scanKeyword()
+{
+    char const * original = pos;
+
+    if ( ':' != *pos ) {
+        return none;
+    }
+    ++pos;
+
+    while ( ! isDelimiter(*pos) ) {
+        ++pos;
+    }
+
+    string text(original, pos-original);
+    Token token(TokenType::TT_KEYWORD, text);
     return token;
 }
 

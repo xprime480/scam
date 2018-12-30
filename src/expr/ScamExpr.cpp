@@ -83,6 +83,11 @@ bool ScamExpr::isSymbol() const
     return false;
 }
 
+bool ScamExpr::isKeyword() const
+{
+    return false;
+}
+
 bool ScamExpr::isNumeric() const
 {
     return false;

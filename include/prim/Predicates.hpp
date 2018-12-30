@@ -25,6 +25,7 @@ namespace scam
     DECL_PREDICATE(CharP);
     DECL_PREDICATE(StringP);
     DECL_PREDICATE(SymbolP);
+    DECL_PREDICATE(KeywordP);
     DECL_PREDICATE(NumericP);
     DECL_PREDICATE(FloatP);
     DECL_PREDICATE(IntegerP);

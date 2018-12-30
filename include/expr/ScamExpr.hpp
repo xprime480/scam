@@ -37,6 +37,7 @@ namespace scam
         virtual char toChar() const;
         virtual bool isString() const;
         virtual bool isSymbol() const;
+        virtual bool isKeyword() const;
 
         virtual bool isNumeric() const;
         virtual bool isFloat() const;
