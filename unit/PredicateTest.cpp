@@ -24,230 +24,192 @@ TEST_F(PredicateTest, NilTestExtraArg)
 
 TEST_F(PredicateTest, NilTestNil)
 {
-    ExprHandle expr = parseAndEvaluate("(nil? ())");
-    booleanTest(expr, true, "#t");
+    expectTrue("(nil? ())");
 }
 
 TEST_F(PredicateTest, NilTestNotNil)
 {
-    ExprHandle expr = parseAndEvaluate("(nil? 2)");
-    booleanTest(expr, false, "#f");
+    expectFalse("(nil? 2)");
 }
 
 TEST_F(PredicateTest, ConsTestCons)
 {
-    ExprHandle expr = parseAndEvaluate("(cons? (cons 1 2))");
-    booleanTest(expr, true, "#t");
+    expectTrue("(cons? (cons 1 2))");
 }
 
 TEST_F(PredicateTest, ConsTestList)
 {
-    ExprHandle expr = parseAndEvaluate("(cons? (list 1 2 3))");
-    booleanTest(expr, true, "#t");
+    expectTrue("(cons? (list 1 2 3))");
 }
 
 TEST_F(PredicateTest, ConsTestNotCons)
 {
-    ExprHandle expr = parseAndEvaluate("(cons? 2)");
-    booleanTest(expr, false, "#f");
+    expectFalse("(cons? 2)");
 }
 
 TEST_F(PredicateTest, ListTestNil)
 {
-    ExprHandle expr = parseAndEvaluate("(list? ())");
-    booleanTest(expr, true, "#t");
+    expectTrue("(list? ())");
 }
 
 TEST_F(PredicateTest, ListTestList)
 {
-    ExprHandle expr = parseAndEvaluate("(list? (list 1 2 3))");
-    booleanTest(expr, true, "#t");
+    expectTrue("(list? (list 1 2 3))");
 }
 
 TEST_F(PredicateTest, ListTestCons)
 {
-    ExprHandle expr = parseAndEvaluate("(list? (cons 'a 'b))");
-    booleanTest(expr, false, "#f");
+    expectFalse("(list? (cons 'a 'b))");
 }
 
 TEST_F(PredicateTest, ListTestNotList)
 {
-    ExprHandle expr = parseAndEvaluate("(list? 2)");
-    booleanTest(expr, false, "#f");
+    expectFalse("(list? 2)");
 }
 
 TEST_F(PredicateTest, VectorTestVector)
 {
-    ExprHandle expr = parseAndEvaluate("(vector? [1 2 3])");
-    booleanTest(expr, true, "#t");
+    expectTrue("(vector? [1 2 3])");
 }
 
 TEST_F(PredicateTest, VectorTestList)
 {
-    ExprHandle expr = parseAndEvaluate("(vector? (list 'a 'b))");
-    booleanTest(expr, false, "#f");
+    expectFalse("(vector? (list 'a 'b))");
 }
 
 TEST_F(PredicateTest, VectorTestNotVector)
 {
-    ExprHandle expr = parseAndEvaluate("(vector? 2)");
-    booleanTest(expr, false, "#f");
+    expectFalse("(vector? 2)");
 }
 
 TEST_F(PredicateTest, BooleanTestBoolean)
 {
-    ExprHandle expr = parseAndEvaluate("(bool? (> 2 0))");
-    booleanTest(expr, true, "#t");
+    expectTrue("(bool? (> 2 0))");
 }
 
 TEST_F(PredicateTest, BooleanTestNotBoolean)
 {
-    ExprHandle expr = parseAndEvaluate("(bool? '(> 2 0))");
-    booleanTest(expr, false, "#f");
+    expectFalse("(bool? '(> 2 0))");
 }
 
 TEST_F(PredicateTest, CharTestChar)
 {
-    ExprHandle expr = parseAndEvaluate("(char? #\\a)");
-    booleanTest(expr, true, "#t");
+    expectTrue("(char? #\\a)");
 }
 
 TEST_F(PredicateTest, CharTestNotChar)
 {
-    ExprHandle expr = parseAndEvaluate("(bool? 12.34)");
-    booleanTest(expr, false, "#f");
+    expectFalse("(bool? 12.34)");
 }
 
 TEST_F(PredicateTest, StringTestEmptyString)
 {
-    ExprHandle expr = parseAndEvaluate("(string? \"\")");
-    booleanTest(expr, true, "#t");
+    expectTrue("(string? \"\")");
 }
 
 TEST_F(PredicateTest, StringTestNonEmptyString)
 {
-    ExprHandle expr = parseAndEvaluate("(string? \"Hello World\")");
-    booleanTest(expr, true, "#t");
+    expectTrue("(string? \"Hello World\")");
 }
 
 TEST_F(PredicateTest, StringTestNotString)
 {
-    ExprHandle expr = parseAndEvaluate("(string? ())");
-    booleanTest(expr, false, "#f");
+    expectFalse("(string? ())");
 }
 
 TEST_F(PredicateTest, SymbolTestSymbol)
 {
-    ExprHandle expr = parseAndEvaluate("(symbol? (quote a-symbol))");
-    booleanTest(expr, true, "#t");
+    expectTrue("(symbol? (quote a-symbol))");
 }
 
 TEST_F(PredicateTest, SymbolTestNotSymbol)
 {
-    ExprHandle expr = parseAndEvaluate("(symbol? (lambda () 2))");
-    booleanTest(expr, false, "#f");
+    expectFalse("(symbol? (lambda () 2))");
 }
 
 TEST_F(PredicateTest, NumericTestFloat)
 {
-    ExprHandle expr = parseAndEvaluate("(numeric? 1.5)");
-    booleanTest(expr, true, "#t");
+    expectTrue("(numeric? 1.5)");
 }
 
 TEST_F(PredicateTest, NumericTestInteger)
 {
-    ExprHandle expr = parseAndEvaluate("(numeric? 17)");
-    booleanTest(expr, true, "#t");
+    expectTrue("(numeric? 17)");
 }
 
 TEST_F(PredicateTest, NumericTestNotNumeric)
 {
-    ExprHandle expr = parseAndEvaluate("(numeric? ())");
-    booleanTest(expr, false, "#f");
+    expectFalse("(numeric? ())");
 }
 
 TEST_F(PredicateTest, FloatTestFloat)
 {
-    ExprHandle expr = parseAndEvaluate("(float? 1.5)");
-    booleanTest(expr, true, "#t");
+    expectTrue("(float? 1.5)");
 }
 
 TEST_F(PredicateTest, FloatTestInteger)
 {
-    ExprHandle expr = parseAndEvaluate("(float? 17)");
-    booleanTest(expr, true, "#t");
+    expectTrue("(float? 17)");
 }
 
 TEST_F(PredicateTest, FloatTestNotNumeric)
 {
-    ExprHandle expr = parseAndEvaluate("(float? ())");
-    booleanTest(expr, false, "#f");
+    expectFalse("(float? ())");
 }
 
 TEST_F(PredicateTest, IntegerTestFloat)
 {
-    ExprHandle expr = parseAndEvaluate("(integer? 1.5)");
-    booleanTest(expr, false, "#f");
+    expectFalse("(integer? 1.5)");
 }
 
 TEST_F(PredicateTest, IntegerTestInteger)
 {
-    ExprHandle expr = parseAndEvaluate("(integer? 17)");
-    booleanTest(expr, true, "#t");
+    expectTrue("(integer? 17)");
 }
 
 TEST_F(PredicateTest, IntegerTestNotNumeric)
 {
-    ExprHandle expr = parseAndEvaluate("(integer? ())");
-    booleanTest(expr, false, "#f");
+    expectFalse("(integer? ())");
 }
 
 TEST_F(PredicateTest, ProcTestProc)
 {
-    ExprHandle expr = parseAndEvaluate("(proc? (lambda (x) 2))");
-    booleanTest(expr, true, "#t");
+    expectTrue("(proc? (lambda (x) 2))");
 }
 
 TEST_F(PredicateTest, ProcTestClass)
 {
-    ExprHandle expr = parseAndEvaluate("(proc? (make-class Root () ()))");
-    booleanTest(expr, true, "#t");
+    expectTrue("(proc? (make-class Root () ()))");
 }
 
 TEST_F(PredicateTest, ProcTestInstance)
 {
-    ExprHandle expr = parseAndEvaluate("(proc? (load \"scripts/class/trivial2.scm\"))");
-    booleanTest(expr, true, "#t");
+    expectTrue("(proc? (load \"scripts/class/trivial2.scm\"))");
 }
 
 TEST_F(PredicateTest, ProcTestNotProc)
 {
-    ExprHandle expr = parseAndEvaluate("(proc? ())");
-    booleanTest(expr, false, "#f");
+    expectFalse("(proc? ())");
 }
 
 TEST_F(PredicateTest, ClassTestClass)
 {
-    ExprHandle expr = parseAndEvaluate("(class? (make-class Root () ()))");
-    booleanTest(expr, true, "#t");
+    expectTrue("(class? (make-class Root () ()))");
 }
 
 TEST_F(PredicateTest, ClassTestNotClass)
 {
-    ExprHandle expr = parseAndEvaluate("(class? ())");
-    booleanTest(expr, false, "#f");
+    expectFalse("(class? ())");
 }
 
 TEST_F(PredicateTest, InstanceTestInstance)
 {
-    ExprHandle expr = parseAndEvaluate("(instance? (load \"scripts/class/trivial2.scm\"))");
-    booleanTest(expr, true, "#t");
+    expectTrue("(instance? (load \"scripts/class/trivial2.scm\"))");
 }
 
 TEST_F(PredicateTest, InstanceTestNotInstance)
 {
-    ExprHandle expr = parseAndEvaluate("(instance? ())");
-    booleanTest(expr, false, "#f");
+    expectFalse("(instance? ())");
 }
 
 TEST_F(PredicateTest, KeywordTestKeyword)
