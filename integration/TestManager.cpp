@@ -55,6 +55,9 @@ void TestManager::runtest(char const * script)
     if ( test.isPassed() ) {
         ++passCount;
     }
+    else {
+        std::cout << script << " failed\n";
+    }
 }
 
 
