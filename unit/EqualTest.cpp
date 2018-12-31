@@ -228,3 +228,8 @@ TEST_F(EqualTest, EqPTwoProcDifferent)
     expectFalse("(load \"scripts/equality/differentproc.scm\")");
 }
 
+TEST_F(EqualTest, EqPKeywordsEqual)
+{
+    expectTrue("(eq? :a :a)");
+}
+

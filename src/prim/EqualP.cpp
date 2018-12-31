@@ -200,6 +200,12 @@ namespace
                  compare_all_as_string(args) );
     }
 
+    bool compare_all_keywords(ScamExpr * args)
+    {
+        return ( all_same_type(args, &ScamExpr::isKeyword) &&
+                 compare_all_as_string(args) );
+    }
+
     bool compare_all_numeric(ScamExpr * args)
     {
         if ( ! all_same_type(args, &ScamExpr::isNumeric) ) {
@@ -298,6 +304,9 @@ namespace
         }
         if ( first->isSymbol() ) {
             return compare_all_symbols(args);
+        }
+        if ( first->isKeyword() ) {
+            return compare_all_keywords(args);
         }
         if ( first->isNumeric() ) {
             return compare_all_numeric(args);
