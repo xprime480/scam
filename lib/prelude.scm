@@ -47,10 +47,12 @@
        (loop))))
 
 (define length
-  (lambda (lst)
-    (if (nil? lst)
+  (lambda (some)
+    (if (nil? some)
         0
-        (+ 1 (length (cdr lst))))))
+        (if (cons? some)
+            (+ 1 (length (cdr some)))
+            (error "Cannot take length of unknown type")))))
 
 (define append
   (lambda (fst snd)
@@ -144,5 +146,17 @@
           (if (member? item vals)
               (exclude vals tail)
               (cons item (exclude vals tail)))))))
+
+(define cond
+  (macro (clauses)
+    (if (nil? clauses)
+        '()
+        (progn
+          (let* ((clause (car clauses))
+                (test (car clause))
+                (value (car (cdr clause))))
+           `(if ,test
+                ,value
+                (cond ,(cdr clauses))))))))
 
 1

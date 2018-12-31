@@ -341,3 +341,27 @@ TEST_F(PreludeTest, SomeOfOne)
     expr = parseAndEvaluate("?");
     expectError(expr, "No more choices");
 }
+
+TEST_F(PreludeTest, CondNoClauses)
+{
+    ExprHandle expr = parseAndEvaluate("(cond ())");
+    expectNil(expr);
+}
+
+TEST_F(PreludeTest, CondOneTrueClause)
+{
+    ExprHandle expr = parseAndEvaluateFile("scripts/cond/onetrue.scm");
+    expectString(expr, "One");
+}
+
+TEST_F(PreludeTest, CondOneFalseClause)
+{
+    ExprHandle expr = parseAndEvaluateFile("scripts/cond/onefalse.scm");
+    expectNil(expr);
+}
+
+TEST_F(PreludeTest, CondManyClauses)
+{
+    ExprHandle expr = parseAndEvaluateFile("scripts/cond/many.scm");
+    expectString(expr, "Last");
+}
