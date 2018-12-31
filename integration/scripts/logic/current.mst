@@ -1,0 +1,36 @@
+Test the AssocList class
+
+;[skip]
+
+[name]
+AList
+
+[input]
+
+(load "lib/alist.scm")
+
+(define alist (AssocList))
+
+(alist length)
+(progn
+ (alist put :dog "woof")
+ (alist length))
+(alist get :dog)
+(alist get :cat)
+(progn
+ (alist put :dog "bowwow")
+ (alist length))
+(alist get :dog)
+(progn
+ (alist remove :dog)
+ (alist length))
+
+[result]
+[keep 7]
+0
+1
+woof
+()
+1
+bowwow
+0
