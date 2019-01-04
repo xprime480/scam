@@ -84,6 +84,7 @@ namespace
 
         void run(ScamExpr * expr) override
         {
+	    Continuation::run(expr);
             expr->eval(cont, capture);
         }
 
@@ -111,6 +112,8 @@ namespace
 
         void run(ScamExpr * expr) override
         {
+	    Continuation::run(expr);
+
             if ( expr->error() ) {
                 cont->run(expr);
             }
@@ -223,6 +226,8 @@ namespace
 
         void run() override
         {
+	    Worker::run();
+
             ContHandle newCont
                 = make_shared<ClosureBindCont>(formals.get(),
                                                forms.get(),
