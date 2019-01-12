@@ -174,6 +174,11 @@ bool ScamExpr::isInstance() const
     return false;
 }
 
+bool ScamExpr::isDict() const
+{
+    return false;
+}
+
 size_t ScamExpr::length() const
 {
     stringstream s;

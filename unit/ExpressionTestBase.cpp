@@ -35,6 +35,7 @@ namespace
     static const unsigned long SELECT_CLASS    { 1 << 16 };
     static const unsigned long SELECT_INSTANCE { 1 << 17 };
     static const unsigned long SELECT_KEYWORD  { 1 << 18 };
+    static const unsigned long SELECT_DICT     { 1 << 19 };
 
     static const unsigned long ALL_FLOAT      = SELECT_NUMERIC | SELECT_FLOAT;
     static const unsigned long ALL_INTEGER    = ALL_FLOAT | SELECT_INTEGER;
@@ -42,6 +43,7 @@ namespace
     static const unsigned long ALL_PROC       = SELECT_APPLY | SELECT_PROC;
     static const unsigned long ALL_CLASS      = SELECT_CLASS | ALL_PROC;
     static const unsigned long ALL_INSTANCE   = SELECT_INSTANCE | ALL_PROC;
+    static const unsigned long ALL_DICT       = SELECT_DICT | SELECT_APPLY;
 }
 
 ExpressionTestBase::ExpressionTestBase()
@@ -182,6 +184,8 @@ void ExpressionTestBase::checkPredicates(ScamExpr * expr, unsigned exp)
 
     act |= (expr->isClass() ? SELECT_CLASS : 0);
     act |= (expr->isInstance() ? SELECT_INSTANCE : 0);
+
+    act |= (expr->isDict() ? SELECT_DICT : 0);
 
     EXPECT_EQ(exp, act) << decodePredicate(act, exp)
                         << "\n\tvalue: " << expr->toString();
@@ -359,4 +363,18 @@ void ExpressionTestBase::expectInstance(ExprHandle expr)
 {
     checkPredicates(expr.get(), SELECT_TRUTH | ALL_INSTANCE);
     EXPECT_EQ("instance", expr->toString());
+}
+
+void
+ExpressionTestBase::expectDict(ExprHandle expr, int count, string const & repr)
+{
+    checkPredicates(expr.get(), SELECT_TRUTH | ALL_DICT);
+    EXPECT_EQ(repr, expr->toString());
+
+    try {
+        EXPECT_EQ(count, expr->length());
+    }
+    catch ( ScamException e ) {
+        FAIL() << e.getMessage() << "\n";
+    }
 }

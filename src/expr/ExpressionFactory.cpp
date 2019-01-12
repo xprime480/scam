@@ -7,6 +7,7 @@
 #include "expr/ScamClosure.hpp"
 #include "expr/ScamCons.hpp"
 #include "expr/ScamContinuation.hpp"
+#include "expr/ScamDict.hpp"
 #include "expr/ScamError.hpp"
 #include "expr/ScamFloat.hpp"
 #include "expr/ScamInstance.hpp"
@@ -91,8 +92,7 @@ ExprHandle ExpressionFactory::makeNil()
     return nil;
 }
 
-ExprHandle
-ExpressionFactory::makeCons(ScamExpr * car, ScamExpr * cdr)
+ExprHandle ExpressionFactory::makeCons(ScamExpr * car, ScamExpr * cdr)
 {
     ExprHandle expr = makeForm<ScamCons>(car, cdr);
     return expr;
@@ -143,6 +143,18 @@ ExprHandle ExpressionFactory::makeInstance(ScamExpr * vars,
 ExprHandle ExpressionFactory::makeContinuation(ContHandle cont)
 {
     ExprHandle expr = makeForm<ScamContinuation>(cont);
+    return expr;
+}
+
+ExprHandle ExpressionFactory::makeDict()
+{
+    ExprHandle expr = makeForm<ScamDict, false>();
+    return expr;
+}
+
+ExprHandle ExpressionFactory::makeDict(ExprVec const & args)
+{
+    ExprHandle expr = makeForm<ScamDict>(args);
     return expr;
 }
 

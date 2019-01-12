@@ -62,17 +62,25 @@ namespace scam
 
         static ExprHandle makeContinuation(ContHandle cont);
 
+        static ExprHandle makeDict();
+        static ExprHandle makeDict(ExprVec const & args);
+
         template <typename T, typename... Args>
         static ExprHandle makeForm(Args... args)
         {
             return intern(std::make_shared<T>(args...));
         }
 
-        template <typename T>
+        template <typename T, bool Cache = true>
         static ExprHandle makeForm()
         {
-            static const ExprHandle cached = intern(std::make_shared<T>());
-            return cached;
+            if ( Cache ) {
+                static const ExprHandle cached = intern(std::make_shared<T>());
+                return cached;
+            }
+            else {
+                return intern(std::make_shared<T>());
+            }
         }
 
         static ExprHandle clone(ScamExpr const *);

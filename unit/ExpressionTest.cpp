@@ -343,6 +343,34 @@ TEST_F(ExpressionTest, VectorNonEmpty)
     f(evaled);
 }
 
+TEST_F(ExpressionTest, DictNewEmpty)
+{
+    ExprHandle expr = ExpressionFactory::makeDict();
+    expectDict(expr, 0u, "{}");
+}
+
+TEST_F(ExpressionTest, DictNewSingleton)
+{
+    ExprVec vec;
+    vec.push_back(ExpressionFactory::makeInteger(1));
+    vec.push_back(ExpressionFactory::makeString("one"));
+
+    ExprHandle expr = ExpressionFactory::makeDict(vec);
+    expectDict(expr, 1u, "{ 1 one }");
+}
+
+TEST_F(ExpressionTest, DictNewSingletonDupKeys)
+{
+    ExprVec vec;
+    vec.push_back(ExpressionFactory::makeInteger(1));
+    vec.push_back(ExpressionFactory::makeString("one"));
+    vec.push_back(ExpressionFactory::makeInteger(1));
+    vec.push_back(ExpressionFactory::makeString("ein"));
+
+    ExprHandle expr = ExpressionFactory::makeDict(vec);
+    expectDict(expr, 1u, "{ 1 ein }");
+}
+
 TEST_F(ExpressionTest, CloneTest)
 {
     ExprHandle e1 = ExpressionFactory::makeInteger(2932);

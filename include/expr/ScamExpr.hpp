@@ -57,6 +57,8 @@ namespace scam
         virtual bool isClass() const;
         virtual bool isInstance() const;
 
+        virtual bool isDict() const;
+
         virtual size_t length() const;
         virtual ExprHandle nthcar(size_t n) const;
         virtual ExprHandle nthcdr(size_t n) const;

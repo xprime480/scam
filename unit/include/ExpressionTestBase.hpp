@@ -76,5 +76,6 @@ namespace scam
                              std::string const & repr);
         void expectClass(ExprHandle expr);
         void expectInstance(ExprHandle expr);
+        void expectDict(ExprHandle expr, int count, std::string const & repr);
     };
 }
