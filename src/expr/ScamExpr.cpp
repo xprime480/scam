@@ -224,6 +224,12 @@ void ScamExpr::setParent(ScamExpr * expr) const
     throw ScamException(s.str());
 }
 
+bool ScamExpr::equals(ScamExpr const * expr) const
+{
+    return this == expr;
+}
+
+
 void ScamExpr::setMeta(string const & key, ScamExpr * value)
 {
     ExprHandle ksym = ExpressionFactory::makeSymbol(key);

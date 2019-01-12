@@ -24,3 +24,13 @@ bool ScamKeyword::isKeyword() const
 {
     return true;
 }
+
+bool ScamKeyword::equals(ScamExpr const * expr) const
+{
+    if ( ! expr->isKeyword() ) {
+        return false;
+    }
+    ScamKeyword const * that = dynamic_cast<ScamKeyword const *>(expr);
+    return value == that->value;
+}
+

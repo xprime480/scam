@@ -62,6 +62,25 @@ ExprHandle ScamVector::nthcar(size_t n) const
     return elts[n];
 }
 
+bool ScamVector::equals(ScamExpr const * expr) const
+{
+    if ( ! expr->isVector() ) {
+        return false;
+    }
+    ScamVector const * that = dynamic_cast<ScamVector const *>(expr);
+    if ( elts.size() != that->elts.size() ) {
+        return false;
+    }
+    for ( size_t idx = 0 ; idx < elts.size() ; ++idx ) {
+        if ( ! elts[idx]->equals(that->elts[idx].get()) ) {
+            return false;
+        }
+    }
+
+    return true;
+
+}
+
 namespace
 {
     class VectorCont : public Continuation

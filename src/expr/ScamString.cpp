@@ -19,3 +19,13 @@ bool ScamString::isString() const
 {
     return true;
 }
+
+bool ScamString::equals(ScamExpr const * expr) const
+{
+    if ( ! expr->isString() ) {
+        return false;
+    }
+    ScamString const * that = dynamic_cast<ScamString const *>(expr);
+    return value == that->value;
+}
+

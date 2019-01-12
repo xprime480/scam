@@ -24,6 +24,11 @@ void MathOp::applyArgs(ScamExpr * args, ContHandle cont)
     cont->run(rv.get());
 }
 
+bool MathOp::equals(ScamExpr const * expr) const
+{
+    return ( expr && this->toString() == expr->toString() );
+}
+
 namespace
 {
     double do_add(vector<double> const & ns, ExprHandle & state)

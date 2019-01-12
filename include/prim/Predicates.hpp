@@ -15,6 +15,7 @@ namespace scam
     public: \
         name(); \
         void applyArgs(ScamExpr * args, ContHandle cont) override; \
+        bool equals(ScamExpr const * expr) const override; \
     } \
 
     DECL_PREDICATE(NilP);

@@ -66,6 +66,8 @@ namespace scam
         virtual void setSelf(ScamExpr * expr) const;
         virtual void setParent(ScamExpr * expr) const;
 
+        virtual bool equals(ScamExpr const * expr) const;
+
         void setMeta(std::string const & key, ScamExpr * value);
         bool hasMeta(std::string const & key) const;
         ExprHandle getMeta(std::string const & key) const;

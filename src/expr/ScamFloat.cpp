@@ -29,3 +29,13 @@ double ScamFloat::toFloat() const
 {
     return value;
 }
+
+bool ScamFloat::equals(ScamExpr const * expr) const
+{
+    if ( ! expr->isFloat() ) {
+        return false;
+    }
+    ScamFloat const * that = dynamic_cast<ScamFloat const *>(expr);
+    return ::abs(value - that->value) < 1e-9;
+}
+

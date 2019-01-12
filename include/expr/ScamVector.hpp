@@ -23,6 +23,8 @@ namespace scam
         size_t length() const override;
         ExprHandle nthcar(size_t n) const override;
 
+        bool equals(ScamExpr const * expr) const override;
+
     private:
         ExprVec elts;
     };

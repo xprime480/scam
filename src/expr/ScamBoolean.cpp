@@ -27,3 +27,12 @@ bool ScamBoolean::isBoolean() const
 {
     return true;
 }
+
+bool ScamBoolean::equals(ScamExpr const * expr) const
+{
+    if ( ! expr->isBoolean() ) {
+        return false;
+    }
+    ScamBoolean const * that = dynamic_cast<ScamBoolean const *>(expr);
+    return value == that->value;
+}

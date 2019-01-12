@@ -30,3 +30,12 @@ int ScamInteger::toInteger() const
 {
     return value;
 }
+
+bool ScamInteger::equals(ScamExpr const * expr) const
+{
+    if ( ! expr->isFloat() ) {
+        return false;
+    }
+    return ( ::abs(this->toFloat() - expr->toFloat()) < 1e-9 );
+}
+

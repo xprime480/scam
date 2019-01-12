@@ -15,6 +15,8 @@ namespace scam
 
         bool isNull() const override;
         bool truth() const override;
+
+        bool equals(ScamExpr const * expr) const override;
     };
 }
 

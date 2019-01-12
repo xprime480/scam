@@ -26,3 +26,14 @@ bool ScamError::error() const
 {
     return true;
 }
+
+bool ScamError::equals(ScamExpr const * expr) const
+{
+    if ( ! expr->error() ) {
+        return false;
+    }
+
+    ScamError const * that = dynamic_cast<ScamError const *>(expr);
+    return msg == that->msg;
+}
+

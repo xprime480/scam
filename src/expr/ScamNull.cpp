@@ -29,3 +29,9 @@ bool ScamNull::truth() const
 {
     return false;
 }
+
+bool ScamNull::equals(ScamExpr const * expr) const
+{
+    return false;
+}
+

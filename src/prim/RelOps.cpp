@@ -22,6 +22,12 @@ void CompareOp::applyArgs(ScamExpr * args, ContHandle cont)
     cont->run(rv.get());
 }
 
+
+bool CompareOp::equals(ScamExpr const * expr) const
+{
+    return ( expr && this->toString() == expr->toString() );
+}
+
 namespace
 {
     class DummyOpImpl : public OpImpl

@@ -65,6 +65,15 @@ bool ScamCons::isList() const
     return cdr->isList();
 }
 
+bool ScamCons::equals(ScamExpr const * expr) const
+{
+    if ( ! expr->isCons() ) {
+        return false;
+    }
+    ScamCons const * that = dynamic_cast<ScamCons const *>(expr);
+    return (car->equals(that->car.get()) && cdr->equals(that->cdr.get()) );
+}
+
 ExprHandle ScamCons::getCar() const
 {
     return car;

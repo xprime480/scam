@@ -13,6 +13,8 @@ namespace scam
 
         bool isString() const override;
 
+        bool equals(ScamExpr const * expr) const override;
+
     private:
         std::string const value;
     };

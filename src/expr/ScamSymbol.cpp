@@ -40,3 +40,14 @@ bool ScamSymbol::isSymbol() const
 {
     return true;
 }
+
+bool ScamSymbol::equals(ScamExpr const * expr) const
+{
+    if ( ! expr->isSymbol() ) {
+        return false;
+    }
+    ScamSymbol const * that = dynamic_cast<ScamSymbol const *>(expr);
+    return value == that->value;
+}
+
+

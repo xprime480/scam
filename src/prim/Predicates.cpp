@@ -30,6 +30,11 @@ void cls::applyArgs(ScamExpr * args, ContHandle cont) \
 { \
     apply_predicate(label, pred, args, cont); \
 } \
+bool cls::equals(ScamExpr const * expr) const \
+{ \
+    return ( expr && expr->toString() == label ); \
+}
+
 
 DEFINE_PREDICATE(NilP, "nil?", &ScamExpr::isNil)
 DEFINE_PREDICATE(ErrorP, "error?", &ScamExpr::error)

@@ -16,6 +16,8 @@ namespace scam
         bool isInteger() const override;
         int toInteger() const override;
 
+        bool equals(ScamExpr const * expr) const override;
+
     private:
         int const value;
     };

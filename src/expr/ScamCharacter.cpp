@@ -24,3 +24,12 @@ char ScamCharacter::toChar() const
 {
     return value[2];
 }
+
+bool ScamCharacter::equals(ScamExpr const * expr) const
+{
+    if ( ! expr->isChar() ) {
+        return false;
+    }
+    ScamCharacter const * that = dynamic_cast<ScamCharacter const *>(expr);
+    return value == that->value;
+}
