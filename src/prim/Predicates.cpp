@@ -32,6 +32,7 @@ void cls::applyArgs(ScamExpr * args, ContHandle cont) \
 } \
 
 DEFINE_PREDICATE(NilP, "nil?", &ScamExpr::isNil)
+DEFINE_PREDICATE(ErrorP, "error?", &ScamExpr::error)
 DEFINE_PREDICATE(ConsP, "cons?", &ScamExpr::isCons)
 DEFINE_PREDICATE(ListP, "list?", &ScamExpr::isList)
 DEFINE_PREDICATE(VectorP, "vector?", &ScamExpr::isVector)
