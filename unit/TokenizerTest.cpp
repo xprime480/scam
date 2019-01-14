@@ -130,12 +130,14 @@ This comment style can span lines!\n\
 
     TEST(TokenizerTest, SpecialSymbols)
     {
-        string const input{ "()[].'`,,@" };
+        string const input{ "()[]{}.'`,,@" };
         vector<Token> exp {
             Token(TokenType::TT_OPEN_PAREN,    "(") ,
             Token(TokenType::TT_CLOSE_PAREN,   ")") ,
             Token(TokenType::TT_OPEN_BRACKET,  "[") ,
             Token(TokenType::TT_CLOSE_BRACKET, "]") ,
+            Token(TokenType::TT_OPEN_CURLY,    "{") ,
+            Token(TokenType::TT_CLOSE_CURLY,   "}") ,
             Token(TokenType::TT_DOT,           ".") ,
             Token(TokenType::TT_QUOTE,         "'") ,
             Token(TokenType::TT_QUASIQUOTE,    "`") ,

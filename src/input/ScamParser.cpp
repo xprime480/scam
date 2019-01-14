@@ -61,6 +61,14 @@ ExprHandle ScamParser::tokenToExpr(Token const & token) const
         rv = ExpressionFactory::makeError("Extra ']' in input");
         break;
 
+    case TokenType::TT_OPEN_CURLY:
+        rv = parseDict();
+        break;
+
+    case TokenType::TT_CLOSE_CURLY:
+        rv = ExpressionFactory::makeError("Extra '}' in input");
+        break;
+
     case TokenType::TT_BOOLEAN:
         rv = ExpressionFactory::makeBoolean(token.getText() == "#t");
         break;
@@ -213,6 +221,38 @@ ExprHandle ScamParser::parseVector() const
 
         if ( TokenType::TT_CLOSE_BRACKET == type ) {
             return ExpressionFactory::makeVector(vec);
+        }
+
+        ExprHandle expr = tokenToExpr(token);
+        if ( expr->error() ) {
+            return expr;
+        }
+
+        vec.push_back(expr);
+    }
+}
+
+ExprHandle ScamParser::parseDict() const
+{
+    ExprVec vec;
+
+    while ( true ) {
+        Token token = tokenizer.next();
+        TokenType type = token.getType();
+
+        if ( TokenType::TT_END_OF_INPUT == type ) {
+            ExprHandle err =
+                ExpressionFactory::makeError("Unterminated Dictionary");
+            tagPartial(err.get());
+            return err;
+        }
+
+        if ( TokenType::TT_SCAN_ERROR == type ) {
+            return ExpressionFactory::makeError(token.getText());
+        }
+
+        if ( TokenType::TT_CLOSE_CURLY == type ) {
+            return ExpressionFactory::makeDict(vec);
         }
 
         ExprHandle expr = tokenToExpr(token);

@@ -183,6 +183,18 @@ Token StringTokenizer::scanSpecial()
         return token;
     }
 
+    if ( '{' == *pos ) {
+        static const Token token(TokenType::TT_OPEN_CURLY, "{");
+        ++pos;
+        return token;
+    }
+
+    if ( '}' == *pos ) {
+        static const Token token(TokenType::TT_CLOSE_CURLY, "}");
+        ++pos;
+        return token;
+    }
+
     if ( '.' == *pos ) {
         static const Token token(TokenType::TT_DOT, ".");
         ++pos;

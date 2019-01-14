@@ -415,3 +415,27 @@ TEST_F(ParserTest, Keyword)
     ExprHandle expr = runTest(tokens);
     expectKeyword(expr, msg);
 }
+
+TEST_F(ParserTest, DictEmpty)
+{
+    vector<Token> tokens {
+        Token(TokenType::TT_OPEN_CURLY, "{"),
+        Token(TokenType::TT_CLOSE_CURLY, "}"),
+    };
+
+    ExprHandle expr = runTest(tokens);
+    expectDict(expr, 0u, "{}");
+}
+
+TEST_F(ParserTest, DictNonEmpty)
+{
+    vector<Token> tokens {
+        Token(TokenType::TT_OPEN_CURLY, "{"),
+        Token(TokenType::TT_KEYWORD,    ":test"),
+        Token(TokenType::TT_INTEGER,    "1"),
+        Token(TokenType::TT_CLOSE_CURLY, "}"),
+    };
+
+    ExprHandle expr = runTest(tokens);
+    expectDict(expr, 1u, "{ :test 1 }");
+}

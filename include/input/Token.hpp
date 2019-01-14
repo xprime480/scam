@@ -13,6 +13,9 @@ namespace scam
             TT_CLOSE_PAREN,
             TT_OPEN_BRACKET,
             TT_CLOSE_BRACKET,
+            TT_OPEN_CURLY,
+            TT_CLOSE_CURLY,
+
             TT_DOT,
             TT_QUOTE,
             TT_QUASIQUOTE,
@@ -75,6 +78,14 @@ namespace scam
 
         case TokenType::TT_CLOSE_BRACKET:
             os << "Close Bracket";
+            break;
+
+        case TokenType::TT_OPEN_CURLY:
+            os << "Open Curly Bracket";
+            break;
+
+        case TokenType::TT_CLOSE_CURLY:
+            os << "Close Curly Bracket";
             break;
 
         case TokenType::TT_DOT:

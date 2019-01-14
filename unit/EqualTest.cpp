@@ -233,3 +233,27 @@ TEST_F(EqualTest, EqPKeywordsEqual)
     expectTrue("(eq? :a :a)");
 }
 
+TEST_F(EqualTest, EqPDictTwoEmpty)
+{
+    expectTrue("(eq? {} {})");
+}
+
+TEST_F(EqualTest, EqPDictTwoSingleEq)
+{
+    expectTrue("(eq? { :a 2 } { :a 2 })");
+}
+
+TEST_F(EqualTest, EqPDictTwoSingleNeqKeys)
+{
+    expectFalse("(eq? { :a 2 } { :b 2 })");
+}
+
+TEST_F(EqualTest, EqPDictTwoSingleNeqVals)
+{
+    expectFalse("(eq? { :a 2 } { :a 3 })");
+}
+
+TEST_F(EqualTest, EqPDictTwoSingleNeqLen)
+{
+    expectFalse("(eq? { :a 2 } { :a 3 :b 5 })");
+}
