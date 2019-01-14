@@ -22,6 +22,14 @@ namespace scam
 
         void applyArgs(ScamExpr * args, ContHandle cont) override;
     };
+
+    class Substitute : public Primitive
+    {
+    public:
+        Substitute();
+
+        void applyArgs(ScamExpr * args, ContHandle cont) override;
+    };
 }
 
 #endif

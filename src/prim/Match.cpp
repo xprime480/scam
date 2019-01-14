@@ -16,6 +16,7 @@ namespace
 {
     extern void do_match(ScamExpr * args, ContHandle cont);
     extern void do_unify(ScamExpr * args, ContHandle cont);
+    extern void do_subst(ScamExpr * args, ContHandle cont);
 }
 
 Match::Match()
@@ -38,6 +39,16 @@ void Unify::applyArgs(ScamExpr * args, ContHandle cont)
     do_unify(args, cont);
 }
 
+Substitute::Substitute()
+    : Primitive("subst")
+{
+}
+
+void Substitute::applyArgs(ScamExpr * args, ContHandle cont)
+{
+    do_subst(args, cont);
+}
+
 namespace
 {
     class MatchUnifyCommon
@@ -56,6 +67,29 @@ namespace
             if (  checkargs() ) {
                 process();
             }
+        }
+
+        ExprHandle resolve_value(ScamExpr * expr, ScamDict * answers)
+        {
+            ExprHandle rv;
+
+            if ( expr->isCons() ) {
+                rv = resolve_cons(expr, answers);
+            }
+            else if ( expr->isVector() ) {
+                rv = resolve_vector(expr, answers);
+            }
+            else if ( expr->isDict() ) {
+                rv = resolve_dict(expr, answers);
+            }
+            else if ( expr->isKeyword() ) {
+                rv = resolve_keyword(expr, answers);
+            }
+            else {
+                rv = expr->clone();
+            }
+
+            return rv;
         }
 
     private:
@@ -100,7 +134,7 @@ namespace
         ExprHandle
         check_ignore(ScamDict * dict, ScamExpr * lhs, ScamExpr * rhs)
         {
-	    static ExprHandle ignore = ExpressionFactory::makeKeyword("::");
+            static ExprHandle ignore = ExpressionFactory::makeKeyword("::");
 
             if ( ignore->equals(lhs) || ignore->equals(rhs) ) {
                 return dict->clone();
@@ -226,7 +260,7 @@ namespace
         {
             ExprHandle rv;
 
-	    rv = check_ignore(dict, lhs, rhs);
+            rv = check_ignore(dict, lhs, rhs);
             if ( ! rv->isNil() ) {
                 return rv;
             }
@@ -348,29 +382,6 @@ namespace
             return rv;
         }
 
-        ExprHandle resolve_value(ScamExpr * expr, ScamDict * answers)
-        {
-            ExprHandle rv;
-
-            if ( expr->isCons() ) {
-                rv = resolve_cons(expr, answers);
-            }
-            else if ( expr->isVector() ) {
-                rv = resolve_vector(expr, answers);
-            }
-            else if ( expr->isDict() ) {
-                rv = resolve_dict(expr, answers);
-            }
-            else if ( expr->isKeyword() ) {
-                rv = resolve_keyword(expr, answers);
-            }
-            else {
-                rv = expr->clone();
-            }
-
-            return rv;
-        }
-
         ExprHandle resolve(ScamExpr * expr)
         {
             ScamDict * dict = dynamic_cast<ScamDict *>(expr);
@@ -388,5 +399,31 @@ namespace
     {
         MatchUnifyCommon solver(args, cont, true);
         solver.solve();
+    }
+
+    void do_subst(ScamExpr * args, ContHandle cont)
+    {
+        if ( args->length() < 2 ) {
+            stringstream s;
+            s << "expected 2 args; got " << args->length();
+            ExprHandle err = ExpressionFactory::makeError(s.str());
+            cont->run(err.get());
+            return;
+        }
+
+        ExprHandle form = args->nthcar(0);
+        ExprHandle dict = args->nthcar(1);
+        ScamDict * answers = dynamic_cast<ScamDict *>(dict.get());
+        if ( ! answers ) {
+            stringstream s;
+            s << "expected 'form dict'; got " << args->toString();
+            ExprHandle err = ExpressionFactory::makeError(s.str());
+            cont->run(err.get());
+            return;
+        }
+
+        MatchUnifyCommon solver(args, cont, false);
+        ExprHandle rv = solver.resolve_value(form.get(), answers);
+        cont->run(rv.get());
     }
 }

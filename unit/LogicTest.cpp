@@ -169,3 +169,29 @@ TEST_F(LogicTest, XorTest)
     expectFalse("(xor #t #t)");
     expectFalse("(xor #f #f)");
 }
+
+TEST_F(LogicTest, SubstituteSymbol)
+{
+    expectTrue("(eq? (substitute :X { :X 23 }) 23)");
+}
+
+TEST_F(LogicTest, SubstituteInCons)
+{
+    expectTrue("(eq? (substitute '(:X 99) { :X 23 }) '(23 99))");
+}
+
+TEST_F(LogicTest, SubstituteInVector)
+{
+    expectTrue("(eq? (substitute [:X 99] { :X 23 }) [23 99])");
+}
+
+TEST_F(LogicTest, SubstituteMultiple)
+{
+    expectTrue("(eq? (substitute [:X :Y :X] { :X 23 :Y cat }) [23 'cat 23])");
+}
+
+TEST_F(LogicTest, SubstituteMissing)
+{
+    ExprHandle expr = parseAndEvaluate("(substitute :X {})");
+    expectError(expr);
+}

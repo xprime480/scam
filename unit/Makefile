@@ -28,7 +28,7 @@ do_it_manually :
 	make -C gmock all
 
 test : unittests
-	@./unittests
+	@./unittests --gtest_filter=LogicTest.Substitute*
 
 by_module : unittests
 	@./unittests --gtest_filter=TrampolineTest.*
