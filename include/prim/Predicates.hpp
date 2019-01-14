@@ -34,6 +34,7 @@ namespace scam
     DECL_PREDICATE(ProcP);
     DECL_PREDICATE(ClassP);
     DECL_PREDICATE(InstanceP);
+    DECL_PREDICATE(DictP);
 
 #undef DECL_PREDICATE
 #endif

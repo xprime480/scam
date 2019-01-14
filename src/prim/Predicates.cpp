@@ -52,6 +52,7 @@ DEFINE_PREDICATE(IntegerP, "integer?", &ScamExpr::isInteger)
 DEFINE_PREDICATE(ProcP, "proc?", &ScamExpr::isProcedure)
 DEFINE_PREDICATE(ClassP, "class?", &ScamExpr::isClass)
 DEFINE_PREDICATE(InstanceP, "instance?", &ScamExpr::isInstance)
+DEFINE_PREDICATE(DictP, "dict?", &ScamExpr::isDict)
 
 #endif
 
