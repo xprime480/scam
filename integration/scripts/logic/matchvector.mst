@@ -1,0 +1,15 @@
+Match vector pattern to conforming vector data
+
+;[skip]
+
+[name]
+Match Vector
+
+[input]
+
+(define match-data (match [:name :age] ["Mike" 58]))
+match-data
+
+[result]
+[keep 1]
+{ :name Mike :age 58 }

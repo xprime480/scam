@@ -1,0 +1,17 @@
+Match recurrent pattern to mismatching data
+
+;[skip]
+
+[name]
+Match Var Dup False
+
+[input]
+
+(define match-data (match '(:X :X) '(a b)))
+(if (dict? match-data)
+    match-data
+    (car (cdr match-data)))
+
+[result]
+[keep 1]
+Previous data for pattern :X was 'a'; does not match new data 'b'

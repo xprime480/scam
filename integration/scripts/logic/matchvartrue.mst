@@ -1,0 +1,17 @@
+Match non-empty pattern to conforming data
+
+;[skip]
+
+[name]
+Match Var True
+
+[input]
+
+(define match-data (match '(:X) '(a)))
+(dict? match-data)
+match-data
+
+[result]
+[keep 2]
+#t
+{ :X a }

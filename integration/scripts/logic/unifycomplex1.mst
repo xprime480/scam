@@ -1,0 +1,29 @@
+Unify complex patterns patterns which both have placeholders
+
+;[skip]
+
+[name]
+Unify Complex Pattern (1)
+
+[input]
+
+(define p1 [:F [:A 1  :B] [:A :B] 2])
+(define p2 [:C [:D :D :E] :C     :E])
+
+(define final (unify p1 p2))
+
+(final :get :A)
+(final :get :B)
+(final :get :C)
+(final :get :D)
+(final :get :E)
+(final :get :F)
+
+[result]
+[keep 6]
+1
+2
+[1 2]
+1
+2
+[1 2]

@@ -1,0 +1,13 @@
+Unify two empty patterns
+
+;[skip]
+
+[name]
+Unify Empty
+
+[input]
+
+(unify () ())
+
+[result]
+{}

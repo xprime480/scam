@@ -1,0 +1,16 @@
+Unify patterns containing '_'
+
+;[skip]
+
+[name]
+Unify Underscore
+
+[input]
+
+(define final (unify [:: 3] ['(this is :to :be :ignored) :Y]))
+
+final
+
+[result]
+[keep 1]
+{ :Y 3 }

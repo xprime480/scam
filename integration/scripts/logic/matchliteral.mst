@@ -1,0 +1,17 @@
+Match literal pattern to literal data
+
+;[skip]
+
+[name]
+Match Literal
+
+[input]
+
+(define match-data (match 'a 'a))
+(dict? match-data)
+(match-data :length)
+
+[result]
+[keep 2]
+#t
+0

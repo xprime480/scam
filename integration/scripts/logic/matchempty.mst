@@ -1,0 +1,17 @@
+Match empty pattern to empty data
+
+;[skip]
+
+[name]
+Match Empty
+
+[input]
+
+(define match-data (match () ()))
+(dict? match-data)
+(match-data :length)
+
+[result]
+[keep 2]
+#t
+0

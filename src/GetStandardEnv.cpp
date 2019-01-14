@@ -42,6 +42,9 @@ void ScamEngine::getStandardEnv()
     addForm<Or>(env, "or");
     addForm<Not>(env, "not");
 
+    addForm<Match>(env, "match");
+    addForm<Unify>(env, "unify");
+
     addForm<Add>(env, "+");
     addForm<Sub>(env, "-");
     addForm<Mul>(env, "*");
