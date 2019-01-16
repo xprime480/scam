@@ -195,3 +195,51 @@ TEST_F(LogicTest, SubstituteMissing)
     ExprHandle expr = parseAndEvaluate("(substitute :X {})");
     expectError(expr);
 }
+
+TEST_F(LogicTest, InstantiateNothing)
+{
+    ExprHandle expr = parseAndEvaluate("(instantiate '())");
+    expectNil(expr);
+}
+
+TEST_F(LogicTest, InstantiateNoKeywords)
+{
+    ExprHandle expr = parseAndEvaluate("(instantiate \"test\")");
+    expectString(expr, "test");
+}
+
+TEST_F(LogicTest, InstantiateKeyword)
+{
+    ExprHandle expr = parseAndEvaluateFile("scripts/logic/simplekeyword.scm");
+    expectBoolean(expr, true, "#t");
+}
+
+TEST_F(LogicTest, InstantiateConsSingleKeyword)
+{
+    ExprHandle expr = parseAndEvaluateFile("scripts/logic/consonekeyword.scm");
+    expectBoolean(expr, true, "#t");
+}
+
+TEST_F(LogicTest, InstantiateConsWithDups)
+{
+    ExprHandle expr = parseAndEvaluateFile("scripts/logic/conswithdups.scm");
+    expectBoolean(expr, true, "#t");
+}
+
+TEST_F(LogicTest, InstantiateConsTwoKeywords)
+{
+    ExprHandle expr = parseAndEvaluateFile("scripts/logic/constwokeywords.scm");
+    expectBoolean(expr, true, "#t");
+}
+
+TEST_F(LogicTest, InstantiateVector)
+{
+    ExprHandle expr = parseAndEvaluateFile("scripts/logic/vector.scm");
+    expectBoolean(expr, true, "#t");
+}
+
+TEST_F(LogicTest, InstantiateDict)
+{
+    ExprHandle expr = parseAndEvaluateFile("scripts/logic/dict.scm");
+    expectBoolean(expr, true, "#t");
+}

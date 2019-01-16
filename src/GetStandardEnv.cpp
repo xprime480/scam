@@ -45,6 +45,7 @@ void ScamEngine::getStandardEnv()
     addForm<Match>(env, "match");
     addForm<Unify>(env, "unify");
     addForm<Substitute>(env, "substitute");
+    addForm<Instantiate>(env, "instantiate");
 
     addForm<Add>(env, "+");
     addForm<Sub>(env, "-");
@@ -64,6 +65,9 @@ void ScamEngine::getStandardEnv()
     addForm<Cons>(env, "cons");
     addForm<Car>(env, "car");
     addForm<Cdr>(env, "cdr");
+
+    addForm<VLen>(env, "vlen");
+    addForm<VRef>(env, "vref");
 
     addForm<NilP>(env, "nil?");
     addForm<ErrorP>(env, "error?");

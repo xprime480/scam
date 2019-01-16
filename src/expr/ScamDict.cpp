@@ -3,6 +3,7 @@
 #include "Continuation.hpp"
 #include "expr/ExpressionFactory.hpp"
 
+#include <iostream>
 #include <sstream>
 
 using namespace scam;
@@ -107,6 +108,17 @@ bool ScamDict::equals(ScamExpr const * expr) const
 
     return true;
 
+}
+
+bool ScamDict::has(ScamExpr const * key) const
+{
+    for ( size_t jdx = 0 ; jdx < keys.size() ; ++jdx ) {
+        if ( keys[jdx]->equals(key) ) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 ExprHandle ScamDict::get(ScamExpr const * key) const

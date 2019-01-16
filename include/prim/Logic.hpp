@@ -30,6 +30,17 @@ namespace scam
 
         void applyArgs(ScamExpr * args, ContHandle cont) override;
     };
+
+    class Instantiate : public Primitive
+    {
+    public:
+        Instantiate();
+
+        void applyArgs(ScamExpr * args, ContHandle cont) override;
+
+    private:
+	static size_t counter;
+    };
 }
 
 #endif

@@ -52,7 +52,21 @@
         0
         (if (cons? some)
             (+ 1 (length (cdr some)))
-            (error "Cannot take length of unknown type")))))
+            (if (vector? some)
+                (vlen some)
+                (if (dict? some)
+                    (some :length)
+                    (error "Cannot take length of unknown type")))))))
+
+(define nth
+  (lambda (idx some)
+    (if (cons? some)
+        (if (eq? 0 idx)
+            (car some)
+            (nth (- idx 1) (cdr some)))
+        (if (vector? some)
+            (vref idx some)
+            (error "Cannot index unknown type")))))
 
 (define append
   (lambda (fst snd)

@@ -254,9 +254,51 @@ TEST_F(PreludeTest, LengthWithNested)
     expectInteger(expr, 5, "5");
 }
 
-TEST_F(PreludeTest, LengthNonList)
+TEST_F(PreludeTest, LengthVector)
 {
     ExprHandle expr = parseAndEvaluate("(length [1 2 3])");
+    expectInteger(expr, 3, "3");
+}
+
+TEST_F(PreludeTest, LengthDict)
+{
+    ExprHandle expr = parseAndEvaluate("(length { :a 44 :b \"cat\" })");
+    expectInteger(expr, 2, "2");
+}
+
+TEST_F(PreludeTest, LengthBadType)
+{
+    ExprHandle expr = parseAndEvaluate("(length :abc)");
+    expectError(expr);
+}
+
+TEST_F(PreludeTest, NthList)
+{
+    ExprHandle expr = parseAndEvaluate("(nth 0 '(a b c))");
+    expectSymbol(expr, "a");
+}
+
+TEST_F(PreludeTest, NthListOutOfBounds)
+{
+    ExprHandle expr = parseAndEvaluate("(nth 4 '(a b c))");
+    expectError(expr);
+}
+
+TEST_F(PreludeTest, NthVector)
+{
+    ExprHandle expr = parseAndEvaluate("(nth 0 [1 2 3])");
+    expectInteger(expr, 1, "1");
+}
+
+TEST_F(PreludeTest, NthVectorOutOfBounds)
+{
+    ExprHandle expr = parseAndEvaluate("(nth -50 [1 2 3])");
+    expectError(expr);
+}
+
+TEST_F(PreludeTest, NthNotIndexible)
+{
+    ExprHandle expr = parseAndEvaluate("(nth 0 { :a 333.333 })");
     expectError(expr);
 }
 

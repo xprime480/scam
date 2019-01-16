@@ -1,0 +1,12 @@
+
+(let ((result (instantiate { :k1 :v1 :k2 7 :k3 :v1 } )))
+  (and (dict? result)
+       (eq? 3 (length result))
+       (let ((r2 (result :get :k1))
+	     (r3 (result :get :k2))
+	     (r4 (result :get :k3)))
+         (and (eq? r3 7)
+	      (keyword? r2)
+	      (keyword? r4)
+              (not (eq? :v1 r2))
+	      (eq? r2 r4)))))

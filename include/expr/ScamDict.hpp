@@ -28,6 +28,7 @@ namespace scam
 
         bool equals(ScamExpr const * expr) const override;
 
+        bool has(ScamExpr const * key) const;
         ExprHandle get(ScamExpr const * key) const;
         ExprHandle put(ScamExpr const * key, ScamExpr const * val);
         ExprVec const & getKeys() const;
