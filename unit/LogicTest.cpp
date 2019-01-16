@@ -243,3 +243,9 @@ TEST_F(LogicTest, InstantiateDict)
     ExprHandle expr = parseAndEvaluateFile("scripts/logic/dict.scm");
     expectBoolean(expr, true, "#t");
 }
+
+TEST_F(LogicTest, InstantiateSameExprTwice)
+{
+    ExprHandle expr = parseAndEvaluateFile("scripts/logic/sametwice.scm");
+    expectBoolean(expr, true, "#t");
+}
