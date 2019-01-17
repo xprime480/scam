@@ -239,7 +239,17 @@ namespace
         {
             if ( args->length() < 2u ) {
                 stringstream s;
-                s << "match expected pattern data; got " << args->toString();
+                if ( unify ) {
+                    s << "unify";
+                }
+                else {
+                    s << "match";
+                }
+                s << "expected pattern data";
+                if ( unify ) {
+                    s << " [dict]";
+                }
+                s << "; got " << args->toString();
                 ExprHandle err = ExpressionFactory::makeError(s.str());
                 cont->run(err.get());
                 return false;
@@ -252,7 +262,18 @@ namespace
             ExprHandle lhs = args->nthcar(0);
             ExprHandle rhs = args->nthcar(1);
             ExprHandle rv = ExpressionFactory::makeDict();
+            if ( unify && args->length() > 2u ) {
+                rv = args->nthcar(2);
+            }
             ScamDict * dict = dynamic_cast<ScamDict*>(rv.get());
+            if ( nullptr == dict ) {
+                stringstream s;
+                s << "Unify expected dict for third arg; got "
+                  << rv->toString();
+                ExprHandle err = ExpressionFactory::makeError(s.str());
+                cont->run(err.get());
+                return;
+            }
 
             ExprHandle result = exec(dict, lhs.get(), rhs.get());
             if ( unify && result->isDict() ) {
