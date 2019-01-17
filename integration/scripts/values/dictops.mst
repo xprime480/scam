@@ -11,11 +11,13 @@ Dictionary Operations
 (aDict :put fun "hello")
 (aDict :put :key -1.5)
 (aDict :get :key)
-(aDict :length)
+(begin
+  (aDict :remove :key)
+  (aDict :length))
 aDict
 
 [result]
 [keep 3]
 -1.5
-2
-{ :key -1.5 fun hello }
+1
+{ fun hello }

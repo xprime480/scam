@@ -31,6 +31,7 @@ namespace scam
         bool has(ScamExpr const * key) const;
         ExprHandle get(ScamExpr const * key) const;
         ExprHandle put(ScamExpr const * key, ScamExpr const * val);
+        ExprHandle remove(ScamExpr const * key);
         ExprVec const & getKeys() const;
 
     private:

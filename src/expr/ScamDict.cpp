@@ -157,6 +157,22 @@ ExprHandle ScamDict::put(ScamExpr const * key, ScamExpr const * val)
     return v;
 }
 
+ExprHandle ScamDict::remove(ScamExpr const * key)
+{
+    ExprHandle rv = ExpressionFactory::makeNil();
+
+    for ( size_t jdx = 0 ; jdx < keys.size() ; ++jdx ) {
+        if ( keys[jdx]->equals(key) ) {
+            keys.erase(keys.begin() + jdx);
+            rv = vals[jdx];
+            vals.erase(vals.begin() + jdx);
+            break;
+        }
+    }
+
+    return rv;
+}
+
 ExprVec const & ScamDict::getKeys() const
 {
     return keys;
@@ -167,11 +183,14 @@ namespace
     static const ExprHandle getOp = ExpressionFactory::makeKeyword(":get");
     static const ExprHandle putOp = ExpressionFactory::makeKeyword(":put");
     static const ExprHandle lenOp = ExpressionFactory::makeKeyword(":length");
+    static const ExprHandle remOp = ExpressionFactory::makeKeyword(":remove");
+    static const ExprHandle hasOp = ExpressionFactory::makeKeyword(":has");
 
     void bad_op(ScamExpr * op, ContHandle cont)
     {
         stringstream s;
-        s << "Dict expects op = [:get|:put|:length]; got " << op->toString();
+        s << "Dict expects op = [:get|:put|:length|:remove|:has]; got "
+          << op->toString();
         ExprHandle msg = ExpressionFactory::makeError(s.str());
         cont->run(msg.get());
     }
@@ -207,6 +226,39 @@ namespace
         }
     }
 
+    void exec_has(ScamExpr * args, ContHandle cont, ScamDict * dict)
+    {
+        if ( args->length() < 2u ) {
+            stringstream s;
+            s << "dict :has expects key; got: " << args->toString();
+            ExprHandle err = ExpressionFactory::makeError(s.str());
+            cont->run(err.get());
+        }
+        else {
+            ExprHandle key = args->nthcar(1);
+            bool b = dict->has(key.get());
+            ExprHandle rv = ExpressionFactory::makeBoolean(b);
+
+            cont->run(rv.get());
+        }
+    }
+
+    void exec_remove(ScamExpr * args, ContHandle cont, ScamDict * dict)
+    {
+        if ( args->length() < 2u ) {
+            stringstream s;
+            s << "dict :remove expects key; got: " << args->toString();
+            ExprHandle err = ExpressionFactory::makeError(s.str());
+            cont->run(err.get());
+        }
+        else {
+            ExprHandle key = args->nthcar(1);
+            ExprHandle rv = dict->remove(key.get());
+
+            cont->run(rv.get());
+        }
+    }
+
     void exec_length(ContHandle cont, ScamDict * dict)
     {
         ExprHandle len = ExpressionFactory::makeInteger(dict->length());
@@ -229,6 +281,12 @@ namespace
         }
         else if ( op->equals(lenOp.get()) ) {
             exec_length(cont, dict);
+        }
+        else if ( op->equals(hasOp.get()) ) {
+            exec_has(args, cont, dict);
+        }
+        else if ( op->equals(remOp.get()) ) {
+            exec_remove(args, cont, dict);
         }
         else {
             bad_op(op.get(), cont);
