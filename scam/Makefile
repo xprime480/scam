@@ -5,17 +5,18 @@ SRC = $(wildcard *.cpp)
 OBJ = $(SRC:.cpp=.o)
 DEP = $(SRC:.cpp=.d)
 
-CPP = /usr/bin/g++ -g -std=c++11 -Wall
+CPP = /usr/bin/g++
 INC = -I include -I ../include
+CPPFLAGS =  -g -Wall $(INC)
 
 scam : $(OBJ) lib
 	$(CPP) -o $@ $(OBJ) -L../src -lscam
 
 $(OBJ) : %.o : %.cpp
-	$(CPP) $(INC) -c $<
+	$(CPP) $(CPPFLAGS) -c $<
 
 $(DEP) : %.d : %.cpp
-	$(CPP) $(INC) -MM $< -o $*.d
+	$(CPP) $(CPPFLAGS) -MM $< -o $*.d
 
 lib :
 	make -C ../src all

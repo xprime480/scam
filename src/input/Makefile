@@ -5,17 +5,18 @@ SRC = $(wildcard *.cpp)
 OBJ = $(SRC:.cpp=.o)
 DEP = $(SRC:.cpp=.d)
 
-CPP = /usr/bin/g++ -g -std=c++11 -Wall
-INCL = -I ../../include
+CPP = /usr/bin/g++
+INC = -I ../../include
+CPPFLAGS =  -g -Wall $(INC)
 
 libinput.a : $(OBJ)
 	ar crf	$@ $(OBJ)
 
 $(OBJ) : %.o : %.cpp
-	$(CPP) $(INCL) -c $<
+	$(CPP) $(CPPFLAGS) -c $<
 
 $(DEP) : %.d : %.cpp
-	$(CPP) $(INCL) -MM $< -o $*.d
+	$(CPP) $(CPPFLAGS) -MM $< -o $*.d
 
 clean :
 	-@rm -f *.o *.d *.a

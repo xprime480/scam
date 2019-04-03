@@ -30,7 +30,8 @@ namespace scam
     extern WorkQueue GlobalWorkQueue;
 
     template <typename T, typename... Args>
-    typename std::shared_ptr<T> workQueueHelper(Args &... args)
+
+    typename std::shared_ptr<T> workQueueHelper(Args &&... args)
     {
         std::shared_ptr<T> thunk = std::make_shared<T>(args...);
         WorkerHandle start = thunk;

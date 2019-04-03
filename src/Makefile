@@ -5,17 +5,19 @@ SRC = $(wildcard *.cpp)
 OBJ = $(SRC:.cpp=.o)
 DEP = $(SRC:.cpp=.d)
 
-CPP = /usr/bin/g++ -g -std=c++11 -Wall
+CPP = /usr/bin/g++
+INC =  -I ../include
+CPPFLAGS =  -g -Wall $(INC)
 SUBOBJ = input/*.o expr/*.o prim/*.o form/*.o util/*.o
 
 libscam.a : $(OBJ) subs
 	ar crf	$@ $(OBJ) $(SUBOBJ)
 
 $(OBJ) : %.o : %.cpp
-	$(CPP) -I ../include -c $<
+	$(CPP) $(CPPFLAGS) -c $<
 
 $(DEP) : %.d : %.cpp
-	$(CPP) -I ../include -MM $< -o $*.d
+	$(CPP) $(CPPFLAGS)  -MM $< -o $*.d
 
 clean :
 	-@rm -f *.o *.d *.a
