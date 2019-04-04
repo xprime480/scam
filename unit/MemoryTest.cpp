@@ -6,10 +6,36 @@
 using namespace std;
 using namespace scam;
 
-class TestCollectible : public ManagedObject
+/**
+ * MemoryTest
+ *
+ * basic test class for memory tests
+ */
+class MemoryTest //: public ExpressionTestBase
+ : public ::testing::Test
+{
+
+protected:
+    MemoryTest()
+      : mmLarge()
+      , mmSmall(2)
+    {
+    }
+
+  MemoryManager mmLarge;
+  MemoryManager mmSmall;
+
+};
+
+/*
+ * ManagedObjectTest
+ *
+ * a subclass of ManagedObject to exercise the basic functionality
+ */
+class ManagedObjectTest : public ManagedObject
 {
 public:
-    ~TestCollectible()
+    ~ManagedObjectTest()
     {
     }
 
@@ -23,19 +49,19 @@ public:
         }
     }
 
-    static TestCollectible * makeInstance()
+    static ManagedObjectTest * makeInstance()
     {
-        return new TestCollectible();
+        return new ManagedObjectTest();
     }
 
-    static TestCollectible * makeInstance(int value)
+    static ManagedObjectTest * makeInstance(int value)
     {
-        return new TestCollectible(value);
+        return new ManagedObjectTest(value);
     }
 
-    static TestCollectible * makeInstance(TestCollectible * proxy)
+    static ManagedObjectTest * makeInstance(ManagedObjectTest * proxy)
     {
-        return new TestCollectible(proxy);
+        return new ManagedObjectTest(proxy);
     }
 
     int getValue() const
@@ -47,40 +73,42 @@ public:
     }
 
 private:
-    TestCollectible()
+    ManagedObjectTest()
         : value(7)
         , proxy(nullptr)
     {
     }
 
-    explicit TestCollectible(int value)
+    explicit ManagedObjectTest(int value)
         : value(value)
         , proxy(nullptr)
     {
     }
 
-    explicit TestCollectible(TestCollectible * proxy)
+    explicit ManagedObjectTest(ManagedObjectTest * proxy)
         : value(0)
         , proxy(proxy)
     {
     }
 
     int value;
-    TestCollectible * proxy;
+    ManagedObjectTest * proxy;
 };
 
-class MemoryTest //: public ExpressionTestBase
- : public ::testing::Test
-{
-};
+/*****************************************************************
+ * The first set of tests test the basic functionality with
+ *  the ManagedObjectTest class
+ *****************************************************************
+ */
 
 TEST_F(MemoryTest, MarkTest)
 {
-    MemoryManager mm;
-    TestCollectible * proxy = mm.make<TestCollectible>(33);
+    MemoryManager & mm = mmLarge;
+
+    ManagedObjectTest * proxy = mm.make<ManagedObjectTest>(33);
     ASSERT_NE(nullptr, proxy);
 
-    TestCollectible * cut = mm.make<TestCollectible>(proxy);
+    ManagedObjectTest * cut = mm.make<ManagedObjectTest>(proxy);
     ASSERT_NE(nullptr, cut);
     EXPECT_EQ(33, cut->getValue());
 
@@ -100,8 +128,9 @@ TEST_F(MemoryTest, MarkTest)
 
 TEST_F(MemoryTest, CreateTestDefault)
 {
-    MemoryManager mm;
-    TestCollectible * cut = mm.make<TestCollectible>();
+    MemoryManager &  mm = mmLarge;
+
+    ManagedObjectTest * cut = mm.make<ManagedObjectTest>();
     ASSERT_NE(nullptr, cut);
     EXPECT_EQ(7, cut->getValue());
     EXPECT_EQ(1, mm.getCreateCount());
@@ -110,8 +139,9 @@ TEST_F(MemoryTest, CreateTestDefault)
 
 TEST_F(MemoryTest, CreateTestValue)
 {
-    MemoryManager mm;
-    TestCollectible * cut = mm.make<TestCollectible>(-1);
+    MemoryManager &  mm = mmLarge;
+
+    ManagedObjectTest * cut = mm.make<ManagedObjectTest>(-1);
     ASSERT_NE(nullptr, cut);
     EXPECT_EQ(-1, cut->getValue());
     EXPECT_EQ(1, mm.getCreateCount());
@@ -120,8 +150,9 @@ TEST_F(MemoryTest, CreateTestValue)
 
 TEST_F(MemoryTest, GCTestGCNotNeeded)
 {
-    MemoryManager mm;
-    TestCollectible * cut = mm.make<TestCollectible>();
+    MemoryManager &  mm = mmLarge;
+
+    ManagedObjectTest * cut = mm.make<ManagedObjectTest>();
     EXPECT_EQ(7, cut->getValue());
 
     EXPECT_EQ(1, mm.getCurrentCount());
@@ -131,11 +162,12 @@ TEST_F(MemoryTest, GCTestGCNotNeeded)
 
 TEST_F(MemoryTest, GCTestGCNoRoots)
 {
-    MemoryManager mm(2);
-    TestCollectible * cut = mm.make<TestCollectible>();
-    cut = mm.make<TestCollectible>();
-    cut = mm.make<TestCollectible>();
-    cut = mm.make<TestCollectible>();
+    MemoryManager &  mm = mmSmall;
+
+    ManagedObjectTest * cut = mm.make<ManagedObjectTest>();
+    cut = mm.make<ManagedObjectTest>();
+    cut = mm.make<ManagedObjectTest>();
+    cut = mm.make<ManagedObjectTest>();
     EXPECT_EQ(7, cut->getValue());
 
     EXPECT_EQ(4, mm.getCurrentCount());
@@ -145,11 +177,12 @@ TEST_F(MemoryTest, GCTestGCNoRoots)
 
 TEST_F(MemoryTest, GCTestOneRoot)
 {
-    MemoryManager mm(2);
-    TestCollectible * cut = mm.make<TestCollectible>();
-    cut = mm.make<TestCollectible>();
-    cut = mm.make<TestCollectible>();
-    cut = mm.make<TestCollectible>();
+    MemoryManager &  mm = mmSmall;
+
+    ManagedObjectTest * cut = mm.make<ManagedObjectTest>();
+    cut = mm.make<ManagedObjectTest>();
+    cut = mm.make<ManagedObjectTest>();
+    cut = mm.make<ManagedObjectTest>();
 
     EXPECT_EQ(4, mm.getCurrentCount());
 
@@ -164,13 +197,14 @@ TEST_F(MemoryTest, GCTestOneRoot)
 
 TEST_F(MemoryTest, GCTestWithProxy)
 {
-    MemoryManager mm(2);
-    TestCollectible * proxy = mm.make<TestCollectible>(33);
+    MemoryManager &  mm = mmSmall;
+
+    ManagedObjectTest * proxy = mm.make<ManagedObjectTest>(33);
     ASSERT_NE(nullptr, proxy);
 
-    mm.make<TestCollectible>();
-    mm.make<TestCollectible>();
-    TestCollectible * cut = mm.make<TestCollectible>(proxy);
+    mm.make<ManagedObjectTest>();
+    mm.make<ManagedObjectTest>();
+    ManagedObjectTest * cut = mm.make<ManagedObjectTest>(proxy);
     ASSERT_NE(nullptr, cut);
     EXPECT_EQ(33, cut->getValue());
 
@@ -186,3 +220,22 @@ TEST_F(MemoryTest, GCTestWithProxy)
     EXPECT_FALSE(proxy->isMarked());
     EXPECT_EQ(33, cut->getValue());
 }
+
+/*****************************************************************
+ * The second set of tests test the basic functionality with
+ *  the ScamExpr objects
+ *****************************************************************
+ */
+
+/**
+TEST_F(MemoryTest, TestScamNil)
+{
+    MemoryManager &  mm = mmSmall;
+
+    ManagedObjectTest * cut = mm.make<ScamNull>();
+    ASSERT_NE(nullptr, cut);
+
+    EXPECT_EQ(1, mm.getCreateCount());
+    EXPECT_EQ(1, mm.getCurrentCount());
+}
+**/
