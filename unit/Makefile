@@ -29,7 +29,7 @@ do_it_manually :
 	make -C gmock all
 
 test : unittests
-	@./unittests
+	@./unittests --gtest_filter=MemoryTest.*
 
 by_module : unittests
 	@./unittests --gtest_filter=TrampolineTest.*
@@ -50,6 +50,7 @@ by_module : unittests
 	@./unittests --gtest_filter=ContinuationTest.*
 	@./unittests --gtest_filter=SystemTest.*
 	@./unittests --gtest_filter=PreludeTest.*
+	@./unittests --gtest_filter=MemoryTest.*
 
 clean :
 	make -C ../src clean
