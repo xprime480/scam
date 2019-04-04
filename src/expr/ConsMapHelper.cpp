@@ -99,12 +99,6 @@ MapWorker::MapWorker(ContHandle cont,
     data.cont = make_shared<CarContinuation>(data);
 }
 
-MapWorker::MapWorker(WorkerData const & data)
-    : Worker("Cons Map Copy")
-    , data(data)
-{
-}
-
 void MapWorker::run()
 {
     Worker::run();

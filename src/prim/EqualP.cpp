@@ -74,6 +74,7 @@ namespace
         return false;
     }
 
+#if 0
     ExprHandle all(ScamExpr * args)
     {
         const size_t len = args->length();
@@ -86,6 +87,7 @@ namespace
 
         return yes;
     }
+#endif
 
     ExprHandle any(ScamExpr * args)
     {
