@@ -3,6 +3,8 @@
 
 #include "expr/ScamExpr.hpp"
 
+#include "util/MemoryManager.hpp"
+
 #include <memory>
 #include <string>
 #include <vector>
@@ -12,83 +14,67 @@ namespace scam
     class Continuation;
     using ContHandle = std::shared_ptr<Continuation>;
 
-    using ExprVec = std::vector<ExprHandle>;
+    using ExprVec = std::vector<ScamExpr *>;
 
     class ExpressionFactory
     {
     public:
-        static ExprHandle makeNull();
+        static ScamExpr * makeNull();
 
-        static ExprHandle makeError(char const * msg);
-        static ExprHandle makeError(std::string const & msg);
+        static ScamExpr * makeError(char const * msg);
+        static ScamExpr * makeError(std::string const & msg);
 
-        static ExprHandle makeBoolean(bool value);
-        static ExprHandle makeCharacter(std::string const & value);
+        static ScamExpr * makeBoolean(bool value);
+        static ScamExpr * makeCharacter(std::string const & value);
 
-        static ExprHandle makeString(std::string const & value);
-        static ExprHandle makeSymbol(std::string const & value);
-        static ExprHandle makeKeyword(std::string const & value);
+        static ScamExpr * makeString(std::string const & value);
+        static ScamExpr * makeSymbol(std::string const & value);
+        static ScamExpr * makeKeyword(std::string const & value);
 
-        static ExprHandle makeFloat(double value);
-        static ExprHandle makeInteger(int value);
+        static ScamExpr * makeFloat(double value);
+        static ScamExpr * makeInteger(int value);
 
-        static ExprHandle makeNil();
-        static ExprHandle makeCons(ScamExpr * car, ScamExpr * cdr);
+        static ScamExpr * makeNil();
+        static ScamExpr * makeCons(ScamExpr * car, ScamExpr * cdr);
 
-        static ExprHandle makeList();
-        static ExprHandle makeList(ScamExpr * item);
+        static ScamExpr * makeList();
+        static ScamExpr * makeList(ScamExpr * item);
 
         template <typename... Args>
-        static ExprHandle makeList(ScamExpr * car, Args... args)
+        static ScamExpr * makeList(ScamExpr * car, Args... args)
         {
-            return makeCons(car, makeList(args...).get());
+            return makeCons(car, makeList(args...));
         }
 
-        static ExprHandle makeVector(ExprVec const & elts);
+        static ScamExpr * makeVector(ExprVec const & elts);
 
-        static ExprHandle makeClosure(ScamExpr * formals,
+        static ScamExpr * makeClosure(ScamExpr * formals,
                                       ScamExpr * forms,
                                       Env env,
                                       bool macrolike = false);
 
-        static ExprHandle makeClass(ScamExpr * base,
+        static ScamExpr * makeClass(ScamExpr * base,
                                     ScamExpr * vars,
                                     ScamExpr * funs,
                                     Env env);
 
-        static ExprHandle makeInstance(ScamExpr * vars,
+        static ScamExpr * makeInstance(ScamExpr * vars,
                                        ScamExpr * funs,
                                        Env env);
 
-        static ExprHandle makeContinuation(ContHandle cont);
+        static ScamExpr * makeContinuation(ContHandle cont);
 
-        static ExprHandle makeDict();
-        static ExprHandle makeDict(ExprVec const & args);
+        static ScamExpr * makeDict();
+        static ScamExpr * makeDict(ExprVec const & args);
 
         template <typename T, typename... Args>
-        static ExprHandle makeForm(Args... args)
+        static ScamExpr * makeForm(Args... args)
         {
-            return intern(std::make_shared<T>(args...));
+            return mm.make<T>(args...);
         }
-
-        template <typename T, bool Cache = true>
-        static ExprHandle makeForm()
-        {
-            if ( Cache ) {
-                static const ExprHandle cached = intern(std::make_shared<T>());
-                return cached;
-            }
-            else {
-                return intern(std::make_shared<T>());
-            }
-        }
-
-        static ExprHandle clone(ScamExpr const *);
-
-        static unsigned getMaxHandles();
 
     private:
-        static ExprHandle intern(ExprHandle expr);
+        static MemoryManager mm;
     };
 }
 #endif

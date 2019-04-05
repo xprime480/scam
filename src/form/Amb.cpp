@@ -26,6 +26,11 @@ Amb::Amb(ScamEngine * engine)
 {
 }
 
+Amb * Amb::makeInstance(ScamEngine * engine)
+{
+    return new Amb(engine);
+}
+
 void Amb::apply(ScamExpr * args, ContHandle cont, Env env)
 {
     do_apply(args, cont, env, engine);
@@ -42,7 +47,7 @@ namespace
                        ScamEngine * engine,
                        BacktrackHandle parent)
             : Backtracker("AmbBacktracker", parent)
-            , args(args->clone())
+            , args(args)
             , cont(cont)
             , env(env)
             , engine(engine)
@@ -57,12 +62,12 @@ namespace
                 runParent(cont);
             }
             else {
-                ExprHandle head = args->nthcar(0);
-                ExprHandle tail = args->nthcdr(0);
+                ScamExpr * head = args->nthcar(0);
+                ScamExpr * tail = args->nthcdr(0);
 
                 BacktrackHandle backtracker = engine->getBacktracker();
                 shared_ptr<Backtracker> newBt =
-                    make_shared<AmbBacktracker>(tail.get(),
+                    make_shared<AmbBacktracker>(tail,
                                                 cont,
                                                 env,
                                                 engine,
@@ -74,7 +79,7 @@ namespace
         }
 
     private:
-        ExprHandle      args;
+        ScamExpr *      args;
         ContHandle      cont;
         Env             env;
         ScamEngine    * engine;

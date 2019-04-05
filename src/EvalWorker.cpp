@@ -22,8 +22,8 @@ namespace
         {
             if ( expr->isList() && ! expr->isNil() ) {
                 unsigned len = expr->length();
-                ExprHandle last = expr->nthcar(len - 1);
-                cont->run(last.get());
+                ScamExpr * last = expr->nthcar(len - 1);
+                cont->run(last);
             }
             else {
                 cont->run(expr);
@@ -38,7 +38,7 @@ namespace
 
 EvalWorker::EvalWorker(ScamExpr * forms, Env extended, ContHandle cont)
     : Worker("eval")
-    , forms(forms->clone())
+    , forms(forms)
     , extended(extended)
     , cont(cont)
 {

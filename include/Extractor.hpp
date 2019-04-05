@@ -27,16 +27,16 @@ namespace scam
                       << " getting " << expr->toString() << "\n";
 #endif
             Continuation::run(expr);
-            e = expr->clone();
+            e = expr;
         }
 
-        ExprHandle getExpr() const
+        ScamExpr * getExpr() const
         {
             return e;
         }
 
     private:
-        ExprHandle e;
+        ScamExpr * e;
     };
 }
 

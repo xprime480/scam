@@ -7,9 +7,11 @@ namespace scam
 {
     class EqualP : public Primitive
     {
-    public:
+    private:
         EqualP();
 
+    public:
+        static EqualP * makeInstance();
         void applyArgs(ScamExpr * args, ContHandle cont) override;
 
         bool equals(ScamExpr const * expr) const override;

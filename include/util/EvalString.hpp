@@ -16,7 +16,7 @@ namespace scam
         EvalString(ScamEngine * engine, std::string const & text);
         ~EvalString();
 
-        ExprHandle run();
+        ScamExpr * run();
 
     private:
         ScamEngine * engine;

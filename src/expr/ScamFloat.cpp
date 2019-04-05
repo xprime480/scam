@@ -13,6 +13,11 @@ ScamFloat::ScamFloat(double value)
 {
 }
 
+ScamFloat * ScamFloat::makeInstance(double value)
+{
+    return new ScamFloat(value);
+}
+
 string ScamFloat::toString() const
 {
     stringstream s;

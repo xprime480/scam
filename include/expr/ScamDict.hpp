@@ -7,13 +7,19 @@
 
 namespace scam
 {
-    using ExprVec = std::vector<ExprHandle>;
+    using KeyVec = std::vector<ScamExpr const *>;
+    using ValVec = std::vector<ScamExpr *>;
 
     class ScamDict : public ScamExpr
     {
     public:
         ScamDict();
-        ScamDict(ExprVec const & args);
+        ScamDict(ValVec const & args);
+
+    public:
+        static ScamDict * makeInstance();
+        static ScamDict * makeInstance(ValVec const & args);
+        void mark() const override;
 
         std::string toString() const override;
 
@@ -29,14 +35,14 @@ namespace scam
         bool equals(ScamExpr const * expr) const override;
 
         bool has(ScamExpr const * key) const;
-        ExprHandle get(ScamExpr const * key) const;
-        ExprHandle put(ScamExpr const * key, ScamExpr const * val);
-        ExprHandle remove(ScamExpr const * key);
-        ExprVec const & getKeys() const;
+        ScamExpr * get(ScamExpr const * key) const;
+        ScamExpr * put(ScamExpr const * key, ScamExpr * val);
+        ScamExpr * remove(ScamExpr const * key);
+        KeyVec const & getKeys() const;
 
     private:
-        ExprVec keys;
-        ExprVec vals;
+        KeyVec keys;
+        ValVec vals;
     };
 }
 

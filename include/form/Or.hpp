@@ -7,9 +7,11 @@ namespace scam
 {
     class Or : public SpecialForm
     {
-    public:
+    private:
         Or();
 
+    public:
+        static Or * makeInstance();
         void apply(ScamExpr * args, ContHandle cont, Env env) override;
     };
 }

@@ -7,8 +7,12 @@ namespace scam
 {
     class ScamCons : public ScamExpr
     {
-    public:
+    private:
         ScamCons(ScamExpr * car, ScamExpr * cdr);
+
+    public:
+        static ScamCons * makeInstance(ScamExpr * car, ScamExpr * cdr);
+        void mark() const override;
 
         std::string toString() const override;
         void eval(ContHandle cont, Env env) override;
@@ -17,18 +21,18 @@ namespace scam
         bool isCons() const override;
         bool isList() const override;
 
-        ExprHandle getCar() const override;
-        ExprHandle getCdr() const override;
+        ScamExpr * getCar() const override;
+        ScamExpr * getCdr() const override;
 
         size_t length() const override;
-        ExprHandle nthcar(size_t n) const override;
-        ExprHandle nthcdr(size_t n) const override;
+        ScamExpr * nthcar(size_t n) const override;
+        ScamExpr * nthcdr(size_t n) const override;
 
         bool equals(ScamExpr const * expr) const override;
 
     private:
-        ExprHandle car;
-        ExprHandle cdr;
+        ScamExpr * car;
+        ScamExpr * cdr;
     };
 }
 

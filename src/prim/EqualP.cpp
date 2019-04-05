@@ -20,6 +20,11 @@ EqualP::EqualP()
 {
 }
 
+EqualP * EqualP::makeInstance()
+{
+    return new EqualP();
+}
+
 void EqualP::applyArgs(ScamExpr * args, ContHandle cont)
 {
     equal_p_impl(args, cont);
@@ -33,13 +38,13 @@ bool EqualP::equals(ScamExpr const * expr) const
 
 namespace
 {
-    static const ExprHandle yes = ExpressionFactory::makeBoolean(true);
-    static const ExprHandle no  = ExpressionFactory::makeBoolean(false);
+    static ScamExpr * const yes = ExpressionFactory::makeBoolean(true);
+    static ScamExpr * const no  = ExpressionFactory::makeBoolean(false);
 
     extern bool compare_all(ScamExpr * args);
 
     template <typename MapFn>
-    ExprHandle apply_map(ScamExpr * args, MapFn mapper)
+    ScamExpr * apply_map(ScamExpr * args, MapFn mapper)
     {
         if ( args->isNil() ) {
             return ExpressionFactory::makeNil();
@@ -48,38 +53,38 @@ namespace
             return mapper(args);
         }
 
-        ExprHandle car = args->nthcar(0);
-        ExprHandle cdr = args->nthcdr(0);
+        ScamExpr * car = args->nthcar(0);
+        ScamExpr * cdr = args->nthcdr(0);
 
-        ExprHandle newCar = mapper(car.get());
-        ExprHandle newCdr = apply_map(cdr.get(), mapper);
+        ScamExpr * newCar = mapper(car);
+        ScamExpr * newCdr = apply_map(cdr, mapper);
 
-        return ExpressionFactory::makeCons(newCar.get(), newCdr.get());
+        return ExpressionFactory::makeCons(newCar, newCdr);
     }
 
     template <typename MapFn, typename ReduceFn>
-    ExprHandle map_reduce(ScamExpr * args, MapFn mapper, ReduceFn reducer)
+    ScamExpr * map_reduce(ScamExpr * args, MapFn mapper, ReduceFn reducer)
     {
-        ExprHandle mapped = apply_map(args, mapper);
-        ExprHandle reduced = reducer(mapped.get());
+        ScamExpr * mapped = apply_map(args, mapper);
+        ScamExpr * reduced = reducer(mapped);
         return reduced;
     }
 
     bool zero_args(ScamExpr * args, ContHandle cont)
     {
         if ( 0 == args->length() ) {
-            cont->run(yes.get());
+            cont->run(yes);
             return true;
         }
         return false;
     }
 
 #if 0
-    ExprHandle all(ScamExpr * args)
+    ScamExpr * all(ScamExpr * args)
     {
         const size_t len = args->length();
         for ( size_t idx = 0 ; idx < len ; ++idx ) {
-            ExprHandle arg = args->nthcar(idx);
+            ScamExpr * arg = args->nthcar(idx);
             if ( ! arg->truth() ) {
                 return no;
             }
@@ -89,7 +94,7 @@ namespace
     }
 #endif
 
-    ExprHandle any(ScamExpr * args)
+    ScamExpr * any(ScamExpr * args)
     {
         const size_t len = args->length();
         for ( size_t idx = 0 ; idx < len ; ++idx ) {
@@ -102,17 +107,17 @@ namespace
 
     bool has_nulls(ScamExpr * args, ContHandle cont)
     {
-        auto fn = [](ScamExpr * arg) -> ExprHandle {
+        auto fn = [](ScamExpr * arg) -> ScamExpr * {
             return ExpressionFactory::makeBoolean(arg->isNull());
         };
-        ExprHandle answer = map_reduce(args, fn, any);
+        ScamExpr * answer = map_reduce(args, fn, any);
         return answer->truth();
     }
 
     bool one_arg(ScamExpr * args, ContHandle cont)
     {
         if ( 1 == args->length() ) {
-            cont->run(yes.get());
+            cont->run(yes);
             return true;
         }
         return false;
@@ -120,11 +125,11 @@ namespace
 
     bool compare_all(ScamExpr * args)
     {
-        ExprHandle first = args->nthcar(0);
+        ScamExpr * first = args->nthcar(0);
 
         for ( size_t idx = 1 ; idx < args->length() ; ++idx ) {
-            ExprHandle op = args->nthcar(idx);
-            if ( ! first->equals(op.get()) ) {
+            ScamExpr * op = args->nthcar(idx);
+            if ( ! first->equals(op) ) {
                 return false;
             }
         }
@@ -140,10 +145,10 @@ namespace
             return;
         }
         if ( compare_all(args) ) {
-            cont->run(yes.get());
+            cont->run(yes);
         }
         else {
-            cont->run(no.get());
+            cont->run(no);
         }
     }
 }

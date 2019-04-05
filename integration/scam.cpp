@@ -27,7 +27,7 @@ namespace
         engine.reset(true);
         engine.pushFrame();
         EvalString helper(&engine, testforms);
-        ExprHandle status = helper.run();
+        ScamExpr * status = helper.run();
         return ! ( status->isNull() || status->error() );
     }
 }

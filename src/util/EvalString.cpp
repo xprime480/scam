@@ -18,7 +18,7 @@ EvalString::~EvalString()
     engine->popInput();
 }
 
-ExprHandle EvalString::run()
+ScamExpr * EvalString::run()
 {
     return engine->parseCurrentInput();
 }

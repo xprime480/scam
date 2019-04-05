@@ -15,6 +15,11 @@ ScamSymbol::ScamSymbol(string const & value)
 {
 }
 
+ScamSymbol * ScamSymbol::makeInstance(std::string const & value)
+{
+    return new ScamSymbol(value);
+}
+
 string ScamSymbol::toString() const
 {
     return value;
@@ -22,7 +27,7 @@ string ScamSymbol::toString() const
 
 void ScamSymbol::eval(ContHandle cont, Env env)
 {
-    ExprHandle evaluated;
+    ScamExpr * evaluated;
 
     if ( env.check(this) ) {
         evaluated = env.get(this);
@@ -33,7 +38,7 @@ void ScamSymbol::eval(ContHandle cont, Env env)
         evaluated = ExpressionFactory::makeError(s.str());
     }
 
-    cont->run(evaluated.get());
+    cont->run(evaluated);
 }
 
 bool ScamSymbol::isSymbol() const

@@ -10,6 +10,11 @@ ScamCharacter::ScamCharacter(string const & value)
 {
 }
 
+ScamCharacter * ScamCharacter::makeInstance(string const & value)
+{
+    return new ScamCharacter(value);
+}
+
 string ScamCharacter::toString() const
 {
     return value;

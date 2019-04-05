@@ -18,8 +18,8 @@ CompareOp::CompareOp(char const * name, shared_ptr<OpImpl> impl)
 void CompareOp::applyArgs(ScamExpr * args, ContHandle cont)
 {
     string const context = toString();
-    ExprHandle rv = compareAlgorithm(args, context, impl);
-    cont->run(rv.get());
+    ScamExpr * rv = compareAlgorithm(args, context, impl);
+    cont->run(rv);
 }
 
 
@@ -91,7 +91,9 @@ namespace
 
 #define CMP_OP_DEFINE(Name, Impl)                                \
     Name::Name()                                         \
-        : CompareOp(#Name, Impl) {}
+        : CompareOp(#Name, Impl) {}                      \
+    Name * Name::makeInstance() { return new Name(); }
+
 
 CMP_OP_DEFINE(Eq, eqDef);
 CMP_OP_DEFINE(Ne, neDef);

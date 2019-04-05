@@ -11,8 +11,13 @@ namespace scam
 
     class ScamInstance : public ScamExpr
     {
-    public:
+    private:
         ScamInstance(ScamExpr * vars, ScamExpr * funs, Env env);
+
+    public:
+        static ScamInstance* makeInstance(ScamExpr * vars,
+                                          ScamExpr * funs,
+                                          Env env);
 
         std::string toString() const override;
 

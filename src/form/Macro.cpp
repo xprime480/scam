@@ -13,11 +13,16 @@ Macro::Macro()
 {
 }
 
+Macro * Macro::makeInstance()
+{
+    return new Macro();
+}
+
 void Macro::apply(ScamExpr * args, ContHandle cont, Env env)
 {
-    ExprHandle expr = ExpressionFactory::makeClosure(args->getCar().get(),
-                                                     args->getCdr().get(),
+    ScamExpr * expr = ExpressionFactory::makeClosure(args->getCar(),
+                                                     args->getCdr(),
                                                      env,
                                                      true);
-    cont->run(expr.get());
+    cont->run(expr);
 }

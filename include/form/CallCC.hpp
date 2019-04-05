@@ -7,9 +7,11 @@ namespace scam
 {
     class CallCC : public SpecialForm
     {
-    public:
+    private:
         CallCC();
 
+    public:
+        static CallCC * makeInstance();
         void apply(ScamExpr * args, ContHandle cont, Env env) override;
     };
 }

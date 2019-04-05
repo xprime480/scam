@@ -17,13 +17,13 @@ namespace scam
     };
 
     using NumericalAlgorithm =
-        std::function<double(std::vector<double> const &, ExprHandle & state)>;
+        std::function<double(std::vector<double> const &, ScamExpr * & state)>;
 
-    extern ExprHandle numericAlgorithm(ScamExpr * args,
+    extern ScamExpr * numericAlgorithm(ScamExpr * args,
                                        std::string const & context,
                                        NumericalAlgorithm algo);
 
-    extern ExprHandle compareAlgorithm(ScamExpr * args,
+    extern ScamExpr * compareAlgorithm(ScamExpr * args,
                                        std::string const & context,
                                        std::shared_ptr<OpImpl> impl);
 }

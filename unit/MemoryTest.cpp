@@ -1,4 +1,6 @@
 
+#include "expr/ScamExprAll.hpp"
+
 #include "util/MemoryManager.hpp"
 
 #include "ExpressionTestBase.hpp"
@@ -11,20 +13,43 @@ using namespace scam;
  *
  * basic test class for memory tests
  */
-class MemoryTest //: public ExpressionTestBase
- : public ::testing::Test
+class MemoryTest : public ExpressionTestBase
 {
 
 protected:
     MemoryTest()
-      : mmLarge()
-      , mmSmall(2)
+      : mm(2)
     {
     }
 
-  MemoryManager mmLarge;
-  MemoryManager mmSmall;
+    MemoryManager mm;
 
+    void testBoolean(bool val, string const & rep)
+    {
+        ScamBoolean * cut1 = mm.make<ScamBoolean>(val);
+        ScamBoolean * cut2 = mm.make<ScamBoolean>(val);
+
+        expectBoolean(cut1, val, rep);
+        expectBoolean(cut2, val, rep);
+
+        expectNonManaged(cut1, cut2);
+    }
+
+    void expectManaged(ScamExpr const * cut1,
+                       ScamExpr const * cut2,
+                       size_t count = 2)
+    {
+        EXPECT_NE(cut1, cut2);
+        EXPECT_EQ(count, mm.getCreateCount());
+        EXPECT_EQ(count, mm.getCurrentCount());
+    }
+
+    void expectNonManaged(ScamExpr const * cut1, ScamExpr const * cut2)
+    {
+        EXPECT_EQ(cut1, cut2);
+        EXPECT_EQ(0, mm.getCreateCount());
+        EXPECT_EQ(0, mm.getCurrentCount());
+    }
 };
 
 /*
@@ -39,7 +64,7 @@ public:
     {
     }
 
-    void mark() override
+    void mark() const override
     {
         if ( ! isMarked() ) {
             ManagedObject::mark();
@@ -103,8 +128,6 @@ private:
 
 TEST_F(MemoryTest, MarkTest)
 {
-    MemoryManager & mm = mmLarge;
-
     ManagedObjectTest * proxy = mm.make<ManagedObjectTest>(33);
     ASSERT_NE(nullptr, proxy);
 
@@ -128,8 +151,6 @@ TEST_F(MemoryTest, MarkTest)
 
 TEST_F(MemoryTest, CreateTestDefault)
 {
-    MemoryManager &  mm = mmLarge;
-
     ManagedObjectTest * cut = mm.make<ManagedObjectTest>();
     ASSERT_NE(nullptr, cut);
     EXPECT_EQ(7, cut->getValue());
@@ -139,8 +160,6 @@ TEST_F(MemoryTest, CreateTestDefault)
 
 TEST_F(MemoryTest, CreateTestValue)
 {
-    MemoryManager &  mm = mmLarge;
-
     ManagedObjectTest * cut = mm.make<ManagedObjectTest>(-1);
     ASSERT_NE(nullptr, cut);
     EXPECT_EQ(-1, cut->getValue());
@@ -150,8 +169,6 @@ TEST_F(MemoryTest, CreateTestValue)
 
 TEST_F(MemoryTest, GCTestGCNotNeeded)
 {
-    MemoryManager &  mm = mmLarge;
-
     ManagedObjectTest * cut = mm.make<ManagedObjectTest>();
     EXPECT_EQ(7, cut->getValue());
 
@@ -162,8 +179,6 @@ TEST_F(MemoryTest, GCTestGCNotNeeded)
 
 TEST_F(MemoryTest, GCTestGCNoRoots)
 {
-    MemoryManager &  mm = mmSmall;
-
     ManagedObjectTest * cut = mm.make<ManagedObjectTest>();
     cut = mm.make<ManagedObjectTest>();
     cut = mm.make<ManagedObjectTest>();
@@ -177,8 +192,6 @@ TEST_F(MemoryTest, GCTestGCNoRoots)
 
 TEST_F(MemoryTest, GCTestOneRoot)
 {
-    MemoryManager &  mm = mmSmall;
-
     ManagedObjectTest * cut = mm.make<ManagedObjectTest>();
     cut = mm.make<ManagedObjectTest>();
     cut = mm.make<ManagedObjectTest>();
@@ -197,8 +210,6 @@ TEST_F(MemoryTest, GCTestOneRoot)
 
 TEST_F(MemoryTest, GCTestWithProxy)
 {
-    MemoryManager &  mm = mmSmall;
-
     ManagedObjectTest * proxy = mm.make<ManagedObjectTest>(33);
     ASSERT_NE(nullptr, proxy);
 
@@ -223,19 +234,231 @@ TEST_F(MemoryTest, GCTestWithProxy)
 
 /*****************************************************************
  * The second set of tests test the basic functionality with
- *  the ScamExpr objects
+ *  the ScamExpr objects.
+ *
+ * First test the primitive types.
+ *
+ *****************************************************************
+ */
+TEST_F(MemoryTest, TestScamNull)
+{
+    ScamNull * cut1 = mm.make<ScamNull>();
+    ScamNull * cut2 = mm.make<ScamNull>();
+
+    expectNull(cut1);
+    expectNull(cut2);
+
+    expectNonManaged(cut1, cut2);
+}
+
+TEST_F(MemoryTest, TestScamNil)
+{
+    ScamNil * cut1 = mm.make<ScamNil>();
+    ScamNil * cut2 = mm.make<ScamNil>();
+
+    expectNil(cut1);
+    expectNil(cut2);
+
+    expectNonManaged(cut1, cut2);
+}
+
+TEST_F(MemoryTest, TestScamBoolean)
+{
+    testBoolean(true,  "#t");
+    testBoolean(false, "#f");
+}
+
+TEST_F(MemoryTest, TestScamCharacter)
+{
+    const string repr { "#\\a" };
+
+    ScamCharacter * cut1 = mm.make<ScamCharacter>(repr);
+    ScamCharacter * cut2 = mm.make<ScamCharacter>(repr);
+
+    expectChar(cut1, 'a', repr);
+    expectChar(cut2, 'a', repr);
+
+    expectManaged(cut1, cut2);
+}
+
+TEST_F(MemoryTest, TestScamInteger)
+{
+    const int value { 1 };
+    const string repr { "1" };
+
+    ScamInteger * cut1 = mm.make<ScamInteger>(value);
+    ScamInteger * cut2 = mm.make<ScamInteger>(value);
+
+    expectInteger(cut1, value, repr);
+    expectInteger(cut2, value, repr);
+
+    expectManaged(cut1, cut2);
+}
+
+TEST_F(MemoryTest, TestScamFloat)
+{
+    const float value { 2.5 };
+    const string repr { "2.5" };
+
+    ScamFloat * cut1 = mm.make<ScamFloat>(value);
+    ScamFloat * cut2 = mm.make<ScamFloat>(value);
+
+    expectFloat(cut1, value, repr);
+    expectFloat(cut2, value, repr);
+
+    expectManaged(cut1, cut2);
+}
+
+
+TEST_F(MemoryTest, TestScamString)
+{
+    const string value { "my test string" };
+
+    ScamString * cut1 = mm.make<ScamString>(value);
+    ScamString * cut2 = mm.make<ScamString>(value);
+
+    expectString(cut1, value);
+    expectString(cut2, value);
+
+    expectManaged(cut1, cut2);
+}
+
+TEST_F(MemoryTest, TestScamSymbol)
+{
+    const string value { "my test string" };
+
+    ScamSymbol * cut1 = mm.make<ScamSymbol>(value);
+    ScamSymbol * cut2 = mm.make<ScamSymbol>(value);
+
+    expectSymbol(cut1, value);
+    expectSymbol(cut2, value);
+
+    expectManaged(cut1, cut2);
+}
+
+TEST_F(MemoryTest, TestScamKeyword)
+{
+    const string value { ":aKeyword" };
+
+    ScamKeyword * cut1 = mm.make<ScamKeyword>(value);
+    ScamKeyword * cut2 = mm.make<ScamKeyword>(value);
+
+    expectKeyword(cut1, value);
+    expectKeyword(cut2, value);
+
+    expectManaged(cut1, cut2);
+}
+
+TEST_F(MemoryTest, TestScamError)
+{
+    const char * value { "I don't know what went wrong" };
+
+    ScamError * cut1 = mm.make<ScamError>(value);
+    ScamError * cut2 = mm.make<ScamError>(value);
+
+    expectError(cut1, value);
+    expectError(cut2, value);
+
+    expectManaged(cut1, cut2);
+}
+
+/*****************************************************************
+ *
+ * Now test the composite type.
+ *
+ * The distinguishing feature is that composite types have
+ * components that must be marked when the main object is marked.
+ *
  *****************************************************************
  */
 
-/**
-TEST_F(MemoryTest, TestScamNil)
+TEST_F(MemoryTest, TestScamCons)
 {
-    MemoryManager &  mm = mmSmall;
+    ScamExpr * car = mm.make<ScamInteger>(1);
+    ScamExpr * cdr = mm.make<ScamInteger>(2);
+    ScamCons * cons1 = mm.make<ScamCons>(car, cdr);
+    ScamCons * cons2 = mm.make<ScamCons>(car, cdr);
 
-    ManagedObjectTest * cut = mm.make<ScamNull>();
-    ASSERT_NE(nullptr, cut);
+    expectCons(cons1, "(1 . 2)");
+    expectCons(cons2, "(1 . 2)");
 
-    EXPECT_EQ(1, mm.getCreateCount());
-    EXPECT_EQ(1, mm.getCurrentCount());
+    expectManaged(cons1, cons2, 4);
+
+    cons1->mark();
+    EXPECT_TRUE(cons1->isMarked());
+    EXPECT_TRUE(car->isMarked());
+    EXPECT_TRUE(cdr->isMarked());
 }
-**/
+
+TEST_F(MemoryTest, TestScamDict)
+{
+    ScamDict * dict1 = mm.make<ScamDict>();
+    ScamDict * dict2 = mm.make<ScamDict>();
+    ScamExpr * key1 = mm.make<ScamKeyword>(":key1");
+    ScamExpr * key2 = mm.make<ScamKeyword>(":key2");
+    ScamExpr * val1 = mm.make<ScamInteger>(1);
+    ScamExpr * val2 = mm.make<ScamInteger>(2);
+    ScamExpr * val3 = mm.make<ScamInteger>(3);
+
+    dict1->put(key1, val1);
+    dict1->put(key2, val2);
+    dict1->put(key1, val3);
+
+    dict2->put(key2, val1);
+
+    expectDict(dict1, 2, "{ :key1 3 :key2 2 }");
+    expectDict(dict2, 1, "{ :key2 1 }");
+
+    expectManaged(dict1, dict2, 7);
+
+    dict1->mark();
+    EXPECT_TRUE(dict1->isMarked());
+    EXPECT_TRUE(key1->isMarked());
+    EXPECT_TRUE(key2->isMarked());
+    EXPECT_FALSE(val1->isMarked());
+    EXPECT_TRUE(val2->isMarked());
+    EXPECT_TRUE(val3->isMarked());
+}
+
+TEST_F(MemoryTest, TestScamVector)
+{
+    ScamExpr * val1 = mm.make<ScamInteger>(1);
+    ScamExpr * val2 = mm.make<ScamInteger>(2);
+    ScamExpr * val3 = mm.make<ScamInteger>(3);
+
+    ExprVec elts;
+
+    elts.push_back(val1);
+    elts.push_back(val2);
+
+    ScamVector * vec2 = mm.make<ScamVector>(elts);
+
+    expectVector(vec2, "[1 2]", 2);
+
+    vec2->mark();
+    EXPECT_TRUE(vec2->isMarked());
+    EXPECT_TRUE(val1->isMarked());
+    EXPECT_TRUE(val2->isMarked());
+    EXPECT_FALSE(val3->isMarked());
+}
+/**
+#include "expr/ScamNull.hpp"
+#include "expr/ScamNil.hpp"
+#include "expr/ScamBoolean.hpp"
+#include "expr/ScamCharacter.hpp"
+#include "expr/ScamInteger.hpp"
+#include "expr/ScamFloat.hpp"
+#include "expr/ScamString.hpp"
+#include "expr/ScamSymbol.hpp"
+#include "expr/ScamKeyword.hpp"
+#include "expr/ScamError.hpp"
+#include "expr/ScamCons.hpp"
+#include "expr/ScamDict.hpp"
+#include "expr/ScamVector.hpp"
+
+
+#include "expr/ScamContinuation.hpp"
+#include "expr/ScamClosure.hpp"
+#include "expr/ScamClass.hpp"
+#include "expr/ScamInstance.hpp"
+*/

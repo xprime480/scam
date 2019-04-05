@@ -48,12 +48,12 @@ namespace
 class ParserTest : public ExpressionTestBase
 {
 protected:
-    ExprHandle runTest(vector<Token> const & tokens)
+    ScamExpr * runTest(vector<Token> const & tokens)
     {
         StaticTokenizer tokenizer(tokens);
         ScamParser parser(tokenizer);
-        ExprHandle expr = parser.parseExpr();
-        EXPECT_NE(nullptr, expr.get());
+        ScamExpr * expr = parser.parseExpr();
+        EXPECT_NE(nullptr, expr);
         return expr;
     }
 
@@ -63,7 +63,7 @@ protected:
             Token(TokenType::TT_BOOLEAN, msg)
         };
 
-        ExprHandle expr = runTest(tokens);
+        ScamExpr * expr = runTest(tokens);
         expectBoolean(expr, value, msg);
     }
 };
@@ -74,7 +74,7 @@ TEST_F(ParserTest, NoneToken)
         Token(TokenType::TT_NONE, "")
     };
 
-    ExprHandle expr = runTest(tokens);
+    ScamExpr * expr = runTest(tokens);
     expectError(expr);
 }
 
@@ -83,7 +83,7 @@ TEST_F(ParserTest, EndOfInput)
     vector<Token> tokens {
     };
 
-    ExprHandle expr = runTest(tokens);
+    ScamExpr * expr = runTest(tokens);
     expectNull(expr);
 }
 
@@ -94,7 +94,7 @@ TEST_F(ParserTest, ScanError)
         Token(TokenType::TT_SCAN_ERROR, msg)
     };
 
-    ExprHandle expr = runTest(tokens);
+    ScamExpr * expr = runTest(tokens);
     expectError(expr, msg);
 }
 
@@ -115,7 +115,7 @@ TEST_F(ParserTest, CharacterTest)
         Token(TokenType::TT_CHARACTER, msg)
     };
 
-    ExprHandle expr = runTest(tokens);
+    ScamExpr * expr = runTest(tokens);
     expectChar(expr, 'Z', msg);
 }
 
@@ -126,7 +126,7 @@ TEST_F(ParserTest, StringTest)
         Token(TokenType::TT_STRING, msg)
     };
 
-    ExprHandle expr = runTest(tokens);
+    ScamExpr * expr = runTest(tokens);
     expectString(expr, msg);
 }
 
@@ -137,7 +137,7 @@ TEST_F(ParserTest, SymbolTest)
         Token(TokenType::TT_SYMBOL, msg)
     };
 
-    ExprHandle expr = runTest(tokens);
+    ScamExpr * expr = runTest(tokens);
     expectSymbol(expr, msg);
 }
 
@@ -148,7 +148,7 @@ TEST_F(ParserTest, FloatTest)
         Token(TokenType::TT_FLOAT, msg)
     };
 
-    ExprHandle expr = runTest(tokens);
+    ScamExpr * expr = runTest(tokens);
     expectFloat(expr, -17.5, msg);
 }
 
@@ -159,7 +159,7 @@ TEST_F(ParserTest, IntegerTest)
         Token(TokenType::TT_INTEGER, msg)
     };
 
-    ExprHandle expr = runTest(tokens);
+    ScamExpr * expr = runTest(tokens);
 
     expectInteger(expr, 99, msg);
 }
@@ -171,7 +171,7 @@ TEST_F(ParserTest, NilTest)
         Token(TokenType::TT_CLOSE_PAREN, ")")
     };
 
-    ExprHandle expr = runTest(tokens);
+    ScamExpr * expr = runTest(tokens);
     expectNil(expr);
 }
 
@@ -185,7 +185,7 @@ TEST_F(ParserTest, ListTest)
         Token(TokenType::TT_CLOSE_PAREN, ")")
     };
 
-    ExprHandle expr = runTest(tokens);
+    ScamExpr * expr = runTest(tokens);
     expectList(expr, msg, 2);
 }
 
@@ -195,7 +195,7 @@ TEST_F(ParserTest, UnterminatedList)
         Token(TokenType::TT_OPEN_PAREN, "("),
     };
 
-    ExprHandle expr = runTest(tokens);
+    ScamExpr * expr = runTest(tokens);
     expectError(expr);
 }
 
@@ -208,7 +208,7 @@ TEST_F(ParserTest, ListWithTokenError)
         Token(TokenType::TT_CLOSE_PAREN, ")")
     };
 
-    ExprHandle expr = runTest(tokens);
+    ScamExpr * expr = runTest(tokens);
     expectError(expr, msg);
 }
 
@@ -224,7 +224,7 @@ TEST_F(ParserTest, DottedPairTest)
         Token(TokenType::TT_CLOSE_PAREN, ")")
     };
 
-    ExprHandle expr = runTest(tokens);
+    ScamExpr * expr = runTest(tokens);
     expectCons(expr, msg);
 }
 
@@ -238,7 +238,7 @@ TEST_F(ParserTest, DottedPairNoCdr)
             Token(TokenType::TT_CLOSE_PAREN, ")")
             };
 
-    ExprHandle expr = runTest(tokens);
+    ScamExpr * expr = runTest(tokens);
     expectError(expr);
 }
 
@@ -251,7 +251,7 @@ TEST_F(ParserTest, DottedPairNoClose)
         Token(TokenType::TT_INTEGER, "17"),
     };
 
-    ExprHandle expr = runTest(tokens);
+    ScamExpr * expr = runTest(tokens);
     expectError(expr);
 }
 
@@ -266,7 +266,7 @@ TEST_F(ParserTest, DottedPairExcessForms)
         Token(TokenType::TT_CLOSE_PAREN, ")")
     };
 
-    ExprHandle expr = runTest(tokens);
+    ScamExpr * expr = runTest(tokens);
     expectError(expr);
 }
 
@@ -276,7 +276,7 @@ TEST_F(ParserTest, ExtraDot)
         Token(TokenType::TT_DOT, "."),
     };
 
-    ExprHandle expr = runTest(tokens);
+    ScamExpr * expr = runTest(tokens);
     expectError(expr);
 }
 
@@ -286,7 +286,7 @@ TEST_F(ParserTest, CloseWithoutOpenParen)
         Token(TokenType::TT_CLOSE_PAREN, ")")
     };
 
-    ExprHandle expr = runTest(tokens);
+    ScamExpr * expr = runTest(tokens);
     expectError(expr);
 }
 
@@ -299,7 +299,7 @@ TEST_F(ParserTest, ReaderMacroQuote)
         Token(TokenType::TT_SYMBOL, "foo")
     };
 
-    ExprHandle expr = runTest(tokens);
+    ScamExpr * expr = runTest(tokens);
     expectList(expr, msg, 2);
 }
 
@@ -312,7 +312,7 @@ TEST_F(ParserTest, ReaderMacroQuasiquote)
         Token(TokenType::TT_SYMBOL, "foo")
     };
 
-    ExprHandle expr = runTest(tokens);
+    ScamExpr * expr = runTest(tokens);
     expectList(expr, msg, 2);
 }
 
@@ -325,7 +325,7 @@ TEST_F(ParserTest, ReaderMacroUnquote)
         Token(TokenType::TT_SYMBOL, "foo")
     };
 
-    ExprHandle expr = runTest(tokens);
+    ScamExpr * expr = runTest(tokens);
     expectList(expr, msg, 2);
 }
 
@@ -338,7 +338,7 @@ TEST_F(ParserTest, ReaderMacroUnquoteSplice)
         Token(TokenType::TT_SYMBOL, "foo")
     };
 
-    ExprHandle expr = runTest(tokens);
+    ScamExpr * expr = runTest(tokens);
     expectList(expr, msg, 2);
 }
 
@@ -348,7 +348,7 @@ TEST_F(ParserTest, ReaderMacroNoForm)
         Token(TokenType::TT_SPLICE, ",@"),
     };
 
-    ExprHandle expr = runTest(tokens);
+    ScamExpr * expr = runTest(tokens);
     expectError(expr);
 }
 
@@ -363,7 +363,7 @@ TEST_F(ParserTest, ReaderMacroListForm)
         Token(TokenType::TT_CLOSE_PAREN, ")")
     };
 
-    ExprHandle expr = runTest(tokens);
+    ScamExpr * expr = runTest(tokens);
     expectList(expr, msg, 2);
 }
 
@@ -375,7 +375,7 @@ TEST_F(ParserTest, VectorEmpty)
         Token(TokenType::TT_CLOSE_BRACKET, "]")
     };
 
-    ExprHandle expr = runTest(tokens);
+    ScamExpr * expr = runTest(tokens);
     expectVector(expr, msg, 0);
 }
 
@@ -389,7 +389,7 @@ TEST_F(ParserTest, VectorNonEmpty)
         Token(TokenType::TT_CLOSE_BRACKET, "]")
     };
 
-    ExprHandle expr = runTest(tokens);
+    ScamExpr * expr = runTest(tokens);
     expectVector(expr, msg, 2);
     EXPECT_EQ(42, expr->nthcar(1)->toInteger());
 }
@@ -401,7 +401,7 @@ TEST_F(ParserTest, Backtrack)
         Token(TokenType::TT_QUESTION, "?")
     };
 
-    ExprHandle expr = runTest(tokens);
+    ScamExpr * expr = runTest(tokens);
     expectList(expr, msg, 1);
 }
 
@@ -412,7 +412,7 @@ TEST_F(ParserTest, Keyword)
         Token(TokenType::TT_KEYWORD, ":test")
     };
 
-    ExprHandle expr = runTest(tokens);
+    ScamExpr * expr = runTest(tokens);
     expectKeyword(expr, msg);
 }
 
@@ -423,7 +423,7 @@ TEST_F(ParserTest, DictEmpty)
         Token(TokenType::TT_CLOSE_CURLY, "}"),
     };
 
-    ExprHandle expr = runTest(tokens);
+    ScamExpr * expr = runTest(tokens);
     expectDict(expr, 0u, "{}");
 }
 
@@ -436,6 +436,6 @@ TEST_F(ParserTest, DictNonEmpty)
         Token(TokenType::TT_CLOSE_CURLY, "}"),
     };
 
-    ExprHandle expr = runTest(tokens);
+    ScamExpr * expr = runTest(tokens);
     expectDict(expr, 1u, "{ :test 1 }");
 }

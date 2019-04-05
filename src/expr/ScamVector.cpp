@@ -20,6 +20,23 @@ ScamVector::ScamVector(ExprVec const & elts)
 {
 }
 
+ScamVector * ScamVector::makeInstance(ExprVec const & elts)
+{
+    return new ScamVector(elts);
+}
+
+void ScamVector::mark() const
+{
+    if ( ! isMarked() ) {
+        ScamExpr::mark();
+        for ( auto const & e : elts ) {
+            e->mark();
+        }
+    }
+}
+
+
+
 string ScamVector::toString() const
 {
     stringstream s;
@@ -50,7 +67,7 @@ size_t ScamVector::length() const
     return elts.size();
 }
 
-ExprHandle ScamVector::nthcar(size_t n) const
+ScamExpr * ScamVector::nthcar(size_t n) const
 {
     if ( n >= length() ) {
         stringstream s;
@@ -72,7 +89,7 @@ bool ScamVector::equals(ScamExpr const * expr) const
         return false;
     }
     for ( size_t idx = 0 ; idx < elts.size() ; ++idx ) {
-        if ( ! elts[idx]->equals(that->elts[idx].get()) ) {
+        if ( ! elts[idx]->equals(that->elts[idx]) ) {
             return false;
         }
     }
@@ -148,12 +165,12 @@ namespace
         Worker::run();
 
         if ( forms.size() == evaled.size() ) {
-            ExprHandle value = ExpressionFactory::makeVector(evaled);
-            original->run(value.get());
+            ScamExpr * value = ExpressionFactory::makeVector(evaled);
+            original->run(value);
         }
         else {
             size_t index = evaled.size();
-            ExprHandle expr = forms[index];
+            ScamExpr * expr = forms[index];
             ContHandle cont
                 = make_shared<VectorCont>(forms, evaled, original, env);
             expr->eval(cont, env);
@@ -181,7 +198,7 @@ namespace
         }
         else {
             ExprVec e2(evaled);
-            e2.push_back(expr->clone());
+            e2.push_back(expr);
             workQueueHelper<VectorWorker>(original, env, forms, e2);
         }
     }

@@ -9,8 +9,12 @@ namespace scam
 {
     class ScamError : public ScamExpr
     {
-    public:
+    private:
         ScamError(char const * msg);
+
+    public:
+        static ScamError * makeInstance(char const * msg);
+
         std::string toString() const override;
 
         bool isNull() const override;

@@ -21,7 +21,7 @@ namespace
         void run() override;
 
     private:
-        ExprHandle args;
+        ScamExpr * args;
         ContHandle cont;
         Env env;
     };
@@ -30,6 +30,11 @@ namespace
 If::If()
     : SpecialForm("if")
 {
+}
+
+If * If::makeInstance()
+{
+    return new If();
 }
 
 void If::apply(ScamExpr * args, ContHandle cont, Env env)
@@ -46,7 +51,7 @@ namespace
         void run(ScamExpr * expr) override;
 
     private:
-        ExprHandle args;
+        ScamExpr * args;
         ContHandle cont;
         Env env;
     };
@@ -54,7 +59,7 @@ namespace
 
 IfWorker::IfWorker(ContHandle cont, Env env, ScamExpr * args)
     : Worker("If")
-    , args(args->clone())
+    , args(args)
     , cont(cont)
     , env(env)
 {
@@ -67,12 +72,12 @@ void IfWorker::run()
     if ( ! args->isList() || args->length() < 2 || args->length() > 3 ) {
         stringstream s;
         s << "If expects 2 or 3 forms; got: " << args->toString();
-        ExprHandle err = ExpressionFactory::makeError(s.str());
-        cont->run(err.get());
+        ScamExpr * err = ExpressionFactory::makeError(s.str());
+        cont->run(err);
     }
     else {
-        ContHandle newCont = make_shared<IfCont>(args.get(), cont, env);
-        ExprHandle test = args->nthcar(0);
+        ContHandle newCont = make_shared<IfCont>(args, cont, env);
+        ScamExpr * test = args->nthcar(0);
 
         test->eval(newCont, env);
     }
@@ -80,7 +85,7 @@ void IfWorker::run()
 
 IfCont::IfCont(ScamExpr * args, ContHandle cont, Env env)
     : Continuation("If")
-    , args(args->clone())
+    , args(args)
     , cont(cont)
     , env(env)
 {
@@ -100,6 +105,6 @@ void IfCont::run(ScamExpr * expr)
         args->nthcar(2)->eval(cont, env);
     }
     else {
-        cont->run(ExpressionFactory::makeNil().get());
+        cont->run(ExpressionFactory::makeNil());
     }
 }

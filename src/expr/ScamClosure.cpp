@@ -29,11 +29,19 @@ ScamClosure::ScamClosure(ScamExpr *formals,
                          ScamExpr * forms,
                          Env env,
                          bool macrolike)
-    : formals(formals->clone())
-    , forms(forms->clone())
+    : formals(formals)
+    , forms(forms)
     , env(env)
     , macrolike(macrolike)
 {
+}
+
+ScamClosure * ScamClosure::makeInstance(ScamExpr *formals,
+                                        ScamExpr * forms,
+                                        Env env,
+                                        bool macrolike)
+{
+    return new ScamClosure(formals, forms, env, macrolike);
 }
 
 string ScamClosure::toString() const
@@ -57,7 +65,7 @@ bool ScamClosure::hasApply() const
 
 void ScamClosure::apply(ScamExpr * args, ContHandle cont, Env env)
 {
-    do_apply(formals.get(), forms.get(), this->env, cont, args, env, macrolike);
+    do_apply(formals, forms, this->env, cont, args, env, macrolike);
 }
 
 bool ScamClosure::isProcedure() const
@@ -65,9 +73,9 @@ bool ScamClosure::isProcedure() const
     return true;
 }
 
-ExprHandle ScamClosure::withEnvUpdate(Env updated) const
+ScamExpr * ScamClosure::withEnvUpdate(Env updated) const
 {
-    return ExpressionFactory::makeClosure(formals.get(), forms.get(), updated);
+    return ExpressionFactory::makeClosure(formals, forms, updated);
 }
 
 namespace
@@ -84,7 +92,7 @@ namespace
 
         void run(ScamExpr * expr) override
         {
-	    Continuation::run(expr);
+            Continuation::run(expr);
             expr->eval(cont, capture);
         }
 
@@ -102,8 +110,8 @@ namespace
                         ContHandle cont,
                         bool macrolike)
             : Continuation("proc - bind")
-            , formals(formals->clone())
-            , forms(forms->clone())
+            , formals(formals)
+            , forms(forms)
             , capture(capture)
             , cont(cont)
             , macrolike(macrolike)
@@ -112,7 +120,7 @@ namespace
 
         void run(ScamExpr * expr) override
         {
-	    Continuation::run(expr);
+            Continuation::run(expr);
 
             if ( expr->error() ) {
                 cont->run(expr);
@@ -126,8 +134,8 @@ namespace
         }
 
     private:
-        ExprHandle formals;
-        ExprHandle forms;
+        ScamExpr * formals;
+        ScamExpr * forms;
         Env        capture;
         ContHandle cont;
         bool       macrolike;
@@ -140,8 +148,8 @@ namespace
 
             stringstream s;
             s << "Expected a paramter list, got: " << expr->toString();
-            ExprHandle err = ExpressionFactory::makeError(s.str());
-            cont->run(err.get());
+            ScamExpr * err = ExpressionFactory::makeError(s.str());
+            cont->run(err);
 
             return true;
         }
@@ -167,8 +175,8 @@ namespace
             stringstream s;
             s << "Expected " << formalsLen << " parameters; "
               << "got " << actualsLen;
-            ExprHandle err = ExpressionFactory::makeError(s.str());
-            cont->run(err.get());
+            ScamExpr * err = ExpressionFactory::makeError(s.str());
+            cont->run(err);
         }
 
         bool checkArgLength(ScamExpr * expr) const
@@ -188,10 +196,10 @@ namespace
         void finalize(ScamExpr * actuals)  const
         {
             Binder binder(capture);
-            Env extended = binder.bind(formals.get(), actuals);
+            Env extended = binder.bind(formals, actuals);
 
             using WT = EvalWorker;
-            ScamExpr * f = forms.get();
+            ScamExpr * f = forms;
 
             if ( macrolike ) {
                 ContHandle cont2 = make_shared<MacroEvalCont>(cont, capture);
@@ -214,11 +222,11 @@ namespace
                       Env argEnv,
                       bool macrolike)
             : Worker("proc")
-            , formals(formals->clone())
-            , forms(forms->clone())
+            , formals(formals)
+            , forms(forms)
             , capture(capture)
             , cont(cont)
-            , args(args->clone())
+            , args(args)
             , argEnv(argEnv)
             , macrolike(macrolike)
         {
@@ -226,16 +234,16 @@ namespace
 
         void run() override
         {
-	    Worker::run();
+            Worker::run();
 
             ContHandle newCont
-                = make_shared<ClosureBindCont>(formals.get(),
-                                               forms.get(),
+                = make_shared<ClosureBindCont>(formals,
+                                               forms,
                                                capture,
                                                cont,
                                                macrolike);
             if ( macrolike ) {
-                newCont->run(args.get());
+                newCont->run(args);
             }
             else {
                 args->mapEval(newCont, argEnv);
@@ -243,11 +251,11 @@ namespace
         }
 
     private:
-        ExprHandle formals;
-        ExprHandle forms;
+        ScamExpr * formals;
+        ScamExpr * forms;
         Env capture;
         ContHandle cont;
-        ExprHandle args;
+        ScamExpr * args;
         Env argEnv;
         bool macrolike;
     };

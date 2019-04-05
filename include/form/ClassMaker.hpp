@@ -7,9 +7,11 @@ namespace scam
 {
     class ClassMaker : public SpecialForm
     {
-    public:
+    private:
         ClassMaker();
 
+    public:
+        static ClassMaker * makeInstance();
         void apply(ScamExpr * args, ContHandle cont, Env env) override;
     };
 }

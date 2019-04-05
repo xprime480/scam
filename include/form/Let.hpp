@@ -9,17 +9,21 @@ namespace scam
 
     class Let : public SpecialForm
     {
-    public:
+    private:
         Let();
 
+    public:
+        static Let * makeInstance();
         void apply(ScamExpr * args, ContHandle cont, Env env) override;
     };
 
     class LetStar : public SpecialForm
     {
-    public:
+    private:
         LetStar(ScamEngine * engine);
 
+    public:
+        static LetStar * makeInstance(ScamEngine * engine);
         void apply(ScamExpr * args, ContHandle cont, Env env) override;
 
     private:
@@ -28,9 +32,11 @@ namespace scam
 
     class LetRec : public SpecialForm
     {
-    public:
+    private:
         LetRec();
 
+    public:
+        static LetRec * makeInstance();
         void apply(ScamExpr * args, ContHandle cont, Env env) override;
     };
 }

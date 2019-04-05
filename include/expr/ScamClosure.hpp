@@ -9,11 +9,17 @@ namespace scam
 {
     class ScamClosure : public ScamExpr
     {
-    public:
+    private:
         ScamClosure(ScamExpr *formals,
                     ScamExpr * forms,
                     Env env,
                     bool macrolike = false);
+
+    public:
+        static ScamClosure * makeInstance(ScamExpr *formals,
+                                          ScamExpr * forms,
+                                          Env env,
+                                          bool macrolike = false);
 
         std::string toString() const override;
 
@@ -22,11 +28,11 @@ namespace scam
 
         bool isProcedure() const override;
 
-        ExprHandle withEnvUpdate(Env updated) const override;
+        ScamExpr * withEnvUpdate(Env updated) const override;
 
     private:
-        ExprHandle formals;
-        ExprHandle forms;
+        ScamExpr * formals;
+        ScamExpr * forms;
         Env env;
         bool macrolike;
     };

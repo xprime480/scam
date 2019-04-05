@@ -12,13 +12,13 @@ class PredicateTest : public ExpressionTestBase
 
 TEST_F(PredicateTest, NilTestZeroArg)
 {
-    ExprHandle expr = parseAndEvaluate("(nil?)");
+    ScamExpr * expr = parseAndEvaluate("(nil?)");
     expectError(expr);
 }
 
 TEST_F(PredicateTest, NilTestExtraArg)
 {
-    ExprHandle expr = parseAndEvaluate("(nil? 1 2 3)");
+    ScamExpr * expr = parseAndEvaluate("(nil? 1 2 3)");
     expectError(expr);
 }
 

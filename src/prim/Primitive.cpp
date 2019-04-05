@@ -21,7 +21,7 @@ namespace
                        Env env,
                        Primitive * caller);
 
-        ExprHandle args;
+        ScamExpr * args;
         ContHandle original;
         ContHandle cont;
         Env env;
@@ -74,7 +74,7 @@ namespace
                                    ContHandle original,
                                    Env env,
                                    Primitive * caller)
-        : args(args->clone())
+        : args(args)
         , original(original)
         , env(env)
         , caller(caller)
@@ -125,7 +125,7 @@ namespace
 
     EvalContinuation::EvalContinuation(PrimWorkerData const & data)
         : Continuation("Primitive Eval")
-        , data(data.args.get(), data.original, data.env, data.caller)
+        , data(data.args, data.original, data.env, data.caller)
     {
     }
 

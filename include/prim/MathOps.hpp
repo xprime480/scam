@@ -29,8 +29,10 @@ namespace scam
 #define MATH_OP_DECL(Name) \
     class Name : public MathOp \
     { \
-    public: \
+    private: \
         Name(); \
+    public: \
+        static Name * makeInstance(); \
     };
 
     MATH_OP_DECL(Add);

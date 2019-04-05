@@ -15,12 +15,12 @@ namespace scam
 {
     struct EnvData
     {
-        map<string, ExprHandle> table;
+        map<string, ScamExpr *> table;
         shared_ptr<EnvData> parent;
 
         void reset()
         {
-            map<string, ExprHandle> temp;
+            map<string, ScamExpr *> temp;
             table.swap(temp);
             if ( parent.get() ) {
                 parent->reset();
@@ -35,7 +35,7 @@ namespace scam
                 s << "Key: '" << key << "' already exists in current frame";
                 throw ScamException(s.str());
             }
-            table[key] = val->clone();
+            table[key] = val;
         }
 
         bool check(string const & key, bool checkParent) const
@@ -51,7 +51,7 @@ namespace scam
             return false;
         }
 
-        ExprHandle get(string const & key) const
+        ScamExpr * get(string const & key) const
         {
             auto const iter = table.find(key);
             if ( iter != table.end() ) {
@@ -80,7 +80,7 @@ namespace scam
                 }
             }
             else {
-                table[key] = val->clone();
+                table[key] = val;
             }
         }
 
@@ -143,7 +143,7 @@ bool Env::check(ScamExpr const * key, bool checkParent) const
     return data->check(checkKey(key), checkParent);
 }
 
-ExprHandle Env::get(ScamExpr const * key) const
+ScamExpr * Env::get(ScamExpr const * key) const
 {
     return data->get(checkKey(key));
 }

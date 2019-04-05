@@ -13,9 +13,9 @@ namespace
     template <typename T, typename... Args>
     void addForm(Env & env, char const * name, Args... args)
     {
-        ExprHandle sym = ExpressionFactory::makeSymbol(name);
-        ExprHandle form = ExpressionFactory::makeForm<T>(args...);
-        env.put(sym.get(), form.get());
+        ScamExpr * sym = ExpressionFactory::makeSymbol(name);
+        ScamExpr * form = ExpressionFactory::makeForm<T>(args...);
+        env.put(sym, form);
     }
 }
 

@@ -25,6 +25,11 @@ Match::Match()
 {
 }
 
+Match * Match::makeInstance()
+{
+    return new Match();
+}
+
 void Match::applyArgs(ScamExpr * args, ContHandle cont)
 {
     do_match(args, cont);
@@ -33,6 +38,11 @@ void Match::applyArgs(ScamExpr * args, ContHandle cont)
 Unify::Unify()
     : Primitive("unify")
 {
+}
+
+Unify * Unify::makeInstance()
+{
+    return new Unify();
 }
 
 void Unify::applyArgs(ScamExpr * args, ContHandle cont)
@@ -45,6 +55,11 @@ Substitute::Substitute()
 {
 }
 
+Substitute * Substitute::makeInstance()
+{
+    return new Substitute();
+}
+
 void Substitute::applyArgs(ScamExpr * args, ContHandle cont)
 {
     do_subst(args, cont);
@@ -53,6 +68,11 @@ void Substitute::applyArgs(ScamExpr * args, ContHandle cont)
 Instantiate::Instantiate()
     : Primitive("instantiate")
 {
+}
+
+Instantiate * Instantiate::makeInstance()
+{
+    return new Instantiate();
 }
 
 void Instantiate::applyArgs(ScamExpr * args, ContHandle cont)
@@ -64,65 +84,65 @@ size_t Instantiate::counter { 0 };
 
 namespace
 {
-    ExprHandle make_common_error(string const & text)
+    ScamExpr * make_common_error(string const & text)
     {
-        ExprHandle msg = ExpressionFactory::makeString(text);
-        ExprHandle rv = ExpressionFactory::makeBoolean(false);
-        return ExpressionFactory::makeList(rv.get(), msg.get());
+        ScamExpr * msg = ExpressionFactory::makeString(text);
+        ScamExpr * rv = ExpressionFactory::makeBoolean(false);
+        return ExpressionFactory::makeList(rv, msg);
     }
 
     class ValueMapper
     {
     protected:
 
-        ExprHandle map_dict(ScamExpr * expr)
+        ScamExpr * map_dict(ScamExpr * expr)
         {
             if ( 0u == expr->length() ) {
-                return expr->clone();
+                return expr;
             }
 
-            ExprHandle final = ExpressionFactory::makeDict();
-            ScamDict * f    = dynamic_cast<ScamDict *>(final.get());
+            ScamExpr * rv   = ExpressionFactory::makeDict();
+            ScamDict * f    = dynamic_cast<ScamDict *>(rv);
             ScamDict * dict = dynamic_cast<ScamDict *>(expr);
 
-            ExprVec const & keys = dict->getKeys();
+            KeyVec const & keys = dict->getKeys();
             for ( auto key : keys ) {
-                ExprHandle val = dict->get(key.get());
-                ExprHandle newVal = map_value(val.get());
+                ScamExpr * val = dict->get(key);
+                ScamExpr * newVal = map_value(val);
                 if ( newVal->error() ) {
                     return newVal;
                 }
-                f->put(key.get(), newVal.get());
+                f->put(key, newVal);
             }
 
-            return final;
+            return rv;
         }
 
-        ExprHandle map_vector(ScamExpr * expr)
+        ScamExpr * map_vector(ScamExpr * expr)
         {
             ExprVec newExprs;
             size_t const len = expr->length();
 
             for ( size_t idx = 0 ; idx < len ; ++idx ) {
-                ExprHandle val = expr->nthcar(idx);
-                ExprHandle newVal = map_value(val.get());
+                ScamExpr * val = expr->nthcar(idx);
+                ScamExpr * newVal = map_value(val);
                 newExprs.push_back(newVal);
             }
 
-            ExprHandle rv = ExpressionFactory::makeVector(newExprs);
+            ScamExpr * rv = ExpressionFactory::makeVector(newExprs);
             return rv;
         }
 
-        ExprHandle map_cons(ScamExpr * expr)
+        ScamExpr * map_cons(ScamExpr * expr)
         {
-            ExprHandle head = expr->nthcar(0);
-            ExprHandle tail = expr->nthcdr(0);
-            ExprHandle newHead = map_value(head.get());
-            ExprHandle newTail = map_value(tail.get());
-            return ExpressionFactory::makeCons(newHead.get(), newTail.get());
+            ScamExpr * head = expr->nthcar(0);
+            ScamExpr * tail = expr->nthcdr(0);
+            ScamExpr * newHead = map_value(head);
+            ScamExpr * newTail = map_value(tail);
+            return ExpressionFactory::makeCons(newHead, newTail);
         }
 
-        virtual ExprHandle map_value(ScamExpr * expr) = 0;
+        virtual ScamExpr * map_value(ScamExpr * expr) = 0;
     };
 
     class Substitutor : public ValueMapper
@@ -134,9 +154,9 @@ namespace
         {
         }
 
-        ExprHandle resolve_value(ScamExpr * expr)
+        ScamExpr * resolve_value(ScamExpr * expr)
         {
-            ExprHandle rv;
+            ScamExpr * rv;
 
             if ( expr->isCons() ) {
                 rv = resolve_cons(expr);
@@ -151,35 +171,35 @@ namespace
                 rv = resolve_keyword(expr);
             }
             else {
-                rv = expr->clone();
+                rv = expr;
             }
 
             return rv;
         }
 
     protected:
-        ExprHandle map_value(ScamExpr * val) override
+        ScamExpr * map_value(ScamExpr * val) override
         {
             return resolve_value(val);
         }
 
     private:
         ScamDict * answers;
-        ExprHandle helper;
+        ScamExpr * helper;
 
-        ExprHandle resolve_cons(ScamExpr * expr)
+        ScamExpr * resolve_cons(ScamExpr * expr)
         {
             return map_cons(expr);
         }
 
-        ExprHandle resolve_vector(ScamExpr * expr)
+        ScamExpr * resolve_vector(ScamExpr * expr)
         {
             return map_vector(expr);
         }
 
         bool have_seen(ScamExpr * expr)
         {
-            ExprHandle t = helper;
+            ScamExpr * t = helper;
             while ( ! t->isNil() ) {
                 if ( t->nthcar(0)->equals(expr) ) {
                     return true;
@@ -190,7 +210,7 @@ namespace
             return false;
         }
 
-        ExprHandle resolve_keyword(ScamExpr * expr)
+        ScamExpr * resolve_keyword(ScamExpr * expr)
         {
             if ( have_seen(expr) ) {
                 stringstream s;
@@ -198,16 +218,16 @@ namespace
                 return make_common_error(s.str());
             }
 
-            helper = ExpressionFactory::makeCons(expr, helper.get());
+            helper = ExpressionFactory::makeCons(expr, helper);
 
-            ExprHandle val = answers->get(expr);
-            ExprHandle rv  = resolve_value(val.get());
+            ScamExpr * val = answers->get(expr);
+            ScamExpr * rv  = resolve_value(val);
 
             helper = helper->nthcdr(0);
             return rv;
         }
 
-        ExprHandle resolve_dict(ScamExpr * expr)
+        ScamExpr * resolve_dict(ScamExpr * expr)
         {
             return map_dict(expr);
         }
@@ -217,7 +237,7 @@ namespace
     {
     public:
         MatchUnifyCommon(ScamExpr * args, ContHandle cont, bool unify)
-            : args(args->clone())
+            : args(args)
             , cont(cont)
             , unify(unify)
         {
@@ -231,7 +251,7 @@ namespace
         }
 
     private:
-        ExprHandle args;
+        ScamExpr * args;
         ContHandle cont;
         bool       unify;
 
@@ -250,8 +270,8 @@ namespace
                     s << " [dict]";
                 }
                 s << "; got " << args->toString();
-                ExprHandle err = ExpressionFactory::makeError(s.str());
-                cont->run(err.get());
+                ScamExpr * err = ExpressionFactory::makeError(s.str());
+                cont->run(err);
                 return false;
             }
             return true;
@@ -259,56 +279,56 @@ namespace
 
         void process()
         {
-            ExprHandle lhs = args->nthcar(0);
-            ExprHandle rhs = args->nthcar(1);
-            ExprHandle rv = ExpressionFactory::makeDict();
+            ScamExpr * lhs = args->nthcar(0);
+            ScamExpr * rhs = args->nthcar(1);
+            ScamExpr * rv = ExpressionFactory::makeDict();
             if ( unify && args->length() > 2u ) {
                 rv = args->nthcar(2);
             }
-            ScamDict * dict = dynamic_cast<ScamDict*>(rv.get());
+            ScamDict * dict = dynamic_cast<ScamDict*>(rv);
             if ( nullptr == dict ) {
                 stringstream s;
                 s << "Unify expected dict for third arg; got "
                   << rv->toString();
-                ExprHandle err = ExpressionFactory::makeError(s.str());
-                cont->run(err.get());
+                ScamExpr * err = ExpressionFactory::makeError(s.str());
+                cont->run(err);
                 return;
             }
 
-            ExprHandle result = exec(dict, lhs.get(), rhs.get());
+            ScamExpr * result = exec(dict, lhs, rhs);
             if ( unify && result->isDict() ) {
-                result = resolve(result.get());
+                result = resolve(result);
             }
-            cont->run(result.get());
+            cont->run(result);
         }
 
-        ExprHandle
+        ScamExpr *
         check_ignore(ScamDict * dict, ScamExpr * lhs, ScamExpr * rhs)
         {
-            static ExprHandle ignore = ExpressionFactory::makeKeyword("::");
+            static ScamExpr * ignore = ExpressionFactory::makeKeyword("::");
 
             if ( ignore->equals(lhs) || ignore->equals(rhs) ) {
-                return dict->clone();
+                return dict;
             }
 
             return ExpressionFactory::makeNil();
         }
 
-        ExprHandle
+        ScamExpr *
         check_literals(ScamDict * dict, ScamExpr * lhs, ScamExpr * rhs)
         {
             if ( lhs->equals(rhs) ) {
-                return dict->clone();
+                return dict;
             }
 
             return ExpressionFactory::makeNil();
         }
 
-        ExprHandle
+        ScamExpr *
         check_keyword(ScamDict * dict, ScamExpr * lhs, ScamExpr * rhs)
         {
             if ( lhs->isKeyword() && ! rhs->isNil() ) {
-                ExprHandle old = dict->get(lhs);
+                ScamExpr * old = dict->get(lhs);
                 if ( old->error() ) {
                     dict->put(lhs, rhs);
                 }
@@ -321,13 +341,13 @@ namespace
                     return make_common_error(s.str());
                 }
 
-                return dict->clone();
+                return dict;
             }
 
             return ExpressionFactory::makeNil();
         }
 
-        ExprHandle
+        ScamExpr *
         check_keyword_reversed(ScamDict * dict, ScamExpr * lhs, ScamExpr * rhs)
         {
             if ( unify ) {
@@ -338,26 +358,26 @@ namespace
             }
         }
 
-        ExprHandle
+        ScamExpr *
         check_cons(ScamDict * dict, ScamExpr * lhs, ScamExpr * rhs)
         {
             if ( lhs->isCons() && rhs->isCons() ) {
-                ExprHandle lhsCar  = lhs->getCar();
-                ExprHandle rhsCar  = rhs->getCar();
-                ExprHandle carMatch = exec(dict, lhsCar.get(), rhsCar.get());
+                ScamExpr * lhsCar  = lhs->getCar();
+                ScamExpr * rhsCar  = rhs->getCar();
+                ScamExpr * carMatch = exec(dict, lhsCar, rhsCar);
                 if ( ! carMatch->isDict() ) {
                     return carMatch;
                 }
 
-                ExprHandle lhsCdr  = lhs->getCdr();
-                ExprHandle rhsCdr  = rhs->getCdr();
-                return exec(dict, lhsCdr.get(), rhsCdr.get());
+                ScamExpr * lhsCdr  = lhs->getCdr();
+                ScamExpr * rhsCdr  = rhs->getCdr();
+                return exec(dict, lhsCdr, rhsCdr);
             }
 
             return ExpressionFactory::makeNil();
         }
 
-        ExprHandle
+        ScamExpr *
         check_vector(ScamDict * dict, ScamExpr * lhs, ScamExpr * rhs)
         {
             if ( lhs->isVector() && rhs->isVector() ) {
@@ -370,21 +390,21 @@ namespace
 
                 size_t len = lhs->length();
                 for ( size_t idx = 0 ; idx < len ; ++ idx ) {
-                    ExprHandle lhsN = lhs->nthcar(idx);
-                    ExprHandle rhsN = rhs->nthcar(idx);
-                    ExprHandle matchN = exec(dict, lhsN.get(), rhsN.get());
+                    ScamExpr * lhsN = lhs->nthcar(idx);
+                    ScamExpr * rhsN = rhs->nthcar(idx);
+                    ScamExpr * matchN = exec(dict, lhsN, rhsN);
                     if ( ! matchN->isDict() ) {
                         return matchN;
                     }
                 }
 
-                return dict->clone();
+                return dict;
             }
 
             return ExpressionFactory::makeNil();
         }
 
-        ExprHandle
+        ScamExpr *
         check_dict(ScamDict * dict, ScamExpr * lhs, ScamExpr * rhs)
         {
             if ( lhs->isDict() && rhs->isDict() ) {
@@ -397,31 +417,31 @@ namespace
 
                 ScamDict * lhsAsDict = dynamic_cast<ScamDict *>(lhs);
                 ScamDict * rhsAsDict = dynamic_cast<ScamDict *>(rhs);
-                ExprVec const & keys = lhsAsDict->getKeys();
+                KeyVec const & keys = lhsAsDict->getKeys();
 
                 for ( auto key : keys ) {
-                    ExprHandle d = rhsAsDict->get(key.get());
+                    ScamExpr * d = rhsAsDict->get(key);
                     if ( d->error() ) {
                         string const text = d->toString();
                         return make_common_error(text);
                     }
-                    ExprHandle p = lhsAsDict->get(key.get());
-                    ExprHandle result = exec(dict, p.get(), d.get());
+                    ScamExpr * p = lhsAsDict->get(key);
+                    ScamExpr * result = exec(dict, p, d);
                     if ( ! result->isDict() ) {
                         return result;
                     }
                 }
 
-                return dict->clone();
+                return dict;
             }
 
             return ExpressionFactory::makeNil();
         }
 
-        ExprHandle exec(ScamDict * dict, ScamExpr * lhs, ScamExpr * rhs)
+        ScamExpr * exec(ScamDict * dict, ScamExpr * lhs, ScamExpr * rhs)
         {
             using CheckerType =
-                ExprHandle (MatchUnifyCommon::*)(ScamDict*, ScamExpr*, ScamExpr*);
+                ScamExpr * (MatchUnifyCommon::*)(ScamDict*, ScamExpr*, ScamExpr*);
 
             static CheckerType checkers[] = {
                 &MatchUnifyCommon::check_ignore,
@@ -434,7 +454,7 @@ namespace
             };
 
             for ( auto checker : checkers ) {
-                ExprHandle rv = (this->*checker)(dict, lhs, rhs);
+                ScamExpr * rv = (this->*checker)(dict, lhs, rhs);
                 if ( ! rv->isNil() ) {
                     return rv;
                 }
@@ -446,7 +466,7 @@ namespace
             return make_common_error(s.str());
         }
 
-        ExprHandle resolve(ScamExpr * expr)
+        ScamExpr * resolve(ScamExpr * expr)
         {
             ScamDict * dict = dynamic_cast<ScamDict *>(expr);
             Substitutor subst(dict);
@@ -462,19 +482,19 @@ namespace
         {
         }
 
-        ExprHandle exec(ScamExpr * args)
+        ScamExpr * exec(ScamExpr * args)
         {
             bool ok;
-            ExprHandle expr = checkargs(args, ok);
+            ScamExpr * expr = checkargs(args, ok);
             if ( ! ok ) {
                 return expr;
             }
 
-            return inst_value(expr.get());
+            return inst_value(expr);
         }
 
     protected:
-        ExprHandle map_value(ScamExpr * val)
+        ScamExpr * map_value(ScamExpr * val)
         {
             return inst_value(val);
         }
@@ -483,7 +503,7 @@ namespace
         size_t & counter;
         ScamDict dict;
 
-        ExprHandle make_error(ScamExpr * args)
+        ScamExpr * make_error(ScamExpr * args)
         {
             stringstream s;
             s << "Substitute expected one arg got: ";
@@ -491,19 +511,19 @@ namespace
             return ExpressionFactory::makeError(s.str());
         }
 
-        ExprHandle checkargs(ScamExpr * args, bool & ok)
+        ScamExpr * checkargs(ScamExpr * args, bool & ok)
         {
             if ( args->length() < 1u ) {
                 ok = false;
                 return make_error(args);
             }
 
-            ExprHandle expr = args->nthcar(0);
+            ScamExpr * expr = args->nthcar(0);
             ok = true;
             return expr;
         }
 
-        ExprHandle inst_value(ScamExpr * expr)
+        ScamExpr * inst_value(ScamExpr * expr)
         {
             if ( expr->isKeyword() ) {
                 return inst_keyword(expr);
@@ -518,20 +538,20 @@ namespace
                 return inst_dict(expr);
             }
             else {
-                return expr->clone();
+                return expr;
             }
         }
 
-        ExprHandle new_mapping(ScamExpr * expr)
+        ScamExpr * new_mapping(ScamExpr * expr)
         {
             stringstream s;
             s << ":kw" << ++counter;
-            ExprHandle value = ExpressionFactory::makeKeyword(s.str());
-            dict.put(expr, value.get());
+            ScamExpr * value = ExpressionFactory::makeKeyword(s.str());
+            dict.put(expr, value);
             return value;
         }
 
-        ExprHandle inst_keyword(ScamExpr * expr)
+        ScamExpr * inst_keyword(ScamExpr * expr)
         {
             if ( dict.has(expr) ) {
                 return dict.get(expr);
@@ -541,17 +561,17 @@ namespace
             }
         }
 
-        ExprHandle inst_cons(ScamExpr * expr)
+        ScamExpr * inst_cons(ScamExpr * expr)
         {
             return map_cons(expr);
         }
 
-        ExprHandle inst_vector(ScamExpr * expr)
+        ScamExpr * inst_vector(ScamExpr * expr)
         {
             return map_vector(expr);
         }
 
-        ExprHandle inst_dict(ScamExpr * expr)
+        ScamExpr * inst_dict(ScamExpr * expr)
         {
             return map_dict(expr);
         }
@@ -574,31 +594,31 @@ namespace
         if ( args->length() < 2 ) {
             stringstream s;
             s << "expected 2 args; got " << args->length();
-            ExprHandle err = ExpressionFactory::makeError(s.str());
-            cont->run(err.get());
+            ScamExpr * err = ExpressionFactory::makeError(s.str());
+            cont->run(err);
             return;
         }
 
-        ExprHandle form = args->nthcar(0);
-        ExprHandle dict = args->nthcar(1);
-        ScamDict * answers = dynamic_cast<ScamDict *>(dict.get());
+        ScamExpr * form = args->nthcar(0);
+        ScamExpr * dict = args->nthcar(1);
+        ScamDict * answers = dynamic_cast<ScamDict *>(dict);
         if ( ! answers ) {
             stringstream s;
             s << "expected 'form dict'; got " << args->toString();
-            ExprHandle err = ExpressionFactory::makeError(s.str());
-            cont->run(err.get());
+            ScamExpr * err = ExpressionFactory::makeError(s.str());
+            cont->run(err);
             return;
         }
 
         Substitutor resolver(answers);
-        ExprHandle rv = resolver.resolve_value(form.get());
-        cont->run(rv.get());
+        ScamExpr * rv = resolver.resolve_value(form);
+        cont->run(rv);
     }
 
     void do_inst(ScamExpr * args, ContHandle cont, size_t & counter)
     {
         Instantiator inst(counter);
-        ExprHandle rv = inst.exec(args);
-        cont->run(rv.get());
+        ScamExpr * rv = inst.exec(args);
+        cont->run(rv);
     }
 }

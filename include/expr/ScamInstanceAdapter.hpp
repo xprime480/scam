@@ -15,7 +15,7 @@ namespace scam
 
         Env getFunctionMap() const;
         Env getEnv() const;
-        ExprHandle getParent() const;
+        ScamExpr * getParent() const;
 
     private:
         ScamInstance const * instance;

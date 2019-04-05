@@ -10,6 +10,11 @@ ScamString::ScamString(string const & value)
 {
 }
 
+ScamString * ScamString::makeInstance(std::string const & value)
+{
+    return new ScamString(value);
+}
+
 string ScamString::toString() const
 {
     return value;

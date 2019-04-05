@@ -22,6 +22,11 @@ Or::Or()
 {
 }
 
+Or * Or::makeInstance()
+{
+    return new Or();
+}
+
 void Or::apply(ScamExpr * args, ContHandle cont, Env env)
 {
     apply_impl(args, cont, env);
@@ -36,7 +41,7 @@ namespace
         void run() override;
 
     private:
-        ExprHandle args;
+        ScamExpr * args;
         ContHandle cont;
         Env env;
         size_t n;
@@ -49,7 +54,7 @@ namespace
         void run(ScamExpr * expr) override;
 
     private:
-        ExprHandle args;
+        ScamExpr * args;
         ContHandle cont;
         Env env;
         size_t n;
@@ -67,7 +72,7 @@ OrWorker::OrWorker(ContHandle cont,
                    ScamExpr * args,
                    size_t n)
     : Worker("Or")
-    , args(args->clone())
+    , args(args)
     , cont(cont)
     , env(env)
     , n(n)
@@ -81,29 +86,30 @@ void OrWorker::run()
     if ( ! args->isList() ) {
         stringstream s;
         s << "Or expects a list of forms; got: " << args->toString();
-        ExprHandle err = ExpressionFactory::makeError(s.str());
-        cont->run(err.get());
+        ScamExpr * err = ExpressionFactory::makeError(s.str());
+        cont->run(err);
         return;
     }
 
     size_t const len = args->length();
     if ( 0 == len ) {
-        cont->run(ExpressionFactory::makeBoolean(false).get());
+        ScamExpr * rv = ExpressionFactory::makeBoolean(false);
+        cont->run(rv);
     }
     else if ( n == (len - 1) ) {
         args->nthcar(len-1)->eval(cont, env);
     }
     else {
-        ExprHandle test = args->nthcar(n);
+        ScamExpr * test = args->nthcar(n);
 
-        ContHandle newCont = make_shared<OrCont>(args.get(), cont, env, n+1);
+        ContHandle newCont = make_shared<OrCont>(args, cont, env, n+1);
         test->eval(newCont, env);
     }
 }
 
 OrCont::OrCont(ScamExpr * args, ContHandle cont, Env env, size_t n)
     : Continuation("Or")
-    , args(args->clone())
+    , args(args)
     , cont(cont)
     , env(env)
     , n(n)
@@ -121,7 +127,6 @@ void OrCont::run(ScamExpr * expr)
         cont->run(expr);
     }
     else {
-        ScamExpr * e = args.get();
-        workQueueHelper<OrWorker>(cont, env, e, n);
+        workQueueHelper<OrWorker>(cont, env, args, n);
     }
 }

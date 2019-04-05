@@ -35,13 +35,13 @@ size_t ScamListAdapter::getLength() const
     return len;
 }
 
-ExprHandle ScamListAdapter::append(ScamExpr * tail) const
+ScamExpr * ScamListAdapter::append(ScamExpr * tail) const
 {
     if ( isNil ) {
         return ExpressionFactory::makeList(tail);
     }
 
-    ScamListAdapter a(cdr.get());
-    ExprHandle newCdr = a.append(tail);
-    return ExpressionFactory::makeCons(car.get(), newCdr.get());
+    ScamListAdapter a(cdr);
+    ScamExpr * newCdr = a.append(tail);
+    return ExpressionFactory::makeCons(car, newCdr);
 }

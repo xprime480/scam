@@ -27,8 +27,8 @@ namespace scam
                        ScamExpr * cdr,
                        ContHandle original,
                        Env env)
-                : car(car->clone())
-                , cdr(cdr->clone())
+                : car(car)
+                , cdr(cdr)
                 , original(original)
                 , env(env)
             {
@@ -37,8 +37,8 @@ namespace scam
             WorkerData(const WorkerData &) = default;
             WorkerData & operator=(const WorkerData &) = default;
 
-            ExprHandle car;
-            ExprHandle cdr;
+            ScamExpr * car;
+            ScamExpr * cdr;
             ContHandle original;
             ContHandle cont;
             Env env;

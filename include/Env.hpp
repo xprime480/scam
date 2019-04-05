@@ -6,8 +6,6 @@
 namespace scam
 {
     class ScamExpr;
-    using ExprHandle = std::shared_ptr<ScamExpr>;
-
     struct EnvData;
 
     class Env
@@ -17,7 +15,7 @@ namespace scam
 
         void put(ScamExpr const * key, ScamExpr * val);
         bool check(ScamExpr const * key, bool checkParent = true) const;
-        ExprHandle get(ScamExpr const * key) const;
+        ScamExpr * get(ScamExpr const * key) const;
 
         void reset();
         Env extend() const;

@@ -29,7 +29,7 @@ namespace scam
 
         void addBinding(ScamExpr * key, ScamExpr * val);
         bool hasBinding(ScamExpr * key, bool checkParent = true);
-        ExprHandle getBinding(ScamExpr * key, bool top = false);
+        ScamExpr * getBinding(ScamExpr * key, bool top = false);
         void rebind(ScamExpr * key, ScamExpr * val);
 
         /*** functions to manage the input buffer ***/
@@ -43,10 +43,10 @@ namespace scam
 
         /*** functions to read, eval, and apply ***/
 
-        ExprHandle parseCurrentInput();
-        ExprHandle read();
-        ExprHandle eval(ScamExpr * expr);
-        ExprHandle apply(ScamExpr * expr, ScamExpr * args);
+        ScamExpr * parseCurrentInput();
+        ScamExpr * read();
+        ScamExpr * eval(ScamExpr * expr);
+        ScamExpr * apply(ScamExpr * expr, ScamExpr * args);
 
         /*** functions to manage backtracking */
 

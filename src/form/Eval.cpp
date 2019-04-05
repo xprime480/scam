@@ -18,6 +18,11 @@ Eval::Eval()
 {
 }
 
+Eval * Eval::makeInstance()
+{
+    return new Eval();
+}
+
 void Eval::apply(ScamExpr * args, ContHandle cont, Env env)
 {
     do_apply(args, cont, env);

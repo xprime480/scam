@@ -20,8 +20,8 @@ MathOp::MathOp(MathOpDef const & def)
 void MathOp::applyArgs(ScamExpr * args, ContHandle cont)
 {
     string const context = toString();
-    ExprHandle rv = numericAlgorithm(args, context, algo);
-    cont->run(rv.get());
+    ScamExpr * rv = numericAlgorithm(args, context, algo);
+    cont->run(rv);
 }
 
 bool MathOp::equals(ScamExpr const * expr) const
@@ -31,12 +31,12 @@ bool MathOp::equals(ScamExpr const * expr) const
 
 namespace
 {
-    double do_add(vector<double> const & ns, ExprHandle & state)
+    double do_add(vector<double> const & ns, ScamExpr * & state)
     {
         return accumulate(ns.begin(), ns.end(), 0.0);
     }
 
-    double do_sub(vector<double> const & ns, ExprHandle & state)
+    double do_sub(vector<double> const & ns, ScamExpr * & state)
     {
         double total { 0 };
         switch ( ns.size() ) {
@@ -54,13 +54,13 @@ namespace
         return total;
     }
 
-    double do_mul(vector<double> const & ns, ExprHandle & state)
+    double do_mul(vector<double> const & ns, ScamExpr * & state)
     {
         return accumulate(ns.begin(), ns.end(), 1.0,
                           multiplies<double>());
     }
 
-    double do_div(vector<double> const & ns, ExprHandle & state)
+    double do_div(vector<double> const & ns, ScamExpr * & state)
     {
         state = ExpressionFactory::makeBoolean(false);
         if ( ns.empty() ) {
@@ -95,7 +95,7 @@ namespace
         return total;
     }
 
-    double do_mod(vector<double> const & ns, ExprHandle & state)
+    double do_mod(vector<double> const & ns, ScamExpr * & state)
     {
         state = ExpressionFactory::makeBoolean(false);
         if ( ns.size() < 2 ) {
@@ -114,7 +114,8 @@ namespace
     static const MathOpDef Name ## def { #Name, Proc }; \
                                                          \
     Name::Name()                                         \
-        : MathOp(Name ## def) {}
+        : MathOp(Name ## def) {}                         \
+    Name * Name::makeInstance() { return new Name(); }
 
 MATH_OP_DEFINE(Add, do_add);
 MATH_OP_DEFINE(Sub, do_sub);

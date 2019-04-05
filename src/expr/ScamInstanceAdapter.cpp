@@ -31,10 +31,9 @@ Env ScamInstanceAdapter::getEnv() const
     return instance->local;
 }
 
-ExprHandle ScamInstanceAdapter::getParent() const
+ScamExpr * ScamInstanceAdapter::getParent() const
 {
-    static const ExprHandle p = ExpressionFactory::makeSymbol("parent");
-    static const ScamExpr * parent = p.get();
+    static const ScamExpr * parent = ExpressionFactory::makeSymbol("parent");
 
     if ( instance->local.check(parent) ) {
         return instance->local.get(parent);

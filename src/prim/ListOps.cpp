@@ -15,6 +15,11 @@ List::List()
 {
 }
 
+List * List::makeInstance()
+{
+    return new List();
+}
+
 void List::applyArgs(ScamExpr * args, ContHandle cont)
 {
     cont->run(args);
@@ -25,6 +30,11 @@ Cons::Cons()
 {
 }
 
+Cons * Cons::makeInstance()
+{
+    return new Cons();
+}
+
 void Cons::applyArgs(ScamExpr * args, ContHandle cont)
 {
     if ( args->error() ) {
@@ -33,14 +43,14 @@ void Cons::applyArgs(ScamExpr * args, ContHandle cont)
     else if ( ! args->isList() || 2 != args->length() ) {
         stringstream s;
         s << "cons is expecting 2 parameters, got " << args->toString() << "\n";
-        ExprHandle err = ExpressionFactory::makeError(s.str());
-        cont->run(err.get());
+        ScamExpr * err = ExpressionFactory::makeError(s.str());
+        cont->run(err);
     }
     else {
-        ScamExpr * car = args->nthcar(0).get();
-        ScamExpr * cdr = args->nthcar(1).get();
-        ExprHandle cons = ExpressionFactory::makeCons(car, cdr);
-        cont->run(cons.get());
+        ScamExpr * car = args->nthcar(0);
+        ScamExpr * cdr = args->nthcar(1);
+        ScamExpr * cons = ExpressionFactory::makeCons(car, cdr);
+        cont->run(cons);
     }
 }
 
@@ -58,8 +68,8 @@ void CarCdr::applyArgs(ScamExpr * args, ContHandle cont)
               ! args->nthcar(0)->isCons() ) {
         stringstream s;
         s << name << " is expecting a non-empty list, got " << args->toString() << "\n";
-        ExprHandle err = ExpressionFactory::makeError(s.str());
-        cont->run(err.get());
+        ScamExpr * err = ExpressionFactory::makeError(s.str());
+        cont->run(err);
     }
     else {
         finish(args, cont);
@@ -72,9 +82,14 @@ Car::Car()
 {
 }
 
+Car * Car::makeInstance()
+{
+    return new Car();
+}
+
 void Car::finish(ScamExpr * args, ContHandle cont)
 {
-    ScamExpr * car = args->nthcar(0)->nthcar(0).get();
+    ScamExpr * car = args->nthcar(0)->nthcar(0);
     cont->run(car);
 }
 
@@ -83,8 +98,13 @@ Cdr::Cdr()
 {
 }
 
+Cdr * Cdr::makeInstance()
+{
+    return new Cdr();
+}
+
 void Cdr::finish(ScamExpr * args, ContHandle cont)
 {
-    ScamExpr * cdr = args->nthcar(0)->nthcdr(0).get();
+    ScamExpr * cdr = args->nthcar(0)->nthcdr(0);
     cont->run(cdr);
 }

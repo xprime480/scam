@@ -18,25 +18,31 @@ namespace scam
 
     class Define : public EnvHelper
     {
-    public:
+    private:
         Define(ScamEngine * engine);
 
+    public:
+        static Define * makeInstance(ScamEngine * engine);
         void apply(ScamExpr * args, ContHandle cont, Env env) override;
     };
 
     class Undefine : public EnvHelper
     {
-    public:
+    private:
         Undefine(ScamEngine * engine);
 
+    public:
+        static Undefine * makeInstance(ScamEngine * engine);
         void apply(ScamExpr * args, ContHandle cont, Env env) override;
     };
 
     class Assign : public EnvHelper
     {
-    public:
+    private:
         Assign(ScamEngine * engine);
 
+    public:
+        static Assign * makeInstance(ScamEngine * engine);
         void apply(ScamExpr * args, ContHandle cont, Env env) override;
     };
 }

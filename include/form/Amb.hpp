@@ -9,9 +9,11 @@ namespace scam
 
     class Amb : public SpecialForm
     {
-    public:
+    private:
         Amb(ScamEngine * engine);
 
+    public:
+        static Amb * makeInstance(ScamEngine * engine);
         void apply(ScamExpr * args, ContHandle cont, Env env) override;
 
     private:

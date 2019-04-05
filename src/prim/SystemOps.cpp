@@ -37,6 +37,11 @@ Load::Load(ScamEngine * engine)
 {
 }
 
+Load * Load::makeInstance(ScamEngine * engine)
+{
+    return new Load(engine);
+}
+
 void Load::applyArgs(ScamExpr * args, ContHandle cont)
 {
     apply_load(args, cont, engine);
@@ -47,6 +52,11 @@ Spawn::Spawn()
 {
 }
 
+Spawn * Spawn::makeInstance()
+{
+    return new Spawn();
+}
+
 void Spawn::applyArgs(ScamExpr * args, ContHandle cont)
 {
     apply_spawn(cont);
@@ -55,6 +65,11 @@ void Spawn::applyArgs(ScamExpr * args, ContHandle cont)
 Error::Error()
     : Primitive("error")
 {
+}
+
+Error * Error::makeInstance()
+{
+    return new Error();
 }
 
 void Error::applyArgs(ScamExpr * args, ContHandle cont)
@@ -68,6 +83,11 @@ Backtrack::Backtrack(ScamEngine * engine)
 {
 }
 
+Backtrack * Backtrack::makeInstance(ScamEngine * engine)
+{
+    return new Backtrack(engine);
+}
+
 void Backtrack::applyArgs(ScamExpr * args, ContHandle cont)
 {
     apply_backtrack(cont, engine);
@@ -78,6 +98,11 @@ Trace::Trace()
 {
 }
 
+Trace * Trace::makeInstance()
+{
+    return new Trace();
+}
+
 void Trace::applyArgs(ScamExpr * args, ContHandle cont)
 {
     apply_trace(args, cont);
@@ -85,7 +110,7 @@ void Trace::applyArgs(ScamExpr * args, ContHandle cont)
 
 namespace
 {
-    extern ExprHandle default_path();
+    extern ScamExpr * default_path();
 
     string next_element(char const *& path)
     {
@@ -99,7 +124,7 @@ namespace
         }
     }
 
-    ExprHandle convert_path(char const * path)
+    ScamExpr * convert_path(char const * path)
     {
         ExprVec dp;
 
@@ -116,14 +141,14 @@ namespace
         return ExpressionFactory::makeVector(dp);
     }
 
-    ExprHandle default_path()
+    ScamExpr * default_path()
     {
         return convert_path(".:..");
     }
 
-    ExprHandle get_path()
+    ScamExpr * get_path()
     {
-        ExprHandle rv = ExpressionFactory::makeNull();
+        ScamExpr * rv = ExpressionFactory::makeNull();
 
         char const * path = getenv("SCAM_PATH");
         if ( ! path || ! *path ) {
@@ -158,8 +183,8 @@ namespace
     {
         stringstream s;
         s << "Unable to open file " << filename;
-        ExprHandle err = ExpressionFactory::makeError(s.str());
-        cont->run(err.get());
+        ScamExpr * err = ExpressionFactory::makeError(s.str());
+        cont->run(err);
     }
 
     bool open_file(ifstream & source, string const & filename, ContHandle cont)
@@ -171,7 +196,7 @@ namespace
             }
         }
         else {
-            ExprHandle path = get_path();
+            ScamExpr * path = get_path();
 
             size_t n = path->length();
             for ( size_t i = 0 ; i < n ; ++i ) {
@@ -207,8 +232,8 @@ namespace
         if ( engine->isLoaded(filename) ) {
             stringstream s;
             s << "file \"" << filename << "\" already loaded";
-            ExprHandle err = ExpressionFactory::makeError(s.str());
-            cont->run(err.get());
+            ScamExpr * err = ExpressionFactory::makeError(s.str());
+            cont->run(err);
             return;
         }
 
@@ -220,10 +245,10 @@ namespace
 
         string data = get_data(source);
         EvalString helper(engine, data);
-        ExprHandle last = helper.run();
+        ScamExpr * last = helper.run();
 
         engine->setLoaded(filename);
-        cont->run(last.get());
+        cont->run(last);
     }
 
     class SpawnWorker : public Worker
@@ -238,8 +263,8 @@ namespace
 
         void run() override
         {
-            ExprHandle flag = ExpressionFactory::makeBoolean(value);
-            cont->run(flag.get());
+            ScamExpr * flag = ExpressionFactory::makeBoolean(value);
+            cont->run(flag);
         }
 
     private:
@@ -272,8 +297,8 @@ namespace
             }
         }
 
-        ExprHandle err = ExpressionFactory::makeError(s.str());
-        cont->run(err.get());
+        ScamExpr * err = ExpressionFactory::makeError(s.str());
+        cont->run(err);
     }
 
     void apply_backtrack(ContHandle cont, ScamEngine * engine)
@@ -281,8 +306,8 @@ namespace
         BacktrackHandle backtracker = engine->getBacktracker();
         if ( nullptr == backtracker.get() ) {
             static const string msg = "No current backtrack context";
-            ExprHandle rv = ExpressionFactory::makeError(msg);
-            cont->run(rv.get());
+            ScamExpr * rv = ExpressionFactory::makeError(msg);
+            cont->run(rv);
         }
         else {
             backtracker->run();

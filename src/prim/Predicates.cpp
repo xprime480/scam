@@ -26,6 +26,10 @@ namespace
 
 #define DEFINE_PREDICATE(cls, label, pred) \
 cls::cls() : Primitive(label) {} \
+cls * cls::makeInstance() \
+{ \
+    return new cls(); \
+} \
 void cls::applyArgs(ScamExpr * args, ContHandle cont) \
 { \
     apply_predicate(label, pred, args, cont); \
@@ -63,10 +67,10 @@ namespace
                          ScamExpr * args,
                          ContHandle cont)
     {
-        ExprHandle rv;
+        ScamExpr * rv;
         if ( 1 == args->length() ) {
-            ExprHandle arg = args->nthcar(0);
-            bool answer = (arg.get()->*pred)();
+            ScamExpr * arg = args->nthcar(0);
+            bool answer = (arg->*pred)();
             rv = ExpressionFactory::makeBoolean(answer);
         }
         else {
@@ -75,6 +79,6 @@ namespace
             rv = ExpressionFactory::makeError(s.str());
         }
 
-        cont->run(rv.get());
+        cont->run(rv);
     }
 }

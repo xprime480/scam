@@ -7,8 +7,13 @@ namespace scam
 {
     class ScamBoolean : public ScamExpr
     {
-    public:
+    private:
         ScamBoolean(bool value);
+      
+    public:
+        static ScamBoolean * makeInstance(bool value);
+        bool isManaged() const override;
+
         std::string toString() const override;
 
         bool truth() const override;

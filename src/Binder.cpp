@@ -21,8 +21,8 @@ Env Binder::bind(ScamExpr * formals, ScamExpr * actuals) const
 void Binder::bindOne(Env env, ScamExpr * syms, ScamExpr * vals) const
 {
     if ( syms->isCons() ) {
-        env.put(syms->getCar().get(), vals->getCar().get());
-        bindOne(env, syms->getCdr().get(), vals->getCdr().get());
+        env.put(syms->getCar(), vals->getCar());
+        bindOne(env, syms->getCdr(), vals->getCdr());
     }
     else if ( ! syms->isNil() ) {
         env.put(syms, vals);

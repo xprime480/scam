@@ -10,10 +10,8 @@ namespace scam
 {
     class Continuation;
     class Env;
-    class ScamExpr;
 
     using ContHandle = std::shared_ptr<Continuation> ;
-    using ExprHandle = std::shared_ptr<ScamExpr>;
 
     class WorkQueue
     {

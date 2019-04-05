@@ -7,8 +7,12 @@ namespace scam
 {
     class ScamString : public ScamExpr
     {
-    public:
+    private:
         ScamString(std::string const & value);
+
+    public:
+        static ScamString * makeInstance(std::string const & value);
+
         std::string toString() const override;
 
         bool isString() const override;

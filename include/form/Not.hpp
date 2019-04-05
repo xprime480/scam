@@ -7,9 +7,11 @@ namespace scam
 {
     class Not : public SpecialForm
     {
-    public:
+    private:
         Not();
 
+    public:
+        static Not * makeInstance();
         void apply(ScamExpr * args, ContHandle cont, Env env) override;
     };
 }

@@ -26,8 +26,10 @@ namespace scam
 #define CMP_OP_DECL(Name) \
     class Name : public CompareOp \
     { \
-    public: \
+    private: \
         Name(); \
+    public: \
+        static Name * makeInstance(); \
     };
 
     CMP_OP_DECL(Eq);

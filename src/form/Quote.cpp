@@ -17,15 +17,36 @@ Quote::Quote()
 {
 }
 
+Quote * Quote::makeInstance()
+{
+    static Quote quote;
+    return &quote;
+}
+
+bool Quote::isManaged() const
+{
+    return false;
+}
+
 void Quote::apply(ScamExpr * args, ContHandle cont, Env env)
 {
-    ExprHandle expr = args->getCar();
-    cont->run(expr.get());
+    ScamExpr * expr = args->getCar();
+    cont->run(expr);
 }
 
 QuasiQuote::QuasiQuote()
     : SpecialForm("quasiquote")
 {
+}
+
+QuasiQuote * QuasiQuote::makeInstance()
+{
+    return new QuasiQuote();
+}
+
+bool QuasiQuote::isManaged() const
+{
+    return false;
 }
 
 namespace
@@ -40,7 +61,7 @@ void QuasiQuote::apply(ScamExpr * args, ContHandle cont, Env env)
 
 namespace
 {
-    static const ExprHandle spliceTag =
+    static ScamExpr *  const spliceTag =
         ExpressionFactory::makeSymbol("**splicing**");
 
     class  QQConsListCdrCont : public Continuation
@@ -48,7 +69,7 @@ namespace
     public:
         QQConsListCdrCont(ScamExpr * car, ContHandle cont, Env env)
             : Continuation("QQConsListCdrCont")
-            , car(car->clone())
+            , car(car)
             , cont(cont)
             , env(env)
         {
@@ -66,22 +87,22 @@ namespace
         }
 
     private:
-        ExprHandle car;
+        ScamExpr * car;
         ContHandle cont;
         Env        env;
 
         void handle(ScamExpr * expr)
         {
             if ( ! check_splice(expr) ) {
-                ExprHandle final = ExpressionFactory::makeCons(car.get(), expr);
-                cont->run(final.get());
+                ScamExpr * rv = ExpressionFactory::makeCons(car, expr);
+                cont->run(rv);
             }
         }
 
         bool check_splice(ScamExpr * expr)
         {
             if ( car->isCons() ) {
-                ExprHandle first = car->nthcar(0);
+                ScamExpr * first = car->nthcar(0);
                 if ( first->isSymbol() ) {
                     if ( first->toString() == spliceTag->toString() ) {
                         do_splice(expr);
@@ -95,16 +116,15 @@ namespace
 
         void do_splice(ScamExpr * expr)
         {
-            ExprHandle f = expr->clone();
+            ScamExpr * f = expr;
             size_t count = car->length();
 
             while ( --count > 0 ) {
-                ExprHandle form = car->nthcar(count);
-                f = ExpressionFactory::makeCons(form.get(), f.get());
+                ScamExpr * form = car->nthcar(count);
+                f = ExpressionFactory::makeCons(form, f);
             }
 
-            ScamExpr * final = f.get();
-            cont->run(final);
+            cont->run(f);
         }
     };
 
@@ -113,7 +133,7 @@ namespace
     public:
         QQConsListCarCont(ScamExpr * cdr, ContHandle cont, Env env)
             : Continuation("QQConsListCarCont")
-            , cdr(cdr->clone())
+            , cdr(cdr)
             , cont(cont)
             , env(env)
         {
@@ -127,12 +147,12 @@ namespace
             }
             else {
                 ContHandle h = make_shared<QQConsListCdrCont>(expr, cont, env);
-                qq_apply(cdr.get(), h, env, false);
+                qq_apply(cdr, h, env, false);
             }
         }
 
     private:
-        ExprHandle cdr;
+        ScamExpr * cdr;
         ContHandle cont;
         Env        env;
     };
@@ -153,8 +173,9 @@ namespace
                 cont->run(expr);
             }
             else {
-                ExprHandle internal = ExpressionFactory::makeCons(spliceTag.get(), expr);
-                cont->run(internal.get());
+                ScamExpr * internal =
+                    ExpressionFactory::makeCons(spliceTag, expr);
+                cont->run(internal);
             }
         }
 
@@ -167,7 +188,7 @@ namespace
     public:
         QuasiQuoteWorker(ScamExpr * form, ContHandle cont, Env env)
             : Worker("QuasiQuote")
-            , form(form->clone())
+            , form(form)
             , cont(cont)
             , env(env)
         {
@@ -175,11 +196,11 @@ namespace
 
         void run() override
         {
-            build_qq_form(form.get(), cont);
+            build_qq_form(form, cont);
         }
 
     private:
-        ExprHandle form;
+        ScamExpr * form;
         ContHandle cont;
         Env        env;
 
@@ -188,8 +209,8 @@ namespace
             if ( ! input->isList() || 1 != input->length() ) {
                 stringstream s;
                 s << "expected single form, got " << input->toString();
-                ExprHandle err = ExpressionFactory::makeError(s.str());
-                cont->run(err.get());
+                ScamExpr * err = ExpressionFactory::makeError(s.str());
+                cont->run(err);
                 return false;
             }
             return true;
@@ -198,7 +219,7 @@ namespace
         void unquote_form(ScamExpr * input, ContHandle cont)
         {
             if ( verify_single_form(input, cont) ) {
-                ScamExpr * form = input->nthcar(0).get();
+                ScamExpr * form = input->nthcar(0);
                 form->eval(cont, env);
             }
         }
@@ -208,7 +229,7 @@ namespace
             if ( verify_single_form(input, cont) ) {
                 ContHandle h = make_shared<QQSpliceCont>(cont);
 
-                ScamExpr * form = input->nthcar(0).get();
+                ScamExpr * form = input->nthcar(0);
                 form->eval(h, env);
             }
         }
@@ -221,8 +242,8 @@ namespace
 
         void build_qq_list(ScamExpr * input, ContHandle cont)
         {
-            ScamExpr * first = input->nthcar(0).get();
-            ScamExpr * rest  = input->nthcdr(0).get();
+            ScamExpr * first = input->nthcar(0);
+            ScamExpr * rest  = input->nthcdr(0);
 
             const bool isSym = first->isSymbol();
             string const sym = first->toString();
@@ -253,18 +274,18 @@ namespace
         if ( ! args->isList() ) {
             stringstream s;
             s << "quasiquote expecting list of args, got " << args->toString();
-            ExprHandle err = ExpressionFactory::makeError(s.str());
-            cont->run(err.get());
+            ScamExpr * err = ExpressionFactory::makeError(s.str());
+            cont->run(err);
         }
         else if ( top ) {
             if ( 1 != args->length() ) {
                 stringstream s;
                 s << "quasiquote expecting one form, got " << args->toString();
-                ExprHandle err = ExpressionFactory::makeError(s.str());
-                cont->run(err.get());
+                ScamExpr * err = ExpressionFactory::makeError(s.str());
+                cont->run(err);
             }
             else {
-                ScamExpr * form = args->nthcar(0).get();
+                ScamExpr * form = args->nthcar(0);
                 workQueueHelper<QuasiQuoteWorker>(form, cont, env);
             }
         }

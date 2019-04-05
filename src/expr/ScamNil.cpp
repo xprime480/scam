@@ -5,6 +5,21 @@
 using namespace scam;
 using namespace std;
 
+ScamNil::ScamNil()
+{
+}
+
+ScamNil * ScamNil::makeInstance()
+{
+    static ScamNil nil;
+    return &nil;
+}
+
+bool ScamNil::isManaged() const
+{
+    return false;
+}
+
 string ScamNil::toString() const
 {
     static const string value{ "()" };

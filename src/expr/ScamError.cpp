@@ -12,6 +12,12 @@ ScamError::ScamError(char const * msg)
 {
 }
 
+ScamError * ScamError::makeInstance(char const * msg)
+{
+    return new ScamError(msg);
+}
+
+
 string ScamError::toString() const
 {
     return msg;

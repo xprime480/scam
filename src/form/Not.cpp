@@ -21,6 +21,11 @@ Not::Not()
 {
 }
 
+Not * Not::makeInstance()
+{
+    return new Not();
+}
+
 void Not::apply(ScamExpr * args, ContHandle cont, Env env)
 {
     apply_impl(args, cont, env);
@@ -35,7 +40,7 @@ namespace
         void run() override;
 
     private:
-        ExprHandle args;
+        ScamExpr * args;
         ContHandle cont;
         Env env;
     };
@@ -58,7 +63,7 @@ namespace
 
 NotWorker::NotWorker(ContHandle cont, Env env, ScamExpr * args)
     : Worker("Not")
-    , args(args->clone())
+    , args(args)
     , cont(cont)
     , env(env)
 {
@@ -71,12 +76,12 @@ void NotWorker::run()
     if ( ! args->isList() || 1u != args->length() ) {
         stringstream s;
         s << "Not expects 1 form; got: " << args->toString();
-        ExprHandle err = ExpressionFactory::makeError(s.str());
-        cont->run(err.get());
+        ScamExpr * err = ExpressionFactory::makeError(s.str());
+        cont->run(err);
     }
     else {
         ContHandle newCont = make_shared<NotCont>(cont);
-        ExprHandle test = args->nthcar(0);
+        ScamExpr * test = args->nthcar(0);
         test->eval(newCont, env);
     }
 }
@@ -95,6 +100,7 @@ void NotCont::run(ScamExpr * expr)
         cont->run(expr);
     }
     else {
-        cont->run(ExpressionFactory::makeBoolean(! expr->truth()).get());
+        ScamExpr * rv = ExpressionFactory::makeBoolean(! expr->truth());
+        cont->run(rv);
     }
 }

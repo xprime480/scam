@@ -10,6 +10,19 @@ ScamBoolean::ScamBoolean(bool value)
 {
 }
 
+ScamBoolean * ScamBoolean::makeInstance(bool value)
+{
+    static ScamBoolean yes(true);
+    static ScamBoolean no(false);
+
+    return value ? &yes : &no;
+}
+
+bool ScamBoolean::isManaged() const
+{
+    return false;
+}
+
 string ScamBoolean::toString() const
 {
     if ( value ) {

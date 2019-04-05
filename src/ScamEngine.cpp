@@ -25,12 +25,12 @@ namespace
 
         void run(ScamExpr * expr) override;
 
-        ExprHandle get(size_t which = 1) const;
+        ScamExpr * get(size_t which = 1) const;
         size_t current() const;
 
     private:
         size_t size;
-        vector<ExprHandle> history;
+        vector<ScamExpr *> history;
         ContHandle cont;
         size_t serial;
     };
@@ -79,7 +79,7 @@ bool ScamEngine::hasBinding(ScamExpr * key, bool checkParent)
     return env.check(key, checkParent);
 }
 
-ExprHandle ScamEngine::getBinding(ScamExpr * key, bool top)
+ScamExpr * ScamEngine::getBinding(ScamExpr * key, bool top)
 {
     Env temp = top ? env.top() : env;
     return temp.get(key);
@@ -110,17 +110,17 @@ void ScamEngine::setCont(ContHandle c)
     }
 }
 
-ExprHandle ScamEngine::parseCurrentInput()
+ScamExpr * ScamEngine::parseCurrentInput()
 {
     HistoryCont const * hc = dynamic_cast<HistoryCont const *>(cont.get());
     size_t const mark = hc ? hc->current() : 0;
 
     while ( true ) {
-        ExprHandle expr = read();
+        ScamExpr * expr = read();
         if ( expr->isNull() ) {
             break;
         }
-        eval(expr.get());
+        eval(expr);
     }
 
     if ( ! hc || hc->current() == mark ) {
@@ -129,7 +129,7 @@ ExprHandle ScamEngine::parseCurrentInput()
     return hc->get();
 }
 
-ExprHandle ScamEngine::read()
+ScamExpr * ScamEngine::read()
 {
     if ( input.empty() ) {
         return ExpressionFactory::makeNull();
@@ -139,7 +139,7 @@ ExprHandle ScamEngine::read()
     return p.parseExpr();
 }
 
-ExprHandle ScamEngine::eval(ScamExpr * expr)
+ScamExpr * ScamEngine::eval(ScamExpr * expr)
 {
     expr->eval(cont, env);
     Trampoline(GlobalWorkQueue);
@@ -147,7 +147,7 @@ ExprHandle ScamEngine::eval(ScamExpr * expr)
     return hc->get();
 }
 
-ExprHandle ScamEngine::apply(ScamExpr * expr, ScamExpr * args)
+ScamExpr * ScamEngine::apply(ScamExpr * expr, ScamExpr * args)
 {
     expr->apply(args, cont, env);
     Trampoline(GlobalWorkQueue);
@@ -198,14 +198,14 @@ namespace
 
         cont->run(expr);
 
-        history.push_back(expr->clone());
+        history.push_back(expr);
         ++serial;
         while ( history.size() > size ) {
             history.erase(history.begin());
         }
     }
 
-    ExprHandle HistoryCont::get(size_t which) const
+    ScamExpr * HistoryCont::get(size_t which) const
     {
         if ( which == 0 || which > history.size() ) {
             return ExpressionFactory::makeNull();

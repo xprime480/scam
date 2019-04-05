@@ -19,6 +19,11 @@ CallCC::CallCC()
 {
 }
 
+CallCC * CallCC::makeInstance()
+{
+    return new CallCC();
+}
+
 void CallCC::apply(ScamExpr * args, ContHandle cont, Env env)
 {
     do_apply(args, cont, env);
@@ -47,14 +52,14 @@ namespace
                 stringstream s;
                 s << "call/cc: form " << expr->toString()
                   << "cannot be applied";
-                ExprHandle err = ExpressionFactory::makeError(s.str());
-                cont->run(err.get());
+                ScamExpr * err = ExpressionFactory::makeError(s.str());
+                cont->run(err);
                 return;
             }
 
-            ExprHandle contExpr = ExpressionFactory::makeContinuation(cont);
-            ExprHandle args = ExpressionFactory::makeList(contExpr.get());
-            expr->apply(args.get(), cont, env);
+            ScamExpr * contExpr = ExpressionFactory::makeContinuation(cont);
+            ScamExpr * args = ExpressionFactory::makeList(contExpr);
+            expr->apply(args, cont, env);
         }
 
     private:
@@ -64,7 +69,7 @@ namespace
 
     void do_apply(ScamExpr * args, ContHandle cont, Env env)
     {
-        ExprHandle body = args->nthcar(0);
+        ScamExpr * body = args->nthcar(0);
         ContHandle newCont = make_shared<CallCont>(cont, env);
         body->eval(newCont, env);
     }

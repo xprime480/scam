@@ -13,10 +13,10 @@ using namespace std;
 namespace
 {
     static unsigned counter { 0 };
-    static const ExprHandle nomore =
+    static ScamExpr * const nomore =
         ExpressionFactory::makeError("No more choices");
     static bool init =
-        (nomore->setMeta("amb-error", ExpressionFactory::makeNil().get()),
+        (nomore->setMeta("amb-error", ExpressionFactory::makeNil()),
          true);
 }
 
@@ -24,6 +24,7 @@ Backtracker::Backtracker(char const * id, BacktrackHandle parent)
     : name(makeName(id))
     , parent(parent)
 {
+  if ( ! init ) { id = nullptr; } // compiler pacifier
     //    cerr << "Creating backtracker " << name << "\n";
 }
 
@@ -58,7 +59,7 @@ void Backtracker::safeRun(BacktrackHandle bt, ContHandle cont)
         bt->run();
     }
     else {
-        cont->run(nomore.get());
+        cont->run(nomore);
     }
 }
 
@@ -80,7 +81,7 @@ BacktrackHandle Backtracker::getParent() const
 void Backtracker::runParent(ContHandle cont) const
 {
     if ( nullptr == parent.get() ) {
-        cont->run(nomore.get());
+        cont->run(nomore);
     }
     else {
         parent->run();

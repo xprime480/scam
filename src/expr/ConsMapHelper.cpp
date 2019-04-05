@@ -119,7 +119,7 @@ void CarContinuation::run(ScamExpr * expr)
         data.original->run(expr);
     }
     else {
-        ScamExpr * e = data.cdr.get();
+        ScamExpr * e = data.cdr;
         workQueueHelper<MapCdr>(expr, e, data.original, data.env);
     }
 }
@@ -151,8 +151,7 @@ void CdrContinuation::run(ScamExpr * expr)
         data.original->run(expr);
     }
     else {
-        ExprHandle x = ExpressionFactory::makeCons(data.car.get(), expr);
-        ScamExpr * e = x.get();
+        ScamExpr * e = ExpressionFactory::makeCons(data.car, expr);
         data.original->run(e);
     }
 }

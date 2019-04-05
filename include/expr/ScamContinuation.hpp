@@ -14,6 +14,9 @@ namespace scam
     public:
         ScamContinuation(ContHandle cont);
 
+    public:
+        static ScamContinuation * makeInstance(ContHandle cont);
+
         std::string toString() const override;
 
         bool hasApply() const override;

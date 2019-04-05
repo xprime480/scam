@@ -42,6 +42,11 @@ Assign::Assign(ScamEngine * engine)
 {
 }
 
+Assign * Assign::makeInstance(ScamEngine * engine)
+{
+    return new Assign(engine);
+}
+
 void Assign::apply(ScamExpr * args, ContHandle cont, Env env)
 {
     apply_assign(args, cont, env, engine);
@@ -52,6 +57,11 @@ Define::Define(ScamEngine * engine)
 {
 }
 
+Define * Define::makeInstance(ScamEngine * engine)
+{
+    return new Define(engine);
+}
+
 void Define::apply(ScamExpr * args, ContHandle cont, Env env)
 {
     apply_define(args, cont, env, engine);
@@ -60,6 +70,11 @@ void Define::apply(ScamExpr * args, ContHandle cont, Env env)
 Undefine::Undefine(ScamEngine * engine)
     : EnvHelper("undefine", engine)
 {
+}
+
+Undefine * Undefine::makeInstance(ScamEngine * engine)
+{
+    return new Undefine(engine);
 }
 
 void Undefine::apply(ScamExpr * args, ContHandle cont, Env env)
@@ -78,8 +93,8 @@ namespace
             stringstream s;
             s << "Expecting " << expected << "forms for argument list; ";
             s << "got: " << args->toString();
-            ExprHandle err = ExpressionFactory::makeError(s.str());
-            cont->run(err.get());
+            ScamExpr * err = ExpressionFactory::makeError(s.str());
+            cont->run(err);
             return false;
         }
 
@@ -102,7 +117,7 @@ namespace
         virtual ContHandle getCont(ScamExpr * sym) const = 0;
 
     private:
-        ExprHandle args;
+        ScamExpr * args;
     };
 
     class AssignWorker : public EnvHelperWorker
@@ -155,7 +170,7 @@ namespace
                       Env env,
                       char const * name)
             : Continuation(name)
-            , sym(sym->clone())
+            , sym(sym)
             , env(env)
             , cont(cont)
         {
@@ -164,11 +179,11 @@ namespace
         void run(ScamExpr * expr) override
         {
             finish(expr);
-            cont->run(sym.get());
+            cont->run(sym);
         }
 
     protected:
-        ExprHandle sym;
+        ScamExpr * sym;
         mutable Env env;
 
         virtual void finish(ScamExpr * expr) const = 0;
@@ -185,8 +200,8 @@ namespace
                           Env env,
                           BacktrackHandle backtracker)
             : Backtracker("DefineBacktracker", backtracker)
-            , sym(sym->clone())
-            , old(old->clone())
+            , sym(sym)
+            , old(old)
             , env(env)
         {
         }
@@ -194,15 +209,15 @@ namespace
         void run() override
         {
             Backtracker::run();
-            env.assign(sym.get(), old.get());
+            env.assign(sym, old);
             shared_ptr<Continuation> cont
                 = make_shared<Continuation>("Assign Backtrack");
             runParent(cont);
         }
 
     private:
-        ExprHandle      sym;
-        ExprHandle      old;
+        ScamExpr *      sym;
+        ScamExpr *      old;
         Env             env;
     };
 
@@ -225,9 +240,9 @@ namespace
                 return;
             }
 
-            ExprHandle old = env.get(sym.get());
+            ScamExpr * old = env.get(sym);
 
-            env.assign(sym.get(), expr);
+            env.assign(sym, expr);
 
             BacktrackHandle backtracker = engine->getBacktracker();
             if ( nullptr == backtracker.get() ) {
@@ -235,8 +250,8 @@ namespace
             }
 
             shared_ptr<Backtracker> bt =
-                make_shared<AssignBacktracker>(sym.get(),
-                                               old.get(),
+                make_shared<AssignBacktracker>(sym,
+                                               old,
                                                env,
                                                backtracker);
             engine->setBacktracker(bt);
@@ -253,7 +268,7 @@ namespace
                           Env env,
                           BacktrackHandle backtracker)
             : Backtracker("DefineBacktracker", backtracker)
-            , sym(sym->clone())
+            , sym(sym)
             , env(env)
         {
         }
@@ -261,14 +276,14 @@ namespace
         void run() override
         {
             Backtracker::run();
-            env.remove(sym.get());
+            env.remove(sym);
             shared_ptr<Continuation> cont
                 = make_shared<Continuation>("Define Backtrack");
             runParent(cont);
         }
 
     private:
-        ExprHandle      sym;
+        ScamExpr *      sym;
         Env             env;
     };
 
@@ -291,7 +306,7 @@ namespace
                 return;
             }
 
-            env.put(sym.get(), expr);
+            env.put(sym, expr);
 
             BacktrackHandle backtracker = engine->getBacktracker();
             if ( nullptr == backtracker.get() ) {
@@ -299,9 +314,7 @@ namespace
             }
 
             shared_ptr<Backtracker> bt =
-                make_shared<DefineBacktracker>(sym.get(),
-                                               env,
-                                               backtracker);
+                make_shared<DefineBacktracker>(sym, env, backtracker);
             engine->setBacktracker(bt);
         }
 
@@ -320,7 +333,7 @@ namespace
     protected:
         void finish(ScamExpr * expr) const override
         {
-            env.remove(sym.get());
+            env.remove(sym);
         }
     };
 
@@ -331,7 +344,7 @@ namespace
         : Worker(name)
         , cont(cont)
         , env(env)
-        , args(args->clone())
+        , args(args)
     {
     }
 
@@ -339,15 +352,15 @@ namespace
     {
         Worker::run();
 
-        ExprHandle sym = args->getCar();
-        ContHandle c = getCont(sym.get());
+        ScamExpr * sym = args->getCar();
+        ContHandle c = getCont(sym);
         if ( args->length() > 1 ) {
-            ExprHandle expr = args->nthcar(1);
+            ScamExpr * expr = args->nthcar(1);
             expr->eval(c, env);
         }
         else {
-            ExprHandle expr = ExpressionFactory::makeNil();
-            c->run(expr.get());
+            ScamExpr * expr = ExpressionFactory::makeNil();
+            c->run(expr);
         }
     }
 

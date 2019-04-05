@@ -19,8 +19,10 @@ namespace scam
         T * make(Args && ... args)
         {
             T * raw = T::makeInstance(args...);
-            arena.emplace_back(raw);
-            ++createCount;
+            if ( raw && raw->isManaged() ) {
+                arena.emplace_back(raw);
+                ++createCount;
+            }
             return raw;
         }
 

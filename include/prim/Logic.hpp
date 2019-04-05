@@ -9,37 +9,45 @@ namespace scam
 
     class Match : public Primitive
     {
-    public:
+    private:
         Match();
 
+    public:
+        static Match * makeInstance();
         void applyArgs(ScamExpr * args, ContHandle cont) override;
     };
 
     class Unify : public Primitive
     {
-    public:
+    private:
         Unify();
 
+    public:
+        static Unify * makeInstance();
         void applyArgs(ScamExpr * args, ContHandle cont) override;
     };
 
     class Substitute : public Primitive
     {
-    public:
+    private:
         Substitute();
 
+    public:
+        static Substitute * makeInstance();
         void applyArgs(ScamExpr * args, ContHandle cont) override;
     };
 
     class Instantiate : public Primitive
     {
-    public:
+    private:
         Instantiate();
 
+    public:
+        static Instantiate * makeInstance();
         void applyArgs(ScamExpr * args, ContHandle cont) override;
 
     private:
-	static size_t counter;
+        static size_t counter;
     };
 }
 

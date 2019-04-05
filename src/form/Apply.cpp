@@ -21,6 +21,11 @@ Apply::Apply()
 {
 }
 
+Apply * Apply::makeInstance()
+{
+    return new Apply();
+}
+
 void Apply::apply(ScamExpr * args, ContHandle cont, Env env)
 {
     do_apply(args, cont, env);
@@ -33,7 +38,7 @@ namespace
     public:
         ApplyArgsCont(ScamExpr * op, ContHandle cont, Env env)
             : Continuation("apply args")
-            , op(op->clone())
+            , op(op)
             , cont(cont)
             , env(env)
         {
@@ -52,7 +57,7 @@ namespace
         }
 
     private:
-        ExprHandle op;
+        ScamExpr * op;
         ContHandle cont;
         Env env;
     };
@@ -65,8 +70,8 @@ namespace
                         ContHandle cont,
                         Env env)
             : Worker("Apply Args")
-            , op(op->clone())
-            , args(args->clone())
+            , op(op)
+            , args(args)
             , cont(cont)
             , env(env)
         {
@@ -74,14 +79,13 @@ namespace
 
         void run() override
         {
-            ContHandle newCont
-                = make_shared<ApplyArgsCont>(op.get(), cont, env);
+            ContHandle newCont = make_shared<ApplyArgsCont>(op, cont, env);
             args->eval(newCont, env);
         }
 
     private:
-        ExprHandle op;
-        ExprHandle args;
+        ScamExpr * op;
+        ScamExpr * args;
         ContHandle cont;
         Env        env;
     };
@@ -91,7 +95,7 @@ namespace
     public:
         ApplyOpCont(ScamExpr * args, ContHandle cont, Env env)
             : Continuation("apply")
-            , args(args->clone())
+            , args(args)
             , cont(cont)
             , env(env)
         {
@@ -105,22 +109,21 @@ namespace
                 cont->run(expr);
             }
             else {
-                ScamExpr * a = args.get();
-                workQueueHelper<ApplyArgsWorker>(expr, a, cont, env);
+                workQueueHelper<ApplyArgsWorker>(expr, args, cont, env);
             }
         }
 
     private:
-        ExprHandle args;
+        ScamExpr * args;
         ContHandle cont;
         Env env;
     };
 
     void do_apply(ScamExpr * args, ContHandle cont, Env env)
     {
-        ExprHandle sym     = args->nthcar(0);
-        ExprHandle arglist = args->nthcar(1);
-        ContHandle newCont = make_shared<ApplyOpCont>(arglist.get(), cont, env);
+        ScamExpr * sym     = args->nthcar(0);
+        ScamExpr * arglist = args->nthcar(1);
+        ContHandle newCont = make_shared<ApplyOpCont>(arglist, cont, env);
 
         sym->eval(newCont, env);
     }

@@ -16,14 +16,19 @@ Progn::Progn()
 {
 }
 
+Progn * Progn::makeInstance()
+{
+    return new Progn();
+}
+
 void Progn::applyArgs(ScamExpr * args, ContHandle cont)
 {
     if ( args->isNil() ) {
         cont->run(args);
     }
     else {
-        ExprHandle last = args->nthcar(args->length() - 1);
-        cont->run(last.get());
+        ScamExpr * last = args->nthcar(args->length() - 1);
+        cont->run(last);
     }
 }
 

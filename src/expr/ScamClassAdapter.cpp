@@ -21,17 +21,17 @@ ScamClassAdapter::ScamClassAdapter(ScamExpr const * expr)
 
 ScamExpr * ScamClassAdapter::getBase() const
 {
-    return cls->base.get();
+    return cls->base;
 }
 
 ScamExpr * ScamClassAdapter::getVars() const
 {
-    return cls->vars.get();
+    return cls->vars;
 }
 
 ScamExpr * ScamClassAdapter::getFuns() const
 {
-    return cls->funs.get();
+    return cls->funs;
 }
 
 Env ScamClassAdapter::getCapture() const

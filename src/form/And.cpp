@@ -23,6 +23,11 @@ And::And()
 {
 }
 
+And * And::makeInstance()
+{
+    return new And();
+}
+
 void And::apply(ScamExpr * args, ContHandle cont, Env env)
 {
     apply_impl(args, cont, env);
@@ -37,7 +42,7 @@ namespace
         void run() override;
 
     private:
-        ExprHandle args;
+        ScamExpr * args;
         ContHandle cont;
         Env env;
         size_t n;
@@ -50,7 +55,7 @@ namespace
         void run(ScamExpr * expr) override;
 
     private:
-        ExprHandle args;
+        ScamExpr * args;
         ContHandle cont;
         Env env;
         size_t n;
@@ -68,7 +73,7 @@ AndWorker::AndWorker(ContHandle cont,
                      ScamExpr * args,
                      size_t n)
     : Worker("And")
-    , args(args->clone())
+    , args(args)
     , cont(cont)
     , env(env)
     , n(n)
@@ -82,21 +87,21 @@ void AndWorker::run()
     if ( ! args->isList() ) {
         stringstream s;
         s << "And expects a list of forms; got: " << args->toString();
-        ExprHandle err = ExpressionFactory::makeError(s.str());
-        cont->run(err.get());
+        ScamExpr * err = ExpressionFactory::makeError(s.str());
+        cont->run(err);
         return;
     }
 
     size_t const len = args->length();
     if ( 0 == len ) {
-        cont->run(ExpressionFactory::makeBoolean(true).get());
+        cont->run(ExpressionFactory::makeBoolean(true));
     }
     else if ( n == (len - 1) ) {
         args->nthcar(len-1)->eval(cont, env);
     }
     else {
-        ExprHandle test = args->nthcar(n);
-        ScamExpr * a = args.get();
+        ScamExpr * test = args->nthcar(n);
+        ScamExpr * a = args;
         ContHandle newCont = make_shared<AndCont>(a, cont, env, n+1);
         test->eval(newCont, env);
     }
@@ -104,7 +109,7 @@ void AndWorker::run()
 
 AndCont::AndCont(ScamExpr * args, ContHandle cont, Env env, size_t n)
     : Continuation("And")
-    , args(args->clone())
+    , args(args)
     , cont(cont)
     , env(env)
     , n(n)
@@ -122,7 +127,6 @@ void AndCont::run(ScamExpr * expr)
         cont->run(expr);
     }
     else {
-        ScamExpr * a = args.get();
-        workQueueHelper<AndWorker>(cont, env, a, n);
+        workQueueHelper<AndWorker>(cont, env, args, n);
     }
 }

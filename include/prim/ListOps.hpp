@@ -7,17 +7,21 @@ namespace scam
 {
     class List : public Primitive
     {
-    public:
+    private:
         List();
 
+    public:
+        static List * makeInstance();
         void applyArgs(ScamExpr * args, ContHandle cont) override;
     };
 
     class Cons : public Primitive
     {
-    public:
+    private:
         Cons();
 
+    public:
+        static Cons * makeInstance();
         void applyArgs(ScamExpr * args, ContHandle cont) override;
     };
 
@@ -34,8 +38,11 @@ namespace scam
 
     class Car : public CarCdr
     {
-    public:
+    private:
         Car();
+
+    public:
+        static Car * makeInstance();
 
     protected:
         void finish(ScamExpr * args, ContHandle cont) override;
@@ -43,8 +50,11 @@ namespace scam
 
     class Cdr : public CarCdr
     {
-    public:
+    private:
         Cdr();
+
+    public:
+        static Cdr * makeInstance();
 
     protected:
         void finish(ScamExpr * args, ContHandle cont) override;

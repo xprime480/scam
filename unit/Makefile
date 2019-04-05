@@ -9,9 +9,10 @@ GTEST_DIR=../../googletest/googletest
 CPP = /usr/bin/g++
 INC = -I include -I ../include -isystem $(GTEST_DIR)/include -I$(GTEST_DIR)
 CPPFLAGS = -g -Wall $(INC)
+TEST_EXE = ./unittests
 
-unittests : $(OBJ) lib gmocklib
-	$(CPP) -o $@ $(OBJ) -L../src -lscam -Lgmock -lgtest -lpthread
+exe : lib gmocklib qexe
+	:
 
 $(OBJ) : %.o : %.cpp
 	$(CPP) $(CPPFLAGS) -c $<
@@ -25,37 +26,46 @@ lib :
 gmocklib :
 	:
 
+qexe : $(OBJ)
+	$(CPP) -o $(TEST_EXE) $(OBJ) -L../src -lscam -Lgmock -lgtest -lpthread
+	touch $@
+
 do_it_manually :
 	make -C gmock all
 
-test : unittests
-	@./unittests --gtest_filter=MemoryTest.*
+TEST_FILTER = --gtest_filter=MemoryTest.*
 
-by_module : unittests
-	@./unittests --gtest_filter=TrampolineTest.*
-	@./unittests --gtest_filter=EnvTest.*
-	@./unittests --gtest_filter=TokenizerTest.*
-	@./unittests --gtest_filter=ParserTest.*
-	@./unittests --gtest_filter=ExpressionTest.*
-	@./unittests --gtest_filter=ComparisonTest.*
-	@./unittests --gtest_filter=EqualTest.*
-	@./unittests --gtest_filter=PredicateTest.*
-	@./unittests --gtest_filter=LogicTest.*
-	@./unittests --gtest_filter=MathTest.*
-	@./unittests --gtest_filter=ClosureTest.*
-	@./unittests --gtest_filter=LetTest.*
-	@./unittests --gtest_filter=ListTest.*
-	@./unittests --gtest_filter=EvalTest.*
-	@./unittests --gtest_filter=ClassTest.*
-	@./unittests --gtest_filter=ContinuationTest.*
-	@./unittests --gtest_filter=SystemTest.*
-	@./unittests --gtest_filter=PreludeTest.*
-	@./unittests --gtest_filter=MemoryTest.*
+qtest : qexe
+	@./$(TEST_EXE) $(TEST_FILTER)
+
+test : exe qtest
+	:
+
+by_module : exe
+	@./$(TEST_EXE) --gtest_filter=TrampolineTest.*
+	@./$(TEST_EXE) --gtest_filter=EnvTest.*
+	@./$(TEST_EXE) --gtest_filter=TokenizerTest.*
+	@./$(TEST_EXE) --gtest_filter=ParserTest.*
+	@./$(TEST_EXE) --gtest_filter=ExpressionTest.*
+	@./$(TEST_EXE) --gtest_filter=ComparisonTest.*
+	@./$(TEST_EXE) --gtest_filter=EqualTest.*
+	@./$(TEST_EXE) --gtest_filter=PredicateTest.*
+	@./$(TEST_EXE) --gtest_filter=LogicTest.*
+	@./$(TEST_EXE) --gtest_filter=MathTest.*
+	@./$(TEST_EXE) --gtest_filter=ClosureTest.*
+	@./$(TEST_EXE) --gtest_filter=LetTest.*
+	@./$(TEST_EXE) --gtest_filter=ListTest.*
+	@./$(TEST_EXE) --gtest_filter=EvalTest.*
+	@./$(TEST_EXE) --gtest_filter=ClassTest.*
+	@./$(TEST_EXE) --gtest_filter=ContinuationTest.*
+	@./$(TEST_EXE) --gtest_filter=SystemTest.*
+	@./$(TEST_EXE) --gtest_filter=PreludeTest.*
+	@./$(TEST_EXE) --gtest_filter=MemoryTest.*
 
 clean :
 	make -C ../src clean
-	-@rm -f *.o *.d unittests
+	-@rm -f *.o *.d $(TEST_EXE) qexe
 
 include $(DEP)
 
-.PHONY : test
+.PHONY : test qtest

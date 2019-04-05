@@ -14,6 +14,11 @@ ScamInteger::ScamInteger(int value)
 {
 }
 
+ScamInteger * ScamInteger::makeInstance(int value)
+{
+    return new ScamInteger(value);
+}
+
 string ScamInteger::toString() const
 {
     stringstream s;

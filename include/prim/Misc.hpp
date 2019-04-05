@@ -7,9 +7,11 @@ namespace scam
 {
     class Progn : public Primitive
     {
-    public:
+    private:
         Progn();
 
+    public:
+        static Progn * makeInstance();
         void applyArgs(ScamExpr * args, ContHandle cont) override;
     };
 }

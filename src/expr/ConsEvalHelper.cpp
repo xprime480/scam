@@ -95,6 +95,6 @@ void EvalContinuation::run(ScamExpr * expr)
         data.original->run(expr);
     }
     else {
-        expr->apply(data.cdr.get(), data.original, data.env);
+        expr->apply(data.cdr, data.original, data.env);
     }
 }

@@ -11,12 +11,14 @@ namespace scam
         ManagedObject();
         virtual ~ManagedObject();
 
-        virtual void mark();
+        virtual bool isManaged() const;
+
+        virtual void mark() const;
         bool isMarked() const;
-        void unmark();
+        void unmark() const;
 
     private:
-        bool marked;
+        mutable bool marked;
     };
 }
 

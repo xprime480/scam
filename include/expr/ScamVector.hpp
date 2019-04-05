@@ -7,12 +7,16 @@
 
 namespace scam
 {
-    using ExprVec = std::vector<ExprHandle>;
+    using ExprVec = std::vector<ScamExpr *>;
 
     class ScamVector : public ScamExpr
     {
-    public:
+    private:
         ScamVector(ExprVec const & elts);
+
+    public:
+        static ScamVector * makeInstance(ExprVec const & elts);
+        void mark() const override;
 
         std::string toString() const override;
 
@@ -21,7 +25,7 @@ namespace scam
         bool isVector() const override;
 
         size_t length() const override;
-        ExprHandle nthcar(size_t n) const override;
+        ScamExpr * nthcar(size_t n) const override;
 
         bool equals(ScamExpr const * expr) const override;
 

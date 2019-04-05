@@ -9,8 +9,12 @@ namespace scam
 {
     class ScamInteger : public ScamFloat
     {
-    public:
+    private:
         ScamInteger(int value);
+
+    public:
+        static ScamInteger * makeInstance(int value);
+
         std::string toString() const override;
 
         bool isInteger() const override;

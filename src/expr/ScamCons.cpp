@@ -13,9 +13,23 @@ using namespace scam::cons_impl;
 using namespace std;
 
 ScamCons::ScamCons(ScamExpr * car, ScamExpr * cdr)
-    : car(car->clone())
-    , cdr(cdr->clone())
+    : car(car)
+    , cdr(cdr)
 {
+}
+
+ScamCons * ScamCons::makeInstance(ScamExpr * car, ScamExpr * cdr)
+{
+    return new ScamCons(car, cdr);
+}
+
+void ScamCons::mark() const
+{
+    if ( ! isMarked() ) {
+        ScamExpr::mark();
+        car->mark();
+        cdr->mark();
+    }
 }
 
 string ScamCons::toString() const
@@ -23,7 +37,7 @@ string ScamCons::toString() const
     stringstream s;
     s << "(";
     s << car->toString();
-    ExprHandle next = cdr;
+    ScamExpr * next = cdr;
     while ( ! next->isNil() ) {
         if ( next->isCons() ) {
             s << " " << next->getCar()->toString();
@@ -41,12 +55,12 @@ string ScamCons::toString() const
 
 void ScamCons::eval(ContHandle cont, Env env)
 {
-    scamConsEvalHelper(car.get(), cdr.get(), cont, env);
+    scamConsEvalHelper(car, cdr, cont, env);
 }
 
 void ScamCons::mapEval(ContHandle cont, Env env)
 {
-    scamConsMapHelper(car.get(), cdr.get(), cont, env);
+    scamConsMapHelper(car, cdr, cont, env);
 }
 
 bool ScamCons::isCons() const
@@ -71,15 +85,15 @@ bool ScamCons::equals(ScamExpr const * expr) const
         return false;
     }
     ScamCons const * that = dynamic_cast<ScamCons const *>(expr);
-    return (car->equals(that->car.get()) && cdr->equals(that->cdr.get()) );
+    return (car->equals(that->car) && cdr->equals(that->cdr) );
 }
 
-ExprHandle ScamCons::getCar() const
+ScamExpr * ScamCons::getCar() const
 {
     return car;
 }
 
-ExprHandle ScamCons::getCdr() const
+ScamExpr * ScamCons::getCdr() const
 {
     return cdr;
 }
@@ -97,15 +111,15 @@ size_t ScamCons::length() const
     return len;
 }
 
-ExprHandle ScamCons::nthcar(size_t n) const
+ScamExpr * ScamCons::nthcar(size_t n) const
 {
-    auto f = [=] () -> ExprHandle {
+    auto f = [=] () -> ScamExpr * {
         stringstream s;
         s << "Index " << n << " requested for " << toString();
         return ExpressionFactory::makeError(s.str());
     };
 
-    ExprHandle rv;
+    ScamExpr * rv;
 
     if ( 0 == n ) {
         rv = car;
@@ -126,15 +140,15 @@ ExprHandle ScamCons::nthcar(size_t n) const
     return rv;
 }
 
-ExprHandle ScamCons::nthcdr(size_t n) const
+ScamExpr * ScamCons::nthcdr(size_t n) const
 {
-    auto f = [=] () -> ExprHandle {
+    auto f = [=] () -> ScamExpr * {
         stringstream s;
         s << "Index " << n << " requested for " << toString();
         return ExpressionFactory::makeError(s.str());
     };
 
-    ExprHandle rv;
+    ScamExpr * rv;
 
     if ( 0 == n ) {
         rv = cdr;

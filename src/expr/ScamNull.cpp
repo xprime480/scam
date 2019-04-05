@@ -7,6 +7,21 @@
 using namespace scam;
 using namespace std;
 
+ScamNull::ScamNull()
+{
+}
+
+ScamNull * ScamNull::makeInstance()
+{
+    static ScamNull instance;
+    return &instance;
+}
+
+bool ScamNull::isManaged() const
+{
+    return false;
+}
+
 std::string ScamNull::toString() const
 {
     static const std::string null{ "null" };
@@ -16,8 +31,8 @@ std::string ScamNull::toString() const
 void ScamNull::eval(ContHandle cont, Env env)
 {
     static const string msg{ "The null type cannot be evaluated." };
-    static const ExprHandle expr = ExpressionFactory::makeError(msg);
-    cont->run(expr.get());
+    static ScamExpr * expr = ExpressionFactory::makeError(msg);
+    cont->run(expr);
 }
 
 bool ScamNull::isNull() const

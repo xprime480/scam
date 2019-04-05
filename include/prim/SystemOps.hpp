@@ -9,9 +9,11 @@ namespace scam
 
     class Load : public Primitive
     {
-    public:
+    private:
         Load(ScamEngine * engine);
 
+    public:
+        static Load * makeInstance(ScamEngine * engine);
         void applyArgs(ScamExpr * args, ContHandle cont) override;
 
     private:
@@ -20,25 +22,31 @@ namespace scam
 
     class Spawn : public Primitive
     {
-    public:
+    private:
         Spawn();
 
+    public:
+        static Spawn * makeInstance();
         void applyArgs(ScamExpr * args, ContHandle cont) override;
     };
 
     class Error : public Primitive
     {
-    public:
+    private:
         Error();
 
+    public:
+        static Error * makeInstance();
         void applyArgs(ScamExpr * args, ContHandle cont) override;
     };
 
     class Backtrack : public Primitive
     {
-    public:
+    private:
         Backtrack(ScamEngine * engine);
 
+    public:
+        static Backtrack * makeInstance(ScamEngine * engine);
         void applyArgs(ScamExpr * args, ContHandle cont) override;
 
     private:
@@ -48,9 +56,11 @@ namespace scam
 
     class Trace : public Primitive
     {
-    public:
+    private:
         Trace();
 
+    public:
+        static Trace * makeInstance();
         void applyArgs(ScamExpr * args, ContHandle cont) override;
     };
 

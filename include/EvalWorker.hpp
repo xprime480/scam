@@ -22,7 +22,7 @@ namespace scam
         void run() override;
 
     private:
-        ExprHandle forms;
+        ScamExpr * forms;
         Env extended;
         ContHandle cont;
     };

@@ -12,64 +12,59 @@ class ClosureTest : public ExpressionTestBase
 
 TEST_F(ClosureTest, ClosureBasic)
 {
-    ExprHandle parm = ExpressionFactory::makeNil();
-    ExprHandle two  = ExpressionFactory::makeInteger(2);
-    ExprHandle forms = ExpressionFactory::makeList(two.get());
-    ExprHandle expr = ExpressionFactory::makeClosure(parm.get(),
-                                                     forms.get(),
-                                                     engine.getFrame());
+    ScamExpr * parm = ExpressionFactory::makeNil();
+    ScamExpr * two  = ExpressionFactory::makeInteger(2);
+    ScamExpr * forms = ExpressionFactory::makeList(two);
+    ScamExpr * expr =
+      ExpressionFactory::makeClosure(parm, forms, engine.getFrame());
 
     expectProcedure(expr, "(lambda () (2))");
 
-    ExprHandle args = ExpressionFactory::makeNil();
-    ExprHandle final = apply(expr.get(), args.get());
+    ScamExpr * args = ExpressionFactory::makeNil();
+    ScamExpr * finalValue = apply(expr, args);
 
-    expectInteger(final, 2, "2");
+    expectInteger(finalValue, 2, "2");
 }
 
 TEST_F(ClosureTest, ClosureMultipleForms)
 {
-    ExprHandle parm = ExpressionFactory::makeNil();
+    ScamExpr * parm = ExpressionFactory::makeNil();
 
-    ExprHandle two  = ExpressionFactory::makeInteger(2);
-    ExprHandle zed  = ExpressionFactory::makeCharacter("\\#z");
-    ExprHandle forms = ExpressionFactory::makeList(two.get(), zed.get());
-    ExprHandle expr = ExpressionFactory::makeClosure(parm.get(),
-                                                     forms.get(),
-                                                     engine.getFrame());
+    ScamExpr * two  = ExpressionFactory::makeInteger(2);
+    ScamExpr * zed  = ExpressionFactory::makeCharacter("\\#z");
+    ScamExpr * forms = ExpressionFactory::makeList(two, zed);
+    ScamExpr * expr =
+      ExpressionFactory::makeClosure(parm, forms, engine.getFrame());
 
     expectProcedure(expr, "(lambda () (2 \\#z))");
 
-    ExprHandle args = ExpressionFactory::makeNil();
-    ExprHandle final = apply(expr.get(), args.get());
+    ScamExpr * args = ExpressionFactory::makeNil();
+    ScamExpr * finalValue = apply(expr, args);
 
-    expectChar(final, 'z', "\\#z");
+    expectChar(finalValue, 'z', "\\#z");
 }
 
 TEST_F(ClosureTest, ClosureWithArg)
 {
-    ExprHandle nil  = ExpressionFactory::makeNil();
-    ExprHandle argx = ExpressionFactory::makeSymbol("x");
-    ExprHandle parm = ExpressionFactory::makeList(argx.get());
+    ScamExpr * argx = ExpressionFactory::makeSymbol("x");
+    ScamExpr * parm = ExpressionFactory::makeList(argx);
 
-    ExprHandle plus = ExpressionFactory::makeSymbol("+");
+    ScamExpr * plus = ExpressionFactory::makeSymbol("+");
 
-    ExprHandle form1 = ExpressionFactory::makeList(plus.get(),
-                                                   argx.get(),
-                                                   argx.get());
-    ExprHandle forms = ExpressionFactory::makeList(form1.get());
+    ScamExpr * form1 =
+      ExpressionFactory::makeList(plus, argx, argx);
+    ScamExpr * forms = ExpressionFactory::makeList(form1);
 
-    ExprHandle expr = ExpressionFactory::makeClosure(parm.get(),
-                                                     forms.get(),
-                                                     engine.getFrame());
+    ScamExpr * expr =
+      ExpressionFactory::makeClosure(parm, forms, engine.getFrame());
 
     expectProcedure(expr, "(lambda (x) ((+ x x)))");
 
-    ExprHandle arg3 = ExpressionFactory::makeInteger(3);
-    ExprHandle args = ExpressionFactory::makeList(arg3.get());
+    ScamExpr * arg3 = ExpressionFactory::makeInteger(3);
+    ScamExpr * args = ExpressionFactory::makeList(arg3);
     try {
-        ExprHandle final = apply(expr.get(), args.get());
-        expectInteger(final, 6, "6");
+        ScamExpr * finalValue = apply(expr, args);
+        expectInteger(finalValue, 6, "6");
     }
     catch ( ScamException e ) {
         FAIL() << e.getMessage();
@@ -78,31 +73,31 @@ TEST_F(ClosureTest, ClosureWithArg)
 
 TEST_F(ClosureTest, LambdaBasic)
 {
-    ExprHandle expr = parseAndEvaluate("(lambda () 2)");
+    ScamExpr * expr = parseAndEvaluate("(lambda () 2)");
     expectProcedure(expr, "(lambda () (2))");
 }
 
 TEST_F(ClosureTest, LambdaEvalConst)
 {
-    ExprHandle expr = parseAndEvaluate("((lambda () 2))");
+    ScamExpr * expr = parseAndEvaluate("((lambda () 2))");
     expectInteger(expr, 2, "2");
 }
 
 TEST_F(ClosureTest, LambdaEvalWithArg)
 {
-    ExprHandle expr = parseAndEvaluate("((lambda (x) (* x 2)) (+ 1 3))");
+    ScamExpr * expr = parseAndEvaluate("((lambda (x) (* x 2)) (+ 1 3))");
     expectInteger(expr, 8, "8");
 }
 
 TEST_F(ClosureTest, LambdaCaptures)
 {
-    ExprHandle expr = parseAndEvaluateFile("scripts/closure/capture.scm");
+    ScamExpr * expr = parseAndEvaluateFile("scripts/closure/capture.scm");
     expectInteger(expr, 20, "20");
 }
 
 TEST_F(ClosureTest, LambdaFormalsMaskEnv)
 {
-    ExprHandle expr = parseAndEvaluateFile("scripts/closure/formalsmask.scm");
+    ScamExpr * expr = parseAndEvaluateFile("scripts/closure/formalsmask.scm");
     expectFloat(expr, 0.5, "0.5");
 
     expr = parseAndEvaluate("x");
@@ -111,54 +106,54 @@ TEST_F(ClosureTest, LambdaFormalsMaskEnv)
 
 TEST_F(ClosureTest, LambdaTooFewActuals)
 {
-    ExprHandle expr = parseAndEvaluateFile("scripts/closure/toofew.scm");
+    ScamExpr * expr = parseAndEvaluateFile("scripts/closure/toofew.scm");
     expectError(expr);
 }
 
 TEST_F(ClosureTest, LambdaTooManyActuals)
 {
-    ExprHandle expr = parseAndEvaluateFile("scripts/closure/toomany.scm");
+    ScamExpr * expr = parseAndEvaluateFile("scripts/closure/toomany.scm");
     expectError(expr);
 }
 
 TEST_F(ClosureTest, LambdaDottedParmListZero)
 {
-    ExprHandle expr = parseAndEvaluateFile("scripts/closure/dottedzero.scm");
+    ScamExpr * expr = parseAndEvaluateFile("scripts/closure/dottedzero.scm");
     expectNil(expr);
 }
 
 TEST_F(ClosureTest, LambdaDottedParmListOne)
 {
-    ExprHandle expr = parseAndEvaluateFile("scripts/closure/dottedone.scm");
+    ScamExpr * expr = parseAndEvaluateFile("scripts/closure/dottedone.scm");
     expectList(expr, "(2)", 1);
 }
 
 TEST_F(ClosureTest, LambdaDottedParmListSeveral)
 {
-    ExprHandle expr = parseAndEvaluateFile("scripts/closure/dottedmany.scm");
+    ScamExpr * expr = parseAndEvaluateFile("scripts/closure/dottedmany.scm");
     expectList(expr, "(2 4 #t)", 3);
 }
 
 TEST_F(ClosureTest, LambdaSymbolParmListNone)
 {
-    ExprHandle expr = parseAndEvaluateFile("scripts/closure/listnone.scm");
+    ScamExpr * expr = parseAndEvaluateFile("scripts/closure/listnone.scm");
     expectNil(expr);
 }
 
 TEST_F(ClosureTest, LambdaSymbolParmListOne)
 {
-    ExprHandle expr = parseAndEvaluateFile("scripts/closure/listone.scm");
+    ScamExpr * expr = parseAndEvaluateFile("scripts/closure/listone.scm");
     expectList(expr, "(5)", 1);
 }
 
 TEST_F(ClosureTest, LambdaSymbolParmListSeveral)
 {
-    ExprHandle expr = parseAndEvaluateFile("scripts/closure/listmany.scm");
+    ScamExpr * expr = parseAndEvaluateFile("scripts/closure/listmany.scm");
     expectList(expr, "(5 10 15)", 3);
 }
 
 TEST_F(ClosureTest, MacroBasic)
 {
-    ExprHandle expr = parseAndEvaluate("(macro () 2)");
+    ScamExpr * expr = parseAndEvaluate("(macro () 2)");
     expectProcedure(expr, "(macro () (2))");
 }

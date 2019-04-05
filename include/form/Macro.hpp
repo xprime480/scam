@@ -7,9 +7,11 @@ namespace scam
 {
     class Macro : public SpecialForm
     {
-    public:
+    private:
         Macro();
 
+    public:
+        static Macro * makeInstance();
         void apply(ScamExpr * args, ContHandle cont, Env env) override;
     };
 }

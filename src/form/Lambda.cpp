@@ -13,10 +13,14 @@ Lambda::Lambda()
 {
 }
 
+Lambda * Lambda::makeInstance()
+{
+    return new Lambda();
+}
+
 void Lambda::apply(ScamExpr * args, ContHandle cont, Env env)
 {
-    ExprHandle expr = ExpressionFactory::makeClosure(args->getCar().get(),
-                                                     args->getCdr().get(),
-                                                     env);
-    cont->run(expr.get());
+    ScamExpr * expr =
+        ExpressionFactory::makeClosure(args->getCar(), args->getCdr(), env);
+    cont->run(expr);
 }

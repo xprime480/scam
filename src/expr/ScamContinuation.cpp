@@ -9,6 +9,11 @@ ScamContinuation::ScamContinuation(ContHandle cont)
 {
 }
 
+ScamContinuation * ScamContinuation::makeInstance(ContHandle cont)
+{
+    return new ScamContinuation(cont);
+}
+
 string ScamContinuation::toString() const
 {
     static const string value { "continuation" };
@@ -22,6 +27,6 @@ bool ScamContinuation::hasApply() const
 
 void ScamContinuation::apply(ScamExpr * args, ContHandle cont,  Env env)
 {
-    ExprHandle arg = args->nthcar(0);
-    this->cont->run(arg.get());
+    ScamExpr * arg = args->nthcar(0);
+    this->cont->run(arg);
 }

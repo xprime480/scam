@@ -12,8 +12,10 @@ namespace scam
 #define DECL_PREDICATE(name) \
     class name : public Primitive \
     { \
-    public: \
+    private: \
         name(); \
+    public: \
+        static name * makeInstance(); \
         void applyArgs(ScamExpr * args, ContHandle cont) override; \
         bool equals(ScamExpr const * expr) const override; \
     } \

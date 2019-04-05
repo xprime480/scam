@@ -14,8 +14,8 @@ using namespace std;
 
 namespace
 {
-    static const ExprHandle initSym = ExpressionFactory::makeSymbol("init");
-    static const ExprHandle nil     = ExpressionFactory::makeNil();
+    static ScamExpr * const initSym = ExpressionFactory::makeSymbol("init");
+    static ScamExpr * const nil     = ExpressionFactory::makeNil();
 
     extern void do_apply(ScamExpr * cls,
                          ScamExpr * args,
@@ -27,11 +27,19 @@ ScamClass::ScamClass(ScamExpr * base,
                      ScamExpr * vars,
                      ScamExpr * funs,
                      Env capture)
-    : base(base->clone())
-    , vars(vars->clone())
-    , funs(funs->clone())
+    : base(base)
+    , vars(vars)
+    , funs(funs)
     , capture(capture)
 {
+}
+
+ScamClass * ScamClass::makeInstance(ScamExpr * base,
+                                    ScamExpr * vars,
+                                    ScamExpr * funs,
+                                    Env capture)
+{
+    return new ScamClass(base, vars, funs, capture);
 }
 
 string ScamClass::toString() const
@@ -66,7 +74,7 @@ namespace
     public:
         ClassInitCont(ScamExpr * instance, ContHandle cont)
             : Continuation("ClassInit")
-            , instance(instance->clone())
+            , instance(instance)
             , cont(cont)
         {
         }
@@ -74,11 +82,11 @@ namespace
         void run(ScamExpr * expr) override
         {
             Continuation::run(expr);
-            cont->run(instance.get());
+            cont->run(instance);
         }
 
     private:
-        ExprHandle instance;
+        ScamExpr * instance;
         ContHandle cont;
     };
 
@@ -90,8 +98,8 @@ namespace
                         ContHandle cont,
                         Env env)
             : Worker("ClassInit")
-            , instance(instance->clone())
-            , args(args->clone())
+            , instance(instance)
+            , args(args)
             , cont(cont)
             , env(env)
         {
@@ -102,16 +110,16 @@ namespace
             Worker::run();
 
             ContHandle newCont
-                = make_shared<ClassInitCont>(instance.get(), cont);
-            ExprHandle newArgs
-                = ExpressionFactory::makeCons(initSym.get(), args.get());
+                = make_shared<ClassInitCont>(instance, cont);
+            ScamExpr * newArgs
+                = ExpressionFactory::makeCons(initSym, args);
 
-            instance->apply(newArgs.get(), newCont, env);
+            instance->apply(newArgs, newCont, env);
         }
 
     private:
-        ExprHandle instance;
-        ExprHandle args;
+        ScamExpr * instance;
+        ScamExpr * args;
         ContHandle cont;
         Env        env;
     };
@@ -121,7 +129,7 @@ namespace
     public:
         ClassCont(ScamExpr * cls, ContHandle cont)
             : Continuation("ClassCont")
-            , cls(cls->clone())
+            , cls(cls)
             , cont(cont)
         {
             ScamClassAdapter adapter(cls);
@@ -136,39 +144,39 @@ namespace
                 cont->run(expr);
             }
             else {
-                vector<ExprHandle> instances;
-                ExprHandle result;
+                vector<ScamExpr *> instances;
+                ScamExpr * result;
 
-                result = build_instances(cls.get(), instances);
+                result = build_instances(cls, instances);
                 if ( result->error() ) {
-                    cont->run(result.get());
+                    cont->run(result);
                 }
                 else {
-                    ExprHandle instance = connect_instances(instances);
-                    init_instance(instance.get(), expr);
+                    ScamExpr * instance = connect_instances(instances);
+                    init_instance(instance, expr);
                 }
             }
         }
 
     private:
-        ExprHandle cls;
+        ScamExpr * cls;
         ContHandle cont;
         Env        env;
 
-        ExprHandle
-        build_instances(ScamExpr * cls, vector<ExprHandle> & instances) const
+        ScamExpr *
+        build_instances(ScamExpr * cls, vector<ScamExpr *> & instances) const
         {
-            ExprHandle temp = cls->clone();
+            ScamExpr * temp = cls;
 
             while ( cls->isClass() ) {
                 ScamClassAdapter adapter(cls);
-                ExprHandle instance
+                ScamExpr * instance
                     = ExpressionFactory::makeInstance(adapter.getVars(),
                                                       adapter.getFuns(),
                                                       env);
                 instances.push_back(instance);
                 temp = get_parent(cls);
-                cls = temp.get();
+                cls = temp;
             }
 
             if ( temp->error() ) {
@@ -182,24 +190,24 @@ namespace
             return nil;
         }
 
-        ExprHandle connect_instances(vector<ExprHandle> & instances) const
+        ScamExpr * connect_instances(vector<ScamExpr *> & instances) const
         {
-            ScamExpr * self = instances[0].get();
+            ScamExpr * self = instances[0];
             for ( auto instance : instances ) {
                 instance->setSelf(self);
             }
 
             size_t len = instances.size();
             for ( size_t idx = 0 ; idx < (len - 1) ; ++idx ) {
-                ScamExpr * child = instances[idx].get();
-                ScamExpr * parent = instances[idx+1].get();
+                ScamExpr * child = instances[idx];
+                ScamExpr * parent = instances[idx+1];
                 child->setParent(parent);
             }
 
-            return self->clone();
+            return self;
         }
 
-        ExprHandle get_parent(ScamClassAdapter const & adapter) const
+        ScamExpr * get_parent(ScamClassAdapter const & adapter) const
         {
             ScamExpr * baseName = adapter.getBase();
             if ( baseName->isNil() || baseName->toString() == "Root" ) {
@@ -210,15 +218,15 @@ namespace
                 return base_class_not_found(baseName);
             }
 
-            ExprHandle b = env.get(baseName);
+            ScamExpr * b = env.get(baseName);
             if ( ! b->isClass() ) {
-                return base_class_not_class(baseName, b.get());
+                return base_class_not_class(baseName, b);
             }
 
             return b;
         }
 
-        ExprHandle no_class_found(ScamExpr * cls) const
+        ScamExpr * no_class_found(ScamExpr * cls) const
         {
             stringstream s;
             s << "ScamClass could not build an instance from: "
@@ -226,14 +234,14 @@ namespace
             return ExpressionFactory::makeError(s.str());
         }
 
-        ExprHandle base_class_not_found(ScamExpr * name) const
+        ScamExpr * base_class_not_found(ScamExpr * name) const
         {
             stringstream s;
             s << "Class definition: " << name->toString() << " not found";
             return ExpressionFactory::makeError(s.str());
         }
 
-        ExprHandle base_class_not_class(ScamExpr * name, ScamExpr * value) const
+        ScamExpr * base_class_not_class(ScamExpr * name, ScamExpr * value) const
         {
             stringstream s;
             s << "Name: " << name->toString()
@@ -252,8 +260,8 @@ namespace
     public:
         ClassWorker(ScamExpr * cls, ScamExpr * args, ContHandle cont, Env env)
             : Worker("ClassWorker")
-            , cls(cls->clone())
-            , args(args->clone())
+            , cls(cls)
+            , args(args)
             , cont(cont)
             , env(env)
         {
@@ -262,13 +270,13 @@ namespace
         void run() override
         {
             Worker::run();
-            ContHandle newCont = make_shared<ClassCont>(cls.get(), cont);
+            ContHandle newCont = make_shared<ClassCont>(cls, cont);
             args->mapEval(newCont, env);
         }
 
     private:
-        ExprHandle cls;
-        ExprHandle args;
+        ScamExpr * cls;
+        ScamExpr * args;
         ContHandle cont;
         Env        env;
     };

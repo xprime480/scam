@@ -15,6 +15,11 @@ ScamKeyword::ScamKeyword(string const & value)
 {
 }
 
+ScamKeyword * ScamKeyword::makeInstance(std::string const & value)
+{
+   return new ScamKeyword(value);
+}
+
 string ScamKeyword::toString() const
 {
     return value;
