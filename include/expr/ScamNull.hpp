@@ -11,10 +11,11 @@ namespace scam
   class ScamNull : public ScamExpr
     {
     private:
+        friend class MemoryManager;
         ScamNull();
+        static ScamNull * makeInstance();
 
     public:
-        static ScamNull * makeInstance();
         bool isManaged() const override;
 
         std::string toString() const override;

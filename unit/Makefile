@@ -33,7 +33,7 @@ qexe : $(OBJ)
 do_it_manually :
 	make -C gmock all
 
-TEST_FILTER = --gtest_filter=MemoryTest.*
+#TEST_FILTER = --gtest_filter=MemoryTest.*
 
 qtest : qexe
 	@./$(TEST_EXE) $(TEST_FILTER)
