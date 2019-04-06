@@ -14,10 +14,10 @@ using namespace scam::test;
 
 namespace
 {
-    int SHOW_NONE = 0x0000;
+    // int SHOW_NONE = 0x0000;
     int SHOW_PASS = 0x0001;
     int SHOW_FAIL = 0x0002;
-    int SHOW_ALL  = 0xFFFF;
+    // int SHOW_ALL  = 0xFFFF;
 
     extern string strip_trailing_whitespace(string const & str);
     extern string get_last_lines(string const & str, size_t count);

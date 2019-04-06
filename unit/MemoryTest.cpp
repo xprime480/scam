@@ -442,19 +442,6 @@ TEST_F(MemoryTest, TestScamVector)
     EXPECT_FALSE(val3->isMarked());
 }
 /**
-#include "expr/ScamNull.hpp"
-#include "expr/ScamNil.hpp"
-#include "expr/ScamBoolean.hpp"
-#include "expr/ScamCharacter.hpp"
-#include "expr/ScamInteger.hpp"
-#include "expr/ScamFloat.hpp"
-#include "expr/ScamString.hpp"
-#include "expr/ScamSymbol.hpp"
-#include "expr/ScamKeyword.hpp"
-#include "expr/ScamError.hpp"
-#include "expr/ScamCons.hpp"
-#include "expr/ScamDict.hpp"
-#include "expr/ScamVector.hpp"
 
 
 #include "expr/ScamContinuation.hpp"

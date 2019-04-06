@@ -35,8 +35,6 @@ void ScamVector::mark() const
     }
 }
 
-
-
 string ScamVector::toString() const
 {
     stringstream s;
