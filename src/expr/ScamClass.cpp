@@ -42,6 +42,22 @@ ScamClass * ScamClass::makeInstance(ScamExpr * base,
     return new ScamClass(base, vars, funs, capture);
 }
 
+void ScamClass::mark() const
+{
+    if ( ! isMarked() ) {
+        ScamExpr::mark();
+        if ( base ) {
+            base->mark();
+        }
+        if ( vars ) {
+            vars->mark();
+        }
+        if ( funs ) {
+            funs->mark();
+        }
+    }
+}
+
 string ScamClass::toString() const
 {
     return "class";

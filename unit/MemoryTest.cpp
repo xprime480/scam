@@ -455,8 +455,8 @@ TEST_F(MemoryTest, TestScamVector)
 TEST_F(MemoryTest, TestScamClosure)
 {
     ScamSymbol * symPlus = ExpressionFactory::makeSymbol("*");
-    ScamSymbol * symA    = ExpressionFactory::makeSymbol("*");
-    ScamSymbol * symB    = ExpressionFactory::makeSymbol("*");
+    ScamSymbol * symA    = ExpressionFactory::makeSymbol("a");
+    ScamSymbol * symB    = ExpressionFactory::makeSymbol("b");
     ScamExpr   * formals = ExpressionFactory::makeList(symA, symB);
     ScamExpr   * aForm   = ExpressionFactory::makeList(symPlus, symA, symB);
     ScamExpr   * forms   = ExpressionFactory::makeList(aForm);
@@ -473,8 +473,30 @@ TEST_F(MemoryTest, TestScamClosure)
     EXPECT_TRUE(symPlus->isMarked());
 }
 
+TEST_F(MemoryTest, TestScamClass)
+{
+    ScamNil    * base    = ExpressionFactory::makeNil();
+    ScamSymbol * symPlus = ExpressionFactory::makeSymbol("+");
+    ScamSymbol * symA    = ExpressionFactory::makeSymbol("a");
+    ScamSymbol * symB    = ExpressionFactory::makeSymbol("b");
+    ScamExpr   * vars    = ExpressionFactory::makeList(symA, symB);
+    ScamExpr   * aForm   = ExpressionFactory::makeList(symPlus, symA, symB);
+    ScamExpr   * funs    = ExpressionFactory::makeList(aForm);
+    Env env;
+
+    ScamClass * cls = mm.make<ScamClass>(base, vars, funs, env);
+
+    cls->mark();
+    EXPECT_TRUE(funs->isMarked());
+    EXPECT_TRUE(aForm->isMarked());
+    EXPECT_TRUE(vars->isMarked());
+    EXPECT_TRUE(symB->isMarked());
+    EXPECT_TRUE(symA->isMarked());
+    EXPECT_TRUE(symPlus->isMarked());
+    EXPECT_TRUE(base->isMarked());
+}
+
 /**
 #include "expr/ScamContinuation.hpp"
-#include "expr/ScamClass.hpp"
 #include "expr/ScamInstance.hpp"
 */

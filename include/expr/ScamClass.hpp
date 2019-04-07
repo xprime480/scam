@@ -11,16 +11,19 @@ namespace scam
 
     class ScamClass : public ScamExpr
     {
+    private:
+        friend class MemoryManager;
         ScamClass(ScamExpr * base,
                   ScamExpr * vars,
                   ScamExpr * funs,
                   Env capture);
-
-    public:
         static ScamClass * makeInstance(ScamExpr * base,
                                         ScamExpr * vars,
                                         ScamExpr * funs,
                                         Env capture);
+
+    public:
+        void mark() const override;
 
         std::string toString() const override;
 
