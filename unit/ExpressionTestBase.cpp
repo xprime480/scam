@@ -150,6 +150,8 @@ string decodePredicate(unsigned exp, unsigned act)
         DECODER(CLASS);
         DECODER(INSTANCE);
 
+        DECODER(MANAGED);
+
 #undef DECODER
     }
 
@@ -339,9 +341,13 @@ void ExpressionTestBase::expectCons(ScamExpr * expr, string const & repr)
     EXPECT_EQ(repr, expr->toString());
 }
 
-void ExpressionTestBase::expectApplicable(ScamExpr * expr, string const & repr)
+void ExpressionTestBase::expectApplicable(ScamExpr * expr,
+                                          string const & repr,
+                                          bool managed)
 {
-    checkPredicates(expr, SELECT_TRUTH | SELECT_APPLY | SELECT_MANAGED);
+    const auto flags =
+        SELECT_TRUTH | SELECT_APPLY | (managed ? SELECT_MANAGED : 0);
+    checkPredicates(expr, flags);
     EXPECT_EQ(repr, expr->toString());
 }
 

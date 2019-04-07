@@ -8,7 +8,7 @@
 namespace scam
 {
 
-  class ScamNull : public ScamExpr
+    class ScamNull : public ScamExpr
     {
     private:
         friend class MemoryManager;
