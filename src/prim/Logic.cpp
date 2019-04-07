@@ -101,8 +101,7 @@ namespace
                 return expr;
             }
 
-            ScamExpr * rv   = ExpressionFactory::makeDict();
-            ScamDict * f    = dynamic_cast<ScamDict *>(rv);
+            ScamDict * rv   = ExpressionFactory::makeDict();
             ScamDict * dict = dynamic_cast<ScamDict *>(expr);
 
             KeyVec const & keys = dict->getKeys();
@@ -112,7 +111,7 @@ namespace
                 if ( newVal->error() ) {
                     return newVal;
                 }
-                f->put(key, newVal);
+                rv->put(key, newVal);
             }
 
             return rv;
@@ -479,7 +478,7 @@ namespace
     public:
         Instantiator(size_t & counter)
             : counter(counter)
-	    , d(dynamic_cast<ScamDict *>(ExpressionFactory::makeDict()))
+	    , d(ExpressionFactory::makeDict())
 	    , dict(*d)
         {
         }

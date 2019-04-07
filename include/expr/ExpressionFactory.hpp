@@ -1,13 +1,13 @@
 #if ! defined(EXPRESSIONFACTORY_H)
 #define EXPRESSIONFACTORY_H 1
 
-#include "expr/ScamExpr.hpp"
-
-#include "util/MemoryManager.hpp"
-
 #include <memory>
 #include <string>
 #include <vector>
+
+#include "expr/ScamExprAll.hpp"
+
+#include "util/MemoryManager.hpp"
 
 namespace scam
 {
@@ -19,23 +19,23 @@ namespace scam
     class ExpressionFactory
     {
     public:
-        static ScamExpr * makeNull();
+        static ScamNull * makeNull();
 
-        static ScamExpr * makeError(char const * msg);
-        static ScamExpr * makeError(std::string const & msg);
+        static ScamError * makeError(char const * msg);
+        static ScamError * makeError(std::string const & msg);
 
-        static ScamExpr * makeBoolean(bool value);
-        static ScamExpr * makeCharacter(std::string const & value);
+        static ScamBoolean * makeBoolean(bool value);
+        static ScamCharacter * makeCharacter(std::string const & value);
 
-        static ScamExpr * makeString(std::string const & value);
-        static ScamExpr * makeSymbol(std::string const & value);
-        static ScamExpr * makeKeyword(std::string const & value);
+        static ScamString * makeString(std::string const & value);
+        static ScamSymbol * makeSymbol(std::string const & value);
+        static ScamKeyword * makeKeyword(std::string const & value);
 
-        static ScamExpr * makeFloat(double value);
-        static ScamExpr * makeInteger(int value);
+        static ScamFloat * makeFloat(double value);
+        static ScamInteger * makeInteger(int value);
 
-        static ScamExpr * makeNil();
-        static ScamExpr * makeCons(ScamExpr * car, ScamExpr * cdr);
+        static ScamNil * makeNil();
+        static ScamCons * makeCons(ScamExpr * car, ScamExpr * cdr);
 
         static ScamExpr * makeList();
         static ScamExpr * makeList(ScamExpr * item);
@@ -46,29 +46,29 @@ namespace scam
             return makeCons(car, makeList(args...));
         }
 
-        static ScamExpr * makeVector(ExprVec const & elts);
+        static ScamVector * makeVector(ExprVec const & elts);
 
-        static ScamExpr * makeClosure(ScamExpr * formals,
-                                      ScamExpr * forms,
-                                      Env env,
-                                      bool macrolike = false);
+        static ScamClosure * makeClosure(ScamExpr * formals,
+                                         ScamExpr * forms,
+                                         Env env,
+                                         bool macrolike = false);
 
-        static ScamExpr * makeClass(ScamExpr * base,
-                                    ScamExpr * vars,
-                                    ScamExpr * funs,
-                                    Env env);
+        static ScamClass * makeClass(ScamExpr * base,
+                                     ScamExpr * vars,
+                                     ScamExpr * funs,
+                                     Env env);
 
-        static ScamExpr * makeInstance(ScamExpr * vars,
-                                       ScamExpr * funs,
-                                       Env env);
+        static ScamInstance * makeInstance(ScamExpr * vars,
+                                           ScamExpr * funs,
+                                           Env env);
 
-        static ScamExpr * makeContinuation(ContHandle cont);
+        static ScamContinuation * makeContinuation(ContHandle cont);
 
-        static ScamExpr * makeDict();
-        static ScamExpr * makeDict(ExprVec const & args);
+        static ScamDict * makeDict();
+        static ScamDict * makeDict(ExprVec const & args);
 
         template <typename T, typename... Args>
-        static ScamExpr * makeForm(Args... args)
+        static T * makeForm(Args... args)
         {
             return mm.make<T>(args...);
         }

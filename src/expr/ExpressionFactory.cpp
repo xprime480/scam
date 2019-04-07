@@ -2,84 +2,69 @@
 
 #include "expr/ExpressionFactory.hpp"
 
-#include "expr/ScamExprAll.hpp"
-
 using namespace scam;
 using namespace std;
 
 MemoryManager ExpressionFactory::mm;
 
-ScamExpr * ExpressionFactory::makeNull()
+ScamNull * ExpressionFactory::makeNull()
 {
     return mm.make<ScamNull>();
 }
 
-ScamExpr * ExpressionFactory::makeError(char const * msg)
+ScamError * ExpressionFactory::makeError(char const * msg)
 {
-    ScamExpr * expr = makeForm<ScamError>(msg);
-    return expr;
+    return mm.make<ScamError>(msg);
 }
 
-ScamExpr * ExpressionFactory::makeError(string const & msg)
+ScamError * ExpressionFactory::makeError(string const & msg)
 {
-    ScamExpr * expr = makeForm<ScamError>(msg.c_str());
-    return expr;
+    return mm.make<ScamError>(msg.c_str());
 }
 
-ScamExpr * ExpressionFactory::makeBoolean(bool value)
+ScamBoolean * ExpressionFactory::makeBoolean(bool value)
 {
-    static ScamExpr * const scamT = makeForm<ScamBoolean>(true);
-    static ScamExpr * const scamF = makeForm<ScamBoolean>(false);
-
-    return value ? scamT : scamF;
+    return mm.make<ScamBoolean>(value);
 }
 
-ScamExpr * ExpressionFactory::makeCharacter(string const & value)
+ScamCharacter * ExpressionFactory::makeCharacter(string const & value)
 {
-    ScamExpr * expr = makeForm<ScamCharacter>(value);
-    return expr;
+    return mm.make<ScamCharacter>(value);
 }
 
-ScamExpr * ExpressionFactory::makeString(string const & value)
+ScamString * ExpressionFactory::makeString(string const & value)
 {
-    ScamExpr * expr = makeForm<ScamString>(value);
-    return expr;
+    return mm.make<ScamString>(value);
 }
 
-ScamExpr * ExpressionFactory::makeSymbol(string const & value)
+ScamSymbol * ExpressionFactory::makeSymbol(string const & value)
 {
-    ScamExpr * expr = makeForm<ScamSymbol>(value);
-    return expr;
+    return mm.make<ScamSymbol>(value);
 }
 
-ScamExpr * ExpressionFactory::makeKeyword(string const & value)
+ScamKeyword * ExpressionFactory::makeKeyword(string const & value)
 {
-    ScamExpr * expr = makeForm<ScamKeyword>(value);
-    return expr;
+    return mm.make<ScamKeyword>(value);
 }
 
-ScamExpr * ExpressionFactory::makeFloat(double value)
+ScamFloat * ExpressionFactory::makeFloat(double value)
 {
-    ScamExpr * expr = makeForm<ScamFloat>(value);
-    return expr;
+    return mm.make<ScamFloat>(value);
 }
 
-ScamExpr * ExpressionFactory::makeInteger(int value)
+ScamInteger * ExpressionFactory::makeInteger(int value)
 {
-    ScamExpr * expr = makeForm<ScamInteger>(value);
-    return expr;
+    return mm.make<ScamInteger>(value);
 }
 
-ScamExpr * ExpressionFactory::makeNil()
+ScamNil * ExpressionFactory::makeNil()
 {
-    static ScamExpr * const nil = makeForm<ScamNil>();
-    return nil;
+    return mm.make<ScamNil>();
 }
 
-ScamExpr * ExpressionFactory::makeCons(ScamExpr * car, ScamExpr * cdr)
+ScamCons * ExpressionFactory::makeCons(ScamExpr * car, ScamExpr * cdr)
 {
-    ScamExpr * expr = makeForm<ScamCons>(car, cdr);
-    return expr;
+    return mm.make<ScamCons>(car, cdr);
 }
 
 ScamExpr * ExpressionFactory::makeList()
@@ -92,52 +77,45 @@ ScamExpr * ExpressionFactory::makeList(ScamExpr * item)
     return makeCons(item, makeNil());
 }
 
-ScamExpr * ExpressionFactory::makeVector(ExprVec const & elts)
+ScamVector * ExpressionFactory::makeVector(ExprVec const & elts)
 {
-    ScamExpr * expr = makeForm<ScamVector>(elts);
-    return expr;
+    return mm.make<ScamVector>(elts);
 }
 
-ScamExpr * ExpressionFactory::makeClosure(ScamExpr *formals,
-                                          ScamExpr *forms,
-                                          Env env,
-                                          bool macrolike)
+ScamClosure * ExpressionFactory::makeClosure(ScamExpr *formals,
+                                             ScamExpr *forms,
+                                             Env env,
+                                             bool macrolike)
 {
-    ScamExpr * expr = makeForm<ScamClosure>(formals, forms, env, macrolike);
-    return expr;
+    return mm.make<ScamClosure>(formals, forms, env, macrolike);
 }
 
-ScamExpr * ExpressionFactory::makeClass(ScamExpr * base,
-                                        ScamExpr * vars,
-                                        ScamExpr * funs,
-                                        Env env)
+ScamClass * ExpressionFactory::makeClass(ScamExpr * base,
+                                         ScamExpr * vars,
+                                         ScamExpr * funs,
+                                         Env env)
 {
-    ScamExpr * expr = makeForm<ScamClass>(base, vars, funs, env);
-    return expr;
+    return mm.make<ScamClass>(base, vars, funs, env);
 }
 
-ScamExpr * ExpressionFactory::makeInstance(ScamExpr * vars,
-                                           ScamExpr * funs,
-                                           Env env)
+ScamInstance * ExpressionFactory::makeInstance(ScamExpr * vars,
+					       ScamExpr * funs,
+					       Env env)
 {
-    ScamExpr * expr = makeForm<ScamInstance>(vars, funs, env);
-    return expr;
+    return mm.make<ScamInstance>(vars, funs, env);
 }
 
-ScamExpr * ExpressionFactory::makeContinuation(ContHandle cont)
+ScamContinuation * ExpressionFactory::makeContinuation(ContHandle cont)
 {
-    ScamExpr * expr = makeForm<ScamContinuation>(cont);
-    return expr;
+    return mm.make<ScamContinuation>(cont);
 }
 
-ScamExpr * ExpressionFactory::makeDict()
+ScamDict * ExpressionFactory::makeDict()
 {
-    ScamExpr * expr = makeForm<ScamDict>();
-    return expr;
+    return mm.make<ScamDict>();
 }
 
-ScamExpr * ExpressionFactory::makeDict(ExprVec const & args)
+ScamDict * ExpressionFactory::makeDict(ExprVec const & args)
 {
-    ScamExpr * expr = makeForm<ScamDict>(args);
-    return expr;
+    return mm.make<ScamDict>(args);
 }
