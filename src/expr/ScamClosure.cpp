@@ -44,6 +44,19 @@ ScamClosure * ScamClosure::makeInstance(ScamExpr *formals,
     return new ScamClosure(formals, forms, env, macrolike);
 }
 
+void ScamClosure::mark() const
+{
+    if ( ! isMarked() ) {
+        ScamExpr::mark();
+        if ( formals ) {
+            formals->mark();
+        }
+        if ( forms ) {
+            forms->mark();
+        }
+    }
+}
+
 string ScamClosure::toString() const
 {
     stringstream s;

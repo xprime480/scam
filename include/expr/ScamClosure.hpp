@@ -10,16 +10,18 @@ namespace scam
     class ScamClosure : public ScamExpr
     {
     private:
+        friend class MemoryManager;
         ScamClosure(ScamExpr *formals,
                     ScamExpr * forms,
                     Env env,
                     bool macrolike = false);
-
-    public:
         static ScamClosure * makeInstance(ScamExpr *formals,
                                           ScamExpr * forms,
                                           Env env,
                                           bool macrolike = false);
+
+    public:
+        void mark() const override;
 
         std::string toString() const override;
 

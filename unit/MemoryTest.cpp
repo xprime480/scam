@@ -364,7 +364,7 @@ TEST_F(MemoryTest, TestScamError)
 
 /*****************************************************************
  *
- * Now test the composite type.
+ * Now test the composite types.
  *
  * The distinguishing feature is that composite types have
  * components that must be marked when the main object is marked.
@@ -441,11 +441,40 @@ TEST_F(MemoryTest, TestScamVector)
     EXPECT_TRUE(val2->isMarked());
     EXPECT_FALSE(val3->isMarked());
 }
+
+/*****************************************************************
+ *
+ * Finally test the remaining types.
+ *
+ * These are composite types more complex than just "data
+ * structures".
+ *
+ *****************************************************************
+ */
+
+TEST_F(MemoryTest, TestScamClosure)
+{
+    ScamSymbol * symPlus = ExpressionFactory::makeSymbol("*");
+    ScamSymbol * symA    = ExpressionFactory::makeSymbol("*");
+    ScamSymbol * symB    = ExpressionFactory::makeSymbol("*");
+    ScamExpr   * formals = ExpressionFactory::makeList(symA, symB);
+    ScamExpr   * aForm   = ExpressionFactory::makeList(symPlus, symA, symB);
+    ScamExpr   * forms   = ExpressionFactory::makeList(aForm);
+    Env env;
+
+    ScamClosure * closure = mm.make<ScamClosure>(formals, forms, env);
+
+    closure->mark();
+    EXPECT_TRUE(forms->isMarked());
+    EXPECT_TRUE(aForm->isMarked());
+    EXPECT_TRUE(formals->isMarked());
+    EXPECT_TRUE(symB->isMarked());
+    EXPECT_TRUE(symA->isMarked());
+    EXPECT_TRUE(symPlus->isMarked());
+}
+
 /**
-
-
 #include "expr/ScamContinuation.hpp"
-#include "expr/ScamClosure.hpp"
 #include "expr/ScamClass.hpp"
 #include "expr/ScamInstance.hpp"
 */
