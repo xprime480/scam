@@ -50,6 +50,15 @@ protected:
         EXPECT_EQ(0, mm.getCreateCount());
         EXPECT_EQ(0, mm.getCurrentCount());
     }
+
+    void expectMarked(bool value) {}
+
+    template <typename... Ts>
+    void expectMarked(bool value, ManagedObject * obj, Ts && ...rest)
+    {
+        EXPECT_EQ(value, obj->isMarked());
+	expectMarked(value, rest...);
+    }
 };
 
 /*
@@ -135,18 +144,14 @@ TEST_F(MemoryTest, MarkTest)
     ASSERT_NE(nullptr, cut);
     EXPECT_EQ(33, cut->getValue());
 
-    EXPECT_FALSE(proxy->isMarked());
-    EXPECT_FALSE(cut->isMarked());
+    expectMarked(false, cut, proxy);
 
     cut->mark();
-
-    EXPECT_TRUE(proxy->isMarked());
-    EXPECT_TRUE(cut->isMarked());
+    expectMarked(true, cut, proxy);
 
     cut->unmark();
-
-    EXPECT_TRUE(proxy->isMarked());
-    EXPECT_FALSE(cut->isMarked());
+    expectMarked(true, proxy);
+    expectMarked(false, cut);
 }
 
 TEST_F(MemoryTest, CreateTestDefault)
@@ -205,7 +210,7 @@ TEST_F(MemoryTest, GCTestOneRoot)
     mm.gc();
 
     EXPECT_EQ(1, mm.getCurrentCount());
-    EXPECT_FALSE(cut->isMarked());
+    expectMarked(false, cut);
 }
 
 TEST_F(MemoryTest, GCTestWithProxy)
@@ -213,8 +218,8 @@ TEST_F(MemoryTest, GCTestWithProxy)
     ManagedObjectTest * proxy = mm.make<ManagedObjectTest>(33);
     ASSERT_NE(nullptr, proxy);
 
-    mm.make<ManagedObjectTest>();
-    mm.make<ManagedObjectTest>();
+    (void) mm.make<ManagedObjectTest>();
+    (void) mm.make<ManagedObjectTest>();
     ManagedObjectTest * cut = mm.make<ManagedObjectTest>(proxy);
     ASSERT_NE(nullptr, cut);
     EXPECT_EQ(33, cut->getValue());
@@ -227,8 +232,7 @@ TEST_F(MemoryTest, GCTestWithProxy)
     mm.gc();
 
     EXPECT_EQ(2, mm.getCurrentCount());
-    EXPECT_FALSE(cut->isMarked());
-    EXPECT_FALSE(proxy->isMarked());
+    expectMarked(false, cut, proxy);
     EXPECT_EQ(33, cut->getValue());
 }
 
@@ -377,14 +381,9 @@ TEST_F(MemoryTest, TestScamCons)
     ScamExpr * car = mm.make<ScamInteger>(1);
     ScamExpr * cdr = mm.make<ScamInteger>(2);
     ScamCons * cons1 = mm.make<ScamCons>(car, cdr);
-    ScamCons * cons2 = mm.make<ScamCons>(car, cdr);
-
-    expectCons(cons1, "(1 . 2)");
-    expectCons(cons2, "(1 . 2)");
-
-    expectManaged(cons1, cons2, 4);
 
     cons1->mark();
+    expectMarked(true, cons1, car, cdr);
     EXPECT_TRUE(cons1->isMarked());
     EXPECT_TRUE(car->isMarked());
     EXPECT_TRUE(cdr->isMarked());
@@ -393,7 +392,6 @@ TEST_F(MemoryTest, TestScamCons)
 TEST_F(MemoryTest, TestScamDict)
 {
     ScamDict * dict1 = mm.make<ScamDict>();
-    ScamDict * dict2 = mm.make<ScamDict>();
     ScamExpr * key1 = mm.make<ScamKeyword>(":key1");
     ScamExpr * key2 = mm.make<ScamKeyword>(":key2");
     ScamExpr * val1 = mm.make<ScamInteger>(1);
@@ -404,20 +402,9 @@ TEST_F(MemoryTest, TestScamDict)
     dict1->put(key2, val2);
     dict1->put(key1, val3);
 
-    dict2->put(key2, val1);
-
-    expectDict(dict1, 2, "{ :key1 3 :key2 2 }");
-    expectDict(dict2, 1, "{ :key2 1 }");
-
-    expectManaged(dict1, dict2, 7);
-
     dict1->mark();
-    EXPECT_TRUE(dict1->isMarked());
-    EXPECT_TRUE(key1->isMarked());
-    EXPECT_TRUE(key2->isMarked());
-    EXPECT_FALSE(val1->isMarked());
-    EXPECT_TRUE(val2->isMarked());
-    EXPECT_TRUE(val3->isMarked());
+    expectMarked(true, dict1, key1, key2, val2, val3);
+    expectMarked(false, val1);
 }
 
 TEST_F(MemoryTest, TestScamVector)
@@ -427,19 +414,13 @@ TEST_F(MemoryTest, TestScamVector)
     ScamExpr * val3 = mm.make<ScamInteger>(3);
 
     ExprVec elts;
-
     elts.push_back(val1);
     elts.push_back(val2);
-
     ScamVector * vec2 = mm.make<ScamVector>(elts);
 
-    expectVector(vec2, "[1 2]", 2);
-
     vec2->mark();
-    EXPECT_TRUE(vec2->isMarked());
-    EXPECT_TRUE(val1->isMarked());
-    EXPECT_TRUE(val2->isMarked());
-    EXPECT_FALSE(val3->isMarked());
+    expectMarked(true, vec2, val1, val2);
+    expectMarked(false, val3);
 }
 
 /*****************************************************************
@@ -465,12 +446,7 @@ TEST_F(MemoryTest, TestScamClosure)
     ScamClosure * closure = mm.make<ScamClosure>(formals, forms, env);
 
     closure->mark();
-    EXPECT_TRUE(forms->isMarked());
-    EXPECT_TRUE(aForm->isMarked());
-    EXPECT_TRUE(formals->isMarked());
-    EXPECT_TRUE(symB->isMarked());
-    EXPECT_TRUE(symA->isMarked());
-    EXPECT_TRUE(symPlus->isMarked());
+    expectMarked(true, closure, forms, aForm, formals, symB, symA, symPlus);
 }
 
 TEST_F(MemoryTest, TestScamClass)
@@ -487,13 +463,7 @@ TEST_F(MemoryTest, TestScamClass)
     ScamClass * cls = mm.make<ScamClass>(base, vars, funs, env);
 
     cls->mark();
-    EXPECT_TRUE(funs->isMarked());
-    EXPECT_TRUE(aForm->isMarked());
-    EXPECT_TRUE(vars->isMarked());
-    EXPECT_TRUE(symB->isMarked());
-    EXPECT_TRUE(symA->isMarked());
-    EXPECT_TRUE(symPlus->isMarked());
-    EXPECT_TRUE(base->isMarked());
+    expectMarked(true, cls, funs, aForm, vars, symB, symA, symPlus, base);
 }
 
 /**
