@@ -484,19 +484,30 @@ TEST_F(MemoryTest, TestScamInstance)
     ScamExpr   * funs    = ExpressionFactory::makeList(fun1);
 
     Env env;
-    
+
     ScamInstance * instance = mm.make<ScamInstance>(vars, funs, env);
 
     instance->mark();
     expectMarked(true, instance);
     expectMarked(false, funs, fun1, vars);
 
-    // uncomment the following after we make environments part
-    // of managed memory
+    // change false to true in the following after we make
+    // environments part of managed memory
     //
-    // expectMarked(true, aForm, args, symQ, name, symB, symA, symPlus);
+    expectMarked(false, aForm, args, symQ, name, symB, symA, symPlus);
 }
 
-/**
-#include "expr/ScamContinuation.hpp"
-*/
+TEST_F(MemoryTest, TestScamContinuation)
+{
+    ContHandle original  = make_shared<Continuation>("Test");
+    ScamContinuation * c = ExpressionFactory::makeContinuation(original);
+
+    c->mark();
+    expectMarked(true, c);
+
+    // uncomment the following after we make continuations part
+    // of managed memory.
+    // 'original' will be a raw pointer then.
+    //
+    // expectMarked(true, original);
+}
