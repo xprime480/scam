@@ -12,13 +12,13 @@ namespace scam
     class ScamInstance : public ScamExpr
     {
     private:
+        friend class MemoryManager;
         ScamInstance(ScamExpr * vars, ScamExpr * funs, Env env);
-
-    public:
         static ScamInstance* makeInstance(ScamExpr * vars,
                                           ScamExpr * funs,
                                           Env env);
 
+    public:
         std::string toString() const override;
 
         bool hasApply() const override;

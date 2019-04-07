@@ -3,6 +3,9 @@
 
 #include "util/MemoryManager.hpp"
 
+#include "ScamException.hpp"
+#include <iostream>
+
 #include "ExpressionTestBase.hpp"
 
 using namespace std;
@@ -57,7 +60,7 @@ protected:
     void expectMarked(bool value, ManagedObject * obj, Ts && ...rest)
     {
         EXPECT_EQ(value, obj->isMarked());
-	expectMarked(value, rest...);
+        expectMarked(value, rest...);
     }
 };
 
@@ -435,7 +438,7 @@ TEST_F(MemoryTest, TestScamVector)
 
 TEST_F(MemoryTest, TestScamClosure)
 {
-    ScamSymbol * symPlus = ExpressionFactory::makeSymbol("*");
+    ScamSymbol * symPlus = ExpressionFactory::makeSymbol("+");
     ScamSymbol * symA    = ExpressionFactory::makeSymbol("a");
     ScamSymbol * symB    = ExpressionFactory::makeSymbol("b");
     ScamExpr   * formals = ExpressionFactory::makeList(symA, symB);
@@ -466,7 +469,34 @@ TEST_F(MemoryTest, TestScamClass)
     expectMarked(true, cls, funs, aForm, vars, symB, symA, symPlus, base);
 }
 
+TEST_F(MemoryTest, TestScamInstance)
+{
+    ScamSymbol * symPlus = ExpressionFactory::makeSymbol("+");
+    ScamSymbol * symA    = ExpressionFactory::makeSymbol("a");
+    ScamSymbol * symB    = ExpressionFactory::makeSymbol("b");
+    ScamExpr   * vars    = ExpressionFactory::makeList(symA, symB);
+
+    ScamExpr   * name    = ExpressionFactory::makeSymbol("f");
+    ScamExpr   * symQ    = ExpressionFactory::makeSymbol("q");
+    ScamExpr   * args    = ExpressionFactory::makeList(symQ);
+    ScamExpr   * aForm   = ExpressionFactory::makeList(symPlus, symA, symB, symQ);
+    ScamExpr   * fun1    = ExpressionFactory::makeList(name, args, aForm);
+    ScamExpr   * funs    = ExpressionFactory::makeList(fun1);
+
+    Env env;
+    
+    ScamInstance * instance = mm.make<ScamInstance>(vars, funs, env);
+
+    instance->mark();
+    expectMarked(true, instance);
+    expectMarked(false, funs, fun1, vars);
+
+    // uncomment the following after we make environments part
+    // of managed memory
+    //
+    // expectMarked(true, aForm, args, symQ, name, symB, symA, symPlus);
+}
+
 /**
 #include "expr/ScamContinuation.hpp"
-#include "expr/ScamInstance.hpp"
 */
