@@ -12,13 +12,14 @@ namespace scam
 
     class ScamDict : public ScamExpr
     {
-    public:
+    private:
+        friend class MemoryManager;
         ScamDict();
         ScamDict(ValVec const & args);
-
-    public:
         static ScamDict * makeInstance();
         static ScamDict * makeInstance(ValVec const & args);
+
+    public:
         void mark() const override;
 
         std::string toString() const override;

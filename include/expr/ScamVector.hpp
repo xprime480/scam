@@ -12,10 +12,11 @@ namespace scam
     class ScamVector : public ScamExpr
     {
     private:
+        friend class MemoryManager;
         ScamVector(ExprVec const & elts);
+        static ScamVector * makeInstance(ExprVec const & elts);
 
     public:
-        static ScamVector * makeInstance(ExprVec const & elts);
         void mark() const override;
 
         std::string toString() const override;

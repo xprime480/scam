@@ -10,11 +10,11 @@ namespace scam
     class ScamInteger : public ScamFloat
     {
     private:
+        friend class MemoryManager;
         ScamInteger(int value);
-
-    public:
         static ScamInteger * makeInstance(int value);
 
+    public:
         std::string toString() const override;
 
         bool isInteger() const override;

@@ -11,11 +11,12 @@ namespace scam
 
     class ScamContinuation : public ScamExpr
     {
-    public:
+    private:
+        friend class MemoryManager;
         ScamContinuation(ContHandle cont);
+        static ScamContinuation * makeInstance(ContHandle cont);
 
     public:
-        static ScamContinuation * makeInstance(ContHandle cont);
 
         std::string toString() const override;
 

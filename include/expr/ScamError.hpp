@@ -10,11 +10,11 @@ namespace scam
     class ScamError : public ScamExpr
     {
     private:
+        friend class MemoryManager;
         ScamError(char const * msg);
-
-    public:
         static ScamError * makeInstance(char const * msg);
 
+    public:
         std::string toString() const override;
 
         bool isNull() const override;

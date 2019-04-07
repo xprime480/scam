@@ -8,10 +8,11 @@ namespace scam
     class ScamBoolean : public ScamExpr
     {
     private:
+        friend class MemoryManager;
         ScamBoolean(bool value);
-      
-    public:
         static ScamBoolean * makeInstance(bool value);
+
+    public:
         bool isManaged() const override;
 
         std::string toString() const override;

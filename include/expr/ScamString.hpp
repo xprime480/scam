@@ -8,11 +8,11 @@ namespace scam
     class ScamString : public ScamExpr
     {
     private:
+        friend class MemoryManager;
         ScamString(std::string const & value);
-
-    public:
         static ScamString * makeInstance(std::string const & value);
 
+    public:
         std::string toString() const override;
 
         bool isString() const override;

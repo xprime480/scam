@@ -9,12 +9,16 @@ namespace scam
 {
     class ScamFloat : public ScamNumeric
     {
+    private:
+        friend class MemoryManager;
+
     protected:
         ScamFloat(double value);
 
-    public:
+    private:
         static ScamFloat * makeInstance(double value);
 
+    public:
         std::string toString() const override;
 
         bool isFloat() const override;

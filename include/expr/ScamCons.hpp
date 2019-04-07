@@ -8,10 +8,11 @@ namespace scam
     class ScamCons : public ScamExpr
     {
     private:
+        friend class MemoryManager;
         ScamCons(ScamExpr * car, ScamExpr * cdr);
+        static ScamCons * makeInstance(ScamExpr * car, ScamExpr * cdr);
 
     public:
-        static ScamCons * makeInstance(ScamExpr * car, ScamExpr * cdr);
         void mark() const override;
 
         std::string toString() const override;

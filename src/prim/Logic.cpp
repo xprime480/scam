@@ -479,6 +479,8 @@ namespace
     public:
         Instantiator(size_t & counter)
             : counter(counter)
+	    , d(dynamic_cast<ScamDict *>(ExpressionFactory::makeDict()))
+	    , dict(*d)
         {
         }
 
@@ -500,8 +502,9 @@ namespace
         }
 
     private:
-        size_t & counter;
-        ScamDict dict;
+        size_t   & counter;
+        ScamDict * d;
+        ScamDict & dict;
 
         ScamExpr * make_error(ScamExpr * args)
         {
