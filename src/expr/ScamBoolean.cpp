@@ -6,9 +6,9 @@ using namespace scam;
 using namespace std;
 
 ScamBoolean::ScamBoolean(bool value)
-    : value(value)
+    : ScamExpr(false)
+    , value(value)
 {
-    setManaged(false);
 }
 
 ScamBoolean * ScamBoolean::makeInstance(bool value)

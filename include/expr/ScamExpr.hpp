@@ -18,6 +18,8 @@ namespace scam
     class ScamExpr : public ManagedObject
     {
     public:
+        ScamExpr(bool managed = true);
+      
         virtual std::string toString() const = 0;
         virtual void eval(ContHandle cont, Env env);
 

@@ -8,10 +8,9 @@ namespace scam
     class ManagedObject
     {
     public:
-        ManagedObject();
+        ManagedObject(bool managed = true);
         virtual ~ManagedObject();
 
-        void setManaged(bool value) const;
         bool isManaged() const;
 
         virtual void mark() const;
@@ -19,7 +18,7 @@ namespace scam
         void unmark() const;
 
     private:
-        mutable bool managed;
+        const   bool managed;
         mutable bool marked;
     };
 }

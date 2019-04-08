@@ -8,8 +8,8 @@ using namespace scam;
 using namespace std;
 
 ScamNull::ScamNull()
+    : ScamExpr(false)
 {
-    setManaged(false);
 }
 
 ScamNull * ScamNull::makeInstance()

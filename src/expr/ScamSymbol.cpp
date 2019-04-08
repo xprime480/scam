@@ -11,9 +11,9 @@ using namespace scam;
 using namespace std;
 
 ScamSymbol::ScamSymbol(string const & value, bool managed)
-    : value(value)
+    : ScamExpr(managed)
+    , value(value)
 {
-    setManaged(managed);
 }
 
 ScamSymbol * ScamSymbol::makeInstance(std::string const & value, bool managed)

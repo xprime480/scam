@@ -11,6 +11,11 @@
 using namespace scam;
 using namespace std;
 
+ScamExpr::ScamExpr(bool managed)
+    : ManagedObject(managed)
+{
+}
+
 void ScamExpr::eval(ContHandle cont, Env env)
 {
     cont->run(this);

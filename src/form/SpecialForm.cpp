@@ -5,8 +5,9 @@
 using namespace scam;
 using namespace std;
 
-SpecialForm::SpecialForm(string const & name)
-    : name(name)
+SpecialForm::SpecialForm(string const & name, bool managed)
+    : ScamExpr(managed)
+    , name(name)
 {
 }
 

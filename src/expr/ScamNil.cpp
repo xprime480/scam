@@ -6,8 +6,8 @@ using namespace scam;
 using namespace std;
 
 ScamNil::ScamNil()
+    : ScamExpr(false)
 {
-    setManaged(false);
 }
 
 ScamNil * ScamNil::makeInstance()

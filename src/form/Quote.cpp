@@ -12,9 +12,8 @@ using namespace scam;
 using namespace std;
 
 Quote::Quote()
-    : SpecialForm("quote")
+    : SpecialForm("quote", false)
 {
-    setManaged(false);
 }
 
 Quote * Quote::makeInstance()

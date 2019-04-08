@@ -3,19 +3,14 @@
 
 using namespace scam;
 
-ManagedObject::ManagedObject()
-    : managed(true)
+ManagedObject::ManagedObject(bool managed)
+    : managed(managed)
     , marked(false)
 {
 }
 
 ManagedObject::~ManagedObject()
 {
-}
-
-void ManagedObject::setManaged(bool value) const
-{
-    managed = value;
 }
 
 bool ManagedObject::isManaged() const

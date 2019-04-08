@@ -11,9 +11,9 @@ using namespace scam;
 using namespace std;
 
 ScamKeyword::ScamKeyword(string const & value, bool managed)
-    : value(value)
+    : ScamExpr(managed)
+    , value(value)
 {
-    setManaged(managed);
 }
 
 ScamKeyword * ScamKeyword::makeInstance(std::string const & value, bool managed)

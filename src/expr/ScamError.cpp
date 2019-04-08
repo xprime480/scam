@@ -8,9 +8,9 @@ using namespace scam;
 using namespace std;
 
 ScamError::ScamError(char const * msg, bool managed)
-    : msg(msg)
+    : ScamExpr(managed)
+    , msg(msg)
 {
-    setManaged(managed);
 }
 
 ScamError * ScamError::makeInstance(char const * msg, bool managed)
