@@ -21,15 +21,18 @@ namespace scam
     public:
         static ScamNull * makeNull();
 
-        static ScamError * makeError(char const * msg);
-        static ScamError * makeError(std::string const & msg);
+        static ScamError * makeError(char const * msg, bool managed = true);
+        static ScamError * makeError(std::string const & msg,
+                                     bool managed = true);
 
         static ScamBoolean * makeBoolean(bool value);
         static ScamCharacter * makeCharacter(std::string const & value);
 
         static ScamString * makeString(std::string const & value);
-        static ScamSymbol * makeSymbol(std::string const & value);
-        static ScamKeyword * makeKeyword(std::string const & value);
+        static ScamSymbol * makeSymbol(std::string const & value,
+                                       bool managed = true);
+        static ScamKeyword * makeKeyword(std::string const & value,
+                                         bool managed = true);
 
         static ScamFloat * makeFloat(double value);
         static ScamInteger * makeInteger(int value);
@@ -70,11 +73,8 @@ namespace scam
         template <typename T, typename... Args>
         static T * makeForm(Args... args)
         {
-            return mm.make<T>(args...);
+            return standardMemoryManager.make<T>(args...);
         }
-
-    private:
-        static MemoryManager mm;
     };
 }
 #endif

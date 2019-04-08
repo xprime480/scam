@@ -138,7 +138,7 @@ TEST_F(PreludeTest, RequireTest)
     expectTrue("(require #t)");
 
     ScamExpr * expr = parseAndEvaluate("(require #f)");
-    expectError(expr, "No more choices");
+    expectError(expr, "No more choices", false);
 }
 
 TEST_F(PreludeTest, MempEmptyList)
@@ -179,7 +179,7 @@ TEST_F(PreludeTest, DistinctWithDuplicates)
 TEST_F(PreludeTest, OneofNone)
 {
     ScamExpr * expr = parseAndEvaluate("(one-of (list))");
-    expectError(expr, "No more choices");
+    expectError(expr, "No more choices", false);
 }
 
 TEST_F(PreludeTest, OneofOne)
@@ -372,7 +372,7 @@ TEST_F(PreludeTest, PowerSetList)
 TEST_F(PreludeTest, SomeOfNone)
 {
     ScamExpr * expr = parseAndEvaluate("(some-of '())");
-    expectError(expr, "No more choices");
+    expectError(expr, "No more choices", false);
 }
 
 TEST_F(PreludeTest, SomeOfOne)
@@ -381,7 +381,7 @@ TEST_F(PreludeTest, SomeOfOne)
     expectList(expr, "(1)", 1);
 
     expr = parseAndEvaluate("?");
-    expectError(expr, "No more choices");
+    expectError(expr, "No more choices", false);
 }
 
 TEST_F(PreludeTest, CondNoClauses)

@@ -7,17 +7,13 @@ using namespace std;
 
 ScamNil::ScamNil()
 {
+    setManaged(false);
 }
 
 ScamNil * ScamNil::makeInstance()
 {
     static ScamNil nil;
     return &nil;
-}
-
-bool ScamNil::isManaged() const
-{
-    return false;
 }
 
 string ScamNil::toString() const

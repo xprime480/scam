@@ -12,8 +12,10 @@ using namespace std;
 
 namespace
 {
-    static ScamExpr * const self   = ExpressionFactory::makeSymbol("self");
-    static ScamExpr * const parent = ExpressionFactory::makeSymbol("parent");
+    static ScamExpr * const self   =
+        ExpressionFactory::makeSymbol("self", false);
+    static ScamExpr * const parent =
+        ExpressionFactory::makeSymbol("parent", false);
     static ScamExpr * const nil    = ExpressionFactory::makeNil();
 
     extern void

@@ -14,7 +14,7 @@ namespace
 {
     static unsigned counter { 0 };
     static ScamExpr * const nomore =
-        ExpressionFactory::makeError("No more choices");
+        ExpressionFactory::makeError("No more choices", false);
     static bool init =
         (nomore->setMeta("amb-error", ExpressionFactory::makeNil()),
          true);

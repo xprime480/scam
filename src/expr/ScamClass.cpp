@@ -14,7 +14,8 @@ using namespace std;
 
 namespace
 {
-    static ScamExpr * const initSym = ExpressionFactory::makeSymbol("init");
+    static ScamExpr * const initSym =
+        ExpressionFactory::makeSymbol("init", false);
     static ScamExpr * const nil     = ExpressionFactory::makeNil();
 
     extern void do_apply(ScamExpr * cls,

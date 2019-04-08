@@ -7,16 +7,16 @@
 using namespace scam;
 using namespace std;
 
-ScamError::ScamError(char const * msg)
+ScamError::ScamError(char const * msg, bool managed)
     : msg(msg)
 {
+    setManaged(managed);
 }
 
-ScamError * ScamError::makeInstance(char const * msg)
+ScamError * ScamError::makeInstance(char const * msg, bool managed)
 {
-    return new ScamError(msg);
+    return new ScamError(msg, managed);
 }
-
 
 string ScamError::toString() const
 {

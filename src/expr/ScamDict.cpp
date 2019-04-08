@@ -201,11 +201,16 @@ KeyVec const & ScamDict::getKeys() const
 
 namespace
 {
-    static const ScamExpr * getOp = ExpressionFactory::makeKeyword(":get");
-    static const ScamExpr * putOp = ExpressionFactory::makeKeyword(":put");
-    static const ScamExpr * lenOp = ExpressionFactory::makeKeyword(":length");
-    static const ScamExpr * remOp = ExpressionFactory::makeKeyword(":remove");
-    static const ScamExpr * hasOp = ExpressionFactory::makeKeyword(":has");
+    static const ScamExpr * getOp =
+        ExpressionFactory::makeKeyword(":get", false);
+    static const ScamExpr * putOp =
+        ExpressionFactory::makeKeyword(":put", false);
+    static const ScamExpr * lenOp =
+        ExpressionFactory::makeKeyword(":length", false);
+    static const ScamExpr * remOp =
+        ExpressionFactory::makeKeyword(":remove", false);
+    static const ScamExpr * hasOp =
+        ExpressionFactory::makeKeyword(":has", false);
 
     void bad_op(ScamExpr * op, ContHandle cont)
     {

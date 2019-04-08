@@ -21,11 +21,15 @@ class MemoryTest : public ExpressionTestBase
 
 protected:
     MemoryTest()
-      : mm(2)
     {
     }
 
-    MemoryManager mm;
+    void SetUp() override
+    {
+        ExpressionTestBase::SetUp();
+        mm.reset();
+        mm.setSize(2u);
+    }
 
     void testBoolean(bool val, string const & rep)
     {
@@ -200,10 +204,10 @@ TEST_F(MemoryTest, GCTestGCNoRoots)
 
 TEST_F(MemoryTest, GCTestOneRoot)
 {
+    (void) mm.make<ManagedObjectTest>();
+    (void) mm.make<ManagedObjectTest>();
+    (void) mm.make<ManagedObjectTest>();
     ManagedObjectTest * cut = mm.make<ManagedObjectTest>();
-    cut = mm.make<ManagedObjectTest>();
-    cut = mm.make<ManagedObjectTest>();
-    cut = mm.make<ManagedObjectTest>();
 
     EXPECT_EQ(4, mm.getCurrentCount());
 
@@ -224,14 +228,13 @@ TEST_F(MemoryTest, GCTestWithProxy)
     (void) mm.make<ManagedObjectTest>();
     (void) mm.make<ManagedObjectTest>();
     ManagedObjectTest * cut = mm.make<ManagedObjectTest>(proxy);
+
     ASSERT_NE(nullptr, cut);
     EXPECT_EQ(33, cut->getValue());
-
     EXPECT_EQ(4, mm.getCurrentCount());
 
     std::function<void(void)> hook = [&cut](){ cut->mark(); };
     mm.addHook(hook);
-
     mm.gc();
 
     EXPECT_EQ(2, mm.getCurrentCount());

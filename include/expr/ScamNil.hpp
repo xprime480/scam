@@ -13,8 +13,6 @@ namespace scam
         static ScamNil * makeInstance();
 
     public:
-        bool isManaged() const override;
-
         std::string toString() const override;
 
         bool isNil() const override;

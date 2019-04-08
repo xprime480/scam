@@ -7,7 +7,6 @@
 
 namespace scam
 {
-
     class ScamNull : public ScamExpr
     {
     private:
@@ -16,8 +15,6 @@ namespace scam
         static ScamNull * makeInstance();
 
     public:
-        bool isManaged() const override;
-
         std::string toString() const override;
         void eval(ContHandle cont, Env env) override;
 

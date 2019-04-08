@@ -126,7 +126,8 @@ ScamExpr * ScamEngine::parseCurrentInput()
     if ( ! hc || hc->current() == mark ) {
         return ExpressionFactory::makeNull();
     }
-    return hc->get();
+    ScamExpr * rv = hc->get();
+    return rv;
 }
 
 ScamExpr * ScamEngine::read()
@@ -142,9 +143,12 @@ ScamExpr * ScamEngine::read()
 ScamExpr * ScamEngine::eval(ScamExpr * expr)
 {
     expr->eval(cont, env);
+
     Trampoline(GlobalWorkQueue);
+
     HistoryCont const * hc = dynamic_cast<HistoryCont const *>(cont.get());
-    return hc->get();
+    ScamExpr * rv = hc->get();
+    return rv;
 }
 
 ScamExpr * ScamEngine::apply(ScamExpr * expr, ScamExpr * args)

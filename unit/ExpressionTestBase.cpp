@@ -48,6 +48,7 @@ namespace
 }
 
 ExpressionTestBase::ExpressionTestBase()
+    : mm(standardMemoryManager)
 {
 }
 
@@ -57,6 +58,7 @@ ExpressionTestBase::~ExpressionTestBase()
 
 void ExpressionTestBase::SetUp()
 {
+    mm.reset();
     engine.reset(true);
     extractor = make_shared<Extractor>();
     engine.setCont(extractor);
@@ -83,10 +85,12 @@ ScamExpr * ExpressionTestBase::parseAndEvaluate(string const & input)
 {
     try {
         EvalString helper(&engine, input);
-        return helper.run();
+        ScamExpr * rv = helper.run();
+        return rv;
     }
     catch ( ScamException e ) {
-        return ExpressionFactory::makeError(e.getMessage());
+        ScamExpr * rv = ExpressionFactory::makeError(e.getMessage());
+        return rv;
     }
     catch ( ... ) {
         return ExpressionFactory::makeError("Unknown exception");
@@ -210,9 +214,12 @@ void ExpressionTestBase::expectNull(ScamExpr * expr)
     expectNonNumeric(expr);
 }
 
-void ExpressionTestBase::expectError(ScamExpr * expr, string const msg)
+void ExpressionTestBase::expectError(ScamExpr * expr,
+                                     string const msg,
+                                     bool managed)
 {
-    checkPredicates(expr, SELECT_TRUTH | SELECT_ERROR | SELECT_MANAGED);
+    auto pred = SELECT_TRUTH | SELECT_ERROR | (managed ? SELECT_MANAGED : 0x0);
+    checkPredicates(expr, pred);
 
     if ( ! msg.empty() ) {
         EXPECT_EQ(msg, expr->toString());

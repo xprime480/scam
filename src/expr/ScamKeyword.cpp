@@ -10,14 +10,15 @@
 using namespace scam;
 using namespace std;
 
-ScamKeyword::ScamKeyword(string const & value)
+ScamKeyword::ScamKeyword(string const & value, bool managed)
     : value(value)
 {
+    setManaged(managed);
 }
 
-ScamKeyword * ScamKeyword::makeInstance(std::string const & value)
+ScamKeyword * ScamKeyword::makeInstance(std::string const & value, bool managed)
 {
-   return new ScamKeyword(value);
+    return new ScamKeyword(value, managed);
 }
 
 string ScamKeyword::toString() const

@@ -20,8 +20,8 @@ protected:
     ScamExpr * exp;
 
     EnvTest()
-        : key(ExpressionFactory::makeSymbol("key"))
-        , exp(ExpressionFactory::makeInteger(1))
+        : key(nullptr)
+        , exp(nullptr)
     {
     }
 
@@ -34,6 +34,10 @@ protected:
     void reset(bool init)
     {
         engine.reset(init);
+
+        key = ExpressionFactory::makeSymbol("key");
+        exp = ExpressionFactory::makeInteger(1);
+
         engine.addBinding(key, exp);
     }
 };

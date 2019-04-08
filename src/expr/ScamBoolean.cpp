@@ -8,6 +8,7 @@ using namespace std;
 ScamBoolean::ScamBoolean(bool value)
     : value(value)
 {
+    setManaged(false);
 }
 
 ScamBoolean * ScamBoolean::makeInstance(bool value)
@@ -16,11 +17,6 @@ ScamBoolean * ScamBoolean::makeInstance(bool value)
     static ScamBoolean no(false);
 
     return value ? &yes : &no;
-}
-
-bool ScamBoolean::isManaged() const
-{
-    return false;
 }
 
 string ScamBoolean::toString() const

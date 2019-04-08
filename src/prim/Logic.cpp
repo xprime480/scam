@@ -304,7 +304,8 @@ namespace
         ScamExpr *
         check_ignore(ScamDict * dict, ScamExpr * lhs, ScamExpr * rhs)
         {
-            static ScamExpr * ignore = ExpressionFactory::makeKeyword("::");
+            static ScamExpr * ignore =
+                ExpressionFactory::makeKeyword("::", false);
 
             if ( ignore->equals(lhs) || ignore->equals(rhs) ) {
                 return dict;
@@ -478,8 +479,8 @@ namespace
     public:
         Instantiator(size_t & counter)
             : counter(counter)
-	    , d(ExpressionFactory::makeDict())
-	    , dict(*d)
+            , d(ExpressionFactory::makeDict())
+            , dict(*d)
         {
         }
 

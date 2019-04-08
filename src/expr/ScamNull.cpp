@@ -9,17 +9,13 @@ using namespace std;
 
 ScamNull::ScamNull()
 {
+    setManaged(false);
 }
 
 ScamNull * ScamNull::makeInstance()
 {
     static ScamNull instance;
     return &instance;
-}
-
-bool ScamNull::isManaged() const
-{
-    return false;
 }
 
 std::string ScamNull::toString() const

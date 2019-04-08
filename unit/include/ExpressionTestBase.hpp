@@ -23,6 +23,7 @@ namespace scam
 
         std::shared_ptr<Extractor> extractor;
         ScamEngine engine;
+        MemoryManager & mm;
 
         ScamExpr * evaluate(ScamExpr * input);
         ScamExpr * apply(ScamExpr * expr, ScamExpr * args);
@@ -35,7 +36,8 @@ namespace scam
 
         void expectNull(ScamExpr * expr);
         void expectError(ScamExpr * expr,
-                         std::string const msg = "");
+                         std::string const msg = "",
+                         bool managed = true);
 
         void expectBoolean(ScamExpr * expr,
                            bool value,

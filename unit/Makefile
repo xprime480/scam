@@ -36,7 +36,7 @@ do_it_manually :
 #TEST_FILTER = --gtest_filter=MemoryTest.*
 
 qtest : qexe
-	@./$(TEST_EXE) $(TEST_FILTER)
+	@$(TEST_EXE) $(TEST_FILTER)
 
 test : exe qtest
 	:
@@ -68,4 +68,4 @@ clean :
 
 include $(DEP)
 
-.PHONY : test qtest
+.PHONY : test qtest qexe

@@ -5,66 +5,66 @@
 using namespace scam;
 using namespace std;
 
-MemoryManager ExpressionFactory::mm;
-
 ScamNull * ExpressionFactory::makeNull()
 {
-    return mm.make<ScamNull>();
+    return standardMemoryManager.make<ScamNull>();
 }
 
-ScamError * ExpressionFactory::makeError(char const * msg)
+ScamError * ExpressionFactory::makeError(char const * msg, bool managed)
 {
-    return mm.make<ScamError>(msg);
+    return standardMemoryManager.make<ScamError>(msg, managed);
 }
 
-ScamError * ExpressionFactory::makeError(string const & msg)
+ScamError * ExpressionFactory::makeError(string const & msg, bool managed)
 {
-    return mm.make<ScamError>(msg.c_str());
+    return standardMemoryManager.make<ScamError>(msg.c_str(), managed);
 }
 
 ScamBoolean * ExpressionFactory::makeBoolean(bool value)
 {
-    return mm.make<ScamBoolean>(value);
+    return standardMemoryManager.make<ScamBoolean>(value);
 }
 
 ScamCharacter * ExpressionFactory::makeCharacter(string const & value)
 {
-    return mm.make<ScamCharacter>(value);
+    return standardMemoryManager.make<ScamCharacter>(value);
 }
 
 ScamString * ExpressionFactory::makeString(string const & value)
 {
-    return mm.make<ScamString>(value);
+    return standardMemoryManager.make<ScamString>(value);
 }
 
-ScamSymbol * ExpressionFactory::makeSymbol(string const & value)
+ScamSymbol *
+ExpressionFactory::makeSymbol(string const & value, bool managed)
 {
-    return mm.make<ScamSymbol>(value);
+    return standardMemoryManager.make<ScamSymbol>(value, managed);
 }
 
-ScamKeyword * ExpressionFactory::makeKeyword(string const & value)
+ScamKeyword *
+ExpressionFactory::makeKeyword(string const & value, bool managed)
 {
-    return mm.make<ScamKeyword>(value);
+    return standardMemoryManager.make<ScamKeyword>(value, managed);
 }
 
 ScamFloat * ExpressionFactory::makeFloat(double value)
 {
-    return mm.make<ScamFloat>(value);
+    return standardMemoryManager.make<ScamFloat>(value);
 }
 
 ScamInteger * ExpressionFactory::makeInteger(int value)
 {
-    return mm.make<ScamInteger>(value);
+    return standardMemoryManager.make<ScamInteger>(value);
 }
 
 ScamNil * ExpressionFactory::makeNil()
 {
-    return mm.make<ScamNil>();
+    return standardMemoryManager.make<ScamNil>();
 }
 
 ScamCons * ExpressionFactory::makeCons(ScamExpr * car, ScamExpr * cdr)
 {
-    return mm.make<ScamCons>(car, cdr);
+    return standardMemoryManager.make<ScamCons>(car, cdr);
 }
 
 ScamExpr * ExpressionFactory::makeList()
@@ -79,7 +79,7 @@ ScamExpr * ExpressionFactory::makeList(ScamExpr * item)
 
 ScamVector * ExpressionFactory::makeVector(ExprVec const & elts)
 {
-    return mm.make<ScamVector>(elts);
+    return standardMemoryManager.make<ScamVector>(elts);
 }
 
 ScamClosure * ExpressionFactory::makeClosure(ScamExpr *formals,
@@ -87,7 +87,10 @@ ScamClosure * ExpressionFactory::makeClosure(ScamExpr *formals,
                                              Env env,
                                              bool macrolike)
 {
-    return mm.make<ScamClosure>(formals, forms, env, macrolike);
+    return standardMemoryManager.make<ScamClosure>(formals,
+                                                   forms,
+                                                   env,
+                                                   macrolike);
 }
 
 ScamClass * ExpressionFactory::makeClass(ScamExpr * base,
@@ -95,27 +98,27 @@ ScamClass * ExpressionFactory::makeClass(ScamExpr * base,
                                          ScamExpr * funs,
                                          Env env)
 {
-    return mm.make<ScamClass>(base, vars, funs, env);
+    return standardMemoryManager.make<ScamClass>(base, vars, funs, env);
 }
 
 ScamInstance * ExpressionFactory::makeInstance(ScamExpr * vars,
-					       ScamExpr * funs,
-					       Env env)
+                                               ScamExpr * funs,
+                                               Env env)
 {
-    return mm.make<ScamInstance>(vars, funs, env);
+    return standardMemoryManager.make<ScamInstance>(vars, funs, env);
 }
 
 ScamContinuation * ExpressionFactory::makeContinuation(ContHandle cont)
 {
-    return mm.make<ScamContinuation>(cont);
+    return standardMemoryManager.make<ScamContinuation>(cont);
 }
 
 ScamDict * ExpressionFactory::makeDict()
 {
-    return mm.make<ScamDict>();
+    return standardMemoryManager.make<ScamDict>();
 }
 
 ScamDict * ExpressionFactory::makeDict(ExprVec const & args)
 {
-    return mm.make<ScamDict>(args);
+    return standardMemoryManager.make<ScamDict>(args);
 }

@@ -4,7 +4,8 @@
 using namespace scam;
 
 ManagedObject::ManagedObject()
-    : marked(false)
+    : managed(true)
+    , marked(false)
 {
 }
 
@@ -12,9 +13,14 @@ ManagedObject::~ManagedObject()
 {
 }
 
+void ManagedObject::setManaged(bool value) const
+{
+    managed = value;
+}
+
 bool ManagedObject::isManaged() const
 {
-    return true;
+    return managed;
 }
 
 void ManagedObject::mark() const

@@ -17,7 +17,7 @@ TEST_F(EngineTest, BacktrackInitial)
 TEST_F(EngineTest, AmbZeroForms)
 {
     ScamExpr * expr = parseAndEvaluate("(amb)");
-    expectError(expr, "No more choices");
+    expectError(expr, "No more choices", false);
 }
 
 TEST_F(EngineTest, AmbOneFormFirst)
@@ -30,7 +30,7 @@ TEST_F(EngineTest, AmbOneFormSecond)
 {
     ScamExpr * expr = parseAndEvaluate("(amb 2)");
     expr = parseAndEvaluate("?");
-    expectError(expr, "No more choices");
+    expectError(expr, "No more choices", false);
 }
 
 TEST_F(EngineTest, AmbOneFormThird)
@@ -63,7 +63,7 @@ TEST_F(EngineTest, AmbNestedLet)
     expectList(expr, "(b 2)", 2);
 
     expr = parseAndEvaluate("?");
-    expectError(expr, "No more choices");
+    expectError(expr, "No more choices", false);
 
     expr = parseAndEvaluate("?");
     expectError(expr, "No current backtrack context");
@@ -87,7 +87,7 @@ TEST_F(EngineTest, AmbNestedLetStar)
     expectList(expr, "(b 2)", 2);
 
     expr = parseAndEvaluate("?");
-    expectError(expr, "No more choices");
+    expectError(expr, "No more choices", false);
 
     expr = parseAndEvaluate("?");
     expectError(expr, "No current backtrack context");
@@ -108,7 +108,7 @@ TEST_F(EngineTest, AmbPrimitive)
     expectInteger(expr, 5, "5");
 
     expr = parseAndEvaluate("?");
-    expectError(expr, "No more choices");
+    expectError(expr, "No more choices", false);
 
     expr = parseAndEvaluate("?");
     expectError(expr, "No current backtrack context");

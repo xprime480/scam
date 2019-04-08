@@ -3,6 +3,8 @@
 
 using namespace scam;
 
+MemoryManager scam::standardMemoryManager(MemoryManager::DEFAULT_SIZE);
+
 MemoryManager::MemoryManager(size_t size)
     : arena_size(size)
     , createCount(0)
@@ -11,6 +13,11 @@ MemoryManager::MemoryManager(size_t size)
 
 MemoryManager::~MemoryManager()
 {
+}
+
+void MemoryManager::setSize(size_t size)
+{
+    arena_size = size;
 }
 
 void MemoryManager::addHook(std::function<void(void)> & hook)
@@ -28,6 +35,14 @@ void MemoryManager::gc()
     mark();
     sweep();
     unmark();
+}
+
+void MemoryManager::reset()
+{
+    arena.clear();
+    hooks.clear();
+    setSize(DEFAULT_SIZE);
+    createCount = 0u;
 }
 
 size_t MemoryManager::getCreateCount() const

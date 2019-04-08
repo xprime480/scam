@@ -11,8 +11,8 @@ namespace scam
     {
     private:
         friend class MemoryManager;
-        ScamError(char const * msg);
-        static ScamError * makeInstance(char const * msg);
+        ScamError(char const * msg, bool managed = true);
+        static ScamError * makeInstance(char const * msg, bool managed = true);
 
     public:
         std::string toString() const override;

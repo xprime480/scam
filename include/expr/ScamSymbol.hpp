@@ -9,8 +9,9 @@ namespace scam
     {
     private:
         friend class MemoryManager;
-        ScamSymbol(std::string const & value);
-        static ScamSymbol * makeInstance(std::string const & value);
+        ScamSymbol(std::string const & value, bool managed = true);
+        static ScamSymbol * makeInstance(std::string const & value,
+					 bool managed = true);
 
     public:
         std::string toString() const override;

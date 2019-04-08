@@ -10,14 +10,15 @@
 using namespace scam;
 using namespace std;
 
-ScamSymbol::ScamSymbol(string const & value)
+ScamSymbol::ScamSymbol(string const & value, bool managed)
     : value(value)
 {
+    setManaged(managed);
 }
 
-ScamSymbol * ScamSymbol::makeInstance(std::string const & value)
+ScamSymbol * ScamSymbol::makeInstance(std::string const & value, bool managed)
 {
-    return new ScamSymbol(value);
+    return new ScamSymbol(value, managed);
 }
 
 string ScamSymbol::toString() const

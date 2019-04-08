@@ -6,7 +6,6 @@
 #include "Worker.hpp"
 #include "expr/ExpressionFactory.hpp"
 
-#include <iostream>
 #include <sstream>
 
 using namespace scam;
@@ -15,17 +14,13 @@ using namespace std;
 Quote::Quote()
     : SpecialForm("quote")
 {
+    setManaged(false);
 }
 
 Quote * Quote::makeInstance()
 {
     static Quote quote;
     return &quote;
-}
-
-bool Quote::isManaged() const
-{
-    return false;
 }
 
 void Quote::apply(ScamExpr * args, ContHandle cont, Env env)
@@ -44,11 +39,6 @@ QuasiQuote * QuasiQuote::makeInstance()
     return new QuasiQuote();
 }
 
-bool QuasiQuote::isManaged() const
-{
-    return false;
-}
-
 namespace
 {
     extern void qq_apply(ScamExpr * args, ContHandle cont, Env env, bool top);
@@ -61,8 +51,8 @@ void QuasiQuote::apply(ScamExpr * args, ContHandle cont, Env env)
 
 namespace
 {
-    static ScamExpr *  const spliceTag =
-        ExpressionFactory::makeSymbol("**splicing**");
+    static ScamExpr * const spliceTag =
+        ExpressionFactory::makeSymbol("**splicing**", false);
 
     class  QQConsListCdrCont : public Continuation
     {

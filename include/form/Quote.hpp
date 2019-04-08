@@ -12,7 +12,6 @@ namespace scam
 
     public:
         static Quote * makeInstance();
-        bool isManaged() const override;
 
         void apply(ScamExpr * args, ContHandle cont, Env env) override;
     };
@@ -24,7 +23,6 @@ namespace scam
 
     public:
         static QuasiQuote * makeInstance();
-        bool isManaged() const override;
 
         void apply(ScamExpr * args, ContHandle cont, Env env) override;
     };
