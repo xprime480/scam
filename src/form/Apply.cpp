@@ -23,7 +23,8 @@ Apply::Apply()
 
 Apply * Apply::makeInstance()
 {
-    return new Apply();
+    static Apply instance;
+    return &instance;
 }
 
 void Apply::apply(ScamExpr * args, ContHandle cont, Env env)

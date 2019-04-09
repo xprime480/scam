@@ -8,7 +8,7 @@ namespace scam
     class SpecialForm : public ScamExpr
     {
     public:
-        SpecialForm(std::string const & name, bool managed = true);
+        SpecialForm(std::string const & name, bool managed = false);
 
         std::string toString() const override;
 

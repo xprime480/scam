@@ -15,7 +15,8 @@ Lambda::Lambda()
 
 Lambda * Lambda::makeInstance()
 {
-    return new Lambda();
+    static Lambda instance;
+    return &instance;
 }
 
 void Lambda::apply(ScamExpr * args, ContHandle cont, Env env)

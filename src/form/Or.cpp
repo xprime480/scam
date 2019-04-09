@@ -24,7 +24,8 @@ Or::Or()
 
 Or * Or::makeInstance()
 {
-    return new Or();
+    static Or instance;
+    return &instance;
 }
 
 void Or::apply(ScamExpr * args, ContHandle cont, Env env)

@@ -20,7 +20,8 @@ Eval::Eval()
 
 Eval * Eval::makeInstance()
 {
-    return new Eval();
+    static Eval instance;
+    return &instance;
 }
 
 void Eval::apply(ScamExpr * args, ContHandle cont, Env env)

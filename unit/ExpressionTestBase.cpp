@@ -348,12 +348,9 @@ void ExpressionTestBase::expectCons(ScamExpr * expr, string const & repr)
     EXPECT_EQ(repr, expr->toString());
 }
 
-void ExpressionTestBase::expectApplicable(ScamExpr * expr,
-                                          string const & repr,
-                                          bool managed)
+void ExpressionTestBase::expectApplicable(ScamExpr * expr, string const & repr)
 {
-    const auto flags =
-        SELECT_TRUTH | SELECT_APPLY | (managed ? SELECT_MANAGED : 0);
+    const auto flags = SELECT_TRUTH | SELECT_APPLY;
     checkPredicates(expr, flags);
     EXPECT_EQ(repr, expr->toString());
 }

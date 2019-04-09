@@ -25,7 +25,8 @@ And::And()
 
 And * And::makeInstance()
 {
-    return new And();
+    static And instance;
+    return &instance;
 }
 
 void And::apply(ScamExpr * args, ContHandle cont, Env env)

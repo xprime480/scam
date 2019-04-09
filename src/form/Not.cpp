@@ -23,7 +23,8 @@ Not::Not()
 
 Not * Not::makeInstance()
 {
-    return new Not();
+    static Not instance;
+    return &instance;
 }
 
 void Not::apply(ScamExpr * args, ContHandle cont, Env env)

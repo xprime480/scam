@@ -21,7 +21,7 @@ namespace
 }
 
 Amb::Amb(ScamEngine * engine)
-    : SpecialForm("amb")
+    : SpecialForm("amb", true)
     , engine(engine)
 {
 }

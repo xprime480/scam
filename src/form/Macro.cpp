@@ -15,7 +15,8 @@ Macro::Macro()
 
 Macro * Macro::makeInstance()
 {
-    return new Macro();
+    static Macro instance;
+    return &instance;
 }
 
 void Macro::apply(ScamExpr * args, ContHandle cont, Env env)

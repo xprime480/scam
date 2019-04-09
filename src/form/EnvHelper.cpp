@@ -32,7 +32,7 @@ namespace
 }
 
 EnvHelper::EnvHelper(char const * name, ScamEngine * engine)
-    : SpecialForm(name)
+    : SpecialForm(name, true)
     , engine(engine)
 {
 }
@@ -68,7 +68,7 @@ void Define::apply(ScamExpr * args, ContHandle cont, Env env)
 }
 
 Undefine::Undefine(ScamEngine * engine)
-    : EnvHelper("undefine", engine)
+  : EnvHelper("undefine", engine)
 {
 }
 

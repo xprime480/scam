@@ -34,7 +34,8 @@ If::If()
 
 If * If::makeInstance()
 {
-    return new If();
+    static If instance;
+    return &instance;
 }
 
 void If::apply(ScamExpr * args, ContHandle cont, Env env)

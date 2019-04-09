@@ -69,9 +69,7 @@ namespace scam
                         size_t len);
         void expectCons(ScamExpr * expr,
                         std::string const & repr);
-        void expectApplicable(ScamExpr * expr,
-                              std::string const & repr,
-                              bool managed = true);
+        void expectApplicable(ScamExpr * expr, std::string const & repr);
         void expectVector(ScamExpr * expr,
                           std::string const & repr,
                           size_t len);

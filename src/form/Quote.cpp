@@ -12,7 +12,7 @@ using namespace scam;
 using namespace std;
 
 Quote::Quote()
-    : SpecialForm("quote", false)
+    : SpecialForm("quote")
 {
 }
 
@@ -35,7 +35,8 @@ QuasiQuote::QuasiQuote()
 
 QuasiQuote * QuasiQuote::makeInstance()
 {
-    return new QuasiQuote();
+    static QuasiQuote instance;
+    return &instance;
 }
 
 namespace

@@ -21,7 +21,8 @@ CallCC::CallCC()
 
 CallCC * CallCC::makeInstance()
 {
-    return new CallCC();
+    static CallCC instance;
+    return &instance;
 }
 
 void CallCC::apply(ScamExpr * args, ContHandle cont, Env env)

@@ -289,10 +289,10 @@ TEST_F(ExpressionTest, SpecialFormQuote)
     string const value { "Special Form quote" };
 
     ScamExpr * quote  = ExpressionFactory::makeForm<Quote>();
-    expectApplicable(quote, value, false);
+    expectApplicable(quote, value);
 
     ScamExpr * evaled = evaluate(quote);
-    expectApplicable(evaled, value, false);
+    expectApplicable(evaled, value);
 }
 
 TEST_F(ExpressionTest, SpecialFormQuasiQuote)

@@ -21,7 +21,8 @@ ClassMaker::ClassMaker()
 
 ClassMaker * ClassMaker::makeInstance()
 {
-    return new ClassMaker();
+    static ClassMaker instance;
+    return &instance;
 }
 
 void ClassMaker::apply(ScamExpr * args, ContHandle cont, Env env)

@@ -37,7 +37,8 @@ Let::Let()
 
 Let * Let::makeInstance()
 {
-    return new Let();
+    static Let instance;
+    return &instance;
 }
 
 void Let::apply(ScamExpr * args, ContHandle cont, Env env)
@@ -46,7 +47,7 @@ void Let::apply(ScamExpr * args, ContHandle cont, Env env)
 }
 
 LetStar::LetStar(ScamEngine * engine)
-    : SpecialForm("let*")
+    : SpecialForm("let*", true)
     , engine(engine)
 {
 }
@@ -69,7 +70,8 @@ LetRec::LetRec()
 
 LetRec * LetRec::makeInstance()
 {
-    return new LetRec();
+    static LetRec instance;
+    return &instance;
 }
 
 void LetRec::apply(ScamExpr * args, ContHandle cont, Env env)
