@@ -19,7 +19,7 @@ Lambda * Lambda::makeInstance()
     return &instance;
 }
 
-void Lambda::apply(ScamExpr * args, ContHandle cont, Env env)
+void Lambda::apply(ScamExpr * args, Continuation * cont, Env env)
 {
     ScamExpr * expr =
         ExpressionFactory::makeClosure(args->getCar(), args->getCdr(), env);

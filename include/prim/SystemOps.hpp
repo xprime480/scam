@@ -14,7 +14,7 @@ namespace scam
 
     public:
         static Load * makeInstance(ScamEngine * engine);
-        void applyArgs(ScamExpr * args, ContHandle cont) override;
+        void applyArgs(ScamExpr * args, Continuation * cont) override;
 
     private:
         ScamEngine * engine;
@@ -27,7 +27,7 @@ namespace scam
 
     public:
         static Spawn * makeInstance();
-        void applyArgs(ScamExpr * args, ContHandle cont) override;
+        void applyArgs(ScamExpr * args, Continuation * cont) override;
     };
 
     class Error : public Primitive
@@ -37,7 +37,7 @@ namespace scam
 
     public:
         static Error * makeInstance();
-        void applyArgs(ScamExpr * args, ContHandle cont) override;
+        void applyArgs(ScamExpr * args, Continuation * cont) override;
     };
 
     class Backtrack : public Primitive
@@ -47,7 +47,7 @@ namespace scam
 
     public:
         static Backtrack * makeInstance(ScamEngine * engine);
-        void applyArgs(ScamExpr * args, ContHandle cont) override;
+        void applyArgs(ScamExpr * args, Continuation * cont) override;
 
     private:
         ScamEngine * engine;
@@ -61,7 +61,7 @@ namespace scam
 
     public:
         static Trace * makeInstance();
-        void applyArgs(ScamExpr * args, ContHandle cont) override;
+        void applyArgs(ScamExpr * args, Continuation * cont) override;
     };
 
 

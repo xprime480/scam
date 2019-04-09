@@ -12,7 +12,7 @@ using namespace std;
 
 namespace
 {
-    extern void eval_vector(ContHandle cont, Env env, ExprVec const & elts);
+    extern void eval_vector(Continuation * cont, Env env, ExprVec const & elts);
 }
 
 ScamVector::ScamVector(ExprVec const & elts)
@@ -50,7 +50,7 @@ string ScamVector::toString() const
     return s.str();
 }
 
-void ScamVector::eval(ContHandle cont, Env env)
+void ScamVector::eval(Continuation * cont, Env env)
 {
     eval_vector(cont, env, elts);
 }
@@ -100,29 +100,39 @@ namespace
 {
     class VectorCont : public Continuation
     {
-    public:
+    private:
+        friend class scam::MemoryManager;
+
         VectorCont(ExprVec const & forms,
                    ExprVec const & evaled,
-                   ContHandle original,
+                   Continuation * original,
                    Env env);
+
+        static VectorCont * makeInstance(ExprVec const & forms,
+                                         ExprVec const & evaled,
+                                         Continuation * original,
+                                         Env env);
+
+    public:
+        void mark() const override;
 
         void run(ScamExpr * expr) override;
 
     private:
         ExprVec forms;
         ExprVec evaled;
-        ContHandle original;
+        Continuation * original;
         Env env;
     };
 
     class  VectorWorker : public Worker
     {
     public:
-        VectorWorker(ContHandle cont,
+        VectorWorker(Continuation * cont,
                      Env env,
                      ExprVec const & forms);
 
-        VectorWorker(ContHandle cont,
+        VectorWorker(Continuation * cont,
                      Env env,
                      ExprVec const & forms,
                      ExprVec const & evaled);
@@ -132,11 +142,11 @@ namespace
     private:
         ExprVec    forms;
         ExprVec    evaled;
-        ContHandle original;
+        Continuation * original;
         Env        env;
     };
 
-    VectorWorker::VectorWorker(ContHandle cont,
+    VectorWorker::VectorWorker(Continuation * cont,
                                Env env,
                                ExprVec const & forms)
         : Worker("Vector")
@@ -146,7 +156,7 @@ namespace
     {
     }
 
-    VectorWorker::VectorWorker(ContHandle cont,
+    VectorWorker::VectorWorker(Continuation * cont,
                                Env env,
                                ExprVec const & forms,
                                ExprVec const & evaled)
@@ -169,15 +179,18 @@ namespace
         else {
             size_t index = evaled.size();
             ScamExpr * expr = forms[index];
-            ContHandle cont
-                = make_shared<VectorCont>(forms, evaled, original, env);
+            Continuation * cont
+                = standardMemoryManager.make<VectorCont>(forms,
+                                                         evaled,
+                                                         original,
+                                                         env);
             expr->eval(cont, env);
         }
     }
 
     VectorCont::VectorCont(ExprVec const & forms,
                            ExprVec const & evaled,
-                           ContHandle original,
+                           Continuation * original,
                            Env env)
         : Continuation("Vector")
         , forms(forms)
@@ -185,6 +198,28 @@ namespace
         , original(original)
         , env(env)
     {
+    }
+
+    VectorCont * VectorCont::makeInstance(ExprVec const & forms,
+                                          ExprVec const & evaled,
+                                          Continuation * original,
+                                          Env env)
+    {
+        return new VectorCont(forms, evaled, original, env);
+    }
+
+    void VectorCont::mark() const
+    {
+        if ( ! isMarked() ) {
+            Continuation::mark();
+            for ( auto e : forms ) {
+                e->mark();
+            }
+            for ( auto e : evaled ) {
+                e->mark();
+            }
+            original->mark();
+        }
     }
 
     void VectorCont::run(ScamExpr * expr)
@@ -201,7 +236,7 @@ namespace
         }
     }
 
-    void eval_vector(ContHandle cont, Env env, ExprVec const & elts)
+    void eval_vector(Continuation * cont, Env env, ExprVec const & elts)
     {
         workQueueHelper<VectorWorker>(cont, env, elts);
     }

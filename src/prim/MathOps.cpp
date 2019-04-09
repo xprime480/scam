@@ -17,7 +17,7 @@ MathOp::MathOp(MathOpDef const & def)
 {
 }
 
-void MathOp::applyArgs(ScamExpr * args, ContHandle cont)
+void MathOp::applyArgs(ScamExpr * args, Continuation * cont)
 {
     string const context = toString();
     ScamExpr * rv = numericAlgorithm(args, context, algo);

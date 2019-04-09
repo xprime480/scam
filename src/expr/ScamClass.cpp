@@ -20,7 +20,7 @@ namespace
 
     extern void do_apply(ScamExpr * cls,
                          ScamExpr * args,
-                         ContHandle cont,
+                         Continuation * cont,
                          Env env);
 }
 
@@ -69,7 +69,7 @@ bool ScamClass::hasApply() const
     return true;
 }
 
-void ScamClass::apply(ScamExpr * args, ContHandle cont, Env env)
+void ScamClass::apply(ScamExpr * args, Continuation * cont, Env env)
 {
     do_apply(this, args, cont, env);
 }
@@ -88,12 +88,30 @@ namespace
 {
     class ClassInitCont: public Continuation
     {
-    public:
-        ClassInitCont(ScamExpr * instance, ContHandle cont)
+    private:
+        friend class scam::MemoryManager;
+
+        ClassInitCont(ScamExpr * instance, Continuation * cont)
             : Continuation("ClassInit")
             , instance(instance)
             , cont(cont)
         {
+        }
+
+        static ClassInitCont * makeInstance(ScamExpr * instance,
+                                            Continuation * cont)
+        {
+            return new ClassInitCont(instance, cont);
+        }
+
+    public:
+        void mark() const override
+        {
+            if ( ! isMarked() ) {
+              Continuation::mark();
+              instance->mark();
+              cont->mark();
+            }
         }
 
         void run(ScamExpr * expr) override
@@ -104,7 +122,7 @@ namespace
 
     private:
         ScamExpr * instance;
-        ContHandle cont;
+        Continuation * cont;
     };
 
     class ClassInitWorker : public Worker
@@ -112,7 +130,7 @@ namespace
     public:
         ClassInitWorker(ScamExpr * instance,
                         ScamExpr * args,
-                        ContHandle cont,
+                        Continuation * cont,
                         Env env)
             : Worker("ClassInit")
             , instance(instance)
@@ -126,8 +144,8 @@ namespace
         {
             Worker::run();
 
-            ContHandle newCont
-                = make_shared<ClassInitCont>(instance, cont);
+            Continuation * newCont
+                = standardMemoryManager.make<ClassInitCont>(instance, cont);
             ScamExpr * newArgs
                 = ExpressionFactory::makeCons(initSym, args);
 
@@ -137,20 +155,37 @@ namespace
     private:
         ScamExpr * instance;
         ScamExpr * args;
-        ContHandle cont;
+        Continuation * cont;
         Env        env;
     };
 
     class ClassCont : public Continuation
     {
-    public:
-        ClassCont(ScamExpr * cls, ContHandle cont)
+    private:
+        friend class scam::MemoryManager;
+
+        ClassCont(ScamExpr * cls, Continuation * cont)
             : Continuation("ClassCont")
             , cls(cls)
             , cont(cont)
         {
             ScamClassAdapter adapter(cls);
             env = adapter.getCapture();
+        }
+
+        static ClassCont * makeInstance(ScamExpr * cls, Continuation * cont)
+        {
+            return new ClassCont(cls, cont);
+        }
+
+    public:
+        void mark() const override
+        {
+            if ( ! isMarked() ) {
+                Continuation::mark();
+                cls->mark();
+                cont->mark();
+            }
         }
 
         void run(ScamExpr * expr) override
@@ -177,7 +212,7 @@ namespace
 
     private:
         ScamExpr * cls;
-        ContHandle cont;
+        Continuation * cont;
         Env        env;
 
         ScamExpr *
@@ -275,7 +310,10 @@ namespace
     class ClassWorker : public Worker
     {
     public:
-        ClassWorker(ScamExpr * cls, ScamExpr * args, ContHandle cont, Env env)
+        ClassWorker(ScamExpr * cls,
+                    ScamExpr * args,
+                    Continuation * cont,
+                    Env env)
             : Worker("ClassWorker")
             , cls(cls)
             , args(args)
@@ -287,18 +325,19 @@ namespace
         void run() override
         {
             Worker::run();
-            ContHandle newCont = make_shared<ClassCont>(cls, cont);
+            Continuation * newCont =
+                standardMemoryManager.make<ClassCont>(cls, cont);
             args->mapEval(newCont, env);
         }
 
     private:
         ScamExpr * cls;
         ScamExpr * args;
-        ContHandle cont;
+        Continuation * cont;
         Env        env;
     };
 
-    void do_apply(ScamExpr * cls, ScamExpr * args, ContHandle cont, Env env)
+    void do_apply(ScamExpr * cls, ScamExpr * args, Continuation * cont, Env env)
     {
         workQueueHelper<ClassWorker>(cls, args, cont, env);
     }

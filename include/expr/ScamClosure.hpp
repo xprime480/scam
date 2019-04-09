@@ -26,7 +26,7 @@ namespace scam
         std::string toString() const override;
 
         bool hasApply() const override;
-        void apply(ScamExpr * args, ContHandle cont, Env env) override;
+        void apply(ScamExpr * args, Continuation * cont, Env env) override;
 
         bool isProcedure() const override;
 

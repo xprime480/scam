@@ -13,7 +13,7 @@ using namespace std;
 
 namespace
 {
-    extern void apply_impl(ScamExpr * args, ContHandle cont, Env env);
+    extern void apply_impl(ScamExpr * args, Continuation * cont, Env env);
 }
 
 Not::Not()
@@ -27,7 +27,7 @@ Not * Not::makeInstance()
     return &instance;
 }
 
-void Not::apply(ScamExpr * args, ContHandle cont, Env env)
+void Not::apply(ScamExpr * args, Continuation * cont, Env env)
 {
     apply_impl(args, cont, env);
 }
@@ -37,32 +37,38 @@ namespace
     class NotWorker : public Worker
     {
     public:
-        NotWorker(ContHandle cont, Env env, ScamExpr * args);
+        NotWorker(Continuation * cont, Env env, ScamExpr * args);
         void run() override;
 
     private:
         ScamExpr * args;
-        ContHandle cont;
+        Continuation * cont;
         Env env;
     };
 
     class NotCont : public Continuation
     {
+    private:
+        friend class scam::MemoryManager;
+        NotCont(Continuation * cont);
+        static NotCont * makeInstance(Continuation * cont);
+
     public:
-        NotCont(ContHandle cont);
+        void mark() const override;
+
         void run(ScamExpr * expr) override;
 
     private:
-        ContHandle cont;
+        Continuation * cont;
     };
 
-    void apply_impl(ScamExpr * args, ContHandle cont, Env env)
+    void apply_impl(ScamExpr * args, Continuation * cont, Env env)
     {
         workQueueHelper<NotWorker>(cont, env, args);
     }
 }
 
-NotWorker::NotWorker(ContHandle cont, Env env, ScamExpr * args)
+NotWorker::NotWorker(Continuation * cont, Env env, ScamExpr * args)
     : Worker("Not")
     , args(args)
     , cont(cont)
@@ -81,16 +87,29 @@ void NotWorker::run()
         cont->run(err);
     }
     else {
-        ContHandle newCont = make_shared<NotCont>(cont);
+        Continuation * newCont = standardMemoryManager.make<NotCont>(cont);
         ScamExpr * test = args->nthcar(0);
         test->eval(newCont, env);
     }
 }
 
-NotCont::NotCont(ContHandle cont)
+NotCont::NotCont(Continuation * cont)
     : Continuation("Not")
     , cont(cont)
 {
+}
+
+NotCont * NotCont::makeInstance(Continuation * cont)
+{
+    return new NotCont(cont);
+}
+
+void NotCont::mark() const
+{
+  if ( ! isMarked() ) {
+      Continuation::mark();
+      cont->mark();
+  }
 }
 
 void NotCont::run(ScamExpr * expr)

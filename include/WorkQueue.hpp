@@ -8,11 +8,6 @@
 
 namespace scam
 {
-    class Continuation;
-    class Env;
-
-    using ContHandle = std::shared_ptr<Continuation> ;
-
     class WorkQueue
     {
     public:
@@ -28,7 +23,6 @@ namespace scam
     extern WorkQueue GlobalWorkQueue;
 
     template <typename T, typename... Args>
-
     typename std::shared_ptr<T> workQueueHelper(Args &&... args)
     {
         std::shared_ptr<T> thunk = std::make_shared<T>(args...);

@@ -12,7 +12,7 @@ using namespace std;
 namespace
 {
     extern void
-    do_apply(ScamExpr * args, ContHandle cont, Env env, ScamDict * dict);
+    do_apply(ScamExpr * args, Continuation * cont, Env env, ScamDict * dict);
 }
 
 ScamDict::ScamDict()
@@ -77,7 +77,7 @@ bool ScamDict::hasApply() const
     return true;
 }
 
-void ScamDict::apply(ScamExpr * args, ContHandle cont, Env env)
+void ScamDict::apply(ScamExpr * args, Continuation * cont, Env env)
 {
     do_apply(args, cont, env, this);
 }
@@ -212,7 +212,7 @@ namespace
     static const ScamExpr * hasOp =
         ExpressionFactory::makeKeyword(":has", false);
 
-    void bad_op(ScamExpr * op, ContHandle cont)
+    void bad_op(ScamExpr * op, Continuation * cont)
     {
         stringstream s;
         s << "Dict expects op = [:get|:put|:length|:remove|:has]; got "
@@ -221,7 +221,7 @@ namespace
         cont->run(msg);
     }
 
-    void exec_get(ScamExpr * args, ContHandle cont, ScamDict * dict)
+    void exec_get(ScamExpr * args, Continuation * cont, ScamDict * dict)
     {
         if ( args->length() < 2u ) {
             ScamExpr * err
@@ -235,7 +235,7 @@ namespace
         }
     }
 
-    void exec_put(ScamExpr * args, ContHandle cont, ScamDict * dict)
+    void exec_put(ScamExpr * args, Continuation * cont, ScamDict * dict)
     {
         if ( args->length() < 3u ) {
             stringstream s;
@@ -252,7 +252,7 @@ namespace
         }
     }
 
-    void exec_has(ScamExpr * args, ContHandle cont, ScamDict * dict)
+    void exec_has(ScamExpr * args, Continuation * cont, ScamDict * dict)
     {
         if ( args->length() < 2u ) {
             stringstream s;
@@ -269,7 +269,7 @@ namespace
         }
     }
 
-    void exec_remove(ScamExpr * args, ContHandle cont, ScamDict * dict)
+    void exec_remove(ScamExpr * args, Continuation * cont, ScamDict * dict)
     {
         if ( args->length() < 2u ) {
             stringstream s;
@@ -285,13 +285,13 @@ namespace
         }
     }
 
-    void exec_length(ContHandle cont, ScamDict * dict)
+    void exec_length(Continuation * cont, ScamDict * dict)
     {
         ScamExpr * len = ExpressionFactory::makeInteger(dict->length());
         cont->run(len);
     }
 
-    void exec(ScamExpr * args, ContHandle cont, ScamDict * dict)
+    void exec(ScamExpr * args, Continuation * cont, ScamDict * dict)
     {
         ScamExpr * op = args->nthcar(0);
         if ( ! op->isKeyword() ) {
@@ -319,7 +319,8 @@ namespace
         }
     }
 
-    void do_apply(ScamExpr * args, ContHandle cont, Env env, ScamDict * dict)
+    void
+    do_apply(ScamExpr * args, Continuation * cont, Env env, ScamDict * dict)
     {
         if ( args->isNil() ) {
             stringstream s;

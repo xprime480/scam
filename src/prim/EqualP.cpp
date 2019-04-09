@@ -12,7 +12,7 @@ using namespace std;
 
 namespace
 {
-    extern void equal_p_impl(ScamExpr * args, ContHandle cont);
+    extern void equal_p_impl(ScamExpr * args, Continuation * cont);
 }
 
 EqualP::EqualP()
@@ -25,7 +25,7 @@ EqualP * EqualP::makeInstance()
     return new EqualP();
 }
 
-void EqualP::applyArgs(ScamExpr * args, ContHandle cont)
+void EqualP::applyArgs(ScamExpr * args, Continuation * cont)
 {
     equal_p_impl(args, cont);
 }
@@ -70,7 +70,7 @@ namespace
         return reduced;
     }
 
-    bool zero_args(ScamExpr * args, ContHandle cont)
+    bool zero_args(ScamExpr * args, Continuation * cont)
     {
         if ( 0 == args->length() ) {
             cont->run(yes);
@@ -105,7 +105,7 @@ namespace
         return no;
     }
 
-    bool has_nulls(ScamExpr * args, ContHandle cont)
+    bool has_nulls(ScamExpr * args, Continuation * cont)
     {
         auto fn = [](ScamExpr * arg) -> ScamExpr * {
             return ExpressionFactory::makeBoolean(arg->isNull());
@@ -114,7 +114,7 @@ namespace
         return answer->truth();
     }
 
-    bool one_arg(ScamExpr * args, ContHandle cont)
+    bool one_arg(ScamExpr * args, Continuation * cont)
     {
         if ( 1 == args->length() ) {
             cont->run(yes);
@@ -137,7 +137,7 @@ namespace
         return true;
     }
 
-    void equal_p_impl(ScamExpr * args, ContHandle cont)
+    void equal_p_impl(ScamExpr * args, Continuation * cont)
     {
         if ( zero_args(args, cont) ||
              has_nulls(args, cont) ||

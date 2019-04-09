@@ -21,7 +21,7 @@ Progn * Progn::makeInstance()
     return new Progn();
 }
 
-void Progn::applyArgs(ScamExpr * args, ContHandle cont)
+void Progn::applyArgs(ScamExpr * args, Continuation * cont)
 {
     if ( args->isNil() ) {
         cont->run(args);

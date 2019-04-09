@@ -39,7 +39,7 @@ namespace scam
 
         /*** functions to manage the output continuation ***/
 
-        void setCont(ContHandle c);
+        void setCont(Continuation * c);
 
         /*** functions to read, eval, and apply ***/
 
@@ -62,7 +62,7 @@ namespace scam
         Env env;
         std::vector<ScamParser> input;
         BacktrackHandle backtracker;
-        ContHandle cont;
+        Continuation * cont;
         std::set<std::string> loaded;
 
         void getStandardEnv();

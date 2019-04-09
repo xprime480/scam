@@ -19,7 +19,7 @@ namespace
     void do_apply(ScamExpr * formals,
                   ScamExpr * forms,
                   Env capture,
-                  ContHandle cont,
+                  Continuation * cont,
                   ScamExpr * args,
                   Env argEnv,
                   bool macrolike);
@@ -76,7 +76,7 @@ bool ScamClosure::hasApply() const
     return true;
 }
 
-void ScamClosure::apply(ScamExpr * args, ContHandle cont, Env env)
+void ScamClosure::apply(ScamExpr * args, Continuation * cont, Env env)
 {
     do_apply(formals, forms, this->env, cont, args, env, macrolike);
 }
@@ -95,12 +95,28 @@ namespace
 {
     class MacroEvalCont : public Continuation
     {
-    public:
-        MacroEvalCont(ContHandle cont, Env capture)
+    private:
+        friend class scam::MemoryManager;
+
+        MacroEvalCont(Continuation * cont, Env capture)
             : Continuation("macro eval")
             , cont(cont)
             , capture(capture)
         {
+        }
+
+        static MacroEvalCont * makeInstance(Continuation * cont, Env capture)
+        {
+            return new MacroEvalCont(cont, capture);
+        }
+
+    public:
+        void mark() const override
+        {
+            if ( ! isMarked() ) {
+                Continuation::mark();
+                cont->mark();
+            }
         }
 
         void run(ScamExpr * expr) override
@@ -110,17 +126,19 @@ namespace
         }
 
     private:
-        ContHandle cont;
+        Continuation * cont;
         Env        capture;
     };
 
     class ClosureBindCont : public Continuation
     {
-    public:
+    private:
+        friend class scam::MemoryManager;
+
         ClosureBindCont(ScamExpr * formals,
                         ScamExpr * forms,
                         Env capture,
-                        ContHandle cont,
+                        Continuation * cont,
                         bool macrolike)
             : Continuation("proc - bind")
             , formals(formals)
@@ -129,6 +147,30 @@ namespace
             , cont(cont)
             , macrolike(macrolike)
         {
+        }
+
+        static ClosureBindCont * makeInstance(ScamExpr * formals,
+                                              ScamExpr * forms,
+                                              Env capture,
+                                              Continuation * cont,
+                                              bool macrolike)
+        {
+            return new ClosureBindCont(formals,
+                                       forms,
+                                       capture,
+                                       cont,
+                                       macrolike);
+        }
+
+    public:
+        void mark() const override
+        {
+            if ( ! isMarked() ) {
+                Continuation::mark();
+                formals->mark();
+                forms->mark();
+                cont->mark();
+            }
         }
 
         void run(ScamExpr * expr) override
@@ -150,7 +192,7 @@ namespace
         ScamExpr * formals;
         ScamExpr * forms;
         Env        capture;
-        ContHandle cont;
+        Continuation * cont;
         bool       macrolike;
 
         bool malformedActuals(ScamExpr * expr) const
@@ -211,16 +253,12 @@ namespace
             Binder binder(capture);
             Env extended = binder.bind(formals, actuals);
 
-            using WT = EvalWorker;
-            ScamExpr * f = forms;
+            Continuation * c =
+              ( macrolike
+                ? standardMemoryManager.make<MacroEvalCont>(cont, capture)
+                : cont );
 
-            if ( macrolike ) {
-                ContHandle cont2 = make_shared<MacroEvalCont>(cont, capture);
-                workQueueHelper<WT>(f, extended, cont2);
-            }
-            else {
-                workQueueHelper<WT>(f, extended, cont);
-            }
+            workQueueHelper<EvalWorker>(forms, extended, c);
         }
     };
 
@@ -230,7 +268,7 @@ namespace
         ClosureWorker(ScamExpr *formals,
                       ScamExpr * forms,
                       Env capture,
-                      ContHandle cont,
+                      Continuation * cont,
                       ScamExpr * args,
                       Env argEnv,
                       bool macrolike)
@@ -249,12 +287,12 @@ namespace
         {
             Worker::run();
 
-            ContHandle newCont
-                = make_shared<ClosureBindCont>(formals,
-                                               forms,
-                                               capture,
-                                               cont,
-                                               macrolike);
+            Continuation * newCont
+                = standardMemoryManager.make<ClosureBindCont>(formals,
+                                                              forms,
+                                                              capture,
+                                                              cont,
+                                                              macrolike);
             if ( macrolike ) {
                 newCont->run(args);
             }
@@ -267,7 +305,7 @@ namespace
         ScamExpr * formals;
         ScamExpr * forms;
         Env capture;
-        ContHandle cont;
+        Continuation * cont;
         ScamExpr * args;
         Env argEnv;
         bool macrolike;
@@ -276,7 +314,7 @@ namespace
     void do_apply(ScamExpr * formals,
                   ScamExpr * forms,
                   Env capture,
-                  ContHandle cont,
+                  Continuation * cont,
                   ScamExpr * args,
                   Env argEnv,
                   bool macrolike)

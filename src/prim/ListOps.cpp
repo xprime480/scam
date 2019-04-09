@@ -20,7 +20,7 @@ List * List::makeInstance()
     return new List();
 }
 
-void List::applyArgs(ScamExpr * args, ContHandle cont)
+void List::applyArgs(ScamExpr * args, Continuation * cont)
 {
     cont->run(args);
 }
@@ -35,7 +35,7 @@ Cons * Cons::makeInstance()
     return new Cons();
 }
 
-void Cons::applyArgs(ScamExpr * args, ContHandle cont)
+void Cons::applyArgs(ScamExpr * args, Continuation * cont)
 {
     if ( args->error() ) {
         cont->run(args);
@@ -59,7 +59,7 @@ CarCdr::CarCdr(char const * name)
 {
 }
 
-void CarCdr::applyArgs(ScamExpr * args, ContHandle cont)
+void CarCdr::applyArgs(ScamExpr * args, Continuation * cont)
 {
     if ( args->error() ) {
         cont->run(args);
@@ -87,7 +87,7 @@ Car * Car::makeInstance()
     return new Car();
 }
 
-void Car::finish(ScamExpr * args, ContHandle cont)
+void Car::finish(ScamExpr * args, Continuation * cont)
 {
     ScamExpr * car = args->nthcar(0)->nthcar(0);
     cont->run(car);
@@ -103,7 +103,7 @@ Cdr * Cdr::makeInstance()
     return new Cdr();
 }
 
-void Cdr::finish(ScamExpr * args, ContHandle cont)
+void Cdr::finish(ScamExpr * args, Continuation * cont)
 {
     ScamExpr * cdr = args->nthcar(0)->nthcdr(0);
     cont->run(cdr);

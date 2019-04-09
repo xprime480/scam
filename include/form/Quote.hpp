@@ -13,7 +13,7 @@ namespace scam
     public:
         static Quote * makeInstance();
 
-        void apply(ScamExpr * args, ContHandle cont, Env env) override;
+        void apply(ScamExpr * args, Continuation * cont, Env env) override;
     };
 
     class QuasiQuote : public SpecialForm
@@ -24,7 +24,7 @@ namespace scam
     public:
         static QuasiQuote * makeInstance();
 
-        void apply(ScamExpr * args, ContHandle cont, Env env) override;
+        void apply(ScamExpr * args, Continuation * cont, Env env) override;
     };
 }
 

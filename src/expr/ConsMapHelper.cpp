@@ -22,7 +22,7 @@ namespace
     class  MapWorker : public Worker
     {
     public:
-        MapWorker(ContHandle cont,
+        MapWorker(Continuation * cont,
                   Env env,
                   ScamExpr * car,
                   ScamExpr * cdr);
@@ -42,7 +42,7 @@ namespace scam
     {
         void scamConsMapHelper(ScamExpr * car,
                                ScamExpr * cdr,
-                               ContHandle cont,
+                               Continuation * cont,
                                Env env)
         {
             workQueueHelper<MapWorker>(cont, env, car, cdr);
@@ -57,7 +57,7 @@ namespace
     public:
         MapCdr(ScamExpr * car,
                ScamExpr * cdr,
-               ContHandle cont,
+               Continuation * cont,
                Env env);
 
         void run() override;
@@ -68,8 +68,13 @@ namespace
 
     class CarContinuation : public Continuation
     {
-    public:
+    private:
+        friend class scam::MemoryManager;
         CarContinuation(WorkerData const & data);
+        static CarContinuation * makeInstance(WorkerData const & data);
+
+    public:
+        void mark() const override;
 
         void run(ScamExpr * expr) override;
 
@@ -79,8 +84,13 @@ namespace
 
     class CdrContinuation : public Continuation
     {
-    public:
+    private:
+        friend class scam::MemoryManager;
         CdrContinuation(WorkerData const & data);
+        static CdrContinuation * makeInstance(WorkerData const & data);
+
+    public:
+        void mark() const override;
 
         void run(ScamExpr * expr) override;
 
@@ -89,14 +99,14 @@ namespace
     };
 }
 
-MapWorker::MapWorker(ContHandle cont,
+MapWorker::MapWorker(Continuation * cont,
                      Env env,
                      ScamExpr * car,
                      ScamExpr * cdr)
     : Worker("Cons Map")
     , data(car, cdr, cont, env)
 {
-    data.cont = make_shared<CarContinuation>(data);
+    data.cont = standardMemoryManager.make<CarContinuation>(data);
 }
 
 void MapWorker::run()
@@ -109,6 +119,19 @@ CarContinuation::CarContinuation(WorkerData const & data)
     : Continuation("Cons Map Car")
     , data(data)
 {
+}
+
+CarContinuation * CarContinuation::makeInstance(WorkerData const & data)
+{
+  return new CarContinuation(data);
+}
+
+void CarContinuation::mark() const
+{
+  if ( ! isMarked() ) {
+      Continuation::mark();
+      data.mark();
+  }
 }
 
 void CarContinuation::run(ScamExpr * expr)
@@ -124,11 +147,11 @@ void CarContinuation::run(ScamExpr * expr)
     }
 }
 
-MapCdr::MapCdr(ScamExpr * car, ScamExpr * cdr, ContHandle cont, Env env)
+MapCdr::MapCdr(ScamExpr * car, ScamExpr * cdr, Continuation * cont, Env env)
     : Worker("Cons Map Cdr")
     , data(car, cdr, cont, env)
 {
-    data.cont = make_shared<CdrContinuation>(data);
+    data.cont = standardMemoryManager.make<CdrContinuation>(data);
 }
 
 void MapCdr::run()
@@ -142,6 +165,20 @@ CdrContinuation::CdrContinuation(WorkerData const & data)
     , data(data)
 {
 }
+
+CdrContinuation * CdrContinuation::makeInstance(WorkerData const & data)
+{
+    return new CdrContinuation(data);
+}
+
+void CdrContinuation::mark() const
+{
+    if ( ! isMarked() ) {
+        Continuation::mark();
+        data.mark();
+    }
+}
+
 
 void CdrContinuation::run(ScamExpr * expr)
 {

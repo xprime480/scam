@@ -17,12 +17,12 @@ namespace
     class IfWorker : public Worker
     {
     public:
-        IfWorker(ContHandle cont, Env env, ScamExpr * args);
+        IfWorker(Continuation * cont, Env env, ScamExpr * args);
         void run() override;
 
     private:
         ScamExpr * args;
-        ContHandle cont;
+        Continuation * cont;
         Env env;
     };
 }
@@ -38,7 +38,7 @@ If * If::makeInstance()
     return &instance;
 }
 
-void If::apply(ScamExpr * args, ContHandle cont, Env env)
+void If::apply(ScamExpr * args, Continuation * cont, Env env)
 {
     workQueueHelper<IfWorker>(cont, env, args);
 }
@@ -47,18 +47,26 @@ namespace
 {
     class IfCont : public Continuation
     {
+    private:
+        friend class scam::MemoryManager;
+        IfCont(ScamExpr * args, Continuation * cont, Env env);
+
+        static IfCont *
+        makeInstance(ScamExpr * args, Continuation * cont, Env env);
+
     public:
-        IfCont(ScamExpr * args, ContHandle cont, Env env);
+        void mark() const override;
+
         void run(ScamExpr * expr) override;
 
     private:
         ScamExpr * args;
-        ContHandle cont;
+        Continuation * cont;
         Env env;
     };
 }
 
-IfWorker::IfWorker(ContHandle cont, Env env, ScamExpr * args)
+IfWorker::IfWorker(Continuation * cont, Env env, ScamExpr * args)
     : Worker("If")
     , args(args)
     , cont(cont)
@@ -77,19 +85,34 @@ void IfWorker::run()
         cont->run(err);
     }
     else {
-        ContHandle newCont = make_shared<IfCont>(args, cont, env);
+        Continuation * newCont =
+            standardMemoryManager.make<IfCont>(args, cont, env);
         ScamExpr * test = args->nthcar(0);
 
         test->eval(newCont, env);
     }
 }
 
-IfCont::IfCont(ScamExpr * args, ContHandle cont, Env env)
+IfCont::IfCont(ScamExpr * args, Continuation * cont, Env env)
     : Continuation("If")
     , args(args)
     , cont(cont)
     , env(env)
 {
+}
+
+IfCont * IfCont::makeInstance(ScamExpr * args, Continuation * cont, Env env)
+{
+    return new IfCont(args, cont, env);
+}
+
+void IfCont::mark() const
+{
+    if ( ! isMarked() ) {
+        Continuation::mark();
+        args->mark();
+        cont->mark();
+    }
 }
 
 void IfCont::run(ScamExpr * expr)

@@ -20,15 +20,12 @@ using namespace std;
 namespace
 {
     extern void
-    apply_load(ScamExpr * args, ContHandle cont, ScamEngine * engine);
+    apply_load(ScamExpr * args, Continuation * cont, ScamEngine * engine);
 
-    extern void apply_spawn(ContHandle cont);
-
-    extern void apply_error(ScamExpr * args, ContHandle cont);
-
-    extern void apply_backtrack(ContHandle cont, ScamEngine * engine);
-
-    extern void apply_trace(ScamExpr * args, ContHandle cont);
+    extern void apply_spawn(Continuation * cont);
+    extern void apply_error(ScamExpr * args, Continuation * cont);
+    extern void apply_backtrack(Continuation * cont, ScamEngine * engine);
+    extern void apply_trace(ScamExpr * args, Continuation * cont);
 }
 
 Load::Load(ScamEngine * engine)
@@ -42,7 +39,7 @@ Load * Load::makeInstance(ScamEngine * engine)
     return new Load(engine);
 }
 
-void Load::applyArgs(ScamExpr * args, ContHandle cont)
+void Load::applyArgs(ScamExpr * args, Continuation * cont)
 {
     apply_load(args, cont, engine);
 }
@@ -57,7 +54,7 @@ Spawn * Spawn::makeInstance()
     return new Spawn();
 }
 
-void Spawn::applyArgs(ScamExpr * args, ContHandle cont)
+void Spawn::applyArgs(ScamExpr * args, Continuation * cont)
 {
     apply_spawn(cont);
 }
@@ -72,7 +69,7 @@ Error * Error::makeInstance()
     return new Error();
 }
 
-void Error::applyArgs(ScamExpr * args, ContHandle cont)
+void Error::applyArgs(ScamExpr * args, Continuation * cont)
 {
     apply_error(args, cont);
 }
@@ -88,7 +85,7 @@ Backtrack * Backtrack::makeInstance(ScamEngine * engine)
     return new Backtrack(engine);
 }
 
-void Backtrack::applyArgs(ScamExpr * args, ContHandle cont)
+void Backtrack::applyArgs(ScamExpr * args, Continuation * cont)
 {
     apply_backtrack(cont, engine);
 }
@@ -103,7 +100,7 @@ Trace * Trace::makeInstance()
     return new Trace();
 }
 
-void Trace::applyArgs(ScamExpr * args, ContHandle cont)
+void Trace::applyArgs(ScamExpr * args, Continuation * cont)
 {
     apply_trace(args, cont);
 }
@@ -179,7 +176,7 @@ namespace
         return false;
     }
 
-    void file_not_found(string const & filename, ContHandle cont)
+    void file_not_found(string const & filename, Continuation * cont)
     {
         stringstream s;
         s << "Unable to open file " << filename;
@@ -187,7 +184,9 @@ namespace
         cont->run(err);
     }
 
-    bool open_file(ifstream & source, string const & filename, ContHandle cont)
+    bool open_file(ifstream & source,
+                   string const & filename,
+                   Continuation * cont)
     {
         if ( '/' == filename.at(0) ) {
             if ( file_exists(filename) ) {
@@ -226,7 +225,7 @@ namespace
         return text.str();
     }
 
-    void apply_load(ScamExpr * args, ContHandle cont, ScamEngine * engine)
+    void apply_load(ScamExpr * args, Continuation * cont, ScamEngine * engine)
     {
         string filename = args->nthcar(0)->toString();
         if ( engine->isLoaded(filename) ) {
@@ -254,7 +253,7 @@ namespace
     class SpawnWorker : public Worker
     {
     public:
-        SpawnWorker(ContHandle cont, bool value)
+        SpawnWorker(Continuation * cont, bool value)
             : Worker("SpawnWorker")
             , cont(cont)
             , value(value)
@@ -268,11 +267,11 @@ namespace
         }
 
     private:
-        ContHandle cont;
+        Continuation * cont;
         bool       value;
     };
 
-    void apply_spawn(ContHandle cont)
+    void apply_spawn(Continuation * cont)
     {
         bool t { true };
         workQueueHelper<SpawnWorker>(cont, t);
@@ -280,7 +279,7 @@ namespace
         workQueueHelper<SpawnWorker>(cont, f);
     }
 
-    void apply_error(ScamExpr * args, ContHandle cont)
+    void apply_error(ScamExpr * args, Continuation * cont)
     {
         stringstream s;
         unsigned len = args->length();
@@ -301,7 +300,7 @@ namespace
         cont->run(err);
     }
 
-    void apply_backtrack(ContHandle cont, ScamEngine * engine)
+    void apply_backtrack(Continuation * cont, ScamEngine * engine)
     {
         BacktrackHandle backtracker = engine->getBacktracker();
         if ( nullptr == backtracker.get() ) {
@@ -315,7 +314,7 @@ namespace
     }
 
 
-    void apply_trace(ScamExpr * args, ContHandle cont)
+    void apply_trace(ScamExpr * args, Continuation * cont)
     {
         cerr << args->toString() << "\n";
         cont->run(args);

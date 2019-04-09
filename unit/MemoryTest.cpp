@@ -1,12 +1,13 @@
 
+#include "TestBase.hpp"
+
 #include "expr/ScamExprAll.hpp"
-
 #include "util/MemoryManager.hpp"
-
 #include "ScamException.hpp"
+#include "Extractor.hpp"
+
 #include <iostream>
 
-#include "TestBase.hpp"
 
 using namespace std;
 using namespace scam;
@@ -507,4 +508,14 @@ TEST_F(MemoryTest, TestScamContinuation)
 
     wrapper->mark();
     expectMarked(true, wrapper, original);
+}
+
+TEST_F(MemoryTest, TestExtractor)
+{
+    Continuation * cont = mm.make<Extractor>();
+    ScamExpr     * expr = mm.make<ScamKeyword>(":best");
+
+    cont->run(expr);
+    cont->mark();
+    expectMarked(true, cont, expr);
 }

@@ -10,21 +10,19 @@
 namespace scam
 {
     class ScamExpr;
-
     class Continuation;
-    using ContHandle = std::shared_ptr<Continuation>;
 
     class EvalWorker : public Worker
     {
     public:
-        EvalWorker(ScamExpr * forms, Env env, ContHandle cont);
+        EvalWorker(ScamExpr * forms, Env env, Continuation * cont);
 
         void run() override;
 
     private:
         ScamExpr * forms;
         Env extended;
-        ContHandle cont;
+        Continuation * cont;
     };
 }
 

@@ -60,7 +60,7 @@ void TestBase::SetUp()
 {
     mm.reset();
     engine.reset(true);
-    extractor = make_shared<Extractor>();
+    extractor = mm.make<Extractor>();
     engine.setCont(extractor);
     ScamExpr * result = parseAndEvaluate("(load \"lib/prelude.scm\")");
     expectInteger(result, 1, "1");

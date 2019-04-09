@@ -14,10 +14,10 @@ using namespace std;
 
 namespace
 {
-    extern void do_match(ScamExpr * args, ContHandle cont);
-    extern void do_unify(ScamExpr * args, ContHandle cont);
-    extern void do_subst(ScamExpr * args, ContHandle cont);
-    extern void do_inst(ScamExpr * args, ContHandle cont, size_t & counter);
+    extern void do_match(ScamExpr * args, Continuation * cont);
+    extern void do_unify(ScamExpr * args, Continuation * cont);
+    extern void do_subst(ScamExpr * args, Continuation * cont);
+    extern void do_inst(ScamExpr * args, Continuation * cont, size_t & counter);
 }
 
 Match::Match()
@@ -30,7 +30,7 @@ Match * Match::makeInstance()
     return new Match();
 }
 
-void Match::applyArgs(ScamExpr * args, ContHandle cont)
+void Match::applyArgs(ScamExpr * args, Continuation * cont)
 {
     do_match(args, cont);
 }
@@ -45,7 +45,7 @@ Unify * Unify::makeInstance()
     return new Unify();
 }
 
-void Unify::applyArgs(ScamExpr * args, ContHandle cont)
+void Unify::applyArgs(ScamExpr * args, Continuation * cont)
 {
     do_unify(args, cont);
 }
@@ -60,7 +60,7 @@ Substitute * Substitute::makeInstance()
     return new Substitute();
 }
 
-void Substitute::applyArgs(ScamExpr * args, ContHandle cont)
+void Substitute::applyArgs(ScamExpr * args, Continuation * cont)
 {
     do_subst(args, cont);
 }
@@ -75,7 +75,7 @@ Instantiate * Instantiate::makeInstance()
     return new Instantiate();
 }
 
-void Instantiate::applyArgs(ScamExpr * args, ContHandle cont)
+void Instantiate::applyArgs(ScamExpr * args, Continuation * cont)
 {
     do_inst(args, cont, counter);
 }
@@ -235,7 +235,7 @@ namespace
     class MatchUnifyCommon
     {
     public:
-        MatchUnifyCommon(ScamExpr * args, ContHandle cont, bool unify)
+        MatchUnifyCommon(ScamExpr * args, Continuation * cont, bool unify)
             : args(args)
             , cont(cont)
             , unify(unify)
@@ -251,7 +251,7 @@ namespace
 
     private:
         ScamExpr * args;
-        ContHandle cont;
+        Continuation * cont;
         bool       unify;
 
         bool checkargs()
@@ -580,19 +580,19 @@ namespace
         }
     };
 
-    void do_match(ScamExpr * args, ContHandle cont)
+    void do_match(ScamExpr * args, Continuation * cont)
     {
         MatchUnifyCommon solver(args, cont, false);
         solver.solve();
     }
 
-    void do_unify(ScamExpr * args, ContHandle cont)
+    void do_unify(ScamExpr * args, Continuation * cont)
     {
         MatchUnifyCommon solver(args, cont, true);
         solver.solve();
     }
 
-    void do_subst(ScamExpr * args, ContHandle cont)
+    void do_subst(ScamExpr * args, Continuation * cont)
     {
         if ( args->length() < 2 ) {
             stringstream s;
@@ -618,7 +618,7 @@ namespace
         cont->run(rv);
     }
 
-    void do_inst(ScamExpr * args, ContHandle cont, size_t & counter)
+    void do_inst(ScamExpr * args, Continuation * cont, size_t & counter)
     {
         Instantiator inst(counter);
         ScamExpr * rv = inst.exec(args);

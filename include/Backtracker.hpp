@@ -19,13 +19,12 @@ namespace scam
 
         static void dumpStack(BacktrackHandle bt);
         static std::string safeID(BacktrackHandle bt);
-        static void safeRun(BacktrackHandle bt, ContHandle cont);
+        static void safeRun(BacktrackHandle bt, Continuation * cont);
 
         virtual void run();
         std::string id() const;
 
     protected:
-        void runParent(ContHandle cont) const;
         void runParent(Continuation * cont) const;
         BacktrackHandle getParent() const;
 

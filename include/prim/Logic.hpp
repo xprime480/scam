@@ -14,7 +14,7 @@ namespace scam
 
     public:
         static Match * makeInstance();
-        void applyArgs(ScamExpr * args, ContHandle cont) override;
+        void applyArgs(ScamExpr * args, Continuation * cont) override;
     };
 
     class Unify : public Primitive
@@ -24,7 +24,7 @@ namespace scam
 
     public:
         static Unify * makeInstance();
-        void applyArgs(ScamExpr * args, ContHandle cont) override;
+        void applyArgs(ScamExpr * args, Continuation * cont) override;
     };
 
     class Substitute : public Primitive
@@ -34,7 +34,7 @@ namespace scam
 
     public:
         static Substitute * makeInstance();
-        void applyArgs(ScamExpr * args, ContHandle cont) override;
+        void applyArgs(ScamExpr * args, Continuation * cont) override;
     };
 
     class Instantiate : public Primitive
@@ -44,7 +44,7 @@ namespace scam
 
     public:
         static Instantiate * makeInstance();
-        void applyArgs(ScamExpr * args, ContHandle cont) override;
+        void applyArgs(ScamExpr * args, Continuation * cont) override;
 
     private:
         static size_t counter;

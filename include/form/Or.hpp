@@ -12,7 +12,7 @@ namespace scam
 
     public:
         static Or * makeInstance();
-        void apply(ScamExpr * args, ContHandle cont, Env env) override;
+        void apply(ScamExpr * args, Continuation * cont, Env env) override;
     };
 }
 

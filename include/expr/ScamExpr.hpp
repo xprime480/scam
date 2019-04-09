@@ -11,21 +11,19 @@
 namespace scam
 {
     class Continuation;
-    using ContHandle = std::shared_ptr<Continuation> ;
-
     class ExpressionFactory;
 
     class ScamExpr : public ManagedObject
     {
     public:
         ScamExpr(bool managed = true);
-      
+
         virtual std::string toString() const = 0;
-        virtual void eval(ContHandle cont, Env env);
+        virtual void eval(Continuation * cont, Env env);
 
         virtual bool hasApply() const;
-        virtual void apply(ScamExpr * args, ContHandle cont, Env env);
-        virtual void mapEval(ContHandle cont, Env env);
+        virtual void apply(ScamExpr * args, Continuation * cont, Env env);
+        virtual void mapEval(Continuation * cont, Env env);
 
         virtual bool isNull() const;
         virtual bool error() const;

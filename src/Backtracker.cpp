@@ -53,7 +53,7 @@ string Backtracker::safeID(BacktrackHandle bt)
     return bt->id();
 }
 
-void Backtracker::safeRun(BacktrackHandle bt, ContHandle cont)
+void Backtracker::safeRun(BacktrackHandle bt, Continuation * cont)
 {
     if ( bt.get() ) {
         bt->run();
@@ -76,11 +76,6 @@ string Backtracker::id() const
 BacktrackHandle Backtracker::getParent() const
 {
     return parent;
-}
-
-void Backtracker::runParent(ContHandle cont) const
-{
-    runParent(cont.get());
 }
 
 void Backtracker::runParent(Continuation * cont) const

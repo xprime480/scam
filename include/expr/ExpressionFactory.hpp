@@ -12,7 +12,6 @@
 namespace scam
 {
     class Continuation;
-    using ContHandle = std::shared_ptr<Continuation>;
 
     using ExprVec = std::vector<ScamExpr *>;
 
@@ -65,7 +64,7 @@ namespace scam
                                            ScamExpr * funs,
                                            Env env);
 
-        static ScamContinuation * makeContinuation(ContHandle cont);
+        static ScamContinuation * makeContinuation(Continuation * cont);
 
         static ScamDict * makeDict();
         static ScamDict * makeDict(ExprVec const & args);

@@ -40,7 +40,8 @@ string call_scam(string const & input)
         return "** Internal Test Error initializing test environment";
     }
 
-    shared_ptr<Accumulator> accumulator = make_shared<Accumulator>();
+
+    Accumulator * accumulator = standardMemoryManager.make<Accumulator>();
     engine.setCont(accumulator);
     EvalString helper(&engine, input);
     helper.run();

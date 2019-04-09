@@ -24,7 +24,7 @@ std::string ScamNull::toString() const
     return null;
 }
 
-void ScamNull::eval(ContHandle cont, Env env)
+void ScamNull::eval(Continuation * cont, Env env)
 {
     static const string msg{ "The null type cannot be evaluated." };
     static ScamExpr * expr = ExpressionFactory::makeError(msg, false);

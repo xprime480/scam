@@ -16,8 +16,10 @@ using namespace std;
 
 namespace
 {
-    extern void
-    do_apply(ScamExpr * args, ContHandle cont, Env env, ScamEngine * engine);
+    extern void do_apply(ScamExpr * args,
+                         Continuation * cont,
+                         Env env,
+                         ScamEngine * engine);
 }
 
 Amb::Amb(ScamEngine * engine)
@@ -31,7 +33,7 @@ Amb * Amb::makeInstance(ScamEngine * engine)
     return new Amb(engine);
 }
 
-void Amb::apply(ScamExpr * args, ContHandle cont, Env env)
+void Amb::apply(ScamExpr * args, Continuation * cont, Env env)
 {
     do_apply(args, cont, env, engine);
 }
@@ -42,7 +44,7 @@ namespace
     {
     public:
         AmbBacktracker(ScamExpr * args,
-                       ContHandle cont,
+                       Continuation * cont,
                        Env env,
                        ScamEngine * engine,
                        BacktrackHandle parent)
@@ -80,13 +82,13 @@ namespace
 
     private:
         ScamExpr *      args;
-        ContHandle      cont;
+        Continuation *  cont;
         Env             env;
         ScamEngine    * engine;
     };
 
     void
-    do_apply(ScamExpr * args, ContHandle cont, Env env, ScamEngine * engine)
+    do_apply(ScamExpr * args, Continuation * cont, Env env, ScamEngine * engine)
     {
         BacktrackHandle backtracker = engine->getBacktracker();
         shared_ptr<Backtracker> newBt =

@@ -23,7 +23,7 @@ namespace scam
         void SetUp() override;
         void TearDown() override;
 
-        std::shared_ptr<Extractor> extractor;
+        Extractor * extractor;
         ScamEngine engine;
         MemoryManager & mm;
 

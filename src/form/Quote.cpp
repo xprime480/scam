@@ -22,7 +22,7 @@ Quote * Quote::makeInstance()
     return &quote;
 }
 
-void Quote::apply(ScamExpr * args, ContHandle cont, Env env)
+void Quote::apply(ScamExpr * args, Continuation * cont, Env env)
 {
     ScamExpr * expr = args->getCar();
     cont->run(expr);
@@ -41,10 +41,13 @@ QuasiQuote * QuasiQuote::makeInstance()
 
 namespace
 {
-    extern void qq_apply(ScamExpr * args, ContHandle cont, Env env, bool top);
+    extern void qq_apply(ScamExpr * args,
+                         Continuation * cont,
+                         Env env,
+                         bool top);
 }
 
-void QuasiQuote::apply(ScamExpr * args, ContHandle cont, Env env)
+void QuasiQuote::apply(ScamExpr * args, Continuation * cont, Env env)
 {
     qq_apply(args, cont, env, true);
 }
@@ -56,13 +59,31 @@ namespace
 
     class  QQConsListCdrCont : public Continuation
     {
-    public:
-        QQConsListCdrCont(ScamExpr * car, ContHandle cont, Env env)
+    private:
+        friend class scam::MemoryManager;
+
+        QQConsListCdrCont(ScamExpr * car, Continuation * cont, Env env)
             : Continuation("QQConsListCdrCont")
             , car(car)
             , cont(cont)
             , env(env)
         {
+        }
+
+        static QQConsListCdrCont *
+        makeInstance(ScamExpr * car, Continuation * cont, Env env)
+        {
+            return new  QQConsListCdrCont(car, cont, env);
+        }
+
+    public:
+        void mark() const override
+        {
+            if ( ! isMarked() ) {
+                Continuation::mark();
+                car->mark();
+                cont->mark();
+            }
         }
 
         void run(ScamExpr * expr) override
@@ -78,7 +99,7 @@ namespace
 
     private:
         ScamExpr * car;
-        ContHandle cont;
+        Continuation * cont;
         Env        env;
 
         void handle(ScamExpr * expr)
@@ -120,13 +141,31 @@ namespace
 
     class  QQConsListCarCont : public Continuation
     {
-    public:
-        QQConsListCarCont(ScamExpr * cdr, ContHandle cont, Env env)
+    private:
+        friend class scam::MemoryManager;
+
+        QQConsListCarCont(ScamExpr * cdr, Continuation * cont, Env env)
             : Continuation("QQConsListCarCont")
             , cdr(cdr)
             , cont(cont)
             , env(env)
         {
+        }
+
+        static QQConsListCarCont *
+        makeInstance(ScamExpr * cdr, Continuation * cont, Env env)
+        {
+            return new QQConsListCarCont(cdr, cont, env);
+        }
+
+    public:
+        void mark() const override
+        {
+            if ( ! isMarked() ) {
+                Continuation::mark();
+                cdr->mark();
+                cont->mark();
+            }
         }
 
         void run(ScamExpr * expr) override
@@ -136,24 +175,43 @@ namespace
                 cont->run(expr);
             }
             else {
-                ContHandle h = make_shared<QQConsListCdrCont>(expr, cont, env);
+                Continuation * h =
+                    standardMemoryManager.make<QQConsListCdrCont>(expr,
+                                                                  cont,
+                                                                  env);
                 qq_apply(cdr, h, env, false);
             }
         }
 
     private:
         ScamExpr * cdr;
-        ContHandle cont;
+        Continuation * cont;
         Env        env;
     };
 
     class  QQSpliceCont : public Continuation
     {
-    public:
-        QQSpliceCont(ContHandle cont)
+    private:
+        friend class scam::MemoryManager;
+
+        QQSpliceCont(Continuation * cont)
             : Continuation("QQSpliceCont")
             , cont(cont)
         {
+        }
+
+        static QQSpliceCont * makeInstance(Continuation * cont)
+        {
+            return new QQSpliceCont(cont);
+        }
+
+    public:
+        void mark() const override
+        {
+            if ( ! isMarked() ) {
+                Continuation::mark();
+                cont->mark();
+            }
         }
 
         void run(ScamExpr * expr) override
@@ -170,13 +228,13 @@ namespace
         }
 
     private:
-        ContHandle cont;
+        Continuation * cont;
     };
 
     class QuasiQuoteWorker : public Worker
     {
     public:
-        QuasiQuoteWorker(ScamExpr * form, ContHandle cont, Env env)
+        QuasiQuoteWorker(ScamExpr * form, Continuation * cont, Env env)
             : Worker("QuasiQuote")
             , form(form)
             , cont(cont)
@@ -191,10 +249,10 @@ namespace
 
     private:
         ScamExpr * form;
-        ContHandle cont;
+        Continuation * cont;
         Env        env;
 
-        bool verify_single_form(ScamExpr * input, ContHandle cont)
+        bool verify_single_form(ScamExpr * input, Continuation * cont)
         {
             if ( ! input->isList() || 1 != input->length() ) {
                 stringstream s;
@@ -206,7 +264,7 @@ namespace
             return true;
         }
 
-        void unquote_form(ScamExpr * input, ContHandle cont)
+        void unquote_form(ScamExpr * input, Continuation * cont)
         {
             if ( verify_single_form(input, cont) ) {
                 ScamExpr * form = input->nthcar(0);
@@ -214,23 +272,25 @@ namespace
             }
         }
 
-        void splice_form(ScamExpr * input, ContHandle cont)
+        void splice_form(ScamExpr * input, Continuation * cont)
         {
             if ( verify_single_form(input, cont) ) {
-                ContHandle h = make_shared<QQSpliceCont>(cont);
+                Continuation * h =
+                    standardMemoryManager.make<QQSpliceCont>(cont);
 
                 ScamExpr * form = input->nthcar(0);
                 form->eval(h, env);
             }
         }
 
-        void cons_qq_list(ScamExpr * car, ScamExpr * cdr, ContHandle cont)
+        void cons_qq_list(ScamExpr * car, ScamExpr * cdr, Continuation * cont)
         {
-            ContHandle h = make_shared<QQConsListCarCont>(cdr, cont, env);
+            Continuation * h =
+                standardMemoryManager.make<QQConsListCarCont>(cdr, cont, env);
             build_qq_form(car, h);
         }
 
-        void build_qq_list(ScamExpr * input, ContHandle cont)
+        void build_qq_list(ScamExpr * input, Continuation * cont)
         {
             ScamExpr * first = input->nthcar(0);
             ScamExpr * rest  = input->nthcdr(0);
@@ -248,7 +308,7 @@ namespace
             }
         }
 
-        void build_qq_form(ScamExpr * input, ContHandle cont)
+        void build_qq_form(ScamExpr * input, Continuation * cont)
         {
             if ( ! input->isList() || input->isNil() ) {
                 cont->run(input);
@@ -259,7 +319,7 @@ namespace
         }
     };
 
-    void qq_apply(ScamExpr * args, ContHandle cont, Env env, bool top)
+    void qq_apply(ScamExpr * args, Continuation * cont, Env env, bool top)
     {
         if ( ! args->isList() ) {
             stringstream s;

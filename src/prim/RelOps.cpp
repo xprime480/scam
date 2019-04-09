@@ -15,7 +15,7 @@ CompareOp::CompareOp(char const * name, shared_ptr<OpImpl> impl)
 {
 }
 
-void CompareOp::applyArgs(ScamExpr * args, ContHandle cont)
+void CompareOp::applyArgs(ScamExpr * args, Continuation * cont)
 {
     string const context = toString();
     ScamExpr * rv = compareAlgorithm(args, context, impl);

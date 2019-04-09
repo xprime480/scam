@@ -26,7 +26,7 @@ string ScamSymbol::toString() const
     return value;
 }
 
-void ScamSymbol::eval(ContHandle cont, Env env)
+void ScamSymbol::eval(Continuation * cont, Env env)
 {
     ScamExpr * evaluated;
 

@@ -14,7 +14,7 @@ using namespace std;
 
 namespace
 {
-    extern void apply_impl(ScamExpr * args, ContHandle cont, Env env);
+    extern void apply_impl(ScamExpr * args, Continuation * cont, Env env);
 }
 
 Or::Or()
@@ -28,7 +28,7 @@ Or * Or::makeInstance()
     return &instance;
 }
 
-void Or::apply(ScamExpr * args, ContHandle cont, Env env)
+void Or::apply(ScamExpr * args, Continuation * cont, Env env)
 {
     apply_impl(args, cont, env);
 }
@@ -38,37 +38,46 @@ namespace
     class OrWorker : public Worker
     {
     public:
-        OrWorker(ContHandle cont, Env env, ScamExpr * args, size_t n);
+        OrWorker(Continuation * cont, Env env, ScamExpr * args, size_t n);
         void run() override;
 
     private:
         ScamExpr * args;
-        ContHandle cont;
+        Continuation * cont;
         Env env;
         size_t n;
     };
 
     class OrCont : public Continuation
     {
+    private:
+        friend class scam::MemoryManager;
+
+        OrCont(ScamExpr * args, Continuation * cont, Env env, size_t n);
+
+        static OrCont *
+        makeInstance(ScamExpr * args, Continuation * cont, Env env, size_t n);
+
     public:
-        OrCont(ScamExpr * args, ContHandle cont, Env env, size_t n);
+        void mark() const override;
+
         void run(ScamExpr * expr) override;
 
     private:
         ScamExpr * args;
-        ContHandle cont;
+        Continuation * cont;
         Env env;
         size_t n;
     };
 
-    void apply_impl(ScamExpr * args, ContHandle cont, Env env)
+    void apply_impl(ScamExpr * args, Continuation * cont, Env env)
     {
         unsigned pos { 0 };
         workQueueHelper<OrWorker>(cont, env, args, pos);
     }
 }
 
-OrWorker::OrWorker(ContHandle cont,
+OrWorker::OrWorker(Continuation * cont,
                    Env env,
                    ScamExpr * args,
                    size_t n)
@@ -103,18 +112,34 @@ void OrWorker::run()
     else {
         ScamExpr * test = args->nthcar(n);
 
-        ContHandle newCont = make_shared<OrCont>(args, cont, env, n+1);
+        Continuation * newCont =
+            standardMemoryManager.make<OrCont>(args, cont, env, n+1);
         test->eval(newCont, env);
     }
 }
 
-OrCont::OrCont(ScamExpr * args, ContHandle cont, Env env, size_t n)
+OrCont::OrCont(ScamExpr * args, Continuation * cont, Env env, size_t n)
     : Continuation("Or")
     , args(args)
     , cont(cont)
     , env(env)
     , n(n)
 {
+}
+
+OrCont *
+OrCont::makeInstance(ScamExpr * args, Continuation * cont, Env env, size_t n)
+{
+  return new OrCont(args, cont, env, n);
+}
+
+void OrCont::mark() const
+{
+    if ( ! isMarked() ) {
+        Continuation::mark();
+        args->mark();
+        cont->mark();
+    }
 }
 
 void OrCont::run(ScamExpr * expr)

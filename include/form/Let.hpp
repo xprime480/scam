@@ -14,7 +14,7 @@ namespace scam
 
     public:
         static Let * makeInstance();
-        void apply(ScamExpr * args, ContHandle cont, Env env) override;
+        void apply(ScamExpr * args, Continuation * cont, Env env) override;
     };
 
     class LetStar : public SpecialForm
@@ -24,7 +24,7 @@ namespace scam
 
     public:
         static LetStar * makeInstance(ScamEngine * engine);
-        void apply(ScamExpr * args, ContHandle cont, Env env) override;
+        void apply(ScamExpr * args, Continuation * cont, Env env) override;
 
     private:
         ScamEngine * engine;
@@ -37,7 +37,7 @@ namespace scam
 
     public:
         static LetRec * makeInstance();
-        void apply(ScamExpr * args, ContHandle cont, Env env) override;
+        void apply(ScamExpr * args, Continuation * cont, Env env) override;
     };
 }
 

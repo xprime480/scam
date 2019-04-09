@@ -108,7 +108,7 @@ ScamInstance * ExpressionFactory::makeInstance(ScamExpr * vars,
     return standardMemoryManager.make<ScamInstance>(vars, funs, env);
 }
 
-ScamContinuation * ExpressionFactory::makeContinuation(ContHandle cont)
+ScamContinuation * ExpressionFactory::makeContinuation(Continuation * cont)
 {
     return standardMemoryManager.make<ScamContinuation>(cont);
 }

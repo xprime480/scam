@@ -18,15 +18,15 @@ using namespace std;
 namespace
 {
     extern void apply_assign(ScamExpr * args,
-                             ContHandle cont,
+                             Continuation * cont,
                              Env env,
                              ScamEngine * engine);
     extern void apply_define(ScamExpr * args,
-                             ContHandle cont,
+                             Continuation * cont,
                              Env env,
                              ScamEngine * engine);
     extern void apply_undefine(ScamExpr * args,
-                               ContHandle cont,
+                               Continuation * cont,
                                Env env,
                                ScamEngine * engine);
 }
@@ -47,7 +47,7 @@ Assign * Assign::makeInstance(ScamEngine * engine)
     return new Assign(engine);
 }
 
-void Assign::apply(ScamExpr * args, ContHandle cont, Env env)
+void Assign::apply(ScamExpr * args, Continuation * cont, Env env)
 {
     apply_assign(args, cont, env, engine);
 }
@@ -62,7 +62,7 @@ Define * Define::makeInstance(ScamEngine * engine)
     return new Define(engine);
 }
 
-void Define::apply(ScamExpr * args, ContHandle cont, Env env)
+void Define::apply(ScamExpr * args, Continuation * cont, Env env)
 {
     apply_define(args, cont, env, engine);
 }
@@ -77,14 +77,14 @@ Undefine * Undefine::makeInstance(ScamEngine * engine)
     return new Undefine(engine);
 }
 
-void Undefine::apply(ScamExpr * args, ContHandle cont, Env env)
+void Undefine::apply(ScamExpr * args, Continuation * cont, Env env)
 {
     apply_undefine(args, cont, env, engine);
 }
 
 namespace
 {
-    bool checkArgs(ScamExpr * args, ContHandle cont, bool exprNeeded)
+    bool checkArgs(ScamExpr * args, Continuation * cont, bool exprNeeded)
     {
         const size_t expected = 1u + (exprNeeded ? 1u : 0u);
         const size_t actual   = args->length();
@@ -105,16 +105,16 @@ namespace
     {
     public:
         EnvHelperWorker(ScamExpr * args,
-                        ContHandle cont,
+                        Continuation * cont,
                         Env env,
                         char const * name);
         void run() override;
 
     protected:
-        ContHandle cont;
+        Continuation * cont;
         Env env;
 
-        virtual ContHandle getCont(ScamExpr * sym) const = 0;
+        virtual Continuation * getCont(ScamExpr * sym) const = 0;
 
     private:
         ScamExpr * args;
@@ -124,12 +124,12 @@ namespace
     {
     public:
         AssignWorker(ScamExpr * args,
-                     ContHandle cont,
+                     Continuation * cont,
                      Env env,
                      ScamEngine * engine);
 
     protected:
-        ContHandle getCont(ScamExpr * sym) const override;
+        Continuation * getCont(ScamExpr * sym) const override;
 
     private:
         ScamEngine * engine;
@@ -139,12 +139,12 @@ namespace
     {
     public:
         DefineWorker(ScamExpr * args,
-                     ContHandle cont,
+                     Continuation * cont,
                      Env env,
                      ScamEngine * engine);
 
     protected:
-        ContHandle getCont(ScamExpr * sym) const override;
+        Continuation * getCont(ScamExpr * sym) const override;
 
     private:
         ScamEngine * engine;
@@ -154,19 +154,19 @@ namespace
     {
     public:
         UndefineWorker(ScamExpr * args,
-                       ContHandle cont,
+                       Continuation * cont,
                        Env env,
                        ScamEngine * engine);
 
     protected:
-        ContHandle getCont(ScamExpr * sym) const override;
+        Continuation * getCont(ScamExpr * sym) const override;
     };
 
     class EnvHelperCont : public Continuation
     {
     public:
         EnvHelperCont(ScamExpr * sym,
-                      ContHandle cont,
+                      Continuation * cont,
                       Env env,
                       char const * name)
             : Continuation(name)
@@ -174,6 +174,15 @@ namespace
             , env(env)
             , cont(cont)
         {
+        }
+
+        void mark() const override
+        {
+            if ( ! isMarked() ) {
+                Continuation::mark();
+                sym->mark();
+                cont->mark();
+            }
         }
 
         void run(ScamExpr * expr) override
@@ -189,7 +198,7 @@ namespace
         virtual void finish(ScamExpr * expr) const = 0;
 
     private:
-        ContHandle cont;
+        Continuation * cont;
     };
 
     class AssignBacktracker : public Backtracker
@@ -223,14 +232,24 @@ namespace
 
     class AssignCont : public EnvHelperCont
     {
-    public:
+    private:
+        friend class scam::MemoryManager;
+
         AssignCont(ScamExpr * sym,
-                   ContHandle cont,
+                   Continuation * cont,
                    Env env,
                    ScamEngine * engine)
             : EnvHelperCont(sym, cont, env, "Assign")
             , engine(engine)
         {
+        }
+
+        static AssignCont * makeInstance(ScamExpr * sym,
+                                         Continuation * cont,
+                                         Env env,
+                                         ScamEngine * engine)
+        {
+            return new AssignCont(sym, cont, env, engine);
         }
 
     protected:
@@ -289,14 +308,24 @@ namespace
 
     class DefineCont : public EnvHelperCont
     {
-    public:
+    private:
+        friend class scam::MemoryManager;
+
         DefineCont(ScamExpr * sym,
-                   ContHandle cont,
+                   Continuation * cont,
                    Env env,
                    ScamEngine * engine)
             : EnvHelperCont(sym, cont, env, "Define")
             , engine(engine)
         {
+        }
+
+        static DefineCont * makeInstance(ScamExpr * sym,
+                                         Continuation * cont,
+                                         Env env,
+                                         ScamEngine * engine)
+        {
+            return new DefineCont(sym, cont, env, engine);
         }
 
     protected:
@@ -324,10 +353,18 @@ namespace
 
     class UndefineCont : public EnvHelperCont
     {
-    public:
-        UndefineCont(ScamExpr * sym, ContHandle cont, Env env)
+    private:
+        friend class scam::MemoryManager;
+
+        UndefineCont(ScamExpr * sym, Continuation * cont, Env env)
             : EnvHelperCont(sym, cont, env, "Undefine")
         {
+        }
+
+        static UndefineCont *
+        makeInstance(ScamExpr * sym, Continuation * cont, Env env)
+        {
+            return new UndefineCont(sym, cont, env);
         }
 
     protected:
@@ -338,7 +375,7 @@ namespace
     };
 
     EnvHelperWorker::EnvHelperWorker(ScamExpr * args,
-                                     ContHandle cont,
+                                     Continuation * cont,
                                      Env env,
                                      char const * name)
         : Worker(name)
@@ -353,7 +390,7 @@ namespace
         Worker::run();
 
         ScamExpr * sym = args->getCar();
-        ContHandle c = getCont(sym);
+        Continuation * c = getCont(sym);
         if ( args->length() > 1 ) {
             ScamExpr * expr = args->nthcar(1);
             expr->eval(c, env);
@@ -365,7 +402,7 @@ namespace
     }
 
     AssignWorker::AssignWorker(ScamExpr * args,
-                               ContHandle cont,
+                               Continuation * cont,
                                Env env,
                                ScamEngine * engine)
         : EnvHelperWorker(args, cont, env, "Assign")
@@ -373,13 +410,13 @@ namespace
     {
     }
 
-    ContHandle AssignWorker::getCont(ScamExpr * sym) const
+    Continuation * AssignWorker::getCont(ScamExpr * sym) const
     {
-        return make_shared<AssignCont>(sym, cont, env, engine);
+        return standardMemoryManager.make<AssignCont>(sym, cont, env, engine);
     }
 
     DefineWorker::DefineWorker(ScamExpr * args,
-                               ContHandle cont,
+                               Continuation * cont,
                                Env env,
                                ScamEngine * engine)
         : EnvHelperWorker(args, cont, env, "Define")
@@ -387,26 +424,26 @@ namespace
     {
     }
 
-    ContHandle DefineWorker::getCont(ScamExpr * sym) const
+    Continuation * DefineWorker::getCont(ScamExpr * sym) const
     {
-        return make_shared<DefineCont>(sym, cont, env, engine);
+        return standardMemoryManager.make<DefineCont>(sym, cont, env, engine);
     }
 
     UndefineWorker::UndefineWorker(ScamExpr * args,
-                                   ContHandle cont,
+                                   Continuation * cont,
                                    Env env,
                                    ScamEngine * engine)
         : EnvHelperWorker(args, cont, env, "Undefine")
     {
     }
 
-    ContHandle UndefineWorker::getCont(ScamExpr * sym) const
+    Continuation * UndefineWorker::getCont(ScamExpr * sym) const
     {
-        return make_shared<UndefineCont>(sym, cont, env);
+        return standardMemoryManager.make<UndefineCont>(sym, cont, env);
     }
 
     void apply_assign(ScamExpr * args,
-                      ContHandle cont,
+                      Continuation * cont,
                       Env env,
                       ScamEngine * engine)
     {
@@ -416,7 +453,7 @@ namespace
     }
 
     void apply_define(ScamExpr * args,
-                      ContHandle cont,
+                      Continuation * cont,
                       Env env,
                       ScamEngine * engine)
     {
@@ -426,7 +463,7 @@ namespace
     }
 
     void apply_undefine(ScamExpr * args,
-                        ContHandle cont,
+                        Continuation * cont,
                         Env env,
                         ScamEngine * engine)
     {

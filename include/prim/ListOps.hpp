@@ -12,7 +12,7 @@ namespace scam
 
     public:
         static List * makeInstance();
-        void applyArgs(ScamExpr * args, ContHandle cont) override;
+        void applyArgs(ScamExpr * args, Continuation * cont) override;
     };
 
     class Cons : public Primitive
@@ -22,7 +22,7 @@ namespace scam
 
     public:
         static Cons * makeInstance();
-        void applyArgs(ScamExpr * args, ContHandle cont) override;
+        void applyArgs(ScamExpr * args, Continuation * cont) override;
     };
 
     class CarCdr : public Primitive
@@ -30,10 +30,10 @@ namespace scam
     public:
         CarCdr(char const * name);
 
-        void applyArgs(ScamExpr * args, ContHandle cont) override;
+        void applyArgs(ScamExpr * args, Continuation * cont) override;
 
     protected:
-        virtual void finish(ScamExpr * args, ContHandle cont) = 0;
+        virtual void finish(ScamExpr * args, Continuation * cont) = 0;
     };
 
     class Car : public CarCdr
@@ -45,7 +45,7 @@ namespace scam
         static Car * makeInstance();
 
     protected:
-        void finish(ScamExpr * args, ContHandle cont) override;
+        void finish(ScamExpr * args, Continuation * cont) override;
     };
 
     class Cdr : public CarCdr
@@ -57,7 +57,7 @@ namespace scam
         static Cdr * makeInstance();
 
     protected:
-        void finish(ScamExpr * args, ContHandle cont) override;
+        void finish(ScamExpr * args, Continuation * cont) override;
     };
 }
 

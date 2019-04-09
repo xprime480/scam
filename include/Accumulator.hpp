@@ -12,12 +12,19 @@ namespace scam
 {
     class Accumulator : public Continuation
     {
-    public:
+    private:
+        friend class MemoryManager;
         Accumulator()
             : Continuation("Accumulator")
         {
         }
 
+        static Accumulator * makeInstance()
+        {
+            return new Accumulator();
+        }
+
+    public:
         void run(ScamExpr * expr) override
         {
             Continuation::run(expr);

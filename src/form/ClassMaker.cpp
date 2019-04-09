@@ -11,7 +11,7 @@ using namespace std;
 
 namespace
 {
-    extern void do_apply(ScamExpr * args, ContHandle cont, Env env);
+    extern void do_apply(ScamExpr * args, Continuation * cont, Env env);
 }
 
 ClassMaker::ClassMaker()
@@ -25,14 +25,14 @@ ClassMaker * ClassMaker::makeInstance()
     return &instance;
 }
 
-void ClassMaker::apply(ScamExpr * args, ContHandle cont, Env env)
+void ClassMaker::apply(ScamExpr * args, Continuation * cont, Env env)
 {
     do_apply(args, cont, env);
 }
 
 namespace
 {
-    bool validate_args(ScamExpr * args, ContHandle cont)
+    bool validate_args(ScamExpr * args, Continuation * cont)
     {
         if ( args->length() < 2 ) {
             stringstream s;
@@ -55,7 +55,7 @@ namespace
         return true;
     }
 
-    void do_apply(ScamExpr * args, ContHandle cont, Env env)
+    void do_apply(ScamExpr * args, Continuation * cont, Env env)
     {
         if ( ! validate_args(args, cont) ) {
             return;

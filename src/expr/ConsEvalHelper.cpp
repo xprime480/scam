@@ -6,6 +6,7 @@
 #include "WorkQueue.hpp"
 #include "Worker.hpp"
 #include "expr/ScamExpr.hpp"
+#include "util/MemoryManager.hpp"
 
 using namespace scam;
 using namespace scam::cons_impl;
@@ -18,7 +19,7 @@ namespace scam
         class  ConsWorker : public Worker
         {
         public:
-            ConsWorker(ContHandle cont,
+            ConsWorker(Continuation * cont,
                        Env env,
                        ScamExpr * car,
                        ScamExpr * cdr);
@@ -36,7 +37,7 @@ namespace scam
     {
         void scamConsEvalHelper(ScamExpr * car,
                                 ScamExpr * cdr,
-                                ContHandle cont,
+                                Continuation * cont,
                                 Env env)
         {
             workQueueHelper<ConsWorker>(cont, env, car, cdr);
@@ -48,8 +49,13 @@ namespace
 {
     class EvalContinuation : public Continuation
     {
-    public:
+    private:
+        friend class scam::MemoryManager;
         EvalContinuation(WorkerData const & data);
+        static EvalContinuation * makeInstance(WorkerData const & data);
+
+    public:
+        void mark() const override;
 
         void run(ScamExpr * expr) override;
 
@@ -58,7 +64,7 @@ namespace
     };
 }
 
-ConsWorker::ConsWorker(ContHandle cont,
+ConsWorker::ConsWorker(Continuation * cont,
                        Env env,
                        ScamExpr * car,
                        ScamExpr * cdr)
@@ -66,7 +72,7 @@ ConsWorker::ConsWorker(ContHandle cont,
     : Worker("Cons Eval")
     , data(car, cdr, cont, env)
 {
-    data.cont = make_shared<EvalContinuation>(data);
+  data.cont = standardMemoryManager.make<EvalContinuation>(data);
 }
 
 ConsWorker::ConsWorker(WorkerData const & data)
@@ -85,6 +91,19 @@ EvalContinuation::EvalContinuation(WorkerData const & data)
     : Continuation("Cons Eval Eval")
     , data(data)
 {
+}
+
+EvalContinuation * EvalContinuation::makeInstance(WorkerData const & data)
+{
+    return new EvalContinuation(data);
+}
+
+void EvalContinuation::mark() const
+{
+    if ( ! isMarked() ) {
+        Continuation::mark();
+        data.mark();
+    }
 }
 
 void EvalContinuation::run(ScamExpr * expr)

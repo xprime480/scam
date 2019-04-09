@@ -12,7 +12,7 @@ namespace scam
 
     public:
         static VLen * makeInstance();
-        void applyArgs(ScamExpr * args, ContHandle cont) override;
+        void applyArgs(ScamExpr * args, Continuation * cont) override;
     };
 
     class VRef : public Primitive
@@ -22,7 +22,7 @@ namespace scam
 
     public:
         static VRef * makeInstance();
-        void applyArgs(ScamExpr * args, ContHandle cont) override;
+        void applyArgs(ScamExpr * args, Continuation * cont) override;
     };
 }
 

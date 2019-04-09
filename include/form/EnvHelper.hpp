@@ -23,7 +23,7 @@ namespace scam
 
     public:
         static Define * makeInstance(ScamEngine * engine);
-        void apply(ScamExpr * args, ContHandle cont, Env env) override;
+        void apply(ScamExpr * args, Continuation * cont, Env env) override;
     };
 
     class Undefine : public EnvHelper
@@ -33,7 +33,7 @@ namespace scam
 
     public:
         static Undefine * makeInstance(ScamEngine * engine);
-        void apply(ScamExpr * args, ContHandle cont, Env env) override;
+        void apply(ScamExpr * args, Continuation * cont, Env env) override;
     };
 
     class Assign : public EnvHelper
@@ -43,7 +43,7 @@ namespace scam
 
     public:
         static Assign * makeInstance(ScamEngine * engine);
-        void apply(ScamExpr * args, ContHandle cont, Env env) override;
+        void apply(ScamExpr * args, Continuation * cont, Env env) override;
     };
 }
 

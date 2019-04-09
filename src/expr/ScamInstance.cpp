@@ -19,7 +19,7 @@ namespace
     static ScamExpr * const nil    = ExpressionFactory::makeNil();
 
     extern void
-    do_apply(ScamExpr * obj, ScamExpr * args, ContHandle cont, Env env);
+    do_apply(ScamExpr * obj, ScamExpr * args, Continuation * cont, Env env);
 }
 
 ScamInstance::ScamInstance(ScamExpr * vars, ScamExpr * funs, Env env)
@@ -61,7 +61,7 @@ bool ScamInstance::hasApply() const
     return true;
 }
 
-void ScamInstance::apply(ScamExpr * args, ContHandle cont, Env env)
+void ScamInstance::apply(ScamExpr * args, Continuation * cont, Env env)
 {
     do_apply(this, args, cont, env);
 }
@@ -90,13 +90,31 @@ namespace
 {
     class InstanceCont : public Continuation
     {
-    public:
-        InstanceCont(ScamExpr * obj, ScamExpr * name, ContHandle cont)
+    private:
+        friend class scam::MemoryManager;
+        InstanceCont(ScamExpr * obj, ScamExpr * name, Continuation * cont)
             : Continuation("InstanceCont")
             , obj(obj)
             , name(name)
             , cont(cont)
         {
+        }
+
+        static InstanceCont *
+        makeInstance(ScamExpr * obj, ScamExpr * name, Continuation * cont)
+        {
+            return new InstanceCont(obj, name, cont);
+        }
+
+    public:
+        void mark() const override
+        {
+            if ( ! isMarked() ) {
+                Continuation::mark();
+                obj->mark();
+                name->mark();
+                cont->mark();
+            }
         }
 
         void run(ScamExpr * expr) override
@@ -121,7 +139,7 @@ namespace
     private:
         ScamExpr * obj;
         ScamExpr * name;
-        ContHandle cont;
+        Continuation * cont;
 
         ScamExpr * find_func(ScamExpr * o) const
         {
@@ -151,13 +169,13 @@ namespace
         }
     };
 
-    void do_apply(ScamExpr * obj, ScamExpr * args, ContHandle cont, Env env)
+    void do_apply(ScamExpr * obj, ScamExpr * args, Continuation * cont, Env env)
     {
         ScamExpr * name = args->nthcar(0);
         ScamExpr * funargs = args->nthcdr(0);
 
-        ContHandle newCont = make_shared<InstanceCont>(obj, name, cont);
+        Continuation * newCont =
+            standardMemoryManager.make<InstanceCont>(obj, name, cont);
         funargs->mapEval(newCont, env);
     }
-
 }

@@ -19,8 +19,14 @@ namespace
 {
     class HistoryCont : public Continuation
     {
-    public:
+    private:
+        friend class scam::MemoryManager;
         HistoryCont(size_t size);
+
+        static HistoryCont * makeInstance(size_t size);
+
+    public:
+        void mark() const override;
 
         void setCont(Continuation * c);
 
@@ -43,7 +49,7 @@ ScamEngine::ScamEngine()
 
 void ScamEngine::reset(bool initEnv)
 {
-    cont = make_shared<HistoryCont>(1);
+    cont = standardMemoryManager.make<HistoryCont>(1);
 
     loaded.clear();
 
@@ -103,17 +109,17 @@ void ScamEngine::popInput()
     }
 }
 
-void ScamEngine::setCont(ContHandle c)
+void ScamEngine::setCont(Continuation * c)
 {
-    HistoryCont * hc = dynamic_cast<HistoryCont *>(cont.get());
+    HistoryCont * hc = dynamic_cast<HistoryCont *>(cont);
     if ( hc ) {
-        hc->setCont(c.get());
+        hc->setCont(c);
     }
 }
 
 ScamExpr * ScamEngine::parseCurrentInput()
 {
-    HistoryCont const * hc = dynamic_cast<HistoryCont const *>(cont.get());
+    HistoryCont const * hc = dynamic_cast<HistoryCont const *>(cont);
     size_t const mark = hc ? hc->current() : 0;
 
     while ( true ) {
@@ -147,7 +153,7 @@ ScamExpr * ScamEngine::eval(ScamExpr * expr)
 
     Trampoline(GlobalWorkQueue);
 
-    HistoryCont const * hc = dynamic_cast<HistoryCont const *>(cont.get());
+    HistoryCont const * hc = dynamic_cast<HistoryCont const *>(cont);
     ScamExpr * rv = hc->get();
     return rv;
 }
@@ -156,7 +162,7 @@ ScamExpr * ScamEngine::apply(ScamExpr * expr, ScamExpr * args)
 {
     expr->apply(args, cont, env);
     Trampoline(GlobalWorkQueue);
-    HistoryCont const * hc = dynamic_cast<HistoryCont const *>(cont.get());
+    HistoryCont const * hc = dynamic_cast<HistoryCont const *>(cont);
     return hc->get();
 }
 
@@ -190,6 +196,24 @@ namespace
         , cont(standardMemoryManager.make<Continuation>("Default"))
         , serial(0u)
     {
+    }
+
+    HistoryCont * HistoryCont::makeInstance(size_t size)
+    {
+        return new HistoryCont(size);
+    }
+
+    void HistoryCont::mark() const
+    {
+        if ( ! isMarked() ) {
+            Continuation::mark();
+            if ( cont ) {
+                cont->mark();
+            }
+            for ( auto h : history ) {
+                h->mark();
+            }
+        }
     }
 
     void HistoryCont::setCont(Continuation * c)

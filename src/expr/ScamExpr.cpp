@@ -16,7 +16,7 @@ ScamExpr::ScamExpr(bool managed)
 {
 }
 
-void ScamExpr::eval(ContHandle cont, Env env)
+void ScamExpr::eval(Continuation * cont, Env env)
 {
     cont->run(this);
 }
@@ -26,7 +26,7 @@ bool ScamExpr::hasApply() const
     return false;
 }
 
-void ScamExpr::apply(ScamExpr * args, ContHandle cont, Env env)
+void ScamExpr::apply(ScamExpr * args, Continuation * cont, Env env)
 {
     stringstream s;
     s << "Not possible to apply <" << this->toString()
@@ -35,7 +35,7 @@ void ScamExpr::apply(ScamExpr * args, ContHandle cont, Env env)
     cont->run(err);
 }
 
-void ScamExpr::mapEval(ContHandle cont, Env env)
+void ScamExpr::mapEval(Continuation * cont, Env env)
 {
     cont->run(this);
 }

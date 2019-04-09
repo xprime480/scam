@@ -16,8 +16,8 @@ namespace scam
         void mark() const override;
 
         std::string toString() const override;
-        void eval(ContHandle cont, Env env) override;
-        void mapEval(ContHandle cont, Env env) override;
+        void eval(Continuation * cont, Env env) override;
+        void mapEval(Continuation * cont, Env env) override;
 
         bool isCons() const override;
         bool isList() const override;

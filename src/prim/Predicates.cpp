@@ -17,7 +17,7 @@ namespace
     extern void apply_predicate(const char * name,
                                 ExprPredicate pred,
                                 ScamExpr * args,
-                                ContHandle cont);
+                                Continuation * cont);
 }
 
 #if defined(DEFINE_PREDICATE)
@@ -30,7 +30,7 @@ cls * cls::makeInstance() \
 { \
     return new cls(); \
 } \
-void cls::applyArgs(ScamExpr * args, ContHandle cont) \
+void cls::applyArgs(ScamExpr * args, Continuation * cont) \
 { \
     apply_predicate(label, pred, args, cont); \
 } \
@@ -65,7 +65,7 @@ namespace
     void apply_predicate(const char * name,
                          ExprPredicate pred,
                          ScamExpr * args,
-                         ContHandle cont)
+                         Continuation * cont)
     {
         ScamExpr * rv;
         if ( 1 == args->length() ) {

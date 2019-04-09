@@ -20,7 +20,7 @@ VLen * VLen::makeInstance()
     return new VLen();
 }
 
-void VLen::applyArgs(ScamExpr * args, ContHandle cont)
+void VLen::applyArgs(ScamExpr * args, Continuation * cont)
 {
     ScamExpr * rv;
 
@@ -53,7 +53,7 @@ VRef * VRef::makeInstance()
     return new VRef();
 }
 
-void VRef::applyArgs(ScamExpr * args, ContHandle cont)
+void VRef::applyArgs(ScamExpr * args, Continuation * cont)
 {
     ScamExpr * rv;
 

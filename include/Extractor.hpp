@@ -13,11 +13,26 @@ namespace scam
 {
     class Extractor : public Continuation
     {
-    public:
+    private:
+        friend class MemoryManager;
         Extractor()
             : Continuation("Extractor")
             , e(ExpressionFactory::makeNull())
         {
+        }
+
+        static Extractor * makeInstance()
+        {
+            return new Extractor();
+        }
+
+    public:
+        void mark() const override
+        {
+            if ( ! isMarked() ) {
+                Continuation::mark();
+                e->mark();
+            }
         }
 
         void run(ScamExpr * expr) override

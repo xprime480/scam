@@ -13,9 +13,9 @@ namespace scam
         std::string toString() const override;
 
         bool hasApply() const override;
-        void apply(ScamExpr * args, ContHandle cont, Env env) override;
+        void apply(ScamExpr * args, Continuation * cont, Env env) override;
 
-        virtual void applyArgs(ScamExpr * args, ContHandle cont) = 0;
+        virtual void applyArgs(ScamExpr * args, Continuation * cont) = 0;
 
     protected:
         std::string const name;

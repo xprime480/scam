@@ -3,6 +3,7 @@
 
 #include "Continuation.hpp"
 #include "expr/ScamExpr.hpp"
+#include "util/MemoryManager.hpp"
 
 using namespace scam;
 using namespace std;
@@ -11,11 +12,26 @@ namespace
 {
     class EvalCont : public Continuation
     {
-    public:
-        EvalCont(ContHandle cont)
+    private:
+        friend class scam::MemoryManager;
+        EvalCont(Continuation * cont)
             : Continuation("eval")
             , cont(cont)
         {
+        }
+
+        static EvalCont * makeInstance(Continuation * cont)
+        {
+            return new EvalCont(cont);
+        }
+
+    public:
+        void mark() const override
+        {
+            if ( ! isMarked() ) {
+                Continuation::mark();
+                cont->mark();
+            }
         }
 
         void run(ScamExpr * expr) override
@@ -31,12 +47,11 @@ namespace
         }
 
     private:
-        ContHandle cont;
+        Continuation * cont;
     };
 }
 
-
-EvalWorker::EvalWorker(ScamExpr * forms, Env extended, ContHandle cont)
+EvalWorker::EvalWorker(ScamExpr * forms, Env extended, Continuation * cont)
     : Worker("eval")
     , forms(forms)
     , extended(extended)
@@ -48,6 +63,6 @@ void EvalWorker::run()
 {
     Worker::run();
 
-    ContHandle newCont = make_shared<EvalCont>(cont);
+    EvalCont * newCont = standardMemoryManager.make<EvalCont>(cont);
     forms->mapEval(newCont, extended);
 }

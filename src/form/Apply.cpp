@@ -13,7 +13,7 @@ using namespace std;
 
 namespace
 {
-    extern void do_apply(ScamExpr * args, ContHandle cont, Env env);
+    extern void do_apply(ScamExpr * args, Continuation * cont, Env env);
 }
 
 Apply::Apply()
@@ -27,7 +27,7 @@ Apply * Apply::makeInstance()
     return &instance;
 }
 
-void Apply::apply(ScamExpr * args, ContHandle cont, Env env)
+void Apply::apply(ScamExpr * args, Continuation * cont, Env env)
 {
     do_apply(args, cont, env);
 }
@@ -36,13 +36,31 @@ namespace
 {
     class ApplyArgsCont : public Continuation
     {
-    public:
-        ApplyArgsCont(ScamExpr * op, ContHandle cont, Env env)
+    private:
+        friend class scam::MemoryManager;
+
+        ApplyArgsCont(ScamExpr * op, Continuation * cont, Env env)
             : Continuation("apply args")
             , op(op)
             , cont(cont)
             , env(env)
         {
+        }
+
+        static ApplyArgsCont *
+        makeInstance(ScamExpr * op, Continuation * cont, Env env)
+        {
+            return new ApplyArgsCont(op, cont, env);
+        }
+
+    public:
+        void mark() const override
+        {
+            if ( ! isMarked() ) {
+                Continuation::mark();
+                op->mark();
+                cont->mark();
+            }
         }
 
         void run(ScamExpr * expr) override
@@ -59,7 +77,7 @@ namespace
 
     private:
         ScamExpr * op;
-        ContHandle cont;
+        Continuation * cont;
         Env env;
     };
 
@@ -68,7 +86,7 @@ namespace
     public:
         ApplyArgsWorker(ScamExpr * op,
                         ScamExpr * args,
-                        ContHandle cont,
+                        Continuation * cont,
                         Env env)
             : Worker("Apply Args")
             , op(op)
@@ -80,26 +98,45 @@ namespace
 
         void run() override
         {
-            ContHandle newCont = make_shared<ApplyArgsCont>(op, cont, env);
+            Continuation * newCont =
+                standardMemoryManager.make<ApplyArgsCont>(op, cont, env);
             args->eval(newCont, env);
         }
 
     private:
         ScamExpr * op;
         ScamExpr * args;
-        ContHandle cont;
+        Continuation * cont;
         Env        env;
     };
 
     class ApplyOpCont : public Continuation
     {
-    public:
-        ApplyOpCont(ScamExpr * args, ContHandle cont, Env env)
+    private:
+        friend class scam::MemoryManager;
+
+        ApplyOpCont(ScamExpr * args, Continuation * cont, Env env)
             : Continuation("apply")
             , args(args)
             , cont(cont)
             , env(env)
         {
+        }
+
+        static ApplyOpCont *
+        makeInstance(ScamExpr * args, Continuation * cont, Env env)
+        {
+            return new ApplyOpCont(args, cont, env);
+        }
+
+    public:
+        void mark() const override
+        {
+            if ( ! isMarked() ) {
+                Continuation::mark();
+                args->mark();
+                cont->mark();
+            }
         }
 
         void run(ScamExpr * expr) override
@@ -116,15 +153,16 @@ namespace
 
     private:
         ScamExpr * args;
-        ContHandle cont;
+        Continuation * cont;
         Env env;
     };
 
-    void do_apply(ScamExpr * args, ContHandle cont, Env env)
+    void do_apply(ScamExpr * args, Continuation * cont, Env env)
     {
         ScamExpr * sym     = args->nthcar(0);
         ScamExpr * arglist = args->nthcar(1);
-        ContHandle newCont = make_shared<ApplyOpCont>(arglist, cont, env);
+        Continuation * newCont =
+            standardMemoryManager.make<ApplyOpCont>(arglist, cont, env);
 
         sym->eval(newCont, env);
     }
