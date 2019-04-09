@@ -1,7 +1,7 @@
 
 #include "Env.hpp"
 
-#include "ExpressionTestBase.hpp"
+#include "TestBase.hpp"
 #include "ScamException.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamExpr.hpp"
@@ -13,7 +13,7 @@
 using namespace std;
 using namespace scam;
 
-class EnvTest : public ExpressionTestBase
+class EnvTest : public TestBase
 {
 protected:
     ScamExpr * key;
@@ -27,7 +27,7 @@ protected:
 
     void SetUp() override
     {
-        ExpressionTestBase::SetUp();
+        TestBase::SetUp();
         reset(false);
     }
 

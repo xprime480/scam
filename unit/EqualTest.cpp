@@ -1,10 +1,10 @@
 
-#include "ExpressionTestBase.hpp"
+#include "TestBase.hpp"
 
 using namespace std;
 using namespace scam;
 
-class EqualTest : public ExpressionTestBase
+class EqualTest : public TestBase
 {
 };
 

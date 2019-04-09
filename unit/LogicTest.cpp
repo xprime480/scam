@@ -1,5 +1,5 @@
 
-#include "ExpressionTestBase.hpp"
+#include "TestBase.hpp"
 
 #include "ScamException.hpp"
 #include "input/ScamParser.hpp"
@@ -11,7 +11,7 @@
 using namespace std;
 using namespace scam;
 
-class LogicTest : public ExpressionTestBase
+class LogicTest : public TestBase
 {
 };
 

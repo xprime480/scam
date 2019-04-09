@@ -6,7 +6,7 @@
 #include "ScamException.hpp"
 #include <iostream>
 
-#include "ExpressionTestBase.hpp"
+#include "TestBase.hpp"
 
 using namespace std;
 using namespace scam;
@@ -16,7 +16,7 @@ using namespace scam;
  *
  * basic test class for memory tests
  */
-class MemoryTest : public ExpressionTestBase
+class MemoryTest : public TestBase
 {
 
 protected:
@@ -26,7 +26,7 @@ protected:
 
     void SetUp() override
     {
-        ExpressionTestBase::SetUp();
+        TestBase::SetUp();
         mm.reset();
         mm.setSize(2u);
     }

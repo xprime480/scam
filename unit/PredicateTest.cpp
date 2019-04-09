@@ -1,12 +1,12 @@
 
-#include "ExpressionTestBase.hpp"
+#include "TestBase.hpp"
 
 #include <sstream>
 
 using namespace std;
 using namespace scam;
 
-class PredicateTest : public ExpressionTestBase
+class PredicateTest : public TestBase
 {
 };
 

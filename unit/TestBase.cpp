@@ -1,5 +1,5 @@
 
-#include "ExpressionTestBase.hpp"
+#include "TestBase.hpp"
 
 #include "ScamEngine.hpp"
 #include "ScamException.hpp"
@@ -47,16 +47,16 @@ namespace
     static const unsigned long ALL_DICT       = SELECT_DICT | SELECT_APPLY | SELECT_MANAGED;
 }
 
-ExpressionTestBase::ExpressionTestBase()
+TestBase::TestBase()
     : mm(standardMemoryManager)
 {
 }
 
-ExpressionTestBase::~ExpressionTestBase()
+TestBase::~TestBase()
 {
 }
 
-void ExpressionTestBase::SetUp()
+void TestBase::SetUp()
 {
     mm.reset();
     engine.reset(true);
@@ -66,22 +66,22 @@ void ExpressionTestBase::SetUp()
     expectInteger(result, 1, "1");
 }
 
-void ExpressionTestBase::TearDown()
+void TestBase::TearDown()
 {
     engine.reset(false);
 }
 
-ScamExpr * ExpressionTestBase::evaluate(ScamExpr * input)
+ScamExpr * TestBase::evaluate(ScamExpr * input)
 {
     return engine.eval(input);
 }
 
-ScamExpr * ExpressionTestBase::apply(ScamExpr * expr, ScamExpr * args)
+ScamExpr * TestBase::apply(ScamExpr * expr, ScamExpr * args)
 {
     return engine.apply(expr, args);
 }
 
-ScamExpr * ExpressionTestBase::parseAndEvaluate(string const & input)
+ScamExpr * TestBase::parseAndEvaluate(string const & input)
 {
     try {
         EvalString helper(&engine, input);
@@ -97,7 +97,7 @@ ScamExpr * ExpressionTestBase::parseAndEvaluate(string const & input)
     }
 }
 
-ScamExpr * ExpressionTestBase::parseAndEvaluateFile(char const * filename)
+ScamExpr * TestBase::parseAndEvaluateFile(char const * filename)
 {
     stringstream s;
     s << "(load \"" << filename << "\")";
@@ -162,7 +162,7 @@ string decodePredicate(unsigned exp, unsigned act)
     return s.str();
 }
 
-void ExpressionTestBase::checkPredicates(ScamExpr * expr, unsigned exp)
+void TestBase::checkPredicates(ScamExpr * expr, unsigned exp)
 {
     ASSERT_NE(nullptr, expr);
     unsigned act { 0 };
@@ -206,7 +206,7 @@ void expectNonNumeric(ScamExpr * expr)
     EXPECT_THROW(expr->toInteger(), ScamException) << "got "  << expr->toInteger();
 }
 
-void ExpressionTestBase::expectNull(ScamExpr * expr)
+void TestBase::expectNull(ScamExpr * expr)
 {
     checkPredicates(expr, SELECT_NULL);
     EXPECT_EQ("null", expr->toString());
@@ -214,7 +214,7 @@ void ExpressionTestBase::expectNull(ScamExpr * expr)
     expectNonNumeric(expr);
 }
 
-void ExpressionTestBase::expectError(ScamExpr * expr,
+void TestBase::expectError(ScamExpr * expr,
                                      string const msg,
                                      bool managed)
 {
@@ -228,7 +228,7 @@ void ExpressionTestBase::expectError(ScamExpr * expr,
     expectNonNumeric(expr);
 }
 
-void ExpressionTestBase::expectBoolean(ScamExpr * expr,
+void TestBase::expectBoolean(ScamExpr * expr,
                                        bool value,
                                        string const & repr)
 {
@@ -238,19 +238,19 @@ void ExpressionTestBase::expectBoolean(ScamExpr * expr,
     expectNonNumeric(expr);
 }
 
-void ExpressionTestBase::expectTrue(string const & input)
+void TestBase::expectTrue(string const & input)
 {
     ScamExpr * expr = parseAndEvaluate(input);
     expectBoolean(expr, true, "#t");
 }
 
-void ExpressionTestBase::expectFalse(string const & input)
+void TestBase::expectFalse(string const & input)
 {
     ScamExpr * expr = parseAndEvaluate(input);
     expectBoolean(expr, false, "#f");
 }
 
-void ExpressionTestBase::booleanTest(ScamExpr * expr,
+void TestBase::booleanTest(ScamExpr * expr,
                                      bool value,
                                      string const & repr)
 {
@@ -259,7 +259,7 @@ void ExpressionTestBase::booleanTest(ScamExpr * expr,
     expectBoolean(evaled, value, repr);
 }
 
-void ExpressionTestBase::expectFloat(ScamExpr * expr,
+void TestBase::expectFloat(ScamExpr * expr,
                                      double value,
                                      string const & repr)
 {
@@ -276,7 +276,7 @@ void ExpressionTestBase::expectFloat(ScamExpr * expr,
     EXPECT_THROW(expr->toInteger(), ScamException);
 }
 
-void ExpressionTestBase::expectInteger(ScamExpr * expr,
+void TestBase::expectInteger(ScamExpr * expr,
                                        int value,
                                        string const & repr)
 {
@@ -292,7 +292,7 @@ void ExpressionTestBase::expectInteger(ScamExpr * expr,
 }
 
 void
-ExpressionTestBase::expectChar(ScamExpr * expr, char value, string const & repr)
+TestBase::expectChar(ScamExpr * expr, char value, string const & repr)
 {
     checkPredicates(expr, SELECT_TRUTH | SELECT_CHAR | SELECT_MANAGED);
     EXPECT_EQ(repr, expr->toString());
@@ -300,32 +300,32 @@ ExpressionTestBase::expectChar(ScamExpr * expr, char value, string const & repr)
 }
 
 
-void ExpressionTestBase::expectString(ScamExpr * expr, string const & value)
+void TestBase::expectString(ScamExpr * expr, string const & value)
 {
     checkPredicates(expr, SELECT_TRUTH | SELECT_STRING | SELECT_MANAGED);
     EXPECT_EQ(value, expr->toString());
 }
 
-void ExpressionTestBase::expectSymbol(ScamExpr * expr, string const & name)
+void TestBase::expectSymbol(ScamExpr * expr, string const & name)
 {
     checkPredicates(expr, SELECT_TRUTH | SELECT_SYMBOL | SELECT_MANAGED);
     EXPECT_EQ(name, expr->toString());
 }
 
-void ExpressionTestBase::expectKeyword(ScamExpr * expr, string const & name)
+void TestBase::expectKeyword(ScamExpr * expr, string const & name)
 {
     checkPredicates(expr, SELECT_TRUTH | SELECT_KEYWORD | SELECT_MANAGED);
     EXPECT_EQ(name, expr->toString());
 }
 
-void ExpressionTestBase::expectNil(ScamExpr * expr)
+void TestBase::expectNil(ScamExpr * expr)
 {
     static const string repr { "()" };
     checkPredicates(expr, SELECT_TRUTH | ALL_NIL);
     EXPECT_EQ(repr, expr->toString());
 }
 
-void ExpressionTestBase::expectList(ScamExpr * expr,
+void TestBase::expectList(ScamExpr * expr,
                                     string const & repr,
                                     size_t len)
 {
@@ -342,20 +342,20 @@ void ExpressionTestBase::expectList(ScamExpr * expr,
     }
 }
 
-void ExpressionTestBase::expectCons(ScamExpr * expr, string const & repr)
+void TestBase::expectCons(ScamExpr * expr, string const & repr)
 {
     checkPredicates(expr, SELECT_TRUTH | SELECT_CONS | SELECT_MANAGED);
     EXPECT_EQ(repr, expr->toString());
 }
 
-void ExpressionTestBase::expectApplicable(ScamExpr * expr, string const & repr)
+void TestBase::expectApplicable(ScamExpr * expr, string const & repr)
 {
     const auto flags = SELECT_TRUTH | SELECT_APPLY;
     checkPredicates(expr, flags);
     EXPECT_EQ(repr, expr->toString());
 }
 
-void ExpressionTestBase::expectVector(ScamExpr * expr,
+void TestBase::expectVector(ScamExpr * expr,
                                       string const & repr,
                                       size_t len)
 {
@@ -364,26 +364,26 @@ void ExpressionTestBase::expectVector(ScamExpr * expr,
     EXPECT_EQ(len, expr->length());
 }
 
-void ExpressionTestBase::expectProcedure(ScamExpr * expr, string const & repr)
+void TestBase::expectProcedure(ScamExpr * expr, string const & repr)
 {
     checkPredicates(expr, SELECT_TRUTH | ALL_PROC);
     EXPECT_EQ(repr, expr->toString());
 }
 
-void ExpressionTestBase::expectClass(ScamExpr * expr)
+void TestBase::expectClass(ScamExpr * expr)
 {
     checkPredicates(expr, SELECT_TRUTH | ALL_CLASS);
     EXPECT_EQ("class", expr->toString());
 }
 
-void ExpressionTestBase::expectInstance(ScamExpr * expr)
+void TestBase::expectInstance(ScamExpr * expr)
 {
     checkPredicates(expr, SELECT_TRUTH | ALL_INSTANCE);
     EXPECT_EQ("instance", expr->toString());
 }
 
 void
-ExpressionTestBase::expectDict(ScamExpr * expr, int count, string const & repr)
+TestBase::expectDict(ScamExpr * expr, int count, string const & repr)
 {
     checkPredicates(expr, SELECT_TRUTH | ALL_DICT);
     EXPECT_EQ(repr, expr->toString());

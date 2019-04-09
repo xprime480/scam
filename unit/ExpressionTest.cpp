@@ -1,5 +1,5 @@
 
-#include "ExpressionTestBase.hpp"
+#include "TestBase.hpp"
 
 #include "ScamException.hpp"
 #include "expr/ExpressionFactory.hpp"
@@ -8,7 +8,7 @@
 using namespace std;
 using namespace scam;
 
-class ExpressionTest : public ExpressionTestBase
+class ExpressionTest : public TestBase
 {
 };
 

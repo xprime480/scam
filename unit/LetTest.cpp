@@ -1,12 +1,12 @@
 
-#include "ExpressionTestBase.hpp"
+#include "TestBase.hpp"
 
 #include "ScamException.hpp"
 
 using namespace std;
 using namespace scam;
 
-class LetTest : public ExpressionTestBase
+class LetTest : public TestBase
               , public ::testing::WithParamInterface<const char *>
 {
 protected:

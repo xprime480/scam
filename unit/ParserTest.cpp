@@ -1,5 +1,5 @@
 
-#include "ExpressionTestBase.hpp"
+#include "TestBase.hpp"
 
 #include "Continuation.hpp"
 #include "Extractor.hpp"
@@ -45,7 +45,7 @@ namespace
     };
 }
 
-class ParserTest : public ExpressionTestBase
+class ParserTest : public TestBase
 {
 protected:
     ScamExpr * runTest(vector<Token> const & tokens)

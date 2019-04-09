@@ -1,3 +1,5 @@
+#if !defined(TESTBASE_H)
+#define TESTBASE_H 1
 
 #include "Extractor.hpp"
 #include "ScamEngine.hpp"
@@ -12,11 +14,11 @@ namespace scam
     class ScamParser;
     class Tokenizer;
 
-    class ExpressionTestBase : public ::testing::Test
+    class TestBase : public ::testing::Test
     {
     protected:
-        ExpressionTestBase();
-        virtual ~ExpressionTestBase();
+        TestBase();
+        virtual ~TestBase();
 
         void SetUp() override;
         void TearDown() override;
@@ -80,3 +82,5 @@ namespace scam
         void expectDict(ScamExpr * expr, int count, std::string const & repr);
     };
 }
+
+#endif

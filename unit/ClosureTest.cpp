@@ -1,12 +1,12 @@
 
-#include "ExpressionTestBase.hpp"
+#include "TestBase.hpp"
 
 #include "ScamException.hpp"
 
 using namespace std;
 using namespace scam;
 
-class ClosureTest : public ExpressionTestBase
+class ClosureTest : public TestBase
 {
 };
 
