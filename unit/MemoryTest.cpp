@@ -502,15 +502,9 @@ TEST_F(MemoryTest, TestScamInstance)
 
 TEST_F(MemoryTest, TestScamContinuation)
 {
-    ContHandle original  = make_shared<Continuation>("Test");
-    ScamContinuation * c = ExpressionFactory::makeContinuation(original);
+    Continuation     * original = mm.make<Continuation>("Test");
+    ScamContinuation * wrapper  = mm.make<ScamContinuation>(original);
 
-    c->mark();
-    expectMarked(true, c);
-
-    // uncomment the following after we make continuations part
-    // of managed memory.
-    // 'original' will be a raw pointer then.
-    //
-    // expectMarked(true, original);
+    wrapper->mark();
+    expectMarked(true, wrapper, original);
 }

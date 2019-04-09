@@ -14,16 +14,21 @@ namespace scam
     private:
         friend class MemoryManager;
         ScamContinuation(ContHandle cont);
+        ScamContinuation(Continuation * cont);
         static ScamContinuation * makeInstance(ContHandle cont);
+        static ScamContinuation * makeInstance(Continuation * cont);
 
     public:
+        void mark() const override;
+
         std::string toString() const override;
 
         bool hasApply() const override;
         void apply(ScamExpr * args, ContHandle cont, Env env) override;
 
     private:
-        ContHandle cont;
+        Continuation * cont;
+        ContHandle cOld;
     };
 }
 

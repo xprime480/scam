@@ -1,17 +1,28 @@
 #if ! defined(CONTINUATION_H)
 #define CONTINUATION_H
 
+#include "util/ManagedObject.hpp"
+
 #include <memory>
 #include <string>
 
 namespace scam
 {
     class ScamExpr;
+    class MemoryManager;
 
-    class Continuation
+    class Continuation : public ManagedObject
     {
-    public:
+    private:
+        friend class MemoryManager;
+
+    protected:
         Continuation(char const * name);
+
+    private:
+        static Continuation * makeInstance(char const * name);
+
+    public:
         virtual ~Continuation();
 
         virtual void run(ScamExpr * expr);

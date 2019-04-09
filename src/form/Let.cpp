@@ -391,8 +391,8 @@ namespace
     {
         Backtracker::run();
         env.remove(sym);
-        shared_ptr<Continuation> cont
-            = make_shared<Continuation>("Assign Backtrack");
+        Continuation * cont =
+            standardMemoryManager.make<Continuation>("Assign Backtrack");
         runParent(cont);
     }
 

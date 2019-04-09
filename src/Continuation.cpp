@@ -20,6 +20,11 @@ Continuation::Continuation(char const * id)
     //    cerr << "Creating continuation " << name << "\n";
 }
 
+Continuation * Continuation::makeInstance(char const * name)
+{
+    return new Continuation(name);
+}
+
 Continuation::~Continuation()
 {
     //    cerr << "Deleting continuation " << name << "\n";

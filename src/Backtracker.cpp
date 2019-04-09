@@ -80,6 +80,11 @@ BacktrackHandle Backtracker::getParent() const
 
 void Backtracker::runParent(ContHandle cont) const
 {
+    runParent(cont.get());
+}
+
+void Backtracker::runParent(Continuation * cont) const
+{
     if ( nullptr == parent.get() ) {
         cont->run(nomore);
     }

@@ -8,6 +8,7 @@
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamExpr.hpp"
 #include "input/ScamParser.hpp"
+#include "util/MemoryManager.hpp"
 
 #include <iostream>
 
@@ -21,7 +22,7 @@ namespace
     public:
         HistoryCont(size_t size);
 
-        void setCont(ContHandle c);
+        void setCont(Continuation * c);
 
         void run(ScamExpr * expr) override;
 
@@ -31,7 +32,7 @@ namespace
     private:
         size_t size;
         vector<ScamExpr *> history;
-        ContHandle cont;
+        Continuation * cont;
         size_t serial;
     };
 }
@@ -106,7 +107,7 @@ void ScamEngine::setCont(ContHandle c)
 {
     HistoryCont * hc = dynamic_cast<HistoryCont *>(cont.get());
     if ( hc ) {
-        hc->setCont(c);
+        hc->setCont(c.get());
     }
 }
 
@@ -186,12 +187,12 @@ namespace
     HistoryCont::HistoryCont(size_t size)
         : Continuation("History")
         , size(size)
-        , cont(make_shared<Continuation>("Default"))
+        , cont(standardMemoryManager.make<Continuation>("Default"))
         , serial(0u)
     {
     }
 
-    void HistoryCont::setCont(ContHandle c)
+    void HistoryCont::setCont(Continuation * c)
     {
         cont = c;
     }

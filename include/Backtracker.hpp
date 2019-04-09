@@ -26,6 +26,7 @@ namespace scam
 
     protected:
         void runParent(ContHandle cont) const;
+        void runParent(Continuation * cont) const;
         BacktrackHandle getParent() const;
 
     private:
