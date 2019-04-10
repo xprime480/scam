@@ -302,8 +302,8 @@ namespace
 
     void apply_backtrack(Continuation * cont, ScamEngine * engine)
     {
-        BacktrackHandle backtracker = engine->getBacktracker();
-        if ( nullptr == backtracker.get() ) {
+        Backtracker * backtracker = engine->getBacktracker();
+        if ( ! backtracker ) {
             static const string msg = "No current backtrack context";
             ScamExpr * rv = ExpressionFactory::makeError(msg);
             cont->run(rv);

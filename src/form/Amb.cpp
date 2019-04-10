@@ -42,18 +42,39 @@ namespace
 {
     class AmbBacktracker : public Backtracker
     {
-    public:
+    private:
+        friend class scam::MemoryManager;
+
         AmbBacktracker(ScamExpr * args,
                        Continuation * cont,
                        Env env,
                        ScamEngine * engine,
-                       BacktrackHandle parent)
+                       Backtracker * parent)
             : Backtracker("AmbBacktracker", parent)
             , args(args)
             , cont(cont)
             , env(env)
             , engine(engine)
         {
+        }
+
+        static AmbBacktracker * makeInstance(ScamExpr * args,
+                                             Continuation * cont,
+                                             Env env,
+                                             ScamEngine * engine,
+                                             Backtracker * parent)
+        {
+            return new AmbBacktracker(args, cont, env, engine, parent);
+        }
+
+    public:
+        void mark() const override
+        {
+            if ( ! isMarked() ) {
+                Backtracker::mark();
+                args->mark();
+                cont->mark();
+            }
         }
 
         void run() override
@@ -67,13 +88,14 @@ namespace
                 ScamExpr * head = args->nthcar(0);
                 ScamExpr * tail = args->nthcdr(0);
 
-                BacktrackHandle backtracker = engine->getBacktracker();
-                shared_ptr<Backtracker> newBt =
-                    make_shared<AmbBacktracker>(tail,
-                                                cont,
-                                                env,
-                                                engine,
-                                                getParent());
+                (void) engine->getBacktracker();
+                Backtracker * newBt =
+                    standardMemoryManager.make<AmbBacktracker>(tail,
+                                                               cont,
+                                                               env,
+                                                               engine,
+                                                               getParent());
+
                 engine->setBacktracker(newBt);
 
                 head->eval(cont, env);
@@ -90,9 +112,13 @@ namespace
     void
     do_apply(ScamExpr * args, Continuation * cont, Env env, ScamEngine * engine)
     {
-        BacktrackHandle backtracker = engine->getBacktracker();
-        shared_ptr<Backtracker> newBt =
-            make_shared<AmbBacktracker>(args, cont, env, engine, backtracker);
+        Backtracker * backtracker = engine->getBacktracker();
+        Backtracker * newBt =
+            standardMemoryManager.make<AmbBacktracker>(args,
+                                                       cont,
+                                                       env,
+                                                       engine,
+                                                       backtracker);
         newBt->run();
     }
 }

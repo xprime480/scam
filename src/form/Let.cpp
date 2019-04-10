@@ -140,11 +140,19 @@ namespace
 
     class LetStarBacktracker : public Backtracker
     {
-    public:
+    private:
+        friend class scam::MemoryManager;
+
         LetStarBacktracker(Env env,
                            ScamExpr * sym,
-                           BacktrackHandle backtracker);
+                           Backtracker * backtracker);
 
+        static LetStarBacktracker * makeInstance(Env env,
+                                                 ScamExpr * sym,
+                                                 Backtracker * backtracker);
+
+    public:
+        void mark() const override;
         void run() override;
 
     private:
@@ -445,11 +453,27 @@ namespace
 
     LetStarBacktracker::LetStarBacktracker(Env env,
                                            ScamExpr * sym,
-                                           BacktrackHandle backtracker)
+                                           Backtracker * backtracker)
         : Backtracker("Let*", backtracker)
         , env(env)
         , sym(sym)
     {
+    }
+
+    LetStarBacktracker *
+    LetStarBacktracker::makeInstance(Env env,
+                                     ScamExpr * sym,
+                                     Backtracker * backtracker)
+    {
+        return new LetStarBacktracker(env, sym, backtracker);
+    }
+
+    void LetStarBacktracker::mark() const
+    {
+        if ( ! isMarked() ) {
+            Backtracker::mark();
+            sym->mark();
+        }
     }
 
     void LetStarBacktracker::run()
@@ -522,9 +546,11 @@ namespace
 
     void LetStarCont::makeBacktracker(ScamExpr * sym) const
     {
-        BacktrackHandle backtracker = engine->getBacktracker();
-        BacktrackHandle newBT =
-            make_shared<LetStarBacktracker>(env, sym, backtracker);
+        Backtracker * backtracker = engine->getBacktracker();
+        Backtracker * newBT =
+            standardMemoryManager.make<LetStarBacktracker>(env,
+                                                           sym,
+                                                           backtracker);
         engine->setBacktracker(newBT);
     }
 

@@ -1,36 +1,38 @@
 #if ! defined(BACKTRACKER_H)
 #define BACKTRACKER_H
 
-#include "Continuation.hpp"
+#include "util/ManagedObject.hpp"
 
-#include <memory>
 #include <string>
 
 namespace scam
 {
-    class Backtracker;
-    using BacktrackHandle = std::shared_ptr<Backtracker>;
+    class Continuation;
 
-    class Backtracker
+    class Backtracker : public ManagedObject
     {
+    protected:
+        Backtracker(char const * id, Backtracker * parent);
+
     public:
-        Backtracker(char const * id, BacktrackHandle parent);
+        void mark() const override;
+
         virtual ~Backtracker();
 
-        static void dumpStack(BacktrackHandle bt);
-        static std::string safeID(BacktrackHandle bt);
-        static void safeRun(BacktrackHandle bt, Continuation * cont);
+        static void dumpStack(Backtracker * bt);
+        static std::string safeID(Backtracker * bt);
+        static void safeRun(Backtracker * bt, Continuation * cont);
 
         virtual void run();
         std::string id() const;
 
     protected:
         void runParent(Continuation * cont) const;
-        BacktrackHandle getParent() const;
+        Backtracker * getParent() const;
 
     private:
         std::string const name;
-        BacktrackHandle parent;
+        Backtracker * parent;
 
         static std::string makeName(char const * id);
     };

@@ -136,7 +136,6 @@ TEST_F(PreludeTest, OddTest)
 TEST_F(PreludeTest, RequireTest)
 {
     expectTrue("(require #t)");
-
     ScamExpr * expr = parseAndEvaluate("(require #f)");
     expectError(expr, "No more choices", false);
 }

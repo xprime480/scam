@@ -44,13 +44,17 @@ namespace
 }
 
 ScamEngine::ScamEngine()
+    : backtracker(nullptr)
+    , cont(nullptr)
 {
 }
 
 void ScamEngine::reset(bool initEnv)
 {
+    backtracker = nullptr;
     cont = standardMemoryManager.make<HistoryCont>(1);
 
+    input.clear();
     loaded.clear();
 
     env.reset();
@@ -166,14 +170,14 @@ ScamExpr * ScamEngine::apply(ScamExpr * expr, ScamExpr * args)
     return hc->get();
 }
 
-BacktrackHandle ScamEngine::getBacktracker()
+Backtracker * ScamEngine::getBacktracker()
 {
-    BacktrackHandle tmp = backtracker;
-    backtracker.reset();
+    Backtracker * tmp = backtracker;
+    backtracker = nullptr;
     return tmp;
 }
 
-void ScamEngine::setBacktracker(BacktrackHandle backtracker_in)
+void ScamEngine::setBacktracker(Backtracker * backtracker_in)
 {
     backtracker = backtracker_in;
 }

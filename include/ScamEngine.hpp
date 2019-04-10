@@ -50,8 +50,8 @@ namespace scam
 
         /*** functions to manage backtracking */
 
-        BacktrackHandle getBacktracker();
-        void setBacktracker(BacktrackHandle backtracker);
+        Backtracker * getBacktracker();
+        void setBacktracker(Backtracker * backtracker);
 
         /*** functions to manage loading */
 
@@ -61,7 +61,7 @@ namespace scam
     private:
         Env env;
         std::vector<ScamParser> input;
-        BacktrackHandle backtracker;
+        Backtracker * backtracker;
         Continuation * cont;
         std::set<std::string> loaded;
 

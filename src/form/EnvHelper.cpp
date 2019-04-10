@@ -203,16 +203,36 @@ namespace
 
     class AssignBacktracker : public Backtracker
     {
-    public:
+    private:
+        friend class scam::MemoryManager;
+
         AssignBacktracker(ScamExpr * sym,
                           ScamExpr * old,
                           Env env,
-                          BacktrackHandle backtracker)
+                          Backtracker * backtracker)
             : Backtracker("DefineBacktracker", backtracker)
             , sym(sym)
             , old(old)
             , env(env)
         {
+        }
+
+        static AssignBacktracker * makeInstance(ScamExpr * sym,
+                                                ScamExpr * old,
+                                                Env env,
+                                                Backtracker * backtracker)
+        {
+            return new AssignBacktracker(sym, old, env, backtracker);
+        }
+
+    public:
+        void mark() const override
+        {
+            if ( ! isMarked() ) {
+                Backtracker::mark();
+                sym->mark();
+                old->mark();
+            }
         }
 
         void run() override
@@ -263,16 +283,16 @@ namespace
 
             env.assign(sym, expr);
 
-            BacktrackHandle backtracker = engine->getBacktracker();
-            if ( nullptr == backtracker.get() ) {
+            Backtracker * backtracker = engine->getBacktracker();
+            if ( ! backtracker ) {
                 return;
             }
 
-            shared_ptr<Backtracker> bt =
-                make_shared<AssignBacktracker>(sym,
-                                               old,
-                                               env,
-                                               backtracker);
+            Backtracker * bt =
+                standardMemoryManager.make<AssignBacktracker>(sym,
+                                                              old,
+                                                              env,
+                                                              backtracker);
             engine->setBacktracker(bt);
         }
 
@@ -282,14 +302,32 @@ namespace
 
     class DefineBacktracker : public Backtracker
     {
-    public:
+    private:
+        friend class scam::MemoryManager;
+
         DefineBacktracker(ScamExpr * sym,
                           Env env,
-                          BacktrackHandle backtracker)
+                          Backtracker * backtracker)
             : Backtracker("DefineBacktracker", backtracker)
             , sym(sym)
             , env(env)
         {
+        }
+
+        static DefineBacktracker * makeInstance(ScamExpr * sym,
+                                                Env env,
+                                                Backtracker * backtracker)
+        {
+            return new DefineBacktracker(sym, env, backtracker);
+        }
+
+    public:
+        void mark() const override
+        {
+            if ( ! isMarked() ) {
+              Backtracker::mark();
+              sym->mark();
+          }
         }
 
         void run() override
@@ -337,13 +375,15 @@ namespace
 
             env.put(sym, expr);
 
-            BacktrackHandle backtracker = engine->getBacktracker();
-            if ( nullptr == backtracker.get() ) {
+            Backtracker * backtracker = engine->getBacktracker();
+            if ( ! backtracker ) {
                 return;
             }
 
-            shared_ptr<Backtracker> bt =
-                make_shared<DefineBacktracker>(sym, env, backtracker);
+            Backtracker * bt =
+                standardMemoryManager.make<DefineBacktracker>(sym,
+                                                              env,
+                                                              backtracker);
             engine->setBacktracker(bt);
         }
 

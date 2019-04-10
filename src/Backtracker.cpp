@@ -10,6 +10,8 @@
 using namespace scam;
 using namespace std;
 
+//#define TRACE_BACKTRACKER true
+
 namespace
 {
     static unsigned counter { 0 };
@@ -20,42 +22,57 @@ namespace
          true);
 }
 
-Backtracker::Backtracker(char const * id, BacktrackHandle parent)
+Backtracker::Backtracker(char const * id, Backtracker * parent)
     : name(makeName(id))
     , parent(parent)
 {
   if ( ! init ) { id = nullptr; } // compiler pacifier
-    //    cerr << "Creating backtracker " << name << "\n";
+#if defined(TRACE_BACKTRACKER)
+    cerr << "Creating backtracker " << name << "\n";
+    cerr << "\tParent is " << parent << "\n";
+#endif
 }
 
 Backtracker::~Backtracker()
 {
-    //    cerr << "Deleting backtracker " << name << "\n";
+#if defined(TRACE_BACKTRACKER)
+    cerr << "Deleting backtracker " << name << "\n";
+#endif
 };
 
-void Backtracker::dumpStack(BacktrackHandle bt)
+void Backtracker::mark() const
 {
-    if ( nullptr == bt.get() ) {
+    if ( ! isMarked() ) {
+        ManagedObject::mark();
+        if ( parent ) {
+            parent->mark();
+        }
+    }
+}
+
+void Backtracker::dumpStack(Backtracker * bt)
+{
+    if ( ! bt ) {
         cerr << "<no backtracker stack>\n";
         return;
     }
 
-    for ( size_t n = 1 ; nullptr != bt.get() ; ++n, bt = bt->getParent() ) {
+    for ( size_t n = 1 ; bt ; ++n, bt = bt->getParent() ) {
         cerr << "[" << n << "]\t" << bt->id() << "\n";
     }
 }
 
-string Backtracker::safeID(BacktrackHandle bt)
+string Backtracker::safeID(Backtracker * bt)
 {
-    if ( nullptr == bt.get() ) {
+    if ( ! bt ) {
         return "<null backtracker>";
     }
     return bt->id();
 }
 
-void Backtracker::safeRun(BacktrackHandle bt, Continuation * cont)
+void Backtracker::safeRun(Backtracker * bt, Continuation * cont)
 {
-    if ( bt.get() ) {
+    if ( bt ) {
         bt->run();
     }
     else {
@@ -65,7 +82,9 @@ void Backtracker::safeRun(BacktrackHandle bt, Continuation * cont)
 
 void Backtracker::run()
 {
-    //    cerr << "Executing backtracker " << name << "\n";
+#if defined(TRACE_BACKTRACKER)
+    cerr << "Executing backtracker " << name << "\n";
+#endif
 }
 
 string Backtracker::id() const
@@ -73,14 +92,14 @@ string Backtracker::id() const
     return name;
 }
 
-BacktrackHandle Backtracker::getParent() const
+Backtracker * Backtracker::getParent() const
 {
     return parent;
 }
 
 void Backtracker::runParent(Continuation * cont) const
 {
-    if ( nullptr == parent.get() ) {
+    if ( ! parent ) {
         cont->run(nomore);
     }
     else {

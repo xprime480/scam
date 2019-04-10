@@ -72,7 +72,7 @@ ConsWorker::ConsWorker(Continuation * cont,
     : Worker("Cons Eval")
     , data(car, cdr, cont, env)
 {
-  data.cont = standardMemoryManager.make<EvalContinuation>(data);
+    data.cont = standardMemoryManager.make<EvalContinuation>(data);
 }
 
 ConsWorker::ConsWorker(WorkerData const & data)
