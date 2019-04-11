@@ -3,6 +3,8 @@
 
 #include "expr/ScamExpr.hpp"
 
+#include <string>
+
 namespace scam
 {
     class Primitive : public ScamExpr
@@ -13,9 +15,12 @@ namespace scam
         std::string toString() const override;
 
         bool hasApply() const override;
-        void apply(ScamExpr * args, Continuation * cont, Env * env) override;
+        void apply(ScamExpr * args,
+                   Continuation * cont,
+                   Env * env) override;
 
-        virtual void applyArgs(ScamExpr * args, Continuation * cont) = 0;
+        virtual void
+        applyArgs(ScamExpr * args, Continuation * cont) = 0;
 
     protected:
         std::string const name;

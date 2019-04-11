@@ -1,61 +1,13 @@
 
 #include "prim/Primitive.hpp"
 
-#include "Continuation.hpp"
-#include "Env.hpp"
 #include "WorkQueue.hpp"
-#include "Worker.hpp"
-#include "util/MemoryManager.hpp"
+#include "prim/PrimWorker.hpp"
 
-#include <iostream>
 #include <sstream>
 
 using namespace scam;
 using namespace std;
-
-namespace
-{
-    struct PrimWorkerData
-    {
-        PrimWorkerData(ScamExpr * args,
-                       Continuation * original,
-                       Env * env,
-                       Primitive * caller);
-
-        ScamExpr * args;
-        Continuation * original;
-        Continuation * cont;
-        Env * env;
-        Primitive * caller;
-
-        void mark() const;
-
-        void mapEval();
-        void handleResult(ScamExpr * expr);
-    };
-
-    class  PrimWorker : public Worker
-    {
-    private:
-        friend class scam::MemoryManager;
-        PrimWorker(Continuation * cont,
-                   Env * env,
-                   ScamExpr * args,
-                   Primitive * caller);
-
-        static PrimWorker * makeInstance(Continuation * cont,
-                                         Env * env,
-                                         ScamExpr * args,
-                                         Primitive * caller);
-
-    public:
-        void mark() const override;
-        void run() override;
-
-    private:
-        PrimWorkerData data;
-    };
-}
 
 Primitive::Primitive(string const & name)
     : name(name)
@@ -77,118 +29,4 @@ bool Primitive::hasApply() const
 void Primitive::apply(ScamExpr * args, Continuation * cont, Env * env)
 {
     workQueueHelper<PrimWorker>(cont, env, args, this);
-}
-
-namespace
-{
-    PrimWorkerData::PrimWorkerData(ScamExpr * args,
-                                   Continuation * original,
-                                   Env * env,
-                                   Primitive * caller)
-        : args(args)
-        , original(original)
-        , cont(nullptr)
-        , env(env)
-        , caller(caller)
-    {
-    }
-
-    void PrimWorkerData::mark() const
-    {
-        args->mark();
-        original->mark();
-        if ( cont ) { cont->mark(); };
-        env->mark();
-    }
-
-    void PrimWorkerData::mapEval()
-    {
-        args->mapEval(cont, env);
-    }
-
-    void PrimWorkerData::handleResult(ScamExpr * expr)
-    {
-        if ( expr->error() ) {
-            original->run(expr);
-        }
-        else {
-            caller->applyArgs(expr, original);
-        }
-    }
-
-    class EvalContinuation : public Continuation
-    {
-    private:
-        friend class scam::MemoryManager;
-
-        EvalContinuation(PrimWorkerData const & data);
-
-        static EvalContinuation * makeInstance(PrimWorkerData const & data);
-
-    public:
-        void mark() const override;
-
-        void run(ScamExpr * expr) override;
-
-    private:
-        PrimWorkerData data;
-    };
-
-    PrimWorker::PrimWorker(Continuation * cont,
-                           Env * env,
-                           ScamExpr * args,
-                           Primitive * caller)
-        : Worker("Primitive")
-        , data(args, cont, env, caller)
-    {
-        data.cont = standardMemoryManager.make<EvalContinuation>(data);
-    }
-
-    PrimWorker * PrimWorker::makeInstance(Continuation * cont,
-                                          Env * env,
-                                          ScamExpr * args,
-                                          Primitive * caller)
-    {
-        return new PrimWorker(cont, env, args, caller);
-    }
-
-    void PrimWorker::mark() const
-    {
-        if ( ! isMarked() ) {
-            Worker::mark();
-            data.mark();
-        }
-    }
-
-    void PrimWorker::run()
-    {
-        Worker::run();
-        data.mapEval();
-    }
-
-    EvalContinuation::EvalContinuation(PrimWorkerData const & data)
-        : Continuation("Primitive Eval")
-        , data(data.args, data.original, data.env, data.caller)
-    {
-    }
-
-    EvalContinuation *
-    EvalContinuation::makeInstance(PrimWorkerData const & data)
-    {
-        return new EvalContinuation(data);
-    }
-
-    void EvalContinuation::mark() const
-    {
-        if ( ! isMarked() ) {
-            Continuation::mark();
-            data.mark();
-        }
-    }
-
-    void EvalContinuation::run(ScamExpr * expr)
-    {
-        Continuation::run(expr);
-        data.handleResult(expr);
-    }
 }

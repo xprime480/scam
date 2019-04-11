@@ -1,48 +1,18 @@
 
 #include "TestBase.hpp"
+#include "StaticTokenizer.hpp"
 
-#include "Continuation.hpp"
-#include "Extractor.hpp"
-#include "expr/ScamExpr.hpp"
 #include "input/ScamParser.hpp"
-#include "input/Tokenizer.hpp"
 
-#include "gtest/gtest.h"
-
-#include <functional>
 #include <vector>
 
 using namespace scam;
+using namespace scam::test_impl;
 using namespace std;
 
-namespace
+namespace scam
 {
-    static const Token eof(TokenType::TT_END_OF_INPUT, "");
-
-    class StaticTokenizer : public Tokenizer
-    {
-    public:
-        StaticTokenizer(vector<Token> const & tokens)
-            : tokens(tokens)
-            , index(0)
-        {
-        }
-
-        Token next() override
-        {
-            if ( index >= tokens.size() ) {
-                return eof;
-            }
-
-            Token const & token = tokens[index];
-            ++index;
-            return token;
-        }
-
-    private:
-        vector<Token> const & tokens;
-        size_t index;
-    };
+    class ScamExpr;
 }
 
 class ParserTest : public TestBase

@@ -1,18 +1,18 @@
 
 #include "TestBase.hpp"
+#include "SampleManagedObject.hpp"
 
 #include "expr/ScamExprAll.hpp"
 #include "util/MemoryManager.hpp"
-#include "ScamException.hpp"
 #include "Extractor.hpp"
 #include "WorkQueue.hpp"
 #include "Worker.hpp"
 
 #include <iostream>
 
-
 using namespace std;
 using namespace scam;
+using namespace scam::test_impl;
 
 /**
  * MemoryTest
@@ -21,7 +21,6 @@ using namespace scam;
  */
 class MemoryTest : public TestBase
 {
-
 protected:
     MemoryTest()
     {
@@ -71,86 +70,18 @@ protected:
     }
 };
 
-/*
- * ManagedObjectTest
- *
- * a subclass of ManagedObject to exercise the basic functionality
- */
-class ManagedObjectTest : public ManagedObject
-{
-public:
-    ~ManagedObjectTest()
-    {
-    }
-
-    void mark() const override
-    {
-        if ( ! isMarked() ) {
-            ManagedObject::mark();
-            if ( proxy ) {
-                proxy->mark();
-            }
-        }
-    }
-
-    static ManagedObjectTest * makeInstance()
-    {
-        return new ManagedObjectTest();
-    }
-
-    static ManagedObjectTest * makeInstance(int value)
-    {
-        return new ManagedObjectTest(value);
-    }
-
-    static ManagedObjectTest * makeInstance(ManagedObjectTest * proxy)
-    {
-        return new ManagedObjectTest(proxy);
-    }
-
-    int getValue() const
-    {
-        if ( proxy ) {
-            return proxy->getValue();
-        }
-        return value;
-    }
-
-private:
-    ManagedObjectTest()
-        : value(7)
-        , proxy(nullptr)
-    {
-    }
-
-    explicit ManagedObjectTest(int value)
-        : value(value)
-        , proxy(nullptr)
-    {
-    }
-
-    explicit ManagedObjectTest(ManagedObjectTest * proxy)
-        : value(0)
-        , proxy(proxy)
-    {
-    }
-
-    int value;
-    ManagedObjectTest * proxy;
-};
-
 /*****************************************************************
  * The first set of tests test the basic functionality with
- *  the ManagedObjectTest class
+ *  the SampleManagedObject class
  *****************************************************************
  */
 
 TEST_F(MemoryTest, MarkTest)
 {
-    ManagedObjectTest * proxy = mm.make<ManagedObjectTest>(33);
+    SampleManagedObject * proxy = mm.make<SampleManagedObject>(33);
     ASSERT_NE(nullptr, proxy);
 
-    ManagedObjectTest * cut = mm.make<ManagedObjectTest>(proxy);
+    SampleManagedObject * cut = mm.make<SampleManagedObject>(proxy);
     ASSERT_NE(nullptr, cut);
     EXPECT_EQ(33, cut->getValue());
 
@@ -166,7 +97,7 @@ TEST_F(MemoryTest, MarkTest)
 
 TEST_F(MemoryTest, CreateTestDefault)
 {
-    ManagedObjectTest * cut = mm.make<ManagedObjectTest>();
+    SampleManagedObject * cut = mm.make<SampleManagedObject>();
     ASSERT_NE(nullptr, cut);
     EXPECT_EQ(7, cut->getValue());
     EXPECT_EQ(1, mm.getCreateCount());
@@ -175,7 +106,7 @@ TEST_F(MemoryTest, CreateTestDefault)
 
 TEST_F(MemoryTest, CreateTestValue)
 {
-    ManagedObjectTest * cut = mm.make<ManagedObjectTest>(-1);
+    SampleManagedObject * cut = mm.make<SampleManagedObject>(-1);
     ASSERT_NE(nullptr, cut);
     EXPECT_EQ(-1, cut->getValue());
     EXPECT_EQ(1, mm.getCreateCount());
@@ -184,7 +115,7 @@ TEST_F(MemoryTest, CreateTestValue)
 
 TEST_F(MemoryTest, GCTestGCNotNeeded)
 {
-    ManagedObjectTest * cut = mm.make<ManagedObjectTest>();
+    SampleManagedObject * cut = mm.make<SampleManagedObject>();
     EXPECT_EQ(7, cut->getValue());
 
     EXPECT_EQ(1, mm.getCurrentCount());
@@ -194,10 +125,10 @@ TEST_F(MemoryTest, GCTestGCNotNeeded)
 
 TEST_F(MemoryTest, GCTestGCNoRoots)
 {
-    ManagedObjectTest * cut = mm.make<ManagedObjectTest>();
-    cut = mm.make<ManagedObjectTest>();
-    cut = mm.make<ManagedObjectTest>();
-    cut = mm.make<ManagedObjectTest>();
+    SampleManagedObject * cut = mm.make<SampleManagedObject>();
+    cut = mm.make<SampleManagedObject>();
+    cut = mm.make<SampleManagedObject>();
+    cut = mm.make<SampleManagedObject>();
     EXPECT_EQ(7, cut->getValue());
 
     EXPECT_EQ(4, mm.getCurrentCount());
@@ -207,10 +138,10 @@ TEST_F(MemoryTest, GCTestGCNoRoots)
 
 TEST_F(MemoryTest, GCTestOneRoot)
 {
-    (void) mm.make<ManagedObjectTest>();
-    (void) mm.make<ManagedObjectTest>();
-    (void) mm.make<ManagedObjectTest>();
-    ManagedObjectTest * cut = mm.make<ManagedObjectTest>();
+    (void) mm.make<SampleManagedObject>();
+    (void) mm.make<SampleManagedObject>();
+    (void) mm.make<SampleManagedObject>();
+    SampleManagedObject * cut = mm.make<SampleManagedObject>();
 
     EXPECT_EQ(4, mm.getCurrentCount());
 
@@ -225,12 +156,12 @@ TEST_F(MemoryTest, GCTestOneRoot)
 
 TEST_F(MemoryTest, GCTestWithProxy)
 {
-    ManagedObjectTest * proxy = mm.make<ManagedObjectTest>(33);
+    SampleManagedObject * proxy = mm.make<SampleManagedObject>(33);
     ASSERT_NE(nullptr, proxy);
 
-    (void) mm.make<ManagedObjectTest>();
-    (void) mm.make<ManagedObjectTest>();
-    ManagedObjectTest * cut = mm.make<ManagedObjectTest>(proxy);
+    (void) mm.make<SampleManagedObject>();
+    (void) mm.make<SampleManagedObject>();
+    SampleManagedObject * cut = mm.make<SampleManagedObject>(proxy);
 
     ASSERT_NE(nullptr, cut);
     EXPECT_EQ(33, cut->getValue());

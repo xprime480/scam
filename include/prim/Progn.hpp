@@ -1,5 +1,5 @@
-#if ! defined(PRIMITIVE_MISC_H)
-#define PRIMITIVE_MISC_H 1
+#if ! defined(PRIMITIVE_PROGN_H)
+#define PRIMITIVE_PROGN_H 1
 
 #include "prim/Primitive.hpp"
 
