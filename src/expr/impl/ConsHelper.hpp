@@ -2,12 +2,9 @@
 # define CONS_HELPER_HPP 1
 
 #include "Env.hpp"
-#include "WorkQueue.hpp"
 #include "Continuation.hpp"
 
 #include "expr/ScamExpr.hpp"
-
-#include <memory>
 
 namespace scam
 {
@@ -16,19 +13,19 @@ namespace scam
         void scamConsEvalHelper(ScamExpr * car,
                                 ScamExpr * cdr,
                                 Continuation * cont,
-                                Env env);
+                                Env * env);
 
         void scamConsMapHelper(ScamExpr * car,
                                ScamExpr * cdr,
                                Continuation * cont,
-                               Env env);
+                               Env * env);
 
         struct WorkerData
         {
             WorkerData(ScamExpr * car,
                        ScamExpr * cdr,
                        Continuation * original,
-                       Env env)
+                       Env * env)
                 : car(car)
                 , cdr(cdr)
                 , original(original)
@@ -45,13 +42,14 @@ namespace scam
                cdr->mark();
                original->mark();
                cont->mark();
+	       env->mark();
             }
 
             ScamExpr * car;
             ScamExpr * cdr;
             Continuation * original;
             Continuation * cont;
-            Env env;
+            Env * env;
         };
     }
 }

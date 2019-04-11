@@ -1,13 +1,11 @@
 #if ! defined(EXPRESSIONFACTORY_H)
 #define EXPRESSIONFACTORY_H 1
 
-#include <memory>
+#include "expr/ScamExprAll.hpp"
+#include "util/MemoryManager.hpp"
+
 #include <string>
 #include <vector>
-
-#include "expr/ScamExprAll.hpp"
-
-#include "util/MemoryManager.hpp"
 
 namespace scam
 {
@@ -52,17 +50,17 @@ namespace scam
 
         static ScamClosure * makeClosure(ScamExpr * formals,
                                          ScamExpr * forms,
-                                         Env env,
+                                         Env * env,
                                          bool macrolike = false);
 
         static ScamClass * makeClass(ScamExpr * base,
                                      ScamExpr * vars,
                                      ScamExpr * funs,
-                                     Env env);
+                                     Env * env);
 
         static ScamInstance * makeInstance(ScamExpr * vars,
                                            ScamExpr * funs,
-                                           Env env);
+                                           Env * env);
 
         static ScamContinuation * makeContinuation(Continuation * cont);
 

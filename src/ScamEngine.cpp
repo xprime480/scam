@@ -44,7 +44,8 @@ namespace
 }
 
 ScamEngine::ScamEngine()
-    : backtracker(nullptr)
+    : env(nullptr)
+    , backtracker(nullptr)
     , cont(nullptr)
 {
 }
@@ -57,9 +58,7 @@ void ScamEngine::reset(bool initEnv)
     input.clear();
     loaded.clear();
 
-    env.reset();
-    env = env.top();
-
+    env = standardMemoryManager.make<Env>();
     if ( initEnv ) {
         getStandardEnv();
     }
@@ -67,38 +66,40 @@ void ScamEngine::reset(bool initEnv)
 
 void ScamEngine::pushFrame()
 {
-    env = env.extend();
+    env = env->extend();
 }
 
-Env ScamEngine::getFrame()
+Env * ScamEngine::getFrame()
 {
     return env;
 }
 
 void ScamEngine::popFrame()
 {
-    env = env.parent();
+    if ( env != env->getTop() ) {
+        env = env->getParent();
+    }
 }
 
 void ScamEngine::addBinding(ScamExpr * key, ScamExpr * val)
 {
-    env.put(key, val);
+    env->put(key, val);
 }
 
 bool ScamEngine::hasBinding(ScamExpr * key, bool checkParent)
 {
-    return env.check(key, checkParent);
+    return env->check(key, checkParent);
 }
 
 ScamExpr * ScamEngine::getBinding(ScamExpr * key, bool top)
 {
-    Env temp = top ? env.top() : env;
-    return temp.get(key);
+    Env * temp = top ? env->getTop() : env;
+    return temp->get(key);
 }
 
 void ScamEngine::rebind(ScamExpr * key, ScamExpr * val)
 {
-    env.assign(key, val);
+    env->assign(key, val);
 }
 
 void ScamEngine::pushInput(Tokenizer & tokenizer)

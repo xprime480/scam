@@ -19,7 +19,7 @@ Macro * Macro::makeInstance()
     return &instance;
 }
 
-void Macro::apply(ScamExpr * args, Continuation * cont, Env env)
+void Macro::apply(ScamExpr * args, Continuation * cont, Env * env)
 {
     ScamExpr * expr = ExpressionFactory::makeClosure(args->getCar(),
                                                      args->getCdr(),

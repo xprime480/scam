@@ -21,13 +21,13 @@ namespace
     extern void do_apply(ScamExpr * cls,
                          ScamExpr * args,
                          Continuation * cont,
-                         Env env);
+                         Env * env);
 }
 
 ScamClass::ScamClass(ScamExpr * base,
                      ScamExpr * vars,
                      ScamExpr * funs,
-                     Env capture)
+                     Env * capture)
     : base(base)
     , vars(vars)
     , funs(funs)
@@ -38,7 +38,7 @@ ScamClass::ScamClass(ScamExpr * base,
 ScamClass * ScamClass::makeInstance(ScamExpr * base,
                                     ScamExpr * vars,
                                     ScamExpr * funs,
-                                    Env capture)
+                                    Env * capture)
 {
     return new ScamClass(base, vars, funs, capture);
 }
@@ -47,15 +47,10 @@ void ScamClass::mark() const
 {
     if ( ! isMarked() ) {
         ScamExpr::mark();
-        if ( base ) {
-            base->mark();
-        }
-        if ( vars ) {
-            vars->mark();
-        }
-        if ( funs ) {
-            funs->mark();
-        }
+        base->mark();
+        vars->mark();
+        funs->mark();
+        capture->mark();
     }
 }
 
@@ -69,7 +64,7 @@ bool ScamClass::hasApply() const
     return true;
 }
 
-void ScamClass::apply(ScamExpr * args, Continuation * cont, Env env)
+void ScamClass::apply(ScamExpr * args, Continuation * cont, Env * env)
 {
     do_apply(this, args, cont, env);
 }
@@ -131,7 +126,7 @@ namespace
         ClassInitWorker(ScamExpr * instance,
                         ScamExpr * args,
                         Continuation * cont,
-                        Env env)
+                        Env * env)
             : Worker("ClassInit")
             , instance(instance)
             , args(args)
@@ -156,7 +151,7 @@ namespace
         ScamExpr * instance;
         ScamExpr * args;
         Continuation * cont;
-        Env        env;
+        Env *        env;
     };
 
     class ClassCont : public Continuation
@@ -185,6 +180,7 @@ namespace
                 Continuation::mark();
                 cls->mark();
                 cont->mark();
+                env->mark();
             }
         }
 
@@ -213,7 +209,7 @@ namespace
     private:
         ScamExpr * cls;
         Continuation * cont;
-        Env        env;
+        Env *        env;
 
         ScamExpr *
         build_instances(ScamExpr * cls, vector<ScamExpr *> & instances) const
@@ -266,11 +262,11 @@ namespace
                 return nil;
             }
 
-            if ( ! env.check(baseName) ) {
+            if ( ! env->check(baseName) ) {
                 return base_class_not_found(baseName);
             }
 
-            ScamExpr * b = env.get(baseName);
+            ScamExpr * b = env->get(baseName);
             if ( ! b->isClass() ) {
                 return base_class_not_class(baseName, b);
             }
@@ -313,7 +309,7 @@ namespace
         ClassWorker(ScamExpr * cls,
                     ScamExpr * args,
                     Continuation * cont,
-                    Env env)
+                    Env * env)
             : Worker("ClassWorker")
             , cls(cls)
             , args(args)
@@ -334,10 +330,11 @@ namespace
         ScamExpr * cls;
         ScamExpr * args;
         Continuation * cont;
-        Env        env;
+        Env *        env;
     };
 
-    void do_apply(ScamExpr * cls, ScamExpr * args, Continuation * cont, Env env)
+    void
+    do_apply(ScamExpr * cls, ScamExpr * args, Continuation * cont, Env * env)
     {
         workQueueHelper<ClassWorker>(cls, args, cont, env);
     }

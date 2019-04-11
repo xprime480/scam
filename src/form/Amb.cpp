@@ -18,7 +18,7 @@ namespace
 {
     extern void do_apply(ScamExpr * args,
                          Continuation * cont,
-                         Env env,
+                         Env * env,
                          ScamEngine * engine);
 }
 
@@ -33,7 +33,7 @@ Amb * Amb::makeInstance(ScamEngine * engine)
     return new Amb(engine);
 }
 
-void Amb::apply(ScamExpr * args, Continuation * cont, Env env)
+void Amb::apply(ScamExpr * args, Continuation * cont, Env * env)
 {
     do_apply(args, cont, env, engine);
 }
@@ -47,7 +47,7 @@ namespace
 
         AmbBacktracker(ScamExpr * args,
                        Continuation * cont,
-                       Env env,
+                       Env * env,
                        ScamEngine * engine,
                        Backtracker * parent)
             : Backtracker("AmbBacktracker", parent)
@@ -60,7 +60,7 @@ namespace
 
         static AmbBacktracker * makeInstance(ScamExpr * args,
                                              Continuation * cont,
-                                             Env env,
+                                             Env * env,
                                              ScamEngine * engine,
                                              Backtracker * parent)
         {
@@ -74,6 +74,7 @@ namespace
                 Backtracker::mark();
                 args->mark();
                 cont->mark();
+                env->mark();
             }
         }
 
@@ -103,14 +104,16 @@ namespace
         }
 
     private:
-        ScamExpr *      args;
-        Continuation *  cont;
-        Env             env;
+        ScamExpr      * args;
+        Continuation  * cont;
+        Env           * env;
         ScamEngine    * engine;
     };
 
-    void
-    do_apply(ScamExpr * args, Continuation * cont, Env env, ScamEngine * engine)
+    void do_apply(ScamExpr * args,
+                  Continuation * cont,
+                  Env * env,
+                  ScamEngine * engine)
     {
         Backtracker * backtracker = engine->getBacktracker();
         Backtracker * newBt =

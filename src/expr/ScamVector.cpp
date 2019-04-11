@@ -12,7 +12,8 @@ using namespace std;
 
 namespace
 {
-    extern void eval_vector(Continuation * cont, Env env, ExprVec const & elts);
+    extern void
+    eval_vector(Continuation * cont, Env * env, ExprVec const & elts);
 }
 
 ScamVector::ScamVector(ExprVec const & elts)
@@ -50,7 +51,7 @@ string ScamVector::toString() const
     return s.str();
 }
 
-void ScamVector::eval(Continuation * cont, Env env)
+void ScamVector::eval(Continuation * cont, Env * env)
 {
     eval_vector(cont, env, elts);
 }
@@ -106,12 +107,12 @@ namespace
         VectorCont(ExprVec const & forms,
                    ExprVec const & evaled,
                    Continuation * original,
-                   Env env);
+                   Env * env);
 
         static VectorCont * makeInstance(ExprVec const & forms,
                                          ExprVec const & evaled,
                                          Continuation * original,
-                                         Env env);
+                                         Env * env);
 
     public:
         void mark() const override;
@@ -122,18 +123,18 @@ namespace
         ExprVec forms;
         ExprVec evaled;
         Continuation * original;
-        Env env;
+        Env * env;
     };
 
     class  VectorWorker : public Worker
     {
     public:
         VectorWorker(Continuation * cont,
-                     Env env,
+                     Env * env,
                      ExprVec const & forms);
 
         VectorWorker(Continuation * cont,
-                     Env env,
+                     Env * env,
                      ExprVec const & forms,
                      ExprVec const & evaled);
 
@@ -143,11 +144,11 @@ namespace
         ExprVec    forms;
         ExprVec    evaled;
         Continuation * original;
-        Env        env;
+        Env *        env;
     };
 
     VectorWorker::VectorWorker(Continuation * cont,
-                               Env env,
+                               Env * env,
                                ExprVec const & forms)
         : Worker("Vector")
         , forms(forms)
@@ -157,7 +158,7 @@ namespace
     }
 
     VectorWorker::VectorWorker(Continuation * cont,
-                               Env env,
+                               Env * env,
                                ExprVec const & forms,
                                ExprVec const & evaled)
         : Worker("Vector 2")
@@ -191,7 +192,7 @@ namespace
     VectorCont::VectorCont(ExprVec const & forms,
                            ExprVec const & evaled,
                            Continuation * original,
-                           Env env)
+                           Env * env)
         : Continuation("Vector")
         , forms(forms)
         , evaled(evaled)
@@ -203,7 +204,7 @@ namespace
     VectorCont * VectorCont::makeInstance(ExprVec const & forms,
                                           ExprVec const & evaled,
                                           Continuation * original,
-                                          Env env)
+                                          Env * env)
     {
         return new VectorCont(forms, evaled, original, env);
     }
@@ -219,6 +220,7 @@ namespace
                 e->mark();
             }
             original->mark();
+            env->mark();
         }
     }
 
@@ -236,7 +238,7 @@ namespace
         }
     }
 
-    void eval_vector(Continuation * cont, Env env, ExprVec const & elts)
+    void eval_vector(Continuation * cont, Env * env, ExprVec const & elts)
     {
         workQueueHelper<VectorWorker>(cont, env, elts);
     }

@@ -24,7 +24,7 @@ namespace scam
         void reset(bool initEnv);
 
         void pushFrame();
-        Env  getFrame();
+        Env * getFrame();
         void popFrame();
 
         void addBinding(ScamExpr * key, ScamExpr * val);
@@ -59,7 +59,7 @@ namespace scam
         void setLoaded(std::string const & filename);
 
     private:
-        Env env;
+        Env * env;
         std::vector<ScamParser> input;
         Backtracker * backtracker;
         Continuation * cont;

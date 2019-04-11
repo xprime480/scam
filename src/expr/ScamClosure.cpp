@@ -18,16 +18,16 @@ namespace
 {
     void do_apply(ScamExpr * formals,
                   ScamExpr * forms,
-                  Env capture,
+                  Env * capture,
                   Continuation * cont,
                   ScamExpr * args,
-                  Env argEnv,
+                  Env * argEnv,
                   bool macrolike);
 }
 
 ScamClosure::ScamClosure(ScamExpr *formals,
                          ScamExpr * forms,
-                         Env env,
+                         Env * env,
                          bool macrolike)
     : formals(formals)
     , forms(forms)
@@ -38,7 +38,7 @@ ScamClosure::ScamClosure(ScamExpr *formals,
 
 ScamClosure * ScamClosure::makeInstance(ScamExpr *formals,
                                         ScamExpr * forms,
-                                        Env env,
+                                        Env * env,
                                         bool macrolike)
 {
     return new ScamClosure(formals, forms, env, macrolike);
@@ -48,12 +48,9 @@ void ScamClosure::mark() const
 {
     if ( ! isMarked() ) {
         ScamExpr::mark();
-        if ( formals ) {
-            formals->mark();
-        }
-        if ( forms ) {
-            forms->mark();
-        }
+        formals->mark();
+        forms->mark();
+        env->mark();
     }
 }
 
@@ -76,7 +73,7 @@ bool ScamClosure::hasApply() const
     return true;
 }
 
-void ScamClosure::apply(ScamExpr * args, Continuation * cont, Env env)
+void ScamClosure::apply(ScamExpr * args, Continuation * cont, Env * env)
 {
     do_apply(formals, forms, this->env, cont, args, env, macrolike);
 }
@@ -86,7 +83,7 @@ bool ScamClosure::isProcedure() const
     return true;
 }
 
-ScamExpr * ScamClosure::withEnvUpdate(Env updated) const
+ScamExpr * ScamClosure::withEnvUpdate(Env * updated) const
 {
     return ExpressionFactory::makeClosure(formals, forms, updated);
 }
@@ -98,14 +95,14 @@ namespace
     private:
         friend class scam::MemoryManager;
 
-        MacroEvalCont(Continuation * cont, Env capture)
+        MacroEvalCont(Continuation * cont, Env * capture)
             : Continuation("macro eval")
             , cont(cont)
             , capture(capture)
         {
         }
 
-        static MacroEvalCont * makeInstance(Continuation * cont, Env capture)
+        static MacroEvalCont * makeInstance(Continuation * cont, Env * capture)
         {
             return new MacroEvalCont(cont, capture);
         }
@@ -116,6 +113,7 @@ namespace
             if ( ! isMarked() ) {
                 Continuation::mark();
                 cont->mark();
+                capture->mark();
             }
         }
 
@@ -127,7 +125,7 @@ namespace
 
     private:
         Continuation * cont;
-        Env        capture;
+        Env *        capture;
     };
 
     class ClosureBindCont : public Continuation
@@ -137,7 +135,7 @@ namespace
 
         ClosureBindCont(ScamExpr * formals,
                         ScamExpr * forms,
-                        Env capture,
+                        Env * capture,
                         Continuation * cont,
                         bool macrolike)
             : Continuation("proc - bind")
@@ -151,7 +149,7 @@ namespace
 
         static ClosureBindCont * makeInstance(ScamExpr * formals,
                                               ScamExpr * forms,
-                                              Env capture,
+                                              Env * capture,
                                               Continuation * cont,
                                               bool macrolike)
         {
@@ -169,6 +167,7 @@ namespace
                 Continuation::mark();
                 formals->mark();
                 forms->mark();
+                capture->mark();
                 cont->mark();
             }
         }
@@ -191,7 +190,7 @@ namespace
     private:
         ScamExpr * formals;
         ScamExpr * forms;
-        Env        capture;
+        Env *        capture;
         Continuation * cont;
         bool       macrolike;
 
@@ -251,7 +250,7 @@ namespace
         void finalize(ScamExpr * actuals)  const
         {
             Binder binder(capture);
-            Env extended = binder.bind(formals, actuals);
+            Env * extended = binder.bind(formals, actuals);
 
             Continuation * c =
               ( macrolike
@@ -267,10 +266,10 @@ namespace
     public:
         ClosureWorker(ScamExpr *formals,
                       ScamExpr * forms,
-                      Env capture,
+                      Env * capture,
                       Continuation * cont,
                       ScamExpr * args,
-                      Env argEnv,
+                      Env * argEnv,
                       bool macrolike)
             : Worker("proc")
             , formals(formals)
@@ -304,19 +303,19 @@ namespace
     private:
         ScamExpr * formals;
         ScamExpr * forms;
-        Env capture;
+        Env * capture;
         Continuation * cont;
         ScamExpr * args;
-        Env argEnv;
+        Env * argEnv;
         bool macrolike;
     };
 
     void do_apply(ScamExpr * formals,
                   ScamExpr * forms,
-                  Env capture,
+                  Env * capture,
                   Continuation * cont,
                   ScamExpr * args,
-                  Env argEnv,
+                  Env * argEnv,
                   bool macrolike)
     {
         workQueueHelper<ClosureWorker>(formals,

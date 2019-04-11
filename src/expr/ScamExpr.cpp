@@ -13,10 +13,21 @@ using namespace std;
 
 ScamExpr::ScamExpr(bool managed)
     : ManagedObject(managed)
+    , metadata(nullptr)
 {
 }
 
-void ScamExpr::eval(Continuation * cont, Env env)
+void ScamExpr::mark() const
+{
+    if ( ! isMarked() ) {
+        ManagedObject::mark();
+        if ( metadata ) {
+            metadata->mark();
+        }
+    }
+}
+
+void ScamExpr::eval(Continuation * cont, Env * env)
 {
     cont->run(this);
 }
@@ -26,7 +37,7 @@ bool ScamExpr::hasApply() const
     return false;
 }
 
-void ScamExpr::apply(ScamExpr * args, Continuation * cont, Env env)
+void ScamExpr::apply(ScamExpr * args, Continuation * cont, Env * env)
 {
     stringstream s;
     s << "Not possible to apply <" << this->toString()
@@ -35,7 +46,7 @@ void ScamExpr::apply(ScamExpr * args, Continuation * cont, Env env)
     cont->run(err);
 }
 
-void ScamExpr::mapEval(Continuation * cont, Env env)
+void ScamExpr::mapEval(Continuation * cont, Env * env)
 {
     cont->run(this);
 }
@@ -207,7 +218,7 @@ ScamExpr * ScamExpr::nthcdr(size_t n) const
     return ExpressionFactory::makeNull();
 }
 
-ScamExpr * ScamExpr::withEnvUpdate(Env updated) const
+ScamExpr * ScamExpr::withEnvUpdate(Env * updated) const
 {
     stringstream s;
     s << "Cannot update env of <" << this->toString() << ">";
@@ -238,28 +249,40 @@ bool ScamExpr::equals(ScamExpr const * expr) const
 
 void ScamExpr::setMeta(string const & key, ScamExpr * value)
 {
+    if ( ! metadata ) {
+        metadata = standardMemoryManager.make<Env>();
+    }
+
     ScamExpr * k = ExpressionFactory::makeSymbol(key);
 
-    if ( metadata.check(k) ) {
-        metadata.assign(k, value);
+    if ( metadata->check(k) ) {
+        metadata->assign(k, value);
     }
     else {
-        metadata.put(k, value);
+        metadata->put(k, value);
     }
 }
 
 bool ScamExpr::hasMeta(string const & key) const
 {
+    if ( ! metadata ) {
+        return false;
+    }
+
     ScamExpr * k = ExpressionFactory::makeSymbol(key);
-    return metadata.check(k);
+    return metadata->check(k);
 }
 
 ScamExpr * ScamExpr::getMeta(string const & key) const
 {
-    ScamExpr * k = ExpressionFactory::makeSymbol(key);
     ScamExpr * rv = ExpressionFactory::makeNil();
-    if ( metadata.check(k) ) {
-        rv = metadata.get(k);
+    if ( ! metadata ) {
+        return rv;
+    }
+
+    ScamExpr * k  = ExpressionFactory::makeSymbol(key);
+    if ( metadata->check(k) ) {
+        rv = metadata->get(k);
     }
 
     return rv;

@@ -2,8 +2,10 @@
 #include "expr/ScamInstance.hpp"
 
 #include "Continuation.hpp"
+#include "Env.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamInstanceAdapter.hpp"
+#include "util/MemoryManager.hpp"
 
 #include <sstream>
 
@@ -19,16 +21,17 @@ namespace
     static ScamExpr * const nil    = ExpressionFactory::makeNil();
 
     extern void
-    do_apply(ScamExpr * obj, ScamExpr * args, Continuation * cont, Env env);
+    do_apply(ScamExpr * obj, ScamExpr * args, Continuation * cont, Env * env);
 }
 
-ScamInstance::ScamInstance(ScamExpr * vars, ScamExpr * funs, Env env)
-    : local(env.extend())
+ScamInstance::ScamInstance(ScamExpr * vars, ScamExpr * funs, Env * env)
+    : priv(standardMemoryManager.make<Env>())
+    , local(env->extend())
 {
     size_t var_count = vars->length();
     for ( size_t n = 0 ; n < var_count ; ++n ) {
         ScamExpr * var = vars->nthcar(n);
-        local.put(var, nil);
+        local->put(var, nil);
     }
 
     size_t fun_count = funs->length();
@@ -40,15 +43,24 @@ ScamInstance::ScamInstance(ScamExpr * vars, ScamExpr * funs, Env env)
         ScamExpr * impl
             = ExpressionFactory::makeClosure(formals, forms, local, false);
 
-        priv.put(name, impl);
+        priv->put(name, impl);
     }
 }
 
 ScamInstance * ScamInstance::makeInstance(ScamExpr * vars,
                                           ScamExpr * funs,
-                                          Env env)
+                                          Env * env)
 {
     return new ScamInstance(vars, funs, env);
+}
+
+void ScamInstance::mark() const
+{
+    if ( ! isMarked() ) {
+        ScamExpr::mark();
+        local->mark();
+        priv->mark();
+    }
 }
 
 string ScamInstance::toString() const
@@ -61,7 +73,7 @@ bool ScamInstance::hasApply() const
     return true;
 }
 
-void ScamInstance::apply(ScamExpr * args, Continuation * cont, Env env)
+void ScamInstance::apply(ScamExpr * args, Continuation * cont, Env * env)
 {
     do_apply(this, args, cont, env);
 }
@@ -78,12 +90,12 @@ bool ScamInstance::isInstance() const
 
 void ScamInstance::setSelf(ScamExpr * expr) const
 {
-    local.put(self, expr);
+    local->put(self, expr);
 }
 
 void ScamInstance::setParent(ScamExpr * expr) const
 {
-    local.put(parent, expr);
+    local->put(parent, expr);
 }
 
 namespace
@@ -132,7 +144,7 @@ namespace
             }
 
             ScamInstanceAdapter adapter(obj);
-            Env env = adapter.getEnv();
+            Env * env = adapter.getEnv();
             func->apply(expr, cont, env);
         }
 
@@ -147,9 +159,9 @@ namespace
 
             while ( o->isInstance() ) {
                 ScamInstanceAdapter adapter(o);
-                Env env = adapter.getFunctionMap();
-                if ( env.check(name) ) {
-                    return env.get(name);
+                Env * env = adapter.getFunctionMap();
+                if ( env->check(name) ) {
+                    return env->get(name);
                 }
 
                 temp = adapter.getParent();
@@ -169,7 +181,8 @@ namespace
         }
     };
 
-    void do_apply(ScamExpr * obj, ScamExpr * args, Continuation * cont, Env env)
+    void
+    do_apply(ScamExpr * obj, ScamExpr * args, Continuation * cont, Env * env)
     {
         ScamExpr * name = args->nthcar(0);
         ScamExpr * funargs = args->nthcdr(0);

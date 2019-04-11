@@ -13,17 +13,13 @@ using namespace scam;
 using namespace scam::cons_impl;
 using namespace std;
 
-#include "Worker.hpp"
-
-#include <memory>
-
 namespace
 {
     class  MapWorker : public Worker
     {
     public:
         MapWorker(Continuation * cont,
-                  Env env,
+                  Env * env,
                   ScamExpr * car,
                   ScamExpr * cdr);
 
@@ -43,7 +39,7 @@ namespace scam
         void scamConsMapHelper(ScamExpr * car,
                                ScamExpr * cdr,
                                Continuation * cont,
-                               Env env)
+                               Env * env)
         {
             workQueueHelper<MapWorker>(cont, env, car, cdr);
         }
@@ -58,7 +54,7 @@ namespace
         MapCdr(ScamExpr * car,
                ScamExpr * cdr,
                Continuation * cont,
-               Env env);
+               Env * env);
 
         void run() override;
 
@@ -100,7 +96,7 @@ namespace
 }
 
 MapWorker::MapWorker(Continuation * cont,
-                     Env env,
+                     Env * env,
                      ScamExpr * car,
                      ScamExpr * cdr)
     : Worker("Cons Map")
@@ -147,7 +143,7 @@ void CarContinuation::run(ScamExpr * expr)
     }
 }
 
-MapCdr::MapCdr(ScamExpr * car, ScamExpr * cdr, Continuation * cont, Env env)
+MapCdr::MapCdr(ScamExpr * car, ScamExpr * cdr, Continuation * cont, Env * env)
     : Worker("Cons Map Cdr")
     , data(car, cdr, cont, env)
 {

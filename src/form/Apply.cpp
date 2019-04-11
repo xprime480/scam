@@ -13,7 +13,7 @@ using namespace std;
 
 namespace
 {
-    extern void do_apply(ScamExpr * args, Continuation * cont, Env env);
+    extern void do_apply(ScamExpr * args, Continuation * cont, Env * env);
 }
 
 Apply::Apply()
@@ -27,7 +27,7 @@ Apply * Apply::makeInstance()
     return &instance;
 }
 
-void Apply::apply(ScamExpr * args, Continuation * cont, Env env)
+void Apply::apply(ScamExpr * args, Continuation * cont, Env * env)
 {
     do_apply(args, cont, env);
 }
@@ -39,7 +39,7 @@ namespace
     private:
         friend class scam::MemoryManager;
 
-        ApplyArgsCont(ScamExpr * op, Continuation * cont, Env env)
+        ApplyArgsCont(ScamExpr * op, Continuation * cont, Env * env)
             : Continuation("apply args")
             , op(op)
             , cont(cont)
@@ -48,7 +48,7 @@ namespace
         }
 
         static ApplyArgsCont *
-        makeInstance(ScamExpr * op, Continuation * cont, Env env)
+        makeInstance(ScamExpr * op, Continuation * cont, Env * env)
         {
             return new ApplyArgsCont(op, cont, env);
         }
@@ -60,6 +60,7 @@ namespace
                 Continuation::mark();
                 op->mark();
                 cont->mark();
+                env->mark();
             }
         }
 
@@ -78,7 +79,7 @@ namespace
     private:
         ScamExpr * op;
         Continuation * cont;
-        Env env;
+        Env * env;
     };
 
     class ApplyArgsWorker : public Worker
@@ -87,7 +88,7 @@ namespace
         ApplyArgsWorker(ScamExpr * op,
                         ScamExpr * args,
                         Continuation * cont,
-                        Env env)
+                        Env * env)
             : Worker("Apply Args")
             , op(op)
             , args(args)
@@ -107,7 +108,7 @@ namespace
         ScamExpr * op;
         ScamExpr * args;
         Continuation * cont;
-        Env        env;
+        Env *        env;
     };
 
     class ApplyOpCont : public Continuation
@@ -115,7 +116,7 @@ namespace
     private:
         friend class scam::MemoryManager;
 
-        ApplyOpCont(ScamExpr * args, Continuation * cont, Env env)
+        ApplyOpCont(ScamExpr * args, Continuation * cont, Env * env)
             : Continuation("apply")
             , args(args)
             , cont(cont)
@@ -124,7 +125,7 @@ namespace
         }
 
         static ApplyOpCont *
-        makeInstance(ScamExpr * args, Continuation * cont, Env env)
+        makeInstance(ScamExpr * args, Continuation * cont, Env * env)
         {
             return new ApplyOpCont(args, cont, env);
         }
@@ -136,6 +137,7 @@ namespace
                 Continuation::mark();
                 args->mark();
                 cont->mark();
+                env->mark();
             }
         }
 
@@ -154,10 +156,10 @@ namespace
     private:
         ScamExpr * args;
         Continuation * cont;
-        Env env;
+        Env * env;
     };
 
-    void do_apply(ScamExpr * args, Continuation * cont, Env env)
+    void do_apply(ScamExpr * args, Continuation * cont, Env * env)
     {
         ScamExpr * sym     = args->nthcar(0);
         ScamExpr * arglist = args->nthcar(1);

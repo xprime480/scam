@@ -12,7 +12,7 @@ using namespace std;
 namespace
 {
     extern void
-    do_apply(ScamExpr * args, Continuation * cont, Env env, ScamDict * dict);
+    do_apply(ScamExpr * args, Continuation * cont, Env * env, ScamDict * dict);
 }
 
 ScamDict::ScamDict()
@@ -77,7 +77,7 @@ bool ScamDict::hasApply() const
     return true;
 }
 
-void ScamDict::apply(ScamExpr * args, Continuation * cont, Env env)
+void ScamDict::apply(ScamExpr * args, Continuation * cont, Env * env)
 {
     do_apply(args, cont, env, this);
 }
@@ -320,7 +320,7 @@ namespace
     }
 
     void
-    do_apply(ScamExpr * args, Continuation * cont, Env env, ScamDict * dict)
+    do_apply(ScamExpr * args, Continuation * cont, Env * env, ScamDict * dict)
     {
         if ( args->isNil() ) {
             stringstream s;

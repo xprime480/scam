@@ -1,29 +1,29 @@
 #if ! defined(SCAMEXPR_H)
 #define SCAMEXPR_H 1
 
-#include "Env.hpp"
-
 #include "util/ManagedObject.hpp"
 
-#include <memory>
 #include <string>
 
 namespace scam
 {
     class Continuation;
-    class ExpressionFactory;
+    class Env;
 
     class ScamExpr : public ManagedObject
     {
-    public:
+    protected:
         ScamExpr(bool managed = true);
 
+    public:
+        void mark() const override;
+
         virtual std::string toString() const = 0;
-        virtual void eval(Continuation * cont, Env env);
+        virtual void eval(Continuation * cont, Env * env);
 
         virtual bool hasApply() const;
-        virtual void apply(ScamExpr * args, Continuation * cont, Env env);
-        virtual void mapEval(Continuation * cont, Env env);
+        virtual void apply(ScamExpr * args, Continuation * cont, Env * env);
+        virtual void mapEval(Continuation * cont, Env * env);
 
         virtual bool isNull() const;
         virtual bool error() const;
@@ -60,7 +60,7 @@ namespace scam
         virtual ScamExpr * nthcar(size_t n) const;
         virtual ScamExpr * nthcdr(size_t n) const;
 
-        virtual ScamExpr * withEnvUpdate(Env updated) const;
+        virtual ScamExpr * withEnvUpdate(Env * updated) const;
 
         virtual void setSelf(ScamExpr * expr) const;
         virtual void setParent(ScamExpr * expr) const;
@@ -72,11 +72,7 @@ namespace scam
         ScamExpr * getMeta(std::string const & key) const;
 
     private:
-        friend class ExpressionFactory;
-        unsigned handle;
-        void setHandle(unsigned h) { handle = h; }
-
-        Env metadata;
+        Env * metadata;
     };
 }
 

@@ -84,7 +84,7 @@ ScamVector * ExpressionFactory::makeVector(ExprVec const & elts)
 
 ScamClosure * ExpressionFactory::makeClosure(ScamExpr *formals,
                                              ScamExpr *forms,
-                                             Env env,
+                                             Env * env,
                                              bool macrolike)
 {
     return standardMemoryManager.make<ScamClosure>(formals,
@@ -96,14 +96,14 @@ ScamClosure * ExpressionFactory::makeClosure(ScamExpr *formals,
 ScamClass * ExpressionFactory::makeClass(ScamExpr * base,
                                          ScamExpr * vars,
                                          ScamExpr * funs,
-                                         Env env)
+                                         Env * env)
 {
     return standardMemoryManager.make<ScamClass>(base, vars, funs, env);
 }
 
 ScamInstance * ExpressionFactory::makeInstance(ScamExpr * vars,
                                                ScamExpr * funs,
-                                               Env env)
+                                               Env * env)
 {
     return standardMemoryManager.make<ScamInstance>(vars, funs, env);
 }

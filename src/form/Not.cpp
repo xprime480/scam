@@ -13,7 +13,7 @@ using namespace std;
 
 namespace
 {
-    extern void apply_impl(ScamExpr * args, Continuation * cont, Env env);
+    extern void apply_impl(ScamExpr * args, Continuation * cont, Env * env);
 }
 
 Not::Not()
@@ -27,7 +27,7 @@ Not * Not::makeInstance()
     return &instance;
 }
 
-void Not::apply(ScamExpr * args, Continuation * cont, Env env)
+void Not::apply(ScamExpr * args, Continuation * cont, Env * env)
 {
     apply_impl(args, cont, env);
 }
@@ -37,13 +37,13 @@ namespace
     class NotWorker : public Worker
     {
     public:
-        NotWorker(Continuation * cont, Env env, ScamExpr * args);
+        NotWorker(Continuation * cont, Env * env, ScamExpr * args);
         void run() override;
 
     private:
         ScamExpr * args;
         Continuation * cont;
-        Env env;
+        Env * env;
     };
 
     class NotCont : public Continuation
@@ -62,13 +62,13 @@ namespace
         Continuation * cont;
     };
 
-    void apply_impl(ScamExpr * args, Continuation * cont, Env env)
+    void apply_impl(ScamExpr * args, Continuation * cont, Env * env)
     {
         workQueueHelper<NotWorker>(cont, env, args);
     }
 }
 
-NotWorker::NotWorker(Continuation * cont, Env env, ScamExpr * args)
+NotWorker::NotWorker(Continuation * cont, Env * env, ScamExpr * args)
     : Worker("Not")
     , args(args)
     , cont(cont)

@@ -51,7 +51,7 @@ namespace
     };
 }
 
-EvalWorker::EvalWorker(ScamExpr * forms, Env extended, Continuation * cont)
+EvalWorker::EvalWorker(ScamExpr * forms, Env * extended, Continuation * cont)
     : Worker("eval")
     , forms(forms)
     , extended(extended)

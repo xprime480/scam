@@ -11,7 +11,7 @@ using namespace std;
 
 namespace
 {
-    extern void do_apply(ScamExpr * args, Continuation * cont, Env env);
+    extern void do_apply(ScamExpr * args, Continuation * cont, Env * env);
 }
 
 CallCC::CallCC()
@@ -25,7 +25,7 @@ CallCC * CallCC::makeInstance()
     return &instance;
 }
 
-void CallCC::apply(ScamExpr * args, Continuation * cont, Env env)
+void CallCC::apply(ScamExpr * args, Continuation * cont, Env * env)
 {
     do_apply(args, cont, env);
 }
@@ -37,14 +37,14 @@ namespace
     private:
         friend class scam::MemoryManager;
 
-        CallCont(Continuation * cont, Env env)
+        CallCont(Continuation * cont, Env * env)
             : Continuation("CallCont")
             , cont(cont)
             , env(env)
         {
         }
 
-        static CallCont * makeInstance(Continuation * cont, Env env)
+        static CallCont * makeInstance(Continuation * cont, Env * env)
         {
             return new CallCont(cont, env);
         }
@@ -55,6 +55,7 @@ namespace
             if ( ! isMarked() ) {
               Continuation::mark();
               cont->mark();
+              env->mark();
             }
         }
 
@@ -81,10 +82,10 @@ namespace
 
     private:
         Continuation * cont;
-        Env        env;
+        Env          * env;
     };
 
-    void do_apply(ScamExpr * args, Continuation * cont, Env env)
+    void do_apply(ScamExpr * args, Continuation * cont, Env * env)
     {
         ScamExpr * body = args->nthcar(0);
         Continuation * newCont =

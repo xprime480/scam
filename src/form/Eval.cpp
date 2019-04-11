@@ -10,7 +10,7 @@ using namespace std;
 
 namespace
 {
-    extern void do_apply(ScamExpr * args, Continuation * cont, Env env);
+    extern void do_apply(ScamExpr * args, Continuation * cont, Env * env);
 }
 
 Eval::Eval()
@@ -24,7 +24,7 @@ Eval * Eval::makeInstance()
     return &instance;
 }
 
-void Eval::apply(ScamExpr * args, Continuation * cont, Env env)
+void Eval::apply(ScamExpr * args, Continuation * cont, Env * env)
 {
     do_apply(args, cont, env);
 }
@@ -36,14 +36,14 @@ namespace
     private:
         friend class scam::MemoryManager;
 
-        EvalCont(Continuation * cont, Env env)
+        EvalCont(Continuation * cont, Env * env)
             : Continuation("eval")
             , cont(cont)
             , env(env)
         {
         }
 
-        static EvalCont * makeInstance(Continuation * cont, Env env)
+        static EvalCont * makeInstance(Continuation * cont, Env * env)
         {
             return new EvalCont(cont, env);
         }
@@ -54,6 +54,7 @@ namespace
             if ( ! isMarked() ) {
                 Continuation::mark();
                 cont->mark();
+                env->mark();
             }
         }
 
@@ -65,16 +66,16 @@ namespace
                 cont->run(expr);
             }
             else {
-                expr->eval(cont, env.top());
+                expr->eval(cont, env->getTop());
             }
         }
 
     private:
         Continuation * cont;
-        Env env;
+        Env * env;
     };
 
-    void do_apply(ScamExpr * args, Continuation * cont, Env env)
+    void do_apply(ScamExpr * args, Continuation * cont, Env * env)
     {
         Continuation * finisher =
             standardMemoryManager.make<EvalCont>(cont, env);

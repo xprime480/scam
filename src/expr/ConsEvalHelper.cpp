@@ -20,7 +20,7 @@ namespace scam
         {
         public:
             ConsWorker(Continuation * cont,
-                       Env env,
+                       Env * env,
                        ScamExpr * car,
                        ScamExpr * cdr);
 
@@ -38,7 +38,7 @@ namespace scam
         void scamConsEvalHelper(ScamExpr * car,
                                 ScamExpr * cdr,
                                 Continuation * cont,
-                                Env env)
+                                Env * env)
         {
             workQueueHelper<ConsWorker>(cont, env, car, cdr);
         }
@@ -65,7 +65,7 @@ namespace
 }
 
 ConsWorker::ConsWorker(Continuation * cont,
-                       Env env,
+                       Env * env,
                        ScamExpr * car,
                        ScamExpr * cdr)
 

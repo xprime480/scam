@@ -26,12 +26,12 @@ string ScamSymbol::toString() const
     return value;
 }
 
-void ScamSymbol::eval(Continuation * cont, Env env)
+void ScamSymbol::eval(Continuation * cont, Env * env)
 {
     ScamExpr * evaluated;
 
-    if ( env.check(this) ) {
-        evaluated = env.get(this);
+    if ( env->check(this) ) {
+        evaluated = env->get(this);
     }
     else {
         stringstream s;

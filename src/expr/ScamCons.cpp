@@ -53,12 +53,12 @@ string ScamCons::toString() const
     return s.str();
 }
 
-void ScamCons::eval(Continuation * cont, Env env)
+void ScamCons::eval(Continuation * cont, Env * env)
 {
     scamConsEvalHelper(car, cdr, cont, env);
 }
 
-void ScamCons::mapEval(Continuation * cont, Env env)
+void ScamCons::mapEval(Continuation * cont, Env * env)
 {
     scamConsMapHelper(car, cdr, cont, env);
 }

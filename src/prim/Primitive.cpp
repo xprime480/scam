@@ -19,13 +19,13 @@ namespace
     {
         PrimWorkerData(ScamExpr * args,
                        Continuation * original,
-                       Env env,
+                       Env * env,
                        Primitive * caller);
 
         ScamExpr * args;
         Continuation * original;
         Continuation * cont;
-        Env env;
+        Env * env;
         Primitive * caller;
 
         void mark() const;
@@ -38,7 +38,7 @@ namespace
     {
     public:
         PrimWorker(Continuation * cont,
-                   Env env,
+                   Env * env,
                    ScamExpr * args,
                    Primitive * caller);
 
@@ -66,7 +66,7 @@ bool Primitive::hasApply() const
     return true;
 }
 
-void Primitive::apply(ScamExpr * args, Continuation * cont, Env env)
+void Primitive::apply(ScamExpr * args, Continuation * cont, Env * env)
 {
     workQueueHelper<PrimWorker>(cont, env, args, this);
 }
@@ -75,7 +75,7 @@ namespace
 {
     PrimWorkerData::PrimWorkerData(ScamExpr * args,
                                    Continuation * original,
-                                   Env env,
+                                   Env * env,
                                    Primitive * caller)
         : args(args)
         , original(original)
@@ -90,6 +90,7 @@ namespace
         args->mark();
         original->mark();
         if ( cont ) { cont->mark(); };
+        env->mark();
     }
 
     void PrimWorkerData::mapEval()
@@ -126,7 +127,7 @@ namespace
     };
 
     PrimWorker::PrimWorker(Continuation * cont,
-                           Env env,
+                           Env * env,
                            ScamExpr * args,
                            Primitive * caller)
         : Worker("Primitive")

@@ -33,7 +33,7 @@ bool ScamContinuation::hasApply() const
     return true;
 }
 
-void ScamContinuation::apply(ScamExpr * args, Continuation * cont,  Env env)
+void ScamContinuation::apply(ScamExpr * args, Continuation * cont,  Env * env)
 {
     ScamExpr * arg = args->nthcar(0);
     this->cont->run(arg);

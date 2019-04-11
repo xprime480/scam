@@ -21,12 +21,12 @@ namespace
 {
     extern void let_impl(ScamExpr * args,
                          Continuation * cont,
-                         Env env,
+                         Env * env,
                          bool rebind);
 
     extern void letstar_impl(ScamExpr * args,
                              Continuation * cont,
-                             Env env,
+                             Env * env,
                              ScamEngine * engine);
 }
 
@@ -41,7 +41,7 @@ Let * Let::makeInstance()
     return &instance;
 }
 
-void Let::apply(ScamExpr * args, Continuation * cont, Env env)
+void Let::apply(ScamExpr * args, Continuation * cont, Env * env)
 {
     let_impl(args, cont, env, false);
 }
@@ -57,7 +57,7 @@ LetStar * LetStar::makeInstance(ScamEngine * engine)
     return new LetStar(engine);
 }
 
-void LetStar::apply(ScamExpr * args, Continuation * cont, Env env)
+void LetStar::apply(ScamExpr * args, Continuation * cont, Env * env)
 {
     letstar_impl(args, cont, env, engine);
 }
@@ -73,7 +73,7 @@ LetRec * LetRec::makeInstance()
     return &instance;
 }
 
-void LetRec::apply(ScamExpr * args, Continuation * cont, Env env)
+void LetRec::apply(ScamExpr * args, Continuation * cont, Env * env)
 {
     let_impl(args, cont, env, true);
 }
@@ -103,7 +103,7 @@ namespace
         Continuation * cont;
 
         virtual void do_let(ScamExpr * expr) = 0;
-        void final_eval(Env env);
+        void final_eval(Env * env);
     };
 
     class LetCont : public LetCommonCont
@@ -114,14 +114,14 @@ namespace
         LetCont(ScamExpr * formals,
                 ScamExpr * forms,
                 Continuation * cont,
-                Env env,
+                Env * env,
                 bool rebind);
 
 
         static LetCont * makeInstance(ScamExpr * formals,
                                       ScamExpr * forms,
                                       Continuation * cont,
-                                      Env env,
+                                      Env * env,
                                       bool rebind);
 
     public:
@@ -132,10 +132,10 @@ namespace
 
     private:
         ScamExpr * formals;
-        Env        env;
+        Env *        env;
         bool       rebind;
 
-        void rebind_procs(Env extended);
+        void rebind_procs(Env * extended);
     };
 
     class LetStarBacktracker : public Backtracker
@@ -143,11 +143,11 @@ namespace
     private:
         friend class scam::MemoryManager;
 
-        LetStarBacktracker(Env env,
+        LetStarBacktracker(Env * env,
                            ScamExpr * sym,
                            Backtracker * backtracker);
 
-        static LetStarBacktracker * makeInstance(Env env,
+        static LetStarBacktracker * makeInstance(Env * env,
                                                  ScamExpr * sym,
                                                  Backtracker * backtracker);
 
@@ -156,8 +156,8 @@ namespace
         void run() override;
 
     private:
-        Env             env;
-        ScamExpr *      sym;
+        Env *      env;
+        ScamExpr * sym;
     };
 
     class LetStarCont : public LetCommonCont
@@ -169,14 +169,14 @@ namespace
                     ScamExpr * rest,
                     ScamExpr * forms,
                     Continuation * cont,
-                    Env env,
+                    Env * env,
                     ScamEngine * engine);
 
         static LetStarCont * makeInstance(ScamExpr * formals,
                                           ScamExpr * rest,
                                           ScamExpr * forms,
                                           Continuation * cont,
-                                          Env env,
+                                          Env * env,
                                           ScamEngine * engine);
 
     public:
@@ -188,7 +188,7 @@ namespace
     private:
         ScamExpr * formals;
         ScamExpr * rest;
-        Env        env;
+        Env *        env;
         ScamEngine * engine;
 
         void makeBacktracker(ScamExpr * sym) const;
@@ -204,7 +204,7 @@ namespace
                     ScamExpr * evaled,
                     ScamExpr * args,
                     Continuation * cont,
-                    Env env,
+                    Env * env,
                     bool rebind);
 
         static LetStepCont * makeInstance(ScamExpr * formals,
@@ -212,7 +212,7 @@ namespace
                                           ScamExpr * evaled,
                                           ScamExpr * args,
                                           Continuation * cont,
-                                          Env env,
+                                          Env * env,
                                           bool rebind);
 
     public:
@@ -226,7 +226,7 @@ namespace
         ScamExpr * evaled;
         ScamExpr * args;
         Continuation * cont;
-        Env env;
+        Env * env;
         bool rebind;
     };
 
@@ -236,13 +236,13 @@ namespace
         LetBaseWorker(char const * name,
                       ScamExpr * args,
                       Continuation * cont,
-                      Env env);
+                      Env * env);
 
         void run() override;
 
     protected:
         Continuation * cont;
-        Env env;
+        Env * env;
 
         virtual void
         do_next(ScamExpr * formals, ScamExpr * values, ScamExpr * forms) = 0;
@@ -288,7 +288,7 @@ namespace
     class LetWorker : public LetBaseWorker
     {
     public:
-        LetWorker(ScamExpr * args, Continuation * cont, Env env, bool rebind);
+        LetWorker(ScamExpr * args, Continuation * cont, Env * env, bool rebind);
 
     protected:
         void do_next(ScamExpr * formals,
@@ -304,7 +304,7 @@ namespace
     public:
         LetStarWorker(ScamExpr * args,
                       Continuation * cont,
-                      Env env,
+                      Env * env,
                       ScamEngine * engine);
 
     protected:
@@ -324,7 +324,7 @@ namespace
                       ScamExpr * args,
                       ScamExpr * forms,
                       Continuation * cont,
-                      Env env,
+                      Env * env,
                       bool rebind);
 
         void run() override;
@@ -335,18 +335,18 @@ namespace
         ScamExpr * args;
         ScamExpr * forms;
         Continuation * cont;
-        Env env;
+        Env * env;
         bool rebind;
     };
 
-    void let_impl(ScamExpr * args, Continuation * cont, Env env, bool rebind)
+    void let_impl(ScamExpr * args, Continuation * cont, Env * env, bool rebind)
     {
         workQueueHelper<LetWorker>(args, cont, env, rebind);
     }
 
     void letstar_impl(ScamExpr * args,
                       Continuation * cont,
-                      Env env,
+                      Env * env,
                       ScamEngine * engine)
     {
         workQueueHelper<LetStarWorker>(args, cont, env, engine);
@@ -384,7 +384,7 @@ namespace
         }
     }
 
-    void LetCommonCont::final_eval(Env env)
+    void LetCommonCont::final_eval(Env * env)
     {
         using WT = EvalWorker;
         ScamExpr * f = forms;
@@ -396,7 +396,7 @@ namespace
     LetCont::LetCont(ScamExpr * formals,
                      ScamExpr * forms,
                      Continuation * cont,
-                     Env env,
+                     Env * env,
                      bool rebind)
         : LetCommonCont("Let", forms, cont)
         , formals(formals)
@@ -408,7 +408,7 @@ namespace
     LetCont * LetCont::makeInstance(ScamExpr * formals,
                                     ScamExpr * forms,
                                     Continuation * cont,
-                                    Env env,
+                                    Env * env,
                                     bool rebind)
     {
         return new LetCont(formals, forms, cont, env, rebind);
@@ -419,6 +419,7 @@ namespace
         if ( ! isMarked() ) {
             LetCommonCont::mark();
             formals->mark();
+            env->mark();
         }
     }
 
@@ -426,13 +427,13 @@ namespace
     {
         Binder binder(env);
         ScamExpr * ff = formals;
-        Env extended = binder.bind(ff, expr);
+        Env * extended = binder.bind(ff, expr);
 
         rebind_procs(extended);
         final_eval(extended);
     }
 
-    void LetCont::rebind_procs(Env extended)
+    void LetCont::rebind_procs(Env * extended)
     {
         if ( ! rebind ) {
             return;
@@ -441,17 +442,17 @@ namespace
         const size_t len = formals->length();
         for ( size_t n = 0 ; n < len ; ++n ) {
             ScamExpr * k = formals->nthcar(n);
-            ScamExpr * v = extended.get(k);
+            ScamExpr * v = extended->get(k);
             if ( v->isProcedure() ) {
                 ScamExpr * newV = v->withEnvUpdate(extended);
-                extended.assign(k, newV);
+                extended->assign(k, newV);
             }
         }
     }
 
     /////////////////////////
 
-    LetStarBacktracker::LetStarBacktracker(Env env,
+    LetStarBacktracker::LetStarBacktracker(Env * env,
                                            ScamExpr * sym,
                                            Backtracker * backtracker)
         : Backtracker("Let*", backtracker)
@@ -461,7 +462,7 @@ namespace
     }
 
     LetStarBacktracker *
-    LetStarBacktracker::makeInstance(Env env,
+    LetStarBacktracker::makeInstance(Env * env,
                                      ScamExpr * sym,
                                      Backtracker * backtracker)
     {
@@ -472,6 +473,7 @@ namespace
     {
         if ( ! isMarked() ) {
             Backtracker::mark();
+            env->mark();
             sym->mark();
         }
     }
@@ -479,7 +481,7 @@ namespace
     void LetStarBacktracker::run()
     {
         Backtracker::run();
-        env.remove(sym);
+        env->remove(sym);
         Continuation * cont =
             standardMemoryManager.make<Continuation>("Assign Backtrack");
         runParent(cont);
@@ -491,7 +493,7 @@ namespace
                              ScamExpr * rest,
                              ScamExpr * forms,
                              Continuation * cont,
-                             Env env,
+                             Env * env,
                              ScamEngine * engine)
         : LetCommonCont("Let*", forms, cont)
         , formals(formals)
@@ -505,7 +507,7 @@ namespace
                                             ScamExpr * rest,
                                             ScamExpr * forms,
                                             Continuation * cont,
-                                            Env env,
+                                            Env * env,
                                             ScamEngine * engine)
     {
         return new LetStarCont(formals, rest, forms, cont, env, engine);
@@ -517,6 +519,7 @@ namespace
             LetCommonCont::mark();
             formals->mark();
             rest->mark();
+            env->mark();
         }
     }
 
@@ -527,7 +530,7 @@ namespace
         }
         else {
             ScamExpr * sym = formals->getCar();
-            env.put(sym, expr);
+            env->put(sym, expr);
 
             makeBacktracker(sym);
 
@@ -559,7 +562,7 @@ namespace
     LetBaseWorker::LetBaseWorker(char const * name,
                                  ScamExpr * args,
                                  Continuation * cont,
-                                 Env env)
+                                 Env * env)
         : Worker(name)
         , cont(cont)
         , env(env)
@@ -673,7 +676,7 @@ namespace
 
     LetWorker::LetWorker(ScamExpr * args,
                          Continuation * cont,
-                         Env env,
+                         Env * env,
                          bool rebind)
         : LetBaseWorker("Let", args, cont, env)
         , rebind(rebind)
@@ -699,7 +702,7 @@ namespace
 
     LetStarWorker::LetStarWorker(ScamExpr * args,
                                  Continuation * cont,
-                                 Env env,
+                                 Env * env,
                                  ScamEngine * engine)
         : LetBaseWorker("LetStar", args, cont, env)
         , engine(engine)
@@ -710,7 +713,7 @@ namespace
                                 ScamExpr * values,
                                 ScamExpr * forms)
     {
-        Env extended = env.extend();
+        Env * extended = env->extend();
         ScamExpr * safe = safeCons(values);
 
         using C = LetStarCont;
@@ -729,7 +732,7 @@ namespace
                                  ScamExpr * args,
                                  ScamExpr * forms,
                                  Continuation * cont,
-                                 Env env,
+                                 Env * env,
                                  bool rebind)
         : Worker("LetEvalWorker")
         , formals(formals)
@@ -776,7 +779,7 @@ namespace
                              ScamExpr * evaled,
                              ScamExpr * args,
                              Continuation * cont,
-                             Env env,
+                             Env * env,
                              bool rebind)
         : Continuation("LetStepCont")
         , formals(formals)
@@ -794,7 +797,7 @@ namespace
                                             ScamExpr * evaled,
                                             ScamExpr * args,
                                             Continuation * cont,
-                                            Env env,
+                                            Env * env,
                                             bool rebind)
     {
         return new LetStepCont(formals, forms, evaled, args, cont, env, rebind);
@@ -809,6 +812,7 @@ namespace
             evaled->mark();
             args->mark();
             cont->mark();
+            env->mark();
       }
     }
 

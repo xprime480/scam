@@ -14,7 +14,7 @@ namespace scam
 
     public:
         static Amb * makeInstance(ScamEngine * engine);
-        void apply(ScamExpr * args, Continuation * cont, Env env) override;
+        void apply(ScamExpr * args, Continuation * cont, Env * env) override;
 
     private:
         ScamEngine * engine;

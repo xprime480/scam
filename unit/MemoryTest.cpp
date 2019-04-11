@@ -448,12 +448,13 @@ TEST_F(MemoryTest, TestScamClosure)
     ScamExpr   * formals = ExpressionFactory::makeList(symA, symB);
     ScamExpr   * aForm   = ExpressionFactory::makeList(symPlus, symA, symB);
     ScamExpr   * forms   = ExpressionFactory::makeList(aForm);
-    Env env;
+    Env * env = standardMemoryManager.make<Env>();
 
     ScamClosure * closure = mm.make<ScamClosure>(formals, forms, env);
 
     closure->mark();
-    expectMarked(true, closure, forms, aForm, formals, symB, symA, symPlus);
+    expectMarked(true,
+                 closure, env, forms, aForm, formals, symB, symA, symPlus);
 }
 
 TEST_F(MemoryTest, TestScamClass)
@@ -465,12 +466,12 @@ TEST_F(MemoryTest, TestScamClass)
     ScamExpr   * vars    = ExpressionFactory::makeList(symA, symB);
     ScamExpr   * aForm   = ExpressionFactory::makeList(symPlus, symA, symB);
     ScamExpr   * funs    = ExpressionFactory::makeList(aForm);
-    Env env;
+    Env * env = standardMemoryManager.make<Env>();
 
     ScamClass * cls = mm.make<ScamClass>(base, vars, funs, env);
 
     cls->mark();
-    expectMarked(true, cls, funs, aForm, vars, symB, symA, symPlus, base);
+    expectMarked(true, cls, env, funs, aForm, vars, symB, symA, symPlus, base);
 }
 
 TEST_F(MemoryTest, TestScamInstance)
@@ -487,18 +488,13 @@ TEST_F(MemoryTest, TestScamInstance)
     ScamExpr   * fun1    = ExpressionFactory::makeList(name, args, aForm);
     ScamExpr   * funs    = ExpressionFactory::makeList(fun1);
 
-    Env env;
+    Env * env = standardMemoryManager.make<Env>();
 
     ScamInstance * instance = mm.make<ScamInstance>(vars, funs, env);
 
     instance->mark();
-    expectMarked(true, instance);
-    expectMarked(false, funs, fun1, vars);
-
-    // change false to true in the following after we make
-    // environments part of managed memory
-    //
-    expectMarked(false, aForm, args, symQ, name, symB, symA, symPlus);
+    expectMarked(false, funs, fun1, vars, name);
+    expectMarked(true, instance, env, aForm, args, symQ, symB, symA, symPlus);
 }
 
 TEST_F(MemoryTest, TestScamContinuation)
@@ -518,4 +514,17 @@ TEST_F(MemoryTest, TestExtractor)
     cont->run(expr);
     cont->mark();
     expectMarked(true, cont, expr);
+}
+
+TEST_F(MemoryTest, TestEnv)
+{
+    Env * top = standardMemoryManager.make<Env>();
+    Env * env = top->extend();
+    ScamExpr * key = ExpressionFactory::makeSymbol("f");
+    ScamExpr * val = ExpressionFactory::makeInteger(333);
+
+    top->put(key, val);
+    env->mark();
+    expectMarked(true, top, env, val);
+    expectMarked(false, key);
 }

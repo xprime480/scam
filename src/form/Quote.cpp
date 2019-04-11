@@ -22,7 +22,7 @@ Quote * Quote::makeInstance()
     return &quote;
 }
 
-void Quote::apply(ScamExpr * args, Continuation * cont, Env env)
+void Quote::apply(ScamExpr * args, Continuation * cont, Env * env)
 {
     ScamExpr * expr = args->getCar();
     cont->run(expr);
@@ -43,11 +43,11 @@ namespace
 {
     extern void qq_apply(ScamExpr * args,
                          Continuation * cont,
-                         Env env,
+                         Env * env,
                          bool top);
 }
 
-void QuasiQuote::apply(ScamExpr * args, Continuation * cont, Env env)
+void QuasiQuote::apply(ScamExpr * args, Continuation * cont, Env * env)
 {
     qq_apply(args, cont, env, true);
 }
@@ -62,7 +62,7 @@ namespace
     private:
         friend class scam::MemoryManager;
 
-        QQConsListCdrCont(ScamExpr * car, Continuation * cont, Env env)
+        QQConsListCdrCont(ScamExpr * car, Continuation * cont, Env * env)
             : Continuation("QQConsListCdrCont")
             , car(car)
             , cont(cont)
@@ -71,7 +71,7 @@ namespace
         }
 
         static QQConsListCdrCont *
-        makeInstance(ScamExpr * car, Continuation * cont, Env env)
+        makeInstance(ScamExpr * car, Continuation * cont, Env * env)
         {
             return new  QQConsListCdrCont(car, cont, env);
         }
@@ -83,6 +83,7 @@ namespace
                 Continuation::mark();
                 car->mark();
                 cont->mark();
+                env->mark();
             }
         }
 
@@ -100,7 +101,7 @@ namespace
     private:
         ScamExpr * car;
         Continuation * cont;
-        Env        env;
+        Env  *      env;
 
         void handle(ScamExpr * expr)
         {
@@ -144,7 +145,7 @@ namespace
     private:
         friend class scam::MemoryManager;
 
-        QQConsListCarCont(ScamExpr * cdr, Continuation * cont, Env env)
+        QQConsListCarCont(ScamExpr * cdr, Continuation * cont, Env * env)
             : Continuation("QQConsListCarCont")
             , cdr(cdr)
             , cont(cont)
@@ -153,7 +154,7 @@ namespace
         }
 
         static QQConsListCarCont *
-        makeInstance(ScamExpr * cdr, Continuation * cont, Env env)
+        makeInstance(ScamExpr * cdr, Continuation * cont, Env * env)
         {
             return new QQConsListCarCont(cdr, cont, env);
         }
@@ -165,6 +166,7 @@ namespace
                 Continuation::mark();
                 cdr->mark();
                 cont->mark();
+                env->mark();
             }
         }
 
@@ -186,7 +188,7 @@ namespace
     private:
         ScamExpr * cdr;
         Continuation * cont;
-        Env        env;
+        Env *       env;
     };
 
     class  QQSpliceCont : public Continuation
@@ -234,7 +236,7 @@ namespace
     class QuasiQuoteWorker : public Worker
     {
     public:
-        QuasiQuoteWorker(ScamExpr * form, Continuation * cont, Env env)
+        QuasiQuoteWorker(ScamExpr * form, Continuation * cont, Env * env)
             : Worker("QuasiQuote")
             , form(form)
             , cont(cont)
@@ -250,7 +252,7 @@ namespace
     private:
         ScamExpr * form;
         Continuation * cont;
-        Env        env;
+        Env *       env;
 
         bool verify_single_form(ScamExpr * input, Continuation * cont)
         {
@@ -319,7 +321,7 @@ namespace
         }
     };
 
-    void qq_apply(ScamExpr * args, Continuation * cont, Env env, bool top)
+    void qq_apply(ScamExpr * args, Continuation * cont, Env * env, bool top)
     {
         if ( ! args->isList() ) {
             stringstream s;

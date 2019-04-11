@@ -22,7 +22,7 @@ namespace scam
         std::string toString() const override;
 
         bool hasApply() const override;
-        void apply(ScamExpr * args, Continuation * cont, Env env) override;
+        void apply(ScamExpr * args, Continuation * cont, Env * env) override;
 
     private:
         Continuation * cont;

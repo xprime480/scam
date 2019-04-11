@@ -21,12 +21,12 @@ ScamInstanceAdapter::ScamInstanceAdapter(ScamExpr const * expr)
     }
 }
 
-Env ScamInstanceAdapter::getFunctionMap() const
+Env * ScamInstanceAdapter::getFunctionMap() const
 {
     return instance->priv;
 }
 
-Env ScamInstanceAdapter::getEnv() const
+Env * ScamInstanceAdapter::getEnv() const
 {
     return instance->local;
 }
@@ -36,8 +36,8 @@ ScamExpr * ScamInstanceAdapter::getParent() const
     static const ScamExpr * parent =
         ExpressionFactory::makeSymbol("parent", false);
 
-    if ( instance->local.check(parent) ) {
-        return instance->local.get(parent);
+    if ( instance->local->check(parent) ) {
+        return instance->local->get(parent);
     }
 
     return ExpressionFactory::makeNil();

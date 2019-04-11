@@ -15,7 +15,7 @@ using namespace std;
 
 namespace
 {
-    extern void apply_impl(ScamExpr * args, Continuation * cont, Env env);
+    extern void apply_impl(ScamExpr * args, Continuation * cont, Env * env);
 }
 
 And::And()
@@ -29,7 +29,7 @@ And * And::makeInstance()
     return &instance;
 }
 
-void And::apply(ScamExpr * args, Continuation * cont, Env env)
+void And::apply(ScamExpr * args, Continuation * cont, Env * env)
 {
     apply_impl(args, cont, env);
 }
@@ -39,13 +39,13 @@ namespace
     class AndWorker : public Worker
     {
     public:
-        AndWorker(Continuation * cont, Env env, ScamExpr * args, size_t n);
+        AndWorker(Continuation * cont, Env * env, ScamExpr * args, size_t n);
         void run() override;
 
     private:
         ScamExpr * args;
         Continuation * cont;
-        Env env;
+        Env * env;
         size_t n;
     };
 
@@ -54,10 +54,10 @@ namespace
     private:
         friend class scam::MemoryManager;
 
-        AndCont(ScamExpr * args, Continuation * cont, Env env, size_t n);
+        AndCont(ScamExpr * args, Continuation * cont, Env * env, size_t n);
 
         static AndCont *
-        makeInstance(ScamExpr * args, Continuation * cont, Env env, size_t n);
+        makeInstance(ScamExpr * args, Continuation * cont, Env * env, size_t n);
 
     public:
         void mark() const override;
@@ -67,11 +67,11 @@ namespace
     private:
         ScamExpr * args;
         Continuation * cont;
-        Env env;
+        Env * env;
         size_t n;
     };
 
-    void apply_impl(ScamExpr * args, Continuation * cont, Env env)
+    void apply_impl(ScamExpr * args, Continuation * cont, Env * env)
     {
         unsigned pos { 0 };
         workQueueHelper<AndWorker>(cont, env, args, pos);
@@ -79,7 +79,7 @@ namespace
 }
 
 AndWorker::AndWorker(Continuation * cont,
-                     Env env,
+                     Env * env,
                      ScamExpr * args,
                      size_t n)
     : Worker("And")
@@ -118,7 +118,7 @@ void AndWorker::run()
     }
 }
 
-AndCont::AndCont(ScamExpr * args, Continuation * cont, Env env, size_t n)
+AndCont::AndCont(ScamExpr * args, Continuation * cont, Env * env, size_t n)
     : Continuation("And")
     , args(args)
     , cont(cont)
@@ -128,7 +128,7 @@ AndCont::AndCont(ScamExpr * args, Continuation * cont, Env env, size_t n)
 }
 
 AndCont *
-AndCont::makeInstance(ScamExpr * args, Continuation * cont, Env env, size_t n)
+AndCont::makeInstance(ScamExpr * args, Continuation * cont, Env * env, size_t n)
 {
     return new AndCont(args, cont, env, n);
 }
@@ -139,6 +139,7 @@ void AndCont::mark() const
         Continuation::mark();
         args->mark();
         cont->mark();
+        env->mark();
     }
 }
 
