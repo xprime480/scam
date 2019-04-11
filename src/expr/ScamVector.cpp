@@ -128,7 +128,8 @@ namespace
 
     class  VectorWorker : public Worker
     {
-    public:
+    private:
+        friend class scam::MemoryManager;
         VectorWorker(Continuation * cont,
                      Env * env,
                      ExprVec const & forms);
@@ -138,6 +139,17 @@ namespace
                      ExprVec const & forms,
                      ExprVec const & evaled);
 
+        static VectorWorker * makeInstance(Continuation * cont,
+                                           Env * env,
+                                           ExprVec const & forms);
+
+        static VectorWorker * makeInstance(Continuation * cont,
+                                           Env * env,
+                                           ExprVec const & forms,
+                                           ExprVec const & evaled);
+
+    public:
+        void mark() const override;
         void run() override;
 
     private:
@@ -167,6 +179,36 @@ namespace
         , original(cont)
         , env(env)
     {
+    }
+
+    VectorWorker * VectorWorker::makeInstance(Continuation * cont,
+                                              Env * env,
+                                              ExprVec const & forms)
+    {
+        return new VectorWorker(cont, env, forms);
+    }
+
+    VectorWorker * VectorWorker::makeInstance(Continuation * cont,
+                                              Env * env,
+                                              ExprVec const & forms,
+                                              ExprVec const & evaled)
+    {
+        return new VectorWorker(cont, env, forms, evaled);
+    }
+
+    void VectorWorker::mark() const
+    {
+        if ( ! isMarked() ) {
+            Worker::mark();
+            env->mark();
+            original->mark();
+            for ( const auto f : forms ) {
+                f->mark();
+            }
+            for ( const auto e : evaled ) {
+                e->mark();
+            }
+        }
     }
 
     void VectorWorker::run()

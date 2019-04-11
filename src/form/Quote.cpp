@@ -235,7 +235,8 @@ namespace
 
     class QuasiQuoteWorker : public Worker
     {
-    public:
+    private:
+        friend class scam::MemoryManager;
         QuasiQuoteWorker(ScamExpr * form, Continuation * cont, Env * env)
             : Worker("QuasiQuote")
             , form(form)
@@ -243,6 +244,24 @@ namespace
             , env(env)
         {
         }
+
+        static QuasiQuoteWorker *
+        makeInstance(ScamExpr * form, Continuation * cont, Env * env)
+        {
+            return new QuasiQuoteWorker(form, cont, env);
+        }
+
+    public:
+        void mark() const override
+       {
+           if ( ! isMarked() ) {
+             Worker::mark();
+             form->mark();
+             cont->mark();
+             env->mark();
+         }
+       }
+
 
         void run() override
         {

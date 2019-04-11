@@ -36,12 +36,20 @@ namespace
 
     class  PrimWorker : public Worker
     {
-    public:
+    private:
+        friend class scam::MemoryManager;
         PrimWorker(Continuation * cont,
                    Env * env,
                    ScamExpr * args,
                    Primitive * caller);
 
+        static PrimWorker * makeInstance(Continuation * cont,
+                                         Env * env,
+                                         ScamExpr * args,
+                                         Primitive * caller);
+
+    public:
+        void mark() const override;
         void run() override;
 
     private:
@@ -134,6 +142,22 @@ namespace
         , data(args, cont, env, caller)
     {
         data.cont = standardMemoryManager.make<EvalContinuation>(data);
+    }
+
+    PrimWorker * PrimWorker::makeInstance(Continuation * cont,
+                                          Env * env,
+                                          ScamExpr * args,
+                                          Primitive * caller)
+    {
+        return new PrimWorker(cont, env, args, caller);
+    }
+
+    void PrimWorker::mark() const
+    {
+        if ( ! isMarked() ) {
+            Worker::mark();
+            data.mark();
+        }
     }
 
     void PrimWorker::run()

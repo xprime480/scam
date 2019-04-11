@@ -14,11 +14,14 @@ using namespace std;
 
 namespace scam
 {
+    class MemoryManager;
+
     namespace cons_impl
     {
         class  ConsWorker : public Worker
         {
-        public:
+        private:
+            friend class scam::MemoryManager;
             ConsWorker(Continuation * cont,
                        Env * env,
                        ScamExpr * car,
@@ -26,15 +29,20 @@ namespace scam
 
             ConsWorker(WorkerData const & data);
 
+            static ConsWorker * makeInstance(Continuation * cont,
+                                             Env * env,
+                                             ScamExpr * car,
+                                             ScamExpr * cdr);
+            static ConsWorker * makeInstance(WorkerData const & data);
+
+        public:
+            void mark() const override;
             void run() override;
 
         private:
             WorkerData data;
         };
-    }
 
-    namespace cons_impl
-    {
         void scamConsEvalHelper(ScamExpr * car,
                                 ScamExpr * cdr,
                                 Continuation * cont,
@@ -79,6 +87,28 @@ ConsWorker::ConsWorker(WorkerData const & data)
     : Worker("Cons Eval Copy")
     , data(data)
 {
+}
+
+ConsWorker * ConsWorker::makeInstance(Continuation * cont,
+                                      Env * env,
+                                      ScamExpr * car,
+                                      ScamExpr * cdr)
+
+{
+    return new ConsWorker(cont, env, car, cdr);
+}
+
+ConsWorker * ConsWorker::makeInstance(WorkerData const & data)
+{
+    return new ConsWorker(data);
+}
+
+void ConsWorker::mark() const
+{
+    if ( ! isMarked() ) {
+        Worker::mark();
+        data.mark();
+    }
 }
 
 void ConsWorker::run()

@@ -252,12 +252,28 @@ namespace
 
     class SpawnWorker : public Worker
     {
-    public:
+    private:
+        friend class scam::MemoryManager;
+
         SpawnWorker(Continuation * cont, bool value)
             : Worker("SpawnWorker")
             , cont(cont)
             , value(value)
         {
+        }
+
+        static SpawnWorker * makeInstance(Continuation * cont, bool value)
+        {
+            return new SpawnWorker(cont, value);
+        }
+
+    public:
+        void mark() const override
+        {
+            if ( ! isMarked() ) {
+                Worker::mark();
+                cont->mark();
+            }
         }
 
         void run() override

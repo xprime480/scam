@@ -263,7 +263,8 @@ namespace
 
     class ClosureWorker : public Worker
     {
-    public:
+    private:
+        friend class scam::MemoryManager;
         ClosureWorker(ScamExpr *formals,
                       ScamExpr * forms,
                       Env * capture,
@@ -280,6 +281,37 @@ namespace
             , argEnv(argEnv)
             , macrolike(macrolike)
         {
+        }
+
+        static ClosureWorker * makeInstance(ScamExpr *formals,
+                                            ScamExpr * forms,
+                                            Env * capture,
+                                            Continuation * cont,
+                                            ScamExpr * args,
+                                            Env * argEnv,
+                                            bool macrolike)
+        {
+            return new ClosureWorker(formals,
+                                     forms,
+                                     capture,
+                                     cont,
+                                     args,
+                                     argEnv,
+                                     macrolike);
+        }
+
+    public:
+        void mark() const override
+        {
+            if ( ! isMarked() ) {
+                Worker::mark();
+                formals->mark();
+                forms->mark();
+                capture->mark();
+                cont->mark();
+                args->mark();
+                argEnv->mark();
+            }
         }
 
         void run() override

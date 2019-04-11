@@ -1,21 +1,21 @@
 
 #include "WorkQueue.hpp"
+#include "Worker.hpp"
 
 using namespace scam;
 
-void WorkQueue::put(std::shared_ptr<Worker> & worker)
+void WorkQueue::put(Worker * worker)
 {
-    workers.emplace_back(std::shared_ptr<Worker>(worker));
+    workers.push_back(worker);
 }
 
-std::shared_ptr<Worker> WorkQueue::get()
+Worker * WorkQueue::get()
 {
-    static std::shared_ptr<Worker> lazy;
     if ( empty() ) {
-        return lazy;
+        return nullptr;
     }
 
-    std::shared_ptr<Worker> worker = workers.front();
+    Worker * worker = workers.front();
     workers.pop_front();
     return worker;
 }
@@ -23,6 +23,13 @@ std::shared_ptr<Worker> WorkQueue::get()
 bool WorkQueue::empty() const
 {
     return workers.empty();
+}
+
+void WorkQueue::mark() const
+{
+    for ( const auto w : workers ) {
+        w->mark();
+    }
 }
 
 WorkQueue scam::GlobalWorkQueue;

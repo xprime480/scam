@@ -38,8 +38,15 @@ namespace
 {
     class AndWorker : public Worker
     {
-    public:
+    private:
+        friend class scam::MemoryManager;
         AndWorker(Continuation * cont, Env * env, ScamExpr * args, size_t n);
+
+        static AndWorker *
+        makeInstance(Continuation * cont, Env * env, ScamExpr * args, size_t n);
+
+    public:
+        void mark() const override;
         void run() override;
 
     private:
@@ -88,6 +95,24 @@ AndWorker::AndWorker(Continuation * cont,
     , env(env)
     , n(n)
 {
+}
+
+AndWorker * AndWorker::makeInstance(Continuation * cont,
+                                    Env * env,
+                                    ScamExpr * args,
+                                    size_t n)
+{
+    return new AndWorker(cont, env, args, n);
+}
+
+void AndWorker::mark() const
+{
+    if ( ! isMarked() ) {
+        Worker::mark();
+        args->mark();
+        cont->mark();
+        env->mark();
+    }
 }
 
 void AndWorker::run()

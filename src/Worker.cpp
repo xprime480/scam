@@ -22,6 +22,11 @@ Worker::~Worker()
     //cerr << "Deleting worker " << name << "\n";
 }
 
+Worker * Worker::makeInstance(char const * id)
+{
+    return new Worker(id);
+}
+
 void Worker::run()
 {
     //cerr << "Executing worker " << name << "\n";

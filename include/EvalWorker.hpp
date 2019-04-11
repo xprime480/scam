@@ -8,13 +8,20 @@ namespace scam
     class ScamExpr;
     class Continuation;
     class Env;
+    class MemoryManager;
 
     class EvalWorker : public Worker
     {
-    public:
+    private:
+        friend class scam::MemoryManager;
         EvalWorker(ScamExpr * forms, Env * env, Continuation * cont);
 
-        void run() override;
+        static EvalWorker *
+        makeInstance(ScamExpr * forms, Env * env, Continuation * cont);
+
+    public:
+       void mark() const override;
+       void run() override;
 
     private:
         ScamExpr * forms;

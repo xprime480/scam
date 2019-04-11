@@ -1,21 +1,27 @@
 #if ! defined(SCAM_WORKER_H)
 #define SCAM_WORKER_H
 
-#include <memory>
+#include "util/ManagedObject.hpp"
+
 #include <string>
 
 namespace scam
 {
-    class Worker;
+    class MemoryManager;
 
-    using WorkerHandle = std::shared_ptr<Worker>;
-
-    class Worker
+    class Worker : public ManagedObject
     {
-    public:
+    protected:
+        friend class scam::MemoryManager;
         Worker(char const * id);
-        virtual ~Worker();
 
+    public:
+        ~Worker();
+
+    private:
+        static Worker * makeInstance(char const * id);
+
+    public:
         virtual void run();
         std::string id() const;
 

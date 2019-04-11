@@ -2,6 +2,7 @@
 #include "EvalWorker.hpp"
 
 #include "Continuation.hpp"
+#include "Env.hpp"
 #include "expr/ScamExpr.hpp"
 #include "util/MemoryManager.hpp"
 
@@ -57,6 +58,22 @@ EvalWorker::EvalWorker(ScamExpr * forms, Env * extended, Continuation * cont)
     , extended(extended)
     , cont(cont)
 {
+}
+
+EvalWorker *
+EvalWorker::makeInstance(ScamExpr * forms, Env * env, Continuation * cont)
+{
+    return new EvalWorker(forms, env, cont);
+}
+
+void EvalWorker::mark() const
+{
+    if ( ! isMarked() ) {
+        Worker::mark();
+        forms->mark();
+        extended->mark();
+        cont->mark();
+    }
 }
 
 void EvalWorker::run()

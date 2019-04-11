@@ -84,7 +84,8 @@ namespace
 
     class ApplyArgsWorker : public Worker
     {
-    public:
+    private:
+        friend class scam::MemoryManager;
         ApplyArgsWorker(ScamExpr * op,
                         ScamExpr * args,
                         Continuation * cont,
@@ -95,6 +96,26 @@ namespace
             , cont(cont)
             , env(env)
         {
+        }
+
+        static ApplyArgsWorker * makeInstance(ScamExpr * op,
+                                              ScamExpr * args,
+                                              Continuation * cont,
+                                              Env * env)
+        {
+            return new ApplyArgsWorker(op, args, cont, env);
+        }
+
+    public:
+        void mark() const override
+        {
+            if ( ! isMarked() ) {
+                Worker::mark();
+                op->mark();
+                args->mark();
+                cont->mark();
+                env->mark();
+            }
         }
 
         void run() override

@@ -122,7 +122,8 @@ namespace
 
     class ClassInitWorker : public Worker
     {
-    public:
+    private:
+        friend class scam::MemoryManager;
         ClassInitWorker(ScamExpr * instance,
                         ScamExpr * args,
                         Continuation * cont,
@@ -133,6 +134,25 @@ namespace
             , cont(cont)
             , env(env)
         {
+        }
+
+        static ClassInitWorker * makeInstance(ScamExpr * instance,
+                                              ScamExpr * args,
+                                              Continuation * cont,
+                                              Env * env)
+        {
+            return new ClassInitWorker(instance, args, cont, env);
+        }
+
+    public:
+        void mark() const override
+        {
+            if ( ! isMarked() ) {
+                Worker::mark();
+                args->mark();
+                cont->mark();
+                env->mark();
+            }
         }
 
         void run() override
@@ -305,7 +325,8 @@ namespace
 
     class ClassWorker : public Worker
     {
-    public:
+    private:
+        friend class scam::MemoryManager;
         ClassWorker(ScamExpr * cls,
                     ScamExpr * args,
                     Continuation * cont,
@@ -316,6 +337,26 @@ namespace
             , cont(cont)
             , env(env)
         {
+        }
+
+        static ClassWorker * makeInstance(ScamExpr * cls,
+                                          ScamExpr * args,
+                                          Continuation * cont,
+                                          Env * env)
+        {
+            return new ClassWorker(cls, args, cont, env);
+        }
+
+    public:
+        void mark() const override
+        {
+            if ( ! isMarked() ) {
+                Worker::mark();
+                cls->mark();
+                args->mark();
+                cont->mark();
+                env->mark();
+            }
         }
 
         void run() override

@@ -232,12 +232,14 @@ namespace
 
     class LetBaseWorker : public Worker
     {
-    public:
+    protected:
         LetBaseWorker(char const * name,
                       ScamExpr * args,
                       Continuation * cont,
                       Env * env);
 
+    public:
+        void mark() const override;
         void run() override;
 
     protected:
@@ -287,8 +289,14 @@ namespace
 
     class LetWorker : public LetBaseWorker
     {
-    public:
+    private:
+        friend class scam::MemoryManager;
         LetWorker(ScamExpr * args, Continuation * cont, Env * env, bool rebind);
+
+        static LetWorker * makeInstance(ScamExpr * args,
+                                        Continuation * cont,
+                                        Env * env,
+                                        bool rebind);
 
     protected:
         void do_next(ScamExpr * formals,
@@ -301,11 +309,17 @@ namespace
 
     class LetStarWorker : public LetBaseWorker
     {
-    public:
+    private:
+        friend class scam::MemoryManager;
         LetStarWorker(ScamExpr * args,
                       Continuation * cont,
                       Env * env,
                       ScamEngine * engine);
+
+        static LetStarWorker * makeInstance(ScamExpr * args,
+                                            Continuation * cont,
+                                            Env * env,
+                                            ScamEngine * engine);
 
     protected:
         void do_next(ScamExpr * formals,
@@ -318,7 +332,8 @@ namespace
 
     class LetEvalWorker : public Worker
     {
-    public:
+    private:
+        friend class scam::MemoryManager;
         LetEvalWorker(ScamExpr * formals,
                       ScamExpr * evaled,
                       ScamExpr * args,
@@ -327,6 +342,16 @@ namespace
                       Env * env,
                       bool rebind);
 
+        static LetEvalWorker * makeInstance(ScamExpr * formals,
+                                            ScamExpr * evaled,
+                                            ScamExpr * args,
+                                            ScamExpr * forms,
+                                            Continuation * cont,
+                                            Env * env,
+                                            bool rebind);
+
+    public:
+        void mark() const override;
         void run() override;
 
     private:
@@ -570,6 +595,16 @@ namespace
     {
     }
 
+    void LetBaseWorker::mark() const
+    {
+        if ( ! isMarked() ) {
+            Worker::mark();
+            args->mark();
+            cont->mark();
+            env->mark();
+        }
+    }
+
     void LetBaseWorker::run()
     {
         Worker::run();
@@ -683,6 +718,14 @@ namespace
     {
     }
 
+    LetWorker * LetWorker::makeInstance(ScamExpr * args,
+                                        Continuation * cont,
+                                        Env * env,
+                                        bool rebind)
+    {
+        return new LetWorker(args, cont, env, rebind);
+    }
+
     void LetWorker::do_next(ScamExpr * formals,
                             ScamExpr * values,
                             ScamExpr * forms)
@@ -707,6 +750,14 @@ namespace
         : LetBaseWorker("LetStar", args, cont, env)
         , engine(engine)
     {
+    }
+
+    LetStarWorker * LetStarWorker::makeInstance(ScamExpr * args,
+                                                Continuation * cont,
+                                                Env * env,
+                                                ScamEngine * engine)
+    {
+        return new LetStarWorker(args, cont, env, engine);
     }
 
     void LetStarWorker::do_next(ScamExpr * formals,
@@ -743,6 +794,36 @@ namespace
         , env(env)
         , rebind(rebind)
     {
+    }
+
+    LetEvalWorker * LetEvalWorker::makeInstance(ScamExpr * formals,
+                                                ScamExpr * evaled,
+                                                ScamExpr * args,
+                                                ScamExpr * forms,
+                                                Continuation * cont,
+                                                Env * env,
+                                                bool rebind)
+    {
+        return new LetEvalWorker(formals,
+                                 evaled,
+                                 args,
+                                 forms,
+                                 cont,
+                                 env,
+                                 rebind);
+    }
+
+    void LetEvalWorker::mark() const
+    {
+        if ( ! isMarked() ) {
+           Worker::mark();
+           formals->mark();
+           evaled->mark();
+           args->mark();
+           forms->mark();
+           cont->mark();
+           env->mark();
+      }
     }
 
     void LetEvalWorker::run()

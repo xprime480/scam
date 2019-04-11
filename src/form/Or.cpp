@@ -12,6 +12,11 @@
 using namespace scam;
 using namespace std;
 
+namespace scam
+{
+    class MemoryManager;
+}
+
 namespace
 {
     extern void apply_impl(ScamExpr * args, Continuation * cont, Env * env);
@@ -37,8 +42,15 @@ namespace
 {
     class OrWorker : public Worker
     {
-    public:
+    private:
+        friend class scam::MemoryManager;
         OrWorker(Continuation * cont, Env * env, ScamExpr * args, size_t n);
+
+        static OrWorker *
+        makeInstance(Continuation * cont, Env * env, ScamExpr * args, size_t n);
+
+    public:
+        void mark() const override;
         void run() override;
 
     private:
@@ -87,6 +99,24 @@ OrWorker::OrWorker(Continuation * cont,
     , env(env)
     , n(n)
 {
+}
+
+OrWorker * OrWorker::makeInstance(Continuation * cont,
+                                  Env * env,
+                                  ScamExpr * args,
+                                  size_t n)
+{
+    return new OrWorker(cont, env, args, n);
+}
+
+void OrWorker::mark() const
+{
+    if ( ! isMarked() ) {
+        Worker::mark();
+        args->mark();
+        cont->mark();
+        env->mark();
+    }
 }
 
 void OrWorker::run()

@@ -12,12 +12,24 @@
 using namespace scam;
 using namespace std;
 
+namespace scam
+{
+    class MemoryManager;
+}
+
 namespace
 {
     class IfWorker : public Worker
     {
-    public:
+    private:
+        friend class scam::MemoryManager;
         IfWorker(Continuation * cont, Env * env, ScamExpr * args);
+
+        static IfWorker *
+        makeInstance(Continuation * cont, Env * env, ScamExpr * args);
+
+    public:
+        void mark() const override;
         void run() override;
 
     private:
@@ -56,7 +68,6 @@ namespace
 
     public:
         void mark() const override;
-
         void run(ScamExpr * expr) override;
 
     private:
@@ -73,6 +84,23 @@ IfWorker::IfWorker(Continuation * cont, Env * env, ScamExpr * args)
     , env(env)
 {
 }
+
+IfWorker *
+IfWorker::makeInstance(Continuation * cont, Env * env, ScamExpr * args)
+{
+    return new IfWorker(cont, env, args);
+}
+
+void IfWorker::mark() const
+{
+    if ( ! isMarked() ) {
+        Worker::mark();
+        cont->mark();
+        env->mark();
+        args->mark();
+    }
+}
+
 
 void IfWorker::run()
 {

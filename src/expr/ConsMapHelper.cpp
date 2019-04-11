@@ -13,18 +13,29 @@ using namespace scam;
 using namespace scam::cons_impl;
 using namespace std;
 
+namespace scam
+{
+    class MemoryManager;
+}
+
 namespace
 {
     class  MapWorker : public Worker
     {
-    public:
+    private:
+        friend class scam::MemoryManager;
         MapWorker(Continuation * cont,
                   Env * env,
                   ScamExpr * car,
                   ScamExpr * cdr);
 
-        MapWorker(WorkerData const & data);
+        static MapWorker * makeInstance(Continuation * cont,
+                                        Env * env,
+                                        ScamExpr * car,
+                                        ScamExpr * cdr);
 
+    public:
+        void mark() const override;
         void run() override;
 
     private:
@@ -50,12 +61,20 @@ namespace
 {
     class  MapCdr : public Worker
     {
-    public:
+    private:
+        friend class scam::MemoryManager;
         MapCdr(ScamExpr * car,
                ScamExpr * cdr,
                Continuation * cont,
                Env * env);
 
+        static MapCdr * makeInstance(ScamExpr * car,
+                                     ScamExpr * cdr,
+                                     Continuation * cont,
+                                     Env * env);
+
+    public:
+        void mark() const override;
         void run() override;
 
     private:
@@ -105,6 +124,22 @@ MapWorker::MapWorker(Continuation * cont,
     data.cont = standardMemoryManager.make<CarContinuation>(data);
 }
 
+MapWorker * MapWorker::makeInstance(Continuation * cont,
+                                    Env * env,
+                                    ScamExpr * car,
+                                    ScamExpr * cdr)
+{
+    return new MapWorker(cont, env, car, cdr);
+}
+
+void MapWorker::mark() const
+{
+    if ( ! isMarked() ) {
+        Worker::mark();
+        data.mark();
+    }
+}
+
 void MapWorker::run()
 {
     Worker::run();
@@ -148,6 +183,22 @@ MapCdr::MapCdr(ScamExpr * car, ScamExpr * cdr, Continuation * cont, Env * env)
     , data(car, cdr, cont, env)
 {
     data.cont = standardMemoryManager.make<CdrContinuation>(data);
+}
+
+MapCdr * MapCdr::makeInstance(ScamExpr * car,
+                              ScamExpr * cdr,
+                              Continuation * cont,
+                              Env * env)
+{
+    return new MapCdr(car, cdr, cont, env);
+}
+
+void MapCdr::mark() const
+{
+    if ( ! isMarked() ) {
+        Worker::mark();
+        data.mark();
+    }
 }
 
 void MapCdr::run()

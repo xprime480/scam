@@ -5,6 +5,8 @@
 #include "util/MemoryManager.hpp"
 #include "ScamException.hpp"
 #include "Extractor.hpp"
+#include "WorkQueue.hpp"
+#include "Worker.hpp"
 
 #include <iostream>
 
@@ -527,4 +529,15 @@ TEST_F(MemoryTest, TestEnv)
     env->mark();
     expectMarked(true, top, env, val);
     expectMarked(false, key);
+}
+
+TEST_F(MemoryTest, TestWorkQueue)
+{
+    Worker * worker = standardMemoryManager.make<Worker>("Test");
+    WorkQueue queue;
+
+    queue.put(worker);
+
+    queue.mark();
+    expectMarked(true, worker);
 }

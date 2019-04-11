@@ -2,6 +2,7 @@
 #include "Trampoline.hpp"
 #include "WorkQueue.hpp"
 #include "Worker.hpp"
+#include "util/MemoryManager.hpp"
 
 #include "gtest/gtest.h"
 
@@ -15,13 +16,14 @@ namespace
 
 class TestWorker : public Worker
 {
-public:
+protected:
     TestWorker(size_t * counter, char const *name)
         : Worker(name)
         , counter(counter)
     {
     }
 
+public:
     void run() override
     {
         Worker::run();
@@ -35,12 +37,19 @@ protected:
 
 class OneShotWorker : public TestWorker
 {
-public:
+private:
+    friend class scam::MemoryManager;
     OneShotWorker(size_t * counter)
         : TestWorker(counter, "OneShotWorker")
     {
     }
 
+    static OneShotWorker * makeInstance(size_t * counter)
+    {
+        return new OneShotWorker(counter);
+    }
+
+public:
     void run() override
     {
         TestWorker::run();
@@ -50,13 +59,20 @@ public:
 
 class Countdown : public TestWorker
 {
-public:
+private:
+    friend class scam::MemoryManager;
     Countdown(size_t n, size_t * counter)
         : TestWorker(counter, "CountDown")
         , n(n)
     {
     }
 
+    static Countdown * makeInstance(size_t n, size_t * counter)
+    {
+        return new Countdown(n, counter);
+    }
+
+public:
     void run() override
     {
         TestWorker::run();
@@ -66,7 +82,8 @@ public:
         else {
             //            cout << n << "... ";
 
-            WorkerHandle next = std::make_shared<Countdown>(n-1, counter);
+            Worker * next =
+                standardMemoryManager.make<Countdown>(n-1, counter);
             queue.put(next);
         }
     }
@@ -77,12 +94,14 @@ private:
 
 TEST(TrampolineTest, SimpleTest)
 {
+    MemoryManager & mm = scam::standardMemoryManager;
+
     size_t exec1{ 0 };
-    WorkerHandle count = std::make_shared<Countdown>(3, &exec1);
+    Worker * count = mm.make<Countdown>(3, &exec1);
     queue.put(count);
 
     size_t exec2{ 0 };
-    WorkerHandle start = std::make_shared<OneShotWorker>(&exec2);
+    Worker * start = mm.make<OneShotWorker>(&exec2);
     queue.put(start);
 
     Trampoline(queue);

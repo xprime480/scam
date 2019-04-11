@@ -103,11 +103,14 @@ namespace
 
     class EnvHelperWorker : public Worker
     {
-    public:
+    protected:
         EnvHelperWorker(ScamExpr * args,
                         Continuation * cont,
                         Env * env,
                         char const * name);
+
+    public:
+        void mark() const override;
         void run() override;
 
     protected:
@@ -122,11 +125,17 @@ namespace
 
     class AssignWorker : public EnvHelperWorker
     {
-    public:
+    private:
+        friend class scam::MemoryManager;
         AssignWorker(ScamExpr * args,
                      Continuation * cont,
                      Env * env,
                      ScamEngine * engine);
+
+        static AssignWorker * makeInstance(ScamExpr * args,
+                                           Continuation * cont,
+                                           Env * env,
+                                           ScamEngine * engine);
 
     protected:
         Continuation * getCont(ScamExpr * sym) const override;
@@ -137,11 +146,17 @@ namespace
 
     class DefineWorker : public EnvHelperWorker
     {
-    public:
+    private:
+        friend class scam::MemoryManager;
         DefineWorker(ScamExpr * args,
                      Continuation * cont,
                      Env * env,
                      ScamEngine * engine);
+
+        static DefineWorker * makeInstance(ScamExpr * args,
+                                           Continuation * cont,
+                                           Env * env,
+                                           ScamEngine * engine);
 
     protected:
         Continuation * getCont(ScamExpr * sym) const override;
@@ -152,11 +167,17 @@ namespace
 
     class UndefineWorker : public EnvHelperWorker
     {
-    public:
+    private:
+        friend class scam::MemoryManager;
         UndefineWorker(ScamExpr * args,
                        Continuation * cont,
                        Env * env,
                        ScamEngine * engine);
+
+        static UndefineWorker * makeInstance(ScamExpr * args,
+                                             Continuation * cont,
+                                             Env * env,
+                                             ScamEngine * engine);
 
     protected:
         Continuation * getCont(ScamExpr * sym) const override;
@@ -428,6 +449,16 @@ namespace
     {
     }
 
+    void EnvHelperWorker::mark() const
+    {
+        if ( ! isMarked() ) {
+            Worker::mark();
+            cont->mark();
+            env->mark();
+            args->mark();
+        }
+    }
+
     void EnvHelperWorker::run()
     {
         Worker::run();
@@ -453,6 +484,14 @@ namespace
     {
     }
 
+    AssignWorker * AssignWorker::makeInstance(ScamExpr * args,
+                                              Continuation * cont,
+                                              Env * env,
+                                              ScamEngine * engine)
+    {
+        return new AssignWorker(args, cont, env, engine);
+    }
+
     Continuation * AssignWorker::getCont(ScamExpr * sym) const
     {
         return standardMemoryManager.make<AssignCont>(sym, cont, env, engine);
@@ -467,6 +506,14 @@ namespace
     {
     }
 
+    DefineWorker * DefineWorker::makeInstance(ScamExpr * args,
+                                              Continuation * cont,
+                                              Env * env,
+                                              ScamEngine * engine)
+    {
+        return new DefineWorker(args, cont, env, engine);
+    }
+
     Continuation * DefineWorker::getCont(ScamExpr * sym) const
     {
         return standardMemoryManager.make<DefineCont>(sym, cont, env, engine);
@@ -478,6 +525,14 @@ namespace
                                    ScamEngine * engine)
         : EnvHelperWorker(args, cont, env, "Undefine")
     {
+    }
+
+    UndefineWorker * UndefineWorker::makeInstance(ScamExpr * args,
+                                                  Continuation * cont,
+                                                  Env * env,
+                                                  ScamEngine * engine)
+    {
+        return new UndefineWorker(args, cont, env, engine);
     }
 
     Continuation * UndefineWorker::getCont(ScamExpr * sym) const

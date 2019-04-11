@@ -11,6 +11,11 @@
 using namespace scam;
 using namespace std;
 
+namespace scam
+{
+    class MemoryManager;
+}
+
 namespace
 {
     extern void apply_impl(ScamExpr * args, Continuation * cont, Env * env);
@@ -36,8 +41,15 @@ namespace
 {
     class NotWorker : public Worker
     {
-    public:
+    private:
+        friend class scam::MemoryManager;
         NotWorker(Continuation * cont, Env * env, ScamExpr * args);
+
+        static NotWorker *
+        makeInstance(Continuation * cont, Env * env, ScamExpr * args);
+
+    public:
+        void mark() const override;
         void run() override;
 
     private:
@@ -74,6 +86,22 @@ NotWorker::NotWorker(Continuation * cont, Env * env, ScamExpr * args)
     , cont(cont)
     , env(env)
 {
+}
+
+NotWorker *
+NotWorker::makeInstance(Continuation * cont, Env * env, ScamExpr * args)
+{
+    return new NotWorker(cont, env, args);
+}
+
+void NotWorker::mark() const
+{
+    if ( ! isMarked() ) {
+        Worker::mark();
+        args->mark();
+        cont->mark();
+        env->mark();
+    }
 }
 
 void NotWorker::run()
