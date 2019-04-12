@@ -4,6 +4,7 @@
 #include "ScamException.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "form/Quote.hpp"
+#include "form/QuasiQuote.hpp"
 
 using namespace std;
 using namespace scam;

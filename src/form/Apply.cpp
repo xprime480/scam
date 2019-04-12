@@ -1,12 +1,8 @@
-
 #include "form/Apply.hpp"
 
-#include "Continuation.hpp"
-#include "WorkQueue.hpp"
-#include "Worker.hpp"
-#include "expr/ExpressionFactory.hpp"
-
-#include <iostream>
+#include "expr/ScamExpr.hpp"
+#include "form/ApplyOpCont.hpp"
+#include "util/MemoryManager.hpp"
 
 using namespace scam;
 using namespace std;
@@ -29,164 +25,10 @@ Apply * Apply::makeInstance()
 
 void Apply::apply(ScamExpr * args, Continuation * cont, Env * env)
 {
-    do_apply(args, cont, env);
-}
+    ScamExpr * sym     = args->nthcar(0);
+    ScamExpr * arglist = args->nthcar(1);
+    Continuation * newCont =
+        standardMemoryManager.make<ApplyOpCont>(arglist, cont, env);
 
-namespace
-{
-    class ApplyArgsCont : public Continuation
-    {
-    private:
-        friend class scam::MemoryManager;
-
-        ApplyArgsCont(ScamExpr * op, Continuation * cont, Env * env)
-            : Continuation("apply args")
-            , op(op)
-            , cont(cont)
-            , env(env)
-        {
-        }
-
-        static ApplyArgsCont *
-        makeInstance(ScamExpr * op, Continuation * cont, Env * env)
-        {
-            return new ApplyArgsCont(op, cont, env);
-        }
-
-    public:
-        void mark() const override
-        {
-            if ( ! isMarked() ) {
-                Continuation::mark();
-                op->mark();
-                cont->mark();
-                env->mark();
-            }
-        }
-
-        void run(ScamExpr * expr) override
-        {
-            Continuation::run(expr);
-
-            if ( expr->error() ) {
-                cont->run(expr);
-            }
-            else {
-                op->apply(expr, cont, env);
-            }
-        }
-
-    private:
-        ScamExpr * op;
-        Continuation * cont;
-        Env * env;
-    };
-
-    class ApplyArgsWorker : public Worker
-    {
-    private:
-        friend class scam::MemoryManager;
-        ApplyArgsWorker(ScamExpr * op,
-                        ScamExpr * args,
-                        Continuation * cont,
-                        Env * env)
-            : Worker("Apply Args")
-            , op(op)
-            , args(args)
-            , cont(cont)
-            , env(env)
-        {
-        }
-
-        static ApplyArgsWorker * makeInstance(ScamExpr * op,
-                                              ScamExpr * args,
-                                              Continuation * cont,
-                                              Env * env)
-        {
-            return new ApplyArgsWorker(op, args, cont, env);
-        }
-
-    public:
-        void mark() const override
-        {
-            if ( ! isMarked() ) {
-                Worker::mark();
-                op->mark();
-                args->mark();
-                cont->mark();
-                env->mark();
-            }
-        }
-
-        void run() override
-        {
-            Continuation * newCont =
-                standardMemoryManager.make<ApplyArgsCont>(op, cont, env);
-            args->eval(newCont, env);
-        }
-
-    private:
-        ScamExpr * op;
-        ScamExpr * args;
-        Continuation * cont;
-        Env *        env;
-    };
-
-    class ApplyOpCont : public Continuation
-    {
-    private:
-        friend class scam::MemoryManager;
-
-        ApplyOpCont(ScamExpr * args, Continuation * cont, Env * env)
-            : Continuation("apply")
-            , args(args)
-            , cont(cont)
-            , env(env)
-        {
-        }
-
-        static ApplyOpCont *
-        makeInstance(ScamExpr * args, Continuation * cont, Env * env)
-        {
-            return new ApplyOpCont(args, cont, env);
-        }
-
-    public:
-        void mark() const override
-        {
-            if ( ! isMarked() ) {
-                Continuation::mark();
-                args->mark();
-                cont->mark();
-                env->mark();
-            }
-        }
-
-        void run(ScamExpr * expr) override
-        {
-            Continuation::run(expr);
-
-            if ( expr->error() ) {
-                cont->run(expr);
-            }
-            else {
-                workQueueHelper<ApplyArgsWorker>(expr, args, cont, env);
-            }
-        }
-
-    private:
-        ScamExpr * args;
-        Continuation * cont;
-        Env * env;
-    };
-
-    void do_apply(ScamExpr * args, Continuation * cont, Env * env)
-    {
-        ScamExpr * sym     = args->nthcar(0);
-        ScamExpr * arglist = args->nthcar(1);
-        Continuation * newCont =
-            standardMemoryManager.make<ApplyOpCont>(arglist, cont, env);
-
-        sym->eval(newCont, env);
-    }
+    sym->eval(newCont, env);
 }

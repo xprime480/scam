@@ -6,6 +6,8 @@
 namespace scam
 {
     class ScamEngine;
+    class ScamExpr;
+    class Continuation;
 
     class EnvHelper : public SpecialForm
     {
@@ -14,36 +16,10 @@ namespace scam
 
     protected:
         ScamEngine * engine;
-    };
 
-    class Define : public EnvHelper
-    {
-    private:
-        Define(ScamEngine * engine);
-
-    public:
-        static Define * makeInstance(ScamEngine * engine);
-        void apply(ScamExpr * args, Continuation * cont, Env * env) override;
-    };
-
-    class Undefine : public EnvHelper
-    {
-    private:
-        Undefine(ScamEngine * engine);
-
-    public:
-        static Undefine * makeInstance(ScamEngine * engine);
-        void apply(ScamExpr * args, Continuation * cont, Env * env) override;
-    };
-
-    class Assign : public EnvHelper
-    {
-    private:
-        Assign(ScamEngine * engine);
-
-    public:
-        static Assign * makeInstance(ScamEngine * engine);
-        void apply(ScamExpr * args, Continuation * cont, Env * env) override;
+        bool checkArgs(ScamExpr * args,
+                       Continuation * cont,
+                       bool exprNeeded);
     };
 }
 

@@ -5,14 +5,23 @@
 
 namespace scam
 {
+    class MemoryManager;
+
     class ClassMaker : public SpecialForm
     {
     private:
+        friend class scam::MemoryManager;
+
         ClassMaker();
+        static ClassMaker * makeInstance();
 
     public:
-        static ClassMaker * makeInstance();
-        void apply(ScamExpr * args, Continuation * cont, Env * env) override;
+        void apply(ScamExpr * args,
+                   Continuation * cont,
+                   Env * env) override;
+
+    private:
+        bool validate_args(ScamExpr * args, Continuation * cont);
     };
 }
 

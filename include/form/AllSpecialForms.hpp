@@ -1,12 +1,17 @@
 
 #include "form/Apply.hpp"
+#include "form/Assign.hpp"
 #include "form/CallCC.hpp"
-#include "form/EnvHelper.hpp"
+#include "form/Define.hpp"
 #include "form/Eval.hpp"
 #include "form/Lambda.hpp"
 #include "form/Let.hpp"
+#include "form/LetRec.hpp"
+#include "form/LetStar.hpp"
 #include "form/Macro.hpp"
+#include "form/QuasiQuote.hpp"
 #include "form/Quote.hpp"
+#include "form/Undefine.hpp"
 
 #include "form/And.hpp"
 #include "form/If.hpp"

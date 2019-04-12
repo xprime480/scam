@@ -15,17 +15,6 @@ namespace scam
 
         void apply(ScamExpr * args, Continuation * cont, Env * env) override;
     };
-
-    class QuasiQuote : public SpecialForm
-    {
-    private:
-        QuasiQuote();
-
-    public:
-        static QuasiQuote * makeInstance();
-
-        void apply(ScamExpr * args, Continuation * cont, Env * env) override;
-    };
 }
 
 #endif
