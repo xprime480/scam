@@ -1,6 +1,6 @@
 #include "prim/PrimWorker.hpp"
 
-#include "prim/EvalContinuation.hpp"
+#include "prim/PrimEvalCont.hpp"
 #include "util/MemoryManager.hpp"
 
 using namespace scam;
@@ -13,7 +13,7 @@ PrimWorker::PrimWorker(Continuation * cont,
     : Worker("Primitive")
     , data(args, cont, env, caller)
 {
-    data.cont = standardMemoryManager.make<EvalContinuation>(data);
+    data.cont = standardMemoryManager.make<PrimEvalCont>(data);
 }
 
 PrimWorker * PrimWorker::makeInstance(Continuation * cont,

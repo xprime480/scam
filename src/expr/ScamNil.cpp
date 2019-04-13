@@ -1,7 +1,5 @@
 #include "expr/ScamNil.hpp"
 
-#include "expr/ExpressionFactory.hpp"
-
 using namespace scam;
 using namespace std;
 

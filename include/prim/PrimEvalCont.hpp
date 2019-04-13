@@ -1,3 +1,4 @@
+
 #if ! defined(EVALCONTINUATION_HPP)
 #define EVALCONTINUATION_HPP 1
 
@@ -9,14 +10,14 @@ namespace scam
 {
     class MemoryManager;
 
-    class EvalContinuation : public Continuation
+    class PrimEvalCont : public Continuation
     {
     private:
         friend class scam::MemoryManager;
 
-        EvalContinuation(PrimWorkerData const & data);
+        PrimEvalCont(PrimWorkerData const & data);
 
-        static EvalContinuation *
+        static PrimEvalCont *
         makeInstance(PrimWorkerData const & data);
 
     public:

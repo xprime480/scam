@@ -1,20 +1,13 @@
 #include "expr/ScamVector.hpp"
 
-#include "Continuation.hpp"
 #include "WorkQueue.hpp"
-#include "Worker.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "expr/VectorWorker.hpp"
 
 #include <sstream>
 
 using namespace scam;
 using namespace std;
-
-namespace
-{
-    extern void
-    eval_vector(Continuation * cont, Env * env, ExprVec const & elts);
-}
 
 ScamVector::ScamVector(ExprVec const & elts)
     : elts(elts)
@@ -53,7 +46,7 @@ string ScamVector::toString() const
 
 void ScamVector::eval(Continuation * cont, Env * env)
 {
-    eval_vector(cont, env, elts);
+    workQueueHelper<VectorWorker>(cont, env, elts);
 }
 
 bool ScamVector::isVector() const
@@ -94,194 +87,4 @@ bool ScamVector::equals(ScamExpr const * expr) const
     }
 
     return true;
-
-}
-
-namespace
-{
-    class VectorCont : public Continuation
-    {
-    private:
-        friend class scam::MemoryManager;
-
-        VectorCont(ExprVec const & forms,
-                   ExprVec const & evaled,
-                   Continuation * original,
-                   Env * env);
-
-        static VectorCont * makeInstance(ExprVec const & forms,
-                                         ExprVec const & evaled,
-                                         Continuation * original,
-                                         Env * env);
-
-    public:
-        void mark() const override;
-
-        void run(ScamExpr * expr) override;
-
-    private:
-        ExprVec forms;
-        ExprVec evaled;
-        Continuation * original;
-        Env * env;
-    };
-
-    class  VectorWorker : public Worker
-    {
-    private:
-        friend class scam::MemoryManager;
-        VectorWorker(Continuation * cont,
-                     Env * env,
-                     ExprVec const & forms);
-
-        VectorWorker(Continuation * cont,
-                     Env * env,
-                     ExprVec const & forms,
-                     ExprVec const & evaled);
-
-        static VectorWorker * makeInstance(Continuation * cont,
-                                           Env * env,
-                                           ExprVec const & forms);
-
-        static VectorWorker * makeInstance(Continuation * cont,
-                                           Env * env,
-                                           ExprVec const & forms,
-                                           ExprVec const & evaled);
-
-    public:
-        void mark() const override;
-        void run() override;
-
-    private:
-        ExprVec    forms;
-        ExprVec    evaled;
-        Continuation * original;
-        Env *        env;
-    };
-
-    VectorWorker::VectorWorker(Continuation * cont,
-                               Env * env,
-                               ExprVec const & forms)
-        : Worker("Vector")
-        , forms(forms)
-        , original(cont)
-        , env(env)
-    {
-    }
-
-    VectorWorker::VectorWorker(Continuation * cont,
-                               Env * env,
-                               ExprVec const & forms,
-                               ExprVec const & evaled)
-        : Worker("Vector 2")
-        , forms(forms)
-        , evaled(evaled)
-        , original(cont)
-        , env(env)
-    {
-    }
-
-    VectorWorker * VectorWorker::makeInstance(Continuation * cont,
-                                              Env * env,
-                                              ExprVec const & forms)
-    {
-        return new VectorWorker(cont, env, forms);
-    }
-
-    VectorWorker * VectorWorker::makeInstance(Continuation * cont,
-                                              Env * env,
-                                              ExprVec const & forms,
-                                              ExprVec const & evaled)
-    {
-        return new VectorWorker(cont, env, forms, evaled);
-    }
-
-    void VectorWorker::mark() const
-    {
-        if ( ! isMarked() ) {
-            Worker::mark();
-            env->mark();
-            original->mark();
-            for ( const auto f : forms ) {
-                f->mark();
-            }
-            for ( const auto e : evaled ) {
-                e->mark();
-            }
-        }
-    }
-
-    void VectorWorker::run()
-    {
-        Worker::run();
-
-        if ( forms.size() == evaled.size() ) {
-            ScamExpr * value = ExpressionFactory::makeVector(evaled);
-            original->run(value);
-        }
-        else {
-            size_t index = evaled.size();
-            ScamExpr * expr = forms[index];
-            Continuation * cont
-                = standardMemoryManager.make<VectorCont>(forms,
-                                                         evaled,
-                                                         original,
-                                                         env);
-            expr->eval(cont, env);
-        }
-    }
-
-    VectorCont::VectorCont(ExprVec const & forms,
-                           ExprVec const & evaled,
-                           Continuation * original,
-                           Env * env)
-        : Continuation("Vector")
-        , forms(forms)
-        , evaled(evaled)
-        , original(original)
-        , env(env)
-    {
-    }
-
-    VectorCont * VectorCont::makeInstance(ExprVec const & forms,
-                                          ExprVec const & evaled,
-                                          Continuation * original,
-                                          Env * env)
-    {
-        return new VectorCont(forms, evaled, original, env);
-    }
-
-    void VectorCont::mark() const
-    {
-        if ( ! isMarked() ) {
-            Continuation::mark();
-            for ( auto e : forms ) {
-                e->mark();
-            }
-            for ( auto e : evaled ) {
-                e->mark();
-            }
-            original->mark();
-            env->mark();
-        }
-    }
-
-    void VectorCont::run(ScamExpr * expr)
-    {
-        Continuation::run(expr);
-
-        if ( expr->error() ) {
-            original->run(expr);
-        }
-        else {
-            ExprVec e2(evaled);
-            e2.push_back(expr);
-            workQueueHelper<VectorWorker>(original, env, forms, e2);
-        }
-    }
-
-    void eval_vector(Continuation * cont, Env * env, ExprVec const & elts)
-    {
-        workQueueHelper<VectorWorker>(cont, env, elts);
-    }
 }

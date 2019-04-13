@@ -1,8 +1,6 @@
 #include "expr/ScamSymbol.hpp"
 
 #include "Continuation.hpp"
-#include "Env.hpp"
-
 #include "expr/ExpressionFactory.hpp"
 
 #include <sstream>

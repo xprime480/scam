@@ -44,6 +44,14 @@ namespace scam
     private:
         KeyVec keys;
         ValVec vals;
+
+        void bad_op(ScamExpr * op, Continuation * cont);
+        void exec_get(ScamExpr * args, Continuation * cont);
+        void exec_put(ScamExpr * args, Continuation * cont);
+        void exec_has(ScamExpr * args, Continuation * cont);
+        void exec_remove(ScamExpr * args, Continuation * cont);
+        void exec_length(Continuation * cont);
+        void exec(ScamExpr * args, Continuation * cont);
     };
 }
 

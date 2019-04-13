@@ -1,22 +1,22 @@
 
-#include "prim/EvalContinuation.hpp"
+#include "prim/PrimEvalCont.hpp"
 
 using namespace scam;
 using namespace std;
 
-EvalContinuation::EvalContinuation(PrimWorkerData const & data)
+PrimEvalCont::PrimEvalCont(PrimWorkerData const & data)
     : Continuation("Primitive Eval")
     , data(data.args, data.original, data.env, data.caller)
 {
 }
 
-EvalContinuation *
-EvalContinuation::makeInstance(PrimWorkerData const & data)
+PrimEvalCont *
+PrimEvalCont::makeInstance(PrimWorkerData const & data)
 {
-    return new EvalContinuation(data);
+    return new PrimEvalCont(data);
 }
 
-void EvalContinuation::mark() const
+void PrimEvalCont::mark() const
 {
     if ( ! isMarked() ) {
         Continuation::mark();
@@ -24,7 +24,7 @@ void EvalContinuation::mark() const
     }
 }
 
-void EvalContinuation::run(ScamExpr * expr)
+void PrimEvalCont::run(ScamExpr * expr)
 {
     Continuation::run(expr);
     data.handleResult(expr);

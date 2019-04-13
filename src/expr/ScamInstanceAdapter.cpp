@@ -1,4 +1,3 @@
-
 #include "expr/ScamInstanceAdapter.hpp"
 
 #include "ScamException.hpp"

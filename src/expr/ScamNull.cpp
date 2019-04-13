@@ -1,7 +1,5 @@
 #include "expr/ScamNull.hpp"
 
-#include "Continuation.hpp"
-
 #include "expr/ExpressionFactory.hpp"
 
 using namespace scam;

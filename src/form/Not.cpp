@@ -14,11 +14,6 @@ namespace scam
     class MemoryManager;
 }
 
-namespace
-{
-    extern void apply_impl(ScamExpr * args, Continuation * cont, Env * env);
-}
-
 Not::Not()
     : SpecialForm("not")
 {

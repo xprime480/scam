@@ -1,7 +1,4 @@
-
 #include "expr/ScamInteger.hpp"
-
-#include "expr/ExpressionFactory.hpp"
 
 #include <sstream>
 

@@ -3,7 +3,6 @@
 #include "Continuation.hpp"
 #include "expr/ExpressionFactory.hpp"
 
-#include <iostream>
 #include <sstream>
 
 using namespace scam;
@@ -11,8 +10,16 @@ using namespace std;
 
 namespace
 {
-    extern void
-    do_apply(ScamExpr * args, Continuation * cont, Env * env, ScamDict * dict);
+    static const ScamExpr * getOp =
+        ExpressionFactory::makeKeyword(":get", false);
+    static const ScamExpr * putOp =
+        ExpressionFactory::makeKeyword(":put", false);
+    static const ScamExpr * lenOp =
+        ExpressionFactory::makeKeyword(":length", false);
+    static const ScamExpr * remOp =
+        ExpressionFactory::makeKeyword(":remove", false);
+    static const ScamExpr * hasOp =
+        ExpressionFactory::makeKeyword(":has", false);
 }
 
 ScamDict::ScamDict()
@@ -79,7 +86,16 @@ bool ScamDict::hasApply() const
 
 void ScamDict::apply(ScamExpr * args, Continuation * cont, Env * env)
 {
-    do_apply(args, cont, env, this);
+    if ( args->isNil() ) {
+        stringstream s;
+        s << "Dict expected ':op args...'; got " << args->toString();
+        ScamExpr * err
+            = ExpressionFactory::makeError(s.str());
+        cont->run(err);
+        return;
+    }
+
+    exec(args, cont);
 }
 
 bool ScamDict::truth() const
@@ -199,138 +215,106 @@ KeyVec const & ScamDict::getKeys() const
     return keys;
 }
 
-namespace
+void ScamDict::bad_op(ScamExpr * op, Continuation * cont)
 {
-    static const ScamExpr * getOp =
-        ExpressionFactory::makeKeyword(":get", false);
-    static const ScamExpr * putOp =
-        ExpressionFactory::makeKeyword(":put", false);
-    static const ScamExpr * lenOp =
-        ExpressionFactory::makeKeyword(":length", false);
-    static const ScamExpr * remOp =
-        ExpressionFactory::makeKeyword(":remove", false);
-    static const ScamExpr * hasOp =
-        ExpressionFactory::makeKeyword(":has", false);
+    stringstream s;
+    s << "Dict expects op = [:get|:put|:length|:remove|:has]; got "
+      << op->toString();
+    ScamExpr * msg = ExpressionFactory::makeError(s.str());
+    cont->run(msg);
+}
 
-    void bad_op(ScamExpr * op, Continuation * cont)
-    {
+void ScamDict::exec_get(ScamExpr * args, Continuation * cont)
+{
+    if ( args->length() < 2u ) {
+        ScamExpr * err
+            = ExpressionFactory::makeError("dict :get missing key to get");
+        cont->run(err);
+    }
+    else {
+        ScamExpr * key = args->nthcar(1);
+        ScamExpr * val = get(key);
+        cont->run(val);
+    }
+}
+
+void ScamDict::exec_put(ScamExpr * args, Continuation * cont)
+{
+    if ( args->length() < 3u ) {
         stringstream s;
-        s << "Dict expects op = [:get|:put|:length|:remove|:has]; got "
-          << op->toString();
-        ScamExpr * msg = ExpressionFactory::makeError(s.str());
-        cont->run(msg);
+        s << "dict :put expects key, value; got: " << args->toString();
+        ScamExpr * err = ExpressionFactory::makeError(s.str());
+        cont->run(err);
+    }
+    else {
+        ScamExpr * key = args->nthcar(1);
+        ScamExpr * val = args->nthcar(2);
+        ScamExpr * rv  = put(key, val);
+        cont->run(rv);
+    }
+}
+
+void ScamDict::exec_has(ScamExpr * args, Continuation * cont)
+{
+    if ( args->length() < 2u ) {
+        stringstream s;
+        s << "dict :has expects key; got: " << args->toString();
+        ScamExpr * err = ExpressionFactory::makeError(s.str());
+        cont->run(err);
+    }
+    else {
+        ScamExpr * key = args->nthcar(1);
+        bool b = has(key);
+        ScamExpr * rv = ExpressionFactory::makeBoolean(b);
+        cont->run(rv);
+    }
+}
+
+void ScamDict::exec_remove(ScamExpr * args, Continuation * cont)
+{
+    if ( args->length() < 2u ) {
+        stringstream s;
+        s << "dict :remove expects key; got: " << args->toString();
+        ScamExpr * err = ExpressionFactory::makeError(s.str());
+        cont->run(err);
+    }
+    else {
+        ScamExpr * key = args->nthcar(1);
+        ScamExpr * rv  = remove(key);
+        cont->run(rv);
+    }
+}
+
+void ScamDict::exec_length(Continuation * cont)
+{
+    ScamExpr * len = ExpressionFactory::makeInteger(length());
+    cont->run(len);
+}
+
+void ScamDict::exec(ScamExpr * args, Continuation * cont)
+{
+    ScamExpr * op = args->nthcar(0);
+    if ( ! op->isKeyword() ) {
+        bad_op(op, cont);
+        return;
     }
 
-    void exec_get(ScamExpr * args, Continuation * cont, ScamDict * dict)
-    {
-        if ( args->length() < 2u ) {
-            ScamExpr * err
-                = ExpressionFactory::makeError("dict :get missing key to get");
-            cont->run(err);
-        }
-        else {
-            ScamExpr * key = args->nthcar(1);
-            ScamExpr * val = dict->get(key);
-            cont->run(val);
-        }
+    if ( op->equals(getOp) ) {
+        exec_get(args, cont);
     }
-
-    void exec_put(ScamExpr * args, Continuation * cont, ScamDict * dict)
-    {
-        if ( args->length() < 3u ) {
-            stringstream s;
-            s << "dict :put expects key, value; got: " << args->toString();
-            ScamExpr * err = ExpressionFactory::makeError(s.str());
-            cont->run(err);
-        }
-        else {
-            ScamExpr * key = args->nthcar(1);
-            ScamExpr * val = args->nthcar(2);
-            ScamExpr * rv = dict->put(key, val);
-
-            cont->run(rv);
-        }
+    else if ( op->equals(putOp) ) {
+        exec_put(args, cont);
     }
-
-    void exec_has(ScamExpr * args, Continuation * cont, ScamDict * dict)
-    {
-        if ( args->length() < 2u ) {
-            stringstream s;
-            s << "dict :has expects key; got: " << args->toString();
-            ScamExpr * err = ExpressionFactory::makeError(s.str());
-            cont->run(err);
-        }
-        else {
-            ScamExpr * key = args->nthcar(1);
-            bool b = dict->has(key);
-            ScamExpr * rv = ExpressionFactory::makeBoolean(b);
-
-            cont->run(rv);
-        }
+    else if ( op->equals(lenOp) ) {
+        exec_length(cont);
     }
-
-    void exec_remove(ScamExpr * args, Continuation * cont, ScamDict * dict)
-    {
-        if ( args->length() < 2u ) {
-            stringstream s;
-            s << "dict :remove expects key; got: " << args->toString();
-            ScamExpr * err = ExpressionFactory::makeError(s.str());
-            cont->run(err);
-        }
-        else {
-            ScamExpr * key = args->nthcar(1);
-            ScamExpr * rv = dict->remove(key);
-
-            cont->run(rv);
-        }
+    else if ( op->equals(hasOp) ) {
+        exec_has(args, cont);
     }
-
-    void exec_length(Continuation * cont, ScamDict * dict)
-    {
-        ScamExpr * len = ExpressionFactory::makeInteger(dict->length());
-        cont->run(len);
+    else if ( op->equals(remOp) ) {
+        exec_remove(args, cont);
     }
-
-    void exec(ScamExpr * args, Continuation * cont, ScamDict * dict)
-    {
-        ScamExpr * op = args->nthcar(0);
-        if ( ! op->isKeyword() ) {
-            bad_op(op, cont);
-            return;
-        }
-
-        if ( op->equals(getOp) ) {
-            exec_get(args, cont, dict);
-        }
-        else if ( op->equals(putOp) ) {
-            exec_put(args, cont, dict);
-        }
-        else if ( op->equals(lenOp) ) {
-            exec_length(cont, dict);
-        }
-        else if ( op->equals(hasOp) ) {
-            exec_has(args, cont, dict);
-        }
-        else if ( op->equals(remOp) ) {
-            exec_remove(args, cont, dict);
-        }
-        else {
-            bad_op(op, cont);
-        }
-    }
-
-    void
-    do_apply(ScamExpr * args, Continuation * cont, Env * env, ScamDict * dict)
-    {
-        if ( args->isNil() ) {
-            stringstream s;
-            s << "Dict expected ':op args...'; got " << args->toString();
-            ScamExpr * err
-                = ExpressionFactory::makeError(s.str());
-            cont->run(err);
-            return;
-        }
-
-        exec(args, cont, dict);
+    else {
+        bad_op(op, cont);
     }
 }
