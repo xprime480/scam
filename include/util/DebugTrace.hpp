@@ -1,5 +1,5 @@
-#if ! defined(SCAMTRACE_H)
-#define SCAMTRACE_H 1
+#if ! defined(DEBUGTRACE_H)
+#define DEBUGTRACE_H 1
 
 #include <iostream>
 

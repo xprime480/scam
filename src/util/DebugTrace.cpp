@@ -1,5 +1,5 @@
 
-#include "util/Trace.hpp"
+#include "util/DebugTrace.hpp"
 
 bool scam::scamIsTracing = false;
 
