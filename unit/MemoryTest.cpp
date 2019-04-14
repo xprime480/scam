@@ -1,12 +1,14 @@
 
 #include "TestBase.hpp"
-#include "SampleManagedObject.hpp"
 
-#include "expr/ScamExprAll.hpp"
-#include "util/MemoryManager.hpp"
+#include "SampleManagedObject.hpp"
+#include "TestHook.hpp"
+
 #include "Extractor.hpp"
 #include "WorkQueue.hpp"
 #include "Worker.hpp"
+#include "expr/ScamExprAll.hpp"
+#include "util/MemoryManager.hpp"
 
 #include <iostream>
 
@@ -22,6 +24,8 @@ using namespace scam::test_impl;
 class MemoryTest : public TestBase
 {
 protected:
+    TestHook hook;
+
     MemoryTest()
     {
     }
@@ -31,6 +35,13 @@ protected:
         TestBase::SetUp();
         mm.reset();
         mm.setSize(2u);
+        mm.addHook(&hook);
+    }
+
+    void TearDown() override
+    {
+        mm.removeHook(&hook);
+        TestBase::TearDown();
     }
 
     void testBoolean(bool val, string const & rep)
@@ -145,9 +156,7 @@ TEST_F(MemoryTest, GCTestOneRoot)
 
     EXPECT_EQ(4, mm.getCurrentCount());
 
-    std::function<void(void)> hook = [&cut](){ cut->mark(); };
-    mm.addHook(hook);
-
+    hook.addRoot(cut);
     mm.gc();
 
     EXPECT_EQ(1, mm.getCurrentCount());
@@ -167,8 +176,7 @@ TEST_F(MemoryTest, GCTestWithProxy)
     EXPECT_EQ(33, cut->getValue());
     EXPECT_EQ(4, mm.getCurrentCount());
 
-    std::function<void(void)> hook = [&cut](){ cut->mark(); };
-    mm.addHook(hook);
+    hook.addRoot(cut);
     mm.gc();
 
     EXPECT_EQ(2, mm.getCurrentCount());

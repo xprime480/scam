@@ -1,7 +1,9 @@
-
 #include "util/MemoryManager.hpp"
 
+#include <algorithm>
+
 using namespace scam;
+using namespace std;
 
 MemoryManager scam::standardMemoryManager(MemoryManager::DEFAULT_SIZE);
 
@@ -20,9 +22,17 @@ void MemoryManager::setSize(size_t size)
     arena_size = size;
 }
 
-void MemoryManager::addHook(std::function<void(void)> & hook)
+void MemoryManager::addHook(Hook * hook)
 {
     hooks.push_back(hook);
+}
+
+void MemoryManager::removeHook(Hook * hook)
+{
+    auto it = find(hooks.begin(), hooks.end(), hook);
+    if ( it != hooks.end() ) {
+        hooks.erase(it);
+    }
 }
 
 void MemoryManager::gc()
@@ -58,7 +68,7 @@ size_t MemoryManager::getCurrentCount() const
 void MemoryManager::mark() const
 {
     for ( const auto & hook : hooks ) {
-        hook();
+        (*hook)();
     }
 }
 

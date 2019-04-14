@@ -12,6 +12,11 @@ namespace scam
     class MemoryManager
     {
     public:
+	struct Hook
+	{
+	    virtual void operator()() const = 0;
+	};
+	
         static constexpr size_t DEFAULT_SIZE = 2 << 16;
 
         MemoryManager(size_t size = DEFAULT_SIZE);
@@ -29,7 +34,8 @@ namespace scam
         }
 
         void setSize(size_t size);
-        void addHook(std::function<void(void)> & hook);
+        void addHook(Hook * hook);
+        void removeHook(Hook * hook);
 
         void gc();
         void reset();
@@ -41,7 +47,7 @@ namespace scam
       size_t arena_size;
       std::vector<std::unique_ptr<ManagedObject>> arena;
 
-      std::vector<std::function<void(void)>> hooks;
+      std::vector<Hook *> hooks;
 
       size_t createCount;
 

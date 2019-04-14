@@ -4,7 +4,7 @@
 #include "WorkQueue.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ConsWorker.hpp"
-#include "expr/MapWorker.hpp""
+#include "expr/MapWorker.hpp"
 
 #include <sstream>
 

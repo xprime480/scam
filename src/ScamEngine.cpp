@@ -47,7 +47,14 @@ ScamEngine::ScamEngine()
     : env(nullptr)
     , backtracker(nullptr)
     , cont(nullptr)
+    , marker(this)
 {
+    standardMemoryManager.addHook(&marker);
+}
+
+ScamEngine::~ScamEngine()
+{
+    standardMemoryManager.removeHook(&marker);
 }
 
 void ScamEngine::reset(bool initEnv)
@@ -191,6 +198,16 @@ bool ScamEngine::isLoaded(std::string const & filename) const
 void ScamEngine::setLoaded(std::string const & filename)
 {
     loaded.insert(filename);
+}
+
+void ScamEngine::mark() const
+{
+    env->mark();
+    if ( backtracker ) {
+	backtracker->mark();
+    }
+    cont->mark();
+    GlobalWorkQueue.mark();
 }
 
 namespace

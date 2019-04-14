@@ -7,11 +7,6 @@
 using namespace scam;
 using namespace std;
 
-namespace
-{
-    extern void do_apply(ScamExpr * args, Continuation * cont, Env * env);
-}
-
 Apply::Apply()
     : SpecialForm("apply")
 {

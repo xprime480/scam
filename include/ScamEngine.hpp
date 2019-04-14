@@ -3,6 +3,7 @@
 
 #include "Backtracker.hpp"
 #include "Continuation.hpp"
+#include "EngineMarker.hpp"
 #include "Env.hpp"
 #include "expr/ScamExpr.hpp"
 #include "input/ScamParser.hpp"
@@ -18,6 +19,7 @@ namespace scam
     {
     public:
         ScamEngine();
+        ~ScamEngine();
 
         /***  functions to manage the frame stack ***/
 
@@ -58,12 +60,17 @@ namespace scam
         bool isLoaded(std::string const & filename) const;
         void setLoaded(std::string const & filename);
 
+        /*** function to manage garbage collection ***/
+
+        void mark() const;
+
     private:
         Env * env;
         std::vector<ScamParser> input;
         Backtracker * backtracker;
         Continuation * cont;
         std::set<std::string> loaded;
+	EngineMarker marker;
 
         void getStandardEnv();
     };
