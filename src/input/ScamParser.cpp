@@ -3,7 +3,6 @@
 
 #include "expr/ExpressionFactory.hpp"
 
-#include <sstream>
 #include <vector>
 
 using namespace scam;
@@ -33,7 +32,6 @@ ScamExpr * ScamParser::parseSubExpr() const
 
 ScamExpr * ScamParser::tokenToExpr(Token const & token) const
 {
-    stringstream s;
     ScamExpr * rv = ExpressionFactory::makeNull();
 
     switch ( token.getType() ) {
@@ -280,22 +278,19 @@ ScamExpr * ScamParser::expand_reader_macro(std::string const & text) const
         name = "splice";
     }
     else {
-        stringstream s;
-        s <<  "Unknown reader macro: " << text;
-        return ExpressionFactory::makeError(s.str());
+        return ExpressionFactory::makeError("Unknown reader macro: ", text);
     }
 
     ScamExpr * expr = parseSubExpr();
     if ( expr->isNull() ) {
-        stringstream s;
-        s << "Unterminated macro: " << name;
-        return ExpressionFactory::makeError(s.str());
+        return ExpressionFactory::makeError("Unterminated macro: ", name);
     }
     if ( expr->error() ) {
-        stringstream s;
-        s << "Error getting form for " << name << " macro";
-        s << "\t" << expr->toString();
-        return ExpressionFactory::makeError(s.str());
+        return ExpressionFactory::makeError("Error getting form for ",
+                                            name,
+                                            " macro",
+                                            "\t",
+                                            expr->toString());
     }
 
     ScamExpr * sym    = ExpressionFactory::makeSymbol(name);

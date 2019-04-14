@@ -1,11 +1,6 @@
-
 #include "util/ArgListHelper.hpp"
 
-#include "Continuation.hpp"
 #include "expr/ExpressionFactory.hpp"
-
-#include <iostream>
-#include <sstream>
 
 using namespace scam;
 using namespace std;
@@ -76,10 +71,11 @@ namespace
         typedef TypeChecks<T> Checker;
 
         if ( ! Checker::isType(arg) ) {
-            stringstream s;
-            s << context << " expects " << Checker::id()
-              << ", got " << arg->toString();
-            rv = ExpressionFactory::makeError(s.str());
+            rv = ExpressionFactory::makeError(context,
+                                              " expects ",
+                                              Checker::id(),
+                                              ", got ",
+                                              arg->toString());
             return false;
         }
 
@@ -164,10 +160,10 @@ ScamExpr * scam::compareAlgorithm(ScamExpr * args,
         return rv;
     }
 
-    stringstream s;
-    s << "Invalid arguments to comparison: " << context
-      << " " << args->toString();
-    return ExpressionFactory::makeError(s.str());
+    return ExpressionFactory::makeError("Invalid arguments to comparison: ",
+                                        context,
+                                        " ",
+                                        args->toString());
 }
 
 namespace

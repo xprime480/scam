@@ -6,6 +6,7 @@
 
 #include <string>
 #include <vector>
+#include <sstream>
 
 namespace scam
 {
@@ -21,6 +22,23 @@ namespace scam
         static ScamError * makeError(char const * msg, bool managed = true);
         static ScamError * makeError(std::string const & msg,
                                      bool managed = true);
+
+        template <typename ... Ts>
+        static ScamError * makeError(Ts && ... args)
+        {
+            std::stringstream s;
+            bool iHateTheCompiler { true };
+
+            if ( sizeof...(Ts) > 0 ) {
+                int dummy[sizeof...(Ts)] = { (s << args, 0)... };
+                iHateTheCompiler = dummy[0] == 0;
+            }
+
+            const std::string msg = (iHateTheCompiler
+                                     ? s.str()
+                                     : std::string("never"));
+            return makeError(msg, true);
+        }
 
         static ScamBoolean * makeBoolean(bool value);
         static ScamCharacter * makeCharacter(std::string const & value);

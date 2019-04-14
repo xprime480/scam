@@ -7,8 +7,6 @@
 #include "form/IFCont.hpp"
 #include "util/MemoryManager.hpp"
 
-#include <sstream>
-
 using namespace scam;
 using namespace std;
 
@@ -41,9 +39,9 @@ void IfWorker::run()
     Worker::run();
 
     if ( ! args->isList() || args->length() < 2 || args->length() > 3 ) {
-        stringstream s;
-        s << "If expects 2 or 3 forms; got: " << args->toString();
-        ScamExpr * err = ExpressionFactory::makeError(s.str());
+        ScamExpr * err =
+            ExpressionFactory::makeError("If expects 2 or 3 forms; got: ",
+                                         args->toString());
         cont->run(err);
     }
     else {

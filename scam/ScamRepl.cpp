@@ -5,7 +5,6 @@
 #include "expr/ExpressionFactory.hpp"
 
 #include <iostream>
-#include <sstream>
 
 using namespace scam;
 using namespace std;
@@ -117,9 +116,8 @@ ScamExpr * ScamRepl::eval(ScamExpr * form)
         return engine.eval(form);
     }
     catch ( ScamException e ) {
-        stringstream s;
-        s << "Caught exception: " << e.getMessage();
-        return ExpressionFactory::makeError(s.str());
+        return ExpressionFactory::makeError("Caught exception: ",
+                                            e.getMessage());
     }
 }
 

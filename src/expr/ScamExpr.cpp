@@ -39,10 +39,11 @@ bool ScamExpr::hasApply() const
 
 void ScamExpr::apply(ScamExpr * args, Continuation * cont, Env * env)
 {
-    stringstream s;
-    s << "Not possible to apply <" << this->toString()
-      << "> to args " << args->toString();
-    ScamExpr * err = ExpressionFactory::makeError(s.str());
+    ScamExpr * err =
+        ExpressionFactory::makeError("Not possible to apply <",
+                                     toString(),
+                                     "> to args ",
+                                     args->toString());
     cont->run(err);
 }
 

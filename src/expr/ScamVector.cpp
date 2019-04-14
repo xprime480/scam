@@ -62,10 +62,11 @@ size_t ScamVector::length() const
 ScamExpr * ScamVector::nthcar(size_t n) const
 {
     if ( n >= length() ) {
-        stringstream s;
-        s << "Requested index " << n
-          << " of a " << length() << "-element vector";
-        return ExpressionFactory::makeError(s.str());
+        return ExpressionFactory::makeError("Requested index ",
+                                            n,
+                                            " of a ",
+                                            length(),
+                                            "-element vector");
     }
 
     return elts[n];

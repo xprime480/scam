@@ -10,8 +10,6 @@
 #include "input/ScamParser.hpp"
 #include "util/MemoryManager.hpp"
 
-#include <iostream>
-
 using namespace std;
 using namespace scam;
 
@@ -139,13 +137,16 @@ ScamExpr * ScamEngine::parseCurrentInput()
         if ( expr->isNull() ) {
             break;
         }
-        eval(expr);
+        (void) eval(expr);
     }
 
+    ScamExpr * rv;
     if ( ! hc || hc->current() == mark ) {
-        return ExpressionFactory::makeNull();
+        rv = ExpressionFactory::makeNull();
     }
-    ScamExpr * rv = hc->get();
+    else {
+        rv = hc->get();
+    }
     return rv;
 }
 
@@ -204,7 +205,7 @@ void ScamEngine::mark() const
 {
     env->mark();
     if ( backtracker ) {
-	backtracker->mark();
+        backtracker->mark();
     }
     cont->mark();
     GlobalWorkQueue.mark();

@@ -5,8 +5,6 @@
 #include "expr/ScamExpr.hpp"
 #include "expr/ExpressionFactory.hpp"
 
-#include <sstream>
-
 using namespace scam;
 using namespace std;
 
@@ -39,10 +37,10 @@ void CallCont::run(ScamExpr * expr)
     }
 
     if ( ! expr->hasApply() ) {
-        stringstream s;
-        s << "call/cc: form " << expr->toString()
-          << "cannot be applied";
-        ScamExpr * err = ExpressionFactory::makeError(s.str());
+        ScamExpr * err =
+            ExpressionFactory::makeError("call/cc: form ",
+                                         expr->toString(),
+                                         "cannot be applied");
         cont->run(err);
         return;
     }

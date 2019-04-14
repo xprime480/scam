@@ -32,9 +32,11 @@ void ScamSymbol::eval(Continuation * cont, Env * env)
         evaluated = env->get(this);
     }
     else {
-        stringstream s;
-        s << "Symbol " << value << " does not exist in the current environment";
-        evaluated = ExpressionFactory::makeError(s.str());
+        evaluated =
+            ExpressionFactory::makeError("Symbol ",
+                                         value,
+                                         " does not exist",
+                                         " in the current environment");
     }
 
     cont->run(evaluated);

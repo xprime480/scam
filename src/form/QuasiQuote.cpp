@@ -6,8 +6,6 @@
 #include "expr/ExpressionFactory.hpp"
 #include "form/QuasiQuoteWorker.hpp"
 
-#include <sstream>
-
 using namespace scam;
 using namespace std;
 
@@ -36,16 +34,18 @@ void QuasiQuote::qq_apply(ScamExpr * args,
                           bool top)
 {
     if ( ! args->isList() ) {
-        stringstream s;
-        s << "quasiquote expecting list of args, got " << args->toString();
-        ScamExpr * err = ExpressionFactory::makeError(s.str());
+        ScamExpr * err =
+            ExpressionFactory::makeError("quasiquote expecting list of args",
+                                         ", got ",
+                                         args->toString());
         cont->run(err);
     }
     else if ( top ) {
         if ( 1 != args->length() ) {
-            stringstream s;
-            s << "quasiquote expecting one form, got " << args->toString();
-            ScamExpr * err = ExpressionFactory::makeError(s.str());
+            ScamExpr * err =
+                ExpressionFactory::makeError("quasiquote expecting one form",
+                                             ", got ",
+                                             args->toString());
             cont->run(err);
         }
         else {

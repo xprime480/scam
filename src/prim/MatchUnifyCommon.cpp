@@ -66,10 +66,10 @@ void MatchUnifyCommon::process()
 
     ScamDict * dict = dynamic_cast<ScamDict*>(rv);
     if ( nullptr == dict ) {
-        stringstream s;
-        s << "Unify expected dict for third arg; got "
-          << rv->toString();
-        ScamExpr * err = ExpressionFactory::makeError(s.str());
+        ScamExpr * err =
+            ExpressionFactory::makeError("Unify expected dict for third arg",
+                                         "; got ",
+                                         rv->toString());
         cont->run(err);
         return;
     }

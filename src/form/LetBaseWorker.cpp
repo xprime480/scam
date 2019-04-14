@@ -5,8 +5,6 @@
 #include "expr/ScamExpr.hpp"
 #include "expr/ExpressionFactory.hpp"
 
-#include <sstream>
-
 using namespace scam;
 using namespace std;
 
@@ -49,10 +47,10 @@ void LetBaseWorker::run()
 
 void LetBaseWorker::report_error()
 {
-    stringstream s;
-    s << "Expected (((sym form)...) forms...); got "
-      << args->toString();
-    ScamExpr * err = ExpressionFactory::makeError(s.str());
+    ScamExpr * err =
+        ExpressionFactory::makeError("Expected (((sym form)...) forms...);",
+                                     " got ",
+                                     args->toString());
 
     cont->run(err);
 }

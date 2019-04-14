@@ -5,8 +5,6 @@
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamExpr.hpp"
 
-#include <sstream>
-
 using namespace scam;
 using namespace std;
 
@@ -20,12 +18,14 @@ void CarCdr::applyArgs(ScamExpr * args, Continuation * cont)
     if ( args->error() ) {
         cont->run(args);
     }
-    else if ( ! args->isList() || 1 != args->length() ||
+    else if ( ! args->isList() ||
+              1 != args->length() ||
               ! args->nthcar(0)->isCons() ) {
-        stringstream s;
-        s << name << " is expecting a non-empty list, got "
-          << args->toString() << "\n";
-        ScamExpr * err = ExpressionFactory::makeError(s.str());
+        ScamExpr * err =
+            ExpressionFactory::makeError(name,
+                                         " is expecting a non-empty list, ",
+                                         "got ",
+                                         args->toString());
         cont->run(err);
     }
     else {

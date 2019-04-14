@@ -7,8 +7,6 @@
 #include "form/OrCont.hpp"
 #include "util/MemoryManager.hpp"
 
-#include <sstream>
-
 using namespace scam;
 using namespace std;
 
@@ -47,9 +45,9 @@ void OrWorker::run()
     Worker::run();
 
     if ( ! args->isList() ) {
-        stringstream s;
-        s << "Or expects a list of forms; got: " << args->toString();
-        ScamExpr * err = ExpressionFactory::makeError(s.str());
+        ScamExpr * err =
+            ExpressionFactory::makeError("Or expects a list of forms; got: ",
+                                         args->toString());
         cont->run(err);
         return;
     }

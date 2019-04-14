@@ -10,8 +10,6 @@
 #include "expr/ScamExpr.hpp"
 #include "util/MemoryManager.hpp"
 
-#include <sstream>
-
 using namespace scam;
 using namespace std;
 
@@ -74,9 +72,9 @@ bool ClosureBindCont::malformedActuals(ScamExpr * expr) const
         return false;
     }
 
-    stringstream s;
-    s << "Expected a paramter list, got: " << expr->toString();
-    ScamExpr * err = ExpressionFactory::makeError(s.str());
+    ScamExpr * err =
+        ExpressionFactory::makeError( "Expected a paramter list, got: ",
+                                      expr->toString());
     cont->run(err);
 
     return true;
@@ -100,10 +98,12 @@ bool ClosureBindCont::describeFormals(unsigned & len) const
 void ClosureBindCont::wrongNumberOfParameters(unsigned formalsLen,
                                               unsigned actualsLen) const
 {
-    stringstream s;
-    s << "Expected " << formalsLen << " parameters; "
-      << "got " << actualsLen;
-    ScamExpr * err = ExpressionFactory::makeError(s.str());
+    ScamExpr * err =
+        ExpressionFactory::makeError("Expected ",
+                                     formalsLen,
+                                     " parameters; ",
+                                     "got ",
+                                     actualsLen);
     cont->run(err);
 }
 

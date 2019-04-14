@@ -1,25 +1,21 @@
 #include "Worker.hpp"
 
-//#include <iostream>
+#include "util/DebugTrace.hpp"
+
 #include <sstream>
 
 using namespace scam;
 using namespace std;
 
-namespace
-{
-    static unsigned counter { 0 };
-}
-
 Worker::Worker(char const * id)
     : name(makeName(id))
 {
-    //cerr << "Creating worker " << name << "\n";
+    scamTrace("Creating worker ", this, name);
 }
 
 Worker::~Worker()
 {
-    //cerr << "Deleting worker " << name << "\n";
+    scamTrace("Deleting worker ", name);
 }
 
 Worker * Worker::makeInstance(char const * id)
@@ -29,7 +25,7 @@ Worker * Worker::makeInstance(char const * id)
 
 void Worker::run()
 {
-    //cerr << "Executing worker " << name << "\n";
+    scamTrace("Executing worker ", name);
 }
 
 string Worker::id() const
@@ -39,6 +35,7 @@ string Worker::id() const
 
 string Worker::makeName(char const * id)
 {
+    static unsigned counter { 0 };
     stringstream s;
     s << (++counter) << " {" << id << "}";
     return s.str();

@@ -7,8 +7,6 @@
 #include "form/NotCont.hpp"
 #include "util/MemoryManager.hpp"
 
-#include <sstream>
-
 using namespace scam;
 using namespace std;
 
@@ -41,9 +39,9 @@ void NotWorker::run()
     Worker::run();
 
     if ( ! args->isList() || 1u != args->length() ) {
-        stringstream s;
-        s << "Not expects 1 form; got: " << args->toString();
-        ScamExpr * err = ExpressionFactory::makeError(s.str());
+        ScamExpr * err =
+            ExpressionFactory::makeError("Not expects 1 form; got: ",
+                                         args->toString());
         cont->run(err);
     }
     else {

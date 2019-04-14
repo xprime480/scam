@@ -17,9 +17,9 @@ void scam::Trampoline(WorkQueue & queue)
         if ( worker ) {
             worker->run();
         }
-	if ( 0 == --count ) {
-	    mm.gc();
-	    count = 100;
-	}
+        if ( 0 == --count ) {
+            mm.gc();
+            count = 100;
+        }
     }
 }

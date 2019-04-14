@@ -1,4 +1,3 @@
-
 #include "TestBase.hpp"
 
 #include "ScamEngine.hpp"
@@ -8,8 +7,6 @@
 #include "input/ScamParser.hpp"
 #include "input/StringTokenizer.hpp"
 #include "util/EvalString.hpp"
-
-#include <fstream>
 
 using namespace scam;
 using namespace std;

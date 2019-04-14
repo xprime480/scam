@@ -1,11 +1,8 @@
-
 #include "prim/Substitute.hpp"
 
 #include "prim/Substitutor.hpp"
 #include "expr/ScamExpr.hpp"
 #include "expr/ExpressionFactory.hpp"
-
-#include <sstream>
 
 using namespace std;
 using namespace scam;
@@ -23,9 +20,9 @@ Substitute * Substitute::makeInstance()
 void Substitute::applyArgs(ScamExpr * args, Continuation * cont)
 {
     if ( args->length() < 2 ) {
-        stringstream s;
-        s << "expected 2 args; got " << args->length();
-        ScamExpr * err = ExpressionFactory::makeError(s.str());
+        ScamExpr * err =
+            ExpressionFactory::makeError("expected 2 args; got ",
+                                         args->length());
         cont->run(err);
         return;
     }
@@ -34,9 +31,9 @@ void Substitute::applyArgs(ScamExpr * args, Continuation * cont)
     ScamExpr * dict = args->nthcar(1);
     ScamDict * answers = dynamic_cast<ScamDict *>(dict);
     if ( ! answers ) {
-        stringstream s;
-        s << "expected 'form dict'; got " << args->toString();
-        ScamExpr * err = ExpressionFactory::makeError(s.str());
+        ScamExpr * err =
+            ExpressionFactory::makeError("expected 'form dict'; got ",
+                                         args->toString());
         cont->run(err);
         return;
     }

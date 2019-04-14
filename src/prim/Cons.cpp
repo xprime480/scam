@@ -1,11 +1,8 @@
-
 #include "prim/Cons.hpp"
 
 #include "Continuation.hpp"
 #include "expr/ScamExpr.hpp"
 #include "expr/ExpressionFactory.hpp"
-
-#include <sstream>
 
 using namespace scam;
 using namespace std;
@@ -26,10 +23,10 @@ void Cons::applyArgs(ScamExpr * args, Continuation * cont)
         cont->run(args);
     }
     else if ( ! args->isList() || 2 != args->length() ) {
-        stringstream s;
-        s << "cons is expecting 2 parameters, got "
-          << args->toString() << "\n";
-        ScamExpr * err = ExpressionFactory::makeError(s.str());
+        ScamExpr * err =
+            ExpressionFactory::makeError("cons is expecting 2 parameters",
+                                         ", got ",
+                                         args->toString());
         cont->run(err);
     }
     else {

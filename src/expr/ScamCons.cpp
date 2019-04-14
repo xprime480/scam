@@ -113,9 +113,10 @@ size_t ScamCons::length() const
 ScamExpr * ScamCons::nthcar(size_t n) const
 {
     auto f = [=] () -> ScamExpr * {
-        stringstream s;
-        s << "Index " << n << " requested for " << toString();
-        return ExpressionFactory::makeError(s.str());
+        return ExpressionFactory::makeError("Index ",
+                                            n,
+                                            " requested for ",
+                                            toString());
     };
 
     ScamExpr * rv;
@@ -142,9 +143,10 @@ ScamExpr * ScamCons::nthcar(size_t n) const
 ScamExpr * ScamCons::nthcdr(size_t n) const
 {
     auto f = [=] () -> ScamExpr * {
-        stringstream s;
-        s << "Index " << n << " requested for " << toString();
-        return ExpressionFactory::makeError(s.str());
+        return ExpressionFactory::makeError("Index ",
+                                            n,
+                                            " requested for ",
+                                            toString());
     };
 
     ScamExpr * rv;

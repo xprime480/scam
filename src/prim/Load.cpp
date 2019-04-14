@@ -29,9 +29,10 @@ void Load::applyArgs(ScamExpr * args, Continuation * cont)
 {
     string filename = args->nthcar(0)->toString();
     if ( engine->isLoaded(filename) ) {
-        stringstream s;
-        s << "file \"" << filename << "\" already loaded";
-        ScamExpr * err = ExpressionFactory::makeError(s.str());
+        ScamExpr * err =
+            ExpressionFactory::makeError("file \"",
+                                         filename,
+                                         "\" already loaded");
         cont->run(err);
         return;
     }
@@ -105,9 +106,8 @@ bool Load::file_exists(string fullpath)
 
 void Load::file_not_found(string const & filename, Continuation * cont)
 {
-    stringstream s;
-    s << "Unable to open file " << filename;
-    ScamExpr * err = ExpressionFactory::makeError(s.str());
+    ScamExpr * err = ExpressionFactory::makeError("Unable to open file ",
+                                                  filename);
     cont->run(err);
 }
 

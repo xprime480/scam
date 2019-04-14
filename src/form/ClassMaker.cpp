@@ -4,8 +4,6 @@
 #include "Continuation.hpp"
 #include "expr/ExpressionFactory.hpp"
 
-#include <sstream>
-
 using namespace scam;
 using namespace std;
 
@@ -38,19 +36,20 @@ void ClassMaker::apply(ScamExpr * args, Continuation * cont, Env * env)
 bool ClassMaker::validate_args(ScamExpr * args, Continuation * cont)
 {
     if ( args->length() < 2 ) {
-        stringstream s;
-        s << "Expected: (make-class Base (vars...) methods...); ";
-        s << "got " << args->toString();
-        ScamExpr * err = ExpressionFactory::makeError(s.str());
+        ScamExpr * err =
+            ExpressionFactory::makeError("Expected: (make-class Base",
+                                         " (vars...) methods...); ",
+                                         "got ",
+                                         args->toString());
         cont->run(err);
         return false;
     }
 
     ScamExpr * vars = args->nthcar(1);
     if ( ! vars->isList() ) {
-        stringstream s;
-        s << "Expected list of vars, got " << vars->toString();
-        ScamExpr * err = ExpressionFactory::makeError(s.str());
+        ScamExpr * err =
+            ExpressionFactory::makeError("Expected list of vars, got ",
+                                         vars->toString());
         cont->run(err);
         return false;
     }

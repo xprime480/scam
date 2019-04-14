@@ -1,8 +1,6 @@
 
 #include "util/EvalString.hpp"
 
-#include <iostream>
-
 using namespace scam;
 using namespace std;
 

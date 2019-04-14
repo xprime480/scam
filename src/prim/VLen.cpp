@@ -1,10 +1,7 @@
-
 #include "prim/VLen.hpp"
 
 #include "Continuation.hpp"
 #include "expr/ExpressionFactory.hpp"
-
-#include <sstream>
 
 using namespace scam;
 using namespace std;
@@ -33,10 +30,9 @@ void VLen::applyArgs(ScamExpr * args, Continuation * cont)
             rv = ExpressionFactory::makeInteger(len);
         }
         else {
-            stringstream s;
-            s << "vlen expects vector argument, got: "
-              << arg->toString();
-            rv = ExpressionFactory::makeError(s.str());
+            rv = ExpressionFactory::makeError("vlen expects ",
+                                              "vector argument, got: ",
+                                              arg->toString());
         }
     }
 

@@ -87,10 +87,10 @@ bool ScamDict::hasApply() const
 void ScamDict::apply(ScamExpr * args, Continuation * cont, Env * env)
 {
     if ( args->isNil() ) {
-        stringstream s;
-        s << "Dict expected ':op args...'; got " << args->toString();
         ScamExpr * err
-            = ExpressionFactory::makeError(s.str());
+            = ExpressionFactory::makeError("Dict expected ':op args...'; ",
+                                           "got ",
+                                           args->toString());
         cont->run(err);
         return;
     }
@@ -166,9 +166,9 @@ ScamExpr * ScamDict::get(ScamExpr const * key) const
         }
     }
 
-    stringstream s;
-    s << "Dict key '" << key->toString() << "' does not exist";
-    return ExpressionFactory::makeError(s.str());
+    return ExpressionFactory::makeError("Dict key '",
+                                        key->toString(),
+                                        "' does not exist");
 }
 
 ScamExpr * ScamDict::put(ScamExpr const * key, ScamExpr * val)
@@ -217,10 +217,11 @@ KeyVec const & ScamDict::getKeys() const
 
 void ScamDict::bad_op(ScamExpr * op, Continuation * cont)
 {
-    stringstream s;
-    s << "Dict expects op = [:get|:put|:length|:remove|:has]; got "
-      << op->toString();
-    ScamExpr * msg = ExpressionFactory::makeError(s.str());
+    ScamExpr * msg =
+        ExpressionFactory::makeError("Dict expects op = ",
+                                     "[:get|:put|:length|:remove|:has]; ",
+                                     "got ",
+                                     op->toString());
     cont->run(msg);
 }
 
@@ -241,9 +242,10 @@ void ScamDict::exec_get(ScamExpr * args, Continuation * cont)
 void ScamDict::exec_put(ScamExpr * args, Continuation * cont)
 {
     if ( args->length() < 3u ) {
-        stringstream s;
-        s << "dict :put expects key, value; got: " << args->toString();
-        ScamExpr * err = ExpressionFactory::makeError(s.str());
+        ScamExpr * err =
+            ExpressionFactory::makeError("dict :put expects key, value; ",
+                                         "got: ",
+                                         args->toString());
         cont->run(err);
     }
     else {
@@ -257,9 +259,9 @@ void ScamDict::exec_put(ScamExpr * args, Continuation * cont)
 void ScamDict::exec_has(ScamExpr * args, Continuation * cont)
 {
     if ( args->length() < 2u ) {
-        stringstream s;
-        s << "dict :has expects key; got: " << args->toString();
-        ScamExpr * err = ExpressionFactory::makeError(s.str());
+        ScamExpr * err =
+            ExpressionFactory::makeError("dict :has expects key; got: ",
+                                         args->toString());
         cont->run(err);
     }
     else {
@@ -273,9 +275,9 @@ void ScamDict::exec_has(ScamExpr * args, Continuation * cont)
 void ScamDict::exec_remove(ScamExpr * args, Continuation * cont)
 {
     if ( args->length() < 2u ) {
-        stringstream s;
-        s << "dict :remove expects key; got: " << args->toString();
-        ScamExpr * err = ExpressionFactory::makeError(s.str());
+        ScamExpr * err =
+            ExpressionFactory::makeError("dict :remove expects key; got: ",
+                                         args->toString());
         cont->run(err);
     }
     else {

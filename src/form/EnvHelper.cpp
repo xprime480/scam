@@ -4,8 +4,6 @@
 #include "expr/ScamExpr.hpp"
 #include "expr/ExpressionFactory.hpp"
 
-#include <sstream>
-
 using namespace scam;
 using namespace std;
 
@@ -23,10 +21,12 @@ bool EnvHelper::checkArgs(ScamExpr * args,
     const size_t actual   = args->length();
 
     if ( expected != actual ) {
-        stringstream s;
-        s << "Expecting " << expected << "forms for argument list; ";
-        s << "got: " << args->toString();
-        ScamExpr * err = ExpressionFactory::makeError(s.str());
+        ScamExpr * err =
+            ExpressionFactory::makeError("Expecting ",
+                                         expected,
+                                         "forms for argument list; ",
+                                         "got: ",
+                                         args->toString());
         cont->run(err);
         return false;
     }

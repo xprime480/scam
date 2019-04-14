@@ -33,10 +33,8 @@ ScamExpr * Instantiator::map_value(ScamExpr * val)
 
 ScamExpr * Instantiator::make_error(ScamExpr * args)
 {
-    stringstream s;
-    s << "Substitute expected one arg got: ";
-    s << args->toString();
-    return ExpressionFactory::makeError(s.str());
+    return ExpressionFactory::makeError("Substitute expected one arg got: ",
+                                        args->toString());
 }
 
 ScamExpr * Instantiator::checkargs(ScamExpr * args, bool & ok)

@@ -1,11 +1,7 @@
-
 #include "prim/Predicates.hpp"
 
 #include "Continuation.hpp"
 #include "expr/ExpressionFactory.hpp"
-
-#include <iostream>
-#include <sstream>
 
 using namespace scam;
 using namespace std;
@@ -74,9 +70,10 @@ namespace
             rv = ExpressionFactory::makeBoolean(answer);
         }
         else {
-            stringstream s;
-            s << name << " expected single argument, got " << args->toString();
-            rv = ExpressionFactory::makeError(s.str());
+            rv = ExpressionFactory::makeError(name,
+                                              " expected single argument",
+                                              ", got ",
+                                              args->toString());
         }
 
         cont->run(rv);

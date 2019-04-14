@@ -9,8 +9,6 @@
 
 #include "util/MemoryManager.hpp"
 
-#include <sstream>
-
 using namespace scam;
 using namespace std;
 
@@ -48,9 +46,9 @@ void QuasiQuoteWorker::run()
 bool QuasiQuoteWorker::verify_single_form(ScamExpr * input, Continuation * cont)
 {
     if ( ! input->isList() || 1 != input->length() ) {
-        stringstream s;
-        s << "expected single form, got " << input->toString();
-        ScamExpr * err = ExpressionFactory::makeError(s.str());
+        ScamExpr * err =
+            ExpressionFactory::makeError("expected single form, got ",
+                                         input->toString());
         cont->run(err);
         return false;
     }

@@ -5,8 +5,6 @@
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamExpr.hpp"
 
-#include <sstream>
-
 using namespace scam;
 using namespace std;
 
@@ -76,9 +74,10 @@ ScamExpr * InstanceCont::find_func(ScamExpr * o) const
 
 ScamExpr * InstanceCont::function_not_found() const
 {
-    stringstream s;
-    s << "Instance method " << name->toString() << " not found";
-    ScamExpr * err = ExpressionFactory::makeError(s.str());
+    ScamExpr * err =
+        ExpressionFactory::makeError("Instance method ",
+                                     name->toString(),
+                                     " not found");
     cont->run(err);
     return ExpressionFactory::makeNil();
 }
