@@ -3,6 +3,7 @@
 
 #include "input/Token.hpp"
 
+#include <algorithm>
 #include <cstring>
 #include <sstream>
 
@@ -254,22 +255,22 @@ Token StringTokenizer::scanBoolean()
         return none;
     }
 
-    if ( 2u == text.size() ) {
-        if ( ( 't' == text[1] || 'T' == text[1] ) ) {
-            static const Token tokenTrue(TokenType::TT_BOOLEAN, "#t");
-            return tokenTrue;
-        }
-        if ( ( 'f' == text[1] || 'F' == text[1] ) ) {
-            static const Token tokenFalse(TokenType::TT_BOOLEAN, "#f");
-            return tokenFalse;
-        }
+    string lower_text = text;
+    transform(text.begin(), text.end(), lower_text.begin(),
+              [](const char c) -> char { return tolower(c); });
 
-        pos = original;
-        return none;
+    static const Token tokenTrue(TokenType::TT_BOOLEAN, "#t");
+    static const Token tokenFalse(TokenType::TT_BOOLEAN, "#f");
+
+    if ( lower_text == "#t" || lower_text == "#true" ) {
+        return tokenTrue;
     }
 
-    if ( ( 't' == text[1] || 'T' == text[1] ) ||
-         ( 'f' == text[1] || 'F' == text[1] ) ) {
+    if ( lower_text == "#f" || lower_text == "#false" ) {
+        return tokenFalse;
+    }
+
+    if ( 't' == lower_text[1] || 'f' == lower_text[1]  ) {
         stringstream s;
         s << "Malformed boolean: {" << text << "}";
 
@@ -398,11 +399,41 @@ Token StringTokenizer::scanSymbol()
 {
     char const * original = pos;
 
+    if ( '|' == *pos ) {
+        return scanDelimitedSymbol();
+    }
+
     while ( ! isDelimiter(*pos) ) {
         ++pos;
     }
 
-    string text(original, pos-original);
+    string text = string(original, pos - original);
     Token token(TokenType::TT_SYMBOL, text);
     return token;
+}
+
+Token StringTokenizer::scanDelimitedSymbol()
+{
+    char const * original = pos;
+
+    ++pos;
+    while ( true ) {
+        if ( ! *pos ) {
+            stringstream s;
+            s << "End of input in identifier: {" << original << "}";
+            Token err(TokenType::TT_SCAN_ERROR, s.str());
+            return err;
+        }
+
+        const char ch = *pos;
+        ++pos;
+        if ( '|' == ch ) {
+            break;
+        }
+    }
+
+    string text = string(original + 1, pos - original - 2);
+    Token token(TokenType::TT_SYMBOL, text);
+    return token;
+
 }

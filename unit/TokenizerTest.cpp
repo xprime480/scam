@@ -1,4 +1,3 @@
-
 #include "input/StringTokenizer.hpp"
 
 #include "gtest/gtest.h"
@@ -150,12 +149,14 @@ This comment style can span lines!\n\
 
     TEST(TokenizerTest, Boolean)
     {
-        string const input{ "#t #f #T #F" };
+        string const input{ "#t #f #T #F #true #FaLSE" };
         vector<Token> exp {
             Token(TokenType::TT_BOOLEAN, "#t"),
             Token(TokenType::TT_BOOLEAN, "#f"),
             Token(TokenType::TT_BOOLEAN, "#t"),
             Token(TokenType::TT_BOOLEAN, "#f"),
+            Token(TokenType::TT_BOOLEAN, "#t"),
+            Token(TokenType::TT_BOOLEAN, "#f")
         };
 
         string2tokens(input, exp);
@@ -271,10 +272,16 @@ This comment style can span lines!\n\
 
     TEST(TokenizerTest, Symbols)
     {
-        string const input{ "Two Symbols " };
+        string const input{ "Two Symbols || | | |23| |Two Symbols| |abc" };
         vector<Token> exp {
             Token(TokenType::TT_SYMBOL, "Two"),
-            Token(TokenType::TT_SYMBOL, "Symbols")
+            Token(TokenType::TT_SYMBOL, "Symbols"),
+            Token(TokenType::TT_SYMBOL, ""),
+            Token(TokenType::TT_SYMBOL, " "),
+            Token(TokenType::TT_SYMBOL, "23"),
+            Token(TokenType::TT_SYMBOL, "Two Symbols"),
+            Token(TokenType::TT_SCAN_ERROR,
+                  "End of input in identifier: {|abc}")
         };
 
         return string2tokens(input, exp);

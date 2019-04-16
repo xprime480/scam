@@ -35,6 +35,7 @@ namespace scam
         Token scanNumeric();
         Token scanKeyword();
         Token scanSymbol();
+        Token scanDelimitedSymbol();
     };
 }
 
