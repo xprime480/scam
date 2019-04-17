@@ -1,7 +1,8 @@
-
 #include "input/StringTokenizer.hpp"
 
 #include "input/Token.hpp"
+
+//#include "util/DebugTrace.hpp"
 
 #include <algorithm>
 #include <cstring>
@@ -194,6 +195,14 @@ Token StringTokenizer::scanSpecial()
         static const Token token(TokenType::TT_CLOSE_CURLY, "}");
         ++pos;
         return token;
+    }
+
+    if ( '#' == *pos ) {
+        if ( '(' == pos[1] ) {
+            static const Token token(TokenType::TT_OPEN_VECTOR, "#(");
+            pos += 2;
+            return token;
+        }
     }
 
     if ( '.' == *pos ) {

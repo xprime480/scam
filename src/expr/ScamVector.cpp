@@ -34,12 +34,12 @@ string ScamVector::toString() const
     stringstream s;
     string sep { "" };
 
-    s << "[";
+    s << "#(";
     for ( auto const & e : elts ) {
         s << sep << e->toString();
         sep = " ";
     }
-    s << "]";
+    s << ")";
 
     return s.str();
 }

@@ -7,7 +7,7 @@ Match Vector
 
 [input]
 
-(define match-data (match [:name :age] ["Mike" 58]))
+(define match-data (match #(:name :age) #("Mike" 58)))
 match-data
 
 [result]

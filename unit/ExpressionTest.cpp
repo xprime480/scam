@@ -309,7 +309,7 @@ TEST_F(ExpressionTest, SpecialFormQuasiQuote)
 
 TEST_F(ExpressionTest, VectorEmpty)
 {
-    string const value { "[]" };
+    string const value { "#()" };
     ExprVec vec;
     ScamExpr * expr  = ExpressionFactory::makeVector(vec);
     expectVector(expr, value, 0);
@@ -320,7 +320,7 @@ TEST_F(ExpressionTest, VectorEmpty)
 
 TEST_F(ExpressionTest, VectorNonEmpty)
 {
-    string const value { "[1 2 3]" };
+    string const value { "#(1 2 3)" };
     ExprVec vec;
     for ( auto i : { 1, 2, 3 } ) {
         vec.push_back(ExpressionFactory::makeInteger(i));

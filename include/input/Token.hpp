@@ -15,6 +15,7 @@ namespace scam
             TT_CLOSE_BRACKET,
             TT_OPEN_CURLY,
             TT_CLOSE_CURLY,
+            TT_OPEN_VECTOR,
 
             TT_DOT,
             TT_QUOTE,

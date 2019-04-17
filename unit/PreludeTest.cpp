@@ -255,7 +255,7 @@ TEST_F(PreludeTest, LengthWithNested)
 
 TEST_F(PreludeTest, LengthVector)
 {
-    ScamExpr * expr = parseAndEvaluate("(length [1 2 3])");
+    ScamExpr * expr = parseAndEvaluate("(length #(1 2 3))");
     expectInteger(expr, 3, "3");
 }
 
@@ -285,13 +285,13 @@ TEST_F(PreludeTest, NthListOutOfBounds)
 
 TEST_F(PreludeTest, NthVector)
 {
-    ScamExpr * expr = parseAndEvaluate("(nth 0 [1 2 3])");
+    ScamExpr * expr = parseAndEvaluate("(nth 0 #(1 2 3))");
     expectInteger(expr, 1, "1");
 }
 
 TEST_F(PreludeTest, NthVectorOutOfBounds)
 {
-    ScamExpr * expr = parseAndEvaluate("(nth -50 [1 2 3])");
+    ScamExpr * expr = parseAndEvaluate("(nth -50 #(1 2 3))");
     expectError(expr);
 }
 

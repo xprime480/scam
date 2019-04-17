@@ -55,7 +55,7 @@ TEST_F(EqualTest, EqPSingleChar)
 
 TEST_F(EqualTest, EqPSingleVector)
 {
-    expectTrue("(eq? [1 2 3])");
+    expectTrue("(eq? #(1 2 3))");
 }
 
 TEST_F(EqualTest, EqPSingleSymbol)
@@ -165,17 +165,17 @@ TEST_F(EqualTest, EqPTwoCharDifferent)
 
 TEST_F(EqualTest, EqPTwoVectorSame)
 {
-    expectTrue("(eq? [1 2 3] [1 2 3])");
+    expectTrue("(eq? #(1 2 3) #(1 2 3))");
 }
 
 TEST_F(EqualTest, EqPTwoVectorDifferent)
 {
-    expectFalse("(eq? [1 2 3] [1 2 3 4 5 6 7 8])");
+    expectFalse("(eq? #(1 2 3) #(1 2 3 4 5 6 7 8))");
 }
 
 TEST_F(EqualTest, EqPTwoVectorOneEmpty)
 {
-    expectFalse("(eq? [] [1 2 3 4 5 6 7 8])");
+    expectFalse("(eq? #() #(1 2 3 4 5 6 7 8))");
 }
 
 TEST_F(EqualTest, EqPTwoSymbolSame)

@@ -182,12 +182,12 @@ TEST_F(LogicTest, SubstituteInCons)
 
 TEST_F(LogicTest, SubstituteInVector)
 {
-    expectTrue("(eq? (substitute [:X 99] { :X 23 }) [23 99])");
+    expectTrue("(eq? (substitute #(:X 99) { :X 23 }) #(23 99))");
 }
 
 TEST_F(LogicTest, SubstituteMultiple)
 {
-    expectTrue("(eq? (substitute [:X :Y :X] { :X 23 :Y cat }) [23 'cat 23])");
+    expectTrue("(eq? (substitute #(:X :Y :X) { :X 23 :Y cat }) #(23 'cat 23))");
 }
 
 TEST_F(LogicTest, SubstituteMissing)

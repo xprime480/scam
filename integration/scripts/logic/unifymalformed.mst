@@ -7,7 +7,7 @@ Unify Malformed
 
 [input]
 
-(define result (unify [:X :Y] [:Y :X]))
+(define result (unify #(:X :Y) #(:Y :X)))
 (result :get :X)
 (result :get :Y)
 

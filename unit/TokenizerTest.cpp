@@ -1,5 +1,7 @@
 #include "input/StringTokenizer.hpp"
 
+#include "util/DebugTrace.hpp"
+
 #include "gtest/gtest.h"
 
 #include <vector>
@@ -129,7 +131,8 @@ This comment style can span lines!\n\
 
     TEST(TokenizerTest, SpecialSymbols)
     {
-        string const input{ "()[]{}.'`,,@" };
+	ScamTraceScope _;
+        string const input{ "()[]{}#(.'`,,@" };
         vector<Token> exp {
             Token(TokenType::TT_OPEN_PAREN,    "(") ,
             Token(TokenType::TT_CLOSE_PAREN,   ")") ,
@@ -137,6 +140,7 @@ This comment style can span lines!\n\
             Token(TokenType::TT_CLOSE_BRACKET, "]") ,
             Token(TokenType::TT_OPEN_CURLY,    "{") ,
             Token(TokenType::TT_CLOSE_CURLY,   "}") ,
+	    Token(TokenType::TT_OPEN_VECTOR,   "#("),
             Token(TokenType::TT_DOT,           ".") ,
             Token(TokenType::TT_QUOTE,         "'") ,
             Token(TokenType::TT_QUASIQUOTE,    "`") ,

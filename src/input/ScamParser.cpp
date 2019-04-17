@@ -51,7 +51,7 @@ ScamExpr * ScamParser::tokenToExpr(Token const & token) const
         rv = ExpressionFactory::makeError("Extra ')' in input");
         break;
 
-    case TokenType::TT_OPEN_BRACKET:
+    case TokenType::TT_OPEN_VECTOR:
         rv = parseVector();
         break;
 
@@ -217,7 +217,7 @@ ScamExpr * ScamParser::parseVector() const
             return ExpressionFactory::makeError(token.getText());
         }
 
-        if ( TokenType::TT_CLOSE_BRACKET == type ) {
+        if ( TokenType::TT_CLOSE_PAREN == type ) {
             return ExpressionFactory::makeVector(vec);
         }
 

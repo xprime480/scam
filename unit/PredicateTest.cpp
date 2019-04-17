@@ -69,7 +69,7 @@ TEST_F(PredicateTest, ListTestNotList)
 
 TEST_F(PredicateTest, VectorTestVector)
 {
-    expectTrue("(vector? [1 2 3])");
+    expectTrue("(vector? #(1 2 3))");
 }
 
 TEST_F(PredicateTest, VectorTestList)

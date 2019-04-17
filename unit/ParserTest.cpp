@@ -339,10 +339,10 @@ TEST_F(ParserTest, ReaderMacroListForm)
 
 TEST_F(ParserTest, VectorEmpty)
 {
-    string const msg { "[]" };
+    string const msg { "#()" };
     vector<Token> tokens {
-        Token(TokenType::TT_OPEN_BRACKET, "["),
-        Token(TokenType::TT_CLOSE_BRACKET, "]")
+        Token(TokenType::TT_OPEN_VECTOR, "#("),
+        Token(TokenType::TT_CLOSE_PAREN, ")")
     };
 
     ScamExpr * expr = runTest(tokens);
@@ -351,12 +351,12 @@ TEST_F(ParserTest, VectorEmpty)
 
 TEST_F(ParserTest, VectorNonEmpty)
 {
-    string const msg { "[5 42]" };
+    string const msg { "#(5 42)" };
     vector<Token> tokens {
-        Token(TokenType::TT_OPEN_BRACKET, "["),
+        Token(TokenType::TT_OPEN_VECTOR, "#("),
         Token(TokenType::TT_INTEGER, "5"),
         Token(TokenType::TT_INTEGER, "42"),
-        Token(TokenType::TT_CLOSE_BRACKET, "]")
+        Token(TokenType::TT_CLOSE_PAREN, ")")
     };
 
     ScamExpr * expr = runTest(tokens);
