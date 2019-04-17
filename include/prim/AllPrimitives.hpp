@@ -1,4 +1,3 @@
-
 #include "prim/Backtrack.hpp"
 #include "prim/Car.hpp"
 #include "prim/CarCdr.hpp"
@@ -6,6 +5,7 @@
 #include "prim/Cons.hpp"
 #include "prim/EqualP.hpp"
 #include "prim/Error.hpp"
+#include "prim/Include.hpp"
 #include "prim/Instantiate.hpp"
 #include "prim/List.hpp"
 #include "prim/Load.hpp"

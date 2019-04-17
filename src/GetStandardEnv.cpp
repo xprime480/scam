@@ -1,4 +1,3 @@
-
 #include "ScamEngine.hpp"
 
 #include "expr/ExpressionFactory.hpp"
@@ -91,6 +90,7 @@ void ScamEngine::getStandardEnv()
     addForm<Progn>(env, "begin");
 
     addForm<Load>(env, "load", this);
+    //    addForm<Include>(env, "include", this);
     addForm<Spawn>(env, "spawn");
     addForm<Error>(env, "error");
     addForm<Backtrack>(env, "backtrack", this);

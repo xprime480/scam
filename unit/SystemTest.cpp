@@ -15,6 +15,13 @@ TEST_F(SystemTest, LoadTest)
     expectInteger(expr, 66, "66");
 }
 
+TEST_F(SystemTest, IncludeTest)
+{
+    ScamExpr * expr
+        = parseAndEvaluate("(include \"scripts/system/includetest.scm\")");
+    expectInteger(expr, 66, "66");
+}
+
 TEST_F(SystemTest, WhileTest)
 {
     ScamExpr * expr

@@ -173,4 +173,18 @@
                 ,value
                 (cond ,(cdr clauses))))))))
 
+(define include
+  (lambda files
+    (if (nil? files)
+        (error "include requires at least one file")
+        (letrec ((include-files
+                  (lambda (files)
+                    (let* ((file (car files))
+                           (rest (cdr files))
+                           (val (load file)))
+                      (if (or (error? val) (nil? rest))
+                          val
+                          (include-files rest))))))
+          (include-files files)))))
+
 1
