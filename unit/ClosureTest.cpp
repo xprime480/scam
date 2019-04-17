@@ -152,8 +152,51 @@ TEST_F(ClosureTest, LambdaSymbolParmListSeveral)
     expectList(expr, "(5 10 15)", 3);
 }
 
+TEST_F(ClosureTest, LambdaNoFormalsOrBody)
+{
+    ScamExpr * expr = parseAndEvaluate("(lambda)");
+    expectError(expr, "Expected (lambda args body*); got: (lambda)");
+}
+
+TEST_F(ClosureTest, LambdaFormalsNotListorSymbol)
+{
+    ScamExpr * expr = parseAndEvaluate("(lambda 2 (+ 2 2))");
+    expectError(expr, "Formals should be list or symbol; got: 2");
+}
+
+TEST_F(ClosureTest, LambdaParameterNotSymbol)
+{
+    ScamExpr * expr = parseAndEvaluate("(lambda (:keyword) (+ 2 2))");
+    expectError(expr, "Formal parameter should be a symbol; got: :keyword");
+}
+
+TEST_F(ClosureTest, LambdaDuplicateParameter)
+{
+    ScamExpr * expr = parseAndEvaluate("(lambda (x x) (* x 2))");
+    expectError(expr, "Symbol cannot appear twice in formals list: x");
+}
+
+TEST_F(ClosureTest, LambdaDuplicateParameterInImproperList)
+{
+    ScamExpr * expr = parseAndEvaluate("(lambda (x . x) (* x 2))");
+    expectError(expr, "Symbol cannot appear twice in formals list: x");
+}
+
+TEST_F(ClosureTest, LambdaParameterNotSymbolInImproperList)
+{
+    ScamExpr * expr = parseAndEvaluate("(lambda (ok . :keyword) (+ 2 2))");
+    expectError(expr, "Formal parameter should be a symbol; got: :keyword");
+}
+
 TEST_F(ClosureTest, MacroBasic)
 {
     ScamExpr * expr = parseAndEvaluate("(macro () 2)");
     expectProcedure(expr, "(macro () (2))");
 }
+
+TEST_F(ClosureTest, MacroNoFormalsOrBody)
+{
+    ScamExpr * expr = parseAndEvaluate("(macro)");
+    expectError(expr, "Expected (macro args body*); got: (macro)");
+}
+

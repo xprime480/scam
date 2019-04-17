@@ -179,7 +179,7 @@ TEST_F(PredicateTest, ProcTestProc)
 
 TEST_F(PredicateTest, ProcTestClass)
 {
-    expectTrue("(proc? (make-class Root () ()))");
+    expectTrue("(proc? (make-class Root ()))");
 }
 
 TEST_F(PredicateTest, ProcTestInstance)
@@ -194,7 +194,7 @@ TEST_F(PredicateTest, ProcTestNotProc)
 
 TEST_F(PredicateTest, ClassTestClass)
 {
-    expectTrue("(class? (make-class Root () ()))");
+    expectTrue("(class? (make-class Root ()))");
 }
 
 TEST_F(PredicateTest, ClassTestNotClass)

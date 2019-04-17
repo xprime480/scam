@@ -1,9 +1,8 @@
-
 #include "form/Macro.hpp"
 
 #include "Continuation.hpp"
-
 #include "expr/ExpressionFactory.hpp"
+#include "util/Validations.hpp"
 
 using namespace scam;
 using namespace std;
@@ -21,9 +20,14 @@ Macro * Macro::makeInstance()
 
 void Macro::apply(ScamExpr * args, Continuation * cont, Env * env)
 {
-    ScamExpr * expr = ExpressionFactory::makeClosure(args->getCar(),
-                                                     args->getCdr(),
-                                                     env,
-                                                     true);
+    ScamExpr * expr = validateClosureArgs(args, "macro");
+    if ( ! expr->error() ) {
+        expr =
+            ExpressionFactory::makeClosure(args->getCar(),
+                                           args->getCdr(),
+                                           env,
+                                           true);
+    }
+
     cont->run(expr);
 }

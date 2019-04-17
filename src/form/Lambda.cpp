@@ -1,9 +1,8 @@
-
 #include "form/Lambda.hpp"
 
 #include "Continuation.hpp"
-
 #include "expr/ExpressionFactory.hpp"
+#include "util/Validations.hpp"
 
 using namespace scam;
 using namespace std;
@@ -21,7 +20,11 @@ Lambda * Lambda::makeInstance()
 
 void Lambda::apply(ScamExpr * args, Continuation * cont, Env * env)
 {
-    ScamExpr * expr =
-        ExpressionFactory::makeClosure(args->getCar(), args->getCdr(), env);
+    ScamExpr * expr = validateClosureArgs(args, "lambda");
+    if ( ! expr->error() ) {
+        expr =
+            ExpressionFactory::makeClosure(args->getCar(), args->getCdr(), env);
+    }
+
     cont->run(expr);
 }

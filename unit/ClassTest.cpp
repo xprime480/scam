@@ -79,3 +79,9 @@ TEST_F(ClassTest, FunctionInvocationEnv)
     ScamExpr * expr = parseAndEvaluateFile("scripts/class/invokeenv.scm");
     expectList(expr, "(2 3 5)", 3);
 }
+
+TEST_F(ClassTest, BadFunctionForm)
+{
+    ScamExpr * expr = parseAndEvaluateFile("scripts/class/badfunctionform.scm");
+    expectError(expr, "Expected (foo args body*); got: (foo)");
+}

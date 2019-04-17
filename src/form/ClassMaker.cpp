@@ -1,8 +1,8 @@
-
 #include "form/ClassMaker.hpp"
 
 #include "Continuation.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "util/Validations.hpp"
 
 using namespace scam;
 using namespace std;
@@ -35,7 +35,9 @@ void ClassMaker::apply(ScamExpr * args, Continuation * cont, Env * env)
 
 bool ClassMaker::validate_args(ScamExpr * args, Continuation * cont)
 {
-    if ( args->length() < 2 ) {
+    const auto len = args->length();
+
+    if ( len < 2 ) {
         ScamExpr * err =
             ExpressionFactory::makeError("Expected: (make-class Base",
                                          " (vars...) methods...); ",
@@ -52,6 +54,28 @@ bool ClassMaker::validate_args(ScamExpr * args, Continuation * cont)
                                          vars->toString());
         cont->run(err);
         return false;
+    }
+
+    for ( size_t nth = 2 ; nth < len ; ++nth ) {
+        ScamExpr * funcdef = args->nthcar(nth);
+        if ( ! funcdef->isCons() ) {
+            ScamExpr * err =
+                ExpressionFactory::makeError("Expected function def: ",
+                                             "(function args forms...)",
+                                             "; got ",
+                                             funcdef->toString());
+            cont->run(err);
+            return false;
+        }
+
+        ScamExpr * name = funcdef->getCar();
+        ScamExpr * funcArgs = funcdef->getCdr();
+        ScamExpr * funcOk = validateClosureArgs(funcArgs,
+                                                name->toString().c_str());
+        if ( funcOk->error() ) {
+            cont->run(funcOk);
+            return false;
+        }
     }
 
     return true;
