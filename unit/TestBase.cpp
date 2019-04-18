@@ -212,10 +212,11 @@ void TestBase::expectNull(ScamExpr * expr)
 }
 
 void TestBase::expectError(ScamExpr * expr,
-                                     string const msg,
-                                     bool managed)
+                           string const msg,
+                           bool managed)
 {
-    auto pred = SELECT_TRUTH | SELECT_ERROR | (managed ? SELECT_MANAGED : 0x0);
+    auto pred = SELECT_TRUTH | SELECT_ERROR;
+    pred |= (managed ? SELECT_MANAGED : 0x0);
     checkPredicates(expr, pred);
 
     if ( ! msg.empty() ) {

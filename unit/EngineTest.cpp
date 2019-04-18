@@ -1,4 +1,3 @@
-
 #include "TestBase.hpp"
 
 using namespace std;
@@ -11,7 +10,7 @@ class EngineTest : public TestBase
 TEST_F(EngineTest, BacktrackInitial)
 {
     ScamExpr * expr = parseAndEvaluate("?");
-    expectError(expr, "No current backtrack context");
+    expectError(expr, "No current backtrack context", false);
 }
 
 TEST_F(EngineTest, AmbZeroForms)
@@ -38,7 +37,7 @@ TEST_F(EngineTest, AmbOneFormThird)
     parseAndEvaluate("(amb 2)");
     parseAndEvaluate("?");
     ScamExpr * expr = parseAndEvaluate("?");
-    expectError(expr, "No current backtrack context");
+    expectError(expr, "No current backtrack context", false);
 }
 
 TEST_F(EngineTest, AmbManyFormSecond)
@@ -66,10 +65,10 @@ TEST_F(EngineTest, AmbNestedLet)
     expectError(expr, "No more choices", false);
 
     expr = parseAndEvaluate("?");
-    expectError(expr, "No current backtrack context");
+    expectError(expr, "No current backtrack context", false);
 
     expr = parseAndEvaluate("?");
-    expectError(expr, "No current backtrack context");
+    expectError(expr, "No current backtrack context", false);
 }
 
 TEST_F(EngineTest, AmbNestedLetStar)
@@ -90,10 +89,10 @@ TEST_F(EngineTest, AmbNestedLetStar)
     expectError(expr, "No more choices", false);
 
     expr = parseAndEvaluate("?");
-    expectError(expr, "No current backtrack context");
+    expectError(expr, "No current backtrack context", false);
 
     expr = parseAndEvaluate("?");
-    expectError(expr, "No current backtrack context");
+    expectError(expr, "No current backtrack context", false);
 }
 
 TEST_F(EngineTest, AmbPrimitive)
@@ -111,7 +110,7 @@ TEST_F(EngineTest, AmbPrimitive)
     expectError(expr, "No more choices", false);
 
     expr = parseAndEvaluate("?");
-    expectError(expr, "No current backtrack context");
+    expectError(expr, "No current backtrack context", false);
 }
 
 TEST_F(EngineTest, AmbDefine)
