@@ -406,3 +406,28 @@ TEST_F(PreludeTest, CondManyClauses)
     ScamExpr * expr = parseAndEvaluateFile("scripts/cond/many.scm");
     expectString(expr, "Last");
 }
+
+TEST_F(PreludeTest, CondElse)
+{
+    ScamExpr * expr = parseAndEvaluateFile("scripts/cond/else.scm");
+    expectString(expr, "Else Evaluated");
+}
+
+TEST_F(PreludeTest, CondManyForms)
+{
+    ScamExpr * expr = parseAndEvaluate("(cond ((#t 1 2 3)))");
+    expectInteger(expr, 3, "3");
+}
+
+TEST_F(PreludeTest, CondNoForms)
+{
+    ScamExpr * expr = parseAndEvaluate("(cond ((3)))");
+    expectInteger(expr, 3, "3");
+}
+
+TEST_F(PreludeTest, CondArrowForm)
+{
+    (void) parseAndEvaluate("(define inc (lambda (x) (+ x 1)))");
+    ScamExpr * expr = parseAndEvaluate("(cond ((1 => inc)))");
+    expectInteger(expr, 2, "2");
+}

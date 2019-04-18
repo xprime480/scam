@@ -163,15 +163,47 @@
 
 (define cond
   (macro (clauses)
+
+    ;; if there are no clauses return nil (implementation defined)
+    ;;
     (if (nil? clauses)
         '()
-        (progn
+        (begin
           (let* ((clause (car clauses))
-                (test (car clause))
-                (value (car (cdr clause))))
-           `(if ,test
-                ,value
-                (cond ,(cdr clauses))))))))
+                 (test (car clause))
+                 (forms (cdr clause)))
+
+            ;; check for the "else" keyword
+            ;;
+            (if (eq? test 'else)
+                (if (nil? forms)
+                    ''else
+                    `(begin ,@forms))
+
+                ;; check for a test with no forms; return test
+                ;; value if truthy
+                ;;
+                (if (nil? forms)
+                    `(let ((testval ,test))
+                       (if testval
+                           testval
+                           (cond ,(cdr clauses))))
+
+                    ;; check for the "=>" form
+                    ;;
+                    (if (eq? (car forms) '=>)
+                        `(let ((testval ,test))
+                           (if testval
+                               (apply ,@(car (cdr forms))
+                                      (list testval))
+                               (cond ,(cdr clauses))))
+
+                        ;; normal case: if test is true, eval forms
+                        ;; else recurse
+                        ;;
+                        `(if ,test
+                             (begin ,@forms)
+                             (cond ,(cdr clauses)))))))))))
 
 (define include
   (lambda files
