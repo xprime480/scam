@@ -31,6 +31,7 @@ namespace scam
         ScamExpr * apply(ScamExpr * expr, ScamExpr * args);
         ScamExpr * parseAndEvaluate(std::string const & input);
         ScamExpr * parseAndEvaluateFile(char const * filename);
+        ScamExpr * readString(char const * input);
 
         void doCheck(bool act, unsigned selector, unsigned which);
 

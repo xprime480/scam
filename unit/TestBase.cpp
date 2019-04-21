@@ -6,7 +6,7 @@
 #include "expr/ExpressionFactory.hpp"
 #include "input/ScamParser.hpp"
 #include "input/StringTokenizer.hpp"
-#include "util/EvalString.hpp"
+#include "util/ReadEvalString.hpp"
 
 using namespace scam;
 using namespace std;
@@ -81,7 +81,7 @@ ScamExpr * TestBase::apply(ScamExpr * expr, ScamExpr * args)
 ScamExpr * TestBase::parseAndEvaluate(string const & input)
 {
     try {
-        EvalString helper(&engine, input);
+        ReadEvalString helper(&engine, input);
         ScamExpr * rv = helper.run();
         return rv;
     }
@@ -99,6 +99,22 @@ ScamExpr * TestBase::parseAndEvaluateFile(char const * filename)
     stringstream s;
     s << "(load \"" << filename << "\")";
     return parseAndEvaluate(s.str());
+}
+
+ScamExpr * TestBase::readString(char const * input)
+{
+    try {
+        ReadEvalString helper(&engine, input);
+        ScamExpr * rv = helper.read();
+        return rv;
+    }
+    catch ( ScamException e ) {
+        ScamExpr * rv = ExpressionFactory::makeError(e.getMessage());
+        return rv;
+    }
+    catch ( ... ) {
+        return ExpressionFactory::makeError("Unknown exception");
+    }
 }
 
 void decodeBit(unsigned mismatch,

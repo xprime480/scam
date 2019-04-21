@@ -5,7 +5,7 @@
 #include "Extractor.hpp"
 #include "ScamEngine.hpp"
 #include "input/StringTokenizer.hpp"
-#include "util/EvalString.hpp"
+#include "util/ReadEvalString.hpp"
 
 #include <iostream>
 #include <sstream>
@@ -26,7 +26,7 @@ namespace
     {
         engine.reset(true);
         engine.pushFrame();
-        EvalString helper(&engine, testforms);
+        ReadEvalString helper(&engine, testforms);
         ScamExpr * status = helper.run();
         return ! ( status->isNull() || status->error() );
     }
@@ -43,7 +43,7 @@ string call_scam(string const & input)
 
     Accumulator * accumulator = standardMemoryManager.make<Accumulator>();
     engine.setCont(accumulator);
-    EvalString helper(&engine, input);
+    ReadEvalString helper(&engine, input);
     helper.run();
 
     return accumulator->getResult();

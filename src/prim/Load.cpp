@@ -5,7 +5,7 @@
 #include "Continuation.hpp"
 #include "expr/ScamExpr.hpp"
 #include "expr/ExpressionFactory.hpp"
-#include "util/EvalString.hpp"
+#include "util/ReadEvalString.hpp"
 
 #include <string>
 #include <sstream>
@@ -44,7 +44,7 @@ void Load::applyArgs(ScamExpr * args, Continuation * cont)
     }
 
     string data = get_data(source);
-    EvalString helper(engine, data);
+    ReadEvalString helper(engine, data);
     ScamExpr * last = helper.run();
 
     engine->setLoaded(filename);

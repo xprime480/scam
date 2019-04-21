@@ -1,5 +1,5 @@
-#if ! defined(EVALSTRING_H)
-#define EVALSTRING_H 1
+#if ! defined(READEVALSTRING_HPP)
+#define READEVALSTRING_HPP 1
 
 #include "Extractor.hpp"
 #include "ScamEngine.hpp"
@@ -10,13 +10,14 @@
 
 namespace scam
 {
-    class EvalString
+    class ReadEvalString
     {
     public:
-        EvalString(ScamEngine * engine, std::string const & text);
-        ~EvalString();
+        ReadEvalString(ScamEngine * engine, std::string const & text);
+        ~ReadEvalString();
 
         ScamExpr * run();
+        ScamExpr * read();
 
     private:
         ScamEngine * engine;
