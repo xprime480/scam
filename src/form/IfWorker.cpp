@@ -5,23 +5,25 @@
 #include "expr/ScamExpr.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "form/IFCont.hpp"
+#include "input/CountedListParser.hpp"
 #include "util/MemoryManager.hpp"
 
 using namespace scam;
 using namespace std;
 
-IfWorker::IfWorker(Continuation * cont, Env * env, ScamExpr * args)
+IfWorker::IfWorker(Continuation * cont, Env * env, CountedListParser * parser)
     : Worker("If")
-    , args(args)
+    , parser(parser)
     , cont(cont)
     , env(env)
 {
 }
 
-IfWorker *
-IfWorker::makeInstance(Continuation * cont, Env * env, ScamExpr * args)
+IfWorker * IfWorker::makeInstance(Continuation * cont,
+                                  Env * env,
+                                  CountedListParser * parser)
 {
-    return new IfWorker(cont, env, args);
+    return new IfWorker(cont, env, parser);
 }
 
 void IfWorker::mark() const
@@ -30,7 +32,7 @@ void IfWorker::mark() const
         Worker::mark();
         cont->mark();
         env->mark();
-        args->mark();
+        parser->mark();
     }
 }
 
@@ -38,17 +40,9 @@ void IfWorker::run()
 {
     Worker::run();
 
-    if ( ! args->isList() || args->length() < 2 || args->length() > 3 ) {
-        ScamExpr * err =
-            ExpressionFactory::makeError("If expects 2 or 3 forms; got: ",
-                                         args->toString());
-        cont->run(err);
-    }
-    else {
-        Continuation * newCont =
-            standardMemoryManager.make<IfCont>(args, cont, env);
-        ScamExpr * test = args->nthcar(0);
+    Continuation * newCont =
+        standardMemoryManager.make<IfCont>(parser, cont, env);
+    ExprHandle test = const_cast<ExprHandle>(parser->get(0u));
 
-        test->eval(newCont, env);
-    }
+    test->eval(newCont, env);
 }

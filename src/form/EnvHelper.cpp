@@ -1,8 +1,10 @@
 #include "form/EnvHelper.hpp"
 
 #include "Continuation.hpp"
-#include "expr/ScamExpr.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "expr/ScamExpr.hpp"
+#include "input/ArgParser.hpp"
+#include "input/CountedListParser.hpp"
 
 using namespace scam;
 using namespace std;
@@ -13,15 +15,17 @@ EnvHelper::EnvHelper(char const * name, ScamEngine * engine)
 {
 }
 
-bool EnvHelper::checkArgs(ScamExpr * args,
+bool EnvHelper::checkArgs(ExprHandle args,
                           Continuation * cont,
                           bool exprNeeded)
 {
     const size_t expected = 1u + (exprNeeded ? 1u : 0u);
-    const size_t actual   = args->length();
+    ArgParser * any = standardMemoryManager.make<ArgParser>();
+    CountedListParser * parser =
+        standardMemoryManager.make<CountedListParser>(any, expected, expected);
 
-    if ( expected != actual ) {
-        ScamExpr * err =
+    if ( ! parser->accept(args) ) {
+        ExprHandle err =
             ExpressionFactory::makeError("Expecting ",
                                          expected,
                                          "forms for argument list; ",

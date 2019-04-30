@@ -7,23 +7,25 @@ namespace scam
 {
     class Continuation;
     class Env;
-    class ScamExpr;
+    
+    class CountedListParser;
 
     class IfWorker : public Worker
     {
     private:
         friend class scam::MemoryManager;
-        IfWorker(Continuation * cont, Env * env, ScamExpr * args);
+        IfWorker(Continuation * cont, Env * env, CountedListParser * parser);
 
-        static IfWorker *
-        makeInstance(Continuation * cont, Env * env, ScamExpr * args);
+        static IfWorker * makeInstance(Continuation * cont,
+                                       Env * env,
+                                       CountedListParser * parser);
 
     public:
         void mark() const override;
         void run() override;
 
     private:
-        ScamExpr * args;
+        CountedListParser * parser;
         Continuation * cont;
         Env * env;
     };

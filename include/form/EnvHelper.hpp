@@ -6,7 +6,7 @@
 namespace scam
 {
     class ScamEngine;
-    class ScamExpr;
+    
     class Continuation;
 
     class EnvHelper : public SpecialForm
@@ -17,7 +17,7 @@ namespace scam
     protected:
         ScamEngine * engine;
 
-        bool checkArgs(ScamExpr * args,
+        bool checkArgs(ExprHandle args,
                        Continuation * cont,
                        bool exprNeeded);
     };
