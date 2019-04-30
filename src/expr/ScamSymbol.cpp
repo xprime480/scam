@@ -24,9 +24,9 @@ string ScamSymbol::toString() const
     return value;
 }
 
-void ScamSymbol::eval(Continuation * cont, Env * env)
+void ScamSymbol::eval(Continuation * cont, Env * env) const
 {
-    ScamExpr * evaluated;
+    ExprHandle evaluated;
 
     if ( env->check(this) ) {
         evaluated = env->get(this);
@@ -47,7 +47,7 @@ bool ScamSymbol::isSymbol() const
     return true;
 }
 
-bool ScamSymbol::equals(ScamExpr const * expr) const
+bool ScamSymbol::equals(ConstExprHandle expr) const
 {
     if ( ! expr->isSymbol() ) {
         return false;

@@ -12,9 +12,8 @@ namespace scam
 
     public:
         static Substitute * makeInstance();
-        void applyArgs(ScamExpr * args, Continuation * cont) override;
+        void applyArgs(ExprHandle args, Continuation * cont) override;
     };
-
 }
 
 #endif

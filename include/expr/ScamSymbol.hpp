@@ -11,15 +11,15 @@ namespace scam
         friend class MemoryManager;
         ScamSymbol(std::string const & value, bool managed = true);
         static ScamSymbol * makeInstance(std::string const & value,
-					 bool managed = true);
+                                         bool managed = true);
 
     public:
         std::string toString() const override;
-        void eval(Continuation * cont, Env * env) override;
+        void eval(Continuation * cont, Env * env) const override;
 
         bool isSymbol() const override;
 
-        bool equals(ScamExpr const * expr) const override;
+        bool equals(ConstExprHandle expr) const override;
 
     private:
         std::string const value;

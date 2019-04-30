@@ -15,9 +15,9 @@ Substitutor::Substitutor(ScamDict * answers)
 {
 }
 
-ScamExpr * Substitutor::resolve_value(ScamExpr * expr)
+ExprHandle Substitutor::resolve_value(ExprHandle expr)
 {
-    ScamExpr * rv;
+    ExprHandle rv;
 
     if ( expr->isCons() ) {
         rv = resolve_cons(expr);
@@ -38,24 +38,24 @@ ScamExpr * Substitutor::resolve_value(ScamExpr * expr)
     return rv;
 }
 
-ScamExpr * Substitutor::map_value(ScamExpr * val)
+ExprHandle Substitutor::map_value(ExprHandle val)
 {
     return resolve_value(val);
 }
 
-ScamExpr * Substitutor::resolve_cons(ScamExpr * expr)
+ExprHandle Substitutor::resolve_cons(ExprHandle expr)
 {
     return map_cons(expr);
 }
 
-ScamExpr * Substitutor::resolve_vector(ScamExpr * expr)
+ExprHandle Substitutor::resolve_vector(ExprHandle expr)
 {
     return map_vector(expr);
 }
 
-bool Substitutor::have_seen(ScamExpr * expr)
+bool Substitutor::have_seen(ExprHandle expr)
 {
-    ScamExpr * t = helper;
+    ExprHandle t = helper;
     while ( ! t->isNil() ) {
         if ( t->nthcar(0)->equals(expr) ) {
             return true;
@@ -66,7 +66,7 @@ bool Substitutor::have_seen(ScamExpr * expr)
     return false;
 }
 
-ScamExpr * Substitutor::resolve_keyword(ScamExpr * expr)
+ExprHandle Substitutor::resolve_keyword(ExprHandle expr)
 {
     if ( have_seen(expr) ) {
         stringstream s;
@@ -76,14 +76,14 @@ ScamExpr * Substitutor::resolve_keyword(ScamExpr * expr)
 
     helper = ExpressionFactory::makeCons(expr, helper);
 
-    ScamExpr * val = answers->get(expr);
-    ScamExpr * rv  = resolve_value(val);
+    ExprHandle val = answers->get(expr);
+    ExprHandle rv  = resolve_value(val);
 
     helper = helper->nthcdr(0);
     return rv;
 }
 
-ScamExpr * Substitutor::resolve_dict(ScamExpr * expr)
+ExprHandle Substitutor::resolve_dict(ExprHandle expr)
 {
     return map_dict(expr);
 }

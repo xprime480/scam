@@ -6,31 +6,27 @@
 namespace scam
 {
     class ScamDict;
-    class ScamExpr;
+
 
     class Substitutor : public ValueMapper
     {
     public:
         Substitutor(ScamDict * answers);
 
-        ScamExpr * resolve_value(ScamExpr * expr);
+        ExprHandle resolve_value(ExprHandle expr);
 
     protected:
-        ScamExpr * map_value(ScamExpr * val) override;
+        ExprHandle map_value(ExprHandle val) override;
 
     private:
         ScamDict * answers;
-        ScamExpr * helper;
+        ExprHandle helper;
 
-        ScamExpr * resolve_cons(ScamExpr * expr);
-
-        ScamExpr * resolve_vector(ScamExpr * expr);
-
-        bool have_seen(ScamExpr * expr);
-
-        ScamExpr * resolve_keyword(ScamExpr * expr);
-
-        ScamExpr * resolve_dict(ScamExpr * expr);
+        ExprHandle resolve_cons(ExprHandle expr);
+        ExprHandle resolve_vector(ExprHandle expr);
+        bool have_seen(ExprHandle expr);
+        ExprHandle resolve_keyword(ExprHandle expr);
+        ExprHandle resolve_dict(ExprHandle expr);
     };
 }
 

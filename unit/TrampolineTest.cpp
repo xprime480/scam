@@ -1,4 +1,3 @@
-
 #include "OneShotWorker.hpp"
 #include "CountdownWorker.hpp"
 

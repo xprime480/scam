@@ -15,7 +15,7 @@ Unify * Unify::makeInstance()
     return new Unify();
 }
 
-void Unify::applyArgs(ScamExpr * args, Continuation * cont)
+void Unify::applyArgs(ExprHandle args, Continuation * cont)
 {
     MatchUnifyCommon solver(args, cont, true);
     solver.solve();

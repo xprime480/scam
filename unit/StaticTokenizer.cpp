@@ -1,4 +1,3 @@
-
 #include "StaticTokenizer.hpp"
 
 using namespace std;

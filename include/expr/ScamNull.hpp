@@ -16,12 +16,12 @@ namespace scam
 
     public:
         std::string toString() const override;
-        void eval(Continuation * cont, Env * env) override;
+        void eval(Continuation * cont, Env * env) const override;
 
         bool isNull() const override;
         bool truth() const override;
 
-        bool equals(ScamExpr const * expr) const override;
+        bool equals(ConstExprHandle expr) const override;
     };
 }
 

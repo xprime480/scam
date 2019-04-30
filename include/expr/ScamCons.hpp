@@ -9,31 +9,31 @@ namespace scam
     {
     private:
         friend class MemoryManager;
-        ScamCons(ScamExpr * car, ScamExpr * cdr);
-        static ScamCons * makeInstance(ScamExpr * car, ScamExpr * cdr);
+        ScamCons(ExprHandle car, ExprHandle cdr);
+        static ScamCons * makeInstance(ExprHandle car, ExprHandle cdr);
 
     public:
         void mark() const override;
 
         std::string toString() const override;
-        void eval(Continuation * cont, Env * env) override;
-        void mapEval(Continuation * cont, Env * env) override;
+        void eval(Continuation * cont, Env * env) const override;
+        void mapEval(Continuation * cont, Env * env) const override;
 
         bool isCons() const override;
         bool isList() const override;
 
-        ScamExpr * getCar() const override;
-        ScamExpr * getCdr() const override;
+        ExprHandle getCar() const override;
+        ExprHandle getCdr() const override;
 
         size_t length() const override;
-        ScamExpr * nthcar(size_t n) const override;
-        ScamExpr * nthcdr(size_t n) const override;
+        ExprHandle nthcar(size_t n) const override;
+        ExprHandle nthcdr(size_t n) const override;
 
-        bool equals(ScamExpr const * expr) const override;
+        bool equals(ConstExprHandle expr) const override;
 
     private:
-        ScamExpr * car;
-        ScamExpr * cdr;
+        ExprHandle car;
+        ExprHandle cdr;
     };
 }
 

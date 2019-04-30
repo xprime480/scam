@@ -1,4 +1,3 @@
-
 #include "prim/Match.hpp"
 
 #include "prim/MatchUnifyCommon.hpp"
@@ -16,7 +15,7 @@ Match * Match::makeInstance()
     return new Match();
 }
 
-void Match::applyArgs(ScamExpr * args, Continuation * cont)
+void Match::applyArgs(ExprHandle args, Continuation * cont)
 {
     MatchUnifyCommon solver(args, cont, false);
     solver.solve();

@@ -1,4 +1,3 @@
-
 #include "OneShotWorker.hpp"
 
 using namespace scam;

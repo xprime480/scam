@@ -1,4 +1,3 @@
-
 #include "TestBase.hpp"
 
 using namespace std;
@@ -38,7 +37,7 @@ TEST_F(ComparisonTest, EqString)
 
 TEST_F(ComparisonTest, EqBadArgs)
 {
-    ScamExpr * expr = parseAndEvaluate("(= #t)");
+    ExprHandle expr = parseAndEvaluate("(= #t)");
     expectError(expr);
 
     expr = parseAndEvaluate("(= 3 \"x\")");

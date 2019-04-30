@@ -2,6 +2,7 @@
 #define MATCH_UNIFY_COMMON_HPP 1
 
 #include "ScamFwd.hpp"
+#include "expr/ExprFwd.hpp"
 
 namespace scam
 {

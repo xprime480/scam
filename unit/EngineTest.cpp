@@ -9,25 +9,25 @@ class EngineTest : public TestBase
 
 TEST_F(EngineTest, BacktrackInitial)
 {
-    ScamExpr * expr = parseAndEvaluate("?");
+    ExprHandle expr = parseAndEvaluate("?");
     expectError(expr, "No current backtrack context", false);
 }
 
 TEST_F(EngineTest, AmbZeroForms)
 {
-    ScamExpr * expr = parseAndEvaluate("(amb)");
+    ExprHandle expr = parseAndEvaluate("(amb)");
     expectError(expr, "No more choices", false);
 }
 
 TEST_F(EngineTest, AmbOneFormFirst)
 {
-    ScamExpr * expr = parseAndEvaluate("(amb 2)");
+    ExprHandle expr = parseAndEvaluate("(amb 2)");
     expectInteger(expr, 2, "2");
 }
 
 TEST_F(EngineTest, AmbOneFormSecond)
 {
-    ScamExpr * expr = parseAndEvaluate("(amb 2)");
+    ExprHandle expr = parseAndEvaluate("(amb 2)");
     expr = parseAndEvaluate("?");
     expectError(expr, "No more choices", false);
 }
@@ -36,20 +36,21 @@ TEST_F(EngineTest, AmbOneFormThird)
 {
     parseAndEvaluate("(amb 2)");
     parseAndEvaluate("?");
-    ScamExpr * expr = parseAndEvaluate("?");
+    ExprHandle expr = parseAndEvaluate("?");
     expectError(expr, "No current backtrack context", false);
 }
 
 TEST_F(EngineTest, AmbManyFormSecond)
 {
-    ScamExpr * expr = parseAndEvaluate("(amb 2 3 4)");
+    ExprHandle expr = parseAndEvaluate("(amb 2 3 4)");
     expr = parseAndEvaluate("?");
     expectInteger(expr, 3, "3");
 }
 
 TEST_F(EngineTest, AmbNestedLet)
 {
-    ScamExpr * expr = parseAndEvaluate("(load \"scripts/system/nestedamb.scm\")");
+    ExprHandle expr =
+        parseAndEvaluate("(load \"scripts/system/nestedamb.scm\")");
     expectList(expr, "(a 1)", 2);
 
     expr = parseAndEvaluate("?");
@@ -73,7 +74,8 @@ TEST_F(EngineTest, AmbNestedLet)
 
 TEST_F(EngineTest, AmbNestedLetStar)
 {
-    ScamExpr * expr = parseAndEvaluate("(load \"scripts/system/nestedamb2.scm\")");
+    ExprHandle expr =
+        parseAndEvaluate("(load \"scripts/system/nestedamb2.scm\")");
     expectList(expr, "(a 1)", 2);
 
     expr = parseAndEvaluate("?");
@@ -97,7 +99,7 @@ TEST_F(EngineTest, AmbNestedLetStar)
 
 TEST_F(EngineTest, AmbPrimitive)
 {
-    ScamExpr * expr = parseAndEvaluate("(+ 2 (amb 1 2 3))");
+    ExprHandle expr = parseAndEvaluate("(+ 2 (amb 1 2 3))");
     expectInteger(expr, 3, "3");
 
     expr = parseAndEvaluate("?");
@@ -115,7 +117,8 @@ TEST_F(EngineTest, AmbPrimitive)
 
 TEST_F(EngineTest, AmbDefine)
 {
-    ScamExpr * expr = parseAndEvaluate("(define test (amb 3 4)) test ? test");
+    ExprHandle expr =
+        parseAndEvaluate("(define test (amb 3 4)) test ? test");
     expectInteger(expr, 4, "4");
 
     expr = parseAndEvaluate("? test");
@@ -124,7 +127,8 @@ TEST_F(EngineTest, AmbDefine)
 
 TEST_F(EngineTest, AmbAssign)
 {
-    ScamExpr * expr = parseAndEvaluate("(load \"scripts/system/ambassign.scm\")");
+    ExprHandle expr =
+        parseAndEvaluate("(load \"scripts/system/ambassign.scm\")");
     expectInteger(expr, 1, "1");
 }
 
@@ -134,13 +138,14 @@ TEST_F(EngineTest, AmbUndefine)
     //
     return;
 
-    ScamExpr * expr = parseAndEvaluate("(load \"scripts/system/ambundef.scm\")");
+    ExprHandle expr =
+        parseAndEvaluate("(load \"scripts/system/ambundef.scm\")");
     expectInteger(expr, 7, "7");
 }
 
 TEST_F(EngineTest, AmbOperator)
 {
-    ScamExpr * expr = parseAndEvaluate("((amb + -) 2 2)");
+    ExprHandle expr = parseAndEvaluate("((amb + -) 2 2)");
     expectInteger(expr, 4, "4");
 
     expr = parseAndEvaluate("?");
@@ -149,7 +154,8 @@ TEST_F(EngineTest, AmbOperator)
 
 TEST_F(EngineTest, RequireTest)
 {
-    ScamExpr * expr = parseAndEvaluate("(load \"scripts/system/require.scm\")");
+    ExprHandle expr =
+        parseAndEvaluate("(load \"scripts/system/require.scm\")");
     expectInteger(expr, 2, "2");
 
     expr = parseAndEvaluate("?");
@@ -161,6 +167,6 @@ TEST_F(EngineTest, RequireTest)
 
 TEST_F(EngineTest, LoadTwiceTest)
 {
-    ScamExpr * expr = parseAndEvaluate("(load \"lib/prelude.scm\")");
+    ExprHandle expr = parseAndEvaluate("(load \"lib/prelude.scm\")");
     expectError(expr,  "file \"lib/prelude.scm\" already loaded");
 }

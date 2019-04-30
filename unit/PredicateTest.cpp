@@ -1,4 +1,3 @@
-
 #include "TestBase.hpp"
 
 #include <sstream>
@@ -12,13 +11,13 @@ class PredicateTest : public TestBase
 
 TEST_F(PredicateTest, NilTestZeroArg)
 {
-    ScamExpr * expr = parseAndEvaluate("(nil?)");
+    ExprHandle expr = parseAndEvaluate("(nil?)");
     expectError(expr);
 }
 
 TEST_F(PredicateTest, NilTestExtraArg)
 {
-    ScamExpr * expr = parseAndEvaluate("(nil? 1 2 3)");
+    ExprHandle expr = parseAndEvaluate("(nil? 1 2 3)");
     expectError(expr);
 }
 

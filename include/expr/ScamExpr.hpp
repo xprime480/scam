@@ -18,13 +18,14 @@ namespace scam
         void mark() const override;
 
         virtual std::string toString() const = 0;
-        virtual void eval(Continuation * cont, Env * env);
+        virtual void eval(Continuation * cont, Env * env) const;
 
         virtual bool hasApply() const;
 
-        virtual void apply(ExprHandle args, Continuation * cont, Env * env);
+        virtual void
+        apply(ExprHandle args, Continuation * cont, Env * env);
 
-        virtual void mapEval(Continuation * cont, Env * env);
+        virtual void mapEval(Continuation * cont, Env * env) const;
 
         virtual bool isNull() const;
         virtual bool error() const;
@@ -68,9 +69,9 @@ namespace scam
 
         virtual bool equals(ConstExprHandle expr) const;
 
-        void setMeta(std::string const & key, ExprHandle value);
+        void setMeta(std::string const & key, ExprHandle value) const;
         bool hasMeta(std::string const & key) const;
-        ExprHandle getMeta(std::string const & key);
+        ExprHandle getMeta(std::string const & key) const;
 
     private:
         mutable Env * metadata;

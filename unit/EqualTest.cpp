@@ -1,4 +1,3 @@
-
 #include "TestBase.hpp"
 
 using namespace std;

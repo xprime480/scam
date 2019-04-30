@@ -1,4 +1,3 @@
-
 #include "TestWorkerBase.hpp"
 
 using namespace scam;

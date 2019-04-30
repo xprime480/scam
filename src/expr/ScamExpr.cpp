@@ -25,9 +25,10 @@ void ScamExpr::mark() const
     }
 }
 
-void ScamExpr::eval(Continuation * cont, Env * env)
+void ScamExpr::eval(Continuation * cont, Env * env) const
 {
-    cont->run(this);
+    ScamExpr * argggh = const_cast<ScamExpr *>(this);
+    cont->run(argggh);
 }
 
 bool ScamExpr::hasApply() const
@@ -45,9 +46,10 @@ void ScamExpr::apply(ExprHandle args, Continuation * cont, Env * env)
     cont->run(err);
 }
 
-void ScamExpr::mapEval(Continuation * cont, Env * env)
+void ScamExpr::mapEval(Continuation * cont, Env * env) const
 {
-    cont->run(this);
+    ScamExpr * argggh = const_cast<ScamExpr *>(this);
+    cont->run(argggh);
 }
 
 bool ScamExpr::isNull() const
@@ -245,7 +247,7 @@ bool ScamExpr::equals(ConstExprHandle expr) const
     return this == expr;
 }
 
-void ScamExpr::setMeta(string const & key, ExprHandle value)
+void ScamExpr::setMeta(string const & key, ExprHandle value) const
 {
     if ( ! metadata ) {
         metadata = standardMemoryManager.make<Env>();
@@ -271,7 +273,7 @@ bool ScamExpr::hasMeta(string const & key) const
     return metadata->check(k);
 }
 
-ExprHandle ScamExpr::getMeta(string const & key)
+ExprHandle ScamExpr::getMeta(string const & key) const
 {
     ExprHandle rv = ExpressionFactory::makeNil();
     if ( ! metadata ) {

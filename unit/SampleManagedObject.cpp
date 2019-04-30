@@ -1,4 +1,3 @@
-
 #include "SampleManagedObject.hpp"
 
 using namespace scam::test_impl;

@@ -2,6 +2,8 @@
 
 using namespace scam;
 
+/* This class is obsolete and can be removed */
+
 void TestHook::addRoot(ManagedObject * root)
 {
     roots.push_back(root);
