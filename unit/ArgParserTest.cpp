@@ -2,6 +2,7 @@
 
 #include "expr/ExpressionFactory.hpp"
 #include "input/ArgParser.hpp"
+#include "input/TypeParsers.hpp"
 
 #include "util/DebugTrace.hpp"
 
@@ -53,4 +54,51 @@ TEST_F(ArgParserTest, AcceptNonNull)
     acceptParse(parser, "(list should work)");
 
     rejectParse(parser, "");
+}
+
+TEST_F(ArgParserTest, AcceptNil)
+{
+    NilParser * parser = mm.make<NilParser>();
+    acceptParse(parser, "()");
+}
+
+TEST_F(ArgParserTest, AcceptAnyInteger)
+{
+    IntegerParser * parser = mm.make<IntegerParser>();
+
+    acceptParse(parser, "-234134");
+    acceptParse(parser, "0");
+    acceptParse(parser, "1");
+    acceptParse(parser, "42");
+}
+
+TEST_F(ArgParserTest, AcceptOneInteger)
+{
+    const ScamInteger * target = ExpressionFactory::makeInteger(42);
+    IntegerParser * parser = mm.make<IntegerParser>(target);
+
+    rejectParse(parser, "-234134");
+    rejectParse(parser, "0");
+    rejectParse(parser, "1");
+    acceptParse(parser, "42");
+}
+
+TEST_F(ArgParserTest, RejectOneInteger)
+{
+    const ScamInteger * target = ExpressionFactory::makeInteger(42);
+    IntegerParser * parser     = mm.make<IntegerParser>(target, true);
+
+    acceptParse(parser, "-234134");
+    acceptParse(parser, "0");
+    acceptParse(parser, "1");
+    rejectParse(parser, "42");
+}
+
+TEST_F(ArgParserTest, AcceptAnyNumeric)
+{
+    NumericParser * parser = mm.make<NumericParser>();
+
+    acceptParse(parser, "-234134");
+    acceptParse(parser, "0.00001");
+    rejectParse(parser, "symbol");
 }
