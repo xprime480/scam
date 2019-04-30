@@ -5,6 +5,7 @@
 #include "input/ArgParser.hpp"
 #include "input/CountedListParser.hpp"
 #include "input/ListParser.hpp"
+#include "input/ParameterListParser.hpp"
 #include "input/SequenceParser.hpp"
 #include "input/SingletonParser.hpp"
 #include "input/TypeParsers.hpp"
@@ -256,4 +257,48 @@ TEST_F(ArgParserTest, AcceptOneOfManyAlternatives)
     rejectParse(parser, "(-823)");
     rejectParse(parser, "1.234");
     rejectParse(parser, ":someOtherKeyword");
+}
+
+TEST_F(ArgParserTest, NilParameterList)
+{
+    ParameterListParser * parser = mm.make<ParameterListParser>();
+
+    acceptParse(parser, "()");
+    EXPECT_EQ(0u, parser->size());
+}
+
+TEST_F(ArgParserTest, StandardParameterList)
+{
+    ParameterListParser * parser = mm.make<ParameterListParser>();
+
+    acceptParse(parser, "(a b c)");
+    EXPECT_EQ(3u, parser->size());
+    expectSymbol(parser->get(2), "c");
+}
+
+TEST_F(ArgParserTest, ParameterListWithRest)
+{
+    ParameterListParser * parser = mm.make<ParameterListParser>();
+
+    acceptParse(parser, "(a b . c)");
+    EXPECT_EQ(3u, parser->size());
+    expectSymbol(parser->get(0), "a");
+    expectSymbol(parser->getRest(), "c");
+}
+
+TEST_F(ArgParserTest, ParameterListBareSymbol)
+{
+    ParameterListParser * parser = mm.make<ParameterListParser>();
+
+    acceptParse(parser, "x");
+    EXPECT_EQ(1u, parser->size());
+    expectSymbol(parser->get(0), "x");
+    expectSymbol(parser->getRest(), "x");
+}
+
+TEST_F(ArgParserTest, ParameterListDuplicates)
+{
+    ParameterListParser * parser = mm.make<ParameterListParser>();
+
+    rejectParse(parser, "(a b c d a)");
 }
