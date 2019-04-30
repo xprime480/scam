@@ -4,6 +4,7 @@
 #include "input/ArgParser.hpp"
 #include "input/CountedListParser.hpp"
 #include "input/ListParser.hpp"
+#include "input/SingletonParser.hpp"
 #include "input/TypeParsers.hpp"
 
 #include "util/DebugTrace.hpp"
@@ -159,4 +160,17 @@ TEST_F(ArgParserTest, AcceptOneToThreeIntegers)
     EXPECT_EQ(nullptr, parser->get(0));
 
     rejectParse(parser, "(-3.75 -2)");
+}
+
+TEST_F(ArgParserTest, AcceptSingletonAnything)
+{
+    ArgParser       * ap = mm.make<ArgParser>();
+    SingletonParser * parser = mm.make<SingletonParser>(ap);
+
+    rejectParse(parser, "()");
+
+    acceptParse(parser, "(#(just 1 vector))");
+    EXPECT_EQ(1u, parser->getValue()->length());
+
+    rejectParse(parser, "(two things)");
 }
