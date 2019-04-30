@@ -2,7 +2,7 @@
 * Eventually this will be a Scheme interpreter fully compliant with R7RS
 
 * Update the AlternativeParser so that it is no longer a
-  template classes.  Add a template constructor that updates internal state.
+  template class.  Add a template constructor that updates internal state.
 
 * Separate implementation from interface for all of the ArgParser classes.
 
