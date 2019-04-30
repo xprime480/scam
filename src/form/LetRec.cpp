@@ -17,7 +17,7 @@ LetRec * LetRec::makeInstance()
     return &instance;
 }
 
-void LetRec::apply(ScamExpr * args, Continuation * cont, Env * env)
+void LetRec::apply(ExprHandle args, Continuation * cont, Env * env)
 {
     workQueueHelper<LetWorker>(args, cont, env, true);
 }

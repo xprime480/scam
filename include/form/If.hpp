@@ -12,6 +12,7 @@ namespace scam
 
     public:
         /* I think this should be private, check later */
+
         static If * makeInstance();
 
         void apply(ExprHandle args, Continuation * cont, Env * env) override;

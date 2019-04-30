@@ -1,5 +1,3 @@
-
-
 #include "prim/Instantiate.hpp"
 
 #include "Continuation.hpp"
@@ -22,10 +20,10 @@ Instantiate * Instantiate::makeInstance()
     return new Instantiate();
 }
 
-void Instantiate::applyArgs(ScamExpr * args, Continuation * cont)
+void Instantiate::applyArgs(ExprHandle args, Continuation * cont)
 {
     Instantiator inst(counter);
-    ScamExpr * rv = inst.exec(args);
+    ExprHandle rv = inst.exec(args);
     cont->run(rv);
 }
 

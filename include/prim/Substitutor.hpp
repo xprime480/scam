@@ -7,7 +7,6 @@ namespace scam
 {
     class ScamDict;
 
-
     class Substitutor : public ValueMapper
     {
     public:

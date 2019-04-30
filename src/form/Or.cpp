@@ -22,7 +22,7 @@ Or * Or::makeInstance()
     return &instance;
 }
 
-void Or::apply(ScamExpr * args, Continuation * cont, Env * env)
+void Or::apply(ExprHandle args, Continuation * cont, Env * env)
 {
     unsigned pos { 0 };
     workQueueHelper<OrWorker>(cont, env, args, pos);

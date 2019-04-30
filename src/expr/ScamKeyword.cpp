@@ -24,7 +24,7 @@ bool ScamKeyword::isKeyword() const
     return true;
 }
 
-bool ScamKeyword::equals(ScamExpr const * expr) const
+bool ScamKeyword::equals(ConstExprHandle expr) const
 {
     if ( ! expr->isKeyword() ) {
         return false;

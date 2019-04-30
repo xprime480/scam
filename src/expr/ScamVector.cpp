@@ -44,7 +44,7 @@ string ScamVector::toString() const
     return s.str();
 }
 
-void ScamVector::eval(Continuation * cont, Env * env)
+void ScamVector::eval(Continuation * cont, Env * env) const
 {
     workQueueHelper<VectorWorker>(cont, env, elts);
 }
@@ -59,7 +59,7 @@ size_t ScamVector::length() const
     return elts.size();
 }
 
-ScamExpr * ScamVector::nthcar(size_t n) const
+ExprHandle ScamVector::nthcar(size_t n) const
 {
     if ( n >= length() ) {
         return ExpressionFactory::makeError("Requested index ",
@@ -72,7 +72,7 @@ ScamExpr * ScamVector::nthcar(size_t n) const
     return elts[n];
 }
 
-bool ScamVector::equals(ScamExpr const * expr) const
+bool ScamVector::equals(ConstExprHandle expr) const
 {
     if ( ! expr->isVector() ) {
         return false;

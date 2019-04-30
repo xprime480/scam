@@ -17,22 +17,22 @@ Cons * Cons::makeInstance()
     return new Cons();
 }
 
-void Cons::applyArgs(ScamExpr * args, Continuation * cont)
+void Cons::applyArgs(ExprHandle args, Continuation * cont)
 {
     if ( args->error() ) {
         cont->run(args);
     }
     else if ( ! args->isList() || 2 != args->length() ) {
-        ScamExpr * err =
+        ExprHandle err =
             ExpressionFactory::makeError("cons is expecting 2 parameters",
                                          ", got ",
                                          args->toString());
         cont->run(err);
     }
     else {
-        ScamExpr * car = args->nthcar(0);
-        ScamExpr * cdr = args->nthcar(1);
-        ScamExpr * cons = ExpressionFactory::makeCons(car, cdr);
+        ExprHandle car = args->nthcar(0);
+        ExprHandle cdr = args->nthcar(1);
+        ExprHandle cons = ExpressionFactory::makeCons(car, cdr);
         cont->run(cons);
     }
 }

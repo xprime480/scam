@@ -1,14 +1,14 @@
 #include "expr/ClassInitCont.hpp"
 
 #include "Continuation.hpp"
-#include "expr/ScamExpr.hpp"
+#include "expr/ScamInstance.hpp"
 
 using namespace scam;
 using namespace std;
 
 /* This continuation seems *entirely* useless */
 
-ClassInitCont::ClassInitCont(ExprHandle instance, Continuation * cont)
+ClassInitCont::ClassInitCont(ScamInstance * instance, Continuation * cont)
     : Continuation("ClassInit")
     , instance(instance)
     , cont(cont)
@@ -16,7 +16,7 @@ ClassInitCont::ClassInitCont(ExprHandle instance, Continuation * cont)
 }
 
 ClassInitCont *
-ClassInitCont::makeInstance(ExprHandle instance, Continuation * cont)
+ClassInitCont::makeInstance(ScamInstance * instance, Continuation * cont)
 {
     return new ClassInitCont(instance, cont);
 }

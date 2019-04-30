@@ -6,7 +6,7 @@
 namespace scam
 {
     class ScamEngine;
-    class ScamExpr;
+
     class Continuation;
 
     class Backtrack : public Primitive
@@ -15,8 +15,10 @@ namespace scam
         Backtrack(ScamEngine * engine);
 
     public:
+        /* I think this should be private, check later */
         static Backtrack * makeInstance(ScamEngine * engine);
-        void applyArgs(ScamExpr * args, Continuation * cont) override;
+
+        void applyArgs(ExprHandle args, Continuation * cont) override;
 
     private:
         ScamEngine * engine;

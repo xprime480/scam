@@ -37,7 +37,7 @@ bool ScamBoolean::isBoolean() const
     return true;
 }
 
-bool ScamBoolean::equals(ScamExpr const * expr) const
+bool ScamBoolean::equals(ConstExprHandle expr) const
 {
     if ( ! expr->isBoolean() ) {
         return false;

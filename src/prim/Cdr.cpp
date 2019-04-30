@@ -1,4 +1,3 @@
-
 #include "prim/Cdr.hpp"
 
 #include "Continuation.hpp"
@@ -20,8 +19,8 @@ Cdr * Cdr::makeInstance()
     return new Cdr();
 }
 
-void Cdr::finish(ScamExpr * args, Continuation * cont)
+void Cdr::finish(ExprHandle args, Continuation * cont)
 {
-    ScamExpr * cdr = args->nthcar(0)->nthcdr(0);
+    ExprHandle cdr = args->nthcar(0)->nthcdr(0);
     cont->run(cdr);
 }

@@ -42,7 +42,7 @@ void VectorCont::mark() const
     }
 }
 
-void VectorCont::run(ScamExpr * expr)
+void VectorCont::run(ExprHandle expr)
 {
     Continuation::run(expr);
 

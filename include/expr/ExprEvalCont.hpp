@@ -18,7 +18,7 @@ namespace scam
 
     public:
         void mark() const override;
-        void run(ScamExpr * expr) override;
+        void run(ExprHandle expr) override;
 
     private:
         WorkerData data;

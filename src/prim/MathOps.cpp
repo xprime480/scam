@@ -1,4 +1,3 @@
-
 #include "prim/MathOps.hpp"
 
 #include "Continuation.hpp"
@@ -17,26 +16,26 @@ MathOp::MathOp(MathOpDef const & def)
 {
 }
 
-void MathOp::applyArgs(ScamExpr * args, Continuation * cont)
+void MathOp::applyArgs(ExprHandle args, Continuation * cont)
 {
     string const context = toString();
-    ScamExpr * rv = numericAlgorithm(args, context, algo);
+    ExprHandle rv = numericAlgorithm(args, context, algo);
     cont->run(rv);
 }
 
-bool MathOp::equals(ScamExpr const * expr) const
+bool MathOp::equals(ConstExprHandle expr) const
 {
     return ( expr && this->toString() == expr->toString() );
 }
 
 namespace
 {
-    double do_add(vector<double> const & ns, ScamExpr * & state)
+    double do_add(vector<double> const & ns, ExprHandle & state)
     {
         return accumulate(ns.begin(), ns.end(), 0.0);
     }
 
-    double do_sub(vector<double> const & ns, ScamExpr * & state)
+    double do_sub(vector<double> const & ns, ExprHandle & state)
     {
         double total { 0 };
         switch ( ns.size() ) {
@@ -54,13 +53,13 @@ namespace
         return total;
     }
 
-    double do_mul(vector<double> const & ns, ScamExpr * & state)
+    double do_mul(vector<double> const & ns, ExprHandle & state)
     {
         return accumulate(ns.begin(), ns.end(), 1.0,
                           multiplies<double>());
     }
 
-    double do_div(vector<double> const & ns, ScamExpr * & state)
+    double do_div(vector<double> const & ns, ExprHandle & state)
     {
         state = ExpressionFactory::makeBoolean(false);
         if ( ns.empty() ) {
@@ -95,7 +94,7 @@ namespace
         return total;
     }
 
-    double do_mod(vector<double> const & ns, ScamExpr * & state)
+    double do_mod(vector<double> const & ns, ExprHandle & state)
     {
         state = ExpressionFactory::makeBoolean(false);
         if ( ns.size() < 2 ) {

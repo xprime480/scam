@@ -1,4 +1,3 @@
-
 #include "prim/CarCdr.hpp"
 
 #include "Continuation.hpp"
@@ -13,7 +12,7 @@ CarCdr::CarCdr(char const * name)
 {
 }
 
-void CarCdr::applyArgs(ScamExpr * args, Continuation * cont)
+void CarCdr::applyArgs(ExprHandle args, Continuation * cont)
 {
     if ( args->error() ) {
         cont->run(args);
@@ -21,7 +20,7 @@ void CarCdr::applyArgs(ScamExpr * args, Continuation * cont)
     else if ( ! args->isList() ||
               1 != args->length() ||
               ! args->nthcar(0)->isCons() ) {
-        ScamExpr * err =
+        ExprHandle err =
             ExpressionFactory::makeError(name,
                                          " is expecting a non-empty list, ",
                                          "got ",

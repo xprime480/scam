@@ -33,7 +33,7 @@ bool ScamError::error() const
     return true;
 }
 
-bool ScamError::equals(ScamExpr const * expr) const
+bool ScamError::equals(ConstExprHandle expr) const
 {
     if ( ! expr->error() ) {
         return false;

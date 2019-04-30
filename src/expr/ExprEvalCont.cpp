@@ -24,7 +24,7 @@ void ExprEvalCont::mark() const
     }
 }
 
-void ExprEvalCont::run(ScamExpr * expr)
+void ExprEvalCont::run(ExprHandle expr)
 {
     Continuation::run(expr);
 

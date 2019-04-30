@@ -2,15 +2,12 @@
 #define CARCONTINUATION_HPP 1
 
 #include "Continuation.hpp"
+
+#include "ScamFwd.hpp"
 #include "expr/WorkerData.hpp"
 
 namespace scam
 {
-    class Congtinuation;
-    class Env;
-    class ScamExpr;
-    class MemoryManager;
-
     class CarContinuation : public Continuation
     {
     private:
@@ -21,7 +18,7 @@ namespace scam
     public:
         void mark() const override;
 
-        void run(ScamExpr * expr) override;
+        void run(ExprHandle expr) override;
 
     private:
         WorkerData data;

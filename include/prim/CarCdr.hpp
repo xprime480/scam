@@ -10,10 +10,10 @@ namespace scam
     public:
         CarCdr(char const * name);
 
-        void applyArgs(ScamExpr * args, Continuation * cont) override;
+        void applyArgs(ExprHandle args, Continuation * cont) override;
 
     protected:
-        virtual void finish(ScamExpr * args, Continuation * cont) = 0;
+        virtual void finish(ExprHandle args, Continuation * cont) = 0;
     };
 }
 

@@ -12,7 +12,7 @@ namespace scam
 
     public:
         static Instantiate * makeInstance();
-        void applyArgs(ScamExpr * args, Continuation * cont) override;
+        void applyArgs(ExprHandle args, Continuation * cont) override;
 
     private:
         static size_t counter;

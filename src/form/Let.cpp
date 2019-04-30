@@ -1,4 +1,3 @@
-
 #include "form/Let.hpp"
 
 #include "WorkQueue.hpp"
@@ -21,7 +20,7 @@ Let * Let::makeInstance()
     return &instance;
 }
 
-void Let::apply(ScamExpr * args, Continuation * cont, Env * env)
+void Let::apply(ExprHandle args, Continuation * cont, Env * env)
 {
     workQueueHelper<LetWorker>(args, cont, env, false);
 }

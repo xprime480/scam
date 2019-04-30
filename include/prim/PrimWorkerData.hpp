@@ -22,7 +22,7 @@ namespace scam
 
         void mark() const;
 
-        void mapEval();
+        void mapEval() const;
         void handleResult(ExprHandle expr);
     };
 }

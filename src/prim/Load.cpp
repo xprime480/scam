@@ -1,4 +1,3 @@
-
 #include "prim/Load.hpp"
 
 #include "ScamEngine.hpp"
@@ -25,11 +24,11 @@ Load * Load::makeInstance(ScamEngine * engine)
     return new Load(engine);
 }
 
-void Load::applyArgs(ScamExpr * args, Continuation * cont)
+void Load::applyArgs(ExprHandle args, Continuation * cont)
 {
     string filename = args->nthcar(0)->toString();
     if ( engine->isLoaded(filename) ) {
-        ScamExpr * err =
+        ExprHandle err =
             ExpressionFactory::makeError("file \"",
                                          filename,
                                          "\" already loaded");
@@ -45,7 +44,7 @@ void Load::applyArgs(ScamExpr * args, Continuation * cont)
 
     string data = get_data(source);
     ReadEvalString helper(engine, data);
-    ScamExpr * last = helper.run();
+    ExprHandle last = helper.run();
 
     engine->setLoaded(filename);
     cont->run(last);
@@ -62,7 +61,7 @@ bool Load::open_file(ifstream & source,
         }
     }
     else {
-        ScamExpr * path = get_path();
+        ExprHandle path = get_path();
 
         size_t n = path->length();
         for ( size_t i = 0 ; i < n ; ++i ) {
@@ -106,14 +105,14 @@ bool Load::file_exists(string fullpath)
 
 void Load::file_not_found(string const & filename, Continuation * cont)
 {
-    ScamExpr * err = ExpressionFactory::makeError("Unable to open file ",
+    ExprHandle err = ExpressionFactory::makeError("Unable to open file ",
                                                   filename);
     cont->run(err);
 }
 
-ScamExpr * Load::get_path()
+ExprHandle Load::get_path()
 {
-    ScamExpr * rv = ExpressionFactory::makeNull();
+    ExprHandle rv = ExpressionFactory::makeNull();
 
     char const * path = getenv("SCAM_PATH");
     if ( ! path || ! *path ) {
@@ -125,12 +124,12 @@ ScamExpr * Load::get_path()
     return rv;
 }
 
-ScamExpr * Load::default_path()
+ExprHandle Load::default_path()
 {
     return convert_path(".:..");
 }
 
-ScamExpr * Load::convert_path(char const * path)
+ExprHandle Load::convert_path(char const * path)
 {
     ExprVec dp;
 

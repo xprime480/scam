@@ -3,8 +3,6 @@
 
 #include "expr/ScamExpr.hpp"
 
-#include "Continuation.hpp"
-
 namespace scam
 {
     class Continuation;
@@ -22,7 +20,6 @@ namespace scam
         std::string toString() const override;
 
         bool hasApply() const override;
-
         void apply(ExprHandle args, Continuation * cont, Env * env) override;
 
     private:

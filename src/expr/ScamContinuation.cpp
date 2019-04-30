@@ -1,5 +1,6 @@
 #include "expr/ScamContinuation.hpp"
 
+#include "Continuation.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "input/ArgParser.hpp"
 #include "input/SingletonParser.hpp"

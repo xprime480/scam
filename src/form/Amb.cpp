@@ -1,4 +1,3 @@
-
 #include "form/Amb.hpp"
 
 #include "ScamEngine.hpp"
@@ -19,7 +18,7 @@ Amb * Amb::makeInstance(ScamEngine * engine)
     return new Amb(engine);
 }
 
-void Amb::apply(ScamExpr * args, Continuation * cont, Env * env)
+void Amb::apply(ExprHandle args, Continuation * cont, Env * env)
 {
     Backtracker * backtracker = engine->getBacktracker();
     Backtracker * newBt =

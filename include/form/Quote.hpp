@@ -11,9 +11,10 @@ namespace scam
         Quote();
 
     public:
+        /* I think this should be private, check later */
         static Quote * makeInstance();
 
-        void apply(ScamExpr * args, Continuation * cont, Env * env) override;
+        void apply(ExprHandle args, Continuation * cont, Env * env) override;
     };
 }
 

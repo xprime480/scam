@@ -9,7 +9,7 @@
 namespace scam
 {
     class ScamEngine;
-    class ScamExpr;
+
     class Continuation;
 
     class Load : public Primitive
@@ -19,7 +19,7 @@ namespace scam
 
     public:
         static Load * makeInstance(ScamEngine * engine);
-        void applyArgs(ScamExpr * args, Continuation * cont) override;
+        void applyArgs(ExprHandle args, Continuation * cont) override;
 
     private:
         ScamEngine * engine;
@@ -29,18 +29,14 @@ namespace scam
                        Continuation * cont);
 
         std::string get_data(std::ifstream & source);
-
         bool file_exists(std::string fullpath);
 
         void file_not_found(std::string const & filename,
                             Continuation * cont);
 
-        ScamExpr * get_path();
-
-        ScamExpr * default_path();
-
-        ScamExpr * convert_path(char const * path);
-
+        ExprHandle get_path();
+        ExprHandle default_path();
+        ExprHandle convert_path(char const * path);
         std::string next_element(char const *& path);
 
         std::string make_path(std::string dirname,

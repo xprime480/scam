@@ -3,32 +3,28 @@
 
 #include "LetBaseWorker.hpp"
 
+#include "ScamFwd.hpp"
+
 namespace scam
 {
-    class MemoryManager;
-    class Continuation;
-    class Env;
-    class ScamExpr;
-    class ScamEngine;
-
     class LetStarWorker : public LetBaseWorker
     {
     private:
         friend class scam::MemoryManager;
-        LetStarWorker(ScamExpr * args,
+        LetStarWorker(ExprHandle args,
                       Continuation * cont,
                       Env * env,
                       ScamEngine * engine);
 
-        static LetStarWorker * makeInstance(ScamExpr * args,
+        static LetStarWorker * makeInstance(ExprHandle args,
                                             Continuation * cont,
                                             Env * env,
                                             ScamEngine * engine);
 
     protected:
-        void do_next(ScamExpr * formals,
-                     ScamExpr * values,
-                     ScamExpr * forms) override;
+        void do_next(ExprHandle formals,
+                     ExprHandle values,
+                     ExprHandle forms) override;
 
     private:
         ScamEngine * engine;

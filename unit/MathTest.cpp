@@ -207,6 +207,7 @@ TEST_F(MathTest, Nested)
 
 TEST_F(MathTest, NestedWithError)
 {
-    ExprHandle expr = parseAndEvaluate("(+ (* 2 3) (/ 1 (+ 5 -5)) (- 3))");
+    ExprHandle expr =
+        parseAndEvaluate("(+ (* 2 3) (/ 1 (+ 5 -5)) (- 3))");
     expectError(expr);
 }

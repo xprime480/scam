@@ -1,4 +1,3 @@
-
 #include "prim/Error.hpp"
 
 #include "Continuation.hpp"
@@ -20,7 +19,7 @@ Error * Error::makeInstance()
     return new Error();
 }
 
-void Error::applyArgs(ScamExpr * args, Continuation * cont)
+void Error::applyArgs(ExprHandle args, Continuation * cont)
 {
     stringstream s;
     unsigned len = args->length();
@@ -37,6 +36,6 @@ void Error::applyArgs(ScamExpr * args, Continuation * cont)
         }
     }
 
-    ScamExpr * err = ExpressionFactory::makeError(s.str());
+    ExprHandle err = ExpressionFactory::makeError(s.str());
     cont->run(err);
 }

@@ -16,7 +16,7 @@ namespace scam
         static LetRec * makeInstance();
 
     public:
-        void apply(ScamExpr * args, Continuation * cont, Env * env) override;
+        void apply(ExprHandle args, Continuation * cont, Env * env) override;
     };
 }
 

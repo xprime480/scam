@@ -7,7 +7,7 @@
 using namespace scam;
 using namespace std;
 
-LetWorker::LetWorker(ScamExpr * args,
+LetWorker::LetWorker(ExprHandle args,
                      Continuation * cont,
                      Env * env,
                      bool rebind)
@@ -16,7 +16,7 @@ LetWorker::LetWorker(ScamExpr * args,
 {
 }
 
-LetWorker * LetWorker::makeInstance(ScamExpr * args,
+LetWorker * LetWorker::makeInstance(ExprHandle args,
                                     Continuation * cont,
                                     Env * env,
                                     bool rebind)
@@ -24,12 +24,12 @@ LetWorker * LetWorker::makeInstance(ScamExpr * args,
     return new LetWorker(args, cont, env, rebind);
 }
 
-void LetWorker::do_next(ScamExpr * formals,
-                        ScamExpr * values,
-                        ScamExpr * forms)
+void LetWorker::do_next(ExprHandle formals,
+                        ExprHandle values,
+                        ExprHandle forms)
 {
-    ScamExpr * evaled = ExpressionFactory::makeNil();
-    ScamExpr * e = evaled;
+    ExprHandle evaled = ExpressionFactory::makeNil();
+    ExprHandle e = evaled;
     workQueueHelper<LetEvalWorker>(formals,
                                    e,
                                    values,

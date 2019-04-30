@@ -9,7 +9,7 @@
 using namespace scam;
 using namespace std;
 
-ScamExpr * const QuasiQuote::spliceTag =
+ExprHandle const QuasiQuote::spliceTag =
     ExpressionFactory::makeSymbol("**splicing**", false);
 
 QuasiQuote::QuasiQuote()
@@ -23,18 +23,18 @@ QuasiQuote * QuasiQuote::makeInstance()
     return &instance;
 }
 
-void QuasiQuote::apply(ScamExpr * args, Continuation * cont, Env * env)
+void QuasiQuote::apply(ExprHandle args, Continuation * cont, Env * env)
 {
     qq_apply(args, cont, env, true);
 }
 
-void QuasiQuote::qq_apply(ScamExpr * args,
+void QuasiQuote::qq_apply(ExprHandle args,
                           Continuation * cont,
                           Env * env,
                           bool top)
 {
     if ( ! args->isList() ) {
-        ScamExpr * err =
+        ExprHandle err =
             ExpressionFactory::makeError("quasiquote expecting list of args",
                                          ", got ",
                                          args->toString());
@@ -42,19 +42,19 @@ void QuasiQuote::qq_apply(ScamExpr * args,
     }
     else if ( top ) {
         if ( 1 != args->length() ) {
-            ScamExpr * err =
+            ExprHandle err =
                 ExpressionFactory::makeError("quasiquote expecting one form",
                                              ", got ",
                                              args->toString());
             cont->run(err);
         }
         else {
-            ScamExpr * form = args->nthcar(0);
+            ExprHandle form = args->nthcar(0);
             workQueueHelper<QuasiQuoteWorker>(form, cont, env);
         }
     }
     else {
-        ScamExpr * form = args;
+        ExprHandle form = args;
         workQueueHelper<QuasiQuoteWorker>(form, cont, env);
     }
 }

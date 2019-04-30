@@ -18,9 +18,9 @@ namespace scam
     public:
         MathOp(MathOpDef const & def);
 
-        void applyArgs(ScamExpr * args, Continuation * cont) override;
+        void applyArgs(ExprHandle args, Continuation * cont) override;
 
-        bool equals(ScamExpr const * expr) const override;
+        bool equals(ConstExprHandle expr) const override;
 
     private:
         NumericalAlgorithm algo;

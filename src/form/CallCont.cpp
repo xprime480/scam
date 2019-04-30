@@ -29,7 +29,7 @@ void CallCont::mark() const
     }
 }
 
-void CallCont::run(ScamExpr * expr)
+void CallCont::run(ExprHandle expr)
 {
     if ( expr->error() ) {
         cont->run(expr);
@@ -37,7 +37,7 @@ void CallCont::run(ScamExpr * expr)
     }
 
     if ( ! expr->hasApply() ) {
-        ScamExpr * err =
+        ExprHandle err =
             ExpressionFactory::makeError("call/cc: form ",
                                          expr->toString(),
                                          "cannot be applied");
@@ -45,7 +45,7 @@ void CallCont::run(ScamExpr * expr)
         return;
     }
 
-    ScamExpr * contExpr = ExpressionFactory::makeContinuation(cont);
-    ScamExpr * args = ExpressionFactory::makeList(contExpr);
+    ExprHandle contExpr = ExpressionFactory::makeContinuation(cont);
+    ExprHandle args = ExpressionFactory::makeList(contExpr);
     expr->apply(args, cont, env);
 }

@@ -1,4 +1,3 @@
-
 #include "prim/Trace.hpp"
 
 #include "Continuation.hpp"
@@ -19,7 +18,7 @@ Trace * Trace::makeInstance()
     return new Trace();
 }
 
-void Trace::applyArgs(ScamExpr * args, Continuation * cont)
+void Trace::applyArgs(ExprHandle args, Continuation * cont)
 {
     cerr << args->toString() << "\n";
     cont->run(args);

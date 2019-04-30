@@ -5,7 +5,6 @@
 
 namespace scam
 {
-    class ScamExpr;
     class Continuation;
 
     class Trace : public Primitive
@@ -15,7 +14,7 @@ namespace scam
 
     public:
         static Trace * makeInstance();
-        void applyArgs(ScamExpr * args, Continuation * cont) override;
+        void applyArgs(ExprHandle args, Continuation * cont) override;
     };
 }
 

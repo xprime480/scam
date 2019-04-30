@@ -34,3 +34,9 @@
 * Rename Progn => Begin to sync with R7RS
 
 * Remove class unit/TestHook
+
+* Make all snake_case_variables into CamelCaseVariables
+
+* The various WorkerData structures are probably an anti-patter.
+  Look at removing them.
+

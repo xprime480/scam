@@ -3,12 +3,10 @@
 
 #include "prim/Primitive.hpp"
 
+#include "ScamFwd.hpp"
+
 namespace scam
 {
-    class ScamEngine;
-    class ScamExpr;
-    class Continuation;
-
     class Include : public Primitive
     {
     private:
@@ -16,7 +14,7 @@ namespace scam
 
     public:
         static Include * makeInstance(ScamEngine * engine);
-        void applyArgs(ScamExpr * args, Continuation * cont) override;
+        void applyArgs(ExprHandle args, Continuation * cont) override;
 
     private:
         ScamEngine * engine;

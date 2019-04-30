@@ -1,4 +1,3 @@
-
 #include "scam.hpp"
 
 #include "Accumulator.hpp"
@@ -27,7 +26,7 @@ namespace
         engine.reset(true);
         engine.pushFrame();
         ReadEvalString helper(&engine, testforms);
-        ScamExpr * status = helper.run();
+        ExprHandle status = helper.run();
         return ! ( status->isNull() || status->error() );
     }
 }

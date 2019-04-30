@@ -1,4 +1,3 @@
-
 #include "form/Quote.hpp"
 
 #include "Continuation.hpp"
@@ -22,8 +21,8 @@ Quote * Quote::makeInstance()
     return &quote;
 }
 
-void Quote::apply(ScamExpr * args, Continuation * cont, Env * env)
+void Quote::apply(ExprHandle args, Continuation * cont, Env * env)
 {
-    ScamExpr * expr = args->getCar();
+    ExprHandle expr = args->getCar();
     cont->run(expr);
 }

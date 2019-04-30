@@ -3,27 +3,25 @@
 
 #include "Continuation.hpp"
 
+#include "ScamFwd.hpp"
+
 namespace scam
 {
-    class Continuation;
-    class ScamExpr;
-    class Env;
-
     class LetCommonCont : public Continuation
     {
     protected:
-        LetCommonCont(char const * name, ScamExpr * forms, Continuation * cont);
+        LetCommonCont(char const * name, ExprHandle forms, Continuation * cont);
 
     public:
         void mark() const override;
 
-        void run(ScamExpr * expr) override;
+        void run(ExprHandle expr) override;
 
     protected:
-        ScamExpr * forms;
+        ExprHandle forms;
         Continuation * cont;
 
-        virtual void do_let(ScamExpr * expr) = 0;
+        virtual void do_let(ExprHandle expr) = 0;
         void final_eval(Env * env);
     };
 }

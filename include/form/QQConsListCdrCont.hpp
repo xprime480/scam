@@ -3,34 +3,32 @@
 
 #include "Continuation.hpp"
 
+#include "ScamFwd.hpp"
+
 namespace scam
 {
-    class MemoryManager;
-    class Env;
-    class ScamExpr;
-
     class  QQConsListCdrCont : public Continuation
     {
     private:
         friend class scam::MemoryManager;
 
-        QQConsListCdrCont(ScamExpr * car, Continuation * cont, Env * env);
+        QQConsListCdrCont(ExprHandle car, Continuation * cont, Env * env);
 
         static QQConsListCdrCont *
-        makeInstance(ScamExpr * car, Continuation * cont, Env * env);
+        makeInstance(ExprHandle car, Continuation * cont, Env * env);
 
     public:
         void mark() const override;
-        void run(ScamExpr * expr) override;
+        void run(ExprHandle expr) override;
 
     private:
-        ScamExpr * car;
+        ExprHandle car;
         Continuation * cont;
         Env  *      env;
 
-        void handle(ScamExpr * expr);
-        bool check_splice(ScamExpr * expr);
-        void do_splice(ScamExpr * expr);
+        void handle(ExprHandle expr);
+        bool check_splice(ExprHandle expr);
+        void do_splice(ExprHandle expr);
     };
 }
 

@@ -12,9 +12,9 @@ namespace scam
 
     public:
         static EqualP * makeInstance();
-        void applyArgs(ScamExpr * args, Continuation * cont) override;
+        void applyArgs(ExprHandle args, Continuation * cont) override;
 
-        bool equals(ScamExpr const * expr) const override;
+        bool equals(ConstExprHandle expr) const override;
     };
 }
 

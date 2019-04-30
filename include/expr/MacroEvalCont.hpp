@@ -3,12 +3,10 @@
 
 #include "Continuation.hpp"
 
+#include "ScamFwd.hpp"
+
 namespace scam
 {
-    class Env;
-    class ScamExpr;
-    class MemoryManager;
-
     class MacroEvalCont : public Continuation
     {
     private:
@@ -21,7 +19,7 @@ namespace scam
 
     public:
         void mark() const override;
-        void run(ScamExpr * expr) override;
+        void run(ExprHandle expr) override;
 
     private:
         Continuation * cont;

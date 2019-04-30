@@ -1,5 +1,6 @@
 #include "form/If.hpp"
 
+#include "Continuation.hpp"
 #include "WorkQueue.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "form/IfWorker.hpp"

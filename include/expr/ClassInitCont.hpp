@@ -7,22 +7,24 @@
 
 namespace scam
 {
+    class ScamInstance;
+
     class ClassInitCont : public Continuation
     {
     private:
         friend class scam::MemoryManager;
 
-        ClassInitCont(ExprHandle instance, Continuation * cont);
+        ClassInitCont(ScamInstance * instance, Continuation * cont);
 
         static ClassInitCont *
-        makeInstance(ExprHandle instance, Continuation * cont);
+        makeInstance(ScamInstance * instance, Continuation * cont);
 
     public:
         void mark() const override;
         void run(ExprHandle expr) override;
 
     private:
-        ExprHandle instance;
+        ScamInstance * instance;
         Continuation * cont;
     };
 }

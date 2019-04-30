@@ -6,8 +6,7 @@
 namespace scam
 {
     class MemoryManager;
-    class ScamExpr;
-
+    
     class NotCont : public Continuation
     {
     private:
@@ -17,7 +16,7 @@ namespace scam
 
     public:
         void mark() const override;
-        void run(ScamExpr * expr) override;
+        void run(ExprHandle expr) override;
 
     private:
         Continuation * cont;

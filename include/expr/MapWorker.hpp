@@ -3,28 +3,24 @@
 
 #include "Worker.hpp"
 
+#include "ScamFwd.hpp"
 #include "expr/WorkerData.hpp"
 
 namespace scam
 {
-    class Congtinuation;
-    class Env;
-    class ScamExpr;
-    class MemoryManager;
-
     class  MapWorker : public Worker
     {
     private:
         friend class scam::MemoryManager;
         MapWorker(Continuation * cont,
                   Env * env,
-                  ScamExpr * car,
-                  ScamExpr * cdr);
+                  ExprHandle car,
+                  ExprHandle cdr);
 
         static MapWorker * makeInstance(Continuation * cont,
                                         Env * env,
-                                        ScamExpr * car,
-                                        ScamExpr * cdr);
+                                        ExprHandle car,
+                                        ExprHandle cdr);
 
     public:
         void mark() const override;

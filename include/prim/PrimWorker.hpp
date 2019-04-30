@@ -3,14 +3,11 @@
 
 #include "Worker.hpp"
 
+#include "ScamFwd.hpp"
 #include "prim/PrimWorkerData.hpp"
 
 namespace scam
 {
-    class MemoryManager;
-    class Continuation;
-    class Env;
-    class ScamExpr;
     class Primitive;
 
     class  PrimWorker : public Worker
@@ -19,12 +16,12 @@ namespace scam
         friend class scam::MemoryManager;
         PrimWorker(Continuation * cont,
                    Env * env,
-                   ScamExpr * args,
+                   ExprHandle args,
                    Primitive * caller);
 
         static PrimWorker * makeInstance(Continuation * cont,
                                          Env * env,
-                                         ScamExpr * args,
+                                         ExprHandle args,
                                          Primitive * caller);
 
     public:

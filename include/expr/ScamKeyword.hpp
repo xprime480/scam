@@ -18,7 +18,7 @@ namespace scam
 
         bool isKeyword() const override;
 
-        bool equals(ScamExpr const * expr) const override;
+        bool equals(ConstExprHandle expr) const override;
 
     private:
         std::string const value;

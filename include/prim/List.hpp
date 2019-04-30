@@ -12,7 +12,7 @@ namespace scam
 
     public:
         static List * makeInstance();
-        void applyArgs(ScamExpr * args, Continuation * cont) override;
+        void applyArgs(ExprHandle args, Continuation * cont) override;
     };
 }
 

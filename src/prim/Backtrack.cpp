@@ -1,8 +1,8 @@
-
 #include "prim/Backtrack.hpp"
 
-#include "ScamEngine.hpp"
 #include "Backtracker.hpp"
+#include "Continuation.hpp"
+#include "ScamEngine.hpp"
 #include "expr/ExpressionFactory.hpp"
 
 using namespace scam;
@@ -19,15 +19,15 @@ Backtrack * Backtrack::makeInstance(ScamEngine * engine)
     return new Backtrack(engine);
 }
 
-void Backtrack::applyArgs(ScamExpr * args, Continuation * cont)
+void Backtrack::applyArgs(ExprHandle args, Continuation * cont)
 {
     Backtracker * backtracker = engine->getBacktracker();
     if ( ! backtracker ) {
-	static const string msg = "No current backtrack context";
-	static ScamExpr * rv = ExpressionFactory::makeError(msg, false);
-	cont->run(rv);
+        static const string msg = "No current backtrack context";
+        static ExprHandle rv = ExpressionFactory::makeError(msg, false);
+        cont->run(rv);
     }
     else {
-	backtracker->run();
+        backtracker->run();
     }
 }

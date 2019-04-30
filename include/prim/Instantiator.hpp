@@ -8,37 +8,29 @@
 namespace scam
 {
     class ScamDict;
-    class ScamExpr;
 
     class Instantiator : public ValueMapper
     {
     public:
         Instantiator(size_t & counter);
 
-        ScamExpr * exec(ScamExpr * args);
+        ExprHandle exec(ExprHandle args);
 
     protected:
-        ScamExpr * map_value(ScamExpr * val);
+        ExprHandle map_value(ExprHandle val);
 
     private:
         size_t   & counter;
         ScamDict * dict;
 
-        ScamExpr * make_error(ScamExpr * args);
-
-        ScamExpr * checkargs(ScamExpr * args, bool & ok);
-
-        ScamExpr * inst_value(ScamExpr * expr);
-
-        ScamExpr * new_mapping(ScamExpr * expr);
-
-        ScamExpr * inst_keyword(ScamExpr * expr);
-
-        ScamExpr * inst_cons(ScamExpr * expr);
-
-        ScamExpr * inst_vector(ScamExpr * expr);
-
-        ScamExpr * inst_dict(ScamExpr * expr);
+        ExprHandle make_error(ExprHandle args);
+        ExprHandle checkargs(ExprHandle args, bool & ok);
+        ExprHandle inst_value(ExprHandle expr);
+        ExprHandle new_mapping(ExprHandle expr);
+        ExprHandle inst_keyword(ExprHandle expr);
+        ExprHandle inst_cons(ExprHandle expr);
+        ExprHandle inst_vector(ExprHandle expr);
+        ExprHandle inst_dict(ExprHandle expr);
     };
 }
 

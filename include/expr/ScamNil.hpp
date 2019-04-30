@@ -19,7 +19,7 @@ namespace scam
         bool isList() const override;
         size_t length() const override;
 
-        bool equals(ScamExpr const * expr) const override;
+        bool equals(ConstExprHandle expr) const override;
     };
 }
 

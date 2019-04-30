@@ -8,7 +8,7 @@ using namespace std;
 
 PrimWorker::PrimWorker(Continuation * cont,
                        Env * env,
-                       ScamExpr * args,
+                       ExprHandle args,
                        Primitive * caller)
     : Worker("Primitive")
     , data(args, cont, env, caller)
@@ -18,7 +18,7 @@ PrimWorker::PrimWorker(Continuation * cont,
 
 PrimWorker * PrimWorker::makeInstance(Continuation * cont,
                                       Env * env,
-                                      ScamExpr * args,
+                                      ExprHandle args,
                                       Primitive * caller)
 {
     return new PrimWorker(cont, env, args, caller);

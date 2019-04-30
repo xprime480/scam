@@ -16,7 +16,7 @@ Assign * Assign::makeInstance(ScamEngine * engine)
     return new Assign(engine);
 }
 
-void Assign::apply(ScamExpr * args, Continuation * cont, Env * env)
+void Assign::apply(ExprHandle args, Continuation * cont, Env * env)
 {
     if ( checkArgs(args, cont, true) ) {
         workQueueHelper<AssignWorker>(args, cont, env, engine);

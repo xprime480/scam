@@ -1,4 +1,3 @@
-
 #include "prim/RelOps.hpp"
 
 #include "Continuation.hpp"
@@ -15,15 +14,15 @@ CompareOp::CompareOp(char const * name, shared_ptr<OpImpl> impl)
 {
 }
 
-void CompareOp::applyArgs(ScamExpr * args, Continuation * cont)
+void CompareOp::applyArgs(ExprHandle args, Continuation * cont)
 {
     string const context = toString();
-    ScamExpr * rv = compareAlgorithm(args, context, impl);
+    ExprHandle rv = compareAlgorithm(args, context, impl);
     cont->run(rv);
 }
 
 
-bool CompareOp::equals(ScamExpr const * expr) const
+bool CompareOp::equals(ConstExprHandle expr) const
 {
     return ( expr && this->toString() == expr->toString() );
 }

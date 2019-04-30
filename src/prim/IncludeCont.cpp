@@ -7,7 +7,7 @@
 using namespace scam;
 using namespace std;
 
-IncludeCont::IncludeCont(ScamExpr * rest,
+IncludeCont::IncludeCont(ExprHandle rest,
                          Continuation * cont,
                          ScamEngine * engine)
     : Continuation("Include")
@@ -17,7 +17,7 @@ IncludeCont::IncludeCont(ScamExpr * rest,
 {
 }
 
-IncludeCont * IncludeCont::makeInstance(ScamExpr * rest,
+IncludeCont * IncludeCont::makeInstance(ExprHandle rest,
                                         Continuation * cont,
                                         ScamEngine * engine)
 {
@@ -33,7 +33,7 @@ void IncludeCont::mark() const
     }
 }
 
-void IncludeCont::run(ScamExpr * expr)
+void IncludeCont::run(ExprHandle expr)
 {
     if ( expr->error() ) {
         cont->run(expr);

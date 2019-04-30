@@ -1,4 +1,3 @@
-
 #include "prim/PrimEvalCont.hpp"
 
 using namespace scam;
@@ -24,7 +23,7 @@ void PrimEvalCont::mark() const
     }
 }
 
-void PrimEvalCont::run(ScamExpr * expr)
+void PrimEvalCont::run(ExprHandle expr)
 {
     Continuation::run(expr);
     data.handleResult(expr);

@@ -33,7 +33,7 @@ int ScamInteger::toInteger() const
     return value;
 }
 
-bool ScamInteger::equals(ScamExpr const * expr) const
+bool ScamInteger::equals(ConstExprHandle expr) const
 {
     if ( ! expr->isFloat() ) {
         return false;

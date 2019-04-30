@@ -23,7 +23,7 @@ bool ScamString::isString() const
     return true;
 }
 
-bool ScamString::equals(ScamExpr const * expr) const
+bool ScamString::equals(ConstExprHandle expr) const
 {
     if ( ! expr->isString() ) {
         return false;

@@ -11,11 +11,10 @@ namespace scam
         Apply();
 
     public:
-	/* This should probably be private */
+        /* This should probably be private */
         static Apply * makeInstance();
 
-        void
-        apply(ExprHandle args, Continuation * cont, Env * env) override;
+        void apply(ExprHandle args, Continuation * cont, Env * env) override;
     };
 }
 

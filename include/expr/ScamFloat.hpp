@@ -24,7 +24,7 @@ namespace scam
         bool isFloat() const override;
         double toFloat() const override;
 
-        bool equals(ScamExpr const * expr) const override;
+        bool equals(ConstExprHandle expr) const override;
 
     private:
         double const value;

@@ -8,7 +8,7 @@
 using namespace scam;
 using namespace std;
 
-QQConsListCdrCont::QQConsListCdrCont(ScamExpr * car,
+QQConsListCdrCont::QQConsListCdrCont(ExprHandle car,
                                      Continuation * cont,
                                      Env * env)
     : Continuation("QQConsListCdrCont")
@@ -19,7 +19,7 @@ QQConsListCdrCont::QQConsListCdrCont(ScamExpr * car,
 }
 
 QQConsListCdrCont *
-QQConsListCdrCont::makeInstance(ScamExpr * car, Continuation * cont, Env * env)
+QQConsListCdrCont::makeInstance(ExprHandle car, Continuation * cont, Env * env)
 {
     return new  QQConsListCdrCont(car, cont, env);
 }
@@ -34,7 +34,7 @@ void QQConsListCdrCont::mark() const
     }
 }
 
-void QQConsListCdrCont::run(ScamExpr * expr)
+void QQConsListCdrCont::run(ExprHandle expr)
 {
     Continuation::run(expr);
     if ( expr->error() ) {
@@ -45,18 +45,18 @@ void QQConsListCdrCont::run(ScamExpr * expr)
     }
 }
 
-void QQConsListCdrCont::handle(ScamExpr * expr)
+void QQConsListCdrCont::handle(ExprHandle expr)
 {
     if ( ! check_splice(expr) ) {
-        ScamExpr * rv = ExpressionFactory::makeCons(car, expr);
+        ExprHandle rv = ExpressionFactory::makeCons(car, expr);
         cont->run(rv);
     }
 }
 
-bool QQConsListCdrCont::check_splice(ScamExpr * expr)
+bool QQConsListCdrCont::check_splice(ExprHandle expr)
 {
     if ( car->isCons() ) {
-        ScamExpr * first = car->nthcar(0);
+        ExprHandle first = car->nthcar(0);
         if ( first->isSymbol() ) {
             if ( first->toString() == QuasiQuote::spliceTag->toString() ) {
                 do_splice(expr);
@@ -68,13 +68,13 @@ bool QQConsListCdrCont::check_splice(ScamExpr * expr)
     return false;
 }
 
-void QQConsListCdrCont::do_splice(ScamExpr * expr)
+void QQConsListCdrCont::do_splice(ExprHandle expr)
 {
-    ScamExpr * f = expr;
+    ExprHandle f = expr;
     size_t count = car->length();
 
     while ( --count > 0 ) {
-        ScamExpr * form = car->nthcar(count);
+        ExprHandle form = car->nthcar(count);
         f = ExpressionFactory::makeCons(form, f);
     }
 

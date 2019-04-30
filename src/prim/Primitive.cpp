@@ -1,4 +1,3 @@
-
 #include "prim/Primitive.hpp"
 
 #include "WorkQueue.hpp"
@@ -26,7 +25,7 @@ bool Primitive::hasApply() const
     return true;
 }
 
-void Primitive::apply(ScamExpr * args, Continuation * cont, Env * env)
+void Primitive::apply(ExprHandle args, Continuation * cont, Env * env)
 {
     workQueueHelper<PrimWorker>(cont, env, args, this);
 }

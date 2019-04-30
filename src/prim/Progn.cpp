@@ -18,13 +18,13 @@ Progn * Progn::makeInstance()
     return new Progn();
 }
 
-void Progn::applyArgs(ScamExpr * args, Continuation * cont)
+void Progn::applyArgs(ExprHandle args, Continuation * cont)
 {
     if ( args->isNil() ) {
         cont->run(args);
     }
     else {
-        ScamExpr * last = args->nthcar(args->length() - 1);
+        ExprHandle last = args->nthcar(args->length() - 1);
         cont->run(last);
     }
 }

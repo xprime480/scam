@@ -3,29 +3,27 @@
 
 #include "Continuation.hpp"
 
+#include "ScamFwd.hpp"
+
 namespace scam
 {
-    class MemoryManager;
-    class Env;
-    class ScamExpr;
-
     class LetStepCont : public Continuation
     {
     private:
         friend class scam::MemoryManager;
 
-        LetStepCont(ScamExpr * formals,
-                    ScamExpr * forms,
-                    ScamExpr * evaled,
-                    ScamExpr * args,
+        LetStepCont(ExprHandle formals,
+                    ExprHandle forms,
+                    ExprHandle evaled,
+                    ExprHandle args,
                     Continuation * cont,
                     Env * env,
                     bool rebind);
 
-        static LetStepCont * makeInstance(ScamExpr * formals,
-                                          ScamExpr * forms,
-                                          ScamExpr * evaled,
-                                          ScamExpr * args,
+        static LetStepCont * makeInstance(ExprHandle formals,
+                                          ExprHandle forms,
+                                          ExprHandle evaled,
+                                          ExprHandle args,
                                           Continuation * cont,
                                           Env * env,
                                           bool rebind);
@@ -33,13 +31,13 @@ namespace scam
     public:
         void mark() const override;
 
-        void run(ScamExpr * expr) override;
+        void run(ExprHandle expr) override;
 
     private:
-        ScamExpr * formals;
-        ScamExpr * forms;
-        ScamExpr * evaled;
-        ScamExpr * args;
+        ExprHandle formals;
+        ExprHandle forms;
+        ExprHandle evaled;
+        ExprHandle args;
         Continuation * cont;
         Env * env;
         bool rebind;

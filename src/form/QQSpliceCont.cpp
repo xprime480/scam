@@ -26,14 +26,14 @@ void QQSpliceCont::mark() const
     }
 }
 
-void QQSpliceCont::run(ScamExpr * expr)
+void QQSpliceCont::run(ExprHandle expr)
 {
     Continuation::run(expr);
     if ( expr->error() ) {
         cont->run(expr);
     }
     else {
-        ScamExpr * internal =
+        ExprHandle internal =
             ExpressionFactory::makeCons(QuasiQuote::spliceTag, expr);
         cont->run(internal);
     }

@@ -3,28 +3,26 @@
 
 #include "Continuation.hpp"
 
+#include "ScamFwd.hpp"
+
 namespace scam
 {
-    class MemoryManager;
-    class Env;
-    class ScamExpr;
-
     class ApplyArgsCont : public Continuation
     {
     private:
         friend class scam::MemoryManager;
 
-        ApplyArgsCont(ScamExpr * op, Continuation * cont, Env * env);
+        ApplyArgsCont(ExprHandle op, Continuation * cont, Env * env);
 
         static ApplyArgsCont *
-        makeInstance(ScamExpr * op, Continuation * cont, Env * env);
+        makeInstance(ExprHandle op, Continuation * cont, Env * env);
 
     public:
         void mark() const override;
-        void run(ScamExpr * expr) override;
+        void run(ExprHandle expr) override;
 
     private:
-        ScamExpr * op;
+        ExprHandle op;
         Continuation * cont;
         Env * env;
     };

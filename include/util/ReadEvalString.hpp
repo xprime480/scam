@@ -16,8 +16,8 @@ namespace scam
         ReadEvalString(ScamEngine * engine, std::string const & text);
         ~ReadEvalString();
 
-        ScamExpr * run();
-        ScamExpr * read();
+        ExprHandle run();
+        ExprHandle read();
 
     private:
         ScamEngine * engine;

@@ -17,12 +17,12 @@ ReadEvalString::~ReadEvalString()
     engine->popInput();
 }
 
-ScamExpr * ReadEvalString::run()
+ExprHandle ReadEvalString::run()
 {
     return engine->parseCurrentInput();
 }
 
-ScamExpr * ReadEvalString::read()
+ExprHandle ReadEvalString::read()
 {
     return engine->read();
 }

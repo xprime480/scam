@@ -16,7 +16,7 @@ namespace
         ExpressionFactory::makeSymbol("init", false);
 }
 
-ClassInitWorker::ClassInitWorker(ExprHandle instance,
+ClassInitWorker::ClassInitWorker(ScamInstance * instance,
                                  ExprHandle args,
                                  Continuation * cont,
                                  Env * env)
@@ -28,7 +28,7 @@ ClassInitWorker::ClassInitWorker(ExprHandle instance,
 {
 }
 
-ClassInitWorker * ClassInitWorker::makeInstance(ExprHandle instance,
+ClassInitWorker * ClassInitWorker::makeInstance(ScamInstance * instance,
                                                 ExprHandle args,
                                                 Continuation * cont,
                                                 Env * env)

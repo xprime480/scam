@@ -19,10 +19,10 @@ Include * Include::makeInstance(ScamEngine * engine)
     return new Include(engine);
 }
 
-void Include::applyArgs(ScamExpr * args, Continuation * cont)
+void Include::applyArgs(ExprHandle args, Continuation * cont)
 {
     if ( args->length() < 1 ) {
-        ScamExpr * err =
+        ExprHandle err =
             ExpressionFactory::makeError("include expects at least 1 filename",
                                          "; got 0");
         cont->run(err);

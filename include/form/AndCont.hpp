@@ -3,30 +3,27 @@
 
 #include "Continuation.hpp"
 
+#include "ScamFwd.hpp"
+
 namespace scam
 {
-    class MemoryManager;
-    class Continuation;
-    class Env;
-    class ScamExpr;
-
     class AndCont : public Continuation
     {
     private:
         friend class scam::MemoryManager;
 
-        AndCont(ScamExpr * args, Continuation * cont, Env * env, size_t n);
+        AndCont(ExprHandle args, Continuation * cont, Env * env, size_t n);
 
         static AndCont *
-        makeInstance(ScamExpr * args, Continuation * cont, Env * env, size_t n);
+        makeInstance(ExprHandle args, Continuation * cont, Env * env, size_t n);
 
     public:
         void mark() const override;
 
-        void run(ScamExpr * expr) override;
+        void run(ExprHandle expr) override;
 
     private:
-        ScamExpr * args;
+        ExprHandle args;
         Continuation * cont;
         Env * env;
         size_t n;

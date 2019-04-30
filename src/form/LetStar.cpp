@@ -19,7 +19,7 @@ LetStar * LetStar::makeInstance(ScamEngine * engine)
     return new LetStar(engine);
 }
 
-ScamExpr * LetStar::safeCons(ScamExpr * expr)
+ExprHandle LetStar::safeCons(ExprHandle expr)
 {
     if ( expr->isCons() ) {
         return expr;
@@ -27,7 +27,7 @@ ScamExpr * LetStar::safeCons(ScamExpr * expr)
     return ExpressionFactory::makeList(expr);
 }
 
-void LetStar::apply(ScamExpr * args, Continuation * cont, Env * env)
+void LetStar::apply(ExprHandle args, Continuation * cont, Env * env)
 {
     workQueueHelper<LetStarWorker>(args, cont, env, engine);
 }

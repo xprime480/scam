@@ -5,7 +5,6 @@
 
 namespace scam
 {
-    class ScamExpr;
     class Continuation;
 
     class Error : public Primitive
@@ -15,7 +14,7 @@ namespace scam
 
     public:
         static Error * makeInstance();
-        void applyArgs(ScamExpr * args, Continuation * cont) override;
+        void applyArgs(ExprHandle args, Continuation * cont) override;
     };
 }
 

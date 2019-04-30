@@ -3,14 +3,11 @@
 
 #include "Continuation.hpp"
 
+#include "ScamFwd.hpp"
 #include "expr/ScamVector.hpp"
 
 namespace scam
 {
-    class Env;
-    class ScamExpr;
-    class MemoryManager;
-
     class VectorCont : public Continuation
     {
     private:
@@ -28,7 +25,7 @@ namespace scam
 
     public:
         void mark() const override;
-        void run(ScamExpr * expr) override;
+        void run(ExprHandle expr) override;
 
     private:
         ExprVec forms;

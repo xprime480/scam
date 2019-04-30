@@ -10,26 +10,26 @@ namespace
     template <typename T>
     struct TypeChecks
     {
-        static bool isType(ScamExpr * arg) { return false; }
-        static bool isSubType(ScamExpr * arg) { return false; }
-        static T convert(ScamExpr * arg) { return T(); }
+        static bool isType(ExprHandle arg) { return false; }
+        static bool isSubType(ExprHandle arg) { return false; }
+        static T convert(ExprHandle arg) { return T(); }
         static string id() { return ""; }
     };
 
     template <>
     struct TypeChecks<double>
     {
-        static bool isType(ScamExpr * arg)
+        static bool isType(ExprHandle arg)
         {
             return arg->isNumeric();
         }
 
-        static bool isSubType(ScamExpr * arg)
+        static bool isSubType(ExprHandle arg)
         {
             return arg->isInteger();
         }
 
-        static double convert(ScamExpr * arg)
+        static double convert(ExprHandle arg)
         {
             return arg->toFloat();
         }
@@ -42,17 +42,17 @@ namespace
     template <>
     struct TypeChecks<string>
     {
-        static bool isType(ScamExpr * arg)
+        static bool isType(ExprHandle arg)
         {
             return arg->isString();
         }
 
-        static bool isSubType(ScamExpr * arg)
+        static bool isSubType(ExprHandle arg)
         {
             return arg->isString();
         }
 
-        static string convert(ScamExpr * arg)
+        static string convert(ExprHandle arg)
         {
             return arg->toString();
         }
@@ -63,10 +63,10 @@ namespace
     };
 
     template <typename T>
-    bool argToType(ScamExpr * arg,
+    bool argToType(ExprHandle arg,
                    vector<T> & ns,
                    string const & context,
-                   ScamExpr * & rv)
+                   ExprHandle & rv)
     {
         typedef TypeChecks<T> Checker;
 
@@ -88,15 +88,15 @@ namespace
     }
 
     template <typename T>
-    ScamExpr * argsToType(ScamExpr * args,
+    ExprHandle argsToType(ExprHandle args,
                           vector<T> & ns,
                           string const & context)
     {
-        ScamExpr * rv = ExpressionFactory::makeBoolean(true);
+        ExprHandle rv = ExpressionFactory::makeBoolean(true);
 
         const size_t len = args->length();
         for ( size_t idx = 0u ; idx < len ; ++idx ) {
-            ScamExpr * arg = args->nthcar(idx);
+            ExprHandle arg = args->nthcar(idx);
             if ( ! argToType(arg, ns, context, rv) ) {
                 break;
             }
@@ -105,14 +105,14 @@ namespace
         return rv;
     }
 
-    extern ScamExpr * makeNumeric(ScamExpr * & state, double value);
+    extern ExprHandle makeNumeric(ExprHandle & state, double value);
 
     template <typename T>
-    ScamExpr * compareType(ScamExpr * args,
+    ExprHandle compareType(ExprHandle args,
                            string const & context,
                            shared_ptr<OpImpl> impl)
     {
-        ScamExpr * rv;
+        ExprHandle rv;
 
         vector<T> ns;
         rv = argsToType(args, ns, context);
@@ -125,13 +125,13 @@ namespace
     }
 }
 
-ScamExpr * scam::numericAlgorithm(ScamExpr * args,
+ExprHandle scam::numericAlgorithm(ExprHandle args,
                                   string const & context,
                                   NumericalAlgorithm algo)
 {
     vector<double> ns;
 
-    ScamExpr * state = argsToType(args, ns, context);
+    ExprHandle state = argsToType(args, ns, context);
     if ( state->error() ) {
         return state;
     }
@@ -144,11 +144,11 @@ ScamExpr * scam::numericAlgorithm(ScamExpr * args,
     return makeNumeric(state, total);
 }
 
-ScamExpr * scam::compareAlgorithm(ScamExpr * args,
+ExprHandle scam::compareAlgorithm(ExprHandle args,
                                   string const & context,
                                   shared_ptr<OpImpl> impl)
 {
-    ScamExpr * rv;
+    ExprHandle rv;
 
     rv = compareType<double>(args, context, impl);
     if ( rv->isBoolean() ) {
@@ -168,7 +168,7 @@ ScamExpr * scam::compareAlgorithm(ScamExpr * args,
 
 namespace
 {
-    ScamExpr * makeNumeric(ScamExpr * & state, double value)
+    ExprHandle makeNumeric(ExprHandle & state, double value)
     {
         if ( state->truth() ) {
             return ExpressionFactory::makeInteger((int)value);

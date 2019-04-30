@@ -16,17 +16,17 @@ VRef * VRef::makeInstance()
     return new VRef();
 }
 
-void VRef::applyArgs(ScamExpr * args, Continuation * cont)
+void VRef::applyArgs(ExprHandle args, Continuation * cont)
 {
-    ScamExpr * rv;
+    ExprHandle rv;
 
     if ( args->length() < 2u ) {
         rv = ExpressionFactory::makeError("vref expects 2 argument, got ",
                                           args->length());
     }
     else {
-        ScamExpr * indexArg = args->nthcar(0);
-        ScamExpr * vecArg =  args->nthcar(1);
+        ExprHandle indexArg = args->nthcar(0);
+        ExprHandle vecArg =  args->nthcar(1);
 
         if ( ! indexArg->isInteger() || indexArg->toInteger() < 0 ) {
             rv = ExpressionFactory::makeError("vref expects index ",

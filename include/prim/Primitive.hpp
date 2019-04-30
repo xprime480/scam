@@ -15,12 +15,10 @@ namespace scam
         std::string toString() const override;
 
         bool hasApply() const override;
-        void apply(ScamExpr * args,
-                   Continuation * cont,
-                   Env * env) override;
+        void apply(ExprHandle args, Continuation * cont, Env * env) override;
 
         virtual void
-        applyArgs(ScamExpr * args, Continuation * cont) = 0;
+        applyArgs(ExprHandle args, Continuation * cont) = 0;
 
     protected:
         std::string const name;

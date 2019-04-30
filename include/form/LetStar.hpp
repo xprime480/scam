@@ -3,11 +3,10 @@
 
 #include "form/SpecialForm.hpp"
 
+#include "ScamFwd.hpp"
+
 namespace scam
 {
-    class ScamEngine;
-    class MemoryManager;
-
     class LetStar : public SpecialForm
     {
     private:
@@ -17,8 +16,9 @@ namespace scam
         static LetStar * makeInstance(ScamEngine * engine);
 
     public:
-        static ScamExpr * safeCons(ScamExpr * expr);
-        void apply(ScamExpr * args, Continuation * cont, Env * env) override;
+        static ExprHandle safeCons(ExprHandle expr);
+
+        void apply(ExprHandle args, Continuation * cont, Env * env) override;
 
     private:
         ScamEngine * engine;

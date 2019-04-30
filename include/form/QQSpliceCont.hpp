@@ -6,7 +6,6 @@
 namespace scam
 {
     class MemoryManager;
-    class ScamExpr;
 
     class  QQSpliceCont : public Continuation
     {
@@ -17,7 +16,7 @@ namespace scam
 
     public:
         void mark() const override;
-        void run(ScamExpr * expr) override;
+        void run(ExprHandle expr) override;
 
     private:
         Continuation * cont;

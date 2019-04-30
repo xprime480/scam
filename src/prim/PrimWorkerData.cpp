@@ -28,7 +28,7 @@ void PrimWorkerData::mark() const
     env->mark();
 }
 
-void PrimWorkerData::mapEval()
+void PrimWorkerData::mapEval() const
 {
     args->mapEval(cont, env);
 }

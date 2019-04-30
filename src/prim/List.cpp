@@ -1,4 +1,3 @@
-
 #include "prim/List.hpp"
 
 #include "Continuation.hpp"
@@ -16,7 +15,7 @@ List * List::makeInstance()
     return new List();
 }
 
-void List::applyArgs(ScamExpr * args, Continuation * cont)
+void List::applyArgs(ExprHandle args, Continuation * cont)
 {
     cont->run(args);
 }

@@ -9,7 +9,7 @@
 using namespace scam;
 using namespace std;
 
-LetStarWorker::LetStarWorker(ScamExpr * args,
+LetStarWorker::LetStarWorker(ExprHandle args,
                              Continuation * cont,
                              Env * env,
                              ScamEngine * engine)
@@ -18,7 +18,7 @@ LetStarWorker::LetStarWorker(ScamExpr * args,
 {
 }
 
-LetStarWorker * LetStarWorker::makeInstance(ScamExpr * args,
+LetStarWorker * LetStarWorker::makeInstance(ExprHandle args,
                                             Continuation * cont,
                                             Env * env,
                                             ScamEngine * engine)
@@ -26,12 +26,12 @@ LetStarWorker * LetStarWorker::makeInstance(ScamExpr * args,
     return new LetStarWorker(args, cont, env, engine);
 }
 
-void LetStarWorker::do_next(ScamExpr * formals,
-                            ScamExpr * values,
-                            ScamExpr * forms)
+void LetStarWorker::do_next(ExprHandle formals,
+                            ExprHandle values,
+                            ExprHandle forms)
 {
     Env * extended = env->extend();
-    ScamExpr * safe = LetStar::safeCons(values);
+    ExprHandle safe = LetStar::safeCons(values);
 
     Continuation * ch =
         standardMemoryManager.make<LetStarCont>(formals,

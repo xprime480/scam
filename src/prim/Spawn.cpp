@@ -17,7 +17,7 @@ Spawn * Spawn::makeInstance()
     return new Spawn();
 }
 
-void Spawn::applyArgs(ScamExpr * args, Continuation * cont)
+void Spawn::applyArgs(ExprHandle args, Continuation * cont)
 {
     workQueueHelper<SpawnWorker>(cont, true);
     workQueueHelper<SpawnWorker>(cont, false);

@@ -9,7 +9,7 @@ using namespace scam;
 using namespace std;
 
 LetCommonCont::LetCommonCont(char const * name,
-                             ScamExpr * forms,
+                             ExprHandle forms,
                              Continuation * cont)
     : Continuation(name)
     , forms(forms)
@@ -26,7 +26,7 @@ void LetCommonCont::mark() const
     }
 }
 
-void LetCommonCont::run(ScamExpr * expr)
+void LetCommonCont::run(ExprHandle expr)
 {
     Continuation::run(expr);
 

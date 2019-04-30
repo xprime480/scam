@@ -66,12 +66,12 @@ void VectorWorker::run()
     Worker::run();
 
     if ( forms.size() == evaled.size() ) {
-        ScamExpr * value = ExpressionFactory::makeVector(evaled);
+        ExprHandle value = ExpressionFactory::makeVector(evaled);
         original->run(value);
     }
     else {
         size_t index = evaled.size();
-        ScamExpr * expr = forms[index];
+        ExprHandle expr = forms[index];
         Continuation * cont
             = standardMemoryManager.make<VectorCont>(forms,
                                                      evaled,

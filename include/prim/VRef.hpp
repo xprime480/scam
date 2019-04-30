@@ -5,7 +5,6 @@
 
 namespace scam
 {
-    class ScamExpr;
     class Continuation;
 
     class VRef : public Primitive
@@ -15,7 +14,7 @@ namespace scam
 
     public:
         static VRef * makeInstance();
-        void applyArgs(ScamExpr * args, Continuation * cont) override;
+        void applyArgs(ExprHandle args, Continuation * cont) override;
     };
 }
 

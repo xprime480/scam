@@ -28,6 +28,6 @@ void SpawnWorker::mark() const
 
 void SpawnWorker::run()
 {
-    ScamExpr * flag = ExpressionFactory::makeBoolean(value);
+    ExprHandle flag = ExpressionFactory::makeBoolean(value);
     cont->run(flag);
 }

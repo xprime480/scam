@@ -1,4 +1,3 @@
-
 #include "expr/ScamFloat.hpp"
 
 #include "expr/ExpressionFactory.hpp"
@@ -35,7 +34,7 @@ double ScamFloat::toFloat() const
     return value;
 }
 
-bool ScamFloat::equals(ScamExpr const * expr) const
+bool ScamFloat::equals(ConstExprHandle expr) const
 {
     if ( ! expr->isFloat() ) {
         return false;

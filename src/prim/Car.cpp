@@ -1,4 +1,3 @@
-
 #include "prim/Car.hpp"
 
 #include "Continuation.hpp"
@@ -18,9 +17,9 @@ Car * Car::makeInstance()
     return new Car();
 }
 
-void Car::finish(ScamExpr * args, Continuation * cont)
+void Car::finish(ExprHandle args, Continuation * cont)
 {
-    ScamExpr * car = args->nthcar(0)->nthcar(0);
+    ExprHandle car = args->nthcar(0)->nthcar(0);
     cont->run(car);
 }
 

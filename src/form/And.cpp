@@ -19,7 +19,7 @@ And * And::makeInstance()
     return &instance;
 }
 
-void And::apply(ScamExpr * args, Continuation * cont, Env * env)
+void And::apply(ExprHandle args, Continuation * cont, Env * env)
 {
     unsigned pos { 0 };
     workQueueHelper<AndWorker>(cont, env, args, pos);

@@ -25,7 +25,7 @@ void CdrContinuation::mark() const
     }
 }
 
-void CdrContinuation::run(ScamExpr * expr)
+void CdrContinuation::run(ExprHandle expr)
 {
     Continuation::run(expr);
 
@@ -33,7 +33,7 @@ void CdrContinuation::run(ScamExpr * expr)
         data.original->run(expr);
     }
     else {
-        ScamExpr * e = ExpressionFactory::makeCons(data.car, expr);
+        ExprHandle e = ExpressionFactory::makeCons(data.car, expr);
         data.original->run(e);
     }
 }

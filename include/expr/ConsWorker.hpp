@@ -3,30 +3,28 @@
 
 #include "Worker.hpp"
 
+#include "ScamFwd.hpp"
 #include "expr/WorkerData.hpp"
 
 namespace scam
 {
-    class Congtinuation;
-    class Env;
-    class ScamExpr;
-    class MemoryManager;
-
     class  ConsWorker : public Worker
     {
     private:
         friend class scam::MemoryManager;
+
         ConsWorker(Continuation * cont,
                    Env * env,
-                   ScamExpr * car,
-                   ScamExpr * cdr);
+                   ExprHandle car,
+                   ExprHandle cdr);
 
         ConsWorker(WorkerData const & data);
 
         static ConsWorker * makeInstance(Continuation * cont,
                                          Env * env,
-                                         ScamExpr * car,
-                                         ScamExpr * cdr);
+                                         ExprHandle car,
+                                         ExprHandle cdr);
+
         static ConsWorker * makeInstance(WorkerData const & data);
 
     public:

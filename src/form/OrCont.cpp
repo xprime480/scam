@@ -10,7 +10,7 @@
 using namespace scam;
 using namespace std;
 
-OrCont::OrCont(ScamExpr * args, Continuation * cont, Env * env, size_t n)
+OrCont::OrCont(ExprHandle args, Continuation * cont, Env * env, size_t n)
     : Continuation("Or")
     , args(args)
     , cont(cont)
@@ -20,7 +20,7 @@ OrCont::OrCont(ScamExpr * args, Continuation * cont, Env * env, size_t n)
 }
 
 OrCont *
-OrCont::makeInstance(ScamExpr * args, Continuation * cont, Env * env, size_t n)
+OrCont::makeInstance(ExprHandle args, Continuation * cont, Env * env, size_t n)
 {
   return new OrCont(args, cont, env, n);
 }
@@ -35,7 +35,7 @@ void OrCont::mark() const
     }
 }
 
-void OrCont::run(ScamExpr * expr)
+void OrCont::run(ExprHandle expr)
 {
     Continuation::run(expr);
 

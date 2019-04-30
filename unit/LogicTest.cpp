@@ -186,8 +186,7 @@ TEST_F(LogicTest, SubstituteInVector)
 
 TEST_F(LogicTest, SubstituteMultiple)
 {
-    scamTrace("SubstituteMultiple");
-    expectTrue("(eq? (substitute #(:X :Y :X) { :X 23 :Y cat }) #(23 cat 23))");
+    expectTrue("(eq? (substitute #(:X :Y :X) { :X 23 :Y cat }) #(23 'cat 23))");
 }
 
 TEST_F(LogicTest, SubstituteMissing)

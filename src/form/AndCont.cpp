@@ -8,7 +8,7 @@
 using namespace scam;
 using namespace std;
 
-AndCont::AndCont(ScamExpr * args, Continuation * cont, Env * env, size_t n)
+AndCont::AndCont(ExprHandle args, Continuation * cont, Env * env, size_t n)
     : Continuation("And")
     , args(args)
     , cont(cont)
@@ -18,7 +18,7 @@ AndCont::AndCont(ScamExpr * args, Continuation * cont, Env * env, size_t n)
 }
 
 AndCont *
-AndCont::makeInstance(ScamExpr * args, Continuation * cont, Env * env, size_t n)
+AndCont::makeInstance(ExprHandle args, Continuation * cont, Env * env, size_t n)
 {
     return new AndCont(args, cont, env, n);
 }
@@ -33,7 +33,7 @@ void AndCont::mark() const
     }
 }
 
-void AndCont::run(ScamExpr * expr)
+void AndCont::run(ExprHandle expr)
 {
     Continuation::run(expr);
 

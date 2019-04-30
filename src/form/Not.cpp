@@ -25,7 +25,7 @@ Not * Not::makeInstance()
     return &instance;
 }
 
-void Not::apply(ScamExpr * args, Continuation * cont, Env * env)
+void Not::apply(ExprHandle args, Continuation * cont, Env * env)
 {
     workQueueHelper<NotWorker>(cont, env, args);
 }

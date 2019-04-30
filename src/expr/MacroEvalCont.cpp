@@ -28,7 +28,7 @@ void MacroEvalCont::mark() const
     }
 }
 
-void MacroEvalCont::run(ScamExpr * expr)
+void MacroEvalCont::run(ExprHandle expr)
 {
     Continuation::run(expr);
     expr->eval(cont, capture);

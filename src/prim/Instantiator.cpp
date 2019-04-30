@@ -1,4 +1,3 @@
-
 #include "prim/Instantiator.hpp"
 
 #include "expr/ExpressionFactory.hpp"
@@ -15,10 +14,10 @@ Instantiator::Instantiator(size_t & counter)
 {
 }
 
-ScamExpr * Instantiator::exec(ScamExpr * args)
+ExprHandle Instantiator::exec(ExprHandle args)
 {
     bool ok;
-    ScamExpr * expr = checkargs(args, ok);
+    ExprHandle expr = checkargs(args, ok);
     if ( ! ok ) {
         return expr;
     }
@@ -26,30 +25,30 @@ ScamExpr * Instantiator::exec(ScamExpr * args)
     return inst_value(expr);
 }
 
-ScamExpr * Instantiator::map_value(ScamExpr * val)
+ExprHandle Instantiator::map_value(ExprHandle val)
 {
     return inst_value(val);
 }
 
-ScamExpr * Instantiator::make_error(ScamExpr * args)
+ExprHandle Instantiator::make_error(ExprHandle args)
 {
     return ExpressionFactory::makeError("Substitute expected one arg got: ",
                                         args->toString());
 }
 
-ScamExpr * Instantiator::checkargs(ScamExpr * args, bool & ok)
+ExprHandle Instantiator::checkargs(ExprHandle args, bool & ok)
 {
     if ( args->length() < 1u ) {
         ok = false;
         return make_error(args);
     }
 
-    ScamExpr * expr = args->nthcar(0);
+    ExprHandle expr = args->nthcar(0);
     ok = true;
     return expr;
 }
 
-ScamExpr * Instantiator::inst_value(ScamExpr * expr)
+ExprHandle Instantiator::inst_value(ExprHandle expr)
 {
     if ( expr->isKeyword() ) {
         return inst_keyword(expr);
@@ -68,16 +67,16 @@ ScamExpr * Instantiator::inst_value(ScamExpr * expr)
     }
 }
 
-ScamExpr * Instantiator::new_mapping(ScamExpr * expr)
+ExprHandle Instantiator::new_mapping(ExprHandle expr)
 {
     stringstream s;
     s << ":kw" << ++counter;
-    ScamExpr * value = ExpressionFactory::makeKeyword(s.str());
+    ExprHandle value = ExpressionFactory::makeKeyword(s.str());
     dict->put(expr, value);
     return value;
 }
 
-ScamExpr * Instantiator::inst_keyword(ScamExpr * expr)
+ExprHandle Instantiator::inst_keyword(ExprHandle expr)
 {
     if ( dict->has(expr) ) {
         return dict->get(expr);
@@ -86,17 +85,17 @@ ScamExpr * Instantiator::inst_keyword(ScamExpr * expr)
     return new_mapping(expr);
 }
 
-ScamExpr * Instantiator::inst_cons(ScamExpr * expr)
+ExprHandle Instantiator::inst_cons(ExprHandle expr)
 {
     return map_cons(expr);
 }
 
-ScamExpr * Instantiator::inst_vector(ScamExpr * expr)
+ExprHandle Instantiator::inst_vector(ExprHandle expr)
 {
     return map_vector(expr);
 }
 
-ScamExpr * Instantiator::inst_dict(ScamExpr * expr)
+ExprHandle Instantiator::inst_dict(ExprHandle expr)
 {
     return map_dict(expr);
 }
