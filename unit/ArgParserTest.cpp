@@ -4,6 +4,7 @@
 #include "input/AlternativeParser.hpp"
 #include "input/ArgParser.hpp"
 #include "input/CountedListParser.hpp"
+#include "input/FunctionDefParser.hpp"
 #include "input/ListParser.hpp"
 #include "input/ParameterListParser.hpp"
 #include "input/SequenceParser.hpp"
@@ -301,4 +302,61 @@ TEST_F(ArgParserTest, ParameterListDuplicates)
     ParameterListParser * parser = mm.make<ParameterListParser>();
 
     rejectParse(parser, "(a b c d a)");
+}
+
+TEST_F(ArgParserTest, TrivialLambda)
+{
+    LambdaParser * parser = mm.make<LambdaParser>();
+
+    acceptParse(parser, "(())");
+    EXPECT_EQ(0u, parser->getArgs()->size());
+    EXPECT_EQ(0u, parser->getFormCount());
+}
+
+TEST_F(ArgParserTest, NonTrivialLambda)
+{
+    LambdaParser * parser = mm.make<LambdaParser>();
+
+    acceptParse(parser, "((arg) (* arg 3))");
+    EXPECT_EQ(1u, parser->getArgs()->size());
+    EXPECT_EQ(1u, parser->getFormCount());
+}
+
+TEST_F(ArgParserTest, TrivialFunctionDef)
+{
+    FunctionDefParser * parser = mm.make<FunctionDefParser>();
+
+    acceptParse(parser, "(foo ())");
+    expectSymbol(parser->getName(), "foo");
+    const LambdaParser * lambda = parser->getLambda();
+    EXPECT_EQ(0u, lambda->getArgs()->size());
+    EXPECT_EQ(0u, lambda->getFormCount());
+}
+
+TEST_F(ArgParserTest, NoArgFunctionDef)
+{
+    FunctionDefParser * parser = mm.make<FunctionDefParser>();
+
+    acceptParse(parser, "(answer () 42)");
+    expectSymbol(parser->getName(), "answer");
+    const LambdaParser * lambda = parser->getLambda();
+    EXPECT_EQ(0u, lambda->getArgs()->size());
+    EXPECT_EQ(1u, lambda->getFormCount());
+    expectInteger(lambda->getForm(0), 42, "42");
+}
+
+TEST_F(ArgParserTest, GeneralFunctionDef)
+{
+    FunctionDefParser * parser = mm.make<FunctionDefParser>();
+
+    acceptParse(parser, "(stuff (x y . z) (side-effect) (if (> x y) z 1))");
+    expectSymbol(parser->getName(), "stuff");
+
+    const LambdaParser * lambda = parser->getLambda();
+    const auto args = lambda->getArgs();
+    EXPECT_EQ(3u, args->size());
+    expectSymbol(args->get(2), "z");
+    expectSymbol(args->getRest(), "z");
+
+    EXPECT_EQ(2u, lambda->getFormCount());
 }
