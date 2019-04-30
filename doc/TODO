@@ -1,10 +1,20 @@
 
 * Eventually this will be a Scheme interpreter fully compliant with R7RS
 
-* Update the SequenceParser and AlternativeParser so that they are no longer
+* Update the AlternativeParser so that it is no longer a
   template classes.  Add a template constructor that updates internal state.
 
+* Separate implementation from interface for all of the ArgParser classes.
+
+* Ensure all apply functions use an appropriate parser to validate their
+  input.
+
 * Remove unneeded classes.
+
+* Remove trace information from ArgParser classes and test
+
+* Make ArgParser classes return something other than nullptr for failed
+      parses.
 
 * Finish with the merge of branch arg-parse into arg-parse-2
   ** Then merge that into master

@@ -22,56 +22,17 @@ namespace scam
     private:
         friend class scam::MemoryManager;
 
-        template <typename ... Rest>
-        SequenceParser(ArgParser * parser, Rest && ... rest)
-            : carParser(parser)
-            , cdrParser(scam::standardMemoryManager.make<SequenceParser>(rest...))
+        template <typename ... Parsers>
+        SequenceParser(Parsers && ... parsers)
         {
+            saveParsers(parsers...);
         }
 
-        /**
-         * This is NOT a copy constructor.
-         * It is needed when the last element of a sequence is
-         * another sequence.
-         */
-        explicit SequenceParser(SequenceParser * parser)
-            : carParser(parser)
-            , cdrParser(nullptr)
-        {
-        }
-
-        explicit SequenceParser(ArgParser * parser)
-            : carParser(parser)
-            , cdrParser(nullptr)
-        {
-        }
-
-        SequenceParser()
-            : carParser(nullptr)
-            , cdrParser(nullptr)
-        {
-        }
-
-        template <typename ... Rest>
+        template <typename ... Parsers>
         static SequenceParser *
-        makeInstance (ArgParser * parser, Rest && ... rest)
+        makeInstance (Parsers && ... parsers)
         {
-            return new SequenceParser(parser, rest...);
-        }
-
-        static SequenceParser * makeInstance(SequenceParser * parser)
-        {
-            return new SequenceParser(parser);
-        }
-
-        static SequenceParser * makeInstance(ArgParser * parser)
-        {
-            return new SequenceParser(parser);
-        }
-
-        static SequenceParser * makeInstance()
-        {
-            return new SequenceParser();
+            return new SequenceParser(parsers...);
         }
 
     public:
@@ -79,11 +40,8 @@ namespace scam
         {
             if ( ! isMarked() ) {
                 ArgParser::mark();
-                if ( carParser ) {
-                    carParser->mark();
-                }
-                if ( cdrParser ) {
-                    cdrParser->mark();
+                for ( auto p : parsers ) {
+                    p->mark();
                 }
             }
         }
@@ -99,147 +57,54 @@ namespace scam
 
             clearValue();
 
-            if ( ! ArgParser::accept(expr) ) {
-                return false;
-            }
-            scamTrace("\tAccepted by ArgParser");
+            ArgParser * any = standardMemoryManager.make<ArgParser>();
+            ListParser * temp = standardMemoryManager.make<ListParser>(any);
 
-            clearValue();
-
-            if ( expr->isCons() ) {
-                if ( ! acceptCons(dynamic_cast<ScamCons *>(expr)) ) {
-                    return false;
-                }
-            }
-            else if ( expr->isNil() ) {
-                if ( ! acceptNil(dynamic_cast<ScamNil *>(expr)) ) {
-                    return false;
-                }
-            }
-            else if ( ! acceptGeneral(expr) ) {
+            if ( ! temp->accept(expr) ) {
+                scamTrace("\tNot a list of forms");
                 return false;
             }
 
+            if ( temp->size() != parsers.size() ) {
+                scamTrace("\t", temp->size(), "forms for ",
+                          parsers.size(), "parsers");
+                return false;
+            }
+
+            for ( size_t idx = 0 ; idx < parsers.size() ; ++idx ) {
+                ArgParser * p = parsers[idx];
+                ExprHandle  e = temp->get(idx);
+                if ( ! p->accept(e) ) {
+                    scamTrace("\tSubform", idx, "rejected");
+                    return false;
+                }
+            }
+
+            scamTrace("accepted form");
             callback(expr);
             return true;
         }
 
         ArgParser * get(size_t idx) const
         {
-            if ( 0u == idx ) {
-                return carParser;
-            }
-            if ( cdrParser ) {
-                return cdrParser->get(idx - 1);
+            if ( idx < parsers.size() ) {
+                return parsers[idx];
             }
             return nullptr;
         }
 
     private:
-        ArgParser      * carParser;
-        SequenceParser * cdrParser;
+        std::vector<ArgParser *> parsers;
 
-        bool acceptCons(ScamCons * expr)
+        template <typename ... Parsers>
+        void saveParsers(ArgParser * parser, Parsers && ... rest)
         {
-            scamTrace("acceptCons");
-
-            if ( ! carParser && ! cdrParser ) {
-                scamTrace("more forms than parsers");
-                return false;
-            }
-
-            if ( carParser && ! cdrParser ) {
-                return acceptCar(expr);
-            }
-
-            return acceptPair(expr);
+            parsers.push_back(parser);
+            saveParsers(rest...);
         }
 
-        bool acceptNil(ScamNil * expr)
+        void saveParsers()
         {
-            scamTrace("acceptNil");
-
-            if ( carParser && cdrParser ) {
-                scamTrace("more parsers than forms");
-                return false;
-            }
-
-            if ( carParser ) {
-                return acceptExact(expr);
-            }
-
-            scamTrace("No parsers and no forms");
-            return true;
-        }
-
-        bool acceptGeneral(ExprHandle expr)
-        {
-            scamTrace("acceptGeneral");
-            if ( carParser && cdrParser ) {
-                scamTrace("More parsers than forms");
-                return false;
-            }
-
-            if ( ! carParser ) {
-                scamTrace("More forms than parsers");
-                return false;
-            }
-
-            return acceptExact(expr);
-        }
-
-        bool acceptPair(ExprHandle expr)
-        {
-            scamTrace("acceptPair", expr->toString());
-
-            ExprHandle car = expr->getCar();
-            if ( ! carParser->accept(car) ) {
-                scamTrace("Failed to accept car" );
-                return false;
-            }
-
-            ExprHandle cdr = expr->getCdr();
-            if ( ! cdrParser->accept(cdr) ) {
-                scamTrace("Failed to accept cdr" );
-                return false;
-            }
-
-            return true;
-        }
-
-        bool acceptCar(ExprHandle expr)
-        {
-            scamTrace("acceptCar", expr->toString(), carParser);
-
-            ExprHandle cdr = expr->getCdr();
-            scamTrace("cdr = ",  cdr, cdr->toString());
-
-            if ( cdr->isNil() ) {
-                expr = expr->getCar();
-            }
-
-            scamTrace("final car expression", expr, expr->toString());
-
-            if ( carParser->accept(expr) ) {
-                scamTrace("Tail forms accepted to accept last parser" );
-                return true;
-            }
-
-            scamTrace("Last form(s) failed to accept last parser" );
-            return false;
-        }
-
-        bool acceptExact(ExprHandle expr)
-        {
-            scamTrace("acceptExact", expr->toString(), carParser);
-
-            if ( ! carParser->accept(expr) ) {
-                scamTrace("Failed on exact accept" );
-                return false;
-            }
-
-            scamTrace("Succeeded on exact accept" );
-            return true;
         }
     };
 }

@@ -6,6 +6,7 @@
 #include "input/ArgParser.hpp"
 #include "input/ClassDefParser.hpp"
 #include "input/CountedListParser.hpp"
+#include "input/DictParser.hpp"
 #include "input/FunctionDefParser.hpp"
 #include "input/ListParser.hpp"
 #include "input/ParameterListParser.hpp"
@@ -44,7 +45,11 @@ protected:
 
         bool accept = parser->accept(value);
         EXPECT_FALSE(accept);
-        EXPECT_EQ(nullptr, parser->getValue());
+        ConstExprHandle v = parser->getValue();
+        if ( accept && v ) {
+            scamTrace("mistakenly parsed value = ", v, v->toString());
+        }
+        EXPECT_EQ(nullptr, v);
     }
 };
 
@@ -423,4 +428,72 @@ TEST_F(ArgParserTest, BadClassDef)
     ClassDefParser * parser = mm.make<ClassDefParser>();
 
     rejectParse(parser, "(Base ok not-a-function)");
+}
+
+TEST_F(ArgParserTest, DictGet)
+{
+    DictParser * parser = mm.make<DictParser>();
+
+    acceptParse(parser, "(:get anything)");
+    expectKeyword(parser->getParsedOp(), ":get");
+    expectSymbol(parser->getOpKey(), "anything");
+    EXPECT_EQ(nullptr, parser->getOpVal());
+}
+
+TEST_F(ArgParserTest, DictPut)
+{
+    DictParser * parser = mm.make<DictParser>();
+
+    acceptParse(parser, "(:put anything (compute new value))");
+    expectKeyword(parser->getParsedOp(), ":put");
+    expectSymbol(parser->getOpKey(), "anything");
+    expectList(parser->getOpVal(), "(compute new value)", 3);
+}
+
+TEST_F(ArgParserTest, DictLength)
+{
+    DictParser * parser = mm.make<DictParser>();
+
+    acceptParse(parser, "(:length)");
+    expectKeyword(parser->getParsedOp(), ":length");
+    EXPECT_EQ(nullptr, parser->getOpKey());
+    EXPECT_EQ(nullptr, parser->getOpVal());
+}
+
+TEST_F(ArgParserTest, DictHas)
+{
+    DictParser * parser = mm.make<DictParser>();
+
+    acceptParse(parser, "(:has anything)");
+    expectKeyword(parser->getParsedOp(), ":has");
+    expectSymbol(parser->getOpKey(), "anything");
+    EXPECT_EQ(nullptr, parser->getOpVal());
+}
+
+TEST_F(ArgParserTest, DictRemove)
+{
+    DictParser * parser = mm.make<DictParser>();
+
+    acceptParse(parser, "(:remove anything)");
+    expectKeyword(parser->getParsedOp(), ":remove");
+    expectSymbol(parser->getOpKey(), "anything");
+    EXPECT_EQ(nullptr, parser->getOpVal());
+}
+
+TEST_F(ArgParserTest, DictTooMany)
+{
+    DictParser * parser = mm.make<DictParser>();
+    rejectParse(parser, "(:get has too many arguments)");
+}
+
+TEST_F(ArgParserTest, DictTooFew)
+{
+    DictParser * parser = mm.make<DictParser>();
+    rejectParse(parser, "(:put too-few-arguments)");
+}
+
+TEST_F(ArgParserTest, DictUnknown)
+{
+    DictParser * parser = mm.make<DictParser>();
+    rejectParse(parser, "(:unknown)");
 }
