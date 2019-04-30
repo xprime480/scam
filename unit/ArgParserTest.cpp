@@ -2,6 +2,7 @@
 
 #include "expr/ExpressionFactory.hpp"
 #include "input/AlternativeParser.hpp"
+#include "input/ApplyParser.hpp"
 #include "input/ArgParser.hpp"
 #include "input/CountedListParser.hpp"
 #include "input/FunctionDefParser.hpp"
@@ -359,4 +360,27 @@ TEST_F(ArgParserTest, GeneralFunctionDef)
     expectSymbol(args->getRest(), "z");
 
     EXPECT_EQ(2u, lambda->getFormCount());
+}
+
+TEST_F(ArgParserTest, ApplyTooFew)
+{
+    ApplyParser * parser = mm.make<ApplyParser>();
+
+    rejectParse(parser, "(+)");
+}
+
+TEST_F(ArgParserTest, ApplyTooMany)
+{
+    ApplyParser * parser = mm.make<ApplyParser>();
+
+    rejectParse(parser, "(+ 2 3)");
+}
+
+TEST_F(ArgParserTest, ApplyCorrect)
+{
+    ApplyParser * parser = mm.make<ApplyParser>();
+
+    acceptParse(parser, "(+ (2 3))");
+    expectSymbol(parser->getParsedOp(), "+");
+    expectList(parser->getArgs(), "(2 3)", 2);
 }
