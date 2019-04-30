@@ -4,6 +4,7 @@
 #include "input/ArgParser.hpp"
 #include "input/CountedListParser.hpp"
 #include "input/ListParser.hpp"
+#include "input/SequenceParser.hpp"
 #include "input/SingletonParser.hpp"
 #include "input/TypeParsers.hpp"
 
@@ -173,4 +174,40 @@ TEST_F(ArgParserTest, AcceptSingletonAnything)
     EXPECT_EQ(1u, parser->getValue()->length());
 
     rejectParse(parser, "(two things)");
+}
+
+TEST_F(ArgParserTest, AcceptEmptySequence)
+{
+    SequenceParser * parser = mm.make<SequenceParser>();
+
+    acceptParse(parser, "()");
+
+    rejectParse(parser, "(item)");
+}
+
+TEST_F(ArgParserTest, AcceptSingleKeyword)
+{
+    const ScamKeyword * kw = ExpressionFactory::makeKeyword(":sample");
+    KeywordParser  * kp = mm.make<KeywordParser>(kw);
+    SequenceParser * parser = mm.make<SequenceParser>(kp);
+
+    acceptParse(parser, "(:sample)");
+
+    rejectParse(parser, "(:incorrect)");
+    rejectParse(parser, "(:sample plus incorrect)");
+}
+
+TEST_F(ArgParserTest, AcceptSeveral)
+{
+    const ScamKeyword * kw = ExpressionFactory::makeKeyword(":sample");
+    KeywordParser  * kp = mm.make<KeywordParser>(kw);
+    IntegerParser  * ip = mm.make<IntegerParser>();
+    SequenceParser * parser =
+        mm.make<SequenceParser>(kp, ip);
+
+    acceptParse(parser, "(:sample 23)");
+
+    rejectParse(parser, "(:sample)");
+    rejectParse(parser, "(:sample 23 99)");
+    rejectParse(parser, "(:sample 23.5)");
 }
