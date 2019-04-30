@@ -1,6 +1,7 @@
 #include "TestBase.hpp"
 
 #include "expr/ExpressionFactory.hpp"
+#include "input/AlternativeParser.hpp"
 #include "input/ArgParser.hpp"
 #include "input/CountedListParser.hpp"
 #include "input/ListParser.hpp"
@@ -210,4 +211,49 @@ TEST_F(ArgParserTest, AcceptSeveral)
     rejectParse(parser, "(:sample)");
     rejectParse(parser, "(:sample 23 99)");
     rejectParse(parser, "(:sample 23.5)");
+}
+
+TEST_F(ArgParserTest, RejectEmptyAlternative)
+{
+    AlternativeParser * parser =
+        mm.make<AlternativeParser>();
+
+    rejectParse(parser, "()");
+    rejectParse(parser, "(:sample)");
+    rejectParse(parser, "(:sample 23 99)");
+}
+
+TEST_F(ArgParserTest, AcceptSingleAlternative)
+{
+    IntegerParser     * ip = mm.make<IntegerParser>();
+    AlternativeParser * parser =
+        mm.make<AlternativeParser>(ip);
+
+    acceptParse(parser, "9123913");
+
+    rejectParse(parser, "(-823)");
+    rejectParse(parser, "1.234");
+}
+
+TEST_F(ArgParserTest, AcceptOneOfManyAlternatives)
+{
+    const ScamKeyword * kw1 = ExpressionFactory::makeKeyword(":kw1");
+    const ScamKeyword * kw2 = ExpressionFactory::makeKeyword(":kw2");
+
+    IntegerParser     * ip = mm.make<IntegerParser>();
+    BooleanParser     * bp = mm.make<BooleanParser>();
+    KeywordParser     * kp1 = mm.make<KeywordParser>(kw1);
+    KeywordParser     * kp2 = mm.make<KeywordParser>(kw2);
+    AlternativeParser * parser = mm.make<AlternativeParser>(ip, bp, kp1, kp2);
+
+    acceptParse(parser, "9123913");
+    acceptParse(parser, "#FaLSe");
+    acceptParse(parser, ":kw1");
+
+    acceptParse(parser, ":kw2");
+    EXPECT_EQ(kp2, parser->getMatch());
+
+    rejectParse(parser, "(-823)");
+    rejectParse(parser, "1.234");
+    rejectParse(parser, ":someOtherKeyword");
 }
