@@ -1,0 +1,12 @@
+
+* Eventually this will be a Scheme interpreter fully compliant with R7RS
+
+* Update the SequenceParser and AlternativeParser so that they are no longer
+  template classes.  Add a template constructor that updates internal state.
+
+* Remove unneeded classes.
+
+* Finish with the merge of branch arg-parse into arg-parse-2
+  ** Then merge that into master
+  ** Then rebase branch r7rs-parse
+  ** Then implement define-syntax
