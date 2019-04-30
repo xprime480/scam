@@ -2,6 +2,7 @@
 
 #include "expr/ExpressionFactory.hpp"
 #include "input/ArgParser.hpp"
+#include "input/CountedListParser.hpp"
 #include "input/ListParser.hpp"
 #include "input/TypeParsers.hpp"
 
@@ -135,4 +136,27 @@ TEST_F(ArgParserTest, AcceptListOfBooleans)
     EXPECT_EQ(4u, parser->size());
 
     rejectParse(parser, "(#t #FALSE i-am-not-a-boolean #f)");
+}
+
+TEST_F(ArgParserTest, AcceptOneToThreeIntegers)
+{
+    IntegerParser     * ip = mm.make<IntegerParser>();
+    CountedListParser * parser =
+        mm.make<CountedListParser>(ip, 1, 3);
+
+    rejectParse(parser, "()");
+
+    acceptParse(parser, "(1)");
+    EXPECT_EQ(1u, parser->size());
+
+    acceptParse(parser, "(1 -1)");
+    EXPECT_EQ(2u, parser->size());
+
+    acceptParse(parser, "(1 -1 70055)");
+    EXPECT_EQ(3u, parser->size());
+
+    rejectParse(parser, "(-5 -4 -3 -2)");
+    EXPECT_EQ(nullptr, parser->get(0));
+
+    rejectParse(parser, "(-3.75 -2)");
 }
