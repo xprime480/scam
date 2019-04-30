@@ -3,6 +3,7 @@
 #include "Env.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/InstanceCont.hpp"
+#include "input/FunctionDefParser.hpp"
 #include "util/MemoryManager.hpp"
 
 using namespace scam;
@@ -10,43 +11,42 @@ using namespace std;
 
 namespace
 {
-    static ConstExprHandle self   =
+    static ScamEnvKeyType self   =
         ExpressionFactory::makeSymbol("self", false);
-    
-    static ConstExprHandle parent =
-        ExpressionFactory::makeSymbol("parent", false);
-    
+
     static ExprHandle nil = ExpressionFactory::makeNil();
 }
 
-ScamInstance::ScamInstance(ExprHandle vars, ExprHandle funs, Env * env)
+scam::ScamEnvKeyType ScamInstance::parent =
+    ExpressionFactory::makeSymbol("parent", false);
+
+ScamInstance::ScamInstance(const ScamClass * cls, Env * env)
     : priv(standardMemoryManager.make<Env>())
     , local(env->extend())
 {
-    size_t var_count = vars->length();
+    ScamClassAdapter adapter(cls);
+
+    size_t var_count = adapter.getVarCount();
     for ( size_t n = 0 ; n < var_count ; ++n ) {
-        ExprHandle var = vars->nthcar(n);
+        const ScamSymbol * var = adapter.getVar(n);
         local->put(var, nil);
     }
 
-    size_t fun_count = funs->length();
+    size_t fun_count = adapter.getMethodCount();
     for ( size_t n = 0 ; n < fun_count ; ++n ) {
-        ExprHandle fun = funs->nthcar(n);
-        ExprHandle name = fun->nthcar(0);
-        ExprHandle formals = fun->nthcar(1);
-        ExprHandle forms   = fun->nthcdr(1);
-        ExprHandle impl
-            = ExpressionFactory::makeClosure(formals, forms, local, false);
+        const FunctionDefParser * fun = adapter.getMethod(n);
+
+        const ScamSymbol * name = fun->getName();
+        const LambdaParser * lambda = fun->getLambda();
+        ExprHandle impl = ExpressionFactory::makeClosure(lambda, local, false);
 
         priv->put(name, impl);
     }
 }
 
-ScamInstance * ScamInstance::makeInstance(ExprHandle vars,
-                                          ExprHandle funs,
-                                          Env * env)
+ScamInstance * ScamInstance::makeInstance(const ScamClass * cls, Env * env)
 {
-    return new ScamInstance(vars, funs, env);
+    return new ScamInstance(cls, env);
 }
 
 void ScamInstance::mark() const
@@ -70,7 +70,7 @@ bool ScamInstance::hasApply() const
 
 void ScamInstance::apply(ExprHandle args, Continuation * cont, Env * env)
 {
-    ExprHandle name = args->nthcar(0);
+    ExprHandle name    = args->nthcar(0);
     ExprHandle funargs = args->nthcdr(0);
 
     Continuation * newCont =

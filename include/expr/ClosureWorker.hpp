@@ -3,31 +3,28 @@
 
 #include "Worker.hpp"
 
+#include "ScamFwd.hpp"
+
 namespace scam
 {
-    class Continuation;
-    class Env;
-    class ScamExpr;
-    class MemoryManager;
+    class LambdaParser;
 
     class ClosureWorker : public Worker
     {
     private:
         friend class scam::MemoryManager;
 
-        ClosureWorker(ScamExpr *formals,
-                      ScamExpr * forms,
+        ClosureWorker(const LambdaParser * parser,
                       Env * capture,
                       Continuation * cont,
-                      ScamExpr * args,
+                      ExprHandle args,
                       Env * argEnv,
                       bool macrolike);
 
-        static ClosureWorker * makeInstance(ScamExpr *formals,
-                                            ScamExpr * forms,
+        static ClosureWorker * makeInstance(const LambdaParser * parser,
                                             Env * capture,
                                             Continuation * cont,
-                                            ScamExpr * args,
+                                            ExprHandle args,
                                             Env * argEnv,
                                             bool macrolike);
 
@@ -36,11 +33,10 @@ namespace scam
         void run() override;
 
     private:
-        ScamExpr * formals;
-        ScamExpr * forms;
+        const LambdaParser * parser;
         Env * capture;
         Continuation * cont;
-        ScamExpr * args;
+        ExprHandle args;
         Env * argEnv;
         bool macrolike;
     };

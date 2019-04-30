@@ -13,45 +13,37 @@
 using namespace scam;
 using namespace std;
 
-ClosureBindCont::ClosureBindCont(ScamExpr * formals,
-                ScamExpr * forms,
-                Env * capture,
-                Continuation * cont,
-                bool macrolike)
+ClosureBindCont::ClosureBindCont(const LambdaParser * lambda,
+                                 Env * capture,
+                                 Continuation * cont,
+                                 bool macrolike)
     : Continuation("proc - bind")
-    , formals(formals)
-    , forms(forms)
+    , lambda(lambda)
     , capture(capture)
     , cont(cont)
     , macrolike(macrolike)
 {
 }
 
-ClosureBindCont * ClosureBindCont::makeInstance(ScamExpr * formals,
-                               ScamExpr * forms,
-                               Env * capture,
-                               Continuation * cont,
-                               bool macrolike)
+ClosureBindCont * ClosureBindCont::makeInstance(const LambdaParser * lambda,
+                                                Env * capture,
+                                                Continuation * cont,
+                                                bool macrolike)
 {
-    return new ClosureBindCont(formals,
-                               forms,
-                               capture,
-                               cont,
-                               macrolike);
+    return new ClosureBindCont(lambda, capture, cont, macrolike);
 }
 
 void ClosureBindCont::mark() const
 {
     if ( ! isMarked() ) {
         Continuation::mark();
-        formals->mark();
-        forms->mark();
+        lambda->mark();
         capture->mark();
         cont->mark();
     }
 }
 
-void ClosureBindCont::run(ScamExpr * expr)
+void ClosureBindCont::run(ExprHandle expr)
 {
     Continuation::run(expr);
 
@@ -66,13 +58,13 @@ void ClosureBindCont::run(ScamExpr * expr)
     }
 }
 
-bool ClosureBindCont::malformedActuals(ScamExpr * expr) const
+bool ClosureBindCont::malformedActuals(ExprHandle expr) const
 {
     if ( expr->isCons() || expr->isNil() || expr->isSymbol() ) {
         return false;
     }
 
-    ScamExpr * err =
+    ExprHandle err =
         ExpressionFactory::makeError( "Expected a paramter list, got: ",
                                       expr->toString());
     cont->run(err);
@@ -82,23 +74,22 @@ bool ClosureBindCont::malformedActuals(ScamExpr * expr) const
 
 bool ClosureBindCont::describeFormals(unsigned & len) const
 {
-    if ( formals->isSymbol() ) {
-        len = 0;
-        return true;
-    }
+    const ParameterListParser * formals = lambda->getArgs();
+    const ScamSymbol * rest = formals->getRest();
 
-    len = formals->length();
-    if ( ! formals->isList() ) {
+    len = formals->size();
+    if ( nullptr != rest ) {
         --len;
         return true;
     }
+
     return false;
 }
 
 void ClosureBindCont::wrongNumberOfParameters(unsigned formalsLen,
                                               unsigned actualsLen) const
 {
-    ScamExpr * err =
+    ExprHandle err =
         ExpressionFactory::makeError("Expected ",
                                      formalsLen,
                                      " parameters; ",
@@ -107,7 +98,7 @@ void ClosureBindCont::wrongNumberOfParameters(unsigned formalsLen,
     cont->run(err);
 }
 
-bool ClosureBindCont::checkArgLength(ScamExpr * expr) const
+bool ClosureBindCont::checkArgLength(ExprHandle expr) const
 {
     unsigned exp { 0 };
     bool optFinal = describeFormals(exp);
@@ -121,8 +112,9 @@ bool ClosureBindCont::checkArgLength(ScamExpr * expr) const
     return true;
 }
 
-void ClosureBindCont::finalize(ScamExpr * actuals)  const
+void ClosureBindCont::finalize(ExprHandle actuals)  const
 {
+    ExprHandle formals = lambda->getArgs()->getValue();
     Binder binder(capture);
     Env * extended = binder.bind(formals, actuals);
 
@@ -131,5 +123,6 @@ void ClosureBindCont::finalize(ScamExpr * actuals)  const
           ? standardMemoryManager.make<MacroEvalCont>(cont, capture)
           : cont );
 
+    ExprHandle forms = lambda->getFormList();
     workQueueHelper<EvalWorker>(forms, extended, c);
 }

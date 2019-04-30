@@ -3,36 +3,27 @@
 #include "Env.hpp"
 #include "WorkQueue.hpp"
 #include "expr/ClassWorker.hpp"
+#include "input/ClassDefParser.hpp"
 
 using namespace scam;
 using namespace std;
 
-ScamClass::ScamClass(ScamExpr * base,
-                     ScamExpr * vars,
-                     ScamExpr * funs,
-                     Env * capture)
-    : base(base)
-    , vars(vars)
-    , funs(funs)
+ScamClass::ScamClass(ClassDefParser * def, Env * capture)
+    : def(def)
     , capture(capture)
 {
 }
 
-ScamClass * ScamClass::makeInstance(ScamExpr * base,
-                                    ScamExpr * vars,
-                                    ScamExpr * funs,
-                                    Env * capture)
+ScamClass * ScamClass::makeInstance(ClassDefParser * def, Env * capture)
 {
-    return new ScamClass(base, vars, funs, capture);
+    return new ScamClass(def, capture);
 }
 
 void ScamClass::mark() const
 {
     if ( ! isMarked() ) {
         ScamExpr::mark();
-        base->mark();
-        vars->mark();
-        funs->mark();
+        def->mark();
         capture->mark();
     }
 }
@@ -47,7 +38,7 @@ bool ScamClass::hasApply() const
     return true;
 }
 
-void ScamClass::apply(ScamExpr * args, Continuation * cont, Env * env)
+void ScamClass::apply(ExprHandle args, Continuation * cont, Env * env)
 {
     workQueueHelper<ClassWorker>(this, args, cont, env);
 }

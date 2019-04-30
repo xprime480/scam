@@ -6,7 +6,8 @@
 namespace scam
 {
     class Env;
-    class ScamExpr;
+    class LambdaParser;
+
     class MemoryManager;
 
     class ClosureBindCont : public Continuation
@@ -14,37 +15,34 @@ namespace scam
     private:
         friend class scam::MemoryManager;
 
-        ClosureBindCont(ScamExpr * formals,
-                        ScamExpr * forms,
+        ClosureBindCont(const LambdaParser * lambda,
                         Env * capture,
                         Continuation * cont,
                         bool macrolike);
 
-        static ClosureBindCont * makeInstance(ScamExpr * formals,
-                                              ScamExpr * forms,
+        static ClosureBindCont * makeInstance(const LambdaParser * lambda,
                                               Env * capture,
                                               Continuation * cont,
                                               bool macrolike);
 
     public:
         void mark() const override;
-        void run(ScamExpr * expr) override;
+        void run(ExprHandle expr) override;
 
     private:
-        ScamExpr * formals;
-        ScamExpr * forms;
+        const LambdaParser * lambda;
         Env *        capture;
         Continuation * cont;
         bool       macrolike;
 
-        bool malformedActuals(ScamExpr * expr) const;
+        bool malformedActuals(ExprHandle expr) const;
         bool describeFormals(unsigned & len) const;
 
         void wrongNumberOfParameters(unsigned formalsLen,
                                      unsigned actualsLen) const;
 
-        bool checkArgLength(ScamExpr * expr) const;
-        void finalize(ScamExpr * actuals)  const;
+        bool checkArgLength(ExprHandle expr) const;
+        void finalize(ExprHandle actuals)  const;
     };
 }
 

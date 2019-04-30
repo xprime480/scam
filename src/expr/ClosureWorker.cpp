@@ -4,21 +4,20 @@
 #include "Env.hpp"
 #include "expr/ScamExpr.hpp"
 #include "expr/ClosureBindCont.hpp"
+#include "input/LambdaParser.hpp"
 #include "util/MemoryManager.hpp"
 
 using namespace scam;
 using namespace std;
 
-ClosureWorker::ClosureWorker(ScamExpr *formals,
-                             ScamExpr * forms,
+ClosureWorker::ClosureWorker(const LambdaParser * parser,
                              Env * capture,
                              Continuation * cont,
-                             ScamExpr * args,
+                             ExprHandle args,
                              Env * argEnv,
                              bool macrolike)
     : Worker("proc")
-    , formals(formals)
-    , forms(forms)
+    , parser(parser)
     , capture(capture)
     , cont(cont)
     , args(args)
@@ -27,29 +26,21 @@ ClosureWorker::ClosureWorker(ScamExpr *formals,
 {
 }
 
-ClosureWorker * ClosureWorker::makeInstance(ScamExpr *formals,
-                                            ScamExpr * forms,
+ClosureWorker * ClosureWorker::makeInstance(const LambdaParser * parser,
                                             Env * capture,
                                             Continuation * cont,
-                                            ScamExpr * args,
+                                            ExprHandle args,
                                             Env * argEnv,
                                             bool macrolike)
 {
-    return new ClosureWorker(formals,
-                             forms,
-                             capture,
-                             cont,
-                             args,
-                             argEnv,
-                             macrolike);
+    return new ClosureWorker(parser, capture, cont, args, argEnv, macrolike);
 }
 
 void ClosureWorker::mark() const
 {
     if ( ! isMarked() ) {
         Worker::mark();
-        formals->mark();
-        forms->mark();
+        parser->mark();
         capture->mark();
         cont->mark();
         args->mark();
@@ -62,8 +53,7 @@ void ClosureWorker::run()
     Worker::run();
 
     Continuation * newCont
-        = standardMemoryManager.make<ClosureBindCont>(formals,
-                                                      forms,
+        = standardMemoryManager.make<ClosureBindCont>(parser,
                                                       capture,
                                                       cont,
                                                       macrolike);

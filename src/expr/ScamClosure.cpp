@@ -10,31 +10,25 @@
 using namespace scam;
 using namespace std;
 
-ScamClosure::ScamClosure(ScamExpr *formals,
-                         ScamExpr * forms,
-                         Env * env,
-                         bool macrolike)
-    : formals(formals)
-    , forms(forms)
+ScamClosure::ScamClosure(const LambdaParser * parser, Env * env, bool macrolike)
+    : parser(parser)
     , env(env)
     , macrolike(macrolike)
 {
 }
 
-ScamClosure * ScamClosure::makeInstance(ScamExpr *formals,
-                                        ScamExpr * forms,
+ScamClosure * ScamClosure::makeInstance(const LambdaParser * parser,
                                         Env * env,
                                         bool macrolike)
 {
-    return new ScamClosure(formals, forms, env, macrolike);
+    return new ScamClosure(parser, env, macrolike);
 }
 
 void ScamClosure::mark() const
 {
     if ( ! isMarked() ) {
         ScamExpr::mark();
-        formals->mark();
-        forms->mark();
+        parser->mark();
         env->mark();
     }
 }
@@ -43,13 +37,25 @@ string ScamClosure::toString() const
 {
     stringstream s;
     s << "(";
+
     if ( macrolike ) {
         s << "macro ";
     }
     else {
         s << "lambda ";
     }
-    s << formals->toString() << " " << forms->toString() << ")";
+    s << parser->getArgs()->getValue()->toString();
+    s << " ";
+
+    const size_t count = parser->getFormCount();
+    for ( size_t idx = 0 ; idx < count ; ++ idx ) {
+        if ( idx > 0 ) {
+            s << " ";
+        }
+        s << parser->getForm(idx)->toString();
+    }
+
+    s << ")";
     return s.str();
 }
 
@@ -58,15 +64,14 @@ bool ScamClosure::hasApply() const
     return true;
 }
 
-void ScamClosure::apply(ScamExpr * args, Continuation * cont, Env * env)
+void ScamClosure::apply(ExprHandle args, Continuation * cont, Env * env)
 {
-        workQueueHelper<ClosureWorker>(formals,
-                                       forms,
-                                       this->env,
-                                       cont,
-                                       args,
-                                       env,
-                                       macrolike);
+    workQueueHelper<ClosureWorker>(parser,
+                                   this->env,
+                                   cont,
+                                   args,
+                                   env,
+                                   macrolike);
 }
 
 bool ScamClosure::isProcedure() const
@@ -74,7 +79,7 @@ bool ScamClosure::isProcedure() const
     return true;
 }
 
-ScamExpr * ScamClosure::withEnvUpdate(Env * updated) const
+ExprHandle ScamClosure::withEnvUpdate(Env * updated) const
 {
-    return ExpressionFactory::makeClosure(formals, forms, updated);
+    return ExpressionFactory::makeClosure(parser, updated);
 }

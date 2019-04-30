@@ -3,10 +3,10 @@
 
 #include "form/SpecialForm.hpp"
 
+#include "ScamFwd.hpp"
+
 namespace scam
 {
-    class MemoryManager;
-
     class ClassMaker : public SpecialForm
     {
     private:
@@ -16,12 +16,8 @@ namespace scam
         static ClassMaker * makeInstance();
 
     public:
-        void apply(ScamExpr * args,
-                   Continuation * cont,
-                   Env * env) override;
-
-    private:
-        bool validate_args(ScamExpr * args, Continuation * cont);
+        void
+        apply(ExprHandle args, Continuation * cont, Env * env) override;
     };
 }
 

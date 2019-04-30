@@ -2,22 +2,26 @@
 
 #include "expr/ExpressionFactory.hpp"
 
+#include <sstream>
+
 using namespace scam;
 using namespace std;
 
-ScamCharacter::ScamCharacter(string const & value)
-    : value(value)
+ScamCharacter::ScamCharacter(const string & value)
+    : value(0 == value.size() ? '\0' : value[value.size() - 1])
 {
 }
 
-ScamCharacter * ScamCharacter::makeInstance(string const & value)
+ScamCharacter * ScamCharacter::makeInstance(const string & value)
 {
     return new ScamCharacter(value);
 }
 
 string ScamCharacter::toString() const
 {
-    return value;
+    stringstream s;
+    s << "#\\" << value;
+    return s.str();
 }
 
 bool ScamCharacter::isChar() const
@@ -27,10 +31,10 @@ bool ScamCharacter::isChar() const
 
 char ScamCharacter::toChar() const
 {
-    return value[2];
+    return value;
 }
 
-bool ScamCharacter::equals(ScamExpr const * expr) const
+bool ScamCharacter::equals(ConstExprHandle expr) const
 {
     if ( ! expr->isChar() ) {
         return false;

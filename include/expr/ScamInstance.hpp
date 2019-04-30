@@ -8,16 +8,17 @@
 namespace scam
 {
     class ScamInstanceAdapter;
+    class ScamClass;
 
     class ScamInstance : public ScamExpr
     {
     private:
+        static ScamEnvKeyType parent;
+
         friend class MemoryManager;
-        ScamInstance(ExprHandle vars, ExprHandle funs, Env * env);
-	
-        static ScamInstance* makeInstance(ExprHandle vars,
-                                          ExprHandle funs,
-                                          Env * env);
+
+        ScamInstance(const ScamClass * cls, Env * env);
+        static ScamInstance* makeInstance(const ScamClass * cls, Env * env);
 
     public:
         void mark() const override;
@@ -25,7 +26,9 @@ namespace scam
         std::string toString() const override;
 
         bool hasApply() const override;
-        void apply(ExprHandle args, Continuation * cont, Env * env) override;
+
+        void
+        apply(ExprHandle args, Continuation * cont, Env * env) override;
 
         bool isProcedure() const override;
         bool isInstance() const override;

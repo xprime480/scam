@@ -18,15 +18,22 @@ Macro * Macro::makeInstance()
     return &instance;
 }
 
-void Macro::apply(ScamExpr * args, Continuation * cont, Env * env)
+void Macro::apply(ExprHandle args, Continuation * cont, Env * env)
 {
-    ScamExpr * expr = validateClosureArgs(args, "macro");
+    ExprHandle expr = validateClosureArgs(args, "macro");
+
     if ( ! expr->error() ) {
-        expr =
-            ExpressionFactory::makeClosure(args->getCar(),
-                                           args->getCdr(),
-                                           env,
-                                           true);
+        LambdaParser * lambda = standardMemoryManager.make<LambdaParser>();
+
+        if ( ! lambda->accept(args) ) {
+            expr =
+                ExpressionFactory::makeError("Macro expected (formals form...)",
+                                             "; got ",
+                                             args->toString());
+        }
+        else {
+            expr = ExpressionFactory::makeClosure(lambda, env, true);
+        }
     }
 
     cont->run(expr);

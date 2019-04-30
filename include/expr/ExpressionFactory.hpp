@@ -2,6 +2,7 @@
 #define EXPRESSIONFACTORY_H 1
 
 #include "expr/ScamExprAll.hpp"
+#include "input/LambdaParser.hpp"
 #include "util/MemoryManager.hpp"
 
 #include <string>
@@ -11,8 +12,10 @@
 namespace scam
 {
     class Continuation;
+    class ClassDefParser;
+    class ScamClass;
 
-    using ExprVec = std::vector<ScamExpr *>;
+    using ExprVec = std::vector<ExprHandle>;
 
     class ExpressionFactory
     {
@@ -53,32 +56,25 @@ namespace scam
         static ScamInteger * makeInteger(int value);
 
         static ScamNil * makeNil();
-        static ScamCons * makeCons(ScamExpr * car, ScamExpr * cdr);
+        static ScamCons * makeCons(ExprHandle car, ExprHandle cdr);
 
-        static ScamExpr * makeList();
-        static ScamExpr * makeList(ScamExpr * item);
+        static ExprHandle makeList();
+        static ExprHandle makeList(ExprHandle item);
 
         template <typename... Args>
-        static ScamExpr * makeList(ScamExpr * car, Args... args)
+        static ExprHandle makeList(ExprHandle car, Args... args)
         {
             return makeCons(car, makeList(args...));
         }
 
         static ScamVector * makeVector(ExprVec const & elts);
 
-        static ScamClosure * makeClosure(ScamExpr * formals,
-                                         ScamExpr * forms,
+        static ScamClosure * makeClosure(const LambdaParser * parser,
                                          Env * env,
                                          bool macrolike = false);
 
-        static ScamClass * makeClass(ScamExpr * base,
-                                     ScamExpr * vars,
-                                     ScamExpr * funs,
-                                     Env * env);
-
-        static ScamInstance * makeInstance(ScamExpr * vars,
-                                           ScamExpr * funs,
-                                           Env * env);
+        static ScamClass * makeClass(ClassDefParser * def, Env * env);
+        static ScamInstance * makeInstance(const ScamClass * cls, Env * env);
 
         static ScamContinuation * makeContinuation(Continuation * cont);
 

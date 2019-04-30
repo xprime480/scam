@@ -2,6 +2,8 @@
 
 #include "Continuation.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "input/LambdaParser.hpp"
+#include "util/MemoryManager.hpp"
 #include "util/Validations.hpp"
 
 using namespace scam;
@@ -18,12 +20,16 @@ Lambda * Lambda::makeInstance()
     return &instance;
 }
 
-void Lambda::apply(ScamExpr * args, Continuation * cont, Env * env)
+void Lambda::apply(ExprHandle args, Continuation * cont, Env * env)
 {
-    ScamExpr * expr = validateClosureArgs(args, "lambda");
-    if ( ! expr->error() ) {
-        expr =
-            ExpressionFactory::makeClosure(args->getCar(), args->getCdr(), env);
+    LambdaParser * lambda = standardMemoryManager.make<LambdaParser>();
+
+    ExprHandle expr = nullptr;
+    if ( ! lambda->accept(args) ) {
+        expr = validateClosureArgs(args, "lambda");
+    }
+    else {
+        expr = ExpressionFactory::makeClosure(lambda, env);
     }
 
     cont->run(expr);

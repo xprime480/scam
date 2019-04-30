@@ -1,4 +1,3 @@
-
 #include "TestBase.hpp"
 
 #include "SampleManagedObject.hpp"
@@ -8,9 +7,12 @@
 #include "WorkQueue.hpp"
 #include "Worker.hpp"
 #include "expr/ScamExprAll.hpp"
+#include "input/ClassDefParser.hpp"
 #include "util/MemoryManager.hpp"
 
 #include <iostream>
+
+#include "util/DebugTrace.hpp"
 
 using namespace std;
 using namespace scam;
@@ -55,8 +57,8 @@ protected:
         expectNonManaged(cut1, cut2);
     }
 
-    void expectManaged(ScamExpr const * cut1,
-                       ScamExpr const * cut2,
+    void expectManaged(ExprHandle cut1,
+                       ExprHandle cut2,
                        size_t count = 2)
     {
         EXPECT_NE(cut1, cut2);
@@ -64,7 +66,7 @@ protected:
         EXPECT_EQ(count, mm.getCurrentCount());
     }
 
-    void expectNonManaged(ScamExpr const * cut1, ScamExpr const * cut2)
+    void expectNonManaged(ExprHandle cut1, ExprHandle cut2)
     {
         EXPECT_EQ(cut1, cut2);
         EXPECT_EQ(0, mm.getCreateCount());
@@ -186,7 +188,7 @@ TEST_F(MemoryTest, GCTestWithProxy)
 
 /*****************************************************************
  * The second set of tests test the basic functionality with
- *  the ScamExpr objects.
+ *  the ExprHandleobjects.
  *
  * First test the primitive types.
  *
@@ -222,13 +224,14 @@ TEST_F(MemoryTest, TestScamBoolean)
 
 TEST_F(MemoryTest, TestScamCharacter)
 {
+    const char val { 'a' };
     const string repr { "#\\a" };
 
     ScamCharacter * cut1 = mm.make<ScamCharacter>(repr);
     ScamCharacter * cut2 = mm.make<ScamCharacter>(repr);
 
-    expectChar(cut1, 'a', repr);
-    expectChar(cut2, 'a', repr);
+    expectChar(cut1, val, repr);
+    expectChar(cut2, val, repr);
 
     expectManaged(cut1, cut2);
 }
@@ -326,8 +329,8 @@ TEST_F(MemoryTest, TestScamError)
 
 TEST_F(MemoryTest, TestScamCons)
 {
-    ScamExpr * car = mm.make<ScamInteger>(1);
-    ScamExpr * cdr = mm.make<ScamInteger>(2);
+    ExprHandle car = mm.make<ScamInteger>(1);
+    ExprHandle cdr = mm.make<ScamInteger>(2);
     ScamCons * cons1 = mm.make<ScamCons>(car, cdr);
 
     cons1->mark();
@@ -340,11 +343,11 @@ TEST_F(MemoryTest, TestScamCons)
 TEST_F(MemoryTest, TestScamDict)
 {
     ScamDict * dict1 = mm.make<ScamDict>();
-    ScamExpr * key1 = mm.make<ScamKeyword>(":key1");
-    ScamExpr * key2 = mm.make<ScamKeyword>(":key2");
-    ScamExpr * val1 = mm.make<ScamInteger>(1);
-    ScamExpr * val2 = mm.make<ScamInteger>(2);
-    ScamExpr * val3 = mm.make<ScamInteger>(3);
+    ExprHandle key1 = mm.make<ScamKeyword>(":key1");
+    ExprHandle key2 = mm.make<ScamKeyword>(":key2");
+    ExprHandle val1 = mm.make<ScamInteger>(1);
+    ExprHandle val2 = mm.make<ScamInteger>(2);
+    ExprHandle val3 = mm.make<ScamInteger>(3);
 
     dict1->put(key1, val1);
     dict1->put(key2, val2);
@@ -357,9 +360,9 @@ TEST_F(MemoryTest, TestScamDict)
 
 TEST_F(MemoryTest, TestScamVector)
 {
-    ScamExpr * val1 = mm.make<ScamInteger>(1);
-    ScamExpr * val2 = mm.make<ScamInteger>(2);
-    ScamExpr * val3 = mm.make<ScamInteger>(3);
+    ExprHandle val1 = mm.make<ScamInteger>(1);
+    ExprHandle val2 = mm.make<ScamInteger>(2);
+    ExprHandle val3 = mm.make<ScamInteger>(3);
 
     ExprVec elts;
     elts.push_back(val1);
@@ -383,36 +386,60 @@ TEST_F(MemoryTest, TestScamVector)
 
 TEST_F(MemoryTest, TestScamClosure)
 {
+    // (() (+ a b))
     ScamSymbol * symPlus = ExpressionFactory::makeSymbol("+");
     ScamSymbol * symA    = ExpressionFactory::makeSymbol("a");
     ScamSymbol * symB    = ExpressionFactory::makeSymbol("b");
-    ScamExpr   * formals = ExpressionFactory::makeList(symA, symB);
-    ScamExpr   * aForm   = ExpressionFactory::makeList(symPlus, symA, symB);
-    ScamExpr   * forms   = ExpressionFactory::makeList(aForm);
+    ExprHandle formals   = ExpressionFactory::makeList(symA, symB);
+    ExprHandle aForm     = ExpressionFactory::makeList(symPlus, symA, symB);
+    ExprHandle forms     = ExpressionFactory::makeList(formals, aForm);
     Env * env = standardMemoryManager.make<Env>();
 
-    ScamClosure * closure = mm.make<ScamClosure>(formals, forms, env);
+    LambdaParser * lambda = mm.make<LambdaParser>();
+    ASSERT_TRUE(lambda->accept(forms));
+
+    ScamClosure * closure = mm.make<ScamClosure>(lambda, env);
 
     closure->mark();
-    expectMarked(true,
-                 closure, env, forms, aForm, formals, symB, symA, symPlus);
+    expectMarked(true, closure);
+    expectMarked(true, env);
+    expectMarked(true, forms);
+    expectMarked(true, aForm);
+    expectMarked(true, formals);
+    expectMarked(true, symB);
+    expectMarked(true, symA);
+    expectMarked(true, symPlus);
 }
 
 TEST_F(MemoryTest, TestScamClass)
 {
-    ScamNil    * base    = ExpressionFactory::makeNil();
+    ScamSymbol * base    = ExpressionFactory::makeSymbol("Root");
+
+    ExprHandle vars    = ExpressionFactory::makeNil();
+
     ScamSymbol * symPlus = ExpressionFactory::makeSymbol("+");
     ScamSymbol * symA    = ExpressionFactory::makeSymbol("a");
     ScamSymbol * symB    = ExpressionFactory::makeSymbol("b");
-    ScamExpr   * vars    = ExpressionFactory::makeList(symA, symB);
-    ScamExpr   * aForm   = ExpressionFactory::makeList(symPlus, symA, symB);
-    ScamExpr   * funs    = ExpressionFactory::makeList(aForm);
-    Env * env = standardMemoryManager.make<Env>();
 
-    ScamClass * cls = mm.make<ScamClass>(base, vars, funs, env);
+    ScamSymbol * meth    = ExpressionFactory::makeSymbol("method");
+
+    ExprHandle formals = ExpressionFactory::makeList(symA, symB);
+
+    ExprHandle aForm   = ExpressionFactory::makeList(symPlus, symA, symB);
+    ExprHandle func    = ExpressionFactory::makeList(meth, formals, aForm);
+    ExprHandle def     = ExpressionFactory::makeList(base, vars, func);
+
+    Env * env = mm.make<Env>();
+
+    ClassDefParser * parser = mm.make<ClassDefParser>();
+    ASSERT_TRUE(parser->accept(def));
+
+    ScamClass * cls = mm.make<ScamClass>(parser, env);
 
     cls->mark();
-    expectMarked(true, cls, env, funs, aForm, vars, symB, symA, symPlus, base);
+    expectMarked(true,
+                 cls, parser, env, base, vars,
+                 symB, symA, aForm, symPlus, def, func);
 }
 
 TEST_F(MemoryTest, TestScamInstance)
@@ -420,22 +447,27 @@ TEST_F(MemoryTest, TestScamInstance)
     ScamSymbol * symPlus = ExpressionFactory::makeSymbol("+");
     ScamSymbol * symA    = ExpressionFactory::makeSymbol("a");
     ScamSymbol * symB    = ExpressionFactory::makeSymbol("b");
-    ScamExpr   * vars    = ExpressionFactory::makeList(symA, symB);
 
-    ScamExpr   * name    = ExpressionFactory::makeSymbol("f");
-    ScamExpr   * symQ    = ExpressionFactory::makeSymbol("q");
-    ScamExpr   * args    = ExpressionFactory::makeList(symQ);
-    ScamExpr   * aForm   = ExpressionFactory::makeList(symPlus, symA, symB, symQ);
-    ScamExpr   * fun1    = ExpressionFactory::makeList(name, args, aForm);
-    ScamExpr   * funs    = ExpressionFactory::makeList(fun1);
+    ExprHandle name    = ExpressionFactory::makeSymbol("f");
+    ExprHandle symQ    = ExpressionFactory::makeSymbol("q");
+    ExprHandle args    = ExpressionFactory::makeList(symQ);
+    ExprHandle aForm   = ExpressionFactory::makeList(symPlus, symA, symB, symQ);
+    ScamSymbol * nom     = ExpressionFactory::makeSymbol("Notre Dame");
+    ExprHandle vars    = ExpressionFactory::makeList(symA, symB);
+    ExprHandle fun1    = ExpressionFactory::makeList(name, args, aForm);
+
+    ExprHandle classDef = ExpressionFactory::makeList(nom, vars, fun1);
+
+    ClassDefParser * def = mm.make<ClassDefParser>();
+    ASSERT_TRUE(def->accept(classDef));
 
     Env * env = standardMemoryManager.make<Env>();
-
-    ScamInstance * instance = mm.make<ScamInstance>(vars, funs, env);
+    ScamClass * cls = mm.make<ScamClass>(def, env);
+    ScamInstance * instance = mm.make<ScamInstance>(cls, env);
 
     instance->mark();
-    expectMarked(false, funs, fun1, vars, name);
-    expectMarked(true, instance, env, aForm, args, symQ, symB, symA, symPlus);
+    expectMarked(false, fun1, vars, name, nom);
+    expectMarked(true, instance, env, symPlus, symA, symB, symQ, aForm, args);
 }
 
 TEST_F(MemoryTest, TestScamContinuation)
@@ -450,7 +482,7 @@ TEST_F(MemoryTest, TestScamContinuation)
 TEST_F(MemoryTest, TestExtractor)
 {
     Continuation * cont = mm.make<Extractor>();
-    ScamExpr     * expr = mm.make<ScamKeyword>(":best");
+    ExprHandle expr = mm.make<ScamKeyword>(":best");
 
     cont->run(expr);
     cont->mark();
@@ -461,8 +493,8 @@ TEST_F(MemoryTest, TestEnv)
 {
     Env * top = standardMemoryManager.make<Env>();
     Env * env = top->extend();
-    ScamExpr * key = ExpressionFactory::makeSymbol("f");
-    ScamExpr * val = ExpressionFactory::makeInteger(333);
+    ScamSymbol * key = ExpressionFactory::makeSymbol("f");
+    ExprHandle val = ExpressionFactory::makeInteger(333);
 
     top->put(key, val);
     env->mark();

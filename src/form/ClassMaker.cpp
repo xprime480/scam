@@ -2,7 +2,11 @@
 
 #include "Continuation.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "input/ClassDefParser.hpp"
+#include "util/MemoryManager.hpp"
 #include "util/Validations.hpp"
+
+#include "util/DebugTrace.hpp"
 
 using namespace scam;
 using namespace std;
@@ -18,65 +22,26 @@ ClassMaker * ClassMaker::makeInstance()
     return &instance;
 }
 
-void ClassMaker::apply(ScamExpr * args, Continuation * cont, Env * env)
+void ClassMaker::apply(ExprHandle args, Continuation * cont, Env * env)
 {
-    if ( ! validate_args(args, cont) ) {
-        return;
-    }
+    scamTrace("ClassMaker::apply", args->toString());
 
-    ScamExpr * base = args->nthcar(0);
-    ScamExpr * parms = args->nthcar(1);
-    ScamExpr * funcs = args->nthcdr(1);
+    ClassDefParser * parser = standardMemoryManager.make<ClassDefParser>();
 
-    ScamExpr * cls =
-        ExpressionFactory::makeClass(base, parms, funcs, env);
-    cont->run(cls);
-}
+    if ( ! parser->accept(args) ) {
+        scamTrace("rejecting the parse");
 
-bool ClassMaker::validate_args(ScamExpr * args, Continuation * cont)
-{
-    const auto len = args->length();
-
-    if ( len < 2 ) {
-        ScamExpr * err =
-            ExpressionFactory::makeError("Expected: (make-class Base",
+        ExprHandle err =
+            ExpressionFactory::makeError("ClassMaker expected: (Base",
                                          " (vars...) methods...); ",
                                          "got ",
                                          args->toString());
         cont->run(err);
-        return false;
+        return;
     }
 
-    ScamExpr * vars = args->nthcar(1);
-    if ( ! vars->isList() ) {
-        ScamExpr * err =
-            ExpressionFactory::makeError("Expected list of vars, got ",
-                                         vars->toString());
-        cont->run(err);
-        return false;
-    }
+    scamTrace("class parsed successfully");
 
-    for ( size_t nth = 2 ; nth < len ; ++nth ) {
-        ScamExpr * funcdef = args->nthcar(nth);
-        if ( ! funcdef->isCons() ) {
-            ScamExpr * err =
-                ExpressionFactory::makeError("Expected function def: ",
-                                             "(function args forms...)",
-                                             "; got ",
-                                             funcdef->toString());
-            cont->run(err);
-            return false;
-        }
-
-        ScamExpr * name = funcdef->getCar();
-        ScamExpr * funcArgs = funcdef->getCdr();
-        ScamExpr * funcOk = validateClosureArgs(funcArgs,
-                                                name->toString().c_str());
-        if ( funcOk->error() ) {
-            cont->run(funcOk);
-            return false;
-        }
-    }
-
-    return true;
+    ExprHandle cls = ExpressionFactory::makeClass(parser, env);
+    cont->run(cls);
 }

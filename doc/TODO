@@ -20,3 +20,11 @@
   ** Then merge that into master
   ** Then rebase branch r7rs-parse
   ** Then implement define-syntax
+
+* Make ScamCharacter output be readable by reader for non-printable
+  characters
+
+* Make ScamString output be readable by reader
+
+* Instead of single continuation, pass along a block that has at least
+  a success and an error continuation.

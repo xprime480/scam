@@ -10,7 +10,7 @@
 using namespace scam;
 using namespace std;
 
-ClassWorker::ClassWorker(ExprHandle cls,
+ClassWorker::ClassWorker(const ScamClass * cls,
                          ExprHandle args,
                          Continuation * cont,
                          Env * env)
@@ -22,7 +22,7 @@ ClassWorker::ClassWorker(ExprHandle cls,
 {
 }
 
-ClassWorker * ClassWorker::makeInstance(ExprHandle cls,
+ClassWorker * ClassWorker::makeInstance(const ScamClass * cls,
                                         ExprHandle args,
                                         Continuation * cont,
                                         Env * env)

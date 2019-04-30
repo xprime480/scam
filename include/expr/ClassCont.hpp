@@ -3,47 +3,45 @@
 
 #include "Continuation.hpp"
 
+#include "ScamFwd.hpp"
+#include "expr/ExprFwd.hpp"
 #include "expr/ScamClassAdapter.hpp"
 
 #include <vector>
 
 namespace scam
 {
-    class Env;
-    class ScamExpr;
-    class MemoryManager;
 
     class ClassCont : public Continuation
     {
     private:
+        using InstanceVec = std::vector<ScamInstance *>;
+        using ClassHandle = const ScamClass *;
+
         friend class scam::MemoryManager;
-        ClassCont(ScamExpr * cls, Continuation * cont);
-        static ClassCont * makeInstance(ScamExpr * cls, Continuation * cont);
+        ClassCont(ClassHandle cls, Continuation * cont);
+        static ClassCont * makeInstance(ClassHandle cls, Continuation * cont);
 
     public:
         void mark() const override;
-        void run(ScamExpr * expr) override;
+        void run(ExprHandle expr) override;
 
     private:
-        ScamExpr * cls;
+        ClassHandle    cls;
         Continuation * cont;
-        Env *        env;
+        Env          * env;
 
-        ScamExpr *
-        build_instances(ScamExpr * cls,
-                        std::vector<ScamExpr *> & instances) const;
+        ExprHandle build(ClassHandle cls, InstanceVec & instances) const;
+        ScamInstance * connect(InstanceVec & instances) const;
 
-        ScamExpr *
-        connect_instances(std::vector<ScamExpr *> & instances) const;
+        ExprHandle get_parent(ScamClassAdapter const & adapter) const;
 
-        ScamExpr * get_parent(ScamClassAdapter const & adapter) const;
-        ScamExpr * no_class_found(ScamExpr * cls) const;
-        ScamExpr * base_class_not_found(ScamExpr * name) const;
+        ExprHandle base_class_not_found(ScamEnvKeyType name) const;
 
-        ScamExpr *
-        base_class_not_class(ScamExpr * name, ScamExpr * value) const;
+        ExprHandle
+        base_class_not_class(ScamEnvKeyType name, ExprHandle value) const;
 
-        void init_instance(ScamExpr * instance, ScamExpr * expr) const;
+        void init(ScamInstance * instance, ExprHandle expr) const;
     };
 }
 

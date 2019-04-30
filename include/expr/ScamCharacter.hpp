@@ -9,8 +9,8 @@ namespace scam
     {
     private:
         friend class MemoryManager;
-        ScamCharacter(std::string const & value);
-        static ScamCharacter * makeInstance(std::string const & value);
+        ScamCharacter(const std::string & value);
+        static ScamCharacter * makeInstance(const std::string & value);
 
     public:
         std::string toString() const override;
@@ -18,10 +18,10 @@ namespace scam
         bool isChar() const override;
         char toChar() const override;
 
-        bool equals(ScamExpr const * expr) const override;
+        bool equals(ConstExprHandle expr) const override;
 
     private:
-        std::string const value;
+        const char value;
     };
 }
 

@@ -2,35 +2,41 @@
 
 #include "ScamException.hpp"
 #include "expr/ScamClass.hpp"
+#include "input/ClassDefParser.hpp"
 
 #include <sstream>
 
 using namespace scam;
 using namespace std;
 
-ScamClassAdapter::ScamClassAdapter(ConstExprHandle expr)
-    : cls(dynamic_cast<ScamClass const *>(expr))
+ScamClassAdapter::ScamClassAdapter(const ScamClass * cls)
+    : cls(cls)
 {
-    if ( ! expr->isClass() ) {
-        stringstream s;
-        s << "ScamClassAdapter expected a class, got: " << expr->toString();
-        throw ScamException(s.str());
-    }
 }
 
-ExprHandle ScamClassAdapter::getBase() const
+const ScamSymbol * ScamClassAdapter::getBase() const
 {
-    return cls->base;
+    return cls->def->getBase();
 }
 
-ExprHandle ScamClassAdapter::getVars() const
+size_t ScamClassAdapter::getVarCount() const
 {
-    return cls->vars;
+    return cls->def->getVarCount();
 }
 
-ExprHandle ScamClassAdapter::getFuns() const
+const ScamSymbol * ScamClassAdapter::getVar(size_t idx) const
 {
-    return cls->funs;
+    return cls->def->getVar(idx);
+}
+
+size_t ScamClassAdapter::getMethodCount() const
+{
+    return cls->def->getMethodCount();
+}
+
+const FunctionDefParser * ScamClassAdapter::getMethod(size_t idx) const
+{
+    return cls->def->getMethod(idx);
 }
 
 Env * ScamClassAdapter::getCapture() const

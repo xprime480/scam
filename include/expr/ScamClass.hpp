@@ -5,21 +5,16 @@
 
 namespace scam
 {
-    class ScamClassAdapter;
+    class ClassDefParser;
     class Env;
+    class ScamClassAdapter;
 
     class ScamClass : public ScamExpr
     {
     private:
         friend class MemoryManager;
-        ScamClass(ScamExpr * base,
-                  ScamExpr * vars,
-                  ScamExpr * funs,
-                  Env * capture);
-        static ScamClass * makeInstance(ScamExpr * base,
-                                        ScamExpr * vars,
-                                        ScamExpr * funs,
-                                        Env * capture);
+        ScamClass(ClassDefParser * def, Env * capture);
+        static ScamClass * makeInstance(ClassDefParser * def, Env * capture);
 
     public:
         void mark() const override;
@@ -27,7 +22,9 @@ namespace scam
         std::string toString() const override;
 
         bool hasApply() const override;
-        void apply(ScamExpr * args, Continuation * cont, Env * env) override;
+
+        void
+        apply(ExprHandle args, Continuation * cont, Env * env) override;
 
         bool isProcedure() const override;
         bool isClass() const override;
@@ -35,10 +32,8 @@ namespace scam
         friend class ScamClassAdapter;
 
     private:
-        ScamExpr * base;
-        ScamExpr * vars;
-        ScamExpr * funs;
-        Env *      capture;
+        ClassDefParser * def;
+        Env            * capture;
     };
 }
 

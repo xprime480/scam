@@ -6,17 +6,18 @@
 namespace scam
 {
     class Env;
-  
+    class LambdaParser;
+
     class ScamClosure : public ScamExpr
     {
     private:
         friend class MemoryManager;
-        ScamClosure(ScamExpr *formals,
-                    ScamExpr * forms,
+
+        ScamClosure(const LambdaParser * parser,
                     Env * env,
                     bool macrolike = false);
-        static ScamClosure * makeInstance(ScamExpr *formals,
-                                          ScamExpr * forms,
+
+        static ScamClosure * makeInstance(const LambdaParser * parser,
                                           Env * env,
                                           bool macrolike = false);
 
@@ -26,15 +27,16 @@ namespace scam
         std::string toString() const override;
 
         bool hasApply() const override;
-        void apply(ScamExpr * args, Continuation * cont, Env * env) override;
+
+        void
+        apply(ExprHandle args, Continuation * cont, Env * env) override;
 
         bool isProcedure() const override;
 
-        ScamExpr * withEnvUpdate(Env * updated) const override;
+        ExprHandle withEnvUpdate(Env * updated) const override;
 
     private:
-        ScamExpr * formals;
-        ScamExpr * forms;
+        const LambdaParser * parser;
         Env * env;
         bool macrolike;
     };
