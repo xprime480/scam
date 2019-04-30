@@ -1,4 +1,3 @@
-
 #include "EvalWorker.hpp"
 
 #include "Continuation.hpp"
@@ -35,11 +34,11 @@ namespace
             }
         }
 
-        void run(ScamExpr * expr) override
+        void run(ExprHandle expr) override
         {
             if ( expr->isList() && ! expr->isNil() ) {
                 unsigned len = expr->length();
-                ScamExpr * last = expr->nthcar(len - 1);
+                ExprHandle last = expr->nthcar(len - 1);
                 cont->run(last);
             }
             else {
@@ -52,7 +51,9 @@ namespace
     };
 }
 
-EvalWorker::EvalWorker(ScamExpr * forms, Env * extended, Continuation * cont)
+EvalWorker::EvalWorker(ExprHandle forms,
+                       Env * extended,
+                       Continuation * cont)
     : Worker("eval")
     , forms(forms)
     , extended(extended)
@@ -61,7 +62,7 @@ EvalWorker::EvalWorker(ScamExpr * forms, Env * extended, Continuation * cont)
 }
 
 EvalWorker *
-EvalWorker::makeInstance(ScamExpr * forms, Env * env, Continuation * cont)
+EvalWorker::makeInstance(ExprHandle forms, Env * env, Continuation * cont)
 {
     return new EvalWorker(forms, env, cont);
 }

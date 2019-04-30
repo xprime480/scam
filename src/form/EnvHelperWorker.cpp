@@ -8,7 +8,7 @@
 using namespace scam;
 using namespace std;
 
-EnvHelperWorker::EnvHelperWorker(ScamExpr * args,
+EnvHelperWorker::EnvHelperWorker(ExprHandle args,
                                  Continuation * cont,
                                  Env * env,
                                  char const * name)
@@ -36,11 +36,11 @@ void EnvHelperWorker::run()
     ScamExpr * sym = args->getCar();
     Continuation * c = getCont(sym);
     if ( args->length() > 1 ) {
-        ScamExpr * expr = args->nthcar(1);
+        ExprHandle expr = args->nthcar(1);
         expr->eval(c, env);
     }
     else {
-        ScamExpr * expr = ExpressionFactory::makeNil();
+        ExprHandle expr = ExpressionFactory::makeNil();
         c->run(expr);
     }
 }

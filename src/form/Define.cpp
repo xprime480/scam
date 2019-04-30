@@ -16,7 +16,7 @@ Define * Define::makeInstance(ScamEngine * engine)
     return new Define(engine);
 }
 
-void Define::apply(ScamExpr * args, Continuation * cont, Env * env)
+void Define::apply(ExprHandle args, Continuation * cont, Env * env)
 {
     if ( checkArgs(args, cont, true) ) {
         workQueueHelper<DefineWorker>(args, cont, env, engine);

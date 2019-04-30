@@ -3,18 +3,20 @@
 
 #include "expr/ScamExpr.hpp"
 
+#include "ScamFwd.hpp"
+
 namespace scam
 {
     class ScamInstanceAdapter;
-    class Env;
 
     class ScamInstance : public ScamExpr
     {
     private:
         friend class MemoryManager;
-        ScamInstance(ScamExpr * vars, ScamExpr * funs, Env * env);
-        static ScamInstance* makeInstance(ScamExpr * vars,
-                                          ScamExpr * funs,
+        ScamInstance(ExprHandle vars, ExprHandle funs, Env * env);
+	
+        static ScamInstance* makeInstance(ExprHandle vars,
+                                          ExprHandle funs,
                                           Env * env);
 
     public:
@@ -23,13 +25,13 @@ namespace scam
         std::string toString() const override;
 
         bool hasApply() const override;
-        void apply(ScamExpr * args, Continuation * cont, Env * env) override;
+        void apply(ExprHandle args, Continuation * cont, Env * env) override;
 
         bool isProcedure() const override;
         bool isInstance() const override;
 
-        void setSelf(ScamExpr * expr) const override;
-        void setParent(ScamExpr * expr) const override;
+        void setSelf(ExprHandle expr) const override;
+        void setParent(ExprHandle expr) const override;
 
         friend class ScamInstanceAdapter;
 

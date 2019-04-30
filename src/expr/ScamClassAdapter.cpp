@@ -8,7 +8,7 @@
 using namespace scam;
 using namespace std;
 
-ScamClassAdapter::ScamClassAdapter(ScamExpr const * expr)
+ScamClassAdapter::ScamClassAdapter(ConstExprHandle expr)
     : cls(dynamic_cast<ScamClass const *>(expr))
 {
     if ( ! expr->isClass() ) {
@@ -18,17 +18,17 @@ ScamClassAdapter::ScamClassAdapter(ScamExpr const * expr)
     }
 }
 
-ScamExpr * ScamClassAdapter::getBase() const
+ExprHandle ScamClassAdapter::getBase() const
 {
     return cls->base;
 }
 
-ScamExpr * ScamClassAdapter::getVars() const
+ExprHandle ScamClassAdapter::getVars() const
 {
     return cls->vars;
 }
 
-ScamExpr * ScamClassAdapter::getFuns() const
+ExprHandle ScamClassAdapter::getFuns() const
 {
     return cls->funs;
 }

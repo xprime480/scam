@@ -1,8 +1,8 @@
-
 #include "Binder.hpp"
 
 #include "Env.hpp"
 #include "expr/ScamExpr.hpp"
+#include "expr/ScamSymbol.hpp"
 
 using namespace scam;
 using namespace std;
@@ -12,14 +12,14 @@ Binder::Binder(Env * capture)
 {
 }
 
-Env * Binder::bind(ScamExpr * formals, ScamExpr * actuals) const
+Env * Binder::bind(ExprHandle formals, ExprHandle actuals) const
 {
     Env * extended = capture->extend();
     bindOne(extended, formals, actuals);
     return extended;
 }
 
-void Binder::bindOne(Env * env, ScamExpr * syms, ScamExpr * vals) const
+void Binder::bindOne(Env * env, ExprHandle syms, ExprHandle vals) const
 {
     if ( syms->isCons() ) {
         env->put(syms->getCar(), vals->getCar());

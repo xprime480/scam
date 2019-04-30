@@ -3,30 +3,27 @@
 
 #include "form/EnvHelperCont.hpp"
 
+#include "ScamFwd.hpp"
+
 namespace scam
 {
-    class ScamExpr;
-    class Continuation;
-    class Env;
-    class ScamEngine;
-
     class AssignCont : public EnvHelperCont
     {
     private:
         friend class scam::MemoryManager;
 
-        AssignCont(ScamExpr * sym,
+        AssignCont(ExprHandle sym,
                    Continuation * cont,
                    Env * env,
                    ScamEngine * engine);
 
-        static AssignCont * makeInstance(ScamExpr * sym,
+        static AssignCont * makeInstance(ExprHandle sym,
                                          Continuation * cont,
                                          Env * env,
                                          ScamEngine * engine);
 
     protected:
-        void finish(ScamExpr * expr) const override;
+        void finish(ExprHandle expr) const override;
 
     private:
         ScamEngine * engine;

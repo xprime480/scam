@@ -3,29 +3,25 @@
 
 #include "LetCommonCont.hpp"
 
+#include "ScamFwd.hpp"
+
 namespace scam
 {
-    class MemoryManager;
-    class Continuation;
-    class Env;
-    class ScamExpr;
-    class ScamEngine;
-
     class LetStarCont : public LetCommonCont
     {
     private:
         friend class scam::MemoryManager;
 
-        LetStarCont(ScamExpr * formals,
-                    ScamExpr * rest,
-                    ScamExpr * forms,
+        LetStarCont(ExprHandle formals,
+                    ExprHandle rest,
+                    ExprHandle forms,
                     Continuation * cont,
                     Env * env,
                     ScamEngine * engine);
 
-        static LetStarCont * makeInstance(ScamExpr * formals,
-                                          ScamExpr * rest,
-                                          ScamExpr * forms,
+        static LetStarCont * makeInstance(ExprHandle formals,
+                                          ExprHandle rest,
+                                          ExprHandle forms,
                                           Continuation * cont,
                                           Env * env,
                                           ScamEngine * engine);
@@ -34,15 +30,15 @@ namespace scam
         void mark() const override;
 
     protected:
-        void do_let(ScamExpr * expr) override;
+        void do_let(ExprHandle expr) override;
 
     private:
-        ScamExpr * formals;
-        ScamExpr * rest;
+        ExprHandle formals;
+        ExprHandle rest;
         Env *        env;
         ScamEngine * engine;
 
-        void makeBacktracker(ScamExpr * sym) const;
+        void makeBacktracker(ExprHandle sym) const;
     };
 }
 

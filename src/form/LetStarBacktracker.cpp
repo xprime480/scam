@@ -3,13 +3,14 @@
 #include "Continuation.hpp"
 #include "Env.hpp"
 #include "expr/ScamExpr.hpp"
+#include "expr/ScamSymbol.hpp"
 #include "util/MemoryManager.hpp"
 
 using namespace scam;
 using namespace std;
 
 LetStarBacktracker::LetStarBacktracker(Env * env,
-                                       ScamExpr * sym,
+                                       ExprHandle sym,
                                        Backtracker * backtracker)
     : Backtracker("Let*", backtracker)
     , env(env)
@@ -19,7 +20,7 @@ LetStarBacktracker::LetStarBacktracker(Env * env,
 
 LetStarBacktracker *
 LetStarBacktracker::makeInstance(Env * env,
-                                 ScamExpr * sym,
+                                 ExprHandle sym,
                                  Backtracker * backtracker)
 {
     return new LetStarBacktracker(env, sym, backtracker);

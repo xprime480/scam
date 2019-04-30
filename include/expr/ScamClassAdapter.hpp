@@ -1,20 +1,20 @@
 #if ! defined(SCAMCLASSADAPTER_H)
 #define SCAMCLASSADAPTER_H 1
 
+#include "ScamFwd.hpp"
+
 namespace scam
 {
-    class ScamExpr;
     class ScamClass;
-    class Env;
 
     class ScamClassAdapter
     {
     public:
-        ScamClassAdapter(ScamExpr const * expr);
+        ScamClassAdapter(ConstExprHandle expr);
 
-        ScamExpr * getBase() const;
-        ScamExpr * getVars() const;
-        ScamExpr * getFuns() const;
+        ExprHandle getBase() const;
+        ExprHandle getVars() const;
+        ExprHandle getFuns() const;
         Env * getCapture() const;
 
     private:

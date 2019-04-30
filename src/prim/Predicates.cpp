@@ -1,6 +1,7 @@
 #include "prim/Predicates.hpp"
 
 #include "Continuation.hpp"
+#include "ScamFwd.hpp"
 #include "expr/ExpressionFactory.hpp"
 
 using namespace scam;
@@ -12,7 +13,7 @@ namespace
 
     extern void apply_predicate(const char * name,
                                 ExprPredicate pred,
-                                ScamExpr * args,
+                                ExprHandle args,
                                 Continuation * cont);
 }
 
@@ -26,11 +27,11 @@ cls * cls::makeInstance() \
 { \
     return new cls(); \
 } \
-void cls::applyArgs(ScamExpr * args, Continuation * cont) \
+void cls::applyArgs(ExprHandle args, Continuation * cont) \
 { \
     apply_predicate(label, pred, args, cont); \
 } \
-bool cls::equals(ScamExpr const * expr) const \
+bool cls::equals(ConstExprHandle expr) const \
 { \
     return ( expr && expr->toString() == label ); \
 }
@@ -60,12 +61,12 @@ namespace
 {
     void apply_predicate(const char * name,
                          ExprPredicate pred,
-                         ScamExpr * args,
+                         ExprHandle args,
                          Continuation * cont)
     {
-        ScamExpr * rv;
+        ExprHandle rv;
         if ( 1 == args->length() ) {
-            ScamExpr * arg = args->nthcar(0);
+            ExprHandle arg = args->nthcar(0);
             bool answer = (arg->*pred)();
             rv = ExpressionFactory::makeBoolean(answer);
         }

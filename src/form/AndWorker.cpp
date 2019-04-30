@@ -12,7 +12,7 @@ using namespace std;
 
 AndWorker::AndWorker(Continuation * cont,
                      Env * env,
-                     ScamExpr * args,
+                     ExprHandle args,
                      size_t n)
     : Worker("And")
     , args(args)
@@ -24,7 +24,7 @@ AndWorker::AndWorker(Continuation * cont,
 
 AndWorker * AndWorker::makeInstance(Continuation * cont,
                                     Env * env,
-                                    ScamExpr * args,
+                                    ExprHandle args,
                                     size_t n)
 {
     return new AndWorker(cont, env, args, n);
@@ -45,7 +45,7 @@ void AndWorker::run()
     Worker::run();
 
     if ( ! args->isList() ) {
-        ScamExpr * err =
+        ExprHandle err =
             ExpressionFactory::makeError("And expects a list of forms; ",
                                          "got: ",
                                          args->toString());
@@ -61,8 +61,8 @@ void AndWorker::run()
         args->nthcar(len-1)->eval(cont, env);
     }
     else {
-        ScamExpr * test = args->nthcar(n);
-        ScamExpr * a = args;
+        ExprHandle test = args->nthcar(n);
+        ExprHandle a = args;
         Continuation * newCont =
             standardMemoryManager.make<AndCont>(a, cont, env, n+1);
         test->eval(newCont, env);

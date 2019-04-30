@@ -3,29 +3,26 @@
 
 #include "Worker.hpp"
 
+#include "ScamFwd.hpp"
+
 namespace scam
 {
-    class MemoryManager;
-    class Continuation;
-    class Env;
-    class ScamExpr;
-
     class LetEvalWorker : public Worker
     {
     private:
         friend class scam::MemoryManager;
-        LetEvalWorker(ScamExpr * formals,
-                      ScamExpr * evaled,
-                      ScamExpr * args,
-                      ScamExpr * forms,
+        LetEvalWorker(ExprHandle formals,
+                      ExprHandle evaled,
+                      ExprHandle args,
+                      ExprHandle forms,
                       Continuation * cont,
                       Env * env,
                       bool rebind);
 
-        static LetEvalWorker * makeInstance(ScamExpr * formals,
-                                            ScamExpr * evaled,
-                                            ScamExpr * args,
-                                            ScamExpr * forms,
+        static LetEvalWorker * makeInstance(ExprHandle formals,
+                                            ExprHandle evaled,
+                                            ExprHandle args,
+                                            ExprHandle forms,
                                             Continuation * cont,
                                             Env * env,
                                             bool rebind);
@@ -35,10 +32,10 @@ namespace scam
         void run() override;
 
     private:
-        ScamExpr * formals;
-        ScamExpr * evaled;
-        ScamExpr * args;
-        ScamExpr * forms;
+        ExprHandle formals;
+        ExprHandle evaled;
+        ExprHandle args;
+        ExprHandle forms;
         Continuation * cont;
         Env * env;
         bool rebind;

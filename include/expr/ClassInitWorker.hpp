@@ -3,25 +3,24 @@
 
 #include "Worker.hpp"
 
+#include "ScamFwd.hpp"
+
 namespace scam
 {
-    class Continuation;
-    class Env;
-    class ScamExpr;
-    class MemoryManager;
+    class ScamInstance;
 
     class ClassInitWorker : public Worker
     {
     private:
         friend class scam::MemoryManager;
 
-        ClassInitWorker(ScamExpr * instance,
-                        ScamExpr * args,
+        ClassInitWorker(ExprHandle instance,
+                        ExprHandle args,
                         Continuation * cont,
                         Env * env);
 
-        static ClassInitWorker * makeInstance(ScamExpr * instance,
-                                              ScamExpr * args,
+        static ClassInitWorker * makeInstance(ExprHandle instance,
+                                              ExprHandle args,
                                               Continuation * cont,
                                               Env * env);
 
@@ -30,10 +29,10 @@ namespace scam
         void run() override;
 
     private:
-        ScamExpr * instance;
-        ScamExpr * args;
+        ExprHandle     instance;
+        ExprHandle     args;
         Continuation * cont;
-        Env *        env;
+        Env          * env;
     };
 }
 

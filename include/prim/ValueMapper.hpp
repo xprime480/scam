@@ -1,21 +1,17 @@
 #if ! defined(VALUEMAPPER_HPP)
 #define VALUEMAPPER_HPP 1
 
+#include "ScamFwd.hpp"
+
 namespace scam
 {
-    class ScamExpr;
-  
     class ValueMapper
     {
     protected:
-
-        ScamExpr * map_dict(ScamExpr * expr);
-
-        ScamExpr * map_vector(ScamExpr * expr);
-
-        ScamExpr * map_cons(ScamExpr * expr);
-
-        virtual ScamExpr * map_value(ScamExpr * expr) = 0;
+        ExprHandle map_dict(ExprHandle expr);
+        ExprHandle map_vector(ExprHandle expr);
+        ExprHandle map_cons(ExprHandle expr);
+        virtual ExprHandle map_value(ExprHandle expr) = 0;
     };
 }
 

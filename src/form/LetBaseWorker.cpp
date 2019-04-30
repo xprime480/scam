@@ -9,7 +9,7 @@ using namespace scam;
 using namespace std;
 
 LetBaseWorker::LetBaseWorker(char const * name,
-                             ScamExpr * args,
+                             ExprHandle args,
                              Continuation * cont,
                              Env * env)
     : Worker(name)
@@ -37,17 +37,17 @@ void LetBaseWorker::run()
         return;
     }
 
-    ScamExpr * parsed  = parse_args();
-    ScamExpr * formals = parsed->getCar()->getCar();
-    ScamExpr * values  = parsed->getCar()->getCdr();
-    ScamExpr * forms   = parsed->getCdr();
+    ExprHandle parsed  = parse_args();
+    ExprHandle formals = parsed->getCar()->getCar();
+    ExprHandle values  = parsed->getCar()->getCdr();
+    ExprHandle forms   = parsed->getCdr();
 
     do_next(formals, values, forms);
 }
 
 void LetBaseWorker::report_error()
 {
-    ScamExpr * err =
+    ExprHandle err =
         ExpressionFactory::makeError("Expected (((sym form)...) forms...);",
                                      " got ",
                                      args->toString());
@@ -55,7 +55,7 @@ void LetBaseWorker::report_error()
     cont->run(err);
 }
 
-bool LetBaseWorker::verify_single(ScamExpr * arg)
+bool LetBaseWorker::verify_single(ExprHandle arg)
 {
     if ( ! arg->isList() || 2 != arg->length() ) {
         report_error();
@@ -70,7 +70,7 @@ bool LetBaseWorker::verify_single(ScamExpr * arg)
     return true;
 }
 
-bool LetBaseWorker::verify_list(ScamExpr * check)
+bool LetBaseWorker::verify_list(ExprHandle check)
 {
     if ( check->isNil() ) {
         return true;
@@ -95,38 +95,38 @@ bool LetBaseWorker::verify_args()
         return false;
     }
 
-    ScamExpr * check = args->getCar();
+    ExprHandle check = args->getCar();
     return verify_list(check);
 }
 
-ScamExpr * LetBaseWorker::parse_bindings(ScamExpr * bindings)
+ExprHandle LetBaseWorker::parse_bindings(ExprHandle bindings)
 {
     if ( bindings->isNil() ) {
-        ScamExpr * nil = ExpressionFactory::makeNil();
+        ExprHandle nil = ExpressionFactory::makeNil();
         return ExpressionFactory::makeCons(nil, nil);
     }
 
-    ScamExpr * one  = bindings->getCar();
-    ScamExpr * rest = bindings->getCdr();
+    ExprHandle one  = bindings->getCar();
+    ExprHandle rest = bindings->getCdr();
 
-    ScamExpr * separated = parse_bindings(rest);
+    ExprHandle separated = parse_bindings(rest);
 
-    ScamExpr * symList
+    ExprHandle symList
         = ExpressionFactory::makeCons(one->getCar(),
                                       separated->getCar());
-    ScamExpr * valList
+    ExprHandle valList
         = ExpressionFactory::makeCons(one->getCdr()->getCar(),
                                       separated->getCdr());
 
     return ExpressionFactory::makeCons(symList, valList);
 }
 
-ScamExpr * LetBaseWorker::parse_args()
+ExprHandle LetBaseWorker::parse_args()
 {
-    ScamExpr * forms    = args->getCdr();
-    ScamExpr * bindings = args->getCar();
+    ExprHandle forms    = args->getCdr();
+    ExprHandle bindings = args->getCar();
 
-    ScamExpr * separated = parse_bindings(bindings);
+    ExprHandle separated = parse_bindings(bindings);
 
     return ExpressionFactory::makeCons(separated, forms);
 }

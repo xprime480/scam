@@ -3,12 +3,13 @@
 #include "Continuation.hpp"
 #include "Env.hpp"
 #include "expr/ScamExpr.hpp"
+#include "expr/ScamSymbol.hpp"
 #include "util/MemoryManager.hpp"
 
 using namespace scam;
 using namespace std;
 
-DefineBacktracker::DefineBacktracker(ScamExpr * sym,
+DefineBacktracker::DefineBacktracker(ExprHandle sym,
                                      Env * env,
                                      Backtracker * backtracker)
     : Backtracker("DefineBacktracker", backtracker)
@@ -18,7 +19,7 @@ DefineBacktracker::DefineBacktracker(ScamExpr * sym,
 }
 
 DefineBacktracker *
-DefineBacktracker::makeInstance(ScamExpr * sym,
+DefineBacktracker::makeInstance(ExprHandle sym,
                                 Env * env,
                                 Backtracker * backtracker)
 {

@@ -3,6 +3,7 @@
 #include "Env.hpp"
 #include "ScamEngine.hpp"
 #include "expr/ScamExpr.hpp"
+#include "expr/ScamSymbol.hpp"
 #include "form/LetStar.hpp"
 #include "form/LetStarBacktracker.hpp"
 #include "form/LetStarCont.hpp"
@@ -11,9 +12,9 @@
 using namespace scam;
 using namespace std;
 
-LetStarCont::LetStarCont(ScamExpr * formals,
-                         ScamExpr * rest,
-                         ScamExpr * forms,
+LetStarCont::LetStarCont(ExprHandle formals,
+                         ExprHandle rest,
+                         ExprHandle forms,
                          Continuation * cont,
                          Env * env,
                          ScamEngine * engine)
@@ -25,9 +26,9 @@ LetStarCont::LetStarCont(ScamExpr * formals,
 {
 }
 
-LetStarCont * LetStarCont::makeInstance(ScamExpr * formals,
-                                        ScamExpr * rest,
-                                        ScamExpr * forms,
+LetStarCont * LetStarCont::makeInstance(ExprHandle formals,
+                                        ExprHandle rest,
+                                        ExprHandle forms,
                                         Continuation * cont,
                                         Env * env,
                                         ScamEngine * engine)
@@ -45,18 +46,18 @@ void LetStarCont::mark() const
     }
 }
 
-void LetStarCont::do_let(ScamExpr * expr)
+void LetStarCont::do_let(ExprHandle expr)
 {
     if ( formals->isNil() ) {
         final_eval(env);
     }
     else {
-        ScamExpr * sym = formals->getCar();
+        ExprHandle sym = formals->getCar();
         env->put(sym, expr);
 
         makeBacktracker(sym);
 
-        ScamExpr * safe = LetStar::safeCons(rest);
+        ExprHandle safe = LetStar::safeCons(rest);
         Continuation * ch =
             standardMemoryManager.make<LetStarCont>(formals->getCdr(),
                                                     safe->getCdr(),
@@ -68,7 +69,7 @@ void LetStarCont::do_let(ScamExpr * expr)
     }
 }
 
-void LetStarCont::makeBacktracker(ScamExpr * sym) const
+void LetStarCont::makeBacktracker(ExprHandle sym) const
 {
     Backtracker * backtracker = engine->getBacktracker();
     Backtracker * newBT =

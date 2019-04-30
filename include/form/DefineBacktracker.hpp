@@ -3,23 +3,21 @@
 
 #include "Backtracker.hpp"
 
+#include "ScamFwd.hpp"
+
 namespace scam
 {
-    class ScamExpr;
-    class Env;
-    class MemoryManager;
-
     class DefineBacktracker : public Backtracker
     {
     private:
         friend class scam::MemoryManager;
 
-        DefineBacktracker(ScamExpr * sym,
+        DefineBacktracker(ExprHandle sym,
                           Env * env,
                           Backtracker * backtracker);
 
         static DefineBacktracker *
-        makeInstance(ScamExpr * sym,
+        makeInstance(ExprHandle sym,
                      Env * env,
                      Backtracker * backtracker);
 
@@ -28,8 +26,8 @@ namespace scam
         void run() override;
 
     private:
-        ScamExpr *      sym;
-        Env *           env;
+        ExprHandle sym;
+        Env      * env;
     };
 }
 

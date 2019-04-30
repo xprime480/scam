@@ -3,29 +3,26 @@
 
 #include "form/EnvHelperWorker.hpp"
 
+#include "ScamFwd.hpp"
+
 namespace scam
 {
-    class ScamExpr;
-    class Continuation;
-    class Env;
-    class ScamEngine;
-
     class DefineWorker : public EnvHelperWorker
     {
     private:
         friend class scam::MemoryManager;
-        DefineWorker(ScamExpr * args,
+        DefineWorker(ExprHandle args,
                      Continuation * cont,
                      Env * env,
                      ScamEngine * engine);
 
-        static DefineWorker * makeInstance(ScamExpr * args,
+        static DefineWorker * makeInstance(ExprHandle args,
                                            Continuation * cont,
                                            Env * env,
                                            ScamEngine * engine);
 
     protected:
-        Continuation * getCont(ScamExpr * sym) const override;
+        Continuation * getCont(ExprHandle sym) const override;
 
     private:
         ScamEngine * engine;

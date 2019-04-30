@@ -2,12 +2,14 @@
 
 #include "Continuation.hpp"
 #include "Env.hpp"
+#include "expr/ExpressionFactory.hpp"
 #include "expr/ScamExpr.hpp"
+#include "expr/ScamSymbol.hpp"
 
 using namespace scam;
 using namespace std;
 
-EnvHelperCont::EnvHelperCont(ScamExpr * sym,
+EnvHelperCont::EnvHelperCont(ExprHandle sym,
                              Continuation * cont,
                              Env * env,
                              char const * name)
@@ -28,7 +30,7 @@ void EnvHelperCont::mark() const
     }
 }
 
-void EnvHelperCont::run(ScamExpr * expr)
+void EnvHelperCont::run(ExprHandle expr)
 {
     finish(expr);
     cont->run(sym);

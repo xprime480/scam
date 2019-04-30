@@ -1,8 +1,7 @@
+#include "ScamFwd.hpp"
 
 namespace scam
 {
-    class ScamExpr;
-
-    extern ScamExpr * validateClosureArgs(ScamExpr * args, const char * name);
-    extern ScamExpr * validateFormals(ScamExpr * formals);
+    extern ExprHandle validateClosureArgs(ExprHandle args, const char * name);
+    extern ExprHandle validateFormals(ExprHandle formals);
 }

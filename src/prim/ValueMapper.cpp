@@ -9,7 +9,7 @@
 using namespace std;
 using namespace scam;
 
-ScamExpr * ValueMapper::map_dict(ScamExpr * expr)
+ExprHandle ValueMapper::map_dict(ExprHandle expr)
 {
     if ( 0u == expr->length() ) {
         return expr;
@@ -20,8 +20,8 @@ ScamExpr * ValueMapper::map_dict(ScamExpr * expr)
 
     KeyVec const & keys = dict->getKeys();
     for ( auto key : keys ) {
-        ScamExpr * val = dict->get(key);
-        ScamExpr * newVal = map_value(val);
+        ExprHandle val = dict->get(key);
+        ExprHandle newVal = map_value(val);
         if ( newVal->error() ) {
             return newVal;
         }
@@ -31,26 +31,26 @@ ScamExpr * ValueMapper::map_dict(ScamExpr * expr)
     return rv;
 }
 
-ScamExpr * ValueMapper::map_vector(ScamExpr * expr)
+ExprHandle ValueMapper::map_vector(ExprHandle expr)
 {
     ExprVec newExprs;
     size_t const len = expr->length();
 
     for ( size_t idx = 0 ; idx < len ; ++idx ) {
-        ScamExpr * val = expr->nthcar(idx);
-        ScamExpr * newVal = map_value(val);
+        ExprHandle val = expr->nthcar(idx);
+        ExprHandle newVal = map_value(val);
         newExprs.push_back(newVal);
     }
 
-    ScamExpr * rv = ExpressionFactory::makeVector(newExprs);
+    ExprHandle rv = ExpressionFactory::makeVector(newExprs);
     return rv;
 }
 
-ScamExpr * ValueMapper::map_cons(ScamExpr * expr)
+ExprHandle ValueMapper::map_cons(ExprHandle expr)
 {
-    ScamExpr * head = expr->nthcar(0);
-    ScamExpr * tail = expr->nthcdr(0);
-    ScamExpr * newHead = map_value(head);
-    ScamExpr * newTail = map_value(tail);
+    ExprHandle head = expr->nthcar(0);
+    ExprHandle tail = expr->nthcdr(0);
+    ExprHandle newHead = map_value(head);
+    ExprHandle newTail = map_value(tail);
     return ExpressionFactory::makeCons(newHead, newTail);
 }

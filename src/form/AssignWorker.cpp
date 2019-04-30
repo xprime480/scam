@@ -10,7 +10,7 @@
 using namespace scam;
 using namespace std;
 
-AssignWorker::AssignWorker(ScamExpr * args,
+AssignWorker::AssignWorker(ExprHandle args,
                            Continuation * cont,
                            Env * env,
                            ScamEngine * engine)
@@ -19,7 +19,7 @@ AssignWorker::AssignWorker(ScamExpr * args,
 {
 }
 
-AssignWorker * AssignWorker::makeInstance(ScamExpr * args,
+AssignWorker * AssignWorker::makeInstance(ExprHandle args,
                                           Continuation * cont,
                                           Env * env,
                                           ScamEngine * engine)
@@ -27,7 +27,7 @@ AssignWorker * AssignWorker::makeInstance(ScamExpr * args,
     return new AssignWorker(args, cont, env, engine);
 }
 
-Continuation * AssignWorker::getCont(ScamExpr * sym) const
+Continuation * AssignWorker::getCont(ExprHandle sym) const
 {
     return standardMemoryManager.make<AssignCont>(sym,
                                                   cont,

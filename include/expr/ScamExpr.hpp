@@ -3,13 +3,12 @@
 
 #include "util/ManagedObject.hpp"
 
+#include "ScamFwd.hpp"
+
 #include <string>
 
 namespace scam
 {
-    class Continuation;
-    class Env;
-
     class ScamExpr : public ManagedObject
     {
     protected:
@@ -22,7 +21,8 @@ namespace scam
         virtual void eval(Continuation * cont, Env * env);
 
         virtual bool hasApply() const;
-        virtual void apply(ScamExpr * args, Continuation * cont, Env * env);
+        virtual void apply(ExprHandle args, Continuation * cont, Env * env);
+
         virtual void mapEval(Continuation * cont, Env * env);
 
         virtual bool isNull() const;
@@ -45,8 +45,8 @@ namespace scam
         virtual bool isNil() const;
         virtual bool isCons() const;
         virtual bool isList() const;
-        virtual ScamExpr * getCar() const;
-        virtual ScamExpr * getCdr() const;
+        virtual ExprHandle getCar() const;
+        virtual ExprHandle getCdr() const;
 
         virtual bool isVector() const;
 
@@ -57,22 +57,22 @@ namespace scam
         virtual bool isDict() const;
 
         virtual size_t length() const;
-        virtual ScamExpr * nthcar(size_t n) const;
-        virtual ScamExpr * nthcdr(size_t n) const;
+        virtual ExprHandle nthcar(size_t n) const;
+        virtual ExprHandle nthcdr(size_t n) const;
 
-        virtual ScamExpr * withEnvUpdate(Env * updated) const;
+        virtual ExprHandle withEnvUpdate(Env * updated) const;
 
-        virtual void setSelf(ScamExpr * expr) const;
-        virtual void setParent(ScamExpr * expr) const;
+        virtual void setSelf(ExprHandle expr) const;
+        virtual void setParent(ExprHandle expr) const;
 
-        virtual bool equals(ScamExpr const * expr) const;
+        virtual bool equals(ConstExprHandle expr) const;
 
-        void setMeta(std::string const & key, ScamExpr * value);
+        void setMeta(std::string const & key, ExprHandle value);
         bool hasMeta(std::string const & key) const;
-        ScamExpr * getMeta(std::string const & key) const;
+        ExprHandle getMeta(std::string const & key);
 
     private:
-        Env * metadata;
+        mutable Env * metadata;
     };
 }
 

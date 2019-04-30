@@ -1,4 +1,3 @@
-
 #include "Continuation.hpp"
 
 #include "expr/ScamExpr.hpp"
@@ -31,7 +30,7 @@ Continuation::~Continuation()
     scamTrace("Deleting continuation ", name);
 };
 
-void Continuation::run(ScamExpr * expr)
+void Continuation::run(ExprHandle expr)
 {
     scamTrace("Executing continuation ", name);
     scamTrace("\tExpr: ", expr->toString());

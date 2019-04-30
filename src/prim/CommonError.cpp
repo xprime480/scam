@@ -4,9 +4,9 @@
 
 using namespace scam;
 
-ScamExpr * scam::make_common_error(const char * text)
+ExprHandle scam::make_common_error(const char * text)
 {
-    ScamExpr * msg = ExpressionFactory::makeString(text);
-    ScamExpr * rv  = ExpressionFactory::makeBoolean(false);
+    ExprHandle msg = ExpressionFactory::makeString(text);
+    ExprHandle rv  = ExpressionFactory::makeBoolean(false);
     return ExpressionFactory::makeList(rv, msg);
 }

@@ -3,14 +3,12 @@
 
 #include "util/ManagedObject.hpp"
 
-#include <memory>
+#include "ScamFwd.hpp"
+
 #include <string>
 
 namespace scam
 {
-    class ScamExpr;
-    class MemoryManager;
-
     class Continuation : public ManagedObject
     {
     private:
@@ -25,7 +23,7 @@ namespace scam
     public:
         virtual ~Continuation();
 
-        virtual void run(ScamExpr * expr);
+        virtual void run(ExprHandle expr);
         std::string id() const;
 
     private:

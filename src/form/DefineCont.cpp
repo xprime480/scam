@@ -9,7 +9,7 @@
 using namespace scam;
 using namespace std;
 
-DefineCont::DefineCont(ScamExpr * sym,
+DefineCont::DefineCont(ExprHandle sym,
                        Continuation * cont,
                        Env * env,
                        ScamEngine * engine)
@@ -18,7 +18,7 @@ DefineCont::DefineCont(ScamExpr * sym,
 {
 }
 
-DefineCont * DefineCont::makeInstance(ScamExpr * sym,
+DefineCont * DefineCont::makeInstance(ExprHandle sym,
                                       Continuation * cont,
                                       Env * env,
                                       ScamEngine * engine)
@@ -27,7 +27,7 @@ DefineCont * DefineCont::makeInstance(ScamExpr * sym,
 }
 
 
-void DefineCont::finish(ScamExpr * expr) const
+void DefineCont::finish(ExprHandle expr) const
 {
     if ( expr->error() && expr->hasMeta("amb-error") ) {
         return;

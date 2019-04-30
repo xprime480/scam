@@ -9,7 +9,7 @@
 using namespace scam;
 using namespace std;
 
-AssignCont::AssignCont(ScamExpr * sym,
+AssignCont::AssignCont(ExprHandle sym,
                        Continuation * cont,
                        Env * env,
                        ScamEngine * engine)
@@ -18,7 +18,7 @@ AssignCont::AssignCont(ScamExpr * sym,
 {
 }
 
-AssignCont * AssignCont::makeInstance(ScamExpr * sym,
+AssignCont * AssignCont::makeInstance(ExprHandle sym,
                                       Continuation * cont,
                                       Env * env,
                                       ScamEngine * engine)
@@ -26,13 +26,13 @@ AssignCont * AssignCont::makeInstance(ScamExpr * sym,
     return new AssignCont(sym, cont, env, engine);
 }
 
-void AssignCont::finish(ScamExpr * expr) const
+void AssignCont::finish(ExprHandle expr) const
 {
     if ( expr->error() && expr->hasMeta("amb-error") ) {
         return;
     }
 
-    ScamExpr * old = env->get(sym);
+    ExprHandle old = env->get(sym);
     env->assign(sym, expr);
 
     Backtracker * backtracker = engine->getBacktracker();

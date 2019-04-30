@@ -3,14 +3,15 @@
 #include "Continuation.hpp"
 #include "Env.hpp"
 #include "expr/ClassCont.hpp"
+#include "expr/ScamClass.hpp"
 #include "expr/ScamExpr.hpp"
 #include "util/MemoryManager.hpp"
 
 using namespace scam;
 using namespace std;
 
-ClassWorker::ClassWorker(ScamExpr * cls,
-                         ScamExpr * args,
+ClassWorker::ClassWorker(ExprHandle cls,
+                         ExprHandle args,
                          Continuation * cont,
                          Env * env)
     : Worker("ClassWorker")
@@ -21,8 +22,8 @@ ClassWorker::ClassWorker(ScamExpr * cls,
 {
 }
 
-ClassWorker * ClassWorker::makeInstance(ScamExpr * cls,
-                                        ScamExpr * args,
+ClassWorker * ClassWorker::makeInstance(ExprHandle cls,
+                                        ExprHandle args,
                                         Continuation * cont,
                                         Env * env)
 {

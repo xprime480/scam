@@ -1,22 +1,21 @@
 #if ! defined(BINDER_H)
 #define BINDER_H
 
+#include "ScamFwd.hpp"
+
 namespace scam
 {
-    class ScamExpr;
-    class Env;
-
     class Binder
     {
     public:
         Binder(Env * capture);
 
-        Env * bind(ScamExpr * formals, ScamExpr * actuals) const;
+        Env * bind(ExprHandle formals, ExprHandle actuals) const;
 
     private:
         Env * capture;
 
-        void bindOne(Env * env, ScamExpr * syms, ScamExpr * vals) const;
+        void bindOne(Env * env, ExprHandle syms, ExprHandle vals) const;
     };
 }
 

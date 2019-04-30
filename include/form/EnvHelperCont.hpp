@@ -3,34 +3,31 @@
 
 #include "Continuation.hpp"
 
+#include "ScamFwd.hpp"
+
 namespace scam
 {
-    class ScamExpr;
-    class Continuation;
-    class Env;
-
     class EnvHelperCont : public Continuation
     {
     protected:
-        EnvHelperCont(ScamExpr * sym,
+        EnvHelperCont(ExprHandle sym,
                       Continuation * cont,
                       Env * env,
                       char const * name);
 
         void mark() const override;
 
-        void run(ScamExpr * expr) override;
+        void run(ExprHandle expr) override;
 
     protected:
-        ScamExpr * sym;
+        ExprHandle sym;
         mutable Env * env;
 
-        virtual void finish(ScamExpr * expr) const = 0;
+        virtual void finish(ExprHandle expr) const = 0;
 
     private:
         Continuation * cont;
     };
-
 }
 
 #endif

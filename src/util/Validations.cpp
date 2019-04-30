@@ -8,24 +8,24 @@
 using namespace scam;
 using namespace std;
 
-ScamExpr * scam::validateClosureArgs(ScamExpr * args, const char * name)
+ExprHandle scam::validateClosureArgs(ExprHandle args, const char * name)
 {
     if ( ! args->isCons() ) {
-        ScamExpr * nameSymbol = ExpressionFactory::makeSymbol(name);
-        ScamExpr * extended = ExpressionFactory::makeCons(nameSymbol, args);
+        ExprHandle nameSymbol = ExpressionFactory::makeSymbol(name);
+        ExprHandle extended = ExpressionFactory::makeCons(nameSymbol, args);
         return ExpressionFactory::makeError("Expected (", name, " args body*)",
                                             "; got: ",
                                             extended->toString());
     }
 
-    ScamExpr * formals = args->getCar();
+    ExprHandle formals = args->getCar();
     return validateFormals(formals);
 }
 
 
-ScamExpr * scam::validateFormals(ScamExpr * formals)
+ExprHandle scam::validateFormals(ExprHandle formals)
 {
-    ScamExpr * ok = ExpressionFactory::makeNil();
+    ExprHandle ok = ExpressionFactory::makeNil();
 
     if ( formals->isSymbol() || formals->isNil() ) {
         return ok;
@@ -39,7 +39,7 @@ ScamExpr * scam::validateFormals(ScamExpr * formals)
 
     set<string> parms;
     while ( true ) {
-        ScamExpr * arg = formals->getCar();
+        ExprHandle arg = formals->getCar();
         if ( ! arg->isSymbol() ) {
             return ExpressionFactory::makeError("Formal parameter should ",
                                                 "be a symbol; got: ",

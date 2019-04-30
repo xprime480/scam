@@ -1,4 +1,3 @@
-
 #include "prim/PrimWorkerData.hpp"
 
 #include "Continuation.hpp"
@@ -9,7 +8,7 @@
 using namespace scam;
 using namespace std;
 
-PrimWorkerData::PrimWorkerData(ScamExpr * args,
+PrimWorkerData::PrimWorkerData(ExprHandle args,
                                Continuation * original,
                                Env * env,
                                Primitive * caller)
@@ -34,7 +33,7 @@ void PrimWorkerData::mapEval()
     args->mapEval(cont, env);
 }
 
-void PrimWorkerData::handleResult(ScamExpr * expr)
+void PrimWorkerData::handleResult(ExprHandle expr)
 {
     if ( expr->error() ) {
         original->run(expr);

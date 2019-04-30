@@ -3,17 +3,15 @@
 
 #include "Worker.hpp"
 
+#include "ScamFwd.hpp"
+
 namespace scam
 {
-    class Continuation;
-    class Env;
-    class ScamExpr;
-
     class LetBaseWorker : public Worker
     {
     protected:
         LetBaseWorker(char const * name,
-                      ScamExpr * args,
+                      ExprHandle args,
                       Continuation * cont,
                       Env * env);
 
@@ -26,10 +24,10 @@ namespace scam
         Env * env;
 
         virtual void
-        do_next(ScamExpr * formals, ScamExpr * values, ScamExpr * forms) = 0;
+        do_next(ExprHandle formals, ExprHandle values, ExprHandle forms) = 0;
 
     private:
-        ScamExpr * args;
+        ExprHandle args;
 
         void report_error();
 
@@ -39,7 +37,7 @@ namespace scam
          * Verify that the given expression is a list of the form
          * "(sym expr)"
          */
-        bool verify_single(ScamExpr * arg);
+        bool verify_single(ExprHandle arg);
 
         /**
          * verify_next
@@ -49,7 +47,7 @@ namespace scam
          * If so, continue checking the rest of list.
          *
          */
-        bool verify_list(ScamExpr * check);
+        bool verify_list(ExprHandle check);
 
         /**
          * Verify the argument list is structurally sound.
@@ -62,8 +60,8 @@ namespace scam
          */
         bool verify_args();
 
-        ScamExpr * parse_bindings(ScamExpr * bindings);
-        ScamExpr * parse_args();
+        ExprHandle parse_bindings(ExprHandle bindings);
+        ExprHandle parse_args();
     };
 }
 

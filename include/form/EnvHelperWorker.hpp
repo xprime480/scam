@@ -3,16 +3,18 @@
 
 #include "Worker.hpp"
 
+#include "ScamFwd.hpp"
+
 namespace scam
 {
-    class ScamExpr;
+    
     class Continuation;
     class Env;
 
     class EnvHelperWorker : public Worker
     {
     protected:
-        EnvHelperWorker(ScamExpr * args,
+        EnvHelperWorker(ExprHandle args,
                         Continuation * cont,
                         Env * env,
                         char const * name);
@@ -25,10 +27,10 @@ namespace scam
         Continuation * cont;
         Env * env;
 
-        virtual Continuation * getCont(ScamExpr * sym) const = 0;
+        virtual Continuation * getCont(ExprHandle sym) const = 0;
 
     private:
-        ScamExpr * args;
+        ExprHandle args;
     };
 }
 

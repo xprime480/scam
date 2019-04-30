@@ -10,7 +10,7 @@
 using namespace scam;
 using namespace std;
 
-NotWorker::NotWorker(Continuation * cont, Env * env, ScamExpr * args)
+NotWorker::NotWorker(Continuation * cont, Env * env, ExprHandle args)
     : Worker("Not")
     , args(args)
     , cont(cont)
@@ -19,7 +19,7 @@ NotWorker::NotWorker(Continuation * cont, Env * env, ScamExpr * args)
 }
 
 NotWorker *
-NotWorker::makeInstance(Continuation * cont, Env * env, ScamExpr * args)
+NotWorker::makeInstance(Continuation * cont, Env * env, ExprHandle args)
 {
     return new NotWorker(cont, env, args);
 }
@@ -39,14 +39,14 @@ void NotWorker::run()
     Worker::run();
 
     if ( ! args->isList() || 1u != args->length() ) {
-        ScamExpr * err =
+        ExprHandle err =
             ExpressionFactory::makeError("Not expects 1 form; got: ",
                                          args->toString());
         cont->run(err);
     }
     else {
         Continuation * newCont = standardMemoryManager.make<NotCont>(cont);
-        ScamExpr * test = args->nthcar(0);
+        ExprHandle test = args->nthcar(0);
         test->eval(newCont, env);
     }
 }

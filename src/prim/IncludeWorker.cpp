@@ -10,7 +10,7 @@
 using namespace scam;
 using namespace std;
 
-IncludeWorker::IncludeWorker(ScamExpr * args,
+IncludeWorker::IncludeWorker(ExprHandle args,
                              Continuation * cont,
                              ScamEngine * engine)
     : Worker("Include")
@@ -20,7 +20,7 @@ IncludeWorker::IncludeWorker(ScamExpr * args,
 {
 }
 
-IncludeWorker * IncludeWorker::makeInstance(ScamExpr * args,
+IncludeWorker * IncludeWorker::makeInstance(ExprHandle args,
                                             Continuation * cont,
                                             ScamEngine * engine)
 {
@@ -38,9 +38,9 @@ void IncludeWorker::mark() const
 
 void IncludeWorker::run()
 {
-    ScamExpr * curr = args->getCar();
-    ScamExpr * newArg = ExpressionFactory::makeList(curr);
-    ScamExpr * rest = args->getCdr();
+    ExprHandle curr = args->getCar();
+    ExprHandle newArg = ExpressionFactory::makeList(curr);
+    ExprHandle rest = args->getCdr();
 
     Continuation * nextCont = cont;
 

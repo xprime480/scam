@@ -1,21 +1,20 @@
 #if ! defined(PRIMWORKERDATA_HPP)
 #define PRIMWORKERDATA_HPP 1
 
+#include "ScamFwd.hpp"
+
 namespace scam
 {
-    class ScamExpr;
-    class Continuation;
-    class Env;
     class Primitive;
 
     struct PrimWorkerData
     {
-        PrimWorkerData(ScamExpr * args,
+        PrimWorkerData(ExprHandle args,
                        Continuation * original,
                        Env * env,
                        Primitive * caller);
 
-        ScamExpr * args;
+        ExprHandle args;
         Continuation * original;
         Continuation * cont;
         Env * env;
@@ -24,7 +23,7 @@ namespace scam
         void mark() const;
 
         void mapEval();
-        void handleResult(ScamExpr * expr);
+        void handleResult(ExprHandle expr);
     };
 }
 

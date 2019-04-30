@@ -9,7 +9,7 @@
 using namespace scam;
 using namespace std;
 
-ScamInstanceAdapter::ScamInstanceAdapter(ScamExpr const * expr)
+ScamInstanceAdapter::ScamInstanceAdapter(ConstExprHandle expr)
     : instance(dynamic_cast<ScamInstance const *>(expr))
 {
     if ( ! expr->isInstance() ) {
@@ -30,7 +30,7 @@ Env * ScamInstanceAdapter::getEnv() const
     return instance->local;
 }
 
-ScamExpr * ScamInstanceAdapter::getParent() const
+ExprHandle ScamInstanceAdapter::getParent() const
 {
     static const ScamExpr * parent =
         ExpressionFactory::makeSymbol("parent", false);

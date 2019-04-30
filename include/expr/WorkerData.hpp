@@ -1,16 +1,14 @@
-#if ! defined(WorkerData_HPP)
-#define WorkerData_HPP 1
+#if ! defined(WORKERDATA_HPP)
+#define WORKERDATA_HPP 1
+
+#include "ScamFwd.hpp"
 
 namespace scam
 {
-    class ScamExpr;
-    class Continuation;
-    class Env;
-
     struct WorkerData
     {
-        WorkerData(ScamExpr * car,
-                   ScamExpr * cdr,
+        WorkerData(ExprHandle car,
+                   ExprHandle cdr,
                    Continuation * original,
                    Env * env);
 
@@ -19,8 +17,8 @@ namespace scam
 
         void mark() const;
 
-        ScamExpr * car;
-        ScamExpr * cdr;
+        ExprHandle car;
+        ExprHandle cdr;
         Continuation * original;
         Continuation * cont;
         Env * env;

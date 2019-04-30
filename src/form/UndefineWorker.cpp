@@ -6,7 +6,7 @@
 using namespace scam;
 using namespace std;
 
-UndefineWorker::UndefineWorker(ScamExpr * args,
+UndefineWorker::UndefineWorker(ExprHandle args,
                                Continuation * cont,
                                Env * env,
                                ScamEngine * engine)
@@ -14,7 +14,7 @@ UndefineWorker::UndefineWorker(ScamExpr * args,
 {
 }
 
-UndefineWorker * UndefineWorker::makeInstance(ScamExpr * args,
+UndefineWorker * UndefineWorker::makeInstance(ExprHandle args,
                                               Continuation * cont,
                                               Env * env,
                                               ScamEngine * engine)
@@ -22,7 +22,7 @@ UndefineWorker * UndefineWorker::makeInstance(ScamExpr * args,
     return new UndefineWorker(args, cont, env, engine);
 }
 
-Continuation * UndefineWorker::getCont(ScamExpr * sym) const
+Continuation * UndefineWorker::getCont(ExprHandle sym) const
 {
     return standardMemoryManager.make<UndefineCont>(sym, cont, env);
 }

@@ -12,7 +12,7 @@ using namespace std;
 
 OrWorker::OrWorker(Continuation * cont,
                    Env * env,
-                   ScamExpr * args,
+                   ExprHandle args,
                    size_t n)
     : Worker("Or")
     , args(args)
@@ -24,7 +24,7 @@ OrWorker::OrWorker(Continuation * cont,
 
 OrWorker * OrWorker::makeInstance(Continuation * cont,
                                   Env * env,
-                                  ScamExpr * args,
+                                  ExprHandle args,
                                   size_t n)
 {
     return new OrWorker(cont, env, args, n);
@@ -45,7 +45,7 @@ void OrWorker::run()
     Worker::run();
 
     if ( ! args->isList() ) {
-        ScamExpr * err =
+        ExprHandle err =
             ExpressionFactory::makeError("Or expects a list of forms; got: ",
                                          args->toString());
         cont->run(err);
@@ -54,14 +54,14 @@ void OrWorker::run()
 
     size_t const len = args->length();
     if ( 0 == len ) {
-        ScamExpr * rv = ExpressionFactory::makeBoolean(false);
+        ExprHandle rv = ExpressionFactory::makeBoolean(false);
         cont->run(rv);
     }
     else if ( n == (len - 1) ) {
         args->nthcar(len-1)->eval(cont, env);
     }
     else {
-        ScamExpr * test = args->nthcar(n);
+        ExprHandle test = args->nthcar(n);
 
         Continuation * newCont =
             standardMemoryManager.make<OrCont>(args, cont, env, n+1);

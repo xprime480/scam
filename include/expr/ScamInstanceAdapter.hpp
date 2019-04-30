@@ -1,23 +1,23 @@
 #if ! defined(SCAMINSTANCEADAPTER_H)
 #define SCAMINSTANCEADAPTER_H 1
 
+#include "ScamFwd.hpp"
+
 namespace scam
 {
-    class ScamExpr;
     class ScamInstance;
-    class Env;
 
     class ScamInstanceAdapter
     {
     public:
-        ScamInstanceAdapter(ScamExpr const * expr);
+        ScamInstanceAdapter(ConstExprHandle expr);
 
         Env * getFunctionMap() const;
         Env * getEnv() const;
-        ScamExpr * getParent() const;
+        ExprHandle getParent() const;
 
     private:
-        ScamInstance const * instance;
+        const ScamInstance * instance;
     };
 }
 

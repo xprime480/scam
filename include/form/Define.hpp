@@ -3,14 +3,10 @@
 
 #include "form/EnvHelper.hpp"
 
+#include "ScamFwd.hpp"
+
 namespace scam
 {
-    class ScamEngine;
-    class ScamExpr;
-    class Continuation;
-    class Env;
-    class MemoryManager;
-
     class Define : public EnvHelper
     {
     private:
@@ -19,9 +15,8 @@ namespace scam
         static Define * makeInstance(ScamEngine * engine);
 
     public:
-        void apply(ScamExpr * args,
-                   Continuation * cont,
-                   Env * env) override;
+        void
+        apply(ExprHandle args, Continuation * cont, Env * env) override;
     };
 }
 

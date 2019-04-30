@@ -10,38 +10,40 @@ using namespace std;
 
 namespace
 {
-    static ScamExpr * const self   =
+    static ConstExprHandle self   =
         ExpressionFactory::makeSymbol("self", false);
-    static ScamExpr * const parent =
+    
+    static ConstExprHandle parent =
         ExpressionFactory::makeSymbol("parent", false);
-    static ScamExpr * const nil    = ExpressionFactory::makeNil();
+    
+    static ExprHandle nil = ExpressionFactory::makeNil();
 }
 
-ScamInstance::ScamInstance(ScamExpr * vars, ScamExpr * funs, Env * env)
+ScamInstance::ScamInstance(ExprHandle vars, ExprHandle funs, Env * env)
     : priv(standardMemoryManager.make<Env>())
     , local(env->extend())
 {
     size_t var_count = vars->length();
     for ( size_t n = 0 ; n < var_count ; ++n ) {
-        ScamExpr * var = vars->nthcar(n);
+        ExprHandle var = vars->nthcar(n);
         local->put(var, nil);
     }
 
     size_t fun_count = funs->length();
     for ( size_t n = 0 ; n < fun_count ; ++n ) {
-        ScamExpr * fun = funs->nthcar(n);
-        ScamExpr * name = fun->nthcar(0);
-        ScamExpr * formals = fun->nthcar(1);
-        ScamExpr * forms   = fun->nthcdr(1);
-        ScamExpr * impl
+        ExprHandle fun = funs->nthcar(n);
+        ExprHandle name = fun->nthcar(0);
+        ExprHandle formals = fun->nthcar(1);
+        ExprHandle forms   = fun->nthcdr(1);
+        ExprHandle impl
             = ExpressionFactory::makeClosure(formals, forms, local, false);
 
         priv->put(name, impl);
     }
 }
 
-ScamInstance * ScamInstance::makeInstance(ScamExpr * vars,
-                                          ScamExpr * funs,
+ScamInstance * ScamInstance::makeInstance(ExprHandle vars,
+                                          ExprHandle funs,
                                           Env * env)
 {
     return new ScamInstance(vars, funs, env);
@@ -66,10 +68,10 @@ bool ScamInstance::hasApply() const
     return true;
 }
 
-void ScamInstance::apply(ScamExpr * args, Continuation * cont, Env * env)
+void ScamInstance::apply(ExprHandle args, Continuation * cont, Env * env)
 {
-    ScamExpr * name = args->nthcar(0);
-    ScamExpr * funargs = args->nthcdr(0);
+    ExprHandle name = args->nthcar(0);
+    ExprHandle funargs = args->nthcdr(0);
 
     Continuation * newCont =
         standardMemoryManager.make<InstanceCont>(this, name, cont);
@@ -86,12 +88,12 @@ bool ScamInstance::isInstance() const
     return true;
 }
 
-void ScamInstance::setSelf(ScamExpr * expr) const
+void ScamInstance::setSelf(ExprHandle expr) const
 {
     local->put(self, expr);
 }
 
-void ScamInstance::setParent(ScamExpr * expr) const
+void ScamInstance::setParent(ExprHandle expr) const
 {
     local->put(parent, expr);
 }

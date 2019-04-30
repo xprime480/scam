@@ -6,15 +6,17 @@
 using namespace scam;
 using namespace std;
 
-ClassInitCont::ClassInitCont(ScamExpr * instance, Continuation * cont)
+/* This continuation seems *entirely* useless */
+
+ClassInitCont::ClassInitCont(ExprHandle instance, Continuation * cont)
     : Continuation("ClassInit")
     , instance(instance)
     , cont(cont)
 {
 }
 
-ClassInitCont * ClassInitCont::makeInstance(ScamExpr * instance,
-                                            Continuation * cont)
+ClassInitCont *
+ClassInitCont::makeInstance(ExprHandle instance, Continuation * cont)
 {
     return new ClassInitCont(instance, cont);
 }
@@ -28,7 +30,7 @@ void ClassInitCont::mark() const
     }
 }
 
-void ClassInitCont::run(ScamExpr * expr)
+void ClassInitCont::run(ExprHandle expr)
 {
     Continuation::run(expr);
     cont->run(instance);
