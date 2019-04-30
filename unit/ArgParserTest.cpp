@@ -2,6 +2,7 @@
 
 #include "expr/ExpressionFactory.hpp"
 #include "input/ArgParser.hpp"
+#include "input/ListParser.hpp"
 #include "input/TypeParsers.hpp"
 
 #include "util/DebugTrace.hpp"
@@ -86,7 +87,8 @@ TEST_F(ArgParserTest, AcceptOneInteger)
 TEST_F(ArgParserTest, RejectOneInteger)
 {
     const ScamInteger * target = ExpressionFactory::makeInteger(42);
-    IntegerParser * parser     = mm.make<IntegerParser>(target, true);
+    IntegerParser * parser =
+        mm.make<IntegerParser>(target, true);
 
     acceptParse(parser, "-234134");
     acceptParse(parser, "0");
@@ -101,4 +103,36 @@ TEST_F(ArgParserTest, AcceptAnyNumeric)
     acceptParse(parser, "-234134");
     acceptParse(parser, "0.00001");
     rejectParse(parser, "symbol");
+}
+
+TEST_F(ArgParserTest, AcceptListOfAnything)
+{
+    const char * text = "symbol";
+
+    ArgParser *  ap = mm.make<ArgParser>();
+    ListParser * parser = mm.make<ListParser>(ap);
+
+    acceptParse(parser, "()");
+    EXPECT_EQ(0u, parser->size());
+
+    acceptParse(parser, "(a symbol (+ 2 2) #\\c)");
+    EXPECT_EQ(4u, parser->size());
+    expectSymbol(parser->get(1), text);
+    EXPECT_EQ(nullptr, parser->get(4));
+
+    rejectParse(parser, text);
+}
+
+TEST_F(ArgParserTest, AcceptListOfBooleans)
+{
+    BooleanParser * bp = mm.make<BooleanParser>();
+    ListParser    * parser = mm.make<ListParser>(bp);
+
+    acceptParse(parser, "()");
+    EXPECT_EQ(0u, parser->size());
+
+    acceptParse(parser, "(#t #FALSE #t #f)");
+    EXPECT_EQ(4u, parser->size());
+
+    rejectParse(parser, "(#t #FALSE i-am-not-a-boolean #f)");
 }
