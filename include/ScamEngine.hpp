@@ -2,10 +2,8 @@
 #define SCAMENGINE_H 1
 
 #include "Backtracker.hpp"
-#include "Continuation.hpp"
 #include "EngineMarker.hpp"
-#include "Env.hpp"
-#include "expr/ScamExpr.hpp"
+#include "ScamFwd.hpp"
 #include "input/ScamParser.hpp"
 
 #include <set>
@@ -29,10 +27,10 @@ namespace scam
         Env * getFrame();
         void popFrame();
 
-        void addBinding(ScamExpr * key, ScamExpr * val);
-        bool hasBinding(ScamExpr * key, bool checkParent = true);
-        ScamExpr * getBinding(ScamExpr * key, bool top = false);
-        void rebind(ScamExpr * key, ScamExpr * val);
+        void addBinding(ScamEnvKeyType key, ExprHandle val);
+        bool hasBinding(ScamEnvKeyType key, bool checkParent = true);
+        ExprHandle getBinding(ScamEnvKeyType key, bool top = false);
+        void rebind(ScamEnvKeyType key, ExprHandle val);
 
         /*** functions to manage the input buffer ***/
 
@@ -45,10 +43,10 @@ namespace scam
 
         /*** functions to read, eval, and apply ***/
 
-        ScamExpr * parseCurrentInput();
-        ScamExpr * read();
-        ScamExpr * eval(ScamExpr * expr);
-        ScamExpr * apply(ScamExpr * expr, ScamExpr * args);
+        ExprHandle parseCurrentInput();
+        ExprHandle read();
+        ExprHandle eval(ExprHandle expr);
+        ExprHandle apply(ExprHandle expr, ExprHandle args);
 
         /*** functions to manage backtracking */
 
@@ -70,7 +68,7 @@ namespace scam
         Backtracker * backtracker;
         Continuation * cont;
         std::set<std::string> loaded;
-	EngineMarker marker;
+        EngineMarker marker;
 
         void getStandardEnv();
     };

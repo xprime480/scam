@@ -52,7 +52,7 @@ void LetStarCont::do_let(ExprHandle expr)
         final_eval(env);
     }
     else {
-        ExprHandle sym = formals->getCar();
+        ScamEnvKeyType sym = dynamic_cast<ScamSymbol *>(formals->getCar());
         env->put(sym, expr);
 
         makeBacktracker(sym);
@@ -69,7 +69,7 @@ void LetStarCont::do_let(ExprHandle expr)
     }
 }
 
-void LetStarCont::makeBacktracker(ExprHandle sym) const
+void LetStarCont::makeBacktracker(ScamEnvKeyType sym) const
 {
     Backtracker * backtracker = engine->getBacktracker();
     Backtracker * newBT =

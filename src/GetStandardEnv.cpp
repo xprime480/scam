@@ -12,9 +12,9 @@ namespace
     template <typename T, typename... Args>
     void addForm(Env * env, char const * name, Args... args)
     {
-        ScamExpr * sym = ExpressionFactory::makeSymbol(name);
-        ScamExpr * form = ExpressionFactory::makeForm<T>(args...);
-        env->put(sym, form);
+        ScamEnvKeyType key = ExpressionFactory::makeSymbol(name);
+        ExprHandle form = ExpressionFactory::makeForm<T>(args...);
+        env->put(key, form);
     }
 }
 

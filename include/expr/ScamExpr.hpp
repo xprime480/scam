@@ -9,7 +9,7 @@
 
 namespace scam
 {
-    class ScamExpr : public ManagedObject
+    class ScamExpr: public ManagedObject
     {
     protected:
         ScamExpr(bool managed = true);
@@ -21,6 +21,7 @@ namespace scam
         virtual void eval(Continuation * cont, Env * env);
 
         virtual bool hasApply() const;
+
         virtual void apply(ExprHandle args, Continuation * cont, Env * env);
 
         virtual void mapEval(Continuation * cont, Env * env);

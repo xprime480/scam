@@ -6,7 +6,7 @@
 using namespace scam;
 using namespace std;
 
-DefineWorker::DefineWorker(ScamExpr * args,
+DefineWorker::DefineWorker(ExprHandle args,
                            Continuation * cont,
                            Env * env,
                            ScamEngine * engine)
@@ -15,7 +15,7 @@ DefineWorker::DefineWorker(ScamExpr * args,
 {
 }
 
-DefineWorker * DefineWorker::makeInstance(ScamExpr * args,
+DefineWorker * DefineWorker::makeInstance(ExprHandle args,
                                           Continuation * cont,
                                           Env * env,
                                           ScamEngine * engine)
@@ -23,7 +23,7 @@ DefineWorker * DefineWorker::makeInstance(ScamExpr * args,
     return new DefineWorker(args, cont, env, engine);
 }
 
-Continuation * DefineWorker::getCont(ScamExpr * sym) const
+Continuation * DefineWorker::getCont(ScamEnvKeyType sym) const
 {
     return standardMemoryManager.make<DefineCont>(sym,
                                                   cont,

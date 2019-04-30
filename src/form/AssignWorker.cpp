@@ -27,7 +27,7 @@ AssignWorker * AssignWorker::makeInstance(ExprHandle args,
     return new AssignWorker(args, cont, env, engine);
 }
 
-Continuation * AssignWorker::getCont(ExprHandle sym) const
+Continuation * AssignWorker::getCont(ScamEnvKeyType sym) const
 {
     return standardMemoryManager.make<AssignCont>(sym,
                                                   cont,

@@ -27,7 +27,7 @@ namespace scam
         Continuation * cont;
         Env * env;
 
-        virtual Continuation * getCont(ExprHandle sym) const = 0;
+        virtual Continuation * getCont(ScamEnvKeyType sym) const = 0;
 
     private:
         ExprHandle args;

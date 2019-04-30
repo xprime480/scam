@@ -9,7 +9,7 @@
 using namespace scam;
 using namespace std;
 
-DefineBacktracker::DefineBacktracker(ExprHandle sym,
+DefineBacktracker::DefineBacktracker(ScamEnvKeyType sym,
                                      Env * env,
                                      Backtracker * backtracker)
     : Backtracker("DefineBacktracker", backtracker)
@@ -19,7 +19,7 @@ DefineBacktracker::DefineBacktracker(ExprHandle sym,
 }
 
 DefineBacktracker *
-DefineBacktracker::makeInstance(ExprHandle sym,
+DefineBacktracker::makeInstance(ScamEnvKeyType sym,
                                 Env * env,
                                 Backtracker * backtracker)
 {

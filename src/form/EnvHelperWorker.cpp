@@ -33,7 +33,7 @@ void EnvHelperWorker::run()
 {
     Worker::run();
 
-    ScamExpr * sym = args->getCar();
+    ScamEnvKeyType sym = dynamic_cast<ScamSymbol *>(args->getCar());
     Continuation * c = getCont(sym);
     if ( args->length() > 1 ) {
         ExprHandle expr = args->nthcar(1);

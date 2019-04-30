@@ -25,7 +25,7 @@ namespace scam
         }
 
     public:
-        void run(ScamExpr * expr) override
+        void run(ExprHandle expr) override
         {
             Continuation::run(expr);
             s << expr->toString() << "\n";

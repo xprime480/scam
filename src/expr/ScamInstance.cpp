@@ -70,7 +70,7 @@ bool ScamInstance::hasApply() const
 
 void ScamInstance::apply(ExprHandle args, Continuation * cont, Env * env)
 {
-    ExprHandle name    = args->nthcar(0);
+    ScamEnvKeyType name = dynamic_cast<ScamSymbol *>(args->nthcar(0));
     ExprHandle funargs = args->nthcdr(0);
 
     Continuation * newCont =

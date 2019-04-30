@@ -3,12 +3,13 @@
 #include "Binder.hpp"
 #include "Env.hpp"
 #include "expr/ScamExpr.hpp"
+#include "expr/ScamSymbol.hpp"
 
 using namespace scam;
 using namespace std;
 
-LetCont::LetCont(ScamExpr * formals,
-                 ScamExpr * forms,
+LetCont::LetCont(ExprHandle formals,
+                 ExprHandle forms,
                  Continuation * cont,
                  Env * env,
                  bool rebind)
@@ -19,8 +20,8 @@ LetCont::LetCont(ScamExpr * formals,
 {
 }
 
-LetCont * LetCont::makeInstance(ScamExpr * formals,
-                                ScamExpr * forms,
+LetCont * LetCont::makeInstance(ExprHandle formals,
+                                ExprHandle forms,
                                 Continuation * cont,
                                 Env * env,
                                 bool rebind)
@@ -37,10 +38,10 @@ void LetCont::mark() const
     }
 }
 
-void LetCont::do_let(ScamExpr * expr)
+void LetCont::do_let(ExprHandle expr)
 {
     Binder binder(env);
-    ScamExpr * ff = formals;
+    ExprHandle ff = formals;
     Env * extended = binder.bind(ff, expr);
 
     rebind_procs(extended);
@@ -55,10 +56,10 @@ void LetCont::rebind_procs(Env * extended)
 
     const size_t len = formals->length();
     for ( size_t n = 0 ; n < len ; ++n ) {
-        ScamExpr * k = formals->nthcar(n);
-        ScamExpr * v = extended->get(k);
+        ScamEnvKeyType k = dynamic_cast<ScamSymbol *>(formals->nthcar(n));
+        ExprHandle v = extended->get(k);
         if ( v->isProcedure() ) {
-            ScamExpr * newV = v->withEnvUpdate(extended);
+            ExprHandle newV = v->withEnvUpdate(extended);
             extended->assign(k, newV);
         }
     }

@@ -22,10 +22,12 @@ Env * Binder::bind(ExprHandle formals, ExprHandle actuals) const
 void Binder::bindOne(Env * env, ExprHandle syms, ExprHandle vals) const
 {
     if ( syms->isCons() ) {
-        env->put(syms->getCar(), vals->getCar());
+        ScamEnvKeyType key = dynamic_cast<ScamEnvKeyType>(syms->getCar());
+        env->put(key, vals->getCar());
         bindOne(env, syms->getCdr(), vals->getCdr());
     }
     else if ( ! syms->isNil() ) {
-        env->put(syms, vals);
+        ScamEnvKeyType key = dynamic_cast<ScamEnvKeyType>(syms);
+        env->put(key, vals);
     }
 }

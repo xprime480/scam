@@ -9,7 +9,7 @@
 using namespace scam;
 using namespace std;
 
-AssignCont::AssignCont(ExprHandle sym,
+AssignCont::AssignCont(ScamEnvKeyType sym,
                        Continuation * cont,
                        Env * env,
                        ScamEngine * engine)
@@ -18,7 +18,7 @@ AssignCont::AssignCont(ExprHandle sym,
 {
 }
 
-AssignCont * AssignCont::makeInstance(ExprHandle sym,
+AssignCont * AssignCont::makeInstance(ScamEnvKeyType sym,
                                       Continuation * cont,
                                       Env * env,
                                       ScamEngine * engine)

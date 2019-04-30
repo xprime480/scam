@@ -8,22 +8,22 @@ namespace scam
     class MemoryManager;
     class Continuation;
     class Env;
-    class ScamExpr;
+    
 
     class LetCont : public LetCommonCont
     {
     private:
         friend class scam::MemoryManager;
 
-        LetCont(ScamExpr * formals,
-                ScamExpr * forms,
+        LetCont(ExprHandle formals,
+                ExprHandle forms,
                 Continuation * cont,
                 Env * env,
                 bool rebind);
 
 
-        static LetCont * makeInstance(ScamExpr * formals,
-                                      ScamExpr * forms,
+        static LetCont * makeInstance(ExprHandle formals,
+                                      ExprHandle forms,
                                       Continuation * cont,
                                       Env * env,
                                       bool rebind);
@@ -32,10 +32,10 @@ namespace scam
         void mark() const override;
 
     protected:
-        void do_let(ScamExpr * expr) override;
+        void do_let(ExprHandle expr) override;
 
     private:
-        ScamExpr * formals;
+        ExprHandle formals;
         Env *        env;
         bool       rebind;
 

@@ -22,7 +22,7 @@ UndefineWorker * UndefineWorker::makeInstance(ExprHandle args,
     return new UndefineWorker(args, cont, env, engine);
 }
 
-Continuation * UndefineWorker::getCont(ExprHandle sym) const
+Continuation * UndefineWorker::getCont(ScamEnvKeyType sym) const
 {
     return standardMemoryManager.make<UndefineCont>(sym, cont, env);
 }

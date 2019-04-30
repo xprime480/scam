@@ -22,7 +22,7 @@ namespace scam
                                              ScamEngine * engine);
 
     protected:
-        Continuation * getCont(ExprHandle sym) const override;
+        Continuation * getCont(ScamEnvKeyType sym) const override;
     };
 }
 

@@ -13,11 +13,11 @@ namespace scam
         friend class scam::MemoryManager;
 
         LetStarBacktracker(Env * env,
-                           ExprHandle sym,
+                           ScamEnvKeyType sym,
                            Backtracker * backtracker);
 
         static LetStarBacktracker * makeInstance(Env * env,
-                                                 ExprHandle sym,
+                                                 ScamEnvKeyType sym,
                                                  Backtracker * backtracker);
 
     public:
@@ -25,8 +25,8 @@ namespace scam
         void run() override;
 
     private:
-        Env      * env;
-        ExprHandle sym;
+        Env          * env;
+        ScamEnvKeyType sym;
     };
 }
 

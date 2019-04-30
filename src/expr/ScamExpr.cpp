@@ -251,7 +251,7 @@ void ScamExpr::setMeta(string const & key, ExprHandle value)
         metadata = standardMemoryManager.make<Env>();
     }
 
-    ExprHandle k = ExpressionFactory::makeSymbol(key);
+    ScamEnvKeyType k = ExpressionFactory::makeSymbol(key);
 
     if ( metadata->check(k) ) {
         metadata->assign(k, value);
@@ -267,7 +267,7 @@ bool ScamExpr::hasMeta(string const & key) const
         return false;
     }
 
-    ExprHandle k = ExpressionFactory::makeSymbol(key);
+    ScamEnvKeyType k = ExpressionFactory::makeSymbol(key);
     return metadata->check(k);
 }
 
@@ -278,7 +278,7 @@ ExprHandle ScamExpr::getMeta(string const & key)
         return rv;
     }
 
-    ExprHandle k  = ExpressionFactory::makeSymbol(key);
+    ScamEnvKeyType k  = ExpressionFactory::makeSymbol(key);
     if ( metadata->check(k) ) {
         rv = metadata->get(k);
     }

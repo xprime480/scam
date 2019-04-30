@@ -10,7 +10,7 @@ namespace scam
     class ScamInstanceAdapter
     {
     public:
-        ScamInstanceAdapter(ConstExprHandle expr);
+        ScamInstanceAdapter(ExprHandle expr);
 
         Env * getFunctionMap() const;
         Env * getEnv() const;

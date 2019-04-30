@@ -9,7 +9,7 @@
 using namespace scam;
 using namespace std;
 
-EnvHelperCont::EnvHelperCont(ExprHandle sym,
+EnvHelperCont::EnvHelperCont(ScamEnvKeyType sym,
                              Continuation * cont,
                              Env * env,
                              char const * name)
@@ -33,5 +33,5 @@ void EnvHelperCont::mark() const
 void EnvHelperCont::run(ExprHandle expr)
 {
     finish(expr);
-    cont->run(sym);
+    cont->run(ExpressionFactory::makeNull());
 }

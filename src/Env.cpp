@@ -1,8 +1,8 @@
-
 #include "Env.hpp"
 
 #include "ScamException.hpp"
 #include "expr/ScamExpr.hpp"
+#include "expr/ScamSymbol.hpp"
 #include "util/MemoryManager.hpp"
 
 #include <iostream>
@@ -14,11 +14,11 @@ using namespace std;
 
 namespace
 {
-    string checkKey(ScamExpr const * key)
+    string checkKey(ScamEnvKeyType key)
     {
-        if ( ! key->isSymbol() ) {
+        if ( nullptr == key ) {
             stringstream s;
-            s << "Environment key : " << key->toString() << " must be a symbol";
+            s << "Null Environment key not allowed";
             throw ScamException(s.str());
         }
         return  key->toString();
@@ -39,16 +39,16 @@ void Env::mark() const
 {
     if ( ! isMarked() ) {
         ManagedObject::mark();
-	if ( parent ) {
-	    parent->mark();
-	}
-	for ( const auto & p : table ) {
-	    p.second->mark();
-	}
+        if ( parent ) {
+            parent->mark();
+        }
+        for ( const auto & p : table ) {
+            p.second->mark();
+        }
     }
 }
 
-void Env::put(ScamExpr const * key, ScamExpr * val)
+void Env::put(ScamEnvKeyType key, ExprHandle val)
 {
     const string keyStr = checkKey(key);
     auto const iter = table.find(keyStr);
@@ -61,7 +61,7 @@ void Env::put(ScamExpr const * key, ScamExpr * val)
     table[keyStr] = val;
 }
 
-bool Env::check(ScamExpr const * key, bool checkParent) const
+bool Env::check(ScamEnvKeyType key, bool checkParent) const
 {
     const string keyStr = checkKey(key);
     auto const iter = table.find(keyStr);
@@ -75,7 +75,7 @@ bool Env::check(ScamExpr const * key, bool checkParent) const
     return false;
 }
 
-ScamExpr * Env::get(ScamExpr const * key) const
+ExprHandle Env::get(ScamEnvKeyType key) const
 {
     const string keyStr = checkKey(key);
     auto const iter = table.find(keyStr);
@@ -93,7 +93,7 @@ ScamExpr * Env::get(ScamExpr const * key) const
 
 void Env::reset()
 {
-    map<string, ScamExpr *> temp;
+    map<string, ExprHandle> temp;
     table.swap(temp);
 
     if ( parent ) {
@@ -122,7 +122,7 @@ Env * Env::getTop() const
     return parent->getTop();
 }
 
-void Env::assign(ScamExpr const * key, ScamExpr * val)
+void Env::assign(ScamEnvKeyType key, ExprHandle val)
 {
     const string keyStr = checkKey(key);
     auto const iter = table.find(keyStr);
@@ -141,7 +141,7 @@ void Env::assign(ScamExpr const * key, ScamExpr * val)
     }
 }
 
-void Env::remove(ScamExpr const * key)
+void Env::remove(ScamEnvKeyType key)
 {
     const string keyStr = checkKey(key);
     auto const iter = table.find(keyStr);

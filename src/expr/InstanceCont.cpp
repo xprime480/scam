@@ -9,7 +9,7 @@ using namespace scam;
 using namespace std;
 
 InstanceCont::InstanceCont(ExprHandle obj,
-                           ExprHandle name,
+                           ScamEnvKeyType name,
                            Continuation * cont)
     : Continuation("InstanceCont")
     , obj(obj)
@@ -18,8 +18,9 @@ InstanceCont::InstanceCont(ExprHandle obj,
 {
 }
 
-InstanceCont *
-InstanceCont::makeInstance(ExprHandle obj, ExprHandle name, Continuation * cont)
+InstanceCont * InstanceCont::makeInstance(ExprHandle obj,
+                                          ScamEnvKeyType name,
+                                          Continuation * cont)
 {
     return new InstanceCont(obj, name, cont);
 }

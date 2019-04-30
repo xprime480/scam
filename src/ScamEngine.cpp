@@ -10,6 +10,8 @@
 #include "input/ScamParser.hpp"
 #include "util/MemoryManager.hpp"
 
+#include "util/DebugTrace.hpp"
+
 using namespace std;
 using namespace scam;
 
@@ -28,14 +30,14 @@ namespace
 
         void setCont(Continuation * c);
 
-        void run(ScamExpr * expr) override;
+        void run(ExprHandle expr) override;
 
-        ScamExpr * get(size_t which = 1) const;
+        ExprHandle get(size_t which = 1) const;
         size_t current() const;
 
     private:
         size_t size;
-        vector<ScamExpr *> history;
+        vector<ExprHandle> history;
         Continuation * cont;
         size_t serial;
     };
@@ -86,23 +88,23 @@ void ScamEngine::popFrame()
     }
 }
 
-void ScamEngine::addBinding(ScamExpr * key, ScamExpr * val)
+void ScamEngine::addBinding(ScamEnvKeyType key, ExprHandle val)
 {
     env->put(key, val);
 }
 
-bool ScamEngine::hasBinding(ScamExpr * key, bool checkParent)
+bool ScamEngine::hasBinding(ScamEnvKeyType key, bool checkParent)
 {
     return env->check(key, checkParent);
 }
 
-ScamExpr * ScamEngine::getBinding(ScamExpr * key, bool top)
+ExprHandle ScamEngine::getBinding(ScamEnvKeyType key, bool top)
 {
     Env * temp = top ? env->getTop() : env;
     return temp->get(key);
 }
 
-void ScamEngine::rebind(ScamExpr * key, ScamExpr * val)
+void ScamEngine::rebind(ScamEnvKeyType key, ExprHandle val)
 {
     env->assign(key, val);
 }
@@ -127,20 +129,20 @@ void ScamEngine::setCont(Continuation * c)
     }
 }
 
-ScamExpr * ScamEngine::parseCurrentInput()
+ExprHandle ScamEngine::parseCurrentInput()
 {
     HistoryCont const * hc = dynamic_cast<HistoryCont const *>(cont);
     size_t const mark = hc ? hc->current() : 0;
 
     while ( true ) {
-        ScamExpr * expr = read();
+        ExprHandle expr = read();
         if ( expr->isNull() ) {
             break;
         }
         (void) eval(expr);
     }
 
-    ScamExpr * rv;
+    ExprHandle rv;
     if ( ! hc || hc->current() == mark ) {
         rv = ExpressionFactory::makeNull();
     }
@@ -150,7 +152,7 @@ ScamExpr * ScamEngine::parseCurrentInput()
     return rv;
 }
 
-ScamExpr * ScamEngine::read()
+ExprHandle ScamEngine::read()
 {
     if ( input.empty() ) {
         return ExpressionFactory::makeNull();
@@ -160,18 +162,18 @@ ScamExpr * ScamEngine::read()
     return p.parseExpr();
 }
 
-ScamExpr * ScamEngine::eval(ScamExpr * expr)
+ExprHandle ScamEngine::eval(ExprHandle expr)
 {
     expr->eval(cont, env);
 
     Trampoline(GlobalWorkQueue);
 
     HistoryCont const * hc = dynamic_cast<HistoryCont const *>(cont);
-    ScamExpr * rv = hc->get();
+    ExprHandle rv = hc->get();
     return rv;
 }
 
-ScamExpr * ScamEngine::apply(ScamExpr * expr, ScamExpr * args)
+ExprHandle ScamEngine::apply(ExprHandle expr, ExprHandle args)
 {
     expr->apply(args, cont, env);
     Trampoline(GlobalWorkQueue);
@@ -244,7 +246,7 @@ namespace
         cont = c;
     }
 
-    void HistoryCont::run(ScamExpr * expr)
+    void HistoryCont::run(ExprHandle expr)
     {
         Continuation::run(expr);
 
@@ -257,7 +259,7 @@ namespace
         }
     }
 
-    ScamExpr * HistoryCont::get(size_t which) const
+    ExprHandle HistoryCont::get(size_t which) const
     {
         if ( which == 0 || which > history.size() ) {
             return ExpressionFactory::makeNull();

@@ -10,7 +10,7 @@ using namespace scam;
 using namespace std;
 
 LetStarBacktracker::LetStarBacktracker(Env * env,
-                                       ExprHandle sym,
+                                       ScamEnvKeyType sym,
                                        Backtracker * backtracker)
     : Backtracker("Let*", backtracker)
     , env(env)
@@ -20,7 +20,7 @@ LetStarBacktracker::LetStarBacktracker(Env * env,
 
 LetStarBacktracker *
 LetStarBacktracker::makeInstance(Env * env,
-                                 ExprHandle sym,
+                                 ScamEnvKeyType sym,
                                  Backtracker * backtracker)
 {
     return new LetStarBacktracker(env, sym, backtracker);

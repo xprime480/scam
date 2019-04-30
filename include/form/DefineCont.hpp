@@ -12,12 +12,12 @@ namespace scam
     private:
         friend class scam::MemoryManager;
 
-        DefineCont(ExprHandle sym,
+        DefineCont(ScamEnvKeyType sym,
                    Continuation * cont,
                    Env * env,
                    ScamEngine * engine);
 
-        static DefineCont * makeInstance(ExprHandle sym,
+        static DefineCont * makeInstance(ScamEnvKeyType sym,
                                          Continuation * cont,
                                          Env * env,
                                          ScamEngine * engine);

@@ -13,11 +13,11 @@ namespace scam
         friend class scam::MemoryManager;
 
         InstanceCont(ExprHandle obj,
-                     ExprHandle name,
+                     ScamEnvKeyType name,
                      Continuation * cont);
 
         static InstanceCont * makeInstance(ExprHandle obj,
-                                           ExprHandle name,
+                                           ScamEnvKeyType name,
                                            Continuation * cont);
 
     public:
@@ -26,7 +26,7 @@ namespace scam
 
     private:
         ExprHandle obj;
-        ExprHandle name;
+        ScamEnvKeyType name;
         Continuation * cont;
 
         ExprHandle find_func(ExprHandle o) const;
