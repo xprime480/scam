@@ -1,31 +1,38 @@
 #if ! defined(ASSIGNWORKER_HPP)
 #define ASSIGNWORKER_HPP 1
 
-#include "form/EnvHelperWorker.hpp"
+#include "Worker.hpp"
 
 #include "ScamFwd.hpp"
+#include "input/AssignParser.hpp"
 
 namespace scam
 {
-    class AssignWorker : public EnvHelperWorker
+    class AssignWorker : public Worker
     {
     private:
         friend class scam::MemoryManager;
-        AssignWorker(ExprHandle args,
+
+        AssignWorker(AssignParser * parser,
                      Continuation * cont,
                      Env * env,
                      ScamEngine * engine);
 
-        static AssignWorker * makeInstance(ExprHandle args,
+        static AssignWorker * makeInstance(AssignParser * parser,
                                            Continuation * cont,
                                            Env * env,
                                            ScamEngine * engine);
 
-    protected:
-        Continuation * getCont(ScamEnvKeyType sym) const override;
+    public:
+        void mark() const override;
+
+        void run() override;
 
     private:
-        ScamEngine * engine;
+        AssignParser * parser;
+        Continuation * cont;
+        Env          * env;
+        ScamEngine   * engine;
     };
 }
 

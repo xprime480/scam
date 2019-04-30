@@ -30,6 +30,7 @@
   a success and an error continuation.
 
 * Does EnvHelper::checkArgs still get used?  Remove if not
+  ** EnvHelper itself seems somewhat sparse without checkArgs
 
 * Rename Progn => Begin to sync with R7RS
 

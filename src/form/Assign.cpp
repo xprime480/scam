@@ -1,6 +1,8 @@
 #include "form/Assign.hpp"
 
+#include "Continuation.hpp"
 #include "WorkQueue.hpp"
+#include "expr/ExpressionFactory.hpp"
 #include "form/AssignWorker.hpp"
 
 using namespace scam;
@@ -18,7 +20,16 @@ Assign * Assign::makeInstance(ScamEngine * engine)
 
 void Assign::apply(ExprHandle args, Continuation * cont, Env * env)
 {
-    if ( checkArgs(args, cont, true) ) {
-        workQueueHelper<AssignWorker>(args, cont, env, engine);
+    AssignParser * parser = standardMemoryManager.make<AssignParser>();
+
+    if ( ! parser->accept(args) ) {
+        ExprHandle err =
+            ExpressionFactory::makeError("assign! expects (sym expr)",
+                                         "; got: ",
+                                         args->toString());
+        cont->run(err);
+    }
+    else {
+        workQueueHelper<AssignWorker>(parser, cont, env, engine);
     }
 }

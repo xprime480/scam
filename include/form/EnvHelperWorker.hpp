@@ -7,10 +7,6 @@
 
 namespace scam
 {
-    
-    class Continuation;
-    class Env;
-
     class EnvHelperWorker : public Worker
     {
     protected:

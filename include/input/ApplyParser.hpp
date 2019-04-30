@@ -3,7 +3,6 @@
 
 #include "input/ArgParser.hpp"
 
-#include "input/ArgParser.hpp"
 #include "input/CountedListParser.hpp"
 
 namespace scam

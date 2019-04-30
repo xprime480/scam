@@ -4,6 +4,7 @@
 #include "input/AlternativeParser.hpp"
 #include "input/ApplyParser.hpp"
 #include "input/ArgParser.hpp"
+#include "input/AssignParser.hpp"
 #include "input/ClassDefParser.hpp"
 #include "input/CountedListParser.hpp"
 #include "input/DictParser.hpp"
@@ -496,4 +497,17 @@ TEST_F(ArgParserTest, DictUnknown)
 {
     DictParser * parser = mm.make<DictParser>();
     rejectParse(parser, "(:unknown)");
+}
+
+TEST_F(ArgParserTest, AssignCorrect)
+{
+    AssignParser * parser = mm.make<AssignParser>();
+    acceptParse(parser, "(answer (* 2 21))");
+    expectSymbol(parser->getSymbol(), "answer");
+}
+
+TEST_F(ArgParserTest, AssignNoForm)
+{
+    AssignParser * parser = mm.make<AssignParser>();
+    rejectParse(parser, "(answer)");
 }

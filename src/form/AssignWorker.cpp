@@ -10,28 +10,46 @@
 using namespace scam;
 using namespace std;
 
-AssignWorker::AssignWorker(ExprHandle args,
+AssignWorker::AssignWorker(AssignParser * parser,
                            Continuation * cont,
                            Env * env,
                            ScamEngine * engine)
-    : EnvHelperWorker(args, cont, env, "Assign")
+    : Worker("Assign")
+    , parser(parser)
+    , cont(cont)
+    , env(env)
     , engine(engine)
 {
 }
 
-AssignWorker * AssignWorker::makeInstance(ExprHandle args,
+AssignWorker * AssignWorker::makeInstance(AssignParser * parser,
                                           Continuation * cont,
                                           Env * env,
                                           ScamEngine * engine)
 {
-    return new AssignWorker(args, cont, env, engine);
+    return new AssignWorker(parser, cont, env, engine);
 }
 
-Continuation * AssignWorker::getCont(ScamEnvKeyType sym) const
+void AssignWorker::mark() const
 {
-    return standardMemoryManager.make<AssignCont>(sym,
-                                                  cont,
-                                                  env,
-                                                  engine);
+    if ( ! isMarked() ) {
+        Worker::mark();
+        parser->mark();
+        cont->mark();
+        env->mark();
+    }
 }
 
+void AssignWorker::run()
+{
+    Worker::run();
+
+    ScamEnvKeyType sym = parser->getSymbol();
+    Continuation * c = standardMemoryManager.make<AssignCont>(sym,
+                                                              cont,
+                                                              env,
+                                                              engine);
+
+    ExprHandle expr = parser->getForm();
+    expr->eval(c, env);
+}

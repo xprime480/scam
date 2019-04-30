@@ -32,7 +32,7 @@ void EnvHelperWorker::mark() const
 void EnvHelperWorker::run()
 {
     Worker::run();
-
+    
     ScamEnvKeyType sym = dynamic_cast<ScamSymbol *>(args->getCar());
     Continuation * c = getCont(sym);
     if ( args->length() > 1 ) {

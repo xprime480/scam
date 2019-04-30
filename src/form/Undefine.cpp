@@ -18,6 +18,7 @@ Undefine * Undefine::makeInstance(ScamEngine * engine)
 
 void Undefine::apply(ExprHandle args, Continuation * cont, Env * env)
 {
+    
     if ( checkArgs(args, cont, false) ) {
         workQueueHelper<UndefineWorker>(args, cont, env, engine);
     }
