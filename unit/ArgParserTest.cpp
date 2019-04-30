@@ -4,6 +4,7 @@
 #include "input/AlternativeParser.hpp"
 #include "input/ApplyParser.hpp"
 #include "input/ArgParser.hpp"
+#include "input/ClassDefParser.hpp"
 #include "input/CountedListParser.hpp"
 #include "input/FunctionDefParser.hpp"
 #include "input/ListParser.hpp"
@@ -383,4 +384,43 @@ TEST_F(ArgParserTest, ApplyCorrect)
     acceptParse(parser, "(+ (2 3))");
     expectSymbol(parser->getParsedOp(), "+");
     expectList(parser->getArgs(), "(2 3)", 2);
+}
+
+TEST_F(ArgParserTest, TrivialClass)
+{
+    ClassDefParser * parser = mm.make<ClassDefParser>();
+
+    acceptParse(parser, "(Root ())");
+
+    expectSymbol(parser->getBase(), "Root");
+    EXPECT_EQ(0u, parser->getVarCount());
+    EXPECT_EQ(0u, parser->getMethodCount());
+}
+
+TEST_F(ArgParserTest, SmallClass)
+{
+    ClassDefParser * parser = mm.make<ClassDefParser>();
+
+    acceptParse(parser, "\
+(Jerry \
+  (a b) \
+  (get-a () a) \
+  (set-b (new-b) \
+      (assign! b new-b)))\
+");
+
+    expectSymbol(parser->getBase(), "Jerry");
+
+    EXPECT_EQ(2u, parser->getVarCount());
+    expectSymbol(parser->getVar(1), "b");
+
+    EXPECT_EQ(2u, parser->getMethodCount());
+    expectSymbol(parser->getMethod(0u)->getName(), "get-a");
+}
+
+TEST_F(ArgParserTest, BadClassDef)
+{
+    ClassDefParser * parser = mm.make<ClassDefParser>();
+
+    rejectParse(parser, "(Base ok not-a-function)");
 }
