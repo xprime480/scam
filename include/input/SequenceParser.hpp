@@ -4,8 +4,7 @@
 #include "input/ArgParser.hpp"
 
 #include "expr/ScamExpr.hpp"
-#include "expr/ScamCons.hpp"
-#include "expr/ScamNil.hpp"
+#include "input/ListParser.hpp"
 #include "util/MemoryManager.hpp"
 
 #include "util/DebugTrace.hpp"

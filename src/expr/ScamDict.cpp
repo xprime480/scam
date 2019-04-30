@@ -2,25 +2,12 @@
 
 #include "Continuation.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "input/DictParser.hpp"
 
 #include <sstream>
 
 using namespace scam;
 using namespace std;
-
-namespace
-{
-    static const ScamExpr * getOp =
-        ExpressionFactory::makeKeyword(":get", false);
-    static const ScamExpr * putOp =
-        ExpressionFactory::makeKeyword(":put", false);
-    static const ScamExpr * lenOp =
-        ExpressionFactory::makeKeyword(":length", false);
-    static const ScamExpr * remOp =
-        ExpressionFactory::makeKeyword(":remove", false);
-    static const ScamExpr * hasOp =
-        ExpressionFactory::makeKeyword(":has", false);
-}
 
 ScamDict::ScamDict()
 {
@@ -34,8 +21,8 @@ ScamDict::ScamDict(ValVec const & args)
     }
 
     for ( size_t idx = 0 ; idx < input.size() ; idx += 2 ) {
-        ScamExpr * key = input[idx];
-        ScamExpr * val = input[idx+1];
+        ExprHandle key = input[idx];
+        ExprHandle val = input[idx+1];
         put(key, val);
     }
 }
@@ -84,10 +71,12 @@ bool ScamDict::hasApply() const
     return true;
 }
 
-void ScamDict::apply(ScamExpr * args, Continuation * cont, Env * env)
+void ScamDict::apply(ExprHandle args, Continuation * cont, Env * env)
 {
-    if ( args->isNil() ) {
-        ScamExpr * err
+    DictParser * parser = standardMemoryManager.make<DictParser>();
+
+    if ( ! parser->accept(args) ) {
+        ExprHandle err
             = ExpressionFactory::makeError("Dict expected ':op args...'; ",
                                            "got ",
                                            args->toString());
@@ -95,7 +84,33 @@ void ScamDict::apply(ScamExpr * args, Continuation * cont, Env * env)
         return;
     }
 
-    exec(args, cont);
+    const ScamKeyword * op = parser->getParsedOp();
+    ExprHandle rv = nullptr;
+
+    if ( op->equals(DictParser::getOp) ) {
+        rv = get(parser->getOpKey());
+    }
+    else if ( op->equals(DictParser::putOp) ) {
+        /* this is potentially UB so revisit this soon!! */
+        ExprHandle val = const_cast<ExprHandle>(parser->getOpVal());
+        rv = put(parser->getOpKey(), val);
+    }
+    else if ( op->equals(DictParser::lenOp) ) {
+        rv = ExpressionFactory::makeInteger(length());
+    }
+    else if ( op->equals(DictParser::hasOp) ) {
+        const bool b = has(parser->getOpKey());
+        rv = ExpressionFactory::makeBoolean(b);
+    }
+    else if ( op->equals(DictParser::remOp) ) {
+        rv = remove(parser->getOpKey());
+    }
+    else {
+        rv = ExpressionFactory::makeError("Unknown dictionary operator: ",
+                                          op->toString());
+    }
+
+    cont->run(rv);
 }
 
 bool ScamDict::truth() const
@@ -113,7 +128,7 @@ size_t ScamDict::length() const
     return keys.size();
 }
 
-bool ScamDict::equals(ScamExpr const * expr) const
+bool ScamDict::equals(ConstExprHandle expr) const
 {
     if ( ! expr->isDict() ) {
         return false;
@@ -128,10 +143,10 @@ bool ScamDict::equals(ScamExpr const * expr) const
     size_t otherIdx = len+1;
 
     for ( size_t thisIdx = 0 ; thisIdx < len ; ++thisIdx ) {
-        ScamExpr const * myKey = this->keys[thisIdx];
+        ExprHandle myKey = this->keys[thisIdx];
         for ( otherIdx = 0 ; otherIdx < len ; ++otherIdx ) {
             if ( that->keys[otherIdx]->equals(myKey) ) {
-                ScamExpr const * myVal = this->vals[thisIdx];
+                ExprHandle myVal = this->vals[thisIdx];
                 if ( ! that->vals[otherIdx]->equals(myVal) ) {
                     return false;
                 }
@@ -147,7 +162,7 @@ bool ScamDict::equals(ScamExpr const * expr) const
 
 }
 
-bool ScamDict::has(ScamExpr const * key) const
+bool ScamDict::has(ExprHandle key) const
 {
     for ( size_t jdx = 0 ; jdx < keys.size() ; ++jdx ) {
         if ( keys[jdx]->equals(key) ) {
@@ -158,7 +173,7 @@ bool ScamDict::has(ScamExpr const * key) const
     return false;
 }
 
-ScamExpr * ScamDict::get(ScamExpr const * key) const
+ExprHandle ScamDict::get(ExprHandle key) const
 {
     for ( size_t jdx = 0 ; jdx < keys.size() ; ++jdx ) {
         if ( keys[jdx]->equals(key) ) {
@@ -171,10 +186,10 @@ ScamExpr * ScamDict::get(ScamExpr const * key) const
                                         "' does not exist");
 }
 
-ScamExpr * ScamDict::put(ScamExpr const * key, ScamExpr * val)
+ExprHandle ScamDict::put(ExprHandle key, ExprHandle val)
 {
     size_t prev = keys.size();
-    ScamExpr * v = val;
+    ExprHandle v = const_cast<ExprHandle>(val);
 
     for ( size_t jdx = 0 ; jdx < keys.size() ; ++jdx ) {
         if ( keys[jdx]->equals(key) ) {
@@ -194,9 +209,9 @@ ScamExpr * ScamDict::put(ScamExpr const * key, ScamExpr * val)
     return v;
 }
 
-ScamExpr * ScamDict::remove(ScamExpr const * key)
+ExprHandle ScamDict::remove(ExprHandle key)
 {
-    ScamExpr * rv = ExpressionFactory::makeNil();
+    ExprHandle rv = ExpressionFactory::makeNil();
 
     for ( size_t jdx = 0 ; jdx < keys.size() ; ++jdx ) {
         if ( keys[jdx]->equals(key) ) {
@@ -213,110 +228,4 @@ ScamExpr * ScamDict::remove(ScamExpr const * key)
 KeyVec const & ScamDict::getKeys() const
 {
     return keys;
-}
-
-void ScamDict::bad_op(ScamExpr * op, Continuation * cont)
-{
-    ScamExpr * msg =
-        ExpressionFactory::makeError("Dict expects op = ",
-                                     "[:get|:put|:length|:remove|:has]; ",
-                                     "got ",
-                                     op->toString());
-    cont->run(msg);
-}
-
-void ScamDict::exec_get(ScamExpr * args, Continuation * cont)
-{
-    if ( args->length() < 2u ) {
-        ScamExpr * err
-            = ExpressionFactory::makeError("dict :get missing key to get");
-        cont->run(err);
-    }
-    else {
-        ScamExpr * key = args->nthcar(1);
-        ScamExpr * val = get(key);
-        cont->run(val);
-    }
-}
-
-void ScamDict::exec_put(ScamExpr * args, Continuation * cont)
-{
-    if ( args->length() < 3u ) {
-        ScamExpr * err =
-            ExpressionFactory::makeError("dict :put expects key, value; ",
-                                         "got: ",
-                                         args->toString());
-        cont->run(err);
-    }
-    else {
-        ScamExpr * key = args->nthcar(1);
-        ScamExpr * val = args->nthcar(2);
-        ScamExpr * rv  = put(key, val);
-        cont->run(rv);
-    }
-}
-
-void ScamDict::exec_has(ScamExpr * args, Continuation * cont)
-{
-    if ( args->length() < 2u ) {
-        ScamExpr * err =
-            ExpressionFactory::makeError("dict :has expects key; got: ",
-                                         args->toString());
-        cont->run(err);
-    }
-    else {
-        ScamExpr * key = args->nthcar(1);
-        bool b = has(key);
-        ScamExpr * rv = ExpressionFactory::makeBoolean(b);
-        cont->run(rv);
-    }
-}
-
-void ScamDict::exec_remove(ScamExpr * args, Continuation * cont)
-{
-    if ( args->length() < 2u ) {
-        ScamExpr * err =
-            ExpressionFactory::makeError("dict :remove expects key; got: ",
-                                         args->toString());
-        cont->run(err);
-    }
-    else {
-        ScamExpr * key = args->nthcar(1);
-        ScamExpr * rv  = remove(key);
-        cont->run(rv);
-    }
-}
-
-void ScamDict::exec_length(Continuation * cont)
-{
-    ScamExpr * len = ExpressionFactory::makeInteger(length());
-    cont->run(len);
-}
-
-void ScamDict::exec(ScamExpr * args, Continuation * cont)
-{
-    ScamExpr * op = args->nthcar(0);
-    if ( ! op->isKeyword() ) {
-        bad_op(op, cont);
-        return;
-    }
-
-    if ( op->equals(getOp) ) {
-        exec_get(args, cont);
-    }
-    else if ( op->equals(putOp) ) {
-        exec_put(args, cont);
-    }
-    else if ( op->equals(lenOp) ) {
-        exec_length(cont);
-    }
-    else if ( op->equals(hasOp) ) {
-        exec_has(args, cont);
-    }
-    else if ( op->equals(remOp) ) {
-        exec_remove(args, cont);
-    }
-    else {
-        bad_op(op, cont);
-    }
 }
