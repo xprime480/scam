@@ -100,21 +100,21 @@ TEST_F(EvalTest, EvalForm)
     expectList(expr, "(2 4)", 2);
 }
 
-TEST_F(EvalTest, Progn)
+TEST_F(EvalTest, Begin)
 {
-    ExprHandle expr = parseAndEvaluate("(progn 1 2 3 (* 5 4) 99)");
+    ExprHandle expr = parseAndEvaluate("(begin 1 2 3 (* 5 4) 99)");
     expectInteger(expr, 99, "99");
 }
 
-TEST_F(EvalTest, PrognOne)
+TEST_F(EvalTest, BeginOne)
 {
-    ExprHandle expr = parseAndEvaluate("(progn 99)");
+    ExprHandle expr = parseAndEvaluate("(begin 99)");
     expectInteger(expr, 99, "99");
 }
 
-TEST_F(EvalTest, PrognZero)
+TEST_F(EvalTest, BeginZero)
 {
-    ExprHandle expr = parseAndEvaluate("(progn)");
+    ExprHandle expr = parseAndEvaluate("(begin)");
     expectNil(expr);
 }
 

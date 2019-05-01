@@ -86,8 +86,7 @@ void ScamEngine::getStandardEnv()
     addForm<InstanceP>(env, "instance?");
     addForm<DictP>(env, "dict?");
 
-    addForm<Progn>(env, "progn");
-    addForm<Progn>(env, "begin");
+    addForm<Begin>(env, "begin");
 
     addForm<Load>(env, "load", this);
     //    addForm<Include>(env, "include", this);

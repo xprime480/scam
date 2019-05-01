@@ -1,4 +1,4 @@
-#include "prim/Progn.hpp"
+#include "prim/Begin.hpp"
 
 #include "Continuation.hpp"
 #include "ScamException.hpp"
@@ -8,17 +8,17 @@
 using namespace scam;
 using namespace std;
 
-Progn::Progn()
-    : Primitive("progn")
+Begin::Begin()
+    : Primitive("begin")
 {
 }
 
-Progn * Progn::makeInstance()
+Begin * Begin::makeInstance()
 {
-    return new Progn();
+    return new Begin();
 }
 
-void Progn::applyArgs(ExprHandle args, Continuation * cont)
+void Begin::applyArgs(ExprHandle args, Continuation * cont)
 {
     if ( args->isNil() ) {
         cont->run(args);

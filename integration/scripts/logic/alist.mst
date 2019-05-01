@@ -12,18 +12,18 @@ AList
 (define alist (AssocList))
 
 (alist length)
-(progn
- (alist put :dog "woof")
- (alist length))
+(begin
+  (alist put :dog "woof")
+  (alist length))
 (alist get :dog)
 (alist get :cat)
-(progn
- (alist put :dog "bowwow")
- (alist length))
+(begin
+  (alist put :dog "bowwow")
+  (alist length))
 (alist get :dog)
-(progn
- (alist remove :dog)
- (alist length))
+(begin
+  (alist remove :dog)
+  (alist length))
 
 [result]
 [keep 7]

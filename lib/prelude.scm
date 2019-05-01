@@ -40,7 +40,7 @@
          ((loop
            (lambda ()
              (if ,test
-                 (progn
+                 (begin
                    ,body
                    (loop))
                  ()))))

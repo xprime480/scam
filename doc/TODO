@@ -29,8 +29,6 @@
 * Instead of single continuation, pass along a block that has at least
   a success and an error continuation.
 
-* Rename Progn => Begin to sync with R7RS
-
 * Remove class unit/TestHook
 
 * Make all snake_case_variables into CamelCaseVariables
@@ -40,4 +38,3 @@
 
 * I think Undefine will be incorrect in the event of backtracking.  Should
   the form be redefined when backtracking?
-  

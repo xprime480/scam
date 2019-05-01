@@ -1,4 +1,5 @@
 #include "prim/Backtrack.hpp"
+#include "prim/Begin.hpp"
 #include "prim/Car.hpp"
 #include "prim/CarCdr.hpp"
 #include "prim/Cdr.hpp"
@@ -12,7 +13,6 @@
 #include "prim/Match.hpp"
 #include "prim/MathOps.hpp"
 #include "prim/Predicates.hpp"
-#include "prim/Progn.hpp"
 #include "prim/RelOps.hpp"
 #include "prim/Spawn.hpp"
 #include "prim/Substitute.hpp"
