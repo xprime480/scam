@@ -1,31 +1,37 @@
 #if ! defined(DEFINEWORKER_HPP)
 #define DEFINEWORKER_HPP 1
 
-#include "form/EnvHelperWorker.hpp"
+#include "Worker.hpp"
 
 #include "ScamFwd.hpp"
 
 namespace scam
 {
-    class DefineWorker : public EnvHelperWorker
+    class AssignParser;
+
+    class DefineWorker : public Worker
     {
     private:
         friend class scam::MemoryManager;
-        DefineWorker(ExprHandle args,
+        DefineWorker(AssignParser * parser,
                      Continuation * cont,
                      Env * env,
                      ScamEngine * engine);
 
-        static DefineWorker * makeInstance(ExprHandle args,
+        static DefineWorker * makeInstance(AssignParser * parser,
                                            Continuation * cont,
                                            Env * env,
                                            ScamEngine * engine);
 
-    protected:
-        Continuation * getCont(ScamEnvKeyType sym) const override;
+    public:
+        void mark() const override;
+        void run() override;
 
     private:
-        ScamEngine * engine;
+        AssignParser * parser;
+        Continuation * cont;
+        Env          * env;
+        ScamEngine   * engine;
     };
 }
 

@@ -1,33 +1,56 @@
 #include "form/DefineWorker.hpp"
 
+#include "Env.hpp"
 #include "form/DefineCont.hpp"
+#include "input/AssignParser.hpp"
 #include "util/MemoryManager.hpp"
 
 using namespace scam;
 using namespace std;
 
-DefineWorker::DefineWorker(ExprHandle args,
+DefineWorker::DefineWorker(AssignParser * parser,
                            Continuation * cont,
                            Env * env,
                            ScamEngine * engine)
-    : EnvHelperWorker(args, cont, env, "Define")
+    : Worker("Define")
+    , parser(parser)
+    , cont(cont)
+    , env(env)
     , engine(engine)
 {
 }
 
-DefineWorker * DefineWorker::makeInstance(ExprHandle args,
+DefineWorker * DefineWorker::makeInstance(AssignParser * parser,
                                           Continuation * cont,
                                           Env * env,
                                           ScamEngine * engine)
 {
-    return new DefineWorker(args, cont, env, engine);
+    return new DefineWorker(parser, cont, env, engine);
 }
 
-Continuation * DefineWorker::getCont(ScamEnvKeyType sym) const
+void DefineWorker::mark() const
 {
-    return standardMemoryManager.make<DefineCont>(sym,
-                                                  cont,
-                                                  env,
-                                                  engine);
+    if ( ! isMarked() ) {
+        Worker::mark();
+        parser->mark();
+        cont->mark();
+        env->mark();
+    }
 }
+
+void DefineWorker::run()
+{
+    Worker::run();
+
+    ScamEnvKeyType sym = parser->getSymbol();
+    Continuation * c =
+        standardMemoryManager.make<DefineCont>(sym, cont, env, engine);
+
+    ExprHandle expr = parser->getForm();
+    expr->eval(c, env);
+}
+
+
+
+
 

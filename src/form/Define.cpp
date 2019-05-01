@@ -38,6 +38,6 @@ void Define::apply(ExprHandle args, Continuation * cont, Env * env)
         cont->run(err);
     }
     else {
-        workQueueHelper<DefineWorker>(args, cont, env, engine);
+        workQueueHelper<DefineWorker>(parser, cont, env, engine);
     }
 }
