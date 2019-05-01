@@ -29,7 +29,7 @@ namespace scam
 
         template <typename ... Parsers>
         static SequenceParser *
-        makeInstance (Parsers && ... parsers)
+        makeInstance(Parsers && ... parsers)
         {
             return new SequenceParser(parsers...);
         }

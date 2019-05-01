@@ -5,6 +5,8 @@
 
 #include "util/MemoryManager.hpp"
 
+#include <vector>
+
 namespace scam
 {
     class MemoryManager;
@@ -18,40 +20,19 @@ namespace scam
     private:
         friend class scam::MemoryManager;
 
-        template <typename ... Rest>
-        AlternativeParser(ArgParser * parser, Rest && ... rest)
-            : first(parser)
-            , rest(scam::standardMemoryManager.make<AlternativeParser>(rest...))
+        template <typename ... Parsers>
+        AlternativeParser(Parsers && ... parsers)
+            : match(nullptr)
         {
+            saveParsers(parsers...);
+            clearValue();
         }
 
-        explicit AlternativeParser(ArgParser * parser)
-            : first(parser)
-            , rest(nullptr)
-        {
-        }
-
-        AlternativeParser()
-            : first(nullptr)
-            , rest(nullptr)
-        {
-        }
-
-        template <typename ... Rest>
+        template <typename ... Parsers>
         static AlternativeParser *
-        makeInstance(ArgParser * parser, Rest && ... rest)
+        makeInstance(Parsers && ... parsers)
         {
-            return new AlternativeParser(parser, rest...);
-        }
-
-        static AlternativeParser * makeInstance(ArgParser * parser)
-        {
-            return new AlternativeParser(parser);
-        }
-
-        static AlternativeParser * makeInstance ()
-        {
-            return new AlternativeParser;
+            return new AlternativeParser(parsers...);
         }
 
     public:
@@ -59,11 +40,8 @@ namespace scam
         {
             if ( ! isMarked() ) {
                 ArgParser::mark();
-                if ( first ) {
-                    first->mark();
-                }
-                if ( rest ) {
-                    rest->mark();
+                for ( auto p : parsers ) {
+                    p->mark();
                 }
             }
         }
@@ -76,39 +54,49 @@ namespace scam
 
             clearValue();
 
-            if ( ! first ) {
-                return false;
-            }
-
-            if ( first->accept(expr) ) {
-                callback(expr);
-                return true;
-            }
-
-            if ( rest ) {
-                if ( rest->accept(expr) ) {
-                    callback(expr);
-                    return true;
+            for ( size_t idx = 0 ; idx < parsers.size() ; ++idx ) {
+                ArgParser * p = parsers[idx];
+                if ( p->accept(expr) ) {
+                    match = p;
+                    break;
                 }
             }
 
-            return false;
+            if ( ! match ) {
+                return false;
+            }
+
+            callback(expr);
+            return true;
+        }
+
+        void clearValue() override
+        {
+            ArgParser::clearValue();
+            match = nullptr;
         }
 
         ArgParser * getMatch() const
         {
-            if ( first->getValue() ) {
-                return first;
-            }
-            if ( rest ) {
-                return rest->getMatch();
-            }
-            return nullptr;
+            return match;
         }
 
     private:
-        ArgParser         * first;
-        AlternativeParser * rest;
+        ArgParser * match;
+
+        std::vector<ArgParser *> parsers;
+
+        template <typename ... Parsers>
+        void saveParsers(ArgParser * parser, Parsers && ... rest)
+        {
+            parsers.push_back(parser);
+            saveParsers(rest...);
+        }
+
+        void saveParsers()
+        {
+        }
+
     };
 }
 

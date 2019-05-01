@@ -1,9 +1,6 @@
 
 * Eventually this will be a Scheme interpreter fully compliant with R7RS
 
-* Update the AlternativeParser so that it is no longer a
-  template class.  Add a template constructor that updates internal state.
-
 * Separate implementation from interface for all of the ArgParser classes.
 
 * Ensure all apply functions use an appropriate parser to validate their
@@ -33,7 +30,7 @@
 
 * Make all snake_case_variables into CamelCaseVariables
 
-* The various WorkerData structures are probably an anti-patter.
+* The various WorkerData structures are probably an anti-pattern.
   Look at removing them.
 
 * I think Undefine will be incorrect in the event of backtracking.  Should
