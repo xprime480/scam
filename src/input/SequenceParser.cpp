@@ -24,13 +24,10 @@ bool SequenceParser::accept(ExprHandle expr)
 
     clearValue();
 
-    ArgParser * any = standardMemoryManager.make<ArgParser>();
-    ListParser * temp = standardMemoryManager.make<ListParser>(any);
-
+    ListParser * temp = getListOfAnythingParser();
     if ( ! temp->accept(expr) ) {
         return false;
     }
-
     if ( temp->size() != parsers.size() ) {
         return false;
     }

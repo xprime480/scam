@@ -112,8 +112,7 @@ TEST_F(ArgParserTest, AcceptListOfAnything)
 {
     const char * text = "symbol";
 
-    ArgParser *  ap = mm.make<ArgParser>();
-    ListParser * parser = mm.make<ListParser>(ap);
+    ListParser * parser = getListOfAnythingParser();
 
     acceptParse(parser, "()");
     EXPECT_EQ(0u, parser->size());

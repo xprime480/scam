@@ -35,6 +35,8 @@ namespace scam
         ArgParser * itemParser;
         std::vector<ExprHandle> items;
     };
+
+    ListParser * getListOfAnythingParser();
 }
 
 #endif

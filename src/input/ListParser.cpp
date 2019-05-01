@@ -1,6 +1,7 @@
 #include "input/ListParser.hpp"
 
 #include "expr/ScamExpr.hpp"
+#include "util/MemoryManager.hpp"
 
 using namespace scam;
 using namespace std;
@@ -83,4 +84,10 @@ ExprHandle ListParser::get(size_t idx) const
         return nullptr;
     }
     return items[idx];
+}
+
+ListParser * scam::getListOfAnythingParser()
+{
+    ArgParser * any = standardMemoryManager.make<ArgParser>();
+    return standardMemoryManager.make<ListParser>(any);
 }
