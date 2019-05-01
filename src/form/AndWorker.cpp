@@ -5,6 +5,7 @@
 #include "expr/ScamExpr.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "form/AndCont.hpp"
+#include "input/ListParser.hpp"
 #include "util/MemoryManager.hpp"
 
 using namespace scam;
@@ -12,31 +13,31 @@ using namespace std;
 
 AndWorker::AndWorker(Continuation * cont,
                      Env * env,
-                     ExprHandle args,
+                     ListParser * parser,
                      size_t n)
     : Worker("And")
-    , args(args)
     , cont(cont)
     , env(env)
+    , parser(parser)
     , n(n)
 {
 }
 
 AndWorker * AndWorker::makeInstance(Continuation * cont,
                                     Env * env,
-                                    ExprHandle args,
+                                    ListParser * parser,
                                     size_t n)
 {
-    return new AndWorker(cont, env, args, n);
+    return new AndWorker(cont, env, parser, n);
 }
 
 void AndWorker::mark() const
 {
     if ( ! isMarked() ) {
         Worker::mark();
-        args->mark();
         cont->mark();
         env->mark();
+        parser->mark();
     }
 }
 
@@ -44,27 +45,17 @@ void AndWorker::run()
 {
     Worker::run();
 
-    if ( ! args->isList() ) {
-        ExprHandle err =
-            ExpressionFactory::makeError("And expects a list of forms; ",
-                                         "got: ",
-                                         args->toString());
-        cont->run(err);
-        return;
-    }
-
-    size_t const len = args->length();
+    size_t const len = parser->size();
     if ( 0 == len ) {
         cont->run(ExpressionFactory::makeBoolean(true));
     }
     else if ( n == (len - 1) ) {
-        args->nthcar(len-1)->eval(cont, env);
+        parser->get(len-1)->eval(cont, env);
     }
     else {
-        ExprHandle test = args->nthcar(n);
-        ExprHandle a = args;
+        ExprHandle test = parser->get(n);
         Continuation * newCont =
-            standardMemoryManager.make<AndCont>(a, cont, env, n+1);
+            standardMemoryManager.make<AndCont>(parser, cont, env, n+1);
         test->eval(newCont, env);
     }
 }

@@ -3,31 +3,34 @@
 #include "Env.hpp"
 #include "WorkQueue.hpp"
 #include "expr/ScamExpr.hpp"
+#include "input/ListParser.hpp"
 #include "form/AndWorker.hpp"
 
 using namespace scam;
 using namespace std;
 
-AndCont::AndCont(ExprHandle args, Continuation * cont, Env * env, size_t n)
+AndCont::AndCont(ListParser * parser, Continuation * cont, Env * env, size_t n)
     : Continuation("And")
-    , args(args)
+    , parser(parser)
     , cont(cont)
     , env(env)
     , n(n)
 {
 }
 
-AndCont *
-AndCont::makeInstance(ExprHandle args, Continuation * cont, Env * env, size_t n)
+AndCont * AndCont::makeInstance(ListParser * parser,
+                                Continuation * cont,
+                                Env * env,
+                                size_t n)
 {
-    return new AndCont(args, cont, env, n);
+    return new AndCont(parser, cont, env, n);
 }
 
 void AndCont::mark() const
 {
     if ( ! isMarked() ) {
         Continuation::mark();
-        args->mark();
+        parser->mark();
         cont->mark();
         env->mark();
     }
@@ -44,6 +47,6 @@ void AndCont::run(ExprHandle expr)
         cont->run(expr);
     }
     else {
-        workQueueHelper<AndWorker>(cont, env, args, n);
+        workQueueHelper<AndWorker>(cont, env, parser, n);
     }
 }

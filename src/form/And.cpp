@@ -1,9 +1,10 @@
 #include "form/And.hpp"
 
+#include "Continuation.hpp"
 #include "WorkQueue.hpp"
+#include "expr/ExpressionFactory.hpp"
 #include "form/AndWorker.hpp"
-
-#include <sstream>
+#include "input/ListParser.hpp"
 
 using namespace scam;
 using namespace std;
@@ -21,6 +22,15 @@ And * And::makeInstance()
 
 void And::apply(ExprHandle args, Continuation * cont, Env * env)
 {
+    ListParser * parser = getListOfAnythingParser();
+    if ( ! parser->accept(args) ) {
+        ExprHandle err =
+            ExpressionFactory::makeError("and expects (form...); got: ",
+                                         args->toString());
+        cont->run(err);
+        return;
+    }
+
     unsigned pos { 0 };
-    workQueueHelper<AndWorker>(cont, env, args, pos);
+    workQueueHelper<AndWorker>(cont, env, parser, pos);
 }
