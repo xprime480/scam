@@ -56,8 +56,6 @@ void InstanceCont::run(ExprHandle expr)
 
 ExprHandle InstanceCont::find_func(ExprHandle o) const
 {
-    ExprHandle temp = o;
-
     while ( o->isInstance() ) {
         ScamInstanceAdapter adapter(o);
         Env * env = adapter.getFunctionMap();
@@ -65,8 +63,7 @@ ExprHandle InstanceCont::find_func(ExprHandle o) const
             return env->get(name);
         }
 
-        temp = adapter.getParent();
-        o    = temp;
+        o = adapter.getParent();
     }
 
     return function_not_found();

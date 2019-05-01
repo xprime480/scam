@@ -4,7 +4,7 @@
 #include "Worker.hpp"
 
 #include "ScamFwd.hpp"
-#include "input/AssignParser.hpp"
+#include "input/ArgParserFwd.hpp"
 
 namespace scam
 {

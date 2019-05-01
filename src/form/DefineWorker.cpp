@@ -3,13 +3,13 @@
 #include "Env.hpp"
 #include "expr/ScamExpr.hpp"
 #include "form/DefineCont.hpp"
-#include "input/AssignParser.hpp"
+#include "input/SymbolPlusParser.hpp"
 #include "util/MemoryManager.hpp"
 
 using namespace scam;
 using namespace std;
 
-DefineWorker::DefineWorker(AssignParser * parser,
+DefineWorker::DefineWorker(DefineParser * parser,
                            Continuation * cont,
                            Env * env,
                            ScamEngine * engine)
@@ -21,7 +21,7 @@ DefineWorker::DefineWorker(AssignParser * parser,
 {
 }
 
-DefineWorker * DefineWorker::makeInstance(AssignParser * parser,
+DefineWorker * DefineWorker::makeInstance(DefineParser * parser,
                                           Continuation * cont,
                                           Env * env,
                                           ScamEngine * engine)

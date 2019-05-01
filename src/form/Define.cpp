@@ -4,7 +4,7 @@
 #include "WorkQueue.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "form/DefineWorker.hpp"
-#include "input/AssignParser.hpp"
+#include "input/SymbolPlusParser.hpp"
 
 using namespace scam;
 using namespace std;
@@ -22,13 +22,7 @@ Define * Define::makeInstance(ScamEngine * engine)
 
 void Define::apply(ExprHandle args, Continuation * cont, Env * env)
 {
-    /*
-     * For now, define looks like assign.
-     *
-     * This is not in accord with the language definition, so it
-     * should change in the future.
-     */
-    AssignParser * parser = standardMemoryManager.make<AssignParser>();
+    DefineParser * parser = standardMemoryManager.make<DefineParser>();
 
     if ( ! parser->accept(args) ) {
         ExprHandle err =

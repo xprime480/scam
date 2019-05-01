@@ -1,4 +1,4 @@
-#include "input/AssignParser.hpp"
+#include "input/SymbolPlusParser.hpp"
 
 #include "expr/ScamSymbol.hpp"
 #include "input/SequenceParser.hpp"
@@ -6,7 +6,7 @@
 using namespace scam;
 using namespace std;
 
-AssignParser::AssignParser()
+SymbolPlusParser::SymbolPlusParser()
 {
     MemoryManager & mm = standardMemoryManager;
 
@@ -17,12 +17,12 @@ AssignParser::AssignParser()
     clearValue();
 }
 
-AssignParser * AssignParser::makeInstance()
+SymbolPlusParser * SymbolPlusParser::makeInstance()
 {
-    return new AssignParser;
+    return new SymbolPlusParser;
 }
 
-void AssignParser::mark() const
+void SymbolPlusParser::mark() const
 {
     if ( ! isMarked() ) {
         ArgParser::mark();
@@ -32,7 +32,7 @@ void AssignParser::mark() const
     }
 }
 
-bool AssignParser::accept(ExprHandle expr)
+bool SymbolPlusParser::accept(ExprHandle expr)
 {
     ArgParser::clearValue();
 
@@ -44,12 +44,12 @@ bool AssignParser::accept(ExprHandle expr)
     return true;
 }
 
-ScamEnvKeyType AssignParser::getSymbol() const
+ScamEnvKeyType SymbolPlusParser::getSymbol() const
 {
     return dynamic_cast<ScamEnvKeyType>(sym->getValue());
 }
 
-ExprHandle AssignParser::getForm() const
+ExprHandle SymbolPlusParser::getForm() const
 {
     return form->getValue();
 }

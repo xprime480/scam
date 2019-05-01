@@ -40,6 +40,10 @@ bool ScamClass::hasApply() const
 
 void ScamClass::apply(ExprHandle args, Continuation * cont, Env * env)
 {
+    /** It is not meaningful to do argument validation here as the
+     ** correct args are not apparant until the instance init method
+     ** is found.
+     **/
     workQueueHelper<ClassWorker>(this, args, cont, env);
 }
 

@@ -1,5 +1,5 @@
-#if ! defined(ASSIGNPARSER_HPP)
-#define ASSIGNPARSER_HPP 1
+#if ! defined(SYMBOLPLUSPARSER_HPP)
+#define SYMBOLPLUSPARSER_HPP 1
 
 #include "input/ArgParser.hpp"
 
@@ -7,12 +7,12 @@
 
 namespace scam
 {
-    class AssignParser : public ArgParser
+    class SymbolPlusParser : public ArgParser
     {
     private:
         friend class scam::MemoryManager;
-        AssignParser();
-        static AssignParser * makeInstance();
+        SymbolPlusParser();
+        static SymbolPlusParser * makeInstance();
 
     public:
         void mark() const override;

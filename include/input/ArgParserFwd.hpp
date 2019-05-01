@@ -8,7 +8,6 @@ namespace scam
     class AlternativeParser;
     class ApplyParser;
     class ArgParser;
-    class AssignParser;
     class ClassDefParser;
     class CountedListParser;
     class DictParser;
@@ -18,8 +17,14 @@ namespace scam
     class ParameterListParser;
     class SequenceParser;
     class SingletonParser;
+    class SymbolPlusParser;
+    class SymbolPlusManyParser;
     class TypeParsers;
     class UndefineParser;
+
+    using DefineParser = SymbolPlusParser;
+    using AssignParser = SymbolPlusParser;
+    using InstanceParser = SymbolPlusManyParser;
 }
 
 #endif

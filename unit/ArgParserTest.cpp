@@ -4,7 +4,6 @@
 #include "input/AlternativeParser.hpp"
 #include "input/ApplyParser.hpp"
 #include "input/ArgParser.hpp"
-#include "input/AssignParser.hpp"
 #include "input/ClassDefParser.hpp"
 #include "input/CountedListParser.hpp"
 #include "input/DictParser.hpp"
@@ -13,6 +12,8 @@
 #include "input/ParameterListParser.hpp"
 #include "input/SequenceParser.hpp"
 #include "input/SingletonParser.hpp"
+#include "input/SymbolPlusParser.hpp"
+#include "input/SymbolPlusManyParser.hpp"
 #include "input/TypeParsers.hpp"
 
 using namespace std;
@@ -487,15 +488,30 @@ TEST_F(ArgParserTest, DictUnknown)
     rejectParse(parser, "(:unknown)");
 }
 
-TEST_F(ArgParserTest, AssignCorrect)
+TEST_F(ArgParserTest, SymbolPlus)
 {
-    AssignParser * parser = mm.make<AssignParser>();
+    SymbolPlusParser * parser = mm.make<SymbolPlusParser>();
     acceptParse(parser, "(answer (* 2 21))");
     expectSymbol(parser->getSymbol(), "answer");
 }
 
-TEST_F(ArgParserTest, AssignNoForm)
+TEST_F(ArgParserTest, SymbolWithoutForm)
 {
-    AssignParser * parser = mm.make<AssignParser>();
+    SymbolPlusParser * parser = mm.make<SymbolPlusParser>();
     rejectParse(parser, "(answer)");
+}
+
+TEST_F(ArgParserTest, SymbolPlusMany)
+{
+    SymbolPlusManyParser * parser = mm.make<SymbolPlusManyParser>();
+    acceptParse(parser, "(answer (* 2 21))");
+    expectSymbol(parser->getSymbol(), "answer");
+}
+
+TEST_F(ArgParserTest, SymbolManyWithoutForm)
+{
+    SymbolPlusManyParser * parser = mm.make<SymbolPlusManyParser>();
+    acceptParse(parser, "(answer)");
+    expectSymbol(parser->getSymbol(), "answer");
+    expectNil(parser->getForms());
 }

@@ -31,3 +31,7 @@
 
 * I think Undefine will be incorrect in the event of backtracking.  Should
   the form be redefined when backtracking?
+
+* Validate that arguments to ScamClass::apply should not be evaluated
+  twice.  The current code seems to mapEval once in the class and once in
+  the instance.

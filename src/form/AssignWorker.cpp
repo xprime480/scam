@@ -5,6 +5,7 @@
 #include "ScamEngine.hpp"
 #include "expr/ScamExpr.hpp"
 #include "form/AssignCont.hpp"
+#include "input/SymbolPlusParser.hpp"
 #include "util/MemoryManager.hpp"
 
 using namespace scam;
