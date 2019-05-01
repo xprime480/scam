@@ -4,6 +4,7 @@
 #include "WorkQueue.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "form/AssignWorker.hpp"
+#include "input/AssignParser.hpp"
 
 using namespace scam;
 using namespace std;

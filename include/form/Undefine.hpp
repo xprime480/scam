@@ -11,8 +11,8 @@ namespace scam
     {
     private:
         friend class scam::MemoryManager;
-        Undefine(ScamEngine * engine);
-        static Undefine * makeInstance(ScamEngine * engine);
+        Undefine();
+        static Undefine * makeInstance();
 
     public:
         void apply(ExprHandle args, Continuation * cont, Env * env) override;

@@ -1,28 +1,36 @@
 #if ! defined(UNDEFINEWORKER_HPP)
 #define UNDEFINEWORKER_HPP 1
 
-#include "form/EnvHelperWorker.hpp"
+#include "Worker.hpp"
 
 #include "ScamFwd.hpp"
 
 namespace scam
 {
-    class UndefineWorker : public EnvHelperWorker
+    class UndefineParser;
+
+    class UndefineWorker : public Worker
     {
     private:
         friend class scam::MemoryManager;
-        UndefineWorker(ExprHandle args,
+
+        UndefineWorker(UndefineParser * parser,
                        Continuation * cont,
-                       Env * env,
-                       ScamEngine * engine);
+                       Env * env);
 
-        static UndefineWorker * makeInstance(ExprHandle args,
+        static UndefineWorker * makeInstance(UndefineParser * parser,
                                              Continuation * cont,
-                                             Env * env,
-                                             ScamEngine * engine);
+                                             Env * env);
 
-    protected:
-        Continuation * getCont(ScamEnvKeyType sym) const override;
+    public:
+        void mark() const override;
+
+        void run() override;
+
+    private:
+        UndefineParser * parser;
+        Continuation   * cont;
+        Env            * env;
     };
 }
 

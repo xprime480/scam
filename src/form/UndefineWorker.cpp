@@ -1,29 +1,50 @@
 #include "form/UndefineWorker.hpp"
 
+#include "Continuation.hpp"
+#include "Env.hpp"
+#include "expr/ExpressionFactory.hpp"
+#include "expr/ScamExpr.hpp"
 #include "form/UndefineCont.hpp"
+#include "input/UndefineParser.hpp"
 #include "util/MemoryManager.hpp"
 
 using namespace scam;
 using namespace std;
 
-UndefineWorker::UndefineWorker(ExprHandle args,
+UndefineWorker::UndefineWorker(UndefineParser * parser,
                                Continuation * cont,
-                               Env * env,
-                               ScamEngine * engine)
-    : EnvHelperWorker(args, cont, env, "Undefine")
+                               Env * env)
+    : Worker("Undefine")
+    , parser(parser)
+    , cont(cont)
+    , env(env)
 {
 }
 
-UndefineWorker * UndefineWorker::makeInstance(ExprHandle args,
+UndefineWorker * UndefineWorker::makeInstance(UndefineParser * parser,
                                               Continuation * cont,
-                                              Env * env,
-                                              ScamEngine * engine)
+                                              Env * env)
 {
-    return new UndefineWorker(args, cont, env, engine);
+    return new UndefineWorker(parser, cont, env);
 }
 
-Continuation * UndefineWorker::getCont(ScamEnvKeyType sym) const
+void UndefineWorker::mark() const
 {
-    return standardMemoryManager.make<UndefineCont>(sym, cont, env);
+    if ( ! isMarked() ) {
+        Worker::mark();
+        parser->mark();
+        cont->mark();
+        env->mark();
+    }
 }
 
+void UndefineWorker::run()
+{
+    Worker::run();
+
+    ScamEnvKeyType sym = parser->getSymbol();
+    Continuation * c = standardMemoryManager.make<UndefineCont>(sym, cont, env);
+    ExprHandle expr = ExpressionFactory::makeNil();
+
+    c->run(expr);
+}

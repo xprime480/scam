@@ -22,7 +22,7 @@ void ScamEngine::getStandardEnv()
 {
     addForm<Assign>(env, "assign!", this);
     addForm<Define>(env, "define", this);
-    addForm<Undefine>(env, "undefine", this);
+    addForm<Undefine>(env, "undefine");
     addForm<Lambda>(env, "lambda");
     addForm<QuasiQuote>(env, "quasiquote");
     addForm<Quote>(env, "quote");

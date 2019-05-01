@@ -1,25 +1,35 @@
 #include "form/Undefine.hpp"
 
+#include "Continuation.hpp"
 #include "WorkQueue.hpp"
+#include "expr/ExpressionFactory.hpp"
 #include "form/UndefineWorker.hpp"
+#include "input/UndefineParser.hpp"
 
 using namespace scam;
 using namespace std;
 
-Undefine::Undefine(ScamEngine * engine)
+Undefine::Undefine()
   : EnvHelper("undefine", engine)
 {
 }
 
-Undefine * Undefine::makeInstance(ScamEngine * engine)
+Undefine * Undefine::makeInstance()
 {
-    return new Undefine(engine);
+    return new Undefine();
 }
 
 void Undefine::apply(ExprHandle args, Continuation * cont, Env * env)
 {
-    
-    if ( checkArgs(args, cont, false) ) {
-        workQueueHelper<UndefineWorker>(args, cont, env, engine);
+    UndefineParser * parser = standardMemoryManager.make<UndefineParser>();
+
+    if ( ! parser->accept(args) ) {
+        ExprHandle err =
+            ExpressionFactory::makeError("undefine expects (sym); got: ",
+                                         args->toString());
+        cont->run(err);
+    }
+    else {
+        workQueueHelper<UndefineWorker>(parser, cont, env);
     }
 }

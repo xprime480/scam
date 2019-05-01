@@ -41,3 +41,6 @@
 * The various WorkerData structures are probably an anti-patter.
   Look at removing them.
 
+* I think Undefine will be incorrect in the event of backtracking.  Should
+  the form be redefined when backtracking?
+  
