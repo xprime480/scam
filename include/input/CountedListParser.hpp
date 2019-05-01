@@ -3,10 +3,10 @@
 
 #include "input/ListParser.hpp"
 
+#include "ScamFwd.hpp"
+
 namespace scam
 {
-    class MemoryManager;
-
     /**
      * Given an item parser and a min,max count, match a list of
      * min..max items.
@@ -17,35 +17,14 @@ namespace scam
         friend class scam::MemoryManager;
 
     protected:
-        CountedListParser(ArgParser * itemParser, size_t min, size_t max)
-            : ListParser(itemParser)
-            , min(min)
-            , max(max)
-        {
-        }
+        CountedListParser(ArgParser * itemParser, size_t min, size_t max);
 
     private:
         static CountedListParser *
-        makeInstance(ArgParser * itemParser, size_t min, size_t max)
-        {
-            return new CountedListParser(itemParser, min, max);
-        }
+        makeInstance(ArgParser * itemParser, size_t min, size_t max);
 
     public:
-        bool accept(ExprHandle expr) override
-        {
-            if ( ! ListParser::accept(expr) ) {
-                return false;
-            }
-
-            const size_t count = size();
-            if ( count < min || count > max ) {
-                clearValue();
-                return false;
-            }
-
-            return true;
-        }
+        bool accept(ExprHandle expr) override;
 
     private:
         const size_t min;

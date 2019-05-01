@@ -4,6 +4,7 @@
 #include "WorkQueue.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ClosureWorker.hpp"
+#include "input/ParameterListParser.hpp"
 
 #include <sstream>
 

@@ -15,8 +15,6 @@
 #include "input/SingletonParser.hpp"
 #include "input/TypeParsers.hpp"
 
-#include "util/DebugTrace.hpp"
-
 using namespace std;
 using namespace scam;
 
@@ -25,18 +23,11 @@ class ArgParserTest : public TestBase
 protected:
     void acceptParse(ArgParser * parser, const char * text)
     {
-        scamTrace("about to read text:", text);
-
         ExprHandle value = readString(text);
-        scamTrace("read the text, got", value, value->toString());
-
         bool accept = parser->accept(value);
-        scamTrace("parser returned", accept);
 
         ASSERT_TRUE(accept);
         ExprHandle saved = parser->getValue();
-        scamTrace("parser saved", saved,
-                  (nullptr == saved ? "<null>" : saved->toString()));
         EXPECT_TRUE(value->equals(saved));
     }
 
@@ -47,9 +38,6 @@ protected:
         bool accept = parser->accept(value);
         EXPECT_FALSE(accept);
         ConstExprHandle v = parser->getValue();
-        if ( accept && v ) {
-            scamTrace("mistakenly parsed value = ", v, v->toString());
-        }
         EXPECT_EQ(nullptr, v);
     }
 };

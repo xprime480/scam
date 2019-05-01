@@ -3,7 +3,7 @@
 
 #include "input/ArgParser.hpp"
 
-#include "input/CountedListParser.hpp"
+#include "input/ArgParserFwd.hpp"
 
 namespace scam
 {
@@ -14,56 +14,15 @@ namespace scam
     {
     private:
         friend class scam::MemoryManager;
-
-        ApplyParser()
-            : any(standardMemoryManager.make<ArgParser>())
-            , parser(standardMemoryManager.make<CountedListParser>(any, 2, 2))
-        {
-            clearValue();
-        }
-
-        static ApplyParser * makeInstance()
-        {
-            return new ApplyParser;
-        }
+        ApplyParser();
+        static ApplyParser * makeInstance();
 
     public:
-        void mark() const override
-        {
-            if ( ! isMarked() ) {
-                ArgParser::mark();
-                any->mark();
-                parser->mark();
-            }
-        }
+        void mark() const override;
+        bool accept(ExprHandle expr) override;
 
-        bool accept(ExprHandle expr) override
-        {
-            ArgParser::clearValue();
-
-            if ( ! parser->accept(expr) ) {
-                return false;
-            }
-
-            callback(expr);
-            return true;
-        }
-
-        ExprHandle getParsedOp() const
-        {
-            if ( 2u == parser->size() ) {
-                return parser->get(0);
-            }
-            return nullptr;
-        }
-
-        ExprHandle getArgs() const
-        {
-            if ( 2u == parser->size() ) {
-                return parser->get(1);
-            }
-            return nullptr;
-        }
+        ExprHandle getParsedOp() const;
+        ExprHandle getArgs() const;
 
     private:
         ArgParser         * any;

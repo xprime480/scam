@@ -8,6 +8,7 @@
 #include "expr/ExpressionFactory.hpp"
 #include "expr/MacroEvalCont.hpp"
 #include "expr/ScamExpr.hpp"
+#include "input/ParameterListParser.hpp"
 #include "util/MemoryManager.hpp"
 
 using namespace scam;

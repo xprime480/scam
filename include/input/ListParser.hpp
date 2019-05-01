@@ -5,8 +5,6 @@
 
 #include <vector>
 
-#include "util/DebugTrace.hpp"
-
 namespace scam
 {
     class MemoryManager;
@@ -20,100 +18,18 @@ namespace scam
         friend class scam::MemoryManager;
 
     protected:
-        ListParser(ArgParser * itemParser)
-            : itemParser(itemParser)
-        {
-        }
+        ListParser(ArgParser * itemParser);
 
     private:
-        static ListParser * makeInstance(ArgParser * itemParser)
-        {
-            return new ListParser(itemParser);
-        }
+        static ListParser * makeInstance(ArgParser * itemParser);
 
     public:
-        void mark() const override
-        {
-            if ( ! isMarked() ) {
-                ArgParser::mark();
-                itemParser->mark();
-                for ( const auto & item : items ) {
-                    item->mark();
-                }
-            }
-        }
+        void mark() const override;
+        bool accept(ExprHandle expr) override;
+        void clearValue() override;
 
-        bool accept(ExprHandle expr) override
-        {
-            scamTrace("ListParser::accept", expr, expr->toString());
-
-            if ( ! ArgParser::accept(expr) ) {
-                return false;
-            }
-            scamTrace("\tAccepted by ArgParser");
-
-            clearValue();
-
-            if ( ! expr->isCons() && ! expr->isNil() ) {
-                scamTrace("\tNeither cons nor nil, rejected");
-                return false;
-            }
-
-            if ( expr->isNil() ) {
-                scamTrace("\tnil, accepted");
-                callback(expr);
-                return true;
-            }
-
-            ExprHandle current = expr;
-            while ( current->isCons() ) {
-                ExprHandle item = current->getCar();
-                scamTrace("\tin loop, testing", item, item->toString());
-                current = current->getCdr();
-                scamTrace("current", current);
-                if ( ! itemParser->accept(item) ) {
-                    scamTrace("\trejected item");
-                    clearValue();
-                    return false;
-                }
-                scamTrace("\taccepted");
-                items.push_back(item);
-            }
-
-            if ( ! current->isNil() ) {
-                scamTrace("\timproper tail, value:",
-                          current, current->toString());
-                if ( ! itemParser->accept(current) )  {
-                    scamTrace("\t\trejected");
-                    clearValue();
-                    return false;
-                }
-                items.push_back(current);
-            }
-
-            scamTrace("accepted", size(), "items");
-            callback(expr);
-            return true;
-        }
-
-        void clearValue() override
-        {
-            ArgParser::clearValue();
-            items.clear();
-        }
-
-        size_t size() const
-        {
-            return items.size();
-        }
-
-        ExprHandle get(size_t idx) const
-        {
-            if ( idx >= size() ) {
-                return nullptr;
-            }
-            return items[idx];
-        }
+        size_t size() const;
+        ExprHandle get(size_t idx) const;
 
     private:
         ArgParser * itemParser;

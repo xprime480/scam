@@ -5,8 +5,6 @@
 
 namespace scam
 {
-    class MemoryManager;
-
     /**
      * Given an item parser, match a list of exactly 1 item.
      */
@@ -14,23 +12,11 @@ namespace scam
     {
     private:
         friend class scam::MemoryManager;
-
-        SingletonParser(ArgParser * itemParser)
-            : CountedListParser(itemParser, 1, 1)
-        {
-        }
-
-        static SingletonParser * makeInstance(ArgParser * itemParser)
-        {
-            return new SingletonParser(itemParser);
-        }
+        SingletonParser(ArgParser * itemParser);
+        static SingletonParser * makeInstance(ArgParser * itemParser);
 
     public:
-        ExprHandle get() const
-        {
-            return CountedListParser::get(0);
-        }
-
+        ExprHandle get() const;
     };
 }
 

@@ -1,6 +1,7 @@
 #include "form/DefineWorker.hpp"
 
 #include "Env.hpp"
+#include "expr/ScamExpr.hpp"
 #include "form/DefineCont.hpp"
 #include "input/AssignParser.hpp"
 #include "util/MemoryManager.hpp"
