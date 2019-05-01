@@ -1,13 +1,13 @@
 #if ! defined(SCAMDEFINE_HPP)
 #define SCAMDEFINE_HPP 1
 
-#include "form/EnvHelper.hpp"
+#include "form/SpecialForm.hpp"
 
 #include "ScamFwd.hpp"
 
 namespace scam
 {
-    class Define : public EnvHelper
+    class Define : public SpecialForm
     {
     private:
         friend class scam::MemoryManager;
@@ -15,8 +15,10 @@ namespace scam
         static Define * makeInstance(ScamEngine * engine);
 
     public:
-        void
-        apply(ExprHandle args, Continuation * cont, Env * env) override;
+        void apply(ExprHandle args, Continuation * cont, Env * env) override;
+
+    private:
+        ScamEngine * engine;
     };
 }
 

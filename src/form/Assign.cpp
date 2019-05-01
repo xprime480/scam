@@ -10,7 +10,8 @@ using namespace scam;
 using namespace std;
 
 Assign::Assign(ScamEngine * engine)
-    : EnvHelper("assign!", engine)
+    : SpecialForm("assign!", true)
+    , engine(engine)
 {
 }
 

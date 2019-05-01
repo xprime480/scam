@@ -10,7 +10,7 @@ using namespace scam;
 using namespace std;
 
 Undefine::Undefine()
-  : EnvHelper("undefine", engine)
+    : SpecialForm("assign!", true)
 {
 }
 

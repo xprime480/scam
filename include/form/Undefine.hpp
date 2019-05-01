@@ -1,13 +1,13 @@
 #if ! defined(SCAMUNDEFINE_HPP)
 #define SCAMUNDEFINE_HPP 1
 
-#include "form/EnvHelper.hpp"
+#include "form/SpecialForm.hpp"
 
 #include "ScamFwd.hpp"
 
 namespace scam
 {
-    class Undefine : public EnvHelper
+    class Undefine : public SpecialForm
     {
     private:
         friend class scam::MemoryManager;

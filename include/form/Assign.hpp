@@ -1,13 +1,13 @@
 #if ! defined(SCAMASSIGN_HPP)
 #define SCAMASSIGN_HPP 1
 
-#include "form/EnvHelper.hpp"
+#include "form/SpecialForm.hpp"
 
 #include "ScamFwd.hpp"
 
 namespace scam
 {
-    class Assign : public EnvHelper
+    class Assign : public SpecialForm
     {
     private:
         friend class scam::MemoryManager;
@@ -16,6 +16,9 @@ namespace scam
 
     public:
         void apply(ExprHandle args, Continuation * cont, Env * env) override;
+
+    private:
+        ScamEngine * engine;
     };
 }
 
