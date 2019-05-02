@@ -4,10 +4,12 @@
 #include "input/AlternativeParser.hpp"
 #include "input/ApplyParser.hpp"
 #include "input/ArgParser.hpp"
+#include "input/BindFormParser.hpp"
 #include "input/ClassDefParser.hpp"
 #include "input/CountedListParser.hpp"
 #include "input/DictParser.hpp"
 #include "input/FunctionDefParser.hpp"
+#include "input/LetParser.hpp"
 #include "input/ListParser.hpp"
 #include "input/ParameterListParser.hpp"
 #include "input/SequenceParser.hpp"
@@ -164,9 +166,7 @@ TEST_F(ArgParserTest, AcceptOneToThreeIntegers)
 
 TEST_F(ArgParserTest, AcceptSingletonAnything)
 {
-    ArgParser       * ap = mm.make<ArgParser>();
-    SingletonParser * parser = mm.make<SingletonParser>(ap);
-
+    SingletonParser * parser = getSingletonOfAnythingParser();
     rejectParse(parser, "()");
 
     acceptParse(parser, "(#(just 1 vector))");
@@ -513,4 +513,50 @@ TEST_F(ArgParserTest, SymbolManyWithoutForm)
     acceptParse(parser, "(answer)");
     expectSymbol(parser->getSymbol(), "answer");
     expectNil(parser->getForms());
+}
+
+TEST_F(ArgParserTest, BindFormSymbolOnly)
+{
+    BindFormParser * parser = mm.make<BindFormParser>();
+    rejectParse(parser, "(answer)");
+}
+
+TEST_F(ArgParserTest, BindFormSymbolPlusForm)
+{
+    BindFormParser * parser = mm.make<BindFormParser>();
+    acceptParse(parser, "(answer 42)");
+    expectSymbol(parser->getSymbol(), "answer");
+    expectInteger(parser->getForm(), 42, "42");
+}
+
+TEST_F(ArgParserTest, TrivialLet)
+{
+    LetParser * parser = mm.make<LetParser>();
+    acceptParse(parser, "(())");
+    EXPECT_EQ(0u, parser->getBindingCount());
+    expectNil(parser->getForms());
+}
+
+TEST_F(ArgParserTest, NonTrivialLet)
+{
+    LetParser * parser = mm.make<LetParser>();
+    acceptParse(parser, "(((a 3) (b a)) (+ a 2))");
+
+    EXPECT_EQ(2u, parser->getBindingCount());
+
+    BindFormParser * binding = parser->getBinding(0u);
+    expectSymbol(binding->getSymbol(), "a");
+    expectInteger(binding->getForm(), 3, "3");
+    
+    binding = parser->getBinding(1u);
+    expectSymbol(binding->getSymbol(), "b");
+    expectSymbol(binding->getForm(), "a");
+    
+    expectList(parser->getForms(), "((+ a 2))", 1);
+}
+
+TEST_F(ArgParserTest, LetWithBadBindings)
+{
+    LetParser * parser = mm.make<LetParser>();
+    rejectParse(parser, "(this-is-not-a-binding 2 2 2 3 3 4)");
 }

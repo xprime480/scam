@@ -77,6 +77,17 @@ ExprHandle ExpressionFactory::makeList(ExprHandle item)
     return makeCons(item, makeNil());
 }
 
+ExprHandle ExpressionFactory::makeList(std::vector<ExprHandle> & items)
+{
+    ExprHandle rv = makeNil();
+
+    for ( auto iter = items.rbegin() ; iter != items.rend() ; ++iter ) {
+        rv = makeCons(*iter, rv);
+    }
+
+    return rv;
+}
+
 ScamVector * ExpressionFactory::makeVector(ExprVec const & elts)
 {
     return standardMemoryManager.make<ScamVector>(elts);

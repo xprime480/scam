@@ -18,6 +18,8 @@ namespace scam
     public:
         ExprHandle get() const;
     };
+
+    SingletonParser * getSingletonOfAnythingParser();
 }
 
 #endif

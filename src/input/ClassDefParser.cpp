@@ -43,9 +43,7 @@ bool ClassDefParser::accept(ExprHandle expr)
 
     clearValue();
 
-    ArgParser * any = standardMemoryManager.make<ArgParser>();
-    CountedListParser * temp =
-        standardMemoryManager.make<CountedListParser>(any, 2, 99999);
+    CountedListParser * temp = getCountedListOfAnythingParser(2, 99999);
 
     if ( ! temp->accept(expr) ) {
         return false;

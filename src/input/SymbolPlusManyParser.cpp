@@ -36,9 +36,7 @@ bool SymbolPlusManyParser::accept(ExprHandle expr)
 
     clearValue();
 
-    ArgParser * any = standardMemoryManager.make<ArgParser>();
-    CountedListParser * top =
-        standardMemoryManager.make<CountedListParser>(any, 1, 99999);
+    CountedListParser * top = getCountedListOfAnythingParser(1, 99999);
 
     if ( ! top->accept(expr) ) {
         return false;

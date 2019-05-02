@@ -35,3 +35,7 @@
 * Validate that arguments to ScamClass::apply should not be evaluated
   twice.  The current code seems to mapEval once in the class and once in
   the instance.
+
+* Make a convenience function for reporting failed parser expectations.
+
+* Can validateClosureArgs be refactored or eliminated somehow?

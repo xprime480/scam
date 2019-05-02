@@ -7,16 +7,18 @@
 
 namespace scam
 {
+    class LetParser;
+    
     class LetStarWorker : public LetBaseWorker
     {
     private:
         friend class scam::MemoryManager;
-        LetStarWorker(ExprHandle args,
+        LetStarWorker(LetParser * parser,
                       Continuation * cont,
                       Env * env,
                       ScamEngine * engine);
 
-        static LetStarWorker * makeInstance(ExprHandle args,
+        static LetStarWorker * makeInstance(LetParser * parser,
                                             Continuation * cont,
                                             Env * env,
                                             ScamEngine * engine);

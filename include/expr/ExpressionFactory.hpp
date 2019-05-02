@@ -60,6 +60,7 @@ namespace scam
 
         static ExprHandle makeList();
         static ExprHandle makeList(ExprHandle item);
+	static ExprHandle makeList(std::vector<ExprHandle> & items);
 
         template <typename... Args>
         static ExprHandle makeList(ExprHandle car, Args... args)

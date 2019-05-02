@@ -6,8 +6,6 @@
 #include "util/MemoryManager.hpp"
 #include "util/Validations.hpp"
 
-#include "util/DebugTrace.hpp"
-
 using namespace scam;
 using namespace std;
 
@@ -24,13 +22,9 @@ ClassMaker * ClassMaker::makeInstance()
 
 void ClassMaker::apply(ExprHandle args, Continuation * cont, Env * env)
 {
-    scamTrace("ClassMaker::apply", args->toString());
-
     ClassDefParser * parser = standardMemoryManager.make<ClassDefParser>();
 
     if ( ! parser->accept(args) ) {
-        scamTrace("rejecting the parse");
-
         ExprHandle err =
             ExpressionFactory::makeError("ClassMaker expected: (Base",
                                          " (vars...) methods...); ",
@@ -39,8 +33,6 @@ void ClassMaker::apply(ExprHandle args, Continuation * cont, Env * env)
         cont->run(err);
         return;
     }
-
-    scamTrace("class parsed successfully");
 
     ExprHandle cls = ExpressionFactory::makeClass(parser, env);
     cont->run(cls);

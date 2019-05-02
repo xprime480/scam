@@ -8,11 +8,13 @@ namespace scam
     class AlternativeParser;
     class ApplyParser;
     class ArgParser;
+    class BindFormParser;
     class ClassDefParser;
     class CountedListParser;
     class DictParser;
     class FunctionDefParser;
     class LambdaParser;
+    class LetParser;
     class ListParser;
     class ParameterListParser;
     class SequenceParser;

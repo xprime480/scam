@@ -2,7 +2,6 @@
 
 #include "Continuation.hpp"
 #include "expr/ExpressionFactory.hpp"
-#include "input/ArgParser.hpp"
 #include "input/SingletonParser.hpp"
 
 using namespace scam;
@@ -40,8 +39,7 @@ bool ScamContinuation::hasApply() const
 void
 ScamContinuation::apply(ExprHandle args, Continuation * cont,  Env * env)
 {
-    ArgParser * ap = standardMemoryManager.make<ArgParser>();
-    SingletonParser * parser = standardMemoryManager.make<SingletonParser>(ap);
+    SingletonParser * parser = getSingletonOfAnythingParser();
     const bool accepted = parser->accept(args);
 
     if ( accepted ) {

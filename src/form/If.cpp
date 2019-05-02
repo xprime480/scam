@@ -4,17 +4,10 @@
 #include "WorkQueue.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "form/IfWorker.hpp"
-#include "input/ArgParser.hpp"
 #include "input/CountedListParser.hpp"
-#include "util/MemoryManager.hpp"
 
 using namespace scam;
 using namespace std;
-
-namespace scam
-{
-    class MemoryManager;
-}
 
 If::If()
     : SpecialForm("if")
@@ -29,9 +22,7 @@ If * If::makeInstance()
 
 void If::apply(ExprHandle args, Continuation * cont, Env * env)
 {
-    ArgParser * any = standardMemoryManager.make<ArgParser>();
-    CountedListParser * parser =
-        standardMemoryManager.make<CountedListParser>(any, 2, 3);
+    CountedListParser * parser = getCountedListOfAnythingParser(2, 3);
 
     if ( ! parser->accept(args) ) {
         ExprHandle err =

@@ -4,7 +4,6 @@
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamExpr.hpp"
 #include "form/EvalCont.hpp"
-#include "input/ArgParser.hpp"
 #include "input/SingletonParser.hpp"
 #include "util/MemoryManager.hpp"
 
@@ -24,10 +23,7 @@ Eval * Eval::makeInstance()
 
 void Eval::apply(ExprHandle args, Continuation * cont, Env * env)
 {
-    MemoryManager & mm = standardMemoryManager;
-
-    ArgParser       * form = mm.make<ArgParser>();
-    SingletonParser * parser = mm.make<SingletonParser>(form);
+    SingletonParser * parser = getSingletonOfAnythingParser();
 
     if ( ! parser->accept(args) ) {
         ExprHandle err =

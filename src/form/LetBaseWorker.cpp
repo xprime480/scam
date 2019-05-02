@@ -2,20 +2,22 @@
 
 #include "Continuation.hpp"
 #include "Env.hpp"
-#include "expr/ScamExpr.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "expr/ScamExpr.hpp"
+#include "input/BindFormParser.hpp"
+#include "input/LetParser.hpp"
 
 using namespace scam;
 using namespace std;
 
 LetBaseWorker::LetBaseWorker(char const * name,
-                             ExprHandle args,
+                             LetParser * parser,
                              Continuation * cont,
                              Env * env)
     : Worker(name)
     , cont(cont)
     , env(env)
-    , args(args)
+    , parser(parser)
 {
 }
 
@@ -23,7 +25,7 @@ void LetBaseWorker::mark() const
 {
     if ( ! isMarked() ) {
         Worker::mark();
-        args->mark();
+        parser->mark();
         cont->mark();
         env->mark();
     }
@@ -33,10 +35,6 @@ void LetBaseWorker::run()
 {
     Worker::run();
 
-    if ( ! verify_args() ) {
-        return;
-    }
-
     ExprHandle parsed  = parse_args();
     ExprHandle formals = parsed->getCar()->getCar();
     ExprHandle values  = parsed->getCar()->getCdr();
@@ -45,88 +43,39 @@ void LetBaseWorker::run()
     do_next(formals, values, forms);
 }
 
-void LetBaseWorker::report_error()
+ExprHandle LetBaseWorker::parse_bindings()
 {
-    ExprHandle err =
-        ExpressionFactory::makeError("Expected (((sym form)...) forms...);",
-                                     " got ",
-                                     args->toString());
+    ExprHandle nil = ExpressionFactory::makeNil();
+    std::vector<ExprHandle> syms;
+    std::vector<ExprHandle> vals;
 
-    cont->run(err);
-}
+    const size_t count = parser->getBindingCount();
 
-bool LetBaseWorker::verify_single(ExprHandle arg)
-{
-    if ( ! arg->isList() || 2 != arg->length() ) {
-        report_error();
-        return false;
+    for ( size_t idx = 0 ; idx < count ; ++idx ) {
+        BindFormParser * bf = parser->getBinding(idx);
+
+	ScamSymbol * sym = const_cast<ScamSymbol *>(bf->getSymbol());
+        syms.push_back(sym);
+
+        ExprHandle valForm = bf->getForm();
+        if ( nullptr == valForm ) {
+            vals.push_back(nil);
+        }
+        else {
+            vals.push_back(valForm);
+        }
     }
 
-    if ( ! arg->getCar()->isSymbol() ) {
-        report_error();
-        return false;
-    }
-
-    return true;
-}
-
-bool LetBaseWorker::verify_list(ExprHandle check)
-{
-    if ( check->isNil() ) {
-        return true;
-    }
-
-    if ( ! check->isList() ) {
-        report_error();
-        return false;
-    }
-
-    if ( ! verify_single(check->getCar()) ) {
-        return false;
-    }
-
-    return verify_list(check->getCdr());
-}
-
-bool LetBaseWorker::verify_args()
-{
-    if ( ! args->isList() || args->isNil() ) {
-        report_error();
-        return false;
-    }
-
-    ExprHandle check = args->getCar();
-    return verify_list(check);
-}
-
-ExprHandle LetBaseWorker::parse_bindings(ExprHandle bindings)
-{
-    if ( bindings->isNil() ) {
-        ExprHandle nil = ExpressionFactory::makeNil();
-        return ExpressionFactory::makeCons(nil, nil);
-    }
-
-    ExprHandle one  = bindings->getCar();
-    ExprHandle rest = bindings->getCdr();
-
-    ExprHandle separated = parse_bindings(rest);
-
-    ExprHandle symList
-        = ExpressionFactory::makeCons(one->getCar(),
-                                      separated->getCar());
-    ExprHandle valList
-        = ExpressionFactory::makeCons(one->getCdr()->getCar(),
-                                      separated->getCdr());
+    ExprHandle symList = ExpressionFactory::makeList(syms);
+    ExprHandle valList = ExpressionFactory::makeList(vals);
 
     return ExpressionFactory::makeCons(symList, valList);
 }
 
 ExprHandle LetBaseWorker::parse_args()
 {
-    ExprHandle forms    = args->getCdr();
-    ExprHandle bindings = args->getCar();
-
-    ExprHandle separated = parse_bindings(bindings);
+    ExprHandle forms     = parser->getForms();
+    ExprHandle separated = parse_bindings();
 
     return ExpressionFactory::makeCons(separated, forms);
 }

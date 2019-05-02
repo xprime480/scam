@@ -1,5 +1,7 @@
 #include "input/CountedListParser.hpp"
 
+#include "util/MemoryManager.hpp"
+
 using namespace scam;
 using namespace std;
 
@@ -32,3 +34,11 @@ bool CountedListParser::accept(ExprHandle expr)
 
     return true;
 }
+
+CountedListParser *
+scam::getCountedListOfAnythingParser(size_t min, size_t max)
+{
+    ArgParser * any = standardMemoryManager.make<ArgParser>();
+    return standardMemoryManager.make<CountedListParser>(any, min, max);
+}
+

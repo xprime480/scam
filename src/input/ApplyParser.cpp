@@ -6,8 +6,7 @@ using namespace scam;
 using namespace std;
 
 ApplyParser::ApplyParser()
-    : any(standardMemoryManager.make<ArgParser>())
-    , parser(standardMemoryManager.make<CountedListParser>(any, 2, 2))
+    : parser(getCountedListOfAnythingParser(2, 2))
 {
     clearValue();
 }
@@ -21,7 +20,6 @@ void ApplyParser::mark() const
 {
     if ( ! isMarked() ) {
         ArgParser::mark();
-        any->mark();
         parser->mark();
     }
 }

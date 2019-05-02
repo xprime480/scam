@@ -1,10 +1,11 @@
 #include "form/Let.hpp"
 
+#include "Continuation.hpp"
 #include "WorkQueue.hpp"
+#include "expr/ExpressionFactory.hpp"
 #include "form/LetWorker.hpp"
-
-#include <iostream>
-#include <sstream>
+#include "input/LetParser.hpp"
+#include "util/MemoryManager.hpp"
 
 using namespace scam;
 using namespace std;
@@ -22,5 +23,15 @@ Let * Let::makeInstance()
 
 void Let::apply(ExprHandle args, Continuation * cont, Env * env)
 {
-    workQueueHelper<LetWorker>(args, cont, env, false);
+    LetParser * parser = standardMemoryManager.make<LetParser>();
+    if ( ! parser->accept(args) ) {
+        ExprHandle err =
+            ExpressionFactory::makeError("let expects (((sym form)*) form*)",
+                                         "; got: ",
+                                         args->toString());
+        cont->run(err);
+    }
+    else {
+        workQueueHelper<LetWorker>(parser, cont, env, false);
+    }
 }

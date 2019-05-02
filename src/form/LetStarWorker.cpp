@@ -9,21 +9,21 @@
 using namespace scam;
 using namespace std;
 
-LetStarWorker::LetStarWorker(ExprHandle args,
+LetStarWorker::LetStarWorker(LetParser * parser,
                              Continuation * cont,
                              Env * env,
                              ScamEngine * engine)
-    : LetBaseWorker("LetStar", args, cont, env)
+    : LetBaseWorker("LetStar", parser, cont, env)
     , engine(engine)
 {
 }
 
-LetStarWorker * LetStarWorker::makeInstance(ExprHandle args,
+LetStarWorker * LetStarWorker::makeInstance(LetParser * parser,
                                             Continuation * cont,
                                             Env * env,
                                             ScamEngine * engine)
 {
-    return new LetStarWorker(args, cont, env, engine);
+    return new LetStarWorker(parser, cont, env, engine);
 }
 
 void LetStarWorker::do_next(ExprHandle formals,

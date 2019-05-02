@@ -1,5 +1,5 @@
-#if ! defined(APPLYPARSER_HPP)
-#define APPLYPARSER_HPP 1
+#if ! defined(BINDFORMPARSER_HPP)
+#define BINDFORMPARSER_HPP 1
 
 #include "input/ArgParser.hpp"
 
@@ -7,24 +7,22 @@
 
 namespace scam
 {
-    class MemoryManager;
-    class ScamKeyword;
-
-    class ApplyParser : public ArgParser
+    class BindFormParser : public ArgParser
     {
     private:
         friend class scam::MemoryManager;
-        ApplyParser();
-        static ApplyParser * makeInstance();
+        BindFormParser();
+        static BindFormParser * makeInstance();
 
     public:
         void mark() const override;
         bool accept(ExprHandle expr) override;
 
-        ExprHandle getParsedOp() const;
-        ExprHandle getArgs() const;
+        ScamEnvKeyType getSymbol() const;
+        ExprHandle getForm() const;
 
     private:
+        SymbolParser      * sym;
         CountedListParser * parser;
     };
 }

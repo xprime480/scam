@@ -42,9 +42,7 @@ bool LambdaParser::accept(ExprHandle expr)
 
     clearValue();
 
-    ArgParser * any = standardMemoryManager.make<ArgParser>();
-    CountedListParser * temp =
-        standardMemoryManager.make<CountedListParser>(any, 1, 99999);
+    CountedListParser * temp = getCountedListOfAnythingParser(1, 99999);
 
     if ( ! temp->accept(expr) ) {
         return false;

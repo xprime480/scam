@@ -7,21 +7,21 @@
 using namespace scam;
 using namespace std;
 
-LetWorker::LetWorker(ExprHandle args,
+LetWorker::LetWorker(LetParser * parser,
                      Continuation * cont,
                      Env * env,
                      bool rebind)
-    : LetBaseWorker("Let", args, cont, env)
+    : LetBaseWorker("Let", parser, cont, env)
     , rebind(rebind)
 {
 }
 
-LetWorker * LetWorker::makeInstance(ExprHandle args,
+LetWorker * LetWorker::makeInstance(LetParser * parser,
                                     Continuation * cont,
                                     Env * env,
                                     bool rebind)
 {
-    return new LetWorker(args, cont, env, rebind);
+    return new LetWorker(parser, cont, env, rebind);
 }
 
 void LetWorker::do_next(ExprHandle formals,

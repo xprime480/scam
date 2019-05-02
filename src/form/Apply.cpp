@@ -6,8 +6,6 @@
 #include "input/ApplyParser.hpp"
 #include "util/MemoryManager.hpp"
 
-#include "util/DebugTrace.hpp"
-
 using namespace scam;
 using namespace std;
 
@@ -24,8 +22,6 @@ Apply * Apply::makeInstance()
 
 void Apply::apply(ExprHandle args, Continuation * cont, Env * env)
 {
-    scamTrace("Apply::apply", args->toString());
-
     ApplyParser * parser = standardMemoryManager.make<ApplyParser>();
     if ( ! parser->accept(args) ) {
         ExprHandle err =
@@ -36,7 +32,7 @@ void Apply::apply(ExprHandle args, Continuation * cont, Env * env)
         return;
     }
 
-    ExprHandle sym     = const_cast<ExprHandle>(parser->getParsedOp());
+    ExprHandle sym     = parser->getParsedOp();
     ExprHandle arglist = const_cast<ExprHandle>(parser->getArgs());
     Continuation * newCont =
         standardMemoryManager.make<ApplyOpCont>(arglist, cont, env);

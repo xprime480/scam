@@ -4,7 +4,6 @@
 #include "expr/ScamExpr.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "form/CallCont.hpp"
-#include "input/ArgParser.hpp"
 #include "input/SingletonParser.hpp"
 #include "util/MemoryManager.hpp"
 
@@ -24,9 +23,7 @@ CallCC * CallCC::makeInstance()
 
 void CallCC::apply(ExprHandle args, Continuation * cont, Env * env)
 {
-    ArgParser       * any = standardMemoryManager.make<ArgParser>();
-    SingletonParser * parser = standardMemoryManager.make<SingletonParser>(any);
-
+    SingletonParser * parser = getSingletonOfAnythingParser();
     if ( ! parser->accept(args) ) {
         ExprHandle err =
             ExpressionFactory::makeError("call/cc expects exactly 1 parameter",

@@ -30,6 +30,8 @@ namespace scam
         const size_t min;
         const size_t max;
     };
+
+    CountedListParser * getCountedListOfAnythingParser(size_t min, size_t max);
 }
 
 #endif

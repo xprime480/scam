@@ -7,13 +7,19 @@
 
 namespace scam
 {
+    class LetParser;
+
     class LetWorker : public LetBaseWorker
     {
     private:
         friend class scam::MemoryManager;
-        LetWorker(ExprHandle args, Continuation * cont, Env * env, bool rebind);
+	
+        LetWorker(LetParser * parser,
+		  Continuation * cont,
+		  Env * env,
+		  bool rebind);
 
-        static LetWorker * makeInstance(ExprHandle args,
+        static LetWorker * makeInstance(LetParser * parser,
                                         Continuation * cont,
                                         Env * env,
                                         bool rebind);
