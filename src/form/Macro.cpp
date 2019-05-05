@@ -20,20 +20,14 @@ Macro * Macro::makeInstance()
 
 void Macro::apply(ExprHandle args, Continuation * cont, Env * env)
 {
-    ExprHandle expr = validateClosureArgs(args, "macro");
+    LambdaParser * lambda = standardMemoryManager.make<LambdaParser>();
 
-    if ( ! expr->error() ) {
-        LambdaParser * lambda = standardMemoryManager.make<LambdaParser>();
-
-        if ( ! lambda->accept(args) ) {
-            expr =
-                ExpressionFactory::makeError("Macro expected (formals form...)",
-                                             "; got ",
-                                             args->toString());
-        }
-        else {
-            expr = ExpressionFactory::makeClosure(lambda, env, true);
-        }
+    ExprHandle expr = nullptr;
+    if ( ! lambda->accept(args) ) {
+        expr = validateClosureArgs(args, "macro");
+    }
+    else {
+        expr = ExpressionFactory::makeClosure(lambda, env, true);
     }
 
     cont->run(expr);
