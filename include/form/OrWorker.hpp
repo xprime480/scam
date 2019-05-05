@@ -7,21 +7,26 @@
 
 namespace scam
 {
+    class ListParser;
+
     class OrWorker : public Worker
     {
     private:
         friend class scam::MemoryManager;
-        OrWorker(Continuation * cont, Env * env, ExprHandle args, size_t n);
 
-        static OrWorker *
-        makeInstance(Continuation * cont, Env * env, ExprHandle args, size_t n);
+        OrWorker(Continuation * cont, Env * env, ListParser * parser, size_t n);
+
+        static OrWorker * makeInstance(Continuation * cont,
+                                       Env * env,
+                                       ListParser *
+                                       parser, size_t n);
 
     public:
         void mark() const override;
         void run() override;
 
     private:
-        ExprHandle args;
+        ListParser * parser;
         Continuation * cont;
         Env * env;
         size_t n;

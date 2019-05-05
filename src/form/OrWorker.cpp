@@ -5,6 +5,7 @@
 #include "expr/ScamExpr.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "form/OrCont.hpp"
+#include "input/ListParser.hpp"
 #include "util/MemoryManager.hpp"
 
 using namespace scam;
@@ -12,10 +13,10 @@ using namespace std;
 
 OrWorker::OrWorker(Continuation * cont,
                    Env * env,
-                   ExprHandle args,
+                   ListParser * parser,
                    size_t n)
     : Worker("Or")
-    , args(args)
+    , parser(parser)
     , cont(cont)
     , env(env)
     , n(n)
@@ -24,17 +25,17 @@ OrWorker::OrWorker(Continuation * cont,
 
 OrWorker * OrWorker::makeInstance(Continuation * cont,
                                   Env * env,
-                                  ExprHandle args,
+                                  ListParser * parser,
                                   size_t n)
 {
-    return new OrWorker(cont, env, args, n);
+    return new OrWorker(cont, env, parser, n);
 }
 
 void OrWorker::mark() const
 {
     if ( ! isMarked() ) {
         Worker::mark();
-        args->mark();
+        parser->mark();
         cont->mark();
         env->mark();
     }
@@ -44,27 +45,18 @@ void OrWorker::run()
 {
     Worker::run();
 
-    if ( ! args->isList() ) {
-        ExprHandle err =
-            ExpressionFactory::makeError("Or expects a list of forms; got: ",
-                                         args->toString());
-        cont->run(err);
-        return;
-    }
-
-    size_t const len = args->length();
+    size_t const len = parser->size();
     if ( 0 == len ) {
         ExprHandle rv = ExpressionFactory::makeBoolean(false);
         cont->run(rv);
     }
     else if ( n == (len - 1) ) {
-        args->nthcar(len-1)->eval(cont, env);
+        parser->get(len-1)->eval(cont, env);
     }
     else {
-        ExprHandle test = args->nthcar(n);
-
+        ExprHandle test = parser->get(n);
         Continuation * newCont =
-            standardMemoryManager.make<OrCont>(args, cont, env, n+1);
+            standardMemoryManager.make<OrCont>(parser, cont, env, n+1);
         test->eval(newCont, env);
     }
 }

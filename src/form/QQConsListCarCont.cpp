@@ -2,9 +2,11 @@
 
 #include "Continuation.hpp"
 #include "Env.hpp"
+#include "WorkQueue.hpp"
 #include "expr/ScamExpr.hpp"
-#include "form/QuasiQuote.hpp"
 #include "form/QQConsListCdrCont.hpp"
+#include "form/QuasiQuote.hpp"
+#include "form/QuasiQuoteWorker.hpp"
 #include "util/MemoryManager.hpp"
 
 using namespace scam;
@@ -44,9 +46,7 @@ void QQConsListCarCont::run(ExprHandle expr)
     }
     else {
         Continuation * h =
-            standardMemoryManager.make<QQConsListCdrCont>(expr,
-                                                          cont,
-                                                          env);
-        QuasiQuote::qq_apply(cdr, h, env, false);
+            standardMemoryManager.make<QQConsListCdrCont>(expr, cont, env);
+        workQueueHelper<QuasiQuoteWorker>(cdr, h, env);
     }
 }

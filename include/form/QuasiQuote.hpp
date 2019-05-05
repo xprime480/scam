@@ -18,11 +18,6 @@ namespace scam
         static QuasiQuote * makeInstance();
 
         void apply(ExprHandle args, Continuation * cont, Env * env) override;
-
-        static void qq_apply(ExprHandle args,
-                             Continuation * cont,
-                             Env * env,
-                             bool top);
     };
 }
 

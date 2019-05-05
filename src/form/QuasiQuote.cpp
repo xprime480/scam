@@ -5,6 +5,8 @@
 #include "expr/ScamExpr.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "form/QuasiQuoteWorker.hpp"
+#include "input/SingletonParser.hpp"
+#include "util/ArgListHelper.hpp"
 
 using namespace scam;
 using namespace std;
@@ -12,8 +14,10 @@ using namespace std;
 ExprHandle const QuasiQuote::spliceTag =
     ExpressionFactory::makeSymbol("**splicing**", false);
 
+static const char * myName = "quasiquote";
+
 QuasiQuote::QuasiQuote()
-    : SpecialForm("quasiquote")
+    : SpecialForm(myName)
 {
 }
 
@@ -25,36 +29,11 @@ QuasiQuote * QuasiQuote::makeInstance()
 
 void QuasiQuote::apply(ExprHandle args, Continuation * cont, Env * env)
 {
-    qq_apply(args, cont, env, true);
-}
-
-void QuasiQuote::qq_apply(ExprHandle args,
-                          Continuation * cont,
-                          Env * env,
-                          bool top)
-{
-    if ( ! args->isList() ) {
-        ExprHandle err =
-            ExpressionFactory::makeError("quasiquote expecting list of args",
-                                         ", got ",
-                                         args->toString());
-        cont->run(err);
-    }
-    else if ( top ) {
-        if ( 1 != args->length() ) {
-            ExprHandle err =
-                ExpressionFactory::makeError("quasiquote expecting one form",
-                                             ", got ",
-                                             args->toString());
-            cont->run(err);
-        }
-        else {
-            ExprHandle form = args->nthcar(0);
-            workQueueHelper<QuasiQuoteWorker>(form, cont, env);
-        }
+    SingletonParser * parser = getSingletonOfAnythingParser();
+    if ( ! parser->accept(args) ) {
+        failedArgParseMessage(myName, "(form)", args, cont);
     }
     else {
-        ExprHandle form = args;
-        workQueueHelper<QuasiQuoteWorker>(form, cont, env);
+        workQueueHelper<QuasiQuoteWorker>(parser->get(), cont, env);
     }
 }

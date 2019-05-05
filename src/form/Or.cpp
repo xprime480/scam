@@ -2,6 +2,8 @@
 
 #include "WorkQueue.hpp"
 #include "form/OrWorker.hpp"
+#include "input/ListParser.hpp"
+#include "util/ArgListHelper.hpp"
 
 using namespace scam;
 using namespace std;
@@ -11,8 +13,10 @@ namespace scam
     class MemoryManager;
 }
 
+static const char * myName = "or";
+
 Or::Or()
-    : SpecialForm("or")
+    : SpecialForm(myName)
 {
 }
 
@@ -24,6 +28,11 @@ Or * Or::makeInstance()
 
 void Or::apply(ExprHandle args, Continuation * cont, Env * env)
 {
-    unsigned pos { 0 };
-    workQueueHelper<OrWorker>(cont, env, args, pos);
+    ListParser * parser = getListOfAnythingParser();
+    if ( ! parser->accept(args) ) {
+        failedArgParseMessage(myName, "(form*)", args, cont);
+    }
+    else {
+        workQueueHelper<OrWorker>(cont, env, parser, 0u);
+    }
 }
