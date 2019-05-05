@@ -4,13 +4,16 @@
 #include "expr/ExpressionFactory.hpp"
 #include "input/ClassDefParser.hpp"
 #include "util/MemoryManager.hpp"
+#include "util/ArgListHelper.hpp"
 #include "util/Validations.hpp"
 
 using namespace scam;
 using namespace std;
 
+static const char * myName = "class-maker";
+
 ClassMaker::ClassMaker()
-    : SpecialForm("class-maker")
+    : SpecialForm(myName)
 {
 }
 
@@ -25,15 +28,10 @@ void ClassMaker::apply(ExprHandle args, Continuation * cont, Env * env)
     ClassDefParser * parser = standardMemoryManager.make<ClassDefParser>();
 
     if ( ! parser->accept(args) ) {
-        ExprHandle err =
-            ExpressionFactory::makeError("ClassMaker expected: (Base",
-                                         " (vars...) methods...); ",
-                                         "got ",
-                                         args->toString());
-        cont->run(err);
-        return;
+        failedArgParseMessage(myName, "(Base (vars*) methods*)", args, cont);
     }
-
-    ExprHandle cls = ExpressionFactory::makeClass(parser, env);
-    cont->run(cls);
+    else {
+        ExprHandle cls = ExpressionFactory::makeClass(parser, env);
+        cont->run(cls);
+    }
 }

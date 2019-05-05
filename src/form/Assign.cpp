@@ -2,15 +2,17 @@
 
 #include "Continuation.hpp"
 #include "WorkQueue.hpp"
-#include "expr/ExpressionFactory.hpp"
 #include "form/AssignWorker.hpp"
 #include "input/SymbolPlusParser.hpp"
+#include "util/ArgListHelper.hpp"
 
 using namespace scam;
 using namespace std;
 
+static const char * myName = "assign!";
+
 Assign::Assign(ScamEngine * engine)
-    : SpecialForm("assign!", true)
+    : SpecialForm(myName, true)
     , engine(engine)
 {
 }
@@ -25,11 +27,7 @@ void Assign::apply(ExprHandle args, Continuation * cont, Env * env)
     AssignParser * parser = standardMemoryManager.make<AssignParser>();
 
     if ( ! parser->accept(args) ) {
-        ExprHandle err =
-            ExpressionFactory::makeError("assign! expects (sym expr)",
-                                         "; got: ",
-                                         args->toString());
-        cont->run(err);
+        failedArgParseMessage(myName, "(sym expr)", args, cont);
     }
     else {
         workQueueHelper<AssignWorker>(parser, cont, env, engine);

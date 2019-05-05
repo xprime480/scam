@@ -2,15 +2,17 @@
 
 #include "Continuation.hpp"
 #include "WorkQueue.hpp"
-#include "expr/ExpressionFactory.hpp"
 #include "form/IfWorker.hpp"
 #include "input/CountedListParser.hpp"
+#include "util/ArgListHelper.hpp"
 
 using namespace scam;
 using namespace std;
 
+static const char * myName = "if";
+
 If::If()
-    : SpecialForm("if")
+    : SpecialForm(myName)
 {
 }
 
@@ -25,12 +27,10 @@ void If::apply(ExprHandle args, Continuation * cont, Env * env)
     CountedListParser * parser = getCountedListOfAnythingParser(2, 3);
 
     if ( ! parser->accept(args) ) {
-        ExprHandle err =
-            ExpressionFactory::makeError("if expected",
-                                         " (test then-expr [else-expr])",
-                                         "; got: ",
-                                         args->toString());
-        cont->run(err);
+        failedArgParseMessage(myName,
+                              "(test then-expr else-expr?)",
+                              args,
+                              cont);
     }
     else {
         workQueueHelper<IfWorker>(cont, env, parser);

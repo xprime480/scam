@@ -5,30 +5,32 @@
 #include "expr/ScamExpr.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "form/NotCont.hpp"
+#include "input/SingletonParser.hpp"
 #include "util/MemoryManager.hpp"
 
 using namespace scam;
 using namespace std;
 
-NotWorker::NotWorker(Continuation * cont, Env * env, ExprHandle args)
+NotWorker::NotWorker(Continuation * cont, Env * env, SingletonParser * parser)
     : Worker("Not")
-    , args(args)
+    , parser(parser)
     , cont(cont)
     , env(env)
 {
 }
 
-NotWorker *
-NotWorker::makeInstance(Continuation * cont, Env * env, ExprHandle args)
+NotWorker * NotWorker::makeInstance(Continuation * cont,
+                                    Env * env,
+                                    SingletonParser * parser)
 {
-    return new NotWorker(cont, env, args);
+    return new NotWorker(cont, env, parser);
 }
 
 void NotWorker::mark() const
 {
     if ( ! isMarked() ) {
         Worker::mark();
-        args->mark();
+        parser->mark();
         cont->mark();
         env->mark();
     }
@@ -38,16 +40,8 @@ void NotWorker::run()
 {
     Worker::run();
 
-    if ( ! args->isList() || 1u != args->length() ) {
-        ExprHandle err =
-            ExpressionFactory::makeError("Not expects 1 form; got: ",
-                                         args->toString());
-        cont->run(err);
-    }
-    else {
-        Continuation * newCont = standardMemoryManager.make<NotCont>(cont);
-        ExprHandle test = args->nthcar(0);
-        test->eval(newCont, env);
-    }
+    Continuation * newCont = standardMemoryManager.make<NotCont>(cont);
+    ExprHandle form = parser->get();
+    form->eval(newCont, env);
 }
 

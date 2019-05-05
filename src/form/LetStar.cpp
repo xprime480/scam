@@ -5,13 +5,16 @@
 #include "expr/ExpressionFactory.hpp"
 #include "form/LetStarWorker.hpp"
 #include "input/LetParser.hpp"
+#include "util/ArgListHelper.hpp"
 #include "util/MemoryManager.hpp"
 
 using namespace scam;
 using namespace std;
 
+static const char * myName = "let*";
+
 LetStar::LetStar(ScamEngine * engine)
-    : SpecialForm("let*", true)
+    : SpecialForm(myName, true)
     , engine(engine)
 {
 }
@@ -33,11 +36,7 @@ void LetStar::apply(ExprHandle args, Continuation * cont, Env * env)
 {
     LetParser * parser = standardMemoryManager.make<LetParser>();
     if ( ! parser->accept(args) ) {
-        ExprHandle err =
-            ExpressionFactory::makeError("let* expects (((sym form)*) form*)",
-                                         "; got: ",
-                                         args->toString());
-        cont->run(err);
+        failedArgParseMessage(myName, "(((sym form)*) form*)", args, cont);
     }
     else {
         workQueueHelper<LetStarWorker>(parser, cont, env, engine);

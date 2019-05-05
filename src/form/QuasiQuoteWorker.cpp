@@ -6,16 +6,18 @@
 #include "expr/ExpressionFactory.hpp"
 #include "form/QQSpliceCont.hpp"
 #include "form/QQConsListCarCont.hpp"
-
+#include "util/ArgListHelper.hpp"
 #include "util/MemoryManager.hpp"
 
 using namespace scam;
 using namespace std;
 
+static const char * myName = "quasiquote";
+
 QuasiQuoteWorker::QuasiQuoteWorker(ExprHandle form,
                                    Continuation * cont,
                                    Env * env)
-    : Worker("QuasiQuote")
+    : Worker(myName)
     , form(form)
     , cont(cont)
     , env(env)
@@ -46,10 +48,7 @@ void QuasiQuoteWorker::run()
 bool QuasiQuoteWorker::verify_single_form(ExprHandle input, Continuation * cont)
 {
     if ( ! input->isList() || 1 != input->length() ) {
-        ExprHandle err =
-            ExpressionFactory::makeError("expected single form, got ",
-                                         input->toString());
-        cont->run(err);
+        failedArgParseMessage(myName, "form", input, cont);
         return false;
     }
     return true;

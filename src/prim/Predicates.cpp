@@ -3,6 +3,7 @@
 #include "Continuation.hpp"
 #include "ScamFwd.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "util/ArgListHelper.hpp"
 
 using namespace scam;
 using namespace std;
@@ -64,19 +65,15 @@ namespace
                          ExprHandle args,
                          Continuation * cont)
     {
-        ExprHandle rv;
         if ( 1 == args->length() ) {
             ExprHandle arg = args->nthcar(0);
             bool answer = (arg->*pred)();
-            rv = ExpressionFactory::makeBoolean(answer);
+            ExprHandle rv = ExpressionFactory::makeBoolean(answer);
+            cont->run(rv);
         }
         else {
-            rv = ExpressionFactory::makeError(name,
-                                              " expected single argument",
-                                              ", got ",
-                                              args->toString());
+            failedArgParseMessage(name, "(form)", args, cont);
         }
 
-        cont->run(rv);
     }
 }

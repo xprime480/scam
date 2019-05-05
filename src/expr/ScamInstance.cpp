@@ -5,6 +5,7 @@
 #include "expr/InstanceCont.hpp"
 #include "input/FunctionDefParser.hpp"
 #include "input/SymbolPlusManyParser.hpp"
+#include "util/ArgListHelper.hpp"
 #include "util/MemoryManager.hpp"
 
 using namespace scam;
@@ -71,14 +72,10 @@ bool ScamInstance::hasApply() const
 
 void ScamInstance::apply(ExprHandle args, Continuation * cont, Env * env)
 {
-    InstanceParser * parser =
-        standardMemoryManager.make<InstanceParser>();
+    InstanceParser * parser = standardMemoryManager.make<InstanceParser>();
 
     if ( ! parser->accept(args) ) {
-        ExprHandle err =
-            ExpressionFactory::makeError("Class Instance cannot be applied to ",
-                                         args->toString());
-        cont->run(err);
+        failedArgParseMessage("instance", "(sym forms*)", args, cont);
         return;
     }
 

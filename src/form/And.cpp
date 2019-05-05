@@ -2,15 +2,17 @@
 
 #include "Continuation.hpp"
 #include "WorkQueue.hpp"
-#include "expr/ExpressionFactory.hpp"
 #include "form/AndWorker.hpp"
 #include "input/ListParser.hpp"
+#include "util/ArgListHelper.hpp"
 
 using namespace scam;
 using namespace std;
 
+static const char * myName = "and";
+
 And::And()
-    : SpecialForm("and")
+    : SpecialForm(myName)
 {
 }
 
@@ -24,10 +26,7 @@ void And::apply(ExprHandle args, Continuation * cont, Env * env)
 {
     ListParser * parser = getListOfAnythingParser();
     if ( ! parser->accept(args) ) {
-        ExprHandle err =
-            ExpressionFactory::makeError("and expects (form...); got: ",
-                                         args->toString());
-        cont->run(err);
+        failedArgParseMessage(myName, "(form*)", args, cont);
         return;
     }
 

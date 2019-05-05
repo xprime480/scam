@@ -1,5 +1,6 @@
 #include "util/ArgListHelper.hpp"
 
+#include "Continuation.hpp"
 #include "expr/ExpressionFactory.hpp"
 
 using namespace scam;
@@ -175,4 +176,18 @@ namespace
         }
         return ExpressionFactory::makeFloat(value);
     }
+}
+
+void scam::failedArgParseMessage(const char * who,
+                                 const char * exp,
+                                 ExprHandle act,
+                                 Continuation * cont)
+{
+    ExprHandle err = ExpressionFactory::makeError(who,
+                                                  " expected \"",
+                                                  exp,
+                                                  "\"; got \"",
+                                                  act->toString(),
+                                                  "\"");
+    cont->run(err);
 }

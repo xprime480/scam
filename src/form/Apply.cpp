@@ -1,16 +1,18 @@
 #include "form/Apply.hpp"
 
-#include "expr/ExpressionFactory.hpp"
 #include "expr/ScamExpr.hpp"
 #include "form/ApplyOpCont.hpp"
 #include "input/ApplyParser.hpp"
+#include "util/ArgListHelper.hpp"
 #include "util/MemoryManager.hpp"
 
 using namespace scam;
 using namespace std;
 
+static const char * myName = "apply";
+
 Apply::Apply()
-    : SpecialForm("apply")
+    : SpecialForm(myName)
 {
 }
 
@@ -24,11 +26,7 @@ void Apply::apply(ExprHandle args, Continuation * cont, Env * env)
 {
     ApplyParser * parser = standardMemoryManager.make<ApplyParser>();
     if ( ! parser->accept(args) ) {
-        ExprHandle err =
-            ExpressionFactory::makeError("apply expects (function (args...))",
-                                         "; got: ",
-                                         args->toString());
-        cont->run(err);
+        failedArgParseMessage(myName, "(function (args*))", args, cont);
         return;
     }
 

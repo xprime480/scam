@@ -3,6 +3,7 @@
 #include "Continuation.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "input/DictParser.hpp"
+#include "util/ArgListHelper.hpp"
 
 #include <sstream>
 
@@ -76,11 +77,7 @@ void ScamDict::apply(ExprHandle args, Continuation * cont, Env * env)
     DictParser * parser = standardMemoryManager.make<DictParser>();
 
     if ( ! parser->accept(args) ) {
-        ExprHandle err
-            = ExpressionFactory::makeError("Dict expected ':op args...'; ",
-                                           "got ",
-                                           args->toString());
-        cont->run(err);
+        failedArgParseMessage("dict", "(:op args{0,2})", args, cont);
         return;
     }
 

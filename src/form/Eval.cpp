@@ -1,17 +1,19 @@
 #include "form/Eval.hpp"
 
 #include "Continuation.hpp"
-#include "expr/ExpressionFactory.hpp"
 #include "expr/ScamExpr.hpp"
 #include "form/EvalCont.hpp"
 #include "input/SingletonParser.hpp"
+#include "util/ArgListHelper.hpp"
 #include "util/MemoryManager.hpp"
 
 using namespace scam;
 using namespace std;
 
+static const char * myName = "eval";
+
 Eval::Eval()
-    : SpecialForm("eval")
+    : SpecialForm(myName)
 {
 }
 
@@ -26,10 +28,7 @@ void Eval::apply(ExprHandle args, Continuation * cont, Env * env)
     SingletonParser * parser = getSingletonOfAnythingParser();
 
     if ( ! parser->accept(args) ) {
-        ExprHandle err =
-            ExpressionFactory::makeError("Eval expects single form, got: ",
-                                         args->toString());
-        cont->run(err);
+        failedArgParseMessage(myName, "(expr)", args, cont);
     }
     else {
         Continuation * finisher =

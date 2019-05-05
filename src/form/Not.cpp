@@ -1,13 +1,14 @@
 #include "form/Not.hpp"
 
 #include "WorkQueue.hpp"
-#include "expr/ExpressionFactory.hpp"
+#include "input/SingletonParser.hpp"
 #include "form/NotWorker.hpp"
-
-#include <sstream>
+#include "util/ArgListHelper.hpp"
 
 using namespace scam;
 using namespace std;
+
+static const char * myName = { "not" };
 
 namespace scam
 {
@@ -15,7 +16,7 @@ namespace scam
 }
 
 Not::Not()
-    : SpecialForm("not")
+    : SpecialForm(myName)
 {
 }
 
@@ -27,5 +28,11 @@ Not * Not::makeInstance()
 
 void Not::apply(ExprHandle args, Continuation * cont, Env * env)
 {
-    workQueueHelper<NotWorker>(cont, env, args);
+    SingletonParser * parser = getSingletonOfAnythingParser();
+    if ( ! parser->accept(args) ) {
+        failedArgParseMessage(myName, "(form)", args, cont);
+    }
+    else {
+        workQueueHelper<NotWorker>(cont, env, parser);
+    }
 }

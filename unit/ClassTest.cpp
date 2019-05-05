@@ -84,7 +84,6 @@ TEST_F(ClassTest, FunctionInvocationEnv)
 
 TEST_F(ClassTest, BadFunctionForm)
 {
-    ExprHandle expr =
-        parseAndEvaluateFile("scripts/class/badfunctionform.scm");
-    expectError(expr, "ClassMaker expected: (Base (vars...) methods...); got (Root (val) (init (v) (assign! val v)) (foo))");
+    ExprHandle expr = parseAndEvaluateFile("scripts/class/badfunctionform.scm");
+    expectError(expr);
 }

@@ -7,21 +7,24 @@
 
 namespace scam
 {
+    class SingletonParser;
+
     class NotWorker : public Worker
     {
     private:
         friend class scam::MemoryManager;
-        NotWorker(Continuation * cont, Env * env, ExprHandle args);
+
+        NotWorker(Continuation * cont, Env * env, SingletonParser * parser);
 
         static NotWorker *
-        makeInstance(Continuation * cont, Env * env, ExprHandle args);
+        makeInstance(Continuation * cont, Env * env, SingletonParser * parser);
 
     public:
         void mark() const override;
         void run() override;
 
     private:
-        ExprHandle args;
+        SingletonParser * parser;
         Continuation * cont;
         Env * env;
     };

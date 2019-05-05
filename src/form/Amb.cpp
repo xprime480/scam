@@ -2,16 +2,18 @@
 
 #include "Continuation.hpp"
 #include "ScamEngine.hpp"
-#include "expr/ExpressionFactory.hpp"
 #include "form/AmbBacktracker.hpp"
 #include "input/ListParser.hpp"
+#include "util/ArgListHelper.hpp"
 #include "util/MemoryManager.hpp"
 
 using namespace scam;
 using namespace std;
 
+static const char * myName = "amb";
+
 Amb::Amb(ScamEngine * engine)
-    : SpecialForm("amb", true)
+    : SpecialForm(myName, true)
     , engine(engine)
 {
 }
@@ -25,10 +27,7 @@ void Amb::apply(ExprHandle args, Continuation * cont, Env * env)
 {
     ListParser * parser = getListOfAnythingParser();
     if ( ! parser->accept(args) ) {
-        ExprHandle err =
-            ExpressionFactory::makeError("amb expects (form...); got: ",
-                                         args->toString());
-        cont->run(err);
+        failedArgParseMessage(myName, "(form*)", args, cont);
         return;
     }
 

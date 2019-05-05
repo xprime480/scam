@@ -43,8 +43,7 @@ bool TestLoader::isOK() const
     return skip || ok;
 }
 
-void TestLoader::getComponents(
-                               std::string & name,
+void TestLoader::getComponents(std::string & name,
                                std::string & input,
                                std::string & expected
                                ) const

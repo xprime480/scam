@@ -9,6 +9,8 @@
 
 namespace scam
 {
+    class Continuation;
+
     class OpImpl
     {
     public:
@@ -26,6 +28,12 @@ namespace scam
     extern ExprHandle compareAlgorithm(ExprHandle args,
                                        std::string const & context,
                                        std::shared_ptr<OpImpl> impl);
+
+    extern void failedArgParseMessage(const char * who,
+                                      const char * exp,
+                                      ExprHandle act,
+                                      Continuation * cont);
+
 }
 
 #endif

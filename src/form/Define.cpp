@@ -2,15 +2,17 @@
 
 #include "Continuation.hpp"
 #include "WorkQueue.hpp"
-#include "expr/ExpressionFactory.hpp"
 #include "form/DefineWorker.hpp"
 #include "input/SymbolPlusParser.hpp"
+#include "util/ArgListHelper.hpp"
 
 using namespace scam;
 using namespace std;
 
+static const char * myName = "define";
+
 Define::Define(ScamEngine * engine)
-    : SpecialForm("define", true)
+    : SpecialForm(myName, true)
     , engine(engine)
 {
 }
@@ -25,11 +27,7 @@ void Define::apply(ExprHandle args, Continuation * cont, Env * env)
     DefineParser * parser = standardMemoryManager.make<DefineParser>();
 
     if ( ! parser->accept(args) ) {
-        ExprHandle err =
-            ExpressionFactory::makeError("define expects (sym expr)",
-                                         "; got: ",
-                                         args->toString());
-        cont->run(err);
+        failedArgParseMessage(myName, "(sym expr)", args, cont);
     }
     else {
         workQueueHelper<DefineWorker>(parser, cont, env, engine);

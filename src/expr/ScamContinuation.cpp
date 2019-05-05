@@ -1,8 +1,8 @@
 #include "expr/ScamContinuation.hpp"
 
 #include "Continuation.hpp"
-#include "expr/ExpressionFactory.hpp"
 #include "input/SingletonParser.hpp"
+#include "util/ArgListHelper.hpp"
 
 using namespace scam;
 using namespace std;
@@ -36,8 +36,7 @@ bool ScamContinuation::hasApply() const
     return true;
 }
 
-void
-ScamContinuation::apply(ExprHandle args, Continuation * cont,  Env * env)
+void ScamContinuation::apply(ExprHandle args, Continuation * cont,  Env * env)
 {
     SingletonParser * parser = getSingletonOfAnythingParser();
     const bool accepted = parser->accept(args);
@@ -47,10 +46,6 @@ ScamContinuation::apply(ExprHandle args, Continuation * cont,  Env * env)
         this->cont->run(arg);
     }
     else {
-        ExprHandle err =
-            ExpressionFactory::makeError("Continuation expects to be ",
-                                         "applied to 1 arg; received ",
-                                         args->toString());
-        cont->run(err);
+        failedArgParseMessage(toString().c_str(), "(form)", args, cont);
     }
 }
