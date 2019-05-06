@@ -2,6 +2,7 @@
 
 #include "Continuation.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "input/NumericListParser.hpp"
 
 #include <algorithm>
 #include <numeric>
@@ -19,8 +20,16 @@ MathOp::MathOp(MathOpDef const & def)
 void MathOp::applyArgs(ExprHandle args, Continuation * cont)
 {
     string const context = toString();
-    ExprHandle rv = numericAlgorithm(args, context, algo);
-    cont->run(rv);
+    NumericListParser * parser =
+        standardMemoryManager.make<NumericListParser>();
+
+    if ( ! parser->accept(args) ) {
+        failedArgParseMessage(context.c_str(), "(num*)", args, cont);
+    }
+    else {
+        ExprHandle rv = numericAlgorithm(parser, context, algo);
+        cont->run(rv);
+    }
 }
 
 bool MathOp::equals(ConstExprHandle expr) const

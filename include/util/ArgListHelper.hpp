@@ -10,6 +10,7 @@
 namespace scam
 {
     class Continuation;
+    class NumericListParser;
 
     class OpImpl
     {
@@ -21,7 +22,7 @@ namespace scam
     using NumericalAlgorithm =
         std::function<double(std::vector<double> const &, ExprHandle & state)>;
 
-    extern ExprHandle numericAlgorithm(ExprHandle args,
+    extern ExprHandle numericAlgorithm(NumericListParser * parser,
                                        std::string const & context,
                                        NumericalAlgorithm algo);
 

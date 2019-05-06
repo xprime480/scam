@@ -2,6 +2,7 @@
 
 #include "Continuation.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "input/NumericListParser.hpp"
 
 using namespace scam;
 using namespace std;
@@ -106,6 +107,24 @@ namespace
         return rv;
     }
 
+    template <typename T>
+    ExprHandle argsToType(NumericListParser * parser,
+                          vector<T> & ns,
+                          string const & context)
+    {
+        ExprHandle rv = ExpressionFactory::makeBoolean(true);
+
+        const size_t len = parser->size();
+        for ( size_t idx = 0u ; idx < len ; ++idx ) {
+            ExprHandle arg = parser->get(idx);
+            if ( ! argToType(arg, ns, context, rv) ) {
+                break;
+            }
+        }
+
+        return rv;
+    }
+
     extern ExprHandle makeNumeric(ExprHandle & state, double value);
 
     template <typename T>
@@ -126,13 +145,13 @@ namespace
     }
 }
 
-ExprHandle scam::numericAlgorithm(ExprHandle args,
+ExprHandle scam::numericAlgorithm(NumericListParser * parser,
                                   string const & context,
                                   NumericalAlgorithm algo)
 {
     vector<double> ns;
 
-    ExprHandle state = argsToType(args, ns, context);
+    ExprHandle state = argsToType(parser, ns, context);
     if ( state->error() ) {
         return state;
     }

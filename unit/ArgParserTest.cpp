@@ -13,6 +13,7 @@
 #include "input/LetParser.hpp"
 #include "input/ListParser.hpp"
 #include "input/MatchUnifyParser.hpp"
+#include "input/NumericListParser.hpp"
 #include "input/ParameterListParser.hpp"
 #include "input/SequenceParser.hpp"
 #include "input/SingletonParser.hpp"
@@ -616,7 +617,6 @@ TEST_F(ArgParserTest, MatchUnifyParserUnifyValidWithoutDict)
     expectDict(parser->getDict(), 0, "{}");
 }
 
-
 TEST_F(ArgParserTest, MatchUnifyParserUnifyValidWitDict)
 {
     MatchUnifyParser * parser = mm.make<MatchUnifyParser>(false);
@@ -627,4 +627,26 @@ TEST_F(ArgParserTest, MatchUnifyParserUnifyValidWitDict)
     expectDict(parser->getDict(), 1, "{ :key 3 }");
 }
 
+TEST_F(ArgParserTest, NumericEmptyList)
+{
+    NumericListParser * parser = mm.make<NumericListParser>();
+    acceptParse(parser, "()");
+    EXPECT_EQ(0, parser->size());
+}
 
+TEST_F(ArgParserTest, NumericMixedList)
+{
+    NumericListParser * parser = mm.make<NumericListParser>();
+    acceptParse(parser, "(1.2 3 -750 0)");
+    EXPECT_EQ(4, parser->size());
+    expectFloat(parser->get(0), 1.2, "1.2");
+    expectInteger(parser->get(1), 3, "3");
+    expectInteger(parser->get(2), -750, "-750");
+    expectInteger(parser->get(3), 0, "0");
+}
+
+TEST_F(ArgParserTest, NumericInvalidLIst)
+{
+    NumericListParser * parser = mm.make<NumericListParser>();
+    rejectParse(parser, "(1.2 3 -750 spoiler 0)");
+}
