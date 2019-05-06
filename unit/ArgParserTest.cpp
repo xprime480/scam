@@ -9,13 +9,14 @@
 #include "input/CountedListParser.hpp"
 #include "input/DictParser.hpp"
 #include "input/FunctionDefParser.hpp"
+#include "input/IncludeParser.hpp"
 #include "input/LetParser.hpp"
 #include "input/ListParser.hpp"
 #include "input/ParameterListParser.hpp"
 #include "input/SequenceParser.hpp"
 #include "input/SingletonParser.hpp"
-#include "input/SymbolPlusParser.hpp"
 #include "input/SymbolPlusManyParser.hpp"
+#include "input/SymbolPlusParser.hpp"
 #include "input/TypeParsers.hpp"
 
 using namespace std;
@@ -547,11 +548,11 @@ TEST_F(ArgParserTest, NonTrivialLet)
     BindFormParser * binding = parser->getBinding(0u);
     expectSymbol(binding->getSymbol(), "a");
     expectInteger(binding->getForm(), 3, "3");
-    
+
     binding = parser->getBinding(1u);
     expectSymbol(binding->getSymbol(), "b");
     expectSymbol(binding->getForm(), "a");
-    
+
     expectList(parser->getForms(), "((+ a 2))", 1);
 }
 
@@ -559,4 +560,30 @@ TEST_F(ArgParserTest, LetWithBadBindings)
 {
     LetParser * parser = mm.make<LetParser>();
     rejectParse(parser, "(this-is-not-a-binding 2 2 2 3 3 4)");
+}
+
+TEST_F(ArgParserTest, IncludeParserEmpty)
+{
+    IncludeParser * parser = mm.make<IncludeParser>();
+    rejectParse(parser, "()");
+}
+
+TEST_F(ArgParserTest, IncludeParserOne)
+{
+    IncludeParser * parser = mm.make<IncludeParser>();
+    acceptParse(parser, "(\"test\")");
+    expectString(parser->get(0), "test");
+}
+
+TEST_F(ArgParserTest, IncludeParserSeveral)
+{
+    IncludeParser * parser = mm.make<IncludeParser>();
+    acceptParse(parser, "(\"test\" \"best\" \"rest\")");
+    expectString(parser->get(2), "rest");
+}
+
+TEST_F(ArgParserTest, IncludeParserNonString)
+{
+    IncludeParser * parser = mm.make<IncludeParser>();
+    rejectParse(parser, "(\"test\" \"best\" \"rest\" 999)");
 }

@@ -7,24 +7,32 @@
 
 namespace scam
 {
+    class IncludeParser * parser;
+
     class IncludeCont : public Continuation
     {
     private:
         friend class scam::MemoryManager;
 
-        IncludeCont(ExprHandle rest, Continuation * cont, ScamEngine * engine);
+        IncludeCont(IncludeParser * parser,
+                    Continuation * cont,
+                    ScamEngine * engine,
+                    size_t nextIdx);
 
-        static IncludeCont *
-        makeInstance(ExprHandle rest, Continuation * cont, ScamEngine * engine);
+        static IncludeCont * makeInstance(IncludeParser * parser,
+                                          Continuation * cont,
+                                          ScamEngine * engine,
+                                          size_t nextIdx);
 
     public:
         void mark() const override;
         void run(ExprHandle expr) override;
 
     private:
-        ExprHandle rest;
+        IncludeParser * parser;
         Continuation * cont;
         ScamEngine * engine;
+        size_t nextIdx;
     };
 }
 

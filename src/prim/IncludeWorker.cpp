@@ -3,6 +3,7 @@
 #include "Continuation.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamExpr.hpp"
+#include "input/IncludeParser.hpp"
 #include "prim/IncludeCont.hpp"
 #include "prim/Load.hpp"
 #include "util/MemoryManager.hpp"
@@ -10,42 +11,48 @@
 using namespace scam;
 using namespace std;
 
-IncludeWorker::IncludeWorker(ExprHandle args,
+IncludeWorker::IncludeWorker(IncludeParser * parser,
                              Continuation * cont,
-                             ScamEngine * engine)
+                             ScamEngine * engine,
+                             size_t idx)
     : Worker("Include")
-    , args(args)
+    , parser(parser)
     , cont(cont)
     , engine(engine)
+    , idx(idx)
 {
 }
 
-IncludeWorker * IncludeWorker::makeInstance(ExprHandle args,
+IncludeWorker * IncludeWorker::makeInstance(IncludeParser * parser,
                                             Continuation * cont,
-                                            ScamEngine * engine)
+                                            ScamEngine * engine,
+                                            size_t idx)
 {
-    return new IncludeWorker(args, cont, engine);
+    return new IncludeWorker(parser, cont, engine, idx);
 }
 
 void IncludeWorker::mark() const
 {
     if ( ! isMarked() ) {
         Worker::mark();
-        args->mark();
+        parser->mark();
         cont->mark();
     }
 }
 
 void IncludeWorker::run()
 {
-    ExprHandle curr = args->getCar();
+    const size_t count = parser->size();
+    ExprHandle curr = parser->get(idx);
     ExprHandle newArg = ExpressionFactory::makeList(curr);
-    ExprHandle rest = args->getCdr();
 
+    size_t nextIdx = idx + 1;
     Continuation * nextCont = cont;
-
-    if ( ! rest->isNil() ) {
-        nextCont = standardMemoryManager.make<IncludeCont>(rest, cont, engine);
+    if ( nextIdx < count ) {
+        nextCont = standardMemoryManager.make<IncludeCont>(parser,
+                                                           cont,
+                                                           engine,
+                                                           nextIdx);
     }
 
     Load * loader = standardMemoryManager.make<Load>(engine);

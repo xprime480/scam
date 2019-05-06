@@ -2,33 +2,36 @@
 
 #include "WorkQueue.hpp"
 #include "expr/ScamExpr.hpp"
+#include "input/IncludeParser.hpp"
 #include "prim/IncludeWorker.hpp"
 
 using namespace scam;
 using namespace std;
 
-IncludeCont::IncludeCont(ExprHandle rest,
+IncludeCont::IncludeCont(IncludeParser * parser,
                          Continuation * cont,
-                         ScamEngine * engine)
+                         ScamEngine * engine,
+                         size_t nextIdx)
     : Continuation("Include")
-    , rest(rest)
+    , parser(parser)
     , cont(cont)
     , engine(engine)
 {
 }
 
-IncludeCont * IncludeCont::makeInstance(ExprHandle rest,
+IncludeCont * IncludeCont::makeInstance(IncludeParser * parser,
                                         Continuation * cont,
-                                        ScamEngine * engine)
+                                        ScamEngine * engine,
+                                        size_t nextIdx)
 {
-    return new IncludeCont(rest, cont, engine);
+    return new IncludeCont(parser, cont, engine, nextIdx);
 }
 
 void IncludeCont::mark() const
 {
     if ( ! isMarked() ) {
         Continuation::mark();
-        rest->mark();
+        parser->mark();
         cont->mark();
     }
 }
@@ -40,5 +43,5 @@ void IncludeCont::run(ExprHandle expr)
         return;
     }
 
-    workQueueHelper<IncludeWorker>(rest, cont, engine);
+    workQueueHelper<IncludeWorker>(parser, cont, engine, nextIdx);
 }

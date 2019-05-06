@@ -3,14 +3,18 @@
 #include "Continuation.hpp"
 #include "expr/ScamExpr.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "input/ListParser.hpp"
+#include "util/ArgListHelper.hpp"
 
 #include <sstream>
 
 using namespace scam;
 using namespace std;
 
+static const char * myName = "error";
+
 Error::Error()
-    : Primitive("error")
+    : Primitive(myName)
 {
 }
 
@@ -21,6 +25,12 @@ Error * Error::makeInstance()
 
 void Error::applyArgs(ExprHandle args, Continuation * cont)
 {
+    ListParser * parser = getListOfAnythingParser();
+    if ( ! parser->accept(args) ) {
+        failedArgParseMessage(myName, "(form*)", args, cont);
+        return;
+    }
+
     stringstream s;
     unsigned len = args->length();
     if ( 0 == len ) {
