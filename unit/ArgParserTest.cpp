@@ -15,6 +15,7 @@
 #include "input/MatchUnifyParser.hpp"
 #include "input/NumericListParser.hpp"
 #include "input/ParameterListParser.hpp"
+#include "input/RelopsListParser.hpp"
 #include "input/SequenceParser.hpp"
 #include "input/SingletonParser.hpp"
 #include "input/SymbolPlusManyParser.hpp"
@@ -650,3 +651,33 @@ TEST_F(ArgParserTest, NumericInvalidLIst)
     NumericListParser * parser = mm.make<NumericListParser>();
     rejectParse(parser, "(1.2 3 -750 spoiler 0)");
 }
+
+TEST_F(ArgParserTest, RelopsEmptyList)
+{
+    RelopsListParser * parser = mm.make<RelopsListParser>();
+    acceptParse(parser, "()");
+    EXPECT_EQ(0, parser->size());
+}
+
+TEST_F(ArgParserTest, RelopsListOfNumbers)
+{
+    RelopsListParser * parser = mm.make<RelopsListParser>();
+    acceptParse(parser, "(1 2 3 4 5)");
+    EXPECT_EQ(5, parser->size());
+    expectInteger(parser->get(2), 3, "3");
+}
+
+TEST_F(ArgParserTest, RelopsListOfStrings)
+{
+    RelopsListParser * parser = mm.make<RelopsListParser>();
+    acceptParse(parser, "(\"hello\" \"world\")");
+    EXPECT_EQ(2, parser->size());
+    expectString(parser->get(0), "hello");
+}
+
+TEST_F(ArgParserTest, RelopsListMixed)
+{
+    RelopsListParser * parser = mm.make<RelopsListParser>();
+    rejectParse(parser, "(3.14159 \"hello\" \"world\")");
+}
+

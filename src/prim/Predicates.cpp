@@ -3,6 +3,7 @@
 #include "Continuation.hpp"
 #include "ScamFwd.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "input/SingletonParser.hpp"
 #include "util/ArgListHelper.hpp"
 
 using namespace scam;
@@ -65,15 +66,15 @@ namespace
                          ExprHandle args,
                          Continuation * cont)
     {
-        if ( 1 == args->length() ) {
-            ExprHandle arg = args->nthcar(0);
+        SingletonParser * parser = getSingletonOfAnythingParser();
+        if ( ! parser->accept(args) ) {
+            failedArgParseMessage(name, "(form)", args, cont);
+        }
+        else {
+            ExprHandle arg = parser->get();
             bool answer = (arg->*pred)();
             ExprHandle rv = ExpressionFactory::makeBoolean(answer);
             cont->run(rv);
         }
-        else {
-            failedArgParseMessage(name, "(form)", args, cont);
-        }
-
     }
 }

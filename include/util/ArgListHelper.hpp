@@ -11,6 +11,7 @@ namespace scam
 {
     class Continuation;
     class NumericListParser;
+    class RelopsListParser;
 
     class OpImpl
     {
@@ -26,7 +27,7 @@ namespace scam
                                        std::string const & context,
                                        NumericalAlgorithm algo);
 
-    extern ExprHandle compareAlgorithm(ExprHandle args,
+    extern ExprHandle compareAlgorithm(RelopsListParser * parser,
                                        std::string const & context,
                                        std::shared_ptr<OpImpl> impl);
 

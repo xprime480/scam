@@ -1,7 +1,9 @@
 #include "prim/RelOps.hpp"
 
 #include "Continuation.hpp"
+#include "input/RelopsListParser.hpp"
 #include "util/ArgListHelper.hpp"
+#include "util/MemoryManager.hpp"
 
 #include <functional>
 
@@ -17,8 +19,15 @@ CompareOp::CompareOp(char const * name, shared_ptr<OpImpl> impl)
 void CompareOp::applyArgs(ExprHandle args, Continuation * cont)
 {
     string const context = toString();
-    ExprHandle rv = compareAlgorithm(args, context, impl);
-    cont->run(rv);
+    RelopsListParser * parser = standardMemoryManager.make<RelopsListParser>();
+
+    if ( ! parser->accept(args) ) {
+        failedArgParseMessage(context.c_str(), "(num*)", args, cont);
+    }
+    else {
+        ExprHandle rv = compareAlgorithm(parser, context, impl);
+        cont->run(rv);
+    }
 }
 
 

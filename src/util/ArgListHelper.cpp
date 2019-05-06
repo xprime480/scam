@@ -3,6 +3,7 @@
 #include "Continuation.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "input/NumericListParser.hpp"
+#include "input/RelopsListParser.hpp"
 
 using namespace scam;
 using namespace std;
@@ -89,26 +90,8 @@ namespace
         return true;
     }
 
-    template <typename T>
-    ExprHandle argsToType(ExprHandle args,
-                          vector<T> & ns,
-                          string const & context)
-    {
-        ExprHandle rv = ExpressionFactory::makeBoolean(true);
-
-        const size_t len = args->length();
-        for ( size_t idx = 0u ; idx < len ; ++idx ) {
-            ExprHandle arg = args->nthcar(idx);
-            if ( ! argToType(arg, ns, context, rv) ) {
-                break;
-            }
-        }
-
-        return rv;
-    }
-
-    template <typename T>
-    ExprHandle argsToType(NumericListParser * parser,
+    template <typename T, typename ParserType>
+    ExprHandle argsToType(ParserType * parser,
                           vector<T> & ns,
                           string const & context)
     {
@@ -128,14 +111,14 @@ namespace
     extern ExprHandle makeNumeric(ExprHandle & state, double value);
 
     template <typename T>
-    ExprHandle compareType(ExprHandle args,
+    ExprHandle compareType(RelopsListParser * parser,
                            string const & context,
                            shared_ptr<OpImpl> impl)
     {
         ExprHandle rv;
 
         vector<T> ns;
-        rv = argsToType(args, ns, context);
+        rv = argsToType(parser, ns, context);
         if ( rv->isBoolean() ) {
             bool answer = impl->apply(ns);
             rv = ExpressionFactory::makeBoolean(answer);
@@ -164,26 +147,14 @@ ExprHandle scam::numericAlgorithm(NumericListParser * parser,
     return makeNumeric(state, total);
 }
 
-ExprHandle scam::compareAlgorithm(ExprHandle args,
+ExprHandle scam::compareAlgorithm(RelopsListParser * parser,
                                   string const & context,
                                   shared_ptr<OpImpl> impl)
 {
-    ExprHandle rv;
-
-    rv = compareType<double>(args, context, impl);
-    if ( rv->isBoolean() ) {
-        return rv;
+    if ( parser->isNumeric() ) {
+        return compareType<double>(parser, context, impl);
     }
-
-    rv = compareType<string>(args, context, impl);
-    if ( rv->isBoolean() ) {
-        return rv;
-    }
-
-    return ExpressionFactory::makeError("Invalid arguments to comparison: ",
-                                        context,
-                                        " ",
-                                        args->toString());
+    return compareType<string>(parser, context, impl);
 }
 
 namespace
