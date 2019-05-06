@@ -4,12 +4,15 @@
 #include "Continuation.hpp"
 #include "ScamEngine.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "util/ArgListHelper.hpp"
 
 using namespace scam;
 using namespace std;
 
+static const char * myName = "backtrack";
+
 Backtrack::Backtrack(ScamEngine * engine)
-    : Primitive("backtrack")
+    : Primitive(myName)
     , engine(engine)
 {
 }
@@ -21,6 +24,11 @@ Backtrack * Backtrack::makeInstance(ScamEngine * engine)
 
 void Backtrack::applyArgs(ExprHandle args, Continuation * cont)
 {
+    if ( ! args->isNil() ) {
+        failedArgParseMessage(myName, "()", args, cont);
+        return;
+    }
+
     Backtracker * backtracker = engine->getBacktracker();
     if ( ! backtracker ) {
         static const string msg = "No current backtrack context";

@@ -14,7 +14,7 @@ namespace scam
         static Car * makeInstance();
 
     protected:
-        void finish(ExprHandle args, Continuation * cont) override;
+        void finish(ExprHandle cons, Continuation * cont) override;
     };
 }
 

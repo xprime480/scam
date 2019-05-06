@@ -5,6 +5,8 @@
 
 namespace scam
 {
+    class ListParser;
+    
     class EqualP : public Primitive
     {
     private:

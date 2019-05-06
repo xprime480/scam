@@ -27,5 +27,9 @@ bool Primitive::hasApply() const
 
 void Primitive::apply(ExprHandle args, Continuation * cont, Env * env)
 {
+    /*
+     * For primitives, the argument confirmation is delegated to the
+     * derived class' applyArgs function.
+     */
     workQueueHelper<PrimWorker>(cont, env, args, this);
 }

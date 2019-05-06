@@ -17,9 +17,9 @@ Car * Car::makeInstance()
     return new Car();
 }
 
-void Car::finish(ExprHandle args, Continuation * cont)
+void Car::finish(ExprHandle cons, Continuation * cont)
 {
-    ExprHandle car = args->nthcar(0)->nthcar(0);
+    ExprHandle car = cons->getCar();
     cont->run(car);
 }
 

@@ -19,8 +19,8 @@ Cdr * Cdr::makeInstance()
     return new Cdr();
 }
 
-void Cdr::finish(ExprHandle args, Continuation * cont)
+void Cdr::finish(ExprHandle cons, Continuation * cont)
 {
-    ExprHandle cdr = args->nthcar(0)->nthcdr(0);
+    ExprHandle cdr = cons->getCdr();
     cont->run(cdr);
 }

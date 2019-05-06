@@ -3,6 +3,9 @@
 #include "Continuation.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamExpr.hpp"
+#include "input/SingletonParser.hpp"
+#include "input/TypeParsers.hpp"
+#include "util/ArgListHelper.hpp"
 
 using namespace scam;
 using namespace std;
@@ -16,20 +19,15 @@ void CarCdr::applyArgs(ExprHandle args, Continuation * cont)
 {
     if ( args->error() ) {
         cont->run(args);
+        return;
     }
-    else if ( ! args->isList() ||
-              1 != args->length() ||
-              ! args->nthcar(0)->isCons() ) {
-        ExprHandle err =
-            ExpressionFactory::makeError(name,
-                                         " is expecting a non-empty list, ",
-                                         "got ",
-                                         args->toString());
-        cont->run(err);
+
+    ConsParser * cp = standardMemoryManager.make<ConsParser>();
+    SingletonParser * parser = standardMemoryManager.make<SingletonParser>(cp);
+    if ( ! parser->accept(args) ) {
+        failedArgParseMessage(name.c_str(), "(a-cons)", args, cont);
+        return;
     }
-    else {
-        finish(args, cont);
-    }
+
+    finish(parser->get(), cont);
 }
-
-

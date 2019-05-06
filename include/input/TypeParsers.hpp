@@ -75,6 +75,8 @@ namespace scam
     using NumericParser = TypeParser<ScamNumeric>;
     using IntegerParser = TypeParser<ScamInteger>;
     using FloatParser   = TypeParser<ScamFloat>;
+
+    using ConsParser    = TypeParser<ScamCons>;
 }
 
 #endif

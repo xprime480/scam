@@ -3,12 +3,16 @@
 #include "Continuation.hpp"
 #include "expr/ScamExpr.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "input/CountedListParser.hpp"
+#include "util/ArgListHelper.hpp"
 
 using namespace scam;
 using namespace std;
 
+static const char * myName = "cons";
+
 Cons::Cons()
-    : Primitive("cons")
+    : Primitive(myName)
 {
 }
 
@@ -22,16 +26,14 @@ void Cons::applyArgs(ExprHandle args, Continuation * cont)
     if ( args->error() ) {
         cont->run(args);
     }
-    else if ( ! args->isList() || 2 != args->length() ) {
-        ExprHandle err =
-            ExpressionFactory::makeError("cons is expecting 2 parameters",
-                                         ", got ",
-                                         args->toString());
-        cont->run(err);
+
+    CountedListParser * parser = getCountedListOfAnythingParser(2, 2);
+    if ( ! parser->accept(args) ) {
+        failedArgParseMessage(myName, "(form form)", args, cont);
     }
     else {
-        ExprHandle car = args->nthcar(0);
-        ExprHandle cdr = args->nthcar(1);
+        ExprHandle car = parser->get(0);
+        ExprHandle cdr = parser->get(1);
         ExprHandle cons = ExpressionFactory::makeCons(car, cdr);
         cont->run(cons);
     }

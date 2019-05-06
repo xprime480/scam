@@ -3,19 +3,21 @@
 #include "Continuation.hpp"
 #include "ScamException.hpp"
 #include "expr/ExpressionFactory.hpp"
-
-#include <sstream>
+#include "input/ListParser.hpp"
+#include "util/ArgListHelper.hpp"
 
 using namespace scam;
 using namespace std;
 
 namespace
 {
-    extern void equal_p_impl(ExprHandle args, Continuation * cont);
+    extern void equal_p_impl(ListParser * parser, Continuation * cont);
 }
 
+static const char * myName = "eq?";
+
 EqualP::EqualP()
-    : Primitive("eq?")
+    : Primitive(myName)
 {
 }
 
@@ -26,7 +28,13 @@ EqualP * EqualP::makeInstance()
 
 void EqualP::applyArgs(ExprHandle args, Continuation * cont)
 {
-    equal_p_impl(args, cont);
+    ListParser * parser = getListOfAnythingParser();
+    if ( ! parser->accept(args) ) {
+        failedArgParseMessage(myName, "(form*)", args, cont);
+    }
+    else {
+        equal_p_impl(parser, cont);
+    }
 }
 
 bool EqualP::equals(ConstExprHandle expr) const
@@ -40,58 +48,39 @@ namespace
     static ExprHandle const yes = ExpressionFactory::makeBoolean(true);
     static ExprHandle const no  = ExpressionFactory::makeBoolean(false);
 
-    extern bool compare_all(ExprHandle args);
+    extern bool compare_all(ListParser * parser);
 
     template <typename MapFn>
-    ExprHandle apply_map(ExprHandle args, MapFn mapper)
+    ExprHandle apply_map(ListParser * parser, MapFn mapper)
     {
-        if ( args->isNil() ) {
-            return ExpressionFactory::makeNil();
+        const size_t count = parser->size();
+        vector<ExprHandle> mapped;
+
+        for ( size_t idx = 0 ; idx < count ; ++idx ) {
+            ExprHandle item = parser->get(idx);
+            ExprHandle tmp  = mapper(item);
+            mapped.push_back(tmp);
         }
-        if ( ! args->isCons() ) {
-            return mapper(args);
-        }
 
-        ExprHandle car = args->nthcar(0);
-        ExprHandle cdr = args->nthcdr(0);
-
-        ExprHandle newCar = mapper(car);
-        ExprHandle newCdr = apply_map(cdr, mapper);
-
-        return ExpressionFactory::makeCons(newCar, newCdr);
+        return ExpressionFactory::makeList(mapped);
     }
 
     template <typename MapFn, typename ReduceFn>
-    ExprHandle map_reduce(ExprHandle args, MapFn mapper, ReduceFn reducer)
+    ExprHandle map_reduce(ListParser * parser, MapFn mapper, ReduceFn reducer)
     {
-        ExprHandle mapped = apply_map(args, mapper);
+        ExprHandle mapped = apply_map(parser, mapper);
         ExprHandle reduced = reducer(mapped);
         return reduced;
     }
 
-    bool zero_args(ExprHandle args, Continuation * cont)
+    bool zero_args(ListParser * parser, Continuation * cont)
     {
-        if ( 0 == args->length() ) {
+        if ( 0 == parser->size() ) {
             cont->run(yes);
             return true;
         }
         return false;
     }
-
-#if 0
-    ExprHandle all(ExprHandle args)
-    {
-        const size_t len = args->length();
-        for ( size_t idx = 0 ; idx < len ; ++idx ) {
-            ExprHandle arg = args->nthcar(idx);
-            if ( ! arg->truth() ) {
-                return no;
-            }
-        }
-
-        return yes;
-    }
-#endif
 
     ExprHandle any(ExprHandle args)
     {
@@ -104,30 +93,31 @@ namespace
         return no;
     }
 
-    bool has_nulls(ExprHandle args, Continuation * cont)
+    bool has_nulls(ListParser * parser, Continuation * cont)
     {
         auto fn = [](ExprHandle arg) -> ExprHandle {
             return ExpressionFactory::makeBoolean(arg->isNull());
         };
-        ExprHandle answer = map_reduce(args, fn, any);
+        ExprHandle answer = map_reduce(parser, fn, any);
         return answer->truth();
     }
 
-    bool one_arg(ExprHandle args, Continuation * cont)
+    bool one_arg(ListParser * parser, Continuation * cont)
     {
-        if ( 1 == args->length() ) {
+        if ( 1 == parser->size() ) {
             cont->run(yes);
             return true;
         }
         return false;
     }
 
-    bool compare_all(ExprHandle args)
+    bool compare_all(ListParser * parser)
     {
-        ExprHandle first = args->nthcar(0);
+        const size_t len = parser->size();
+        ExprHandle first = parser->get(0);
 
-        for ( size_t idx = 1 ; idx < args->length() ; ++idx ) {
-            ExprHandle op = args->nthcar(idx);
+        for ( size_t idx = 1 ; idx < len ; ++idx ) {
+            ExprHandle op = parser->get(idx);
             if ( ! first->equals(op) ) {
                 return false;
             }
@@ -136,14 +126,14 @@ namespace
         return true;
     }
 
-    void equal_p_impl(ExprHandle args, Continuation * cont)
+    void equal_p_impl(ListParser * parser, Continuation * cont)
     {
-        if ( zero_args(args, cont) ||
-             has_nulls(args, cont) ||
-             one_arg(args, cont) ) {
+        if ( zero_args(parser, cont) ||
+             has_nulls(parser, cont) ||
+             one_arg(parser, cont) ) {
             return;
         }
-        if ( compare_all(args) ) {
+        if ( compare_all(parser) ) {
             cont->run(yes);
         }
         else {
