@@ -3,15 +3,17 @@
 #include "Continuation.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamDict.hpp"
+#include "input/SingletonParser.hpp"
 #include "prim/Instantiator.hpp"
-
-#include <sstream>
+#include "util/ArgListHelper.hpp"
 
 using namespace scam;
 using namespace std;
 
+static const char * myName = "instantiate";
+
 Instantiate::Instantiate()
-    : Primitive("instantiate")
+    : Primitive(myName)
 {
 }
 
@@ -22,8 +24,13 @@ Instantiate * Instantiate::makeInstance()
 
 void Instantiate::applyArgs(ExprHandle args, Continuation * cont)
 {
+    SingletonParser * parser = getSingletonOfAnythingParser();
+    if ( ! parser->accept(args) ) {
+        failedArgParseMessage(myName, "(form)", args, cont);
+    }
+
     Instantiator inst(counter);
-    ExprHandle rv = inst.exec(args);
+    ExprHandle rv = inst.exec(parser);
     cont->run(rv);
 }
 

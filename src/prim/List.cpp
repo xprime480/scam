@@ -17,6 +17,8 @@ List * List::makeInstance()
 
 void List::applyArgs(ExprHandle args, Continuation * cont)
 {
+    /** literally anything goes **/
+    
     cont->run(args);
 }
 

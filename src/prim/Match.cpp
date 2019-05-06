@@ -1,12 +1,16 @@
 #include "prim/Match.hpp"
 
+#include "input/MatchUnifyParser.hpp"
 #include "prim/MatchUnifyCommon.hpp"
+#include "util/ArgListHelper.hpp"
 
 using namespace scam;
 using namespace std;
 
+static const char * myName = "match";
+
 Match::Match()
-    : Primitive("match")
+    : Primitive(myName)
 {
 }
 
@@ -17,7 +21,14 @@ Match * Match::makeInstance()
 
 void Match::applyArgs(ExprHandle args, Continuation * cont)
 {
-    MatchUnifyCommon solver(args, cont, false);
-    solver.solve();
+    MatchUnifyParser * parser =
+        standardMemoryManager.make<MatchUnifyParser>(true);
+    if ( ! parser->accept(args) ) {
+        failedArgParseMessage(myName, "(form form)", args, cont);
+    }
+    else {
+        MatchUnifyCommon solver(parser, cont);
+        solver.solve();
+    }
 }
 

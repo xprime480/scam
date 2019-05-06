@@ -8,13 +8,14 @@
 namespace scam
 {
     class ScamDict;
+    class SingletonParser;
 
     class Instantiator : public ValueMapper
     {
     public:
         Instantiator(size_t & counter);
 
-        ExprHandle exec(ExprHandle args);
+        ExprHandle exec(SingletonParser * parser);
 
     protected:
         ExprHandle map_value(ExprHandle val);
@@ -23,8 +24,6 @@ namespace scam
         size_t   & counter;
         ScamDict * dict;
 
-        ExprHandle make_error(ExprHandle args);
-        ExprHandle checkargs(ExprHandle args, bool & ok);
         ExprHandle inst_value(ExprHandle expr);
         ExprHandle new_mapping(ExprHandle expr);
         ExprHandle inst_keyword(ExprHandle expr);

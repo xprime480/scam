@@ -12,6 +12,7 @@
 #include "input/IncludeParser.hpp"
 #include "input/LetParser.hpp"
 #include "input/ListParser.hpp"
+#include "input/MatchUnifyParser.hpp"
 #include "input/ParameterListParser.hpp"
 #include "input/SequenceParser.hpp"
 #include "input/SingletonParser.hpp"
@@ -587,3 +588,43 @@ TEST_F(ArgParserTest, IncludeParserNonString)
     IncludeParser * parser = mm.make<IncludeParser>();
     rejectParse(parser, "(\"test\" \"best\" \"rest\" 999)");
 }
+
+TEST_F(ArgParserTest, MatchUnifyParserMatchValid)
+{
+    MatchUnifyParser * parser = mm.make<MatchUnifyParser>(true);
+    acceptParse(parser, "(thing-1 thing-2)");
+    EXPECT_TRUE(parser->isMatch());
+    expectSymbol(parser->getLhs(), "thing-1");
+    expectSymbol(parser->getRhs(), "thing-2");
+    expectDict(parser->getDict(), 0, "{}");
+}
+
+TEST_F(ArgParserTest, MatchUnifyParserMatchInvalid )
+{
+    MatchUnifyParser * parser = mm.make<MatchUnifyParser>(true);
+    rejectParse(parser, "(thing-1 thing-2 {})");
+    EXPECT_TRUE(parser->isMatch());
+}
+
+TEST_F(ArgParserTest, MatchUnifyParserUnifyValidWithoutDict)
+{
+    MatchUnifyParser * parser = mm.make<MatchUnifyParser>(false);
+    acceptParse(parser, "(thing-1 thing-2)");
+    EXPECT_FALSE(parser->isMatch());
+    expectSymbol(parser->getLhs(), "thing-1");
+    expectSymbol(parser->getRhs(), "thing-2");
+    expectDict(parser->getDict(), 0, "{}");
+}
+
+
+TEST_F(ArgParserTest, MatchUnifyParserUnifyValidWitDict)
+{
+    MatchUnifyParser * parser = mm.make<MatchUnifyParser>(false);
+    acceptParse(parser, "(thing-1 thing-2 { :key 3 })");
+    EXPECT_FALSE(parser->isMatch());
+    expectSymbol(parser->getLhs(), "thing-1");
+    expectSymbol(parser->getRhs(), "thing-2");
+    expectDict(parser->getDict(), 1, "{ :key 3 }");
+}
+
+

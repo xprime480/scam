@@ -39,3 +39,6 @@
 * Make a convenience function for reporting failed parser expectations.
 
 * Can validateClosureArgs be refactored or eliminated somehow?
+
+* "Parsers" should probably be renamed "Validators"
+

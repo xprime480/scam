@@ -4,6 +4,7 @@
 #include "expr/ScamExpr.hpp"
 #include "expr/ScamDict.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "input/MatchUnifyParser.hpp"
 #include "prim/Substitutor.hpp"
 #include "prim/CommonError.hpp"
 
@@ -13,70 +14,24 @@
 using namespace scam;
 using namespace std;
 
-MatchUnifyCommon::MatchUnifyCommon(ExprHandle args,
-                                   Continuation * cont,
-                                   bool unify)
-    : args(args)
+MatchUnifyCommon::MatchUnifyCommon(MatchUnifyParser * parser,
+                                   Continuation * cont)
+    : parser(parser)
     , cont(cont)
-    , unify(unify)
 {
 }
 
 void MatchUnifyCommon::solve()
 {
-    if (  checkargs() ) {
-        process();
-    }
-}
-
-bool MatchUnifyCommon::checkargs()
-{
-    if ( args->length() < 2u ) {
-        stringstream s;
-        if ( unify ) {
-            s << "unify";
-        }
-        else {
-            s << "match";
-        }
-
-        s << "expected pattern data";
-        if ( unify ) {
-            s << " [dict]";
-        }
-
-        s << "; got " << args->toString();
-        ExprHandle err = ExpressionFactory::makeError(s.str());
-        cont->run(err);
-        return false;
-    }
-    return true;
-}
-
-void MatchUnifyCommon::process()
-{
-    ExprHandle lhs = args->nthcar(0);
-    ExprHandle rhs = args->nthcar(1);
-    ExprHandle rv = ExpressionFactory::makeDict();
-
-    if ( unify && args->length() > 2u ) {
-        rv = args->nthcar(2);
-    }
-
-    ScamDict * dict = dynamic_cast<ScamDict*>(rv);
-    if ( nullptr == dict ) {
-        ExprHandle err =
-            ExpressionFactory::makeError("Unify expected dict for third arg",
-                                         "; got ",
-                                         rv->toString());
-        cont->run(err);
-        return;
-    }
+    ExprHandle lhs  = parser->getLhs();
+    ExprHandle rhs  = parser->getRhs();
+    ScamDict * dict = parser->getDict();
 
     ExprHandle result = exec(dict, lhs, rhs);
-    if ( unify && result->isDict() ) {
-      result = resolve(result);
+    if ( ! parser->isMatch() && result->isDict() ) {
+        result = resolve(result);
     }
+
     cont->run(result);
 }
 
@@ -133,11 +88,11 @@ ExprHandle MatchUnifyCommon::check_keyword_reversed(ScamDict * dict,
                                                     ExprHandle lhs,
                                                     ExprHandle rhs)
 {
-    if ( unify ) {
-        return check_keyword(dict, rhs, lhs);
+    if ( parser->isMatch() ) {
+        return ExpressionFactory::makeNil();
     }
     else {
-        return ExpressionFactory::makeNil();
+        return check_keyword(dict, rhs, lhs);
     }
 }
 

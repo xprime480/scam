@@ -4,6 +4,9 @@
 #include "Continuation.hpp"
 #include "expr/ScamExpr.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "input/SingletonParser.hpp"
+#include "input/TypeParsers.hpp"
+#include "util/ArgListHelper.hpp"
 #include "util/ReadEvalString.hpp"
 
 #include <string>
@@ -13,8 +16,10 @@
 using namespace scam;
 using namespace std;
 
+static const char * myName = "load";
+
 Load::Load(ScamEngine * engine)
-    : Primitive("load")
+    : Primitive(myName)
     , engine(engine)
 {
 }
@@ -26,7 +31,14 @@ Load * Load::makeInstance(ScamEngine * engine)
 
 void Load::applyArgs(ExprHandle args, Continuation * cont)
 {
-    string filename = args->nthcar(0)->toString();
+    StringParser * str = standardMemoryManager.make<StringParser>();
+    SingletonParser * parser = standardMemoryManager.make<SingletonParser>(str);
+    if ( ! parser->accept(args) ) {
+        failedArgParseMessage(myName, "(filename-string)", args, cont);
+        return;
+    }
+
+    string filename = parser->get()->toString();
     if ( engine->isLoaded(filename) ) {
         ExprHandle err =
             ExpressionFactory::makeError("file \"",
@@ -37,7 +49,6 @@ void Load::applyArgs(ExprHandle args, Continuation * cont)
     }
 
     ifstream source;
-
     if ( ! open_file(source, filename, cont) ) {
         return;
     }

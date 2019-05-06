@@ -2,6 +2,7 @@
 
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamExpr.hpp"
+#include "input/SingletonParser.hpp"
 
 #include <sstream>
 
@@ -14,38 +15,15 @@ Instantiator::Instantiator(size_t & counter)
 {
 }
 
-ExprHandle Instantiator::exec(ExprHandle args)
+ExprHandle Instantiator::exec(SingletonParser * parser)
 {
-    bool ok;
-    ExprHandle expr = checkargs(args, ok);
-    if ( ! ok ) {
-        return expr;
-    }
-
+    ExprHandle expr = parser->get();
     return inst_value(expr);
 }
 
 ExprHandle Instantiator::map_value(ExprHandle val)
 {
     return inst_value(val);
-}
-
-ExprHandle Instantiator::make_error(ExprHandle args)
-{
-    return ExpressionFactory::makeError("Substitute expected one arg got: ",
-                                        args->toString());
-}
-
-ExprHandle Instantiator::checkargs(ExprHandle args, bool & ok)
-{
-    if ( args->length() < 1u ) {
-        ok = false;
-        return make_error(args);
-    }
-
-    ExprHandle expr = args->nthcar(0);
-    ok = true;
-    return expr;
 }
 
 ExprHandle Instantiator::inst_value(ExprHandle expr)
