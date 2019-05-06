@@ -1,17 +1,12 @@
 
 * Eventually this will be a Scheme interpreter fully compliant with R7RS
 
-* Ensure all apply functions use an appropriate parser to validate their
-  input.
-
 * Remove unneeded classes.
 
 * Make ArgParser classes return something other than nullptr for failed
       parses.
 
 * Finish with the merge of branch arg-parse into arg-parse-2
-  ** Then merge that into master
-  ** Then rebase branch r7rs-parse
   ** Then implement define-syntax
 
 * Make ScamCharacter output be readable by reader for non-printable
@@ -36,9 +31,6 @@
   twice.  The current code seems to mapEval once in the class and once in
   the instance.
 
-* Make a convenience function for reporting failed parser expectations.
-
 * Can validateClosureArgs be refactored or eliminated somehow?
 
 * "Parsers" should probably be renamed "Validators"
-

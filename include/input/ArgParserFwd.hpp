@@ -11,22 +11,30 @@ namespace scam
     class BindFormParser;
     class ClassDefParser;
     class CountedListParser;
-    class DictParser;
+    class DictOpsParser;
     class FunctionDefParser;
+    class IncludeParser;
     class LambdaParser;
     class LetParser;
     class ListParser;
+    class MatchUnifyParser;
+    class NumericListParser;
     class ParameterListParser;
+    class RelopsListParser;
     class SequenceParser;
     class SingletonParser;
-    class SymbolPlusParser;
+    class SubstituteParser;
     class SymbolPlusManyParser;
+    class SymbolPlusParser;
     class TypeParsers;
     class UndefineParser;
+    class VrefParser;
 
     using DefineParser = SymbolPlusParser;
     using AssignParser = SymbolPlusParser;
     using InstanceParser = SymbolPlusManyParser;
+
+
 }
 
 #endif

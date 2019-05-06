@@ -1,4 +1,4 @@
-#include "input/DictParser.hpp"
+#include "input/DictOpsParser.hpp"
 
 #include "expr/ExpressionFactory.hpp"
 #include "input/AlternativeParser.hpp"
@@ -8,22 +8,22 @@ using namespace scam;
 using namespace std;
 
 const ScamKeyword *
-DictParser::getOp = ExpressionFactory::makeKeyword(":get", false);
+DictOpsParser::getOp = ExpressionFactory::makeKeyword(":get", false);
 
 const ScamKeyword *
-DictParser::putOp = ExpressionFactory::makeKeyword(":put", false);
+DictOpsParser::putOp = ExpressionFactory::makeKeyword(":put", false);
 
 const ScamKeyword *
-DictParser::lenOp = ExpressionFactory::makeKeyword(":length", false);
+DictOpsParser::lenOp = ExpressionFactory::makeKeyword(":length", false);
 
 const ScamKeyword *
-DictParser::remOp = ExpressionFactory::makeKeyword(":remove", false);
+DictOpsParser::remOp = ExpressionFactory::makeKeyword(":remove", false);
 
 const ScamKeyword *
-DictParser::hasOp = ExpressionFactory::makeKeyword(":has", false);
+DictOpsParser::hasOp = ExpressionFactory::makeKeyword(":has", false);
 
 
-DictParser::DictParser()
+DictOpsParser::DictOpsParser()
     : ArgParser()
     , matched(nullptr)
 {
@@ -46,12 +46,12 @@ DictParser::DictParser()
     parser = mm.make<AlternativeParser>(get, put, len, rem, has);
 }
 
-DictParser * DictParser::makeInstance()
+DictOpsParser * DictOpsParser::makeInstance()
 {
-    return new DictParser;
+    return new DictOpsParser;
 }
 
-void DictParser::mark() const
+void DictOpsParser::mark() const
 {
     if ( ! isMarked() ) {
         ArgParser::mark();
@@ -75,7 +75,7 @@ void DictParser::mark() const
     }
 }
 
-bool DictParser::accept(ExprHandle expr)
+bool DictOpsParser::accept(ExprHandle expr)
 {
     if ( ! ArgParser::accept(expr) ) {
         return false;
@@ -91,19 +91,19 @@ bool DictParser::accept(ExprHandle expr)
     return true;
 }
 
-void DictParser::callback(ExprHandle expr)
+void DictOpsParser::callback(ExprHandle expr)
 {
     ArgParser::callback(expr);
     matched = dynamic_cast<SequenceParser *>(parser->getMatch());
 }
 
-void DictParser::clearValue()
+void DictOpsParser::clearValue()
 {
     ArgParser::clearValue();
     matched = nullptr;
 }
 
-const ScamKeyword * DictParser::getParsedOp() const
+const ScamKeyword * DictOpsParser::getParsedOp() const
 {
     if ( matched ) {
         ArgParser * ap = matched->get(0);
@@ -113,7 +113,7 @@ const ScamKeyword * DictParser::getParsedOp() const
     return nullptr;
 }
 
-ExprHandle DictParser::getOpKey() const
+ExprHandle DictOpsParser::getOpKey() const
 {
     if ( matched ) {
         ArgParser * ap = matched->get(1);
@@ -123,7 +123,7 @@ ExprHandle DictParser::getOpKey() const
     return nullptr;
 }
 
-ExprHandle DictParser::getOpVal() const
+ExprHandle DictOpsParser::getOpVal() const
 {
     if ( matched ) {
         ArgParser * ap = matched->get(2);

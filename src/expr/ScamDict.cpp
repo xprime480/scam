@@ -2,7 +2,7 @@
 
 #include "Continuation.hpp"
 #include "expr/ExpressionFactory.hpp"
-#include "input/DictParser.hpp"
+#include "input/DictOpsParser.hpp"
 #include "util/ArgListHelper.hpp"
 
 #include <sstream>
@@ -74,7 +74,7 @@ bool ScamDict::hasApply() const
 
 void ScamDict::apply(ExprHandle args, Continuation * cont, Env * env)
 {
-    DictParser * parser = standardMemoryManager.make<DictParser>();
+    DictOpsParser * parser = standardMemoryManager.make<DictOpsParser>();
 
     if ( ! parser->accept(args) ) {
         failedArgParseMessage("dict", "(:op args{0,2})", args, cont);
@@ -84,22 +84,22 @@ void ScamDict::apply(ExprHandle args, Continuation * cont, Env * env)
     const ScamKeyword * op = parser->getParsedOp();
     ExprHandle rv = nullptr;
 
-    if ( op->equals(DictParser::getOp) ) {
+    if ( op->equals(DictOpsParser::getOp) ) {
         rv = get(parser->getOpKey());
     }
-    else if ( op->equals(DictParser::putOp) ) {
+    else if ( op->equals(DictOpsParser::putOp) ) {
         /* this is potentially UB so revisit this soon!! */
-        ExprHandle val = const_cast<ExprHandle>(parser->getOpVal());
+        ExprHandle val = parser->getOpVal();
         rv = put(parser->getOpKey(), val);
     }
-    else if ( op->equals(DictParser::lenOp) ) {
+    else if ( op->equals(DictOpsParser::lenOp) ) {
         rv = ExpressionFactory::makeInteger(length());
     }
-    else if ( op->equals(DictParser::hasOp) ) {
+    else if ( op->equals(DictOpsParser::hasOp) ) {
         const bool b = has(parser->getOpKey());
         rv = ExpressionFactory::makeBoolean(b);
     }
-    else if ( op->equals(DictParser::remOp) ) {
+    else if ( op->equals(DictOpsParser::remOp) ) {
         rv = remove(parser->getOpKey());
     }
     else {

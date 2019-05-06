@@ -2,12 +2,16 @@
 
 #include "Continuation.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "input/SingletonParser.hpp"
+#include "util/ArgListHelper.hpp"
 
 using namespace scam;
 using namespace std;
 
+static const char * myName = "vlen";
+
 VLen::VLen()
-    : Primitive("vlen")
+    : Primitive(myName)
 {
 }
 
@@ -18,23 +22,14 @@ VLen * VLen::makeInstance()
 
 void VLen::applyArgs(ExprHandle args, Continuation * cont)
 {
-    ExprHandle rv;
+    VectorParser * vec =  standardMemoryManager.make<VectorParser>();
+    SingletonParser * parser = standardMemoryManager.make<SingletonParser>(vec);
 
-    if ( 0 == args->length() ) {
-        rv = ExpressionFactory::makeError("vlen expects 1 argument, got none");
+    if ( ! parser->accept(args) ) {
+        failedArgParseMessage(myName, "(vec)", args, cont);
     }
     else {
-        ExprHandle arg = args->nthcar(0);
-        if ( arg->isVector() ) {
-            size_t len = arg->length();
-            rv = ExpressionFactory::makeInteger(len);
-        }
-        else {
-            rv = ExpressionFactory::makeError("vlen expects ",
-                                              "vector argument, got: ",
-                                              arg->toString());
-        }
+        size_t len = parser->get()->length();
+        cont->run(ExpressionFactory::makeInteger(len));
     }
-
-    cont->run(rv);
 }

@@ -2,12 +2,16 @@
 
 #include "Continuation.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "input/VrefParser.hpp"
+#include "util/ArgListHelper.hpp"
 
 using namespace scam;
 using namespace std;
 
+static const char * myName = "vref";
+
 VRef::VRef()
-    : Primitive("vref")
+    : Primitive(myName)
 {
 }
 
@@ -18,34 +22,15 @@ VRef * VRef::makeInstance()
 
 void VRef::applyArgs(ExprHandle args, Continuation * cont)
 {
-    ExprHandle rv;
-
-    if ( args->length() < 2u ) {
-        rv = ExpressionFactory::makeError("vref expects 2 argument, got ",
-                                          args->length());
+    VrefParser * parser = standardMemoryManager.make<VrefParser>();
+    if ( ! parser->accept(args) ) {
+        failedArgParseMessage(myName, "(form*)", args, cont);
     }
     else {
-        ExprHandle indexArg = args->nthcar(0);
-        ExprHandle vecArg =  args->nthcar(1);
-
-        if ( ! indexArg->isInteger() || indexArg->toInteger() < 0 ) {
-            rv = ExpressionFactory::makeError("vref expects index ",
-                                              "for argument 1, got: ",
-                                              indexArg->toString());
-        }
-        else if ( ! vecArg->isVector() ) {
-            rv = ExpressionFactory::makeError("vref expects vector ",
-                                              "for argument 2, got: ",
-                                              vecArg->toString());
-        }
-        else {
-            int idx = indexArg->toInteger();
-            rv = vecArg->nthcar((size_t) idx);
-        }
+        size_t idx = parser->getIndex();
+        ScamVector * vec = parser->getVector();
+        cont->run(vec->nthcar(idx));
     }
-
-    cont->run(rv);
-
 }
 
 

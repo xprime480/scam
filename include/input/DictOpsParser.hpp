@@ -1,5 +1,5 @@
-#if ! defined(DICTPARSER_HPP)
-#define DICTPARSER_HPP 1
+#if ! defined(DICTOPSPARSER_HPP)
+#define DICTOPSPARSER_HPP 1
 
 #include "input/ArgParser.hpp"
 
@@ -10,7 +10,7 @@ namespace scam
     class MemoryManager;
     class ScamKeyword;
 
-    class DictParser : public ArgParser
+    class DictOpsParser : public ArgParser
     {
     public:
         static const ScamKeyword * getOp;
@@ -21,8 +21,8 @@ namespace scam
 
     private:
         friend class scam::MemoryManager;
-        DictParser();
-        static DictParser * makeInstance();
+        DictOpsParser();
+        static DictOpsParser * makeInstance();
 
     public:
         void mark() const override;

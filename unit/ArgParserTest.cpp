@@ -7,7 +7,7 @@
 #include "input/BindFormParser.hpp"
 #include "input/ClassDefParser.hpp"
 #include "input/CountedListParser.hpp"
-#include "input/DictParser.hpp"
+#include "input/DictOpsParser.hpp"
 #include "input/FunctionDefParser.hpp"
 #include "input/IncludeParser.hpp"
 #include "input/LetParser.hpp"
@@ -18,9 +18,11 @@
 #include "input/RelopsListParser.hpp"
 #include "input/SequenceParser.hpp"
 #include "input/SingletonParser.hpp"
+#include "input/SubstituteParser.hpp"
 #include "input/SymbolPlusManyParser.hpp"
 #include "input/SymbolPlusParser.hpp"
 #include "input/TypeParsers.hpp"
+#include "input/VrefParser.hpp"
 
 using namespace std;
 using namespace scam;
@@ -425,7 +427,7 @@ TEST_F(ArgParserTest, BadClassDef)
 
 TEST_F(ArgParserTest, DictGet)
 {
-    DictParser * parser = mm.make<DictParser>();
+    DictOpsParser * parser = mm.make<DictOpsParser>();
 
     acceptParse(parser, "(:get anything)");
     expectKeyword(parser->getParsedOp(), ":get");
@@ -435,7 +437,7 @@ TEST_F(ArgParserTest, DictGet)
 
 TEST_F(ArgParserTest, DictPut)
 {
-    DictParser * parser = mm.make<DictParser>();
+    DictOpsParser * parser = mm.make<DictOpsParser>();
 
     acceptParse(parser, "(:put anything (compute new value))");
     expectKeyword(parser->getParsedOp(), ":put");
@@ -445,7 +447,7 @@ TEST_F(ArgParserTest, DictPut)
 
 TEST_F(ArgParserTest, DictLength)
 {
-    DictParser * parser = mm.make<DictParser>();
+    DictOpsParser * parser = mm.make<DictOpsParser>();
 
     acceptParse(parser, "(:length)");
     expectKeyword(parser->getParsedOp(), ":length");
@@ -455,7 +457,7 @@ TEST_F(ArgParserTest, DictLength)
 
 TEST_F(ArgParserTest, DictHas)
 {
-    DictParser * parser = mm.make<DictParser>();
+    DictOpsParser * parser = mm.make<DictOpsParser>();
 
     acceptParse(parser, "(:has anything)");
     expectKeyword(parser->getParsedOp(), ":has");
@@ -465,7 +467,7 @@ TEST_F(ArgParserTest, DictHas)
 
 TEST_F(ArgParserTest, DictRemove)
 {
-    DictParser * parser = mm.make<DictParser>();
+    DictOpsParser * parser = mm.make<DictOpsParser>();
 
     acceptParse(parser, "(:remove anything)");
     expectKeyword(parser->getParsedOp(), ":remove");
@@ -475,19 +477,19 @@ TEST_F(ArgParserTest, DictRemove)
 
 TEST_F(ArgParserTest, DictTooMany)
 {
-    DictParser * parser = mm.make<DictParser>();
+    DictOpsParser * parser = mm.make<DictOpsParser>();
     rejectParse(parser, "(:get has too many arguments)");
 }
 
 TEST_F(ArgParserTest, DictTooFew)
 {
-    DictParser * parser = mm.make<DictParser>();
+    DictOpsParser * parser = mm.make<DictOpsParser>();
     rejectParse(parser, "(:put too-few-arguments)");
 }
 
 TEST_F(ArgParserTest, DictUnknown)
 {
-    DictParser * parser = mm.make<DictParser>();
+    DictOpsParser * parser = mm.make<DictOpsParser>();
     rejectParse(parser, "(:unknown)");
 }
 
@@ -679,5 +681,27 @@ TEST_F(ArgParserTest, RelopsListMixed)
 {
     RelopsListParser * parser = mm.make<RelopsListParser>();
     rejectParse(parser, "(3.14159 \"hello\" \"world\")");
+}
+
+TEST_F(ArgParserTest, SubstituteParserOK)
+{
+    SubstituteParser * parser = mm.make<SubstituteParser>();
+    acceptParse(parser, "(:cat { :cat 23 })");
+    expectKeyword(parser->getForm(), ":cat");
+    expectDict(parser->getDict(), 1, "{ :cat 23 }");
+}
+
+TEST_F(ArgParserTest, VrefParserOK)
+{
+    VrefParser * parser = mm.make<VrefParser>();
+    acceptParse(parser, "(17 #(1 2 3 :cat :dog))");
+    EXPECT_EQ(17, parser->getIndex());
+    expectVector(parser->getVector(), "#(1 2 3 :cat :dog)", 5);
+}
+
+TEST_F(ArgParserTest, VrefNegativeIndex)
+{
+    VrefParser * parser = mm.make<VrefParser>();
+    rejectParse(parser, "(-17 #(1 2 3 :cat :dog))");
 }
 
