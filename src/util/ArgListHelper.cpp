@@ -34,7 +34,7 @@ namespace
 
         static double convert(ExprHandle arg)
         {
-            return arg->toFloat();
+            return arg->toReal();
         }
 
         static string id() {
@@ -164,7 +164,7 @@ namespace
         if ( state->truth() ) {
             return ExpressionFactory::makeInteger((int)value);
         }
-        return ExpressionFactory::makeFloat(value);
+        return ExpressionFactory::makeReal(value);
     }
 }
 

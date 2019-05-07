@@ -12,7 +12,7 @@
 #include "expr/ScamContinuation.hpp"
 #include "expr/ScamDict.hpp"
 #include "expr/ScamError.hpp"
-#include "expr/ScamFloat.hpp"
+#include "expr/ScamReal.hpp"
 #include "expr/ScamInstance.hpp"
 #include "expr/ScamInstanceAdapter.hpp"
 #include "expr/ScamInteger.hpp"

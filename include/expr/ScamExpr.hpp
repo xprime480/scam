@@ -39,8 +39,8 @@ namespace scam
         virtual bool isKeyword() const;
 
         virtual bool isNumeric() const;
-        virtual bool isFloat() const;
-        virtual double toFloat() const;
+        virtual bool isReal() const;
+        virtual double toReal() const;
         virtual bool isInteger() const;
         virtual int toInteger() const;
 

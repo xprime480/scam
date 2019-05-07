@@ -106,12 +106,12 @@ bool ScamExpr::isNumeric() const
     return false;
 }
 
-bool ScamExpr::isFloat() const
+bool ScamExpr::isReal() const
 {
     return false;
 }
 
-double ScamExpr::toFloat() const
+double ScamExpr::toReal() const
 {
     stringstream s;
     s << "Cannot convert <" << this->toString() << "> to float";

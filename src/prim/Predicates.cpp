@@ -23,20 +23,20 @@ namespace
 #error "DEFINE_PREDICATE already defined"
 #else
 
-#define DEFINE_PREDICATE(cls, label, pred) \
-cls::cls() : Primitive(label) {} \
-cls * cls::makeInstance() \
-{ \
-    return new cls(); \
-} \
-void cls::applyArgs(ExprHandle args, Continuation * cont) \
-{ \
-    apply_predicate(label, pred, args, cont); \
-} \
-bool cls::equals(ConstExprHandle expr) const \
-{ \
-    return ( expr && expr->toString() == label ); \
-}
+#define DEFINE_PREDICATE(cls, label, pred)                      \
+    cls::cls() : Primitive(label) {}                            \
+    cls * cls::makeInstance()                                   \
+    {                                                           \
+        return new cls();                                       \
+    }                                                           \
+    void cls::applyArgs(ExprHandle args, Continuation * cont)   \
+    {                                                           \
+        apply_predicate(label, pred, args, cont);               \
+    }                                                           \
+    bool cls::equals(ConstExprHandle expr) const                \
+    {                                                           \
+        return ( expr && expr->toString() == label );           \
+    }
 
 
 DEFINE_PREDICATE(NilP, "nil?", &ScamExpr::isNil)
@@ -50,7 +50,7 @@ DEFINE_PREDICATE(StringP, "string?", &ScamExpr::isString)
 DEFINE_PREDICATE(SymbolP, "symbol?", &ScamExpr::isSymbol)
 DEFINE_PREDICATE(KeywordP, "keyword?", &ScamExpr::isKeyword)
 DEFINE_PREDICATE(NumericP, "numeric?", &ScamExpr::isNumeric)
-DEFINE_PREDICATE(FloatP, "float?", &ScamExpr::isFloat)
+DEFINE_PREDICATE(RealP, "float?", &ScamExpr::isReal)
 DEFINE_PREDICATE(IntegerP, "integer?", &ScamExpr::isInteger)
 DEFINE_PREDICATE(ProcP, "proc?", &ScamExpr::isProcedure)
 DEFINE_PREDICATE(ClassP, "class?", &ScamExpr::isClass)

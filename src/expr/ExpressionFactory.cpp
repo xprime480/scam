@@ -47,9 +47,9 @@ ExpressionFactory::makeKeyword(string const & value, bool managed)
     return standardMemoryManager.make<ScamKeyword>(value, managed);
 }
 
-ScamFloat * ExpressionFactory::makeFloat(double value)
+ScamReal * ExpressionFactory::makeReal(double value)
 {
-    return standardMemoryManager.make<ScamFloat>(value);
+    return standardMemoryManager.make<ScamReal>(value);
 }
 
 ScamInteger * ExpressionFactory::makeInteger(int value)

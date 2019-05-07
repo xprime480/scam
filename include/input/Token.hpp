@@ -6,36 +6,36 @@
 namespace scam
 {
     enum class TokenType : unsigned char
-    {
-        TT_NONE = 0,
+	{
+	 TT_NONE = 0,
 
-            TT_OPEN_PAREN,
-            TT_CLOSE_PAREN,
-            TT_OPEN_BRACKET,
-            TT_CLOSE_BRACKET,
-            TT_OPEN_CURLY,
-            TT_CLOSE_CURLY,
-            TT_OPEN_VECTOR,
+	 TT_OPEN_PAREN,
+	 TT_CLOSE_PAREN,
+	 TT_OPEN_BRACKET,
+	 TT_CLOSE_BRACKET,
+	 TT_OPEN_CURLY,
+	 TT_CLOSE_CURLY,
+	 TT_OPEN_VECTOR,
 
-            TT_DOT,
-            TT_QUOTE,
-            TT_QUASIQUOTE,
-            TT_UNQUOTE,
-            TT_SPLICE,
-            TT_QUESTION,
+	 TT_DOT,
+	 TT_QUOTE,
+	 TT_QUASIQUOTE,
+	 TT_UNQUOTE,
+	 TT_SPLICE,
+	 TT_QUESTION,
 
-            TT_BOOLEAN,
-            TT_CHARACTER,
-            TT_STRING,
-            TT_SYMBOL,
-            TT_KEYWORD,
+	 TT_BOOLEAN,
+	 TT_CHARACTER,
+	 TT_STRING,
+	 TT_SYMBOL,
+	 TT_KEYWORD,
 
-            TT_FLOAT,
-            TT_INTEGER,
+	 TT_FLOAT,
+	 TT_INTEGER,
 
-            TT_END_OF_INPUT = 254,
-            TT_SCAN_ERROR = 255
-    };
+	 TT_END_OF_INPUT = 254,
+	 TT_SCAN_ERROR = 255
+	};
 
     class Token
     {
@@ -138,7 +138,7 @@ namespace scam
             break;
 
         case TokenType::TT_FLOAT:
-            os << "Float";
+            os << "Real";
             break;
 
         case TokenType::TT_INTEGER:

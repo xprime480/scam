@@ -105,7 +105,7 @@ TEST_F(ParserTest, SymbolTest)
     expectSymbol(expr, msg);
 }
 
-TEST_F(ParserTest, FloatTest)
+TEST_F(ParserTest, RealTest)
 {
     static const string msg{ "-17.5" };
     vector<Token> tokens {
@@ -113,7 +113,7 @@ TEST_F(ParserTest, FloatTest)
     };
 
     ExprHandle expr = runTest(tokens);
-    expectFloat(expr, -17.5, msg);
+    expectReal(expr, -17.5, msg);
 }
 
 TEST_F(ParserTest, IntegerTest)

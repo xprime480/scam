@@ -52,7 +52,7 @@ namespace scam
         static ScamKeyword * makeKeyword(std::string const & value,
                                          bool managed = true);
 
-        static ScamFloat * makeFloat(double value);
+        static ScamReal * makeReal(double value);
         static ScamInteger * makeInteger(int value);
 
         static ScamNil * makeNil();

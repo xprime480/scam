@@ -126,7 +126,7 @@ TEST_F(PredicateTest, SymbolTestNotSymbol)
     expectFalse("(symbol? (lambda () 2))");
 }
 
-TEST_F(PredicateTest, NumericTestFloat)
+TEST_F(PredicateTest, NumericTestReal)
 {
     expectTrue("(numeric? 1.5)");
 }
@@ -141,22 +141,22 @@ TEST_F(PredicateTest, NumericTestNotNumeric)
     expectFalse("(numeric? ())");
 }
 
-TEST_F(PredicateTest, FloatTestFloat)
+TEST_F(PredicateTest, RealTestReal)
 {
-    expectTrue("(float? 1.5)");
+    expectTrue("(real? 1.5)");
 }
 
-TEST_F(PredicateTest, FloatTestInteger)
+TEST_F(PredicateTest, RealTestInteger)
 {
-    expectTrue("(float? 17)");
+    expectTrue("(real? 17)");
 }
 
-TEST_F(PredicateTest, FloatTestNotNumeric)
+TEST_F(PredicateTest, RealTestNotNumeric)
 {
-    expectFalse("(float? ())");
+    expectFalse("(real? ())");
 }
 
-TEST_F(PredicateTest, IntegerTestFloat)
+TEST_F(PredicateTest, IntegerTestReal)
 {
     expectFalse("(integer? 1.5)");
 }

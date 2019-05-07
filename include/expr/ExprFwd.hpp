@@ -13,7 +13,7 @@ namespace scam
     class ScamError;
     class ScamExpr;
     class ScamExprAll;
-    class ScamFloat;
+    class ScamReal;
     class ScamInstance;
     class ScamInteger;
     class ScamKeyword;

@@ -6,7 +6,7 @@ using namespace scam;
 using namespace std;
 
 ScamInteger::ScamInteger(int value)
-    : ScamFloat(1.0 * value)
+    : ScamReal(1.0 * value)
     , value(value)
 {
 }
@@ -35,9 +35,9 @@ int ScamInteger::toInteger() const
 
 bool ScamInteger::equals(ConstExprHandle expr) const
 {
-    if ( ! expr->isFloat() ) {
+    if ( ! expr->isReal() ) {
         return false;
     }
-    return ( ::abs(this->toFloat() - expr->toFloat()) < 1e-9 );
+    return ( ::abs(this->toReal() - expr->toReal()) < 1e-9 );
 }
 

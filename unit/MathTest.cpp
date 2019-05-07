@@ -34,7 +34,7 @@ TEST_F(MathTest, AddManyArgs)
 TEST_F(MathTest, AddTypeUnification)
 {
     ExprHandle expr = parseAndEvaluate("(+ 2 2.5)");
-    expectFloat(expr, 4.5, "4.5");
+    expectReal(expr, 4.5, "4.5");
 }
 
 TEST_F(MathTest, AddBadArgument)
@@ -70,7 +70,7 @@ TEST_F(MathTest, SubManyArgs)
 TEST_F(MathTest, SubTypeUnification)
 {
     ExprHandle expr = parseAndEvaluate("(- 2 1.5)");
-    expectFloat(expr, 0.5, "0.5");
+    expectReal(expr, 0.5, "0.5");
 }
 
 TEST_F(MathTest, SubBadArgument)
@@ -106,7 +106,7 @@ TEST_F(MathTest, MulManyArgs)
 TEST_F(MathTest, MulTypeUnification)
 {
     ExprHandle expr = parseAndEvaluate("(* 2 2.125)");
-    expectFloat(expr, 4.25, "4.25");
+    expectReal(expr, 4.25, "4.25");
 }
 
 TEST_F(MathTest, MulBadArgument)
@@ -118,31 +118,31 @@ TEST_F(MathTest, MulBadArgument)
 TEST_F(MathTest, DivZeroArgs)
 {
     ExprHandle expr = parseAndEvaluate("(/)");
-    expectFloat(expr, 1, "1");
+    expectReal(expr, 1, "1");
 }
 
 TEST_F(MathTest, DivOneArg)
 {
     ExprHandle expr = parseAndEvaluate("(/ 2)");
-    expectFloat(expr, 0.5, "0.5");
+    expectReal(expr, 0.5, "0.5");
 }
 
 TEST_F(MathTest, DivTwoArgs)
 {
     ExprHandle expr = parseAndEvaluate("(/ 2 5)");
-    expectFloat(expr, 0.4, "0.4");
+    expectReal(expr, 0.4, "0.4");
 }
 
 TEST_F(MathTest, DivManyArgs)
 {
     ExprHandle expr = parseAndEvaluate("(/ 1 2 2 2)");
-    expectFloat(expr, 0.125, "0.125");
+    expectReal(expr, 0.125, "0.125");
 }
 
 TEST_F(MathTest, DivTypeUnification)
 {
     ExprHandle expr = parseAndEvaluate("(/ 2.0 1)");
-    expectFloat(expr, 2, "2");
+    expectReal(expr, 2, "2");
 }
 
 TEST_F(MathTest, DivBadArgument)
@@ -160,31 +160,31 @@ TEST_F(MathTest, DivByZero)
 TEST_F(MathTest, DivZeroBy)
 {
     ExprHandle expr = parseAndEvaluate("(/ 0 2)");
-    expectFloat(expr, 0, "0");
+    expectReal(expr, 0, "0");
 }
 
 TEST_F(MathTest, ModZero)
 {
     ExprHandle expr = parseAndEvaluate("(%)");
-    expectFloat(expr, 0, "0");
+    expectReal(expr, 0, "0");
 }
 
 TEST_F(MathTest, ModOne)
 {
     ExprHandle expr = parseAndEvaluate("(% 5)");
-    expectFloat(expr, 0, "0");
+    expectReal(expr, 0, "0");
 }
 
 TEST_F(MathTest, ModTwo)
 {
     ExprHandle expr = parseAndEvaluate("(% 5 2)");
-    expectFloat(expr, 1, "1");
+    expectReal(expr, 1, "1");
 }
 
 TEST_F(MathTest, ModThreeIgnoresExtra)
 {
     ExprHandle expr = parseAndEvaluate("(% 5 2 0 0 0)");
-    expectFloat(expr, 1, "1");
+    expectReal(expr, 1, "1");
 }
 
 TEST_F(MathTest, ModByZero)
@@ -196,13 +196,13 @@ TEST_F(MathTest, ModByZero)
 TEST_F(MathTest, ModZeroBy)
 {
     ExprHandle expr = parseAndEvaluate("(% 0 5)");
-    expectFloat(expr, 0, "0");
+    expectReal(expr, 0, "0");
 }
 
 TEST_F(MathTest, Nested)
 {
     ExprHandle expr = parseAndEvaluate("(+ (* 2 3) (/ 1 5) (- 3))");
-    expectFloat(expr, 3.2, "3.2");
+    expectReal(expr, 3.2, "3.2");
 }
 
 TEST_F(MathTest, NestedWithError)

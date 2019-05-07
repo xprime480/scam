@@ -250,16 +250,16 @@ TEST_F(MemoryTest, TestScamInteger)
     expectManaged(cut1, cut2);
 }
 
-TEST_F(MemoryTest, TestScamFloat)
+TEST_F(MemoryTest, TestScamReal)
 {
     const float value { 2.5 };
     const string repr { "2.5" };
 
-    ScamFloat * cut1 = mm.make<ScamFloat>(value);
-    ScamFloat * cut2 = mm.make<ScamFloat>(value);
+    ScamReal * cut1 = mm.make<ScamReal>(value);
+    ScamReal * cut2 = mm.make<ScamReal>(value);
 
-    expectFloat(cut1, value, repr);
-    expectFloat(cut2, value, repr);
+    expectReal(cut1, value, repr);
+    expectReal(cut2, value, repr);
 
     expectManaged(cut1, cut2);
 }

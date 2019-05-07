@@ -54,9 +54,9 @@ namespace scam
                          bool value,
                          std::string const & repr);
 
-        void expectFloat(ConstExprHandle expr,
-                         double value,
-                         std::string const & repr);
+        void expectReal(ConstExprHandle expr,
+                        double value,
+                        std::string const & repr);
 
         void expectInteger(ConstExprHandle expr,
                            int value,

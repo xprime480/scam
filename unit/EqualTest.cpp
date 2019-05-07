@@ -27,7 +27,7 @@ TEST_F(EqualTest, EqPSingleInteger)
     expectTrue("(eq? 1)");
 }
 
-TEST_F(EqualTest, EqPSingleFloat)
+TEST_F(EqualTest, EqPSingleReal)
 {
     expectTrue("(eq? 3.14159)");
 }
@@ -102,12 +102,12 @@ TEST_F(EqualTest, EqPTwoIntegerDifferent)
     expectFalse("(eq? 1 2)");
 }
 
-TEST_F(EqualTest, EqPTwoFloatSame)
+TEST_F(EqualTest, EqPTwoRealSame)
 {
     expectTrue("(eq? 3.14159 3.14159)");
 }
 
-TEST_F(EqualTest, EqPTwoFloatDifferent)
+TEST_F(EqualTest, EqPTwoRealDifferent)
 {
     expectFalse("(eq? 3.14159 -123.456)");
 }

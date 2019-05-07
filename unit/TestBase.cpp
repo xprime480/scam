@@ -191,7 +191,7 @@ void TestBase::checkPredicates(ConstExprHandle expr, unsigned exp)
     act |= (expr->isKeyword() ? SELECT_KEYWORD : 0);
 
     act |= (expr->isNumeric() ? SELECT_NUMERIC : 0);
-    act |= (expr->isFloat() ? SELECT_FLOAT : 0);
+    act |= (expr->isReal() ? SELECT_FLOAT : 0);
     act |= (expr->isInteger() ? SELECT_INTEGER : 0);
 
     act |= (expr->isNil() ? SELECT_NIL : 0);
@@ -215,8 +215,8 @@ void TestBase::checkPredicates(ConstExprHandle expr, unsigned exp)
 
 void expectNonNumeric(ConstExprHandle expr)
 {
-    EXPECT_THROW(expr->toFloat(), ScamException)
-        << "got " << expr->toFloat();
+    EXPECT_THROW(expr->toReal(), ScamException)
+        << "got " << expr->toReal();
 
     EXPECT_THROW(expr->toInteger(), ScamException)
         << "got "  << expr->toInteger();
@@ -276,15 +276,15 @@ void TestBase::booleanTest(ConstExprHandle expr,
     expectBoolean(evaled, value, repr);
 }
 
-void TestBase::expectFloat(ConstExprHandle expr,
-                           double value,
-                           string const & repr)
+void TestBase::expectReal(ConstExprHandle expr,
+                          double value,
+                          string const & repr)
 {
     checkPredicates(expr, SELECT_TRUTH | ALL_FLOAT);
     EXPECT_EQ(repr, expr->toString());
 
     try {
-        EXPECT_EQ(value, expr->toFloat());
+        EXPECT_EQ(value, expr->toReal());
     }
     catch ( ScamException e ) {
         FAIL() << e.getMessage() << "\n";
@@ -300,7 +300,7 @@ void TestBase::expectInteger(ConstExprHandle expr,
     checkPredicates(expr, SELECT_TRUTH | ALL_INTEGER);
     EXPECT_EQ(repr, expr->toString());
     try {
-        EXPECT_EQ((double)value, expr->toFloat());
+        EXPECT_EQ((double)value, expr->toReal());
         EXPECT_EQ(value, expr->toInteger());
     }
     catch ( ScamException e ) {

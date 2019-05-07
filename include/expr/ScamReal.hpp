@@ -1,5 +1,5 @@
-#if ! defined(SCAMFLOAT_H)
-#define SCAMFLOAT_H 1
+#if ! defined(SCAMREAL_HPP)
+#define SCAMREAL_HPP 1
 
 #include "expr/ScamNumeric.hpp"
 
@@ -7,22 +7,22 @@
 
 namespace scam
 {
-    class ScamFloat : public ScamNumeric
+    class ScamReal : public ScamNumeric
     {
     private:
         friend class MemoryManager;
 
     protected:
-        ScamFloat(double value);
+        ScamReal(double value);
 
     private:
-        static ScamFloat * makeInstance(double value);
+        static ScamReal * makeInstance(double value);
 
     public:
         std::string toString() const override;
 
-        bool isFloat() const override;
-        double toFloat() const override;
+        bool isReal() const override;
+        double toReal() const override;
 
         bool equals(ConstExprHandle expr) const override;
 

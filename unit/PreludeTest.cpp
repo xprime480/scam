@@ -13,10 +13,10 @@ TEST_F(PreludeTest, MaxIntegerTest)
     expectInteger(expr, 123, "123");
 }
 
-TEST_F(PreludeTest, MaxFloatTest)
+TEST_F(PreludeTest, MaxRealTest)
 {
     ExprHandle expr = parseAndEvaluate("(max 42.01 17.5)");
-    expectFloat(expr, 42.01, "42.01");
+    expectReal(expr, 42.01, "42.01");
 }
 
 TEST_F(PreludeTest, MaxMixedNumericTest)
@@ -31,16 +31,16 @@ TEST_F(PreludeTest, MinIntegerTest)
     expectInteger(expr, -123, "-123");
 }
 
-TEST_F(PreludeTest, MinFloatTest)
+TEST_F(PreludeTest, MinRealTest)
 {
     ExprHandle expr = parseAndEvaluate("(min 42.01 17.5)");
-    expectFloat(expr, 17.5, "17.5");
+    expectReal(expr, 17.5, "17.5");
 }
 
 TEST_F(PreludeTest, MinMixedNumericTest)
 {
     ExprHandle expr = parseAndEvaluate("(min -5 -9.999)");
-    expectFloat(expr, -9.999, "-9.999");
+    expectReal(expr, -9.999, "-9.999");
 }
 
 TEST_F(PreludeTest, MapTest)

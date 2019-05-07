@@ -88,10 +88,10 @@ TEST_F(ClosureTest, LambdaFormalsMaskEnv)
 {
     ExprHandle expr =
         parseAndEvaluateFile("scripts/closure/formalsmask.scm");
-    expectFloat(expr, 0.5, "0.5");
+    expectReal(expr, 0.5, "0.5");
 
     expr = parseAndEvaluate("x");
-    expectFloat(expr, 0.0, "0");
+    expectReal(expr, 0.0, "0");
 }
 
 TEST_F(ClosureTest, LambdaTooFewActuals)

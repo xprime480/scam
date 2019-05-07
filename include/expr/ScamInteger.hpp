@@ -1,13 +1,13 @@
 #if ! defined(SCAMINTEGER_H)
 #define SCAMINTEGER_H 1
 
-#include "expr/ScamFloat.hpp"
+#include "expr/ScamReal.hpp"
 
 #include <string>
 
 namespace scam
 {
-    class ScamInteger : public ScamFloat
+    class ScamInteger : public ScamReal
     {
     private:
         friend class MemoryManager;

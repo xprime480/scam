@@ -44,16 +44,16 @@ TEST_F(ExpressionTest, BooleanFalse)
     booleanTest(expr, false, "#f");
 }
 
-TEST_F(ExpressionTest, FloatTest)
+TEST_F(ExpressionTest, RealTest)
 {
     double value { 33.2 };
     string const repr{ "33.2" };
 
-    ExprHandle expr = ExpressionFactory::makeFloat(value);
-    expectFloat(expr, value, repr);
+    ExprHandle expr = ExpressionFactory::makeReal(value);
+    expectReal(expr, value, repr);
 
     ExprHandle evaled = evaluate(expr);
-    expectFloat(evaled, value, repr);
+    expectReal(evaled, value, repr);
 }
 
 TEST_F(ExpressionTest, IntegerTest)
@@ -247,7 +247,7 @@ TEST_F(ExpressionTest, ListCdrTest)
     ExprHandle three = ExpressionFactory::makeInteger(3);
 
     ExprHandle list =
-      ExpressionFactory::makeList(one, two, three, two, one);
+        ExpressionFactory::makeList(one, two, three, two, one);
     expectList(list, "(1 2 3 2 1)", 5);
 
     ExprHandle cdr0 = list->nthcdr(0);
@@ -325,13 +325,13 @@ TEST_F(ExpressionTest, VectorNonEmpty)
         vec.push_back(ExpressionFactory::makeInteger(i));
     }
 
-    auto f = [this, &value](ExprHandle expr) {
-        expectVector(expr, value, 3u);
-        expectInteger(expr->nthcar(0), 1, "1");
-        expectInteger(expr->nthcar(1), 2, "2");
-        expectInteger(expr->nthcar(2), 3, "3");
-        expectError(expr->nthcar(3));
-    };
+    auto f = [this, &value] (ExprHandle expr) {
+                 expectVector(expr, value, 3u);
+                 expectInteger(expr->nthcar(0), 1, "1");
+                 expectInteger(expr->nthcar(1), 2, "2");
+                 expectInteger(expr->nthcar(2), 3, "3");
+                 expectError(expr->nthcar(3));
+             };
 
     ExprHandle expr  = ExpressionFactory::makeVector(vec);
     f(expr);
