@@ -2,8 +2,6 @@
 
 #include "input/Token.hpp"
 
-//#include "util/DebugTrace.hpp"
-
 #include <algorithm>
 #include <cstring>
 #include <sstream>
@@ -159,6 +157,12 @@ bool StringTokenizer::isDelimiter(char c) const
     return ( c == '\0' || isspace(c) || string::npos != delimiters.find(c) );
 }
 
+bool StringTokenizer::isIdentifierCharacter(char c) const
+{
+    static const string extended("!$%&*+-./:<=>?@^_~");
+    return ( isalnum(c) || string::npos != extended.find(c) );
+}
+
 Token StringTokenizer::scanSpecial()
 {
     if ( '(' == *pos ) {
@@ -206,6 +210,10 @@ Token StringTokenizer::scanSpecial()
     }
 
     if ( '.' == *pos ) {
+        if ( pos[1] && ! isspace(pos[1]) ) {
+            return none;
+        }
+
         static const Token token(TokenType::TT_DOT, ".");
         ++pos;
         return token;
@@ -412,8 +420,20 @@ Token StringTokenizer::scanSymbol()
         return scanDelimitedSymbol();
     }
 
-    while ( ! isDelimiter(*pos) ) {
+    if ( isdigit(*pos) ) {
+        /*
+         * The actual spec requires that no prefix be a valid number.
+         * This is our best effort for now.
+         */
+        return none;
+    }
+
+    while ( isIdentifierCharacter(*pos) ) {
         ++pos;
+    }
+
+    if ( pos == original ) {
+        return none;
     }
 
     string text = string(original, pos - original);

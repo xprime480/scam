@@ -89,6 +89,10 @@ namespace scam
             os << "Close Curly Bracket";
             break;
 
+        case TokenType::TT_OPEN_VECTOR:
+            os << "Open Vector";
+            break;
+
         case TokenType::TT_DOT:
             os << "Dot";
             break;
@@ -107,6 +111,10 @@ namespace scam
 
         case TokenType::TT_SPLICE:
             os << "Splice";
+            break;
+
+        case TokenType::TT_QUESTION:
+            os << "QuestionMark";
             break;
 
         case TokenType::TT_BOOLEAN:

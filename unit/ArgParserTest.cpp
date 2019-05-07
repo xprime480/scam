@@ -15,14 +15,20 @@
 #include "input/MatchUnifyParser.hpp"
 #include "input/NumericListParser.hpp"
 #include "input/ParameterListParser.hpp"
+#include "input/PatternDatumParser.hpp"
 #include "input/RelopsListParser.hpp"
 #include "input/SequenceParser.hpp"
 #include "input/SingletonParser.hpp"
 #include "input/SubstituteParser.hpp"
 #include "input/SymbolPlusManyParser.hpp"
 #include "input/SymbolPlusParser.hpp"
+#include "input/SyntaxTransformerParser.hpp"
+#include "input/TemplateElementParser.hpp"
+#include "input/TemplateParser.hpp"
 #include "input/TypeParsers.hpp"
 #include "input/VrefParser.hpp"
+
+#include "util/DebugTrace.hpp"
 
 using namespace std;
 using namespace scam;
@@ -705,3 +711,96 @@ TEST_F(ArgParserTest, VrefNegativeIndex)
     rejectParse(parser, "(-17 #(1 2 3 :cat :dog))");
 }
 
+TEST_F(ArgParserTest, PatternDatumString)
+{
+    PatternDatumParser * parser = mm.make<PatternDatumParser>();
+    acceptParse(parser, "\"test\"");
+    expectString(parser->get(), "test");
+}
+
+TEST_F(ArgParserTest, PatternDatumCharacter)
+{
+    PatternDatumParser * parser = mm.make<PatternDatumParser>();
+    acceptParse(parser, "#\\q");
+    expectChar(parser->get(), 'q', "#\\q");
+}
+
+TEST_F(ArgParserTest, PatternDatumNumeric)
+{
+    PatternDatumParser * parser = mm.make<PatternDatumParser>();
+    acceptParse(parser, "123.456");
+    expectFloat(parser->get(), 123.456, "123.456");
+}
+
+TEST_F(ArgParserTest, PatternDatumBoolean)
+{
+    PatternDatumParser * parser = mm.make<PatternDatumParser>();
+    acceptParse(parser, "#true");
+    expectBoolean(parser->get(), true, "#t");
+}
+
+TEST_F(ArgParserTest, PatternDatumOther)
+{
+    PatternDatumParser * parser = mm.make<PatternDatumParser>();
+    rejectParse(parser, ":keyword");
+}
+
+TEST_F(ArgParserTest, PatternIdentifierOther)
+{
+    ArgParser * parser = getPatternIdentifierParser();
+    acceptParse(parser, "..");
+    expectSymbol(parser->getValue(), "..");
+}
+
+TEST_F(ArgParserTest, PatternIdentifierEllipsis)
+{
+    ArgParser * parser = getPatternIdentifierParser();
+    rejectParse(parser, "...");
+}
+
+TEST_F(ArgParserTest, TemplateIdentifierPlain)
+{
+    TemplateParser * parser = mm.make<TemplateParser>();
+    acceptParse(parser, "ident");
+    expectSymbol(parser->getIdentifier(), "ident");
+    EXPECT_EQ(0, parser->getElementSize());
+    EXPECT_EQ(nullptr, parser->getTemplate());
+    EXPECT_EQ(nullptr, parser->getDatum());
+}
+
+TEST_F(ArgParserTest, TemplateIdentifierNumericDatum)
+{
+    TemplateParser * parser = mm.make<TemplateParser>();
+    acceptParse(parser, "2");
+    EXPECT_EQ(nullptr, parser->getIdentifier());
+    EXPECT_EQ(0, parser->getElementSize());
+    EXPECT_EQ(nullptr, parser->getTemplate());
+    expectInteger(parser->getDatum(), 2, "2");
+}
+
+TEST_F(ArgParserTest, TemplateIdentifierEmptyList)
+{
+    TemplateParser * parser = mm.make<TemplateParser>();
+    acceptParse(parser, "()");
+    EXPECT_EQ(nullptr, parser->getIdentifier());
+    EXPECT_EQ(0, parser->getElementSize());
+    EXPECT_EQ(nullptr, parser->getTemplate());
+    EXPECT_EQ(nullptr, parser->getDatum());
+}
+
+TEST_F(ArgParserTest, TemplateIdentifierSingletonList)
+{
+    TemplateParser * parser = mm.make<TemplateParser>();
+    acceptParse(parser, "(foo)");
+    EXPECT_EQ(nullptr, parser->getIdentifier());
+
+    EXPECT_EQ(1, parser->getElementSize());
+
+    TemplateElementParser * tep = parser->getElement(0);
+    ASSERT_NE(nullptr, tep);
+    expectSymbol(tep->get(), "foo");
+    EXPECT_FALSE(tep->hasEllipsis());
+
+    EXPECT_EQ(nullptr, parser->getTemplate());
+    EXPECT_EQ(nullptr, parser->getDatum());
+}

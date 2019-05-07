@@ -27,6 +27,7 @@ namespace scam
         Token skipNestedComments();
 
         bool isDelimiter(char c) const;
+        bool isIdentifierCharacter(char c) const;
 
         Token scanSpecial();
         Token scanBoolean();

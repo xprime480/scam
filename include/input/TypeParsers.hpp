@@ -67,6 +67,7 @@ namespace scam
 
     using NullParser    = TypeParser<ScamNull>;
     using NilParser     = TypeParser<ScamNil>;
+    using CharParser    = TypeParser<ScamCharacter>;
     using StringParser  = TypeParser<ScamString>;
     using BooleanParser = TypeParser<ScamBoolean>;
     using SymbolParser  = TypeParser<ScamSymbol>;

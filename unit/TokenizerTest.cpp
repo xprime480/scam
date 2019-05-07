@@ -1,7 +1,5 @@
 #include "input/StringTokenizer.hpp"
 
-#include "util/DebugTrace.hpp"
-
 #include "gtest/gtest.h"
 
 #include <vector>
@@ -131,8 +129,7 @@ This comment style can span lines!\n\
 
     TEST(TokenizerTest, SpecialSymbols)
     {
-	ScamTraceScope _;
-        string const input{ "()[]{}#(.'`,,@" };
+        string const input{ " ( ) [ ] { } #( . ' ` , ,@ " };
         vector<Token> exp {
             Token(TokenType::TT_OPEN_PAREN,    "(") ,
             Token(TokenType::TT_CLOSE_PAREN,   ")") ,
@@ -140,12 +137,12 @@ This comment style can span lines!\n\
             Token(TokenType::TT_CLOSE_BRACKET, "]") ,
             Token(TokenType::TT_OPEN_CURLY,    "{") ,
             Token(TokenType::TT_CLOSE_CURLY,   "}") ,
-	    Token(TokenType::TT_OPEN_VECTOR,   "#("),
+            Token(TokenType::TT_OPEN_VECTOR,   "#("),
             Token(TokenType::TT_DOT,           ".") ,
             Token(TokenType::TT_QUOTE,         "'") ,
             Token(TokenType::TT_QUASIQUOTE,    "`") ,
             Token(TokenType::TT_UNQUOTE,       ",") ,
-            Token(TokenType::TT_SPLICE,        ",@") ,
+            Token(TokenType::TT_SPLICE,        ",@")
        };
 
        string2tokens(input, exp);
@@ -267,8 +264,7 @@ This comment style can span lines!\n\
     {
         string const input{ ".2" };
         vector<Token> exp {
-            Token(TokenType::TT_DOT, "."),
-            Token(TokenType::TT_INTEGER, "2")
+            Token(TokenType::TT_SYMBOL, ".2")
         };
 
         return string2tokens(input, exp);
@@ -307,6 +303,16 @@ This comment style can span lines!\n\
         string const input{ ":name" };
         vector<Token> exp {
             Token(TokenType::TT_KEYWORD, ":name")
+        };
+
+        return string2tokens(input, exp);
+    }
+
+    TEST(TokenizerTest, Ellipsis)
+    {
+        string const input{ "..." };
+        vector<Token> exp {
+            Token(TokenType::TT_SYMBOL, "...")
         };
 
         return string2tokens(input, exp);
