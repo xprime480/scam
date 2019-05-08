@@ -141,6 +141,21 @@ TEST_F(PredicateTest, NumericTestNotNumeric)
     expectFalse("(numeric? ())");
 }
 
+TEST_F(PredicateTest, ComplexTestReal)
+{
+    expectTrue("(complex? 1.5)");
+}
+
+TEST_F(PredicateTest, ComplexTestInteger)
+{
+    expectTrue("(complex? 17)");
+}
+
+TEST_F(PredicateTest, ComplexTestNotNumeric)
+{
+    expectFalse("(complex? ())");
+}
+
 TEST_F(PredicateTest, RealTestReal)
 {
     expectTrue("(real? 1.5)");
@@ -154,6 +169,21 @@ TEST_F(PredicateTest, RealTestInteger)
 TEST_F(PredicateTest, RealTestNotNumeric)
 {
     expectFalse("(real? ())");
+}
+
+TEST_F(PredicateTest, RationalTestReal)
+{
+    expectFalse("(rational? 1.5)");
+}
+
+TEST_F(PredicateTest, RationalTestInteger)
+{
+    expectTrue("(rational? 17)");
+}
+
+TEST_F(PredicateTest, RationalTestNotNumeric)
+{
+    expectFalse("(rational? ())");
 }
 
 TEST_F(PredicateTest, IntegerTestReal)

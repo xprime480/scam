@@ -9,6 +9,13 @@ namespace scam
     {
     public:
         bool isNumeric() const override;
+
+        bool equals(ConstExprHandle expr) const override;
+
+    protected:
+        virtual double realPart() const = 0;
+        virtual double imagPart() const = 0;
+
     };
 }
 

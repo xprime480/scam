@@ -106,7 +106,17 @@ bool ScamExpr::isNumeric() const
     return false;
 }
 
+bool ScamExpr::isComplex() const
+{
+    return false;
+}
+
 bool ScamExpr::isReal() const
+{
+    return false;
+}
+
+bool ScamExpr::isRational() const
 {
     return false;
 }

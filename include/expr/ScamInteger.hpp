@@ -1,13 +1,13 @@
 #if ! defined(SCAMINTEGER_H)
 #define SCAMINTEGER_H 1
 
-#include "expr/ScamReal.hpp"
+#include "expr/ScamRational.hpp"
 
 #include <string>
 
 namespace scam
 {
-    class ScamInteger : public ScamReal
+    class ScamInteger : public ScamRational
     {
     private:
         friend class MemoryManager;
@@ -19,8 +19,6 @@ namespace scam
 
         bool isInteger() const override;
         int toInteger() const override;
-
-        bool equals(ConstExprHandle expr) const override;
 
     private:
         int const value;

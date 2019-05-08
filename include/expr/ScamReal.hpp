@@ -1,13 +1,13 @@
 #if ! defined(SCAMREAL_HPP)
 #define SCAMREAL_HPP 1
 
-#include "expr/ScamNumeric.hpp"
+#include "expr/ScamComplex.hpp"
 
 #include <string>
 
 namespace scam
 {
-    class ScamReal : public ScamNumeric
+    class ScamReal : public ScamComplex
     {
     private:
         friend class MemoryManager;
@@ -23,8 +23,6 @@ namespace scam
 
         bool isReal() const override;
         double toReal() const override;
-
-        bool equals(ConstExprHandle expr) const override;
 
     private:
         double const value;
