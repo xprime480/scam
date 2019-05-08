@@ -1,8 +1,9 @@
 #include "expr/ScamNumeric.hpp"
 
+#include "ScamException.hpp"
 #include "expr/ExpressionFactory.hpp"
 
-#include <string>
+#include <sstream>
 
 using namespace scam;
 using namespace std;
@@ -16,17 +17,40 @@ namespace
          NT_REAL,
          NT_COMPLEX
         };
+
+    enum class ExactnessType : unsigned char
+        {
+         ET_EXACT,
+         ET_INEXACT,
+         ET_CONTEXT
+        };
 }
 
 ScamNumeric * ScamNumeric::makeValue(const string & text)
 {
     bool exact = true;
     NumericType type = NumericType::NT_INTEGER;
+    ExactnessType exactness = ExactnessType::ET_CONTEXT;
     bool negative = false;
     double real = 0.0;
     double frac = 0.0;
 
     const char * pos = text.c_str();
+
+    while ( '#' == *pos ) {
+        switch ( pos[1] ) {
+        case 'e': case 'E':
+            exactness = ExactnessType::ET_EXACT;
+            break;
+        case 'i': case 'I':
+            exactness = ExactnessType::ET_INEXACT;
+            break;
+        default:
+            break;
+        }
+        pos += 2;
+    }
+
     if ( '+' == *pos ) {
         ++pos;
     }
@@ -35,7 +59,10 @@ ScamNumeric * ScamNumeric::makeValue(const string & text)
         negative = true;
     }
     if ( '.' == *pos ) {
-        // Handle this error -- shouldn't happen
+        stringstream s;
+        s << "ScamNumeric::makeValue: decimal point before digits: "
+          << text;
+        throw ScamException(s.str());
     }
 
     while ( *pos ) {
@@ -45,7 +72,10 @@ ScamNumeric * ScamNumeric::makeValue(const string & text)
             break;
         }
         if ( ! isdigit(*pos) ) {
-            // Handle this error -- shouldn't happen
+            stringstream s;
+            s << "ScamNumeric::makeValue: non-digit found: "
+              << text;
+            throw ScamException(s.str());
         }
         real = real * 10 + (*pos) - '0';
         ++pos;
@@ -54,20 +84,38 @@ ScamNumeric * ScamNumeric::makeValue(const string & text)
     double d = 0.1;
     while ( *pos ) {
         if ( ! isdigit(*pos) ) {
-            // Handle this error -- shouldn't happen
+            stringstream s;
+            s << "ScamNumeric::makeValue: non-digit found: "
+              << text;
+            throw ScamException(s.str());
         }
         if ( '0' != *pos ) {
             type = NumericType::NT_REAL;
         }
         frac = frac + d * ((*pos) -'0');
+        ++pos;
         d = d / 10;
     }
 
-    if ( NumericType::NT_INTEGER == type ) {
-        ExpressionFactory::makeInteger(negative ? -real : real, exact);
+    switch ( exactness ) {
+    case ExactnessType::ET_EXACT :
+        exact = true;
+        break;
+    case ExactnessType::ET_INEXACT :
+        exact = false;
+        break;
+    default:
+        break;
     }
+
+    if ( NumericType::NT_INTEGER == type ) {
+        int value = (negative ? -1 : 1) * (int)real;
+        return ExpressionFactory::makeInteger(value, exact);
+    }
+
     double t = real+frac;
-    return ExpressionFactory::makeReal(negative ? -t : t, exact);
+    double value = negative ? -t : t;
+    return ExpressionFactory::makeReal(value, exact);
 }
 
 ScamNumeric::ScamNumeric(bool exact)
@@ -96,6 +144,3 @@ bool ScamNumeric::isExact() const
 {
     return exact;
 }
-
-
-
