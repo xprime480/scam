@@ -7,16 +7,16 @@
 using namespace scam;
 using namespace std;
 
-ScamRational::ScamRational(int num, int den)
-    : ScamReal((double) num / (double) den)
+ScamRational::ScamRational(int num, int den, bool exact)
+    : ScamReal((double) num / (double) den, exact)
     , num(num / gcd(num, den))
     , den(den / gcd(num, den))
 {
 }
 
-ScamRational * ScamRational::makeInstance(int num, int den)
+ScamRational * ScamRational::makeInstance(int num, int den, bool exact)
 {
-    return new ScamRational(num, den);
+    return new ScamRational(num, den, exact);
 }
 
 string ScamRational::toString() const

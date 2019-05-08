@@ -47,14 +47,14 @@ ExpressionFactory::makeKeyword(string const & value, bool managed)
     return standardMemoryManager.make<ScamKeyword>(value, managed);
 }
 
-ScamReal * ExpressionFactory::makeReal(double value)
+ScamReal * ExpressionFactory::makeReal(double value, bool exact)
 {
-    return standardMemoryManager.make<ScamReal>(value);
+    return standardMemoryManager.make<ScamReal>(value, exact);
 }
 
-ScamInteger * ExpressionFactory::makeInteger(int value)
+ScamInteger * ExpressionFactory::makeInteger(int value, bool exact)
 {
-    return standardMemoryManager.make<ScamInteger>(value);
+    return standardMemoryManager.make<ScamInteger>(value, exact);
 }
 
 ScamNil * ExpressionFactory::makeNil()

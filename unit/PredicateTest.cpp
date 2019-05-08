@@ -250,3 +250,13 @@ TEST_F(PredicateTest, KeywordTestNotKeyword)
 {
     expectFalse("(keyword? 3)");
 }
+
+TEST_F(PredicateTest, ExactExactInteger)
+{
+    expectTrue("(exact? 3)");
+}
+
+TEST_F(PredicateTest, ExactInexactReal)
+{
+    expectFalse("(exact? 3.9123)");
+}

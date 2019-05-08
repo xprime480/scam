@@ -49,7 +49,7 @@ TEST_F(ExpressionTest, RealTest)
     double value { 33.2 };
     string const repr{ "33.2" };
 
-    ExprHandle expr = ExpressionFactory::makeReal(value);
+    ExprHandle expr = ExpressionFactory::makeReal(value, false);
     expectReal(expr, value, repr);
 
     ExprHandle evaled = evaluate(expr);
@@ -61,7 +61,7 @@ TEST_F(ExpressionTest, IntegerTest)
     int value { 42 };
     string const repr{ "42" };
 
-    ExprHandle expr = ExpressionFactory::makeInteger(value);
+    ExprHandle expr = ExpressionFactory::makeInteger(value, true);
     expectInteger(expr, value, repr);
 
     ExprHandle evaled = evaluate(expr);
@@ -101,7 +101,7 @@ TEST_F(ExpressionTest, SymbolTest)
     ExprHandle evaled = evaluate(sym);
     expectError(evaled);
 
-    ExprHandle value = ExpressionFactory::makeInteger(1899);
+    ExprHandle value = ExpressionFactory::makeInteger(1899, true);
     engine.addBinding(dynamic_cast<ScamSymbol*>(sym), value);
     evaled = evaluate(sym);
     expectInteger(evaled, 1899, "1899");
@@ -213,8 +213,8 @@ TEST_F(ExpressionTest, ConsDottedPair)
 {
     string const value { "(1 . 2)" };
 
-    ExprHandle car = ExpressionFactory::makeInteger(1);
-    ExprHandle cdr = ExpressionFactory::makeInteger(2);
+    ExprHandle car = ExpressionFactory::makeInteger(1, true);
+    ExprHandle cdr = ExpressionFactory::makeInteger(2, true);
     ExprHandle expr = ExpressionFactory::makeCons(car, cdr);
 
     expectCons(expr, value);
@@ -228,7 +228,7 @@ TEST_F(ExpressionTest, ConsEvalTest)
     string const value { "(quote 2)" };
 
     ExprHandle car  = ExpressionFactory::makeSymbol("quote");
-    ExprHandle cadr = ExpressionFactory::makeInteger(2);
+    ExprHandle cadr = ExpressionFactory::makeInteger(2, true);
     ExprHandle cddr = ExpressionFactory::makeNil();
     ExprHandle cdr  = ExpressionFactory::makeCons(cadr, cddr);;
     ExprHandle expr = ExpressionFactory::makeCons(car, cdr);
@@ -242,9 +242,9 @@ TEST_F(ExpressionTest, ConsEvalTest)
 
 TEST_F(ExpressionTest, ListCdrTest)
 {
-    ExprHandle one = ExpressionFactory::makeInteger(1);
-    ExprHandle two = ExpressionFactory::makeInteger(2);
-    ExprHandle three = ExpressionFactory::makeInteger(3);
+    ExprHandle one = ExpressionFactory::makeInteger(1, true);
+    ExprHandle two = ExpressionFactory::makeInteger(2, true);
+    ExprHandle three = ExpressionFactory::makeInteger(3, true);
 
     ExprHandle list =
         ExpressionFactory::makeList(one, two, three, two, one);
@@ -265,9 +265,9 @@ TEST_F(ExpressionTest, ListCdrTest)
 
 TEST_F(ExpressionTest, PseudoListCdrTest)
 {
-    ExprHandle one = ExpressionFactory::makeInteger(1);
-    ExprHandle two = ExpressionFactory::makeInteger(2);
-    ExprHandle three = ExpressionFactory::makeInteger(3);
+    ExprHandle one = ExpressionFactory::makeInteger(1, true);
+    ExprHandle two = ExpressionFactory::makeInteger(2, true);
+    ExprHandle three = ExpressionFactory::makeInteger(3, true);
 
     ExprHandle cons  = ExpressionFactory::makeCons(two, three);
     ExprHandle plist = ExpressionFactory::makeCons(one, cons);
@@ -322,7 +322,7 @@ TEST_F(ExpressionTest, VectorNonEmpty)
     string const value { "#(1 2 3)" };
     ExprVec vec;
     for ( auto i : { 1, 2, 3 } ) {
-        vec.push_back(ExpressionFactory::makeInteger(i));
+        vec.push_back(ExpressionFactory::makeInteger(i, true));
     }
 
     auto f = [this, &value] (ExprHandle expr) {
@@ -349,7 +349,7 @@ TEST_F(ExpressionTest, DictNewEmpty)
 TEST_F(ExpressionTest, DictNewSingleton)
 {
     ExprVec vec;
-    vec.push_back(ExpressionFactory::makeInteger(1));
+    vec.push_back(ExpressionFactory::makeInteger(1, true));
     vec.push_back(ExpressionFactory::makeString("one"));
 
     ExprHandle expr = ExpressionFactory::makeDict(vec);
@@ -359,9 +359,9 @@ TEST_F(ExpressionTest, DictNewSingleton)
 TEST_F(ExpressionTest, DictNewSingletonDupKeys)
 {
     ExprVec vec;
-    vec.push_back(ExpressionFactory::makeInteger(1));
+    vec.push_back(ExpressionFactory::makeInteger(1, true));
     vec.push_back(ExpressionFactory::makeString("one"));
-    vec.push_back(ExpressionFactory::makeInteger(1));
+    vec.push_back(ExpressionFactory::makeInteger(1, true));
     vec.push_back(ExpressionFactory::makeString("ein"));
 
     ExprHandle expr = ExpressionFactory::makeDict(vec);

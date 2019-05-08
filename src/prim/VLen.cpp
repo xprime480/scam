@@ -30,6 +30,6 @@ void VLen::applyArgs(ExprHandle args, Continuation * cont)
     }
     else {
         size_t len = parser->get()->length();
-        cont->run(ExpressionFactory::makeInteger(len));
+        cont->run(ExpressionFactory::makeInteger(len, true));
     }
 }

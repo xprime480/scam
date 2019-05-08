@@ -35,6 +35,7 @@ namespace scam
     DECL_PREDICATE(RealP);
     DECL_PREDICATE(RationalP);
     DECL_PREDICATE(IntegerP);
+    DECL_PREDICATE(ExactP);
     DECL_PREDICATE(ProcP);
     DECL_PREDICATE(ClassP);
     DECL_PREDICATE(InstanceP);

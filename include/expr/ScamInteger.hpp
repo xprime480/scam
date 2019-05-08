@@ -11,8 +11,8 @@ namespace scam
     {
     private:
         friend class MemoryManager;
-        ScamInteger(int value);
-        static ScamInteger * makeInstance(int value);
+        ScamInteger(int value, bool exact);
+        static ScamInteger * makeInstance(int value, bool exact);
 
     public:
         std::string toString() const override;

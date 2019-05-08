@@ -106,6 +106,15 @@ bool ScamExpr::isNumeric() const
     return false;
 }
 
+bool ScamExpr::isExact() const
+{
+    stringstream s;
+    s << "Exactness has no meaning for <" << this->toString() << ">";
+    throw ScamException(s.str());
+
+    return false;
+}
+
 bool ScamExpr::isComplex() const
 {
     return false;

@@ -2,6 +2,11 @@
 
 using namespace scam;
 
+ScamNumeric::ScamNumeric(bool exact)
+    : exact(exact)
+{
+}
+
 bool ScamNumeric::isNumeric() const
 {
     return true;
@@ -18,4 +23,11 @@ bool ScamNumeric::equals(ConstExprHandle expr) const
     return ( ::abs(this->realPart() - that->realPart()) < 1e-9 &&
              ::abs(this->imagPart() - that->imagPart()) < 1e-9 );
 }
+
+bool ScamNumeric::isExact() const
+{
+    return exact;
+}
+
+
 

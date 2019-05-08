@@ -93,7 +93,7 @@ void ScamDict::apply(ExprHandle args, Continuation * cont, Env * env)
         rv = put(parser->getOpKey(), val);
     }
     else if ( op->equals(DictOpsParser::lenOp) ) {
-        rv = ExpressionFactory::makeInteger(length());
+        rv = ExpressionFactory::makeInteger(length(), true);
     }
     else if ( op->equals(DictOpsParser::hasOp) ) {
         const bool b = has(parser->getOpKey());

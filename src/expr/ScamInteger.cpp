@@ -5,15 +5,15 @@
 using namespace scam;
 using namespace std;
 
-ScamInteger::ScamInteger(int value)
-    : ScamRational(value, 1)
+ScamInteger::ScamInteger(int value, bool exact)
+    : ScamRational(value, 1, exact)
     , value(value)
 {
 }
 
-ScamInteger * ScamInteger::makeInstance(int value)
+ScamInteger * ScamInteger::makeInstance(int value, bool exact)
 {
-    return new ScamInteger(value);
+    return new ScamInteger(value, exact);
 }
 
 string ScamInteger::toString() const

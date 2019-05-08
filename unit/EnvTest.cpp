@@ -33,7 +33,7 @@ protected:
         engine.reset(init);
 
         key = ExpressionFactory::makeSymbol("key");
-        exp = ExpressionFactory::makeInteger(1);
+        exp = ExpressionFactory::makeInteger(1, true);
 
         engine.addBinding(key, exp);
     }
@@ -58,7 +58,7 @@ TEST_F(EnvTest, FetchTraversesFrames)
 
 TEST_F(EnvTest, DuplicateKeys)
 {
-    ExprHandle val2 = ExpressionFactory::makeInteger(2);
+    ExprHandle val2 = ExpressionFactory::makeInteger(2, true);
     EXPECT_THROW(engine.addBinding(key, val2), ScamException);
 
     ExprHandle act = engine.getBinding(key);
@@ -68,7 +68,7 @@ TEST_F(EnvTest, DuplicateKeys)
 TEST_F(EnvTest, ExtensionTest)
 {
     engine.pushFrame();
-    ExprHandle exp2 = ExpressionFactory::makeInteger(2);
+    ExprHandle exp2 = ExpressionFactory::makeInteger(2, true);
     engine.addBinding(key, exp2);
 
     ExprHandle act2 = engine.getBinding(key);
@@ -83,7 +83,7 @@ TEST_F(EnvTest, ExtensionTest)
 
 TEST_F(EnvTest, Assign)
 {
-    ExprHandle newExp = ExpressionFactory::makeInteger(33);
+    ExprHandle newExp = ExpressionFactory::makeInteger(33, true);
     engine.rebind(key, newExp);
     ExprHandle act = engine.getBinding(key);
     EXPECT_EQ(newExp->toInteger(), act->toInteger());
@@ -92,14 +92,14 @@ TEST_F(EnvTest, Assign)
 TEST_F(EnvTest, AssignToNonexistentKey)
 {
     ScamSymbol * newKey = ExpressionFactory::makeSymbol("*bad*");
-    ExprHandle   newExp = ExpressionFactory::makeInteger(33);
+    ExprHandle   newExp = ExpressionFactory::makeInteger(33, true);
     EXPECT_THROW(engine.rebind(newKey, newExp), ScamException);
 }
 
 TEST_F(EnvTest, AssignTraversesFrames)
 {
     engine.pushFrame();
-    ExprHandle newExp = ExpressionFactory::makeInteger(33);
+    ExprHandle newExp = ExpressionFactory::makeInteger(33, true);
     engine.rebind(key, newExp);
     ExprHandle act = engine.getBinding(key);
     EXPECT_EQ(newExp->toInteger(), act->toInteger());

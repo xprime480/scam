@@ -162,9 +162,9 @@ namespace
     ExprHandle makeNumeric(ExprHandle & state, double value)
     {
         if ( state->truth() ) {
-            return ExpressionFactory::makeInteger((int)value);
+            return ExpressionFactory::makeInteger((int)value, true);
         }
-        return ExpressionFactory::makeReal(value);
+        return ExpressionFactory::makeReal(value, false);
     }
 }
 

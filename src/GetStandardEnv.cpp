@@ -78,13 +78,14 @@ void ScamEngine::getStandardEnv()
     addForm<StringP>(env, "string?");
     addForm<SymbolP>(env, "symbol?");
     addForm<KeywordP>(env, "keyword?");
-    
+
     addForm<NumericP>(env, "numeric?");
     addForm<ComplexP>(env, "complex?");
     addForm<RealP>(env, "real?");
     addForm<RationalP>(env, "rational?");
     addForm<IntegerP>(env, "integer?");
-    
+    addForm<ExactP>(env, "exact?");
+
     addForm<ProcP>(env, "proc?");
     addForm<ClassP>(env, "class?");
     addForm<InstanceP>(env, "instance?");

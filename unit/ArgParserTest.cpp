@@ -88,7 +88,7 @@ TEST_F(ArgParserTest, AcceptAnyInteger)
 
 TEST_F(ArgParserTest, AcceptOneInteger)
 {
-    const ScamInteger * target = ExpressionFactory::makeInteger(42);
+    const ScamInteger * target = ExpressionFactory::makeInteger(42, true);
     IntegerParser * parser = mm.make<IntegerParser>(target);
 
     rejectParse(parser, "-234134");
@@ -99,7 +99,7 @@ TEST_F(ArgParserTest, AcceptOneInteger)
 
 TEST_F(ArgParserTest, RejectOneInteger)
 {
-    const ScamInteger * target = ExpressionFactory::makeInteger(42);
+    const ScamInteger * target = ExpressionFactory::makeInteger(42, true);
     IntegerParser * parser =
         mm.make<IntegerParser>(target, true);
 

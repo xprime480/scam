@@ -7,15 +7,16 @@
 using namespace scam;
 using namespace std;
 
-ScamComplex::ScamComplex(double real, double imag)
-    : real(real)
+ScamComplex::ScamComplex(double real, double imag, bool exact)
+    : ScamNumeric(exact)
+    , real(real)
     , imag(imag)
 {
 }
 
-ScamComplex * ScamComplex::makeInstance(double real, double imag)
+ScamComplex * ScamComplex::makeInstance(double real, double imag, bool exact)
 {
-    return new ScamComplex(real, imag);
+    return new ScamComplex(real, imag, exact);
 }
 
 string ScamComplex::toString() const

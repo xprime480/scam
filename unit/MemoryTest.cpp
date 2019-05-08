@@ -241,8 +241,8 @@ TEST_F(MemoryTest, TestScamInteger)
     const int value { 1 };
     const string repr { "1" };
 
-    ScamInteger * cut1 = mm.make<ScamInteger>(value);
-    ScamInteger * cut2 = mm.make<ScamInteger>(value);
+    ScamInteger * cut1 = mm.make<ScamInteger>(value, true);
+    ScamInteger * cut2 = mm.make<ScamInteger>(value, true);
 
     expectInteger(cut1, value, repr);
     expectInteger(cut2, value, repr);
@@ -255,8 +255,8 @@ TEST_F(MemoryTest, TestScamReal)
     const float value { 2.5 };
     const string repr { "2.5" };
 
-    ScamReal * cut1 = mm.make<ScamReal>(value);
-    ScamReal * cut2 = mm.make<ScamReal>(value);
+    ScamReal * cut1 = mm.make<ScamReal>(value, false);
+    ScamReal * cut2 = mm.make<ScamReal>(value, false);
 
     expectReal(cut1, value, repr);
     expectReal(cut2, value, repr);
@@ -329,8 +329,8 @@ TEST_F(MemoryTest, TestScamError)
 
 TEST_F(MemoryTest, TestScamCons)
 {
-    ExprHandle car = mm.make<ScamInteger>(1);
-    ExprHandle cdr = mm.make<ScamInteger>(2);
+    ExprHandle car = mm.make<ScamInteger>(1, true);
+    ExprHandle cdr = mm.make<ScamInteger>(2, true);
     ScamCons * cons1 = mm.make<ScamCons>(car, cdr);
 
     cons1->mark();
@@ -345,9 +345,9 @@ TEST_F(MemoryTest, TestScamDict)
     ScamDict * dict1 = mm.make<ScamDict>();
     ExprHandle key1 = mm.make<ScamKeyword>(":key1");
     ExprHandle key2 = mm.make<ScamKeyword>(":key2");
-    ExprHandle val1 = mm.make<ScamInteger>(1);
-    ExprHandle val2 = mm.make<ScamInteger>(2);
-    ExprHandle val3 = mm.make<ScamInteger>(3);
+    ExprHandle val1 = mm.make<ScamInteger>(1, true);
+    ExprHandle val2 = mm.make<ScamInteger>(2, true);
+    ExprHandle val3 = mm.make<ScamInteger>(3, true);
 
     dict1->put(key1, val1);
     dict1->put(key2, val2);
@@ -360,9 +360,9 @@ TEST_F(MemoryTest, TestScamDict)
 
 TEST_F(MemoryTest, TestScamVector)
 {
-    ExprHandle val1 = mm.make<ScamInteger>(1);
-    ExprHandle val2 = mm.make<ScamInteger>(2);
-    ExprHandle val3 = mm.make<ScamInteger>(3);
+    ExprHandle val1 = mm.make<ScamInteger>(1, true);
+    ExprHandle val2 = mm.make<ScamInteger>(2, true);
+    ExprHandle val3 = mm.make<ScamInteger>(3, true);
 
     ExprVec elts;
     elts.push_back(val1);
@@ -494,7 +494,7 @@ TEST_F(MemoryTest, TestEnv)
     Env * top = standardMemoryManager.make<Env>();
     Env * env = top->extend();
     ScamSymbol * key = ExpressionFactory::makeSymbol("f");
-    ExprHandle val = ExpressionFactory::makeInteger(333);
+    ExprHandle val = ExpressionFactory::makeInteger(333, true);
 
     top->put(key, val);
     env->mark();

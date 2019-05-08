@@ -52,15 +52,15 @@ namespace scam
         static ScamKeyword * makeKeyword(std::string const & value,
                                          bool managed = true);
 
-        static ScamReal * makeReal(double value);
-        static ScamInteger * makeInteger(int value);
+        static ScamReal * makeReal(double value, bool exact);
+        static ScamInteger * makeInteger(int value, bool exact);
 
         static ScamNil * makeNil();
         static ScamCons * makeCons(ExprHandle car, ExprHandle cdr);
 
         static ExprHandle makeList();
         static ExprHandle makeList(ExprHandle item);
-	static ExprHandle makeList(std::vector<ExprHandle> & items);
+        static ExprHandle makeList(std::vector<ExprHandle> & items);
 
         template <typename... Args>
         static ExprHandle makeList(ExprHandle car, Args... args)
