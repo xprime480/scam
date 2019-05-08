@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include "expr/ExpressionFactory.hpp"
 
 using namespace scam;
@@ -45,6 +43,11 @@ ScamKeyword *
 ExpressionFactory::makeKeyword(string const & value, bool managed)
 {
     return standardMemoryManager.make<ScamKeyword>(value, managed);
+}
+
+ScamNumeric * ExpressionFactory::makeNumeric(string const & value)
+{
+    return ScamNumeric::makeValue(value);
 }
 
 ScamReal * ExpressionFactory::makeReal(double value, bool exact)
