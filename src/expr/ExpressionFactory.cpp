@@ -1,5 +1,7 @@
 #include "expr/ExpressionFactory.hpp"
 
+#include "util/NumericConverter.hpp"
+
 using namespace scam;
 using namespace std;
 
@@ -45,9 +47,10 @@ ExpressionFactory::makeKeyword(string const & value, bool managed)
     return standardMemoryManager.make<ScamKeyword>(value, managed);
 }
 
-ScamNumeric * ExpressionFactory::makeNumeric(string const & value)
+ExprHandle ExpressionFactory::makeNumeric(string const & value)
 {
-    return ScamNumeric::makeValue(value);
+    NumericConverter nc(value.c_str());
+    return nc.getValue();
 }
 
 ScamReal * ExpressionFactory::makeReal(double value, bool exact)

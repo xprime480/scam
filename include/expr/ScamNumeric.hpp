@@ -13,8 +13,6 @@ namespace scam
         explicit ScamNumeric(bool exact);
 
     public:
-        static ScamNumeric * makeValue(const std::string & text);
-
         bool isNumeric() const override;
 
         bool equals(ConstExprHandle expr) const override;
