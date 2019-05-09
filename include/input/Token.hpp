@@ -30,8 +30,7 @@ namespace scam
 	 TT_SYMBOL,
 	 TT_KEYWORD,
 
-	 TT_FLOAT,
-	 TT_INTEGER,
+	 TT_NUMERIC,
 
 	 TT_END_OF_INPUT = 254,
 	 TT_SCAN_ERROR = 255
@@ -137,12 +136,8 @@ namespace scam
             os << "Keyword";
             break;
 
-        case TokenType::TT_FLOAT:
-            os << "Real";
-            break;
-
-        case TokenType::TT_INTEGER:
-            os << "Integer";
+        case TokenType::TT_NUMERIC:
+            os << "Numeric";
             break;
 
         case TokenType::TT_END_OF_INPUT:

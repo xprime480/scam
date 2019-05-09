@@ -91,7 +91,7 @@ TEST_F(ClosureTest, LambdaFormalsMaskEnv)
     expectReal(expr, 0.5, "0.5");
 
     expr = parseAndEvaluate("x");
-    expectReal(expr, 0.0, "0");
+    expectInteger(expr, 0, "0");
 }
 
 TEST_F(ClosureTest, LambdaTooFewActuals)

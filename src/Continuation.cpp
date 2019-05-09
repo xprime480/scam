@@ -2,8 +2,6 @@
 
 #include "expr/ScamExpr.hpp"
 
-#include "util/DebugTrace.hpp"
-
 #include <sstream>
 
 using namespace scam;
@@ -17,7 +15,6 @@ namespace
 Continuation::Continuation(char const * id)
     : name(makeName(id))
 {
-    scamTrace("Creating continuation ", this, name);
 }
 
 Continuation * Continuation::makeInstance(char const * name)
@@ -27,13 +24,10 @@ Continuation * Continuation::makeInstance(char const * name)
 
 Continuation::~Continuation()
 {
-    scamTrace("Deleting continuation ", name);
 };
 
 void Continuation::run(ExprHandle expr)
 {
-    scamTrace("Executing continuation ", name);
-    scamTrace("\tExpr: ", expr->toString());
 }
 
 string Continuation::id() const

@@ -78,14 +78,8 @@ ExprHandle ScamParser::tokenToExpr(Token const & token) const
         rv = ExpressionFactory::makeString(token.getText());
         break;
 
-    case TokenType::TT_FLOAT:
-        rv = ExpressionFactory::makeReal(std::atof(token.getText().c_str()),
-					 false);
-        break;
-
-    case TokenType::TT_INTEGER:
-        rv = ExpressionFactory::makeInteger(std::atoi(token.getText().c_str()),
-					    true);
+    case TokenType::TT_NUMERIC:
+        rv = ExpressionFactory::makeNumeric(token.getText());
         break;
 
     case TokenType::TT_SYMBOL:

@@ -131,18 +131,18 @@ This comment style can span lines!\n\
     {
         string const input{ " ( ) [ ] { } #( . ' ` , ,@ " };
         vector<Token> exp {
-                           Token(TokenType::TT_OPEN_PAREN,    "(") ,
-                           Token(TokenType::TT_CLOSE_PAREN,   ")") ,
-                           Token(TokenType::TT_OPEN_BRACKET,  "[") ,
-                           Token(TokenType::TT_CLOSE_BRACKET, "]") ,
-                           Token(TokenType::TT_OPEN_CURLY,    "{") ,
-                           Token(TokenType::TT_CLOSE_CURLY,   "}") ,
-                           Token(TokenType::TT_OPEN_VECTOR,   "#("),
-                           Token(TokenType::TT_DOT,           ".") ,
-                           Token(TokenType::TT_QUOTE,         "'") ,
-                           Token(TokenType::TT_QUASIQUOTE,    "`") ,
-                           Token(TokenType::TT_UNQUOTE,       ",") ,
-                           Token(TokenType::TT_SPLICE,        ",@")
+            Token(TokenType::TT_OPEN_PAREN,    "(") ,
+            Token(TokenType::TT_CLOSE_PAREN,   ")") ,
+            Token(TokenType::TT_OPEN_BRACKET,  "[") ,
+            Token(TokenType::TT_CLOSE_BRACKET, "]") ,
+            Token(TokenType::TT_OPEN_CURLY,    "{") ,
+            Token(TokenType::TT_CLOSE_CURLY,   "}") ,
+            Token(TokenType::TT_OPEN_VECTOR,   "#("),
+            Token(TokenType::TT_DOT,           ".") ,
+            Token(TokenType::TT_QUOTE,         "'") ,
+            Token(TokenType::TT_QUASIQUOTE,    "`") ,
+            Token(TokenType::TT_UNQUOTE,       ",") ,
+            Token(TokenType::TT_SPLICE,        ",@")
         };
 
         string2tokens(input, exp);
@@ -152,12 +152,12 @@ This comment style can span lines!\n\
     {
         string const input{ "#t #f #T #F #true #FaLSE" };
         vector<Token> exp {
-                           Token(TokenType::TT_BOOLEAN, "#t"),
-                           Token(TokenType::TT_BOOLEAN, "#f"),
-                           Token(TokenType::TT_BOOLEAN, "#t"),
-                           Token(TokenType::TT_BOOLEAN, "#f"),
-                           Token(TokenType::TT_BOOLEAN, "#t"),
-                           Token(TokenType::TT_BOOLEAN, "#f")
+            Token(TokenType::TT_BOOLEAN, "#t"),
+            Token(TokenType::TT_BOOLEAN, "#f"),
+            Token(TokenType::TT_BOOLEAN, "#t"),
+            Token(TokenType::TT_BOOLEAN, "#f"),
+            Token(TokenType::TT_BOOLEAN, "#t"),
+            Token(TokenType::TT_BOOLEAN, "#f")
         };
 
         string2tokens(input, exp);
@@ -167,7 +167,7 @@ This comment style can span lines!\n\
     {
         string const input{ "#tjunk" };
         vector<Token> exp {
-                           Token(TokenType::TT_SCAN_ERROR, "Malformed boolean: {#tjunk}"),
+            Token(TokenType::TT_SCAN_ERROR, "Malformed boolean: {#tjunk}"),
         };
 
         string2tokens(input, exp);
@@ -177,11 +177,11 @@ This comment style can span lines!\n\
     {
         string const input{ "#\\a#\\Z    #\\+#\\ #\\\\" };
         vector<Token> exp {
-                           Token(TokenType::TT_CHARACTER, "a"),
-                           Token(TokenType::TT_CHARACTER, "Z"),
-                           Token(TokenType::TT_CHARACTER, "+"),
-                           Token(TokenType::TT_CHARACTER, " "),
-                           Token(TokenType::TT_CHARACTER, "\\"),
+            Token(TokenType::TT_CHARACTER, "a"),
+            Token(TokenType::TT_CHARACTER, "Z"),
+            Token(TokenType::TT_CHARACTER, "+"),
+            Token(TokenType::TT_CHARACTER, " "),
+            Token(TokenType::TT_CHARACTER, "\\"),
         };
 
         string2tokens(input, exp);
@@ -191,7 +191,7 @@ This comment style can span lines!\n\
     {
         string const input{ "#\\" };
         vector<Token> exp {
-                           Token(TokenType::TT_SCAN_ERROR, "Malformed character: {#\\}"),
+            Token(TokenType::TT_SCAN_ERROR, "Malformed character: {#\\}"),
         };
 
         string2tokens(input, exp);
@@ -201,7 +201,7 @@ This comment style can span lines!\n\
     {
         string const input{ "#\\a23" };
         vector<Token> exp {
-                           Token(TokenType::TT_SCAN_ERROR, "Malformed character: {#\\a23}"),
+            Token(TokenType::TT_SCAN_ERROR, "Malformed character: {#\\a23}"),
         };
 
         string2tokens(input, exp);
@@ -211,7 +211,7 @@ This comment style can span lines!\n\
     {
         string const input{ "\"\"" };
         vector<Token> exp {
-                           Token(TokenType::TT_STRING, "")
+            Token(TokenType::TT_STRING, "")
         };
 
         string2tokens(input, exp);
@@ -221,7 +221,7 @@ This comment style can span lines!\n\
     {
         string const input{ "\"Hello, World\"" };
         vector<Token> exp {
-                           Token(TokenType::TT_STRING, "Hello, World")
+            Token(TokenType::TT_STRING, "Hello, World")
         };
 
         string2tokens(input, exp);
@@ -240,9 +240,9 @@ This comment style can span lines!\n\
     {
         string const input{ "1 +3 -5" };
         vector<Token> exp {
-                           Token(TokenType::TT_INTEGER, "1"),
-                           Token(TokenType::TT_INTEGER, "+3"),
-                           Token(TokenType::TT_INTEGER, "-5")
+            Token(TokenType::TT_NUMERIC, "1"),
+            Token(TokenType::TT_NUMERIC, "+3"),
+            Token(TokenType::TT_NUMERIC, "-5")
         };
 
         string2tokens(input, exp);
@@ -252,9 +252,9 @@ This comment style can span lines!\n\
     {
         string const input{ "0.0001 +3.2 -5.01" };
         vector<Token> exp {
-                           Token(TokenType::TT_FLOAT, "0.0001"),
-                           Token(TokenType::TT_FLOAT, "+3.2"),
-                           Token(TokenType::TT_FLOAT, "-5.01")
+            Token(TokenType::TT_NUMERIC, "0.0001"),
+            Token(TokenType::TT_NUMERIC, "+3.2"),
+            Token(TokenType::TT_NUMERIC, "-5.01")
         };
 
         return string2tokens(input, exp);
@@ -264,7 +264,7 @@ This comment style can span lines!\n\
     {
         string const input{ ".2" };
         vector<Token> exp {
-                           Token(TokenType::TT_SYMBOL, ".2")
+            Token(TokenType::TT_SYMBOL, ".2")
         };
 
         return string2tokens(input, exp);
@@ -274,14 +274,14 @@ This comment style can span lines!\n\
     {
         string const input{ "Two Symbols || | | |23| |Two Symbols| |abc" };
         vector<Token> exp {
-                           Token(TokenType::TT_SYMBOL, "Two"),
-                           Token(TokenType::TT_SYMBOL, "Symbols"),
-                           Token(TokenType::TT_SYMBOL, ""),
-                           Token(TokenType::TT_SYMBOL, " "),
-                           Token(TokenType::TT_SYMBOL, "23"),
-                           Token(TokenType::TT_SYMBOL, "Two Symbols"),
-                           Token(TokenType::TT_SCAN_ERROR,
-                                 "End of input in identifier: {|abc}")
+            Token(TokenType::TT_SYMBOL, "Two"),
+            Token(TokenType::TT_SYMBOL, "Symbols"),
+            Token(TokenType::TT_SYMBOL, ""),
+            Token(TokenType::TT_SYMBOL, " "),
+            Token(TokenType::TT_SYMBOL, "23"),
+            Token(TokenType::TT_SYMBOL, "Two Symbols"),
+            Token(TokenType::TT_SCAN_ERROR,
+                  "End of input in identifier: {|abc}")
         };
 
         return string2tokens(input, exp);
@@ -291,8 +291,8 @@ This comment style can span lines!\n\
     {
         string const input{ "? ?" };
         vector<Token> exp {
-                           Token(TokenType::TT_QUESTION, "?"),
-                           Token(TokenType::TT_QUESTION, "?")
+            Token(TokenType::TT_QUESTION, "?"),
+            Token(TokenType::TT_QUESTION, "?")
         };
 
         return string2tokens(input, exp);
@@ -302,7 +302,7 @@ This comment style can span lines!\n\
     {
         string const input{ ":name" };
         vector<Token> exp {
-                           Token(TokenType::TT_KEYWORD, ":name")
+            Token(TokenType::TT_KEYWORD, ":name")
         };
 
         return string2tokens(input, exp);
@@ -312,7 +312,7 @@ This comment style can span lines!\n\
     {
         string const input{ "..." };
         vector<Token> exp {
-                           Token(TokenType::TT_SYMBOL, "...")
+            Token(TokenType::TT_SYMBOL, "...")
         };
 
         return string2tokens(input, exp);

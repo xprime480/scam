@@ -37,7 +37,6 @@ TEST_F(ParserTest, NoneToken)
     vector<Token> tokens {
         Token(TokenType::TT_NONE, "")
     };
-
     ExprHandle expr = runTest(tokens);
     expectError(expr);
 }
@@ -109,7 +108,7 @@ TEST_F(ParserTest, RealTest)
 {
     static const string msg{ "-17.5" };
     vector<Token> tokens {
-        Token(TokenType::TT_FLOAT, msg)
+        Token(TokenType::TT_NUMERIC, msg)
     };
 
     ExprHandle expr = runTest(tokens);
@@ -120,7 +119,7 @@ TEST_F(ParserTest, IntegerTest)
 {
     static const string msg{ "99" };
     vector<Token> tokens {
-        Token(TokenType::TT_INTEGER, msg)
+        Token(TokenType::TT_NUMERIC, msg)
     };
 
     ExprHandle expr = runTest(tokens);
@@ -145,7 +144,7 @@ TEST_F(ParserTest, ListTest)
     vector<Token> tokens {
         Token(TokenType::TT_OPEN_PAREN, "("),
         Token(TokenType::TT_SYMBOL, "quote"),
-        Token(TokenType::TT_INTEGER, "2"),
+        Token(TokenType::TT_NUMERIC, "2"),
         Token(TokenType::TT_CLOSE_PAREN, ")")
     };
 
@@ -181,10 +180,10 @@ TEST_F(ParserTest, DottedPairTest)
     static const string msg{ "(5 17 . 2)" };
     vector<Token> tokens {
         Token(TokenType::TT_OPEN_PAREN, "("),
-        Token(TokenType::TT_INTEGER, "5"),
-        Token(TokenType::TT_INTEGER, "17"),
+        Token(TokenType::TT_NUMERIC, "5"),
+        Token(TokenType::TT_NUMERIC, "17"),
         Token(TokenType::TT_DOT, "."),
-        Token(TokenType::TT_INTEGER, "2"),
+        Token(TokenType::TT_NUMERIC, "2"),
         Token(TokenType::TT_CLOSE_PAREN, ")")
     };
 
@@ -196,8 +195,8 @@ TEST_F(ParserTest, DottedPairNoCdr)
 {
     vector<Token> tokens {
         Token(TokenType::TT_OPEN_PAREN, "("),
-            Token(TokenType::TT_INTEGER, "5"),
-            Token(TokenType::TT_INTEGER, "17"),
+            Token(TokenType::TT_NUMERIC, "5"),
+            Token(TokenType::TT_NUMERIC, "17"),
             Token(TokenType::TT_DOT, "."),
             Token(TokenType::TT_CLOSE_PAREN, ")")
             };
@@ -210,9 +209,9 @@ TEST_F(ParserTest, DottedPairNoClose)
 {
     vector<Token> tokens {
         Token(TokenType::TT_OPEN_PAREN, "("),
-        Token(TokenType::TT_INTEGER, "5"),
+        Token(TokenType::TT_NUMERIC, "5"),
         Token(TokenType::TT_DOT, "."),
-        Token(TokenType::TT_INTEGER, "17"),
+        Token(TokenType::TT_NUMERIC, "17"),
     };
 
     ExprHandle expr = runTest(tokens);
@@ -223,10 +222,10 @@ TEST_F(ParserTest, DottedPairExcessForms)
 {
     vector<Token> tokens {
         Token(TokenType::TT_OPEN_PAREN, "("),
-        Token(TokenType::TT_INTEGER, "5"),
+        Token(TokenType::TT_NUMERIC, "5"),
         Token(TokenType::TT_DOT, "."),
-        Token(TokenType::TT_INTEGER, "17"),
-        Token(TokenType::TT_INTEGER, "42"),
+        Token(TokenType::TT_NUMERIC, "17"),
+        Token(TokenType::TT_NUMERIC, "42"),
         Token(TokenType::TT_CLOSE_PAREN, ")")
     };
 
@@ -322,8 +321,8 @@ TEST_F(ParserTest, ReaderMacroListForm)
     vector<Token> tokens {
         Token(TokenType::TT_QUOTE, "'"),
         Token(TokenType::TT_OPEN_PAREN, "("),
-        Token(TokenType::TT_INTEGER, "5"),
-        Token(TokenType::TT_INTEGER, "42"),
+        Token(TokenType::TT_NUMERIC, "5"),
+        Token(TokenType::TT_NUMERIC, "42"),
         Token(TokenType::TT_CLOSE_PAREN, ")")
     };
 
@@ -348,8 +347,8 @@ TEST_F(ParserTest, VectorNonEmpty)
     string const msg { "#(5 42)" };
     vector<Token> tokens {
         Token(TokenType::TT_OPEN_VECTOR, "#("),
-        Token(TokenType::TT_INTEGER, "5"),
-        Token(TokenType::TT_INTEGER, "42"),
+        Token(TokenType::TT_NUMERIC, "5"),
+        Token(TokenType::TT_NUMERIC, "42"),
         Token(TokenType::TT_CLOSE_PAREN, ")")
     };
 
@@ -396,7 +395,7 @@ TEST_F(ParserTest, DictNonEmpty)
     vector<Token> tokens {
         Token(TokenType::TT_OPEN_CURLY, "{"),
         Token(TokenType::TT_KEYWORD,    ":test"),
-        Token(TokenType::TT_INTEGER,    "1"),
+        Token(TokenType::TT_NUMERIC,    "1"),
         Token(TokenType::TT_CLOSE_CURLY, "}"),
     };
 

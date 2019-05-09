@@ -374,9 +374,9 @@ Token StringTokenizer::scanNumeric()
         ++pos;
     }
 
-    TokenType type = TokenType::TT_INTEGER;
+    TokenType type = TokenType::TT_NUMERIC;
     if ( '.' == *pos ) {
-        type = TokenType::TT_FLOAT;
+        type = TokenType::TT_NUMERIC;
         ++pos;
     }
 

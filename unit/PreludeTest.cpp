@@ -115,7 +115,7 @@ TEST_F(PreludeTest, EvenTest)
     expectFalse("(even? 3)");
     expectFalse("(even? 82383)");
 
-    expectFalse("(even? 2.0)");
+    expectTrue("(even? 2.0)");
     expectFalse("(even? #t)");
     expectFalse("(even? \"Silly, strings don't have parity\")");
 }
@@ -131,7 +131,7 @@ TEST_F(PreludeTest, OddTest)
     expectFalse("(odd? 2)");
     expectFalse("(odd? 12398234)");
 
-    expectFalse("(odd? 3.0)");
+    expectTrue("(odd? 3.0)");
     expectFalse("(odd? #t)");
     expectFalse("(odd? \"Silly, strings don't have parity\")");
 }
