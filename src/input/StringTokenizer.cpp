@@ -1,6 +1,8 @@
 #include "input/StringTokenizer.hpp"
 
+#include "expr/ScamExpr.hpp"
 #include "input/Token.hpp"
+#include "util/NumericConverter.hpp"
 
 #include <algorithm>
 #include <cstring>
@@ -151,7 +153,7 @@ Token StringTokenizer::skipNestedComments()
     return err;
 }
 
-bool StringTokenizer::isDelimiter(char c) const
+bool StringTokenizer::isDelimiter(char c)
 {
     static const string delimiters("\"()[];#");
     return ( c == '\0' || isspace(c) || string::npos != delimiters.find(c) );
@@ -359,30 +361,15 @@ Token StringTokenizer::scanString()
 
 Token StringTokenizer::scanNumeric()
 {
-    char const * original = pos;
 
-    if ( *pos == '+' || *pos == '-' ) {
-        ++pos;
-    }
-
-    if ( ! isdigit(*pos) ) {
-        pos = original;
+    NumericConverter nc(pos);
+    ExprHandle expr = nc.getValue();
+    if( ! expr->isNumeric() ) {
         return none;
     }
 
-    while ( isdigit(*pos) ) {
-        ++pos;
-    }
-
-    TokenType type = TokenType::TT_NUMERIC;
-    if ( '.' == *pos ) {
-        type = TokenType::TT_NUMERIC;
-        ++pos;
-    }
-
-    while ( isdigit(*pos) ) {
-        ++pos;
-    }
+    const char * original = pos;
+    pos = nc.getPos();
 
     if ( ! isDelimiter(*pos) ) {
         pos = original;
@@ -390,7 +377,7 @@ Token StringTokenizer::scanNumeric()
     }
 
     string text(original, pos-original);
-    Token token(type, text);
+    Token token(TokenType::TT_NUMERIC, text, expr);
     return token;
 }
 

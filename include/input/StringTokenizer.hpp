@@ -17,6 +17,8 @@ namespace scam
 
         Token next() override;
 
+        static bool isDelimiter(char c);
+	
     private:
         std::string const input;
         char const * pos;
@@ -26,7 +28,6 @@ namespace scam
         bool skipSimpleComments();
         Token skipNestedComments();
 
-        bool isDelimiter(char c) const;
         bool isIdentifierCharacter(char c) const;
 
         Token scanSpecial();

@@ -367,3 +367,21 @@ TEST_F(ExpressionTest, DictNewSingletonDupKeys)
     ExprHandle expr = ExpressionFactory::makeDict(vec);
     expectDict(expr, 1u, "{ 1 ein }");
 }
+
+TEST_F(ExpressionTest, SpecialNumericNaN)
+{
+    ExprHandle expr = ExpressionFactory::makeNaN();
+    expectSpecialNumeric(expr, "+nan.0");
+}
+
+TEST_F(ExpressionTest, SpecialNumericPosInf)
+{
+    ExprHandle expr = ExpressionFactory::makePosInf();
+    expectSpecialNumeric(expr, "+inf.0");
+}
+
+TEST_F(ExpressionTest, SpecialNumericNegInf)
+{
+    ExprHandle expr = ExpressionFactory::makeNegInf();
+    expectSpecialNumeric(expr, "-inf.0");
+}

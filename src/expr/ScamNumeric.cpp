@@ -9,8 +9,9 @@
 using namespace scam;
 using namespace std;
 
-ScamNumeric::ScamNumeric(bool exact)
-    : exact(exact)
+ScamNumeric::ScamNumeric(bool exact, bool managed)
+    : ScamExpr(managed)
+    , exact(exact)
 {
 }
 

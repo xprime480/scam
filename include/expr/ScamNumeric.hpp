@@ -10,7 +10,7 @@ namespace scam
     class ScamNumeric : public ScamExpr
     {
     protected:
-        explicit ScamNumeric(bool exact);
+        explicit ScamNumeric(bool exact, bool managed = true);
 
     public:
         bool isNumeric() const override;

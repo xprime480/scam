@@ -17,7 +17,7 @@ namespace scam
     class TestBase : public ::testing::Test
     {
     protected:
-        TestBase();
+        TestBase(bool loadPrelude = true);
         virtual ~TestBase();
 
         void SetUp() override;
@@ -53,6 +53,9 @@ namespace scam
         void booleanTest(ConstExprHandle expr,
                          bool value,
                          std::string const & repr);
+
+        void expectSpecialNumeric(ConstExprHandle expr,
+                                  std::string const & repr);
 
         void expectReal(ConstExprHandle expr,
                         double value,

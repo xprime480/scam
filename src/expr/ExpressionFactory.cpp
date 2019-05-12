@@ -53,6 +53,21 @@ ExprHandle ExpressionFactory::makeNumeric(string const & value)
     return nc.getValue();
 }
 
+ScamNaN * ExpressionFactory::makeNaN()
+{
+    return standardMemoryManager.make<ScamNaN>();
+}
+
+ScamPosInf * ExpressionFactory::makePosInf()
+{
+    return standardMemoryManager.make<ScamPosInf>();
+}
+
+ScamNegInf * ExpressionFactory::makeNegInf()
+{
+    return standardMemoryManager.make<ScamNegInf>();
+}
+
 ScamReal * ExpressionFactory::makeReal(double value, bool exact)
 {
     return standardMemoryManager.make<ScamReal>(value, exact);

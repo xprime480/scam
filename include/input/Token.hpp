@@ -1,52 +1,56 @@
 #if ! defined(TOKEN_H)
 #define TOKEN_H 1
 
+#include "expr/ScamExpr.hpp"
+
 #include <string>
 
 namespace scam
 {
     enum class TokenType : unsigned char
-	{
-	 TT_NONE = 0,
+        {
+         TT_NONE = 0,
 
-	 TT_OPEN_PAREN,
-	 TT_CLOSE_PAREN,
-	 TT_OPEN_BRACKET,
-	 TT_CLOSE_BRACKET,
-	 TT_OPEN_CURLY,
-	 TT_CLOSE_CURLY,
-	 TT_OPEN_VECTOR,
+         TT_OPEN_PAREN,
+         TT_CLOSE_PAREN,
+         TT_OPEN_BRACKET,
+         TT_CLOSE_BRACKET,
+         TT_OPEN_CURLY,
+         TT_CLOSE_CURLY,
+         TT_OPEN_VECTOR,
 
-	 TT_DOT,
-	 TT_QUOTE,
-	 TT_QUASIQUOTE,
-	 TT_UNQUOTE,
-	 TT_SPLICE,
-	 TT_QUESTION,
+         TT_DOT,
+         TT_QUOTE,
+         TT_QUASIQUOTE,
+         TT_UNQUOTE,
+         TT_SPLICE,
+         TT_QUESTION,
 
-	 TT_BOOLEAN,
-	 TT_CHARACTER,
-	 TT_STRING,
-	 TT_SYMBOL,
-	 TT_KEYWORD,
+         TT_BOOLEAN,
+         TT_CHARACTER,
+         TT_STRING,
+         TT_SYMBOL,
+         TT_KEYWORD,
 
-	 TT_NUMERIC,
+         TT_NUMERIC,
 
-	 TT_END_OF_INPUT = 254,
-	 TT_SCAN_ERROR = 255
-	};
+         TT_END_OF_INPUT = 254,
+         TT_SCAN_ERROR = 255
+        };
 
     class Token
     {
     public:
         Token();
         Token(TokenType type, std::string const & text);
+        Token(TokenType type, std::string const & text, ExprHandle expr);
 
         Token(Token const & rhs) = default;
         Token & operator=(Token const & rhs) = default;
 
         TokenType getType() const;
         std::string const & getText() const;
+        ExprHandle getExpr() const;
 
         bool operator==(Token const & rhs) const;
         bool operator!=(Token const & rhs) const;
@@ -54,6 +58,7 @@ namespace scam
     private:
         TokenType type;
         std::string text;
+        ExprHandle expr;
     };
 
     template <typename OS>
@@ -159,7 +164,12 @@ namespace scam
     template <typename OS>
     OS & operator<<(OS & os, Token const & t)
     {
-        os << "{Token: " << (t.getType()) << "; <" << (t.getText()) << ">}";
+        os << "{Token: " << (t.getType()) << "; <" << (t.getText()) << ">";
+        ExprHandle expr = t.getExpr();
+        if ( ! expr->isNull() ) {
+            os << " <" << expr->toString() << ">";
+        }
+        os << "}";
         return os;
     }
 }

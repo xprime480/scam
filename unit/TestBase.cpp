@@ -46,9 +46,17 @@ namespace
     static const unsigned long ALL_DICT       = SELECT_DICT | SELECT_APPLY | SELECT_MANAGED;
 }
 
-TestBase::TestBase()
+TestBase::TestBase(bool loadPrelude)
     : mm(standardMemoryManager)
 {
+    mm.reset();
+    engine.reset(true);
+    extractor = mm.make<Extractor>();
+    engine.setCont(extractor);
+    if ( loadPrelude ) {
+        ExprHandle result = parseAndEvaluate("(load \"lib/prelude.scm\")");
+        expectInteger(result, 1, "1");
+    }
 }
 
 TestBase::~TestBase()
@@ -57,12 +65,6 @@ TestBase::~TestBase()
 
 void TestBase::SetUp()
 {
-    mm.reset();
-    engine.reset(true);
-    extractor = mm.make<Extractor>();
-    engine.setCont(extractor);
-    ExprHandle result = parseAndEvaluate("(load \"lib/prelude.scm\")");
-    expectInteger(result, 1, "1");
 }
 
 void TestBase::TearDown()
@@ -276,6 +278,14 @@ void TestBase::booleanTest(ConstExprHandle expr,
     expectBoolean(expr, value, repr);
     ExprHandle evaled = evaluate(const_cast<ExprHandle>(expr));
     expectBoolean(evaled, value, repr);
+}
+
+void TestBase::expectSpecialNumeric(ConstExprHandle expr,
+                                    std::string const & repr)
+{
+    EXPECT_EQ(repr, expr->toString());
+    EXPECT_TRUE(expr->isReal());
+    EXPECT_FALSE(expr->isRational());
 }
 
 void TestBase::expectReal(ConstExprHandle expr,

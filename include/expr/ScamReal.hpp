@@ -13,11 +13,11 @@ namespace scam
         friend class MemoryManager;
 
     protected:
-        ScamReal(double value, bool exact);
+        ScamReal(double value, bool exact, bool managed = true);
 
     private:
-        static ScamReal * makeInstance(double value, bool exact);
-
+        static ScamReal *
+        makeInstance(double value, bool exact, bool managed = true);
     public:
         std::string toString() const override;
 

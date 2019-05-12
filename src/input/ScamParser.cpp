@@ -79,7 +79,7 @@ ExprHandle ScamParser::tokenToExpr(Token const & token) const
         break;
 
     case TokenType::TT_NUMERIC:
-        rv = ExpressionFactory::makeNumeric(token.getText());
+        rv = token.getExpr();
         break;
 
     case TokenType::TT_SYMBOL:

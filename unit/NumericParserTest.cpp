@@ -7,6 +7,11 @@ using namespace scam;
 
 class NumericParserTest : public TestBase
 {
+protected:
+    NumericParserTest()
+        : TestBase(false)
+    {
+    }
 };
 
 TEST_F(NumericParserTest, ZeroExact)
@@ -140,4 +145,23 @@ TEST_F(NumericParserTest, HexadecimalNegativeInteger)
     EXPECT_FALSE(expr->isExact());
 }
 
+TEST_F(NumericParserTest, NotANumber)
+{
+    const char * text { "+nan.0" };
+    ExprHandle expr = ExpressionFactory::makeNumeric(text);
+    expectSpecialNumeric(expr, text);
+}
 
+TEST_F(NumericParserTest, PlusInfinity)
+{
+    const char * text { "+inf.0" };
+    ExprHandle expr = ExpressionFactory::makeNumeric(text);
+    expectSpecialNumeric(expr, text);
+}
+
+TEST_F(NumericParserTest, MinusInfinity)
+{
+    const char * text { "-inf.0" };
+    ExprHandle expr = ExpressionFactory::makeNumeric(text);
+    expectSpecialNumeric(expr, text);
+}
