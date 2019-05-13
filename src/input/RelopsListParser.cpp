@@ -1,8 +1,8 @@
 #include "input/RelopsListParser.hpp"
 
-#include "expr/ScamNumeric.hpp"
 #include "expr/ScamString.hpp"
 #include "input/AlternativeParser.hpp"
+#include "input/ExtendedNumericParser.hpp"
 #include "input/ListParser.hpp"
 #include "util/MemoryManager.hpp"
 
@@ -12,7 +12,7 @@ using namespace std;
 RelopsListParser::RelopsListParser()
 {
     MemoryManager & mm = standardMemoryManager;
-    num     = mm.make<NumericParser>();
+    num     = mm.make<ExtendedNumericParser>();
     numList = mm.make<ListParser>(num);
     str     = mm.make<StringParser>();
     strList = mm.make<ListParser>(str);

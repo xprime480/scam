@@ -27,7 +27,7 @@ namespace scam
         ScamExpr * get(size_t idx) const;
 
     private:
-        NumericParser * num;
+        ExtendedNumericParser * num;
         StringParser * str;
         ListParser * numList;
         ListParser * strList;

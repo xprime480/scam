@@ -686,6 +686,13 @@ TEST_F(ArgParserTest, RelopsListMixed)
     rejectParse(parser, "(3.14159 \"hello\" \"world\")");
 }
 
+TEST_F(ArgParserTest, RelopsListOfExtendedNumbers)
+{
+    RelopsListParser * parser = mm.make<RelopsListParser>();
+    acceptParse(parser, "(3.14159 -1 +inf.0 -inf.0 +nan.0)");
+    EXPECT_EQ(5, parser->size());
+}
+
 TEST_F(ArgParserTest, SubstituteParserOK)
 {
     SubstituteParser * parser = mm.make<SubstituteParser>();
