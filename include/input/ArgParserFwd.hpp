@@ -12,6 +12,7 @@ namespace scam
     class ClassDefParser;
     class CountedListParser;
     class DictOpsParser;
+    class ExtendedNumericParser;
     class FunctionDefParser;
     class IncludeParser;
     class LambdaParser;

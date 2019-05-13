@@ -10,7 +10,6 @@ namespace scam
 {
     class MemoryManager;
     class ListParser;
-    class ScamRelops;
 
     class RelopsListParser : public ArgParser
     {

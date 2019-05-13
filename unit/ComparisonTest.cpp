@@ -26,6 +26,17 @@ TEST_F(ComparisonTest, EqNumber)
     expectFalse("(= 3 3 3 3 3 5)");
 }
 
+//TEST_F(ComparisonTest, EqSpecialNumber)
+//{
+//    expectTrue("(= +inf.0)");
+//    expectTrue("(= -inf.0)");
+//    expectFalse("(= +nan.0)");
+//
+//    expectTrue("(= +inf.0 +inf.0)");
+//    expectTrue("(= -inf.0 -inf.0)");
+//    expectFalse("(= +nan.0 +nan.0)");
+//}
+
 TEST_F(ComparisonTest, EqString)
 {
     expectTrue("(= \"A\")");

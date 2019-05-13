@@ -23,6 +23,7 @@ namespace scam
     class ScamNumeric;
     class ScamPosInf;
     class ScamReal;
+    class ScamSpecialNumeric;
     class ScamString;
     class ScamSymbol;
     class ScamVector;

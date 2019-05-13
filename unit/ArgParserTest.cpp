@@ -8,6 +8,7 @@
 #include "input/ClassDefParser.hpp"
 #include "input/CountedListParser.hpp"
 #include "input/DictOpsParser.hpp"
+#include "input/ExtendedNumericParser.hpp"
 #include "input/FunctionDefParser.hpp"
 #include "input/IncludeParser.hpp"
 #include "input/LetParser.hpp"
@@ -705,4 +706,38 @@ TEST_F(ArgParserTest, VrefNegativeIndex)
 {
     VrefParser * parser = mm.make<VrefParser>();
     rejectParse(parser, "(-17 #(1 2 3 :cat :dog))");
+}
+
+TEST_F(ArgParserTest, ExtendedNumericInteger)
+{
+    ExtendedNumericParser * parser = mm.make<ExtendedNumericParser>();
+    acceptParse(parser, "23");
+    expectInteger(parser->getValue(), 23, "23");
+}
+
+TEST_F(ArgParserTest, ExtendedNumericNegInf)
+{
+    ExtendedNumericParser * parser = mm.make<ExtendedNumericParser>();
+    acceptParse(parser, "-inf.0");
+    expectSpecialNumeric(parser->getValue(), "-inf.0");
+}
+
+TEST_F(ArgParserTest, ExtendedNumericPosInf)
+{
+    ExtendedNumericParser * parser = mm.make<ExtendedNumericParser>();
+    acceptParse(parser, "+inf.0");
+    expectSpecialNumeric(parser->getValue(), "+inf.0");
+}
+
+TEST_F(ArgParserTest, ExtendedNumericNaN)
+{
+    ExtendedNumericParser * parser = mm.make<ExtendedNumericParser>();
+    acceptParse(parser, "+nan.0");
+    expectSpecialNumeric(parser->getValue(), "+nan.0");
+}
+
+TEST_F(ArgParserTest, ExtendedNumericNotNumeric)
+{
+    ExtendedNumericParser * parser = mm.make<ExtendedNumericParser>();
+    rejectParse(parser, "just-a-symbol");
 }
