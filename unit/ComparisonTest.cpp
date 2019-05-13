@@ -5,6 +5,11 @@ using namespace scam;
 
 class ComparisonTest : public TestBase
 {
+protected:
+    ComparisonTest()
+        : TestBase(false)
+    {
+    }
 };
 
 TEST_F(ComparisonTest, CmpZeroForms)
@@ -26,16 +31,16 @@ TEST_F(ComparisonTest, EqNumber)
     expectFalse("(= 3 3 3 3 3 5)");
 }
 
-//TEST_F(ComparisonTest, EqSpecialNumber)
-//{
-//    expectTrue("(= +inf.0)");
-//    expectTrue("(= -inf.0)");
-//    expectFalse("(= +nan.0)");
-//
-//    expectTrue("(= +inf.0 +inf.0)");
-//    expectTrue("(= -inf.0 -inf.0)");
-//    expectFalse("(= +nan.0 +nan.0)");
-//}
+TEST_F(ComparisonTest, EqSpecialNumber)
+{
+    expectTrue("(= +inf.0)");
+    expectTrue("(= -inf.0)");
+    expectFalse("(= +nan.0)");
+
+    expectTrue("(= +inf.0 +inf.0)");
+    expectTrue("(= -inf.0 -inf.0)");
+    expectFalse("(= +nan.0 +nan.0)");
+}
 
 TEST_F(ComparisonTest, EqString)
 {
@@ -64,6 +69,17 @@ TEST_F(ComparisonTest, NeNumber)
     expectFalse("(<> 3 3 5)");
 }
 
+TEST_F(ComparisonTest, NeSpecialNumber)
+{
+    expectTrue("(<> -inf.0)");
+    expectTrue("(<> +inf.0)");
+    expectFalse("(<> +nan.0)");
+
+    expectTrue("(<> -inf.0 +inf.0 -inf.0)");
+    expectTrue("(<> +inf.0 -inf.0)");
+    expectFalse("(<> +nan.0 +nan.0)");
+}
+
 TEST_F(ComparisonTest, NeString)
 {
     expectTrue("(<> \"A\")");
@@ -80,6 +96,17 @@ TEST_F(ComparisonTest, GtNumber)
     expectTrue("(> 3 2)");
     expectTrue("(> 4 3 2 1)");
     expectFalse("(> 4 3 2 5)");
+}
+
+TEST_F(ComparisonTest, GtSpecialNumber)
+{
+    expectTrue("(> -inf.0)");
+    expectTrue("(> +inf.0)");
+    expectFalse("(> +nan.0)");
+
+    expectTrue("(> +inf.0 0 -inf.0)");
+    expectFalse("(> -inf.0 -inf.0)");
+    expectFalse("(> +nan.0 +nan.0)");
 }
 
 TEST_F(ComparisonTest, GtString)
@@ -100,6 +127,16 @@ TEST_F(ComparisonTest, GeNumber)
     expectFalse("(>= 1 1 1 10)");
 }
 
+TEST_F(ComparisonTest, GeSpecialNumber)
+{
+    expectTrue("(>= -inf.0)");
+    expectTrue("(>= +inf.0)");
+    expectFalse("(>= +nan.0)");
+
+    expectTrue("(>= +inf.0 +inf.0 0  -inf.0  -inf.0)");
+    expectFalse("(>= +nan.0 +nan.0)");
+}
+
 TEST_F(ComparisonTest, GeString)
 {
     expectTrue("(>= \"a\")");
@@ -108,3 +145,25 @@ TEST_F(ComparisonTest, GeString)
     expectTrue("(>= \"za\" \"fa\" \"ez\" \"\")");
     expectFalse("(>= \"zzz\" \"a\" \"z\" \"q\")");
 }
+
+TEST_F(ComparisonTest, LtSpecialNumber)
+{
+    expectTrue("(< -inf.0)");
+    expectTrue("(< +inf.0)");
+    expectFalse("(< +nan.0)");
+
+    expectTrue("(< -inf.0 0 +inf.0)");
+    expectFalse("(< -inf.0 -inf.0)");
+    expectFalse("(< +nan.0 +nan.0)");
+}
+
+TEST_F(ComparisonTest, LeSpecialNumber)
+{
+    expectTrue("(<= -inf.0)");
+    expectTrue("(<= +inf.0)");
+    expectFalse("(<= +nan.0)");
+
+    expectTrue("(<= -inf.0 -inf.0 0  +inf.0  +inf.0)");
+    expectFalse("(<= +nan.0 +nan.0)");
+}
+

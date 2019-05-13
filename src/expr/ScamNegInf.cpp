@@ -19,3 +19,8 @@ string ScamNegInf::toString() const
     static const string repr { "-inf.0" };
     return repr;
 }
+
+bool ScamNegInf::isNegInf() const
+{
+    return true;
+}

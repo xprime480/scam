@@ -15,6 +15,8 @@ namespace scam
 
     public:
         std::string toString() const override;
+
+        bool isNaN() const override;
     };
 }
 

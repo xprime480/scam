@@ -2,6 +2,7 @@
 
 #include "Continuation.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "expr/ExtendedNumeric.hpp"
 #include "input/NumericListParser.hpp"
 #include "input/RelopsListParser.hpp"
 
@@ -62,6 +63,30 @@ namespace
 
         static string id() {
             return "string";
+        }
+    };
+
+    template <>
+    struct TypeChecks<ExtendedNumeric>
+    {
+        static bool isType(ExprHandle arg)
+        {
+            return arg->isNumeric();
+        }
+
+        static bool isSubType(ExprHandle arg)
+        {
+            return false;
+        }
+
+        static ExtendedNumeric convert(ExprHandle arg)
+        {
+            ExtendedNumeric tmp(arg);
+            return tmp;
+        }
+
+        static string id() {
+            return "extended numeric";
         }
     };
 
@@ -152,7 +177,7 @@ ExprHandle scam::compareAlgorithm(RelopsListParser * parser,
                                   shared_ptr<OpImpl> impl)
 {
     if ( parser->isNumeric() ) {
-        return compareType<double>(parser, context, impl);
+        return compareType<ExtendedNumeric>(parser, context, impl);
     }
     return compareType<string>(parser, context, impl);
 }

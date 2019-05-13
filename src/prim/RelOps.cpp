@@ -1,6 +1,7 @@
 #include "prim/RelOps.hpp"
 
 #include "Continuation.hpp"
+#include "expr/ExtendedNumeric.hpp"
 #include "input/RelopsListParser.hpp"
 #include "util/ArgListHelper.hpp"
 #include "util/MemoryManager.hpp"
@@ -38,9 +39,29 @@ bool CompareOp::equals(ConstExprHandle expr) const
 
 namespace
 {
+    template <typename T>
+    struct Properties
+    {
+        static bool isNaN(T value) { return false; }
+    };
+
+    template <>
+    struct Properties<ExtendedNumeric>
+    {
+        static bool isNaN(ExtendedNumeric value)
+        {
+            return value.isNaN();
+        }
+    };
+
     class DummyOpImpl : public OpImpl
     {
     public:
+        bool apply(std::vector<ExtendedNumeric> const & args) const override
+        {
+            return true;
+        }
+
         bool apply(vector<double> const & args) const override
         {
             return true;
@@ -56,6 +77,11 @@ namespace
     class RelOp : public OpImpl
     {
     public:
+        bool apply(std::vector<ExtendedNumeric> const & args) const override
+        {
+            return check(args);
+        }
+
         bool apply(vector<double> const & args) const override
         {
             return check(args);
@@ -72,10 +98,12 @@ namespace
         {
             Cmp<T> cmp;
 
-            const unsigned len = args.size();
-
-            if ( len < 2 ) {
+            const size_t len = args.size();
+            if ( 0 == len ) {
                 return true;
+            }
+            if ( 1 == len ) {
+                return ! Properties<T>::isNaN(args[0]);
             }
 
             const unsigned lim = len - 1;

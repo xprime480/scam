@@ -130,6 +130,26 @@ bool ScamExpr::isRational() const
     return false;
 }
 
+bool ScamExpr::isInteger() const
+{
+    return false;
+}
+
+bool ScamExpr::isNaN() const
+{
+    return false;
+}
+
+bool ScamExpr::isNegInf() const
+{
+    return false;
+}
+
+bool ScamExpr::isPosInf() const
+{
+    return false;
+}
+
 double ScamExpr::toReal() const
 {
     stringstream s;
@@ -137,11 +157,6 @@ double ScamExpr::toReal() const
     throw ScamException(s.str());
 
     return 0.0;
-}
-
-bool ScamExpr::isInteger() const
-{
-    return false;
 }
 
 int ScamExpr::toInteger() const

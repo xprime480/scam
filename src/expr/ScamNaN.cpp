@@ -19,3 +19,8 @@ string ScamNaN::toString() const
     static const string repr { "+nan.0" };
     return repr;
 }
+
+bool ScamNaN::isNaN() const
+{
+    return true;
+}

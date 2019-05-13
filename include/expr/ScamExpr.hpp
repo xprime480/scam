@@ -39,12 +39,17 @@ namespace scam
         virtual bool isKeyword() const;
 
         virtual bool isNumeric() const;
-	virtual bool isExact() const;
+        virtual bool isExact() const;
         virtual bool isComplex() const;
         virtual bool isReal() const;
         virtual bool isRational() const;
-        virtual double toReal() const;
         virtual bool isInteger() const;
+
+        virtual bool isNaN() const;
+        virtual bool isNegInf() const;
+        virtual bool isPosInf() const;
+
+        virtual double toReal() const;
         virtual int toInteger() const;
 
         virtual bool isNil() const;

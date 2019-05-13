@@ -1,9 +1,10 @@
 #if ! defined(ARGLISTHELPER_H)
 #define ARGLISTHELPER_H 1
 
-#include "expr/ScamExpr.hpp"
+#include "expr/ExtendedNumeric.hpp"
 
 #include <functional>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -16,6 +17,9 @@ namespace scam
     class OpImpl
     {
     public:
+        virtual bool
+        apply(std::vector<ExtendedNumeric> const & args) const = 0 ;
+
         virtual bool apply(std::vector<double> const & args) const = 0 ;
         virtual bool apply(std::vector<std::string> const & args) const = 0;
     };

@@ -19,3 +19,9 @@ string ScamPosInf::toString() const
     static const string repr { "+inf.0" };
     return repr;
 }
+
+bool ScamPosInf::isPosInf() const
+{
+    return true;
+}
+
