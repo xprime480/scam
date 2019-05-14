@@ -10,37 +10,37 @@ class PreludeTest : public TestBase
 TEST_F(PreludeTest, MaxIntegerTest)
 {
     ExprHandle expr = parseAndEvaluate("(max 123 -123)");
-    expectInteger(expr, 123, "123");
+    expectInteger(expr, 123, "123", true);
 }
 
 TEST_F(PreludeTest, MaxRealTest)
 {
     ExprHandle expr = parseAndEvaluate("(max 42.01 17.5)");
-    expectReal(expr, 42.01, "42.01");
+    expectReal(expr, 42.01, "42.01", false);
 }
 
 TEST_F(PreludeTest, MaxMixedNumericTest)
 {
     ExprHandle expr = parseAndEvaluate("(max -5 -9.999)");
-    expectInteger(expr, -5, "-5");
+    expectInteger(expr, -5, "-5", true);
 }
 
 TEST_F(PreludeTest, MinIntegerTest)
 {
     ExprHandle expr = parseAndEvaluate("(min 123 -123)");
-    expectInteger(expr, -123, "-123");
+    expectInteger(expr, -123, "-123", true);
 }
 
 TEST_F(PreludeTest, MinRealTest)
 {
     ExprHandle expr = parseAndEvaluate("(min 42.01 17.5)");
-    expectReal(expr, 17.5, "17.5");
+    expectReal(expr, 17.5, "17.5", false);
 }
 
 TEST_F(PreludeTest, MinMixedNumericTest)
 {
     ExprHandle expr = parseAndEvaluate("(min -5 -9.999)");
-    expectReal(expr, -9.999, "-9.999");
+    expectReal(expr, -9.999, "-9.999", false);
 }
 
 TEST_F(PreludeTest, MapTest)
@@ -54,28 +54,28 @@ TEST_F(PreludeTest, ReduceEmptyList)
 {
     ExprHandle expr =
         parseAndEvaluate("(reduce (lambda (a b) (+ a b)) 0 '())");
-    expectInteger(expr, 0, "0");
+    expectInteger(expr, 0, "0", true);
 }
 
 TEST_F(PreludeTest, ReduceSingleton)
 {
     ExprHandle expr
         = parseAndEvaluate("(reduce (lambda (a b) (+ a b)) 0 '(5))");
-    expectInteger(expr, 5, "5");
+    expectInteger(expr, 5, "5", true);
 }
 
 TEST_F(PreludeTest, ReduceMany)
 {
     ExprHandle expr
         = parseAndEvaluate("(reduce (lambda (a b) (+ a b)) 0 '(1 2 3 4 5))");
-    expectInteger(expr, 15, "15");
+    expectInteger(expr, 15, "15", true);
 }
 
 TEST_F(PreludeTest, ReduceRespectsInit)
 {
     ExprHandle expr
         = parseAndEvaluate("(reduce (lambda (a b) (+ a b)) -10 '(1 2 3 4 5))");
-    expectInteger(expr, 5, "5");
+    expectInteger(expr, 5, "5", true);
 }
 
 TEST_F(PreludeTest, ReduceListOps)
@@ -187,13 +187,13 @@ TEST_F(PreludeTest, OneofNone)
 TEST_F(PreludeTest, OneofOne)
 {
     ExprHandle expr = parseAndEvaluate("(one-of (list 2))");
-    expectInteger(expr, 2, "2");
+    expectInteger(expr, 2, "2", true);
 }
 
 TEST_F(PreludeTest, OneofSecondofThree)
 {
     ExprHandle expr = parseAndEvaluate("(one-of (list 2 8 22)) ?");
-    expectInteger(expr, 8, "8");
+    expectInteger(expr, 8, "8", true);
 }
 
 TEST_F(PreludeTest, ExcludeNilFromNil)
@@ -237,37 +237,37 @@ TEST_F(PreludeTest, ExcludeNonOverlapping)
 TEST_F(PreludeTest, LengthOfNil)
 {
     ExprHandle expr = parseAndEvaluate("(length '())");
-    expectInteger(expr, 0, "0");
+    expectInteger(expr, 0, "0", true);
 }
 
 TEST_F(PreludeTest, LengthOfSingleton)
 {
     ExprHandle expr = parseAndEvaluate("(length '(1))");
-    expectInteger(expr, 1, "1");
+    expectInteger(expr, 1, "1", true);
 }
 
 TEST_F(PreludeTest, LengthOfLongerList)
 {
     ExprHandle expr = parseAndEvaluate("(length '(1 2 3 4))");
-    expectInteger(expr, 4, "4");
+    expectInteger(expr, 4, "4", true);
 }
 
 TEST_F(PreludeTest, LengthWithNested)
 {
     ExprHandle expr = parseAndEvaluate("(length '(1 2 (hi there) 3 4))");
-    expectInteger(expr, 5, "5");
+    expectInteger(expr, 5, "5", true);
 }
 
 TEST_F(PreludeTest, LengthVector)
 {
     ExprHandle expr = parseAndEvaluate("(length #(1 2 3))");
-    expectInteger(expr, 3, "3");
+    expectInteger(expr, 3, "3", true);
 }
 
 TEST_F(PreludeTest, LengthDict)
 {
     ExprHandle expr = parseAndEvaluate("(length { :a 44 :b \"cat\" })");
-    expectInteger(expr, 2, "2");
+    expectInteger(expr, 2, "2", true);
 }
 
 TEST_F(PreludeTest, LengthBadType)
@@ -291,7 +291,7 @@ TEST_F(PreludeTest, NthListOutOfBounds)
 TEST_F(PreludeTest, NthVector)
 {
     ExprHandle expr = parseAndEvaluate("(nth 0 #(1 2 3))");
-    expectInteger(expr, 1, "1");
+    expectInteger(expr, 1, "1", true);
 }
 
 TEST_F(PreludeTest, NthVectorOutOfBounds)
@@ -423,18 +423,18 @@ TEST_F(PreludeTest, CondElse)
 TEST_F(PreludeTest, CondManyForms)
 {
     ExprHandle expr = parseAndEvaluate("(cond ((#t 1 2 3)))");
-    expectInteger(expr, 3, "3");
+    expectInteger(expr, 3, "3", true);
 }
 
 TEST_F(PreludeTest, CondNoForms)
 {
     ExprHandle expr = parseAndEvaluate("(cond ((3)))");
-    expectInteger(expr, 3, "3");
+    expectInteger(expr, 3, "3", true);
 }
 
 TEST_F(PreludeTest, CondArrowForm)
 {
     (void) parseAndEvaluate("(define inc (lambda (x) (+ x 1)))");
     ExprHandle expr = parseAndEvaluate("(cond ((1 => inc)))");
-    expectInteger(expr, 2, "2");
+    expectInteger(expr, 2, "2", true);
 }

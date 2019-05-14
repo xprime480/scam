@@ -347,7 +347,7 @@ TEST_F(ArgParserTest, NoArgFunctionDef)
     const LambdaParser * lambda = parser->getLambda();
     EXPECT_EQ(0u, lambda->getArgs()->size());
     EXPECT_EQ(1u, lambda->getFormCount());
-    expectInteger(lambda->getForm(0), 42, "42");
+    expectInteger(lambda->getForm(0), 42, "42", true);
 }
 
 TEST_F(ArgParserTest, GeneralFunctionDef)
@@ -535,7 +535,7 @@ TEST_F(ArgParserTest, BindFormSymbolPlusForm)
     BindFormParser * parser = mm.make<BindFormParser>();
     acceptParse(parser, "(answer 42)");
     expectSymbol(parser->getSymbol(), "answer");
-    expectInteger(parser->getForm(), 42, "42");
+    expectInteger(parser->getForm(), 42, "42", true);
 }
 
 TEST_F(ArgParserTest, TrivialLet)
@@ -555,7 +555,7 @@ TEST_F(ArgParserTest, NonTrivialLet)
 
     BindFormParser * binding = parser->getBinding(0u);
     expectSymbol(binding->getSymbol(), "a");
-    expectInteger(binding->getForm(), 3, "3");
+    expectInteger(binding->getForm(), 3, "3", true);
 
     binding = parser->getBinding(1u);
     expectSymbol(binding->getSymbol(), "b");
@@ -643,12 +643,12 @@ TEST_F(ArgParserTest, NumericEmptyList)
 TEST_F(ArgParserTest, NumericMixedList)
 {
     NumericListParser * parser = mm.make<NumericListParser>();
-    acceptParse(parser, "(1.2 3 -750 0)");
+    acceptParse(parser, "(1.2 3 -750.0 0)");
     EXPECT_EQ(4, parser->size());
-    expectReal(parser->get(0), 1.2, "1.2");
-    expectInteger(parser->get(1), 3, "3");
-    expectInteger(parser->get(2), -750, "-750");
-    expectInteger(parser->get(3), 0, "0");
+    expectReal(parser->get(0), 1.2, "1.2", false);
+    expectInteger(parser->get(1), 3, "3", true);
+    expectInteger(parser->get(2), -750, "-750", false);
+    expectInteger(parser->get(3), 0, "0", true);
 }
 
 TEST_F(ArgParserTest, ExtendedNumericList)
@@ -676,7 +676,7 @@ TEST_F(ArgParserTest, RelopsListOfNumbers)
     RelopsListParser * parser = mm.make<RelopsListParser>();
     acceptParse(parser, "(1 2 3 4 5)");
     EXPECT_EQ(5, parser->size());
-    expectInteger(parser->get(2), 3, "3");
+    expectInteger(parser->get(2), 3, "3", true);
 }
 
 TEST_F(ArgParserTest, RelopsListOfStrings)
@@ -726,7 +726,7 @@ TEST_F(ArgParserTest, ExtendedNumericInteger)
 {
     ExtendedNumericParser * parser = mm.make<ExtendedNumericParser>();
     acceptParse(parser, "23");
-    expectInteger(parser->getValue(), 23, "23");
+    expectInteger(parser->getValue(), 23, "23", true);
 }
 
 TEST_F(ArgParserTest, ExtendedNumericNegInf)

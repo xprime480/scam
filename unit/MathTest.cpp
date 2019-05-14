@@ -1,7 +1,5 @@
 #include "TestBase.hpp"
 
-#include "util/DebugTrace.hpp"
-
 using namespace std;
 using namespace scam;
 
@@ -17,31 +15,31 @@ protected:
 TEST_F(MathTest, AddZeroArgs)
 {
     ExprHandle expr = parseAndEvaluate("(+)");
-    expectInteger(expr, 0, "0");
+    expectInteger(expr, 0, "0", true);
 }
 
 TEST_F(MathTest, AddOneArg)
 {
     ExprHandle expr = parseAndEvaluate("(+ 2)");
-    expectInteger(expr, 2, "2");
+    expectInteger(expr, 2, "2", true);
 }
 
 TEST_F(MathTest, AddTwoArgs)
 {
     ExprHandle expr = parseAndEvaluate("(+ 2 2)");
-    expectInteger(expr, 4, "4");
+    expectInteger(expr, 4, "4", true);
 }
 
 TEST_F(MathTest, AddManyArgs)
 {
     ExprHandle expr = parseAndEvaluate("(+ 2 2 -1 -3 4)");
-    expectInteger(expr, 4, "4");
+    expectInteger(expr, 4, "4", true);
 }
 
 TEST_F(MathTest, AddTypeUnification)
 {
     ExprHandle expr = parseAndEvaluate("(+ 2 2.5)");
-    expectReal(expr, 4.5, "4.5");
+    expectReal(expr, 4.5, "4.5", false);
 }
 
 TEST_F(MathTest, AddNegInf)
@@ -83,31 +81,31 @@ TEST_F(MathTest, AddBadArgument)
 TEST_F(MathTest, SubZeroArgs)
 {
     ExprHandle expr = parseAndEvaluate("(-)");
-    expectInteger(expr, 0, "0");
+    expectInteger(expr, 0, "0", true);
 }
 
 TEST_F(MathTest, SubOneArg)
 {
     ExprHandle expr = parseAndEvaluate("(- 2)");
-    expectInteger(expr, -2, "-2");
+    expectInteger(expr, -2, "-2", true);
 }
 
 TEST_F(MathTest, SubTwoArgs)
 {
     ExprHandle expr = parseAndEvaluate("(- 2 2)");
-    expectInteger(expr, 0, "0");
+    expectInteger(expr, 0, "0", true);
 }
 
 TEST_F(MathTest, SubManyArgs)
 {
     ExprHandle expr = parseAndEvaluate("(- 2 2 -1 -3 4)");
-    expectInteger(expr, 0, "0");
+    expectInteger(expr, 0, "0", true);
 }
 
 TEST_F(MathTest, SubTypeUnification)
 {
     ExprHandle expr = parseAndEvaluate("(- 2 1.5)");
-    expectReal(expr, 0.5, "0.5");
+    expectReal(expr, 0.5, "0.5", false);
 }
 
 TEST_F(MathTest, SubNegInf)
@@ -149,31 +147,31 @@ TEST_F(MathTest, SubBadArgument)
 TEST_F(MathTest, MulZeroArgs)
 {
     ExprHandle expr = parseAndEvaluate("(*)");
-    expectInteger(expr, 1, "1");
+    expectInteger(expr, 1, "1", true);
 }
 
 TEST_F(MathTest, MulOneArg)
 {
     ExprHandle expr = parseAndEvaluate("(* 2)");
-    expectInteger(expr, 2, "2");
+    expectInteger(expr, 2, "2", true);
 }
 
 TEST_F(MathTest, MulTwoArgs)
 {
     ExprHandle expr = parseAndEvaluate("(* 2 3)");
-    expectInteger(expr, 6, "6");
+    expectInteger(expr, 6, "6", true);
 }
 
 TEST_F(MathTest, MulManyArgs)
 {
     ExprHandle expr = parseAndEvaluate("(* 2 2 -1 4)");
-    expectInteger(expr, -16, "-16");
+    expectInteger(expr, -16, "-16", true);
 }
 
 TEST_F(MathTest, MulTypeUnification)
 {
     ExprHandle expr = parseAndEvaluate("(* 2 2.125)");
-    expectReal(expr, 4.25, "4.25");
+    expectReal(expr, 4.25, "4.25", false);
 }
 
 TEST_F(MathTest, MulNegInf)
@@ -221,39 +219,38 @@ TEST_F(MathTest, MulBadArgument)
 TEST_F(MathTest, DivZeroArgs)
 {
     ExprHandle expr = parseAndEvaluate("(/)");
-    expectInteger(expr, 1, "1");
-    EXPECT_TRUE(expr->isExact());
+    expectInteger(expr, 1, "1", true);
 }
 
 TEST_F(MathTest, DivOneArg)
 {
     ExprHandle expr = parseAndEvaluate("(/ 2)");
-    expectReal(expr, 0.5, "0.5");
+    expectReal(expr, 0.5, "0.5", true);
 }
 
 TEST_F(MathTest, DivTwoArgs)
 {
     ExprHandle expr = parseAndEvaluate("(/ 2 5)");
-    expectReal(expr, 0.4, "0.4");
+    expectReal(expr, 0.4, "0.4", true);
 }
 
 TEST_F(MathTest, DivManyArgs)
 {
     ExprHandle expr = parseAndEvaluate("(/ 1 2 2 2)");
-    expectReal(expr, 0.125, "0.125");
+    expectReal(expr, 0.125, "0.125", true);
 }
 
 TEST_F(MathTest, DivTypeUnification)
 {
     ExprHandle expr = parseAndEvaluate("(/ 2.5 1)");
-    expectReal(expr, 2.5, "2.5");
+    expectReal(expr, 2.5, "2.5", false);
     EXPECT_FALSE(expr->isExact());
 }
 
 TEST_F(MathTest, DivZeroByInf)
 {
     ExprHandle expr = parseAndEvaluate("(/ 0 -inf.0)");
-    expectInteger(expr, 0, "0");
+    expectInteger(expr, 0, "0", true);
 }
 
 TEST_F(MathTest, DivRealByInf)
@@ -313,42 +310,37 @@ TEST_F(MathTest, DivByZero)
 TEST_F(MathTest, DivZeroBy)
 {
     ExprHandle expr = parseAndEvaluate("(/ 0 2)");
-    expectInteger(expr, 0, "0");
-    EXPECT_TRUE(expr->isExact());
+    expectInteger(expr, 0, "0", true);
 }
 
 TEST_F(MathTest, ModZero)
 {
     ExprHandle expr = parseAndEvaluate("(%)");
-    expectInteger(expr, 0, "0");
-    EXPECT_TRUE(expr->isExact());
+    expectInteger(expr, 0, "0", true);
 }
 
 TEST_F(MathTest, ModOne)
 {
     ExprHandle expr = parseAndEvaluate("(% 5)");
-    expectInteger(expr, 0, "0");
-    EXPECT_TRUE(expr->isExact());
+    expectInteger(expr, 0, "0", true);
 }
 
 TEST_F(MathTest, ModTwo)
 {
     ExprHandle expr = parseAndEvaluate("(% 5 2)");
-    expectInteger(expr, 1, "1");
-    EXPECT_TRUE(expr->isExact());
+    expectInteger(expr, 1, "1", true);
 }
 
 TEST_F(MathTest, ModThreeIgnoresExtra)
 {
     ExprHandle expr = parseAndEvaluate("(% 5 2 0 0 0)");
-    expectInteger(expr, 1, "1");
-    EXPECT_TRUE(expr->isExact());
+    expectInteger(expr, 1, "1", true);
 }
 
 TEST_F(MathTest, ModZeroByInf)
 {
     ExprHandle expr = parseAndEvaluate("(% 0 -inf.0)");
-    expectInteger(expr, 0, "0");
+    expectInteger(expr, 0, "0", true);
 }
 
 TEST_F(MathTest, ModRealByInf)
@@ -403,28 +395,29 @@ TEST_F(MathTest, ModByZero)
 TEST_F(MathTest, ModZeroBy)
 {
     ExprHandle expr = parseAndEvaluate("(% 0 5)");
-    expectInteger(expr, 0, "0");
-    EXPECT_TRUE(expr->isExact());
+    expectInteger(expr, 0, "0", true);
 }
 
 TEST_F(MathTest, ModReal)
 {
-    ScamTraceScope _;
-    
     ExprHandle expr = parseAndEvaluate("(% 0.75 0.5)");
-    expectReal(expr, 0.25, "0.25");
-    EXPECT_FALSE(expr->isExact());
+    expectReal(expr, 0.25, "0.25", false);
 }
 
 TEST_F(MathTest, Nested)
 {
     ExprHandle expr = parseAndEvaluate("(+ (* 2 3) (/ 1 5) (- 3))");
-    expectReal(expr, 3.2, "3.2");
+    expectReal(expr, 3.2, "3.2", true);
 }
 
 TEST_F(MathTest, NestedWithError)
 {
-    ExprHandle expr =
-        parseAndEvaluate("(+ (* 2 3) (/ 1 (+ 5 -5)) (- 3))");
+    ExprHandle expr = parseAndEvaluate("(+ (* 2 3) (/ 1 (+ 5 -5)) (- 3))");
     expectError(expr);
+}
+
+TEST_F(MathTest, NestedWithNaN)
+{
+    ExprHandle expr = parseAndEvaluate("(+ (* 2 3) (/ 1 (+ +nan.0 -5)) (- 3))");
+    expectSpecialNumeric(expr, "+nan.0");
 }

@@ -17,13 +17,13 @@ class LogicTest : public TestBase
 TEST_F(LogicTest, IfTrue)
 {
     ExprHandle expr = parseAndEvaluate("(if #t +1 -1)");
-    expectInteger(expr, 1, "1");
+    expectInteger(expr, 1, "1", true);
 }
 
 TEST_F(LogicTest, IfFalse)
 {
     ExprHandle expr = parseAndEvaluate("(if #f +1 -1)");
-    expectInteger(expr, -1, "-1");
+    expectInteger(expr, -1, "-1", true);
 }
 
 TEST_F(LogicTest, IfFalseNoElse)
@@ -35,7 +35,7 @@ TEST_F(LogicTest, IfFalseNoElse)
 TEST_F(LogicTest, IfDoesntEvaluateUnusedClause)
 {
     ExprHandle expr = parseAndEvaluate("(if #t (* 2 3) (/ 1 0))");
-    expectInteger(expr, 6, "6");
+    expectInteger(expr, 6, "6", true);
 }
 
 TEST_F(LogicTest, IfTestError)
@@ -70,7 +70,7 @@ TEST_F(LogicTest, AndZeroForms)
 TEST_F(LogicTest, AndOneTrue)
 {
     ExprHandle expr = parseAndEvaluate("(and 3)");
-    expectInteger(expr, 3, "3");
+    expectInteger(expr, 3, "3", true);
 }
 
 TEST_F(LogicTest, AndOneFalse)
@@ -81,7 +81,7 @@ TEST_F(LogicTest, AndOneFalse)
 TEST_F(LogicTest, AndManyTrue)
 {
     ExprHandle expr = parseAndEvaluate("(and #t #t 3)");
-    expectInteger(expr, 3, "3");
+    expectInteger(expr, 3, "3", true);
 }
 
 TEST_F(LogicTest, AndShortCircuits)
@@ -92,13 +92,13 @@ TEST_F(LogicTest, AndShortCircuits)
 TEST_F(LogicTest, AndComplex1)
 {
     ExprHandle expr = parseAndEvaluate("(and 2 (and 3 4))");
-    expectInteger(expr, 4, "4");
+    expectInteger(expr, 4, "4", true);
 }
 
 TEST_F(LogicTest, AndComplex2)
 {
     ExprHandle expr = parseAndEvaluate("(and (and 3 4) 2)");
-    expectInteger(expr, 2, "2");
+    expectInteger(expr, 2, "2", true);
 }
 
 TEST_F(LogicTest, OrZeroForms)
@@ -109,7 +109,7 @@ TEST_F(LogicTest, OrZeroForms)
 TEST_F(LogicTest, OrOneTrue)
 {
     ExprHandle expr = parseAndEvaluate("(or 3)");
-    expectInteger(expr, 3, "3");
+    expectInteger(expr, 3, "3", true);
 }
 
 TEST_F(LogicTest, OrOneFalse)
@@ -130,13 +130,13 @@ TEST_F(LogicTest, OrShortCircuits)
 TEST_F(LogicTest, OrComplex1)
 {
     ExprHandle expr = parseAndEvaluate("(or #f (or 3 4))");
-    expectInteger(expr, 3, "3");
+    expectInteger(expr, 3, "3", true);
 }
 
 TEST_F(LogicTest, OrComplex2)
 {
     ExprHandle expr = parseAndEvaluate("(or (or #f #f) 2)");
-    expectInteger(expr, 2, "2");
+    expectInteger(expr, 2, "2", true);
 }
 
 TEST_F(LogicTest, NotZeroForms)

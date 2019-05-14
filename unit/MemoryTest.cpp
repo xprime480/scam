@@ -244,8 +244,8 @@ TEST_F(MemoryTest, TestScamInteger)
     ScamInteger * cut1 = mm.make<ScamInteger>(value, true);
     ScamInteger * cut2 = mm.make<ScamInteger>(value, true);
 
-    expectInteger(cut1, value, repr);
-    expectInteger(cut2, value, repr);
+    expectInteger(cut1, value, repr, true);
+    expectInteger(cut2, value, repr, true);
 
     expectManaged(cut1, cut2);
 }
@@ -258,8 +258,8 @@ TEST_F(MemoryTest, TestScamReal)
     ScamReal * cut1 = mm.make<ScamReal>(value, false);
     ScamReal * cut2 = mm.make<ScamReal>(value, false);
 
-    expectReal(cut1, value, repr);
-    expectReal(cut2, value, repr);
+    expectReal(cut1, value, repr, false);
+    expectReal(cut2, value, repr, false);
 
     expectManaged(cut1, cut2);
 }

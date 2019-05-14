@@ -9,36 +9,35 @@ class SystemTest : public TestBase
 
 TEST_F(SystemTest, LoadTest)
 {
-    ExprHandle expr
-        = parseAndEvaluate("(load \"scripts/system/loadtest.scm\")");
-    expectInteger(expr, 66, "66");
+    ExprHandle expr =
+        parseAndEvaluate("(load \"scripts/system/loadtest.scm\")");
+    expectInteger(expr, 66, "66", true);
 }
 
 TEST_F(SystemTest, IncludeTest)
 {
-    ExprHandle expr
-        = parseAndEvaluate("(include \"scripts/system/includetest.scm\")");
-    expectInteger(expr, 66, "66");
+    ExprHandle expr =
+        parseAndEvaluate("(include \"scripts/system/includetest.scm\")");
+    expectInteger(expr, 66, "66", true);
 }
 
 TEST_F(SystemTest, WhileTest)
 {
-    ExprHandle expr
-        = parseAndEvaluate("(load \"scripts/system/whiletest.scm\")");
-    expectInteger(expr, 15, "15");
+    ExprHandle expr =
+        parseAndEvaluate("(load \"scripts/system/whiletest.scm\")");
+    expectInteger(expr, 15, "15", true);
 }
 
 TEST_F(SystemTest, MapTest)
 {
-    ExprHandle expr
-        = parseAndEvaluate("(load \"scripts/system/maptest.scm\")");
+    ExprHandle expr = parseAndEvaluate("(load \"scripts/system/maptest.scm\")");
     expectList(expr, "(2 4 6)", 3);
 }
 
 TEST_F(SystemTest, SpawnTest)
 {
-    ExprHandle expr
-        = parseAndEvaluate("(load \"scripts/system/spawntest.scm\")");
+    ExprHandle expr =
+        parseAndEvaluate("(load \"scripts/system/spawntest.scm\")");
     expectList(expr, "(1 2)", 2);
 }
 
@@ -50,8 +49,7 @@ TEST_F(SystemTest, ErrorTestZero)
 
 TEST_F(SystemTest, ErrorTestOne)
 {
-    ExprHandle expr =
-        parseAndEvaluate("(error \"bagels are not doughnuts\")");
+    ExprHandle expr = parseAndEvaluate("(error \"bagels are not doughnuts\")");
     expectError(expr, "bagels are not doughnuts");
 }
 

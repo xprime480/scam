@@ -29,9 +29,8 @@ TEST_F(ClassTest, TrivialInstance)
 
 TEST_F(ClassTest, SimpleConstantClass)
 {
-    ExprHandle expr =
-        parseAndEvaluateFile("scripts/class/simpleconstant.scm");
-    expectInteger(expr, 42, "42");
+    ExprHandle expr = parseAndEvaluateFile("scripts/class/simpleconstant.scm");
+    expectInteger(expr, 42, "42", true);
 }
 
 TEST_F(ClassTest, ClassWithComputation)
@@ -55,25 +54,25 @@ TEST_F(ClassTest, NoInitFunction)
 TEST_F(ClassTest, CallMemberFunction)
 {
     ExprHandle expr = parseAndEvaluateFile("scripts/class/callmember.scm");
-    expectInteger(expr, 17, "17");
+    expectInteger(expr, 17, "17", true);
 }
 
 TEST_F(ClassTest, CallParentFunction)
 {
     ExprHandle expr = parseAndEvaluateFile("scripts/class/callparent.scm");
-    expectInteger(expr, 17, "17");
+    expectInteger(expr, 17, "17", true);
 }
 
 TEST_F(ClassTest, CallSelfFunction)
 {
     ExprHandle expr = parseAndEvaluateFile("scripts/class/callself.scm");
-    expectInteger(expr, 34, "34");
+    expectInteger(expr, 34, "34", true);
 }
 
 TEST_F(ClassTest, DirectToBase)
 {
     ExprHandle expr = parseAndEvaluateFile("scripts/class/callbase.scm");
-    expectInteger(expr, -1, "-1");
+    expectInteger(expr, -1, "-1", true);
 }
 
 TEST_F(ClassTest, FunctionInvocationEnv)

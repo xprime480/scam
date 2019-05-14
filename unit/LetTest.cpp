@@ -20,25 +20,25 @@ protected:
 TEST_P(LetTest, LetSimple)
 {
     ExprHandle expr = runTest("(%s ((x 1)) (* x 2))");
-    expectInteger(expr, 2, "2");
+    expectInteger(expr, 2, "2", true);
 }
 
 TEST_P(LetTest, LetNoBindings)
 {
     ExprHandle expr = runTest("(%s () 3)");
-    expectInteger(expr, 3, "3");
+    expectInteger(expr, 3, "3", true);
 }
 
 TEST_P(LetTest, LetSeveralBindings)
 {
     ExprHandle expr = runTest("(%s ((a 3) (b 5)) (* a b))");
-    expectInteger(expr, 15, "15");
+    expectInteger(expr, 15, "15", true);
 }
 
 TEST_P(LetTest, LetSeveralForms)
 {
     ExprHandle expr = runTest("(%s () 3 5 9)");
-    expectInteger(expr, 9, "9");
+    expectInteger(expr, 9, "9", true);
 }
 
 TEST_P(LetTest, LetCreatesNewEnv)
@@ -46,10 +46,10 @@ TEST_P(LetTest, LetCreatesNewEnv)
     parseAndEvaluate("(define x 2)");
     parseAndEvaluate("(define y 0)");
     ExprHandle expr = runTest("(%s ((y 1.0)) (/ x y))");
-    expectInteger(expr, 2, "2");
+    expectInteger(expr, 2, "2", false);
 
     expr = parseAndEvaluate("y");
-    expectInteger(expr, 0, "0");
+    expectInteger(expr, 0, "0", true);
 }
 
 TEST_P(LetTest, LetNoForms)
@@ -89,10 +89,10 @@ TEST_P(LetTest, LetDependentForms)
     ExprHandle expr = runTest("(%s ((x 1) (y x)) y)");
 
     if ( 0 == strcmp("let*", GetParam()) ) {
-        expectInteger(expr, 1, "1");
+        expectInteger(expr, 1, "1", true);
     }
     else {
-        expectInteger(expr, 2, "2");
+        expectInteger(expr, 2, "2", true);
     }
 }
 
@@ -108,7 +108,7 @@ TEST_P(LetTest, LetRecursiveLambda)
 ");
 
     if ( 0 == strcmp("letrec", GetParam()) ) {
-        expectInteger(expr, 6, "6");
+        expectInteger(expr, 6, "6", true);
     }
     else {
         expectError(expr);

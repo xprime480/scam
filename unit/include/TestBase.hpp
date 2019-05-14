@@ -59,11 +59,13 @@ namespace scam
 
         void expectReal(ConstExprHandle expr,
                         double value,
-                        std::string const & repr);
+                        std::string const & repr,
+                        bool exact);
 
         void expectInteger(ConstExprHandle expr,
                            int value,
-                           std::string const & repr);
+                           std::string const & repr,
+                           bool exact);
 
         void expectChar(ConstExprHandle expr,
                         char value,

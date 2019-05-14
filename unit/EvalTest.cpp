@@ -43,7 +43,7 @@ TEST_F(EvalTest, QuoteIgnoresUnquote)
 TEST_F(EvalTest, QuasiQuoteWithUnquote)
 {
     ExprHandle expr = parseAndEvaluate("`,(+ 2 2)");
-    expectInteger(expr, 4, "4");
+    expectInteger(expr, 4, "4", true);
 }
 
 TEST_F(EvalTest, QuasiQuoteWithNestedUnquote)
@@ -73,13 +73,13 @@ TEST_F(EvalTest, QuasiQuoteSpliceEmpty)
 TEST_F(EvalTest, MacroLiteralForm)
 {
     ExprHandle expr = parseAndEvaluateFile("scripts/eval/macroliteral.scm");
-    expectInteger(expr, 2, "2");
+    expectInteger(expr, 2, "2", true);
 }
 
 TEST_F(EvalTest, MacroFormNeedsEvaluation)
 {
     ExprHandle expr = parseAndEvaluateFile("scripts/eval/macroeval.scm");
-    expectInteger(expr, 7, "7");
+    expectInteger(expr, 7, "7", true);
 }
 
 TEST_F(EvalTest, MacroMyLetTest)
@@ -91,7 +91,7 @@ TEST_F(EvalTest, MacroMyLetTest)
 TEST_F(EvalTest, EvalSelfEvaluating)
 {
     ExprHandle expr = parseAndEvaluate("(eval 2)");
-    expectInteger(expr, 2, "2");
+    expectInteger(expr, 2, "2", true);
 }
 
 TEST_F(EvalTest, EvalForm)
@@ -103,13 +103,13 @@ TEST_F(EvalTest, EvalForm)
 TEST_F(EvalTest, Begin)
 {
     ExprHandle expr = parseAndEvaluate("(begin 1 2 3 (* 5 4) 99)");
-    expectInteger(expr, 99, "99");
+    expectInteger(expr, 99, "99", true);
 }
 
 TEST_F(EvalTest, BeginOne)
 {
     ExprHandle expr = parseAndEvaluate("(begin 99)");
-    expectInteger(expr, 99, "99");
+    expectInteger(expr, 99, "99", true);
 }
 
 TEST_F(EvalTest, BeginZero)
@@ -121,7 +121,7 @@ TEST_F(EvalTest, BeginZero)
 TEST_F(EvalTest, ApplyValid)
 {
     ExprHandle expr = parseAndEvaluate("(apply * (list 3 33))");
-    expectInteger(expr, 99, "99");
+    expectInteger(expr, 99, "99", true);
 }
 
 TEST_F(EvalTest, ApplyTooManyArgs)

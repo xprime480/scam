@@ -50,10 +50,10 @@ TEST_F(ExpressionTest, RealTest)
     string const repr{ "33.2" };
 
     ExprHandle expr = ExpressionFactory::makeReal(value, false);
-    expectReal(expr, value, repr);
+    expectReal(expr, value, repr, false);
 
     ExprHandle evaled = evaluate(expr);
-    expectReal(evaled, value, repr);
+    expectReal(evaled, value, repr, false);
 }
 
 TEST_F(ExpressionTest, IntegerTest)
@@ -62,10 +62,10 @@ TEST_F(ExpressionTest, IntegerTest)
     string const repr{ "42" };
 
     ExprHandle expr = ExpressionFactory::makeInteger(value, true);
-    expectInteger(expr, value, repr);
+    expectInteger(expr, value, repr, true);
 
     ExprHandle evaled = evaluate(expr);
-    expectInteger(evaled, value, repr);
+    expectInteger(evaled, value, repr, true);
 }
 
 TEST_F(ExpressionTest, CharacterTest)
@@ -104,7 +104,7 @@ TEST_F(ExpressionTest, SymbolTest)
     ExprHandle value = ExpressionFactory::makeInteger(1899, true);
     engine.addBinding(dynamic_cast<ScamSymbol*>(sym), value);
     evaled = evaluate(sym);
-    expectInteger(evaled, 1899, "1899");
+    expectInteger(evaled, 1899, "1899", true);
 }
 
 TEST_F(ExpressionTest, NilTest)
@@ -219,8 +219,8 @@ TEST_F(ExpressionTest, ConsDottedPair)
 
     expectCons(expr, value);
 
-    expectInteger(expr->getCar(), 1, "1");
-    expectInteger(expr->getCdr(), 2, "2");
+    expectInteger(expr->getCar(), 1, "1", true);
+    expectInteger(expr->getCdr(), 2, "2", true);
 }
 
 TEST_F(ExpressionTest, ConsEvalTest)
@@ -237,7 +237,7 @@ TEST_F(ExpressionTest, ConsEvalTest)
     expectSymbol(expr->getCar(), "quote");
 
     ExprHandle evaled = evaluate(expr);
-    expectInteger(evaled, 2, "2");
+    expectInteger(evaled, 2, "2", true);
 }
 
 TEST_F(ExpressionTest, ListCdrTest)
@@ -278,7 +278,7 @@ TEST_F(ExpressionTest, PseudoListCdrTest)
     expectCons(cdr0, "(2 . 3)");
 
     ExprHandle cdr1 = plist->nthcdr(1);
-    expectInteger(cdr1, 3, "3");
+    expectInteger(cdr1, 3, "3", true);
 
     ExprHandle cdr2 = plist->nthcdr(2);
     expectError(cdr2);
@@ -327,9 +327,9 @@ TEST_F(ExpressionTest, VectorNonEmpty)
 
     auto f = [this, &value] (ExprHandle expr) {
                  expectVector(expr, value, 3u);
-                 expectInteger(expr->nthcar(0), 1, "1");
-                 expectInteger(expr->nthcar(1), 2, "2");
-                 expectInteger(expr->nthcar(2), 3, "3");
+                 expectInteger(expr->nthcar(0), 1, "1", true);
+                 expectInteger(expr->nthcar(1), 2, "2", true);
+                 expectInteger(expr->nthcar(2), 3, "3", true);
                  expectError(expr->nthcar(3));
              };
 

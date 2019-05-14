@@ -55,7 +55,7 @@ TestBase::TestBase(bool loadPrelude)
     engine.setCont(extractor);
     if ( loadPrelude ) {
         ExprHandle result = parseAndEvaluate("(load \"lib/prelude.scm\")");
-        expectInteger(result, 1, "1");
+        expectInteger(result, 1, "1", true);
     }
 }
 
@@ -290,7 +290,8 @@ void TestBase::expectSpecialNumeric(ConstExprHandle expr,
 
 void TestBase::expectReal(ConstExprHandle expr,
                           double value,
-                          string const & repr)
+                          string const & repr,
+                          bool exact)
 {
     checkPredicates(expr, SELECT_TRUTH | ALL_FLOAT);
     EXPECT_EQ(repr, expr->toString());
@@ -302,22 +303,25 @@ void TestBase::expectReal(ConstExprHandle expr,
         FAIL() << e.getMessage() << "\n";
     }
 
-    EXPECT_THROW(expr->toInteger(), ScamException);
+    EXPECT_FALSE(expr->isInteger());
+    EXPECT_EQ(exact, expr->isExact());
 }
 
 void TestBase::expectInteger(ConstExprHandle expr,
                              int value,
-                             string const & repr)
+                             string const & repr,
+                             bool exact)
 {
     checkPredicates(expr, SELECT_TRUTH | ALL_INTEGER);
     EXPECT_EQ(repr, expr->toString());
     try {
-        EXPECT_EQ((double)value, expr->toReal());
         EXPECT_EQ(value, expr->toInteger());
     }
     catch ( ScamException e ) {
         FAIL() << e.getMessage() << "\n";
     }
+
+    EXPECT_EQ(exact, expr->isExact());
 }
 
 void TestBase::expectChar(ConstExprHandle expr,

@@ -142,7 +142,7 @@ TEST_F(EnvTest, DefineConstant)
 
     ScamSymbol * sym = ExpressionFactory::makeSymbol("x");
     ExprHandle val = engine.getBinding(sym);
-    expectInteger(val, 1, "1");
+    expectInteger(val, 1, "1", true);
 }
 
 TEST_F(EnvTest, DefineEvaluated)
@@ -153,7 +153,7 @@ TEST_F(EnvTest, DefineEvaluated)
 
     ScamSymbol * sym = ExpressionFactory::makeSymbol("x");
     ExprHandle val = engine.getBinding(sym);
-    expectInteger(val, 1, "1");
+    expectInteger(val, 1, "1", true);
 }
 
 TEST_F(EnvTest, DefineScope)
@@ -176,14 +176,14 @@ TEST_F(EnvTest, AssignKeyword)
 {
     reset(true);
     ExprHandle expr = parseAndEvaluateFile("scripts/env/assign.scm");
-    expectInteger(expr, 77, "77");
+    expectInteger(expr, 77, "77", true);
 }
 
 TEST_F(EnvTest, AssignScope)
 {
     reset(true);
     ExprHandle expr = parseAndEvaluateFile("scripts/env/assignscope.scm");
-    expectInteger(expr, 77, "77");
+    expectInteger(expr, 77, "77", true);
 }
 
 TEST_F(EnvTest, GetTopLevel)
@@ -195,7 +195,7 @@ TEST_F(EnvTest, GetTopLevel)
 
     ScamSymbol * sym = ExpressionFactory::makeSymbol("x");
     ExprHandle val = engine.getBinding(sym, true);
-    expectInteger(val, 1, "1");
+    expectInteger(val, 1, "1", true);
 }
 
 TEST_F(EnvTest, Undefine)
@@ -203,7 +203,7 @@ TEST_F(EnvTest, Undefine)
     reset(true);
 
     ExprHandle val = parseAndEvaluate("(define test 1) test");
-    expectInteger(val, 1, "1");
+    expectInteger(val, 1, "1", true);
 
     val = parseAndEvaluate("(undefine test)  test");
     expectError(val);
@@ -214,10 +214,10 @@ TEST_F(EnvTest, UndefineOnlyAffectsCurrentFrame)
     reset(true);
 
     ExprHandle val = parseAndEvaluate("(define test 1) test");
-    expectInteger(val, 1, "1");
+    expectInteger(val, 1, "1", true);
 
     engine.pushFrame();
 
     val = parseAndEvaluate("(undefine test)  test");
-    expectInteger(val, 1, "1");
+    expectInteger(val, 1, "1", true);
 }

@@ -25,7 +25,7 @@ TEST_F(ClosureTest, ClosureBasic)
     ExprHandle args = ExpressionFactory::makeNil();
     ExprHandle finalValue = apply(expr, args);
 
-    expectInteger(finalValue, 2, "2");
+    expectInteger(finalValue, 2, "2", true);
 }
 
 TEST_F(ClosureTest, ClosureMultipleForms)
@@ -56,7 +56,7 @@ TEST_F(ClosureTest, ClosureWithArg)
 
     ExprHandle args = readString("(3)");
     ExprHandle finalValue = apply(expr, args);
-    expectInteger(finalValue, 6, "6");
+    expectInteger(finalValue, 6, "6", true);
 }
 
 TEST_F(ClosureTest, LambdaBasic)
@@ -68,30 +68,28 @@ TEST_F(ClosureTest, LambdaBasic)
 TEST_F(ClosureTest, LambdaEvalConst)
 {
     ExprHandle expr = parseAndEvaluate("((lambda () 2))");
-    expectInteger(expr, 2, "2");
+    expectInteger(expr, 2, "2", true);
 }
 
 TEST_F(ClosureTest, LambdaEvalWithArg)
 {
     ExprHandle expr = parseAndEvaluate("((lambda (x) (* x 2)) (+ 1 3))");
-    expectInteger(expr, 8, "8");
+    expectInteger(expr, 8, "8", true);
 }
 
 TEST_F(ClosureTest, LambdaCaptures)
 {
-    ExprHandle expr =
-        parseAndEvaluateFile("scripts/closure/capture.scm");
-    expectInteger(expr, 20, "20");
+    ExprHandle expr = parseAndEvaluateFile("scripts/closure/capture.scm");
+    expectInteger(expr, 20, "20", true);
 }
 
 TEST_F(ClosureTest, LambdaFormalsMaskEnv)
 {
-    ExprHandle expr =
-        parseAndEvaluateFile("scripts/closure/formalsmask.scm");
-    expectReal(expr, 0.5, "0.5");
+    ExprHandle expr = parseAndEvaluateFile("scripts/closure/formalsmask.scm");
+    expectReal(expr, 0.5, "0.5", false);
 
     expr = parseAndEvaluate("x");
-    expectInteger(expr, 0, "0");
+    expectInteger(expr, 0, "0", false);
 }
 
 TEST_F(ClosureTest, LambdaTooFewActuals)
@@ -115,8 +113,7 @@ TEST_F(ClosureTest, LambdaDottedParmListZero)
 
 TEST_F(ClosureTest, LambdaDottedParmListOne)
 {
-    ExprHandle expr =
-        parseAndEvaluateFile("scripts/closure/dottedone.scm");
+    ExprHandle expr = parseAndEvaluateFile("scripts/closure/dottedone.scm");
     expectList(expr, "(2)", 1);
 }
 

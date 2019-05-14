@@ -22,7 +22,7 @@ TEST_F(EngineTest, AmbZeroForms)
 TEST_F(EngineTest, AmbOneFormFirst)
 {
     ExprHandle expr = parseAndEvaluate("(amb 2)");
-    expectInteger(expr, 2, "2");
+    expectInteger(expr, 2, "2", true);
 }
 
 TEST_F(EngineTest, AmbOneFormSecond)
@@ -44,7 +44,7 @@ TEST_F(EngineTest, AmbManyFormSecond)
 {
     ExprHandle expr = parseAndEvaluate("(amb 2 3 4)");
     expr = parseAndEvaluate("?");
-    expectInteger(expr, 3, "3");
+    expectInteger(expr, 3, "3", true);
 }
 
 TEST_F(EngineTest, AmbNestedLet)
@@ -100,13 +100,13 @@ TEST_F(EngineTest, AmbNestedLetStar)
 TEST_F(EngineTest, AmbPrimitive)
 {
     ExprHandle expr = parseAndEvaluate("(+ 2 (amb 1 2 3))");
-    expectInteger(expr, 3, "3");
+    expectInteger(expr, 3, "3", true);
 
     expr = parseAndEvaluate("?");
-    expectInteger(expr, 4, "4");
+    expectInteger(expr, 4, "4", true);
 
     expr = parseAndEvaluate("?");
-    expectInteger(expr, 5, "5");
+    expectInteger(expr, 5, "5", true);
 
     expr = parseAndEvaluate("?");
     expectError(expr, "No more choices", false);
@@ -117,9 +117,8 @@ TEST_F(EngineTest, AmbPrimitive)
 
 TEST_F(EngineTest, AmbDefine)
 {
-    ExprHandle expr =
-        parseAndEvaluate("(define test (amb 3 4)) test ? test");
-    expectInteger(expr, 4, "4");
+    ExprHandle expr = parseAndEvaluate("(define test (amb 3 4)) test ? test");
+    expectInteger(expr, 4, "4", true);
 
     expr = parseAndEvaluate("? test");
     expectError(expr, "Symbol test does not exist in the current environment");
@@ -129,7 +128,7 @@ TEST_F(EngineTest, AmbAssign)
 {
     ExprHandle expr =
         parseAndEvaluate("(load \"scripts/system/ambassign.scm\")");
-    expectInteger(expr, 1, "1");
+    expectInteger(expr, 1, "1", true);
 }
 
 TEST_F(EngineTest, AmbUndefine)
@@ -140,29 +139,28 @@ TEST_F(EngineTest, AmbUndefine)
 
     ExprHandle expr =
         parseAndEvaluate("(load \"scripts/system/ambundef.scm\")");
-    expectInteger(expr, 7, "7");
+    expectInteger(expr, 7, "7", true);
 }
 
 TEST_F(EngineTest, AmbOperator)
 {
     ExprHandle expr = parseAndEvaluate("((amb + -) 2 2)");
-    expectInteger(expr, 4, "4");
+    expectInteger(expr, 4, "4", true);
 
     expr = parseAndEvaluate("?");
-    expectInteger(expr, 0, "0");
+    expectInteger(expr, 0, "0", true);
 }
 
 TEST_F(EngineTest, RequireTest)
 {
-    ExprHandle expr =
-        parseAndEvaluate("(load \"scripts/system/require.scm\")");
-    expectInteger(expr, 2, "2");
+    ExprHandle expr = parseAndEvaluate("(load \"scripts/system/require.scm\")");
+    expectInteger(expr, 2, "2", true);
 
     expr = parseAndEvaluate("?");
-    expectInteger(expr, 4, "4");
+    expectInteger(expr, 4, "4", true);
 
     expr = parseAndEvaluate("?");
-    expectInteger(expr, 6, "6");
+    expectInteger(expr, 6, "6", true);
 }
 
 TEST_F(EngineTest, LoadTwiceTest)

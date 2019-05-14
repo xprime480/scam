@@ -13,10 +13,10 @@ class ParserTest : public TestBase
 {
 protected:
     ParserTest()
-	: TestBase(false)
+        : TestBase(false)
     {
     }
-    
+
     ExprHandle runTest(vector<Token> const & tokens)
     {
         StaticTokenizer tokenizer(tokens);
@@ -119,7 +119,7 @@ TEST_F(ParserTest, RealTest)
     };
 
     ExprHandle expr = runTest(tokens);
-    expectReal(expr, -17.5, msg);
+    expectReal(expr, -17.5, msg, false);
 }
 
 TEST_F(ParserTest, IntegerTest)
@@ -133,7 +133,7 @@ TEST_F(ParserTest, IntegerTest)
 
     ExprHandle expr = runTest(tokens);
 
-    expectInteger(expr, 99, msg);
+    expectInteger(expr, 99, msg, true);
 }
 
 TEST_F(ParserTest, NilTest)

@@ -12,19 +12,19 @@ class ContinuationTest : public TestBase
 TEST_F(ContinuationTest, UnusedCont)
 {
     ExprHandle expr = parseAndEvaluate("(+ 4 (call/cc (lambda (k) 2)))");
-    expectInteger(expr, 6, "6");
+    expectInteger(expr, 6, "6", true);
 }
 
 TEST_F(ContinuationTest, TrivialCont)
 {
     ExprHandle expr = parseAndEvaluateFile("scripts/callcc/trivial.scm");
-    expectInteger(expr, 5, "5");
+    expectInteger(expr, 5, "5", true);
 }
 
 TEST_F(ContinuationTest, PersistedCont)
 {
     ExprHandle expr = parseAndEvaluateFile("scripts/callcc/persisted.scm");
-    expectInteger(expr, 1, "1");
+    expectInteger(expr, 1, "1", true);
 }
 
 TEST_F(ContinuationTest, NonLambdaArg)
