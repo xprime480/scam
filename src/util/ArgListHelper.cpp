@@ -133,8 +133,6 @@ namespace
         return rv;
     }
 
-    extern ExprHandle makeNumeric(ExprHandle & state, double value);
-
     template <typename T>
     ExprHandle compareType(RelopsListParser * parser,
                            string const & context,
@@ -157,19 +155,19 @@ ExprHandle scam::numericAlgorithm(NumericListParser * parser,
                                   string const & context,
                                   NumericalAlgorithm algo)
 {
-    vector<double> ns;
+    vector<ExtendedNumeric> ns;
 
     ExprHandle state = argsToType(parser, ns, context);
     if ( state->error() ) {
         return state;
     }
 
-    double total = algo(ns, state);
+    ExtendedNumeric total = algo(ns, state);
     if ( state->error() ) {
         return state;
     }
 
-    return makeNumeric(state, total);
+    return total.get();
 }
 
 ExprHandle scam::compareAlgorithm(RelopsListParser * parser,
@@ -180,17 +178,6 @@ ExprHandle scam::compareAlgorithm(RelopsListParser * parser,
         return compareType<ExtendedNumeric>(parser, context, impl);
     }
     return compareType<string>(parser, context, impl);
-}
-
-namespace
-{
-    ExprHandle makeNumeric(ExprHandle & state, double value)
-    {
-        if ( state->truth() ) {
-            return ExpressionFactory::makeInteger((int)value, true);
-        }
-        return ExpressionFactory::makeReal(value, false);
-    }
 }
 
 void scam::failedArgParseMessage(const char * who,

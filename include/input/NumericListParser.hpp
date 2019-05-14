@@ -3,7 +3,7 @@
 
 #include "input/ArgParser.hpp"
 
-#include "input/TypeParsers.hpp"
+#include "input/ExtendedNumericParser.hpp"
 
 namespace scam
 {
@@ -23,10 +23,10 @@ namespace scam
         bool accept(ExprHandle expr) override;
 
         size_t size() const;
-        ScamNumeric * get(size_t idx) const;
+        ExprHandle get(size_t idx) const;
 
     private:
-        NumericParser * num;
+        ExtendedNumericParser * num;
         ListParser * parser;
     };
 }

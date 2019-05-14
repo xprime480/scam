@@ -296,7 +296,7 @@ void TestBase::expectReal(ConstExprHandle expr,
     EXPECT_EQ(repr, expr->toString());
 
     try {
-        EXPECT_EQ(value, expr->toReal());
+        EXPECT_FLOAT_EQ(value, expr->toReal());
     }
     catch ( ScamException e ) {
         FAIL() << e.getMessage() << "\n";

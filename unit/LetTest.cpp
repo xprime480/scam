@@ -46,7 +46,7 @@ TEST_P(LetTest, LetCreatesNewEnv)
     parseAndEvaluate("(define x 2)");
     parseAndEvaluate("(define y 0)");
     ExprHandle expr = runTest("(%s ((y 1.0)) (/ x y))");
-    expectReal(expr, 2.0, "2");
+    expectInteger(expr, 2, "2");
 
     expr = parseAndEvaluate("y");
     expectInteger(expr, 0, "0");

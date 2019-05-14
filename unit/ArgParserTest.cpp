@@ -651,6 +651,13 @@ TEST_F(ArgParserTest, NumericMixedList)
     expectInteger(parser->get(3), 0, "0");
 }
 
+TEST_F(ArgParserTest, ExtendedNumericList)
+{
+    NumericListParser * parser = mm.make<NumericListParser>();
+    acceptParse(parser, "(-inf.0 +inf.0 +nan.0)");
+    EXPECT_EQ(3, parser->size());
+}
+
 TEST_F(ArgParserTest, NumericInvalidLIst)
 {
     NumericListParser * parser = mm.make<NumericListParser>();

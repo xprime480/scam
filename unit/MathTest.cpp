@@ -1,10 +1,17 @@
 #include "TestBase.hpp"
 
+#include "util/DebugTrace.hpp"
+
 using namespace std;
 using namespace scam;
 
 class MathTest : public TestBase
 {
+protected:
+    MathTest()
+        : TestBase(false)
+    {
+    }
 };
 
 TEST_F(MathTest, AddZeroArgs)
@@ -35,6 +42,36 @@ TEST_F(MathTest, AddTypeUnification)
 {
     ExprHandle expr = parseAndEvaluate("(+ 2 2.5)");
     expectReal(expr, 4.5, "4.5");
+}
+
+TEST_F(MathTest, AddNegInf)
+{
+    ExprHandle expr = parseAndEvaluate("(+ 2 -inf.0)");
+    expectSpecialNumeric(expr, "-inf.0");
+}
+
+TEST_F(MathTest, AddPosInf)
+{
+    ExprHandle expr = parseAndEvaluate("(+ 2 +inf.0)");
+    expectSpecialNumeric(expr, "+inf.0");
+}
+
+TEST_F(MathTest, AddNaN)
+{
+    ExprHandle expr = parseAndEvaluate("(+ 2 +nan.0)");
+    expectSpecialNumeric(expr, "+nan.0");
+}
+
+TEST_F(MathTest, AddOppositeInf)
+{
+    ExprHandle expr = parseAndEvaluate("(+ -inf.0 +inf.0)");
+    expectSpecialNumeric(expr, "+nan.0");
+}
+
+TEST_F(MathTest, AddSameInf)
+{
+    ExprHandle expr = parseAndEvaluate("(+ +inf.0 +inf.0)");
+    expectSpecialNumeric(expr, "+inf.0");
 }
 
 TEST_F(MathTest, AddBadArgument)
@@ -73,6 +110,36 @@ TEST_F(MathTest, SubTypeUnification)
     expectReal(expr, 0.5, "0.5");
 }
 
+TEST_F(MathTest, SubNegInf)
+{
+    ExprHandle expr = parseAndEvaluate("(- 2 -inf.0)");
+    expectSpecialNumeric(expr, "+inf.0");
+}
+
+TEST_F(MathTest, SubPosInf)
+{
+    ExprHandle expr = parseAndEvaluate("(- 2 +inf.0)");
+    expectSpecialNumeric(expr, "-inf.0");
+}
+
+TEST_F(MathTest, SubNaN)
+{
+    ExprHandle expr = parseAndEvaluate("(- 2 +nan.0)");
+    expectSpecialNumeric(expr, "+nan.0");
+}
+
+TEST_F(MathTest, SubOppositeInf)
+{
+    ExprHandle expr = parseAndEvaluate("(- -inf.0 +inf.0)");
+    expectSpecialNumeric(expr, "-inf.0");
+}
+
+TEST_F(MathTest, SubSameInf)
+{
+    ExprHandle expr = parseAndEvaluate("(- +inf.0 +inf.0)");
+    expectSpecialNumeric(expr, "+nan.0");
+}
+
 TEST_F(MathTest, SubBadArgument)
 {
     ExprHandle expr = parseAndEvaluate("(- 2 #f)");
@@ -109,6 +176,42 @@ TEST_F(MathTest, MulTypeUnification)
     expectReal(expr, 4.25, "4.25");
 }
 
+TEST_F(MathTest, MulNegInf)
+{
+    ExprHandle expr = parseAndEvaluate("(* 2 -inf.0)");
+    expectSpecialNumeric(expr, "-inf.0");
+}
+
+TEST_F(MathTest, MulPosInf)
+{
+    ExprHandle expr = parseAndEvaluate("(* 2 +inf.0)");
+    expectSpecialNumeric(expr, "+inf.0");
+}
+
+TEST_F(MathTest, MulNegRealPosInf)
+{
+    ExprHandle expr = parseAndEvaluate("(* -2.0123 +inf.0)");
+    expectSpecialNumeric(expr, "-inf.0");
+}
+
+TEST_F(MathTest, MulNaN)
+{
+    ExprHandle expr = parseAndEvaluate("(* 2 +nan.0)");
+    expectSpecialNumeric(expr, "+nan.0");
+}
+
+TEST_F(MathTest, MulOppositeInf)
+{
+    ExprHandle expr = parseAndEvaluate("(* -inf.0 +inf.0)");
+    expectSpecialNumeric(expr, "-inf.0");
+}
+
+TEST_F(MathTest, MulSameInf)
+{
+    ExprHandle expr = parseAndEvaluate("(* +inf.0 +inf.0)");
+    expectSpecialNumeric(expr, "+inf.0");
+}
+
 TEST_F(MathTest, MulBadArgument)
 {
     ExprHandle expr = parseAndEvaluate("(* 2 #f)");
@@ -118,7 +221,8 @@ TEST_F(MathTest, MulBadArgument)
 TEST_F(MathTest, DivZeroArgs)
 {
     ExprHandle expr = parseAndEvaluate("(/)");
-    expectReal(expr, 1, "1");
+    expectInteger(expr, 1, "1");
+    EXPECT_TRUE(expr->isExact());
 }
 
 TEST_F(MathTest, DivOneArg)
@@ -141,8 +245,57 @@ TEST_F(MathTest, DivManyArgs)
 
 TEST_F(MathTest, DivTypeUnification)
 {
-    ExprHandle expr = parseAndEvaluate("(/ 2.0 1)");
-    expectReal(expr, 2, "2");
+    ExprHandle expr = parseAndEvaluate("(/ 2.5 1)");
+    expectReal(expr, 2.5, "2.5");
+    EXPECT_FALSE(expr->isExact());
+}
+
+TEST_F(MathTest, DivZeroByInf)
+{
+    ExprHandle expr = parseAndEvaluate("(/ 0 -inf.0)");
+    expectInteger(expr, 0, "0");
+}
+
+TEST_F(MathTest, DivRealByInf)
+{
+    ExprHandle expr = parseAndEvaluate("(/ 2 -inf.0)");
+    expectSpecialNumeric(expr, "+nan.0");
+}
+
+TEST_F(MathTest, DivInfByReal)
+{
+    ExprHandle expr = parseAndEvaluate("(/ +inf.0 2)");
+    expectSpecialNumeric(expr, "+inf.0");
+}
+
+TEST_F(MathTest, DivPosInfByNegReal)
+{
+    ExprHandle expr = parseAndEvaluate("(/ +inf.0 -2.0123)");
+    expectSpecialNumeric(expr, "-inf.0");
+}
+
+TEST_F(MathTest, DivNaN)
+{
+    ExprHandle expr = parseAndEvaluate("(/ +nan.0 2)");
+    expectSpecialNumeric(expr, "+nan.0");
+}
+
+TEST_F(MathTest, DivByNaN)
+{
+    ExprHandle expr = parseAndEvaluate("(/ 2 +nan.0)");
+    expectSpecialNumeric(expr, "+nan.0");
+}
+
+TEST_F(MathTest, DivOppositeInf)
+{
+    ExprHandle expr = parseAndEvaluate("(/ -inf.0 +inf.0)");
+    expectSpecialNumeric(expr, "+nan.0");
+}
+
+TEST_F(MathTest, DivSameInf)
+{
+    ExprHandle expr = parseAndEvaluate("(/ -inf.0 -inf.0)");
+    expectSpecialNumeric(expr, "+nan.0");
 }
 
 TEST_F(MathTest, DivBadArgument)
@@ -160,32 +313,86 @@ TEST_F(MathTest, DivByZero)
 TEST_F(MathTest, DivZeroBy)
 {
     ExprHandle expr = parseAndEvaluate("(/ 0 2)");
-    expectReal(expr, 0, "0");
+    expectInteger(expr, 0, "0");
+    EXPECT_TRUE(expr->isExact());
 }
 
 TEST_F(MathTest, ModZero)
 {
     ExprHandle expr = parseAndEvaluate("(%)");
-    expectReal(expr, 0, "0");
+    expectInteger(expr, 0, "0");
+    EXPECT_TRUE(expr->isExact());
 }
 
 TEST_F(MathTest, ModOne)
 {
     ExprHandle expr = parseAndEvaluate("(% 5)");
-    expectReal(expr, 0, "0");
+    expectInteger(expr, 0, "0");
+    EXPECT_TRUE(expr->isExact());
 }
 
 TEST_F(MathTest, ModTwo)
 {
     ExprHandle expr = parseAndEvaluate("(% 5 2)");
-    expectReal(expr, 1, "1");
+    expectInteger(expr, 1, "1");
+    EXPECT_TRUE(expr->isExact());
 }
 
 TEST_F(MathTest, ModThreeIgnoresExtra)
 {
     ExprHandle expr = parseAndEvaluate("(% 5 2 0 0 0)");
-    expectReal(expr, 1, "1");
+    expectInteger(expr, 1, "1");
+    EXPECT_TRUE(expr->isExact());
 }
+
+TEST_F(MathTest, ModZeroByInf)
+{
+    ExprHandle expr = parseAndEvaluate("(% 0 -inf.0)");
+    expectInteger(expr, 0, "0");
+}
+
+TEST_F(MathTest, ModRealByInf)
+{
+    ExprHandle expr = parseAndEvaluate("(% 2 -inf.0)");
+    expectSpecialNumeric(expr, "+nan.0");
+}
+
+TEST_F(MathTest, ModInfByReal)
+{
+    ExprHandle expr = parseAndEvaluate("(% +inf.0 2)");
+    expectSpecialNumeric(expr, "+nan.0");
+}
+
+TEST_F(MathTest, ModPosInfByNegReal)
+{
+    ExprHandle expr = parseAndEvaluate("(% +inf.0 -2.0123)");
+    expectSpecialNumeric(expr, "+nan.0");
+}
+
+TEST_F(MathTest, ModNaN)
+{
+    ExprHandle expr = parseAndEvaluate("(% +nan.0 2)");
+    expectSpecialNumeric(expr, "+nan.0");
+}
+
+TEST_F(MathTest, ModByNaN)
+{
+    ExprHandle expr = parseAndEvaluate("(% 2 +nan.0)");
+    expectSpecialNumeric(expr, "+nan.0");
+}
+
+TEST_F(MathTest, ModOppositeInf)
+{
+    ExprHandle expr = parseAndEvaluate("(% -inf.0 +inf.0)");
+    expectSpecialNumeric(expr, "+nan.0");
+}
+
+TEST_F(MathTest, ModSameInf)
+{
+    ExprHandle expr = parseAndEvaluate("(% -inf.0 -inf.0)");
+    expectSpecialNumeric(expr, "+nan.0");
+}
+
 
 TEST_F(MathTest, ModByZero)
 {
@@ -196,7 +403,17 @@ TEST_F(MathTest, ModByZero)
 TEST_F(MathTest, ModZeroBy)
 {
     ExprHandle expr = parseAndEvaluate("(% 0 5)");
-    expectReal(expr, 0, "0");
+    expectInteger(expr, 0, "0");
+    EXPECT_TRUE(expr->isExact());
+}
+
+TEST_F(MathTest, ModReal)
+{
+    ScamTraceScope _;
+    
+    ExprHandle expr = parseAndEvaluate("(% 0.75 0.5)");
+    expectReal(expr, 0.25, "0.25");
+    EXPECT_FALSE(expr->isExact());
 }
 
 TEST_F(MathTest, Nested)

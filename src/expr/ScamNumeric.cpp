@@ -4,6 +4,7 @@
 #include "expr/ExpressionFactory.hpp"
 
 #include <cctype>
+#include <cmath>
 #include <sstream>
 
 using namespace scam;
@@ -28,8 +29,9 @@ bool ScamNumeric::equals(ConstExprHandle expr) const
 
     const ScamNumeric * that = dynamic_cast<const ScamNumeric *>(expr);
 
-    return ( ::abs(this->realPart() - that->realPart()) < 1e-9 &&
-             ::abs(this->imagPart() - that->imagPart()) < 1e-9 );
+    const bool rv = (::fabs(this->realPart() - that->realPart()) < 1e-9 &&
+                     ::fabs(this->imagPart() - that->imagPart()) < 1e-9 );
+    return rv;
 }
 
 bool ScamNumeric::isExact() const

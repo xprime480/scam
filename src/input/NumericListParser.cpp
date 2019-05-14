@@ -1,6 +1,5 @@
 #include "input/NumericListParser.hpp"
 
-#include "expr/ScamNumeric.hpp"
 #include "input/ListParser.hpp"
 #include "util/MemoryManager.hpp"
 
@@ -10,7 +9,7 @@ using namespace std;
 NumericListParser::NumericListParser()
 {
     MemoryManager & mm = standardMemoryManager;
-    num    = mm.make<NumericParser>();
+    num    = mm.make<ExtendedNumericParser>();
     parser = mm.make<ListParser>(num);
 }
 
@@ -43,7 +42,7 @@ size_t NumericListParser::size() const
     return parser->size();
 }
 
-ScamNumeric * NumericListParser::get(size_t idx) const
+ExprHandle NumericListParser::get(size_t idx) const
 {
-    return dynamic_cast<ScamNumeric *>(parser->get(idx));
+    return parser->get(idx);
 }

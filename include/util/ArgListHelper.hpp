@@ -25,7 +25,8 @@ namespace scam
     };
 
     using NumericalAlgorithm =
-        std::function<double(std::vector<double> const &, ExprHandle & state)>;
+        std::function<ExtendedNumeric(std::vector<ExtendedNumeric> const &,
+                                      ExprHandle & state)>;
 
     extern ExprHandle numericAlgorithm(NumericListParser * parser,
                                        std::string const & context,

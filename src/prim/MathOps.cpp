@@ -39,14 +39,19 @@ bool MathOp::equals(ConstExprHandle expr) const
 
 namespace
 {
-    double do_add(vector<double> const & ns, ExprHandle & state)
+    ExtendedNumeric
+    do_add(vector<ExtendedNumeric> const & ns, ExprHandle & state)
     {
-        return accumulate(ns.begin(), ns.end(), 0.0);
+        ExtendedNumeric zero(ExpressionFactory::makeInteger(0, true));
+        return accumulate(ns.begin(), ns.end(), zero);
     }
 
-    double do_sub(vector<double> const & ns, ExprHandle & state)
+    ExtendedNumeric
+    do_sub(vector<ExtendedNumeric> const & ns, ExprHandle & state)
     {
-        double total { 0 };
+        ExtendedNumeric zero(ExpressionFactory::makeInteger(0, true));
+        ExtendedNumeric total = zero;
+
         switch ( ns.size() ) {
         case 0:
             break;
@@ -56,65 +61,76 @@ namespace
             break;
 
         default:
-            total = ns[0] - accumulate(++(ns.begin()), ns.end(), 0.0);
+            total = ns[0] - accumulate(++(ns.begin()), ns.end(), zero);
             break;
         }
         return total;
     }
 
-    double do_mul(vector<double> const & ns, ExprHandle & state)
+    ExtendedNumeric
+    do_mul(vector<ExtendedNumeric> const & ns, ExprHandle & state)
     {
-        return accumulate(ns.begin(), ns.end(), 1.0,
-                          multiplies<double>());
+        ExtendedNumeric one(ExpressionFactory::makeInteger(1, true));
+        return accumulate(ns.begin(), ns.end(),
+                          one,
+                          multiplies<ExtendedNumeric>());
     }
 
-    double do_div(vector<double> const & ns, ExprHandle & state)
+    ExtendedNumeric
+    do_div(vector<ExtendedNumeric> const & ns, ExprHandle & state)
     {
+        ExtendedNumeric zero(ExpressionFactory::makeInteger(0, true));
+        ExtendedNumeric one(ExpressionFactory::makeInteger(1, true));
+
         state = ExpressionFactory::makeBoolean(false);
         if ( ns.empty() ) {
-            return 1.0;
+            return one;
         }
         else {
             auto iter = ns.begin();
             if ( ns.size() > 1 ) {
                 iter++;
             }
-            if ( ns.end() != find(iter, ns.end(), 0.0) ) {
+            if ( ns.end() != find(iter, ns.end(), zero) ) {
                 state = ExpressionFactory::makeError("Division By Zero");
-                return 0.0;
+                return zero;
             }
         }
 
-        double total { 1.0 };
+        ExtendedNumeric total = one;
         switch ( ns.size() ) {
         case 0:
             break;
 
         case 1:
-            total /= ns[0];
+            total = total / ns[0];
             break;
 
         default:
-            total  = ns[0];
-            total /= accumulate(++(ns.begin()), ns.end(), 1.0,
-                                multiplies<double>());
+            total = ns[0];
+            total = total / accumulate(++(ns.begin()), ns.end(),
+                                       one,
+                                       multiplies<ExtendedNumeric>());
             break;
         }
         return total;
     }
 
-    double do_mod(vector<double> const & ns, ExprHandle & state)
+    ExtendedNumeric
+    do_mod(vector<ExtendedNumeric> const & ns, ExprHandle & state)
     {
+        ExtendedNumeric zero(ExpressionFactory::makeInteger(0, true));
+
         state = ExpressionFactory::makeBoolean(false);
         if ( ns.size() < 2 ) {
-            return 0.0;
+            return zero;
         }
-        if ( 0 == ns[1] ) {
+        if ( zero == ns[1] ) {
             state = ExpressionFactory::makeError("Modulus By Zero");
-            return 0.0;
+            return zero;
         }
 
-        return (double) ((int)ns[0] % (int)ns[1]);
+        return ns[0] % ns[1];
     }
 }
 

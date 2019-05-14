@@ -17,9 +17,13 @@ namespace scam
         bool isNegInf() const;
         bool isPosInf() const;
 
+        bool isSpecialNumeric() const;
+
     private:
         ExprHandle expr;
     };
+
+    /* relational operators on extended numerics */
 
     extern bool
     operator==(const ExtendedNumeric & a, const ExtendedNumeric & b);
@@ -38,6 +42,28 @@ namespace scam
 
     extern bool
     operator<=(const ExtendedNumeric & a, const ExtendedNumeric & b);
+
+    /* arithemetic operators on extended numerics */
+
+    extern ExtendedNumeric
+    operator+(const ExtendedNumeric & a, const ExtendedNumeric & b);
+
+    extern ExtendedNumeric
+    operator-(const ExtendedNumeric & a);
+
+    extern ExtendedNumeric
+    operator-(const ExtendedNumeric & a, const ExtendedNumeric & b);
+
+    extern ExtendedNumeric
+    operator*(const ExtendedNumeric & a, const ExtendedNumeric & b);
+
+    extern ExtendedNumeric
+    operator/(const ExtendedNumeric & a, const ExtendedNumeric & b);
+
+    extern ExtendedNumeric
+    operator%(const ExtendedNumeric & a, const ExtendedNumeric & b);
+
+    /* print a representation of an extended numeric */
 
     template <typename OS>
     OS & operator<<(OS & os, ExtendedNumeric num)

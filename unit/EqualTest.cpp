@@ -256,3 +256,18 @@ TEST_F(EqualTest, EqPDictTwoSingleNeqLen)
 {
     expectFalse("(eq? { :a 2 } { :a 3 :b 5 })");
 }
+
+TEST_F(EqualTest, EqPNegInf)
+{
+    expectTrue("(eq? -inf.0 -inf.0)");
+}
+
+TEST_F(EqualTest, EqPPosInf)
+{
+    expectTrue("(eq? +inf.0 +inf.0)");
+}
+
+TEST_F(EqualTest, EqPNaN)
+{
+    expectTrue("(eq? +nan.0 +nan.0)");
+}
