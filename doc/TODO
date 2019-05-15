@@ -17,7 +17,8 @@
 * Instead of single continuation, pass along a block that has at least
   a success and an error continuation.
 
-* Remove class unit/TestHook
+* Remove class unit/TestHook.  Update:  Not sure how I imagined this
+  to be done.  Tests still require it.
 
 * Make all snake_case_variables into CamelCaseVariables
 
