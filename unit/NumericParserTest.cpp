@@ -122,11 +122,18 @@ TEST_F(NumericParserTest, HexadecimalNegativeInteger)
     expectInteger(expr, -255, "-255", false);
 }
 
-TEST_F(NumericParserTest, NotANumber)
+TEST_F(NumericParserTest, NotANumberPositive)
 {
     const char * text { "+nan.0" };
     ExprHandle expr = ExpressionFactory::makeNumeric(text);
     expectSpecialNumeric(expr, text);
+}
+
+TEST_F(NumericParserTest, NotANumberNegative)
+{
+    const char * text { "-nan.0" };
+    ExprHandle expr = ExpressionFactory::makeNumeric(text);
+    expectSpecialNumeric(expr, "+nan.0");
 }
 
 TEST_F(NumericParserTest, PlusInfinity)

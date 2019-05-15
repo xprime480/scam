@@ -27,30 +27,37 @@ namespace scam
 
         int base;
         ExactnessType exactness;
-        bool exact;
-        bool OK;
 
-        void convert();
-        bool scanSpecialValue();
+        void scanNum();
+        void scanComplex();
+        ExprHandle scanReal();
+        ExprHandle scanUReal();
 
-        void scanInitial();
+        ExprHandle scanDecimal();
+        ExprHandle scanDecimalCase1();
+        ExprHandle scanDecimalCase2();
+        ExprHandle scanDecimalCase3();
+
+        ExprHandle scanUInteger();
+        void scanPrefix();
+        ExprHandle scanInfNan();
+        ExprHandle scanSuffix();
+
+        int scanSign();
+
         void exactnessSeen(char x);
         void baseSeen(char x);
+        ExprHandle makeFraction(unsigned minCount);
 
-        int scanInteger();
-        int scanSign();
-        int scanUnsigned();
-
-        double scanFraction();
         bool scanRadixPoint();
 
-        int scanExponent();
-
-        void finalizeExactness();
-        void makeResult(int integerPart, double fractionalPart, int exponent);
         double makeMultiplier(int exponent) const;
+        int convertDigit(char digit) const;
 
-        int convertDigit(char digit);
+        ExprHandle makeRealWithExactness(double value) const;
+        ExprHandle makeIntegerWithExactness(int value) const;
+
+        ExprHandle simplify(ExprHandle value) const;
     };
 }
 
