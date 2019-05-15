@@ -173,7 +173,7 @@ TEST_F(PredicateTest, RealTestNotNumeric)
 
 TEST_F(PredicateTest, RationalTestReal)
 {
-    expectFalse("(rational? 1.5)");
+    expectTrue("(rational? 1.5)");
 }
 
 TEST_F(PredicateTest, RationalTestInteger)

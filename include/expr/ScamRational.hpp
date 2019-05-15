@@ -24,6 +24,8 @@ namespace scam
 
         bool isRational() const override;
 
+        std::pair<int, int> toRational() const override;
+
     private:
         const int num;
         const int den;

@@ -62,6 +62,11 @@ namespace scam
                         std::string const & repr,
                         bool exact);
 
+        void expectRational(ConstExprHandle expr,
+                            const std::pair<int, int> & value,
+                            std::string const & repr,
+                            bool exact);
+
         void expectInteger(ConstExprHandle expr,
                            int value,
                            std::string const & repr,

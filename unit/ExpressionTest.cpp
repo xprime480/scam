@@ -56,6 +56,18 @@ TEST_F(ExpressionTest, RealTest)
     expectReal(evaled, value, repr, false);
 }
 
+TEST_F(ExpressionTest, RationalTest)
+{
+    pair<int, int> value(8, 3);
+    string const repr{ "8/3" };
+
+    ExprHandle expr = ExpressionFactory::makeRational(8, 3, true);
+    expectRational(expr, value, repr, true);
+
+    ExprHandle evaled = evaluate(expr);
+    expectRational(evaled, value, repr, true);
+}
+
 TEST_F(ExpressionTest, IntegerTest)
 {
     int value { 42 };

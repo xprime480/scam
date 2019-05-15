@@ -3,6 +3,7 @@
 #include "util/NumericUtils.hpp"
 
 #include <sstream>
+#include <utility>
 
 using namespace scam;
 using namespace std;
@@ -23,7 +24,7 @@ ScamRational::makeInstance(int num, int den, bool exact, bool managed)
 string ScamRational::toString() const
 {
     stringstream s;
-    s << "(" << num << " / " << den << ")";
+    s << num << "/" << den;
     return s.str();
 }
 
@@ -31,3 +32,11 @@ bool ScamRational::isRational() const
 {
     return true;
 }
+
+pair<int, int> ScamRational::toRational() const
+{
+    int n { num };
+    int d { den };
+    return make_pair<int, int>(move(n), move(d));
+}
+

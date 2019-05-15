@@ -16,8 +16,8 @@ namespace scam
     int scamTrace(Ts && ... args)
     {
         if ( scam::scamIsTracing && sizeof...(Ts) > 0 ) {
-          int dummy[sizeof...(Ts)] = { (std::cerr << args << "\t", 0)... };
-          std::cerr << "\n";
+            int dummy[sizeof...(Ts)] = { (std::cerr << '<' << args << '>' << "\t", 0)... };
+            std::cerr << "\n";
           return dummy[0];
         }
         return 0;

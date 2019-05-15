@@ -19,7 +19,7 @@ namespace scam
         explicit NumericConverter(const char * pos);
 
         static ExprHandle simplify(ExprHandle value);
-	
+
         ExprHandle getValue() const;
         const char * getPos() const;
 
@@ -35,12 +35,7 @@ namespace scam
         void scanComplex();
         ExprHandle scanReal();
         ExprHandle scanUReal();
-
         ExprHandle scanDecimal();
-        ExprHandle scanDecimalCase1();
-        ExprHandle scanDecimalCase2();
-        ExprHandle scanDecimalCase3();
-
         ExprHandle scanUInteger();
         void scanPrefix();
         ExprHandle scanInfNan();
@@ -58,6 +53,7 @@ namespace scam
         int convertDigit(char digit) const;
 
         ExprHandle makeRealWithExactness(double value) const;
+        ExprHandle makeRationalWithExactness(int num, int den) const;
         ExprHandle makeIntegerWithExactness(int value) const;
     };
 }

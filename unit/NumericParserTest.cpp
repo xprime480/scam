@@ -56,27 +56,69 @@ TEST_F(NumericParserTest, NegativeIntegerInexact)
     expectInteger(expr, -42, "-42", false);
 }
 
+TEST_F(NumericParserTest, PositiveRationalExact)
+{
+    ExprHandle expr = ExpressionFactory::makeNumeric("22/7");
+    expectRational(expr, make_pair<int, int>(22, 7), "22/7", true);
+}
+
+TEST_F(NumericParserTest, PositiveRationalInexact)
+{
+    ExprHandle expr = ExpressionFactory::makeNumeric("#i22/7");
+    expectRational(expr, make_pair<int, int>(22, 7), "22/7", false);
+}
+
+TEST_F(NumericParserTest, NegativeRationalExact)
+{
+    ExprHandle expr = ExpressionFactory::makeNumeric("-22/7");
+    expectRational(expr, make_pair<int, int>(-22, 7), "-22/7", true);
+}
+
+TEST_F(NumericParserTest, NegativeRationalInexact)
+{
+    ExprHandle expr = ExpressionFactory::makeNumeric("#I-22/7");
+    expectRational(expr, make_pair<int, int>(-22, 7), "-22/7", false);
+}
+
+TEST_F(NumericParserTest, HexadecimalRational)
+{
+    ExprHandle expr = ExpressionFactory::makeNumeric("#x3/10");
+    expectRational(expr, make_pair<int, int>(3, 16), "3/16", true);
+}
+
+TEST_F(NumericParserTest, RationalLowestTerms)
+{
+    ExprHandle expr = ExpressionFactory::makeNumeric("50/100");
+    expectRational(expr, make_pair<int, int>(1, 2), "1/2", true);
+}
+
+TEST_F(NumericParserTest, RationalWithUnitDenominator)
+{
+    ExprHandle expr = ExpressionFactory::makeNumeric("100/50");
+    expectInteger(expr, 2, "2", true);
+}
+
 TEST_F(NumericParserTest, PositiveRealExact)
 {
-    ExprHandle expr = ExpressionFactory::makeNumeric("#e42.5");
+    ExprHandle expr = ExpressionFactory::makeNumeric("#e42.5000000");
     expectReal(expr, 42.5, "42.5", true);
 }
 
 TEST_F(NumericParserTest, PositiveRealInexact)
 {
-    ExprHandle expr = ExpressionFactory::makeNumeric("42.5");
+    ExprHandle expr = ExpressionFactory::makeNumeric("42.5000000");
     expectReal(expr, 42.5, "42.5", false);
 }
 
 TEST_F(NumericParserTest, NegativeRealExact)
 {
-    ExprHandle expr = ExpressionFactory::makeNumeric("#E-42.5");
+    ExprHandle expr = ExpressionFactory::makeNumeric("#E-42.5000000");
     expectReal(expr, -42.5, "-42.5", true);
 }
 
 TEST_F(NumericParserTest, NegativeRealInexact)
 {
-    ExprHandle expr = ExpressionFactory::makeNumeric("-42.5");
+    ExprHandle expr = ExpressionFactory::makeNumeric("-42.5000000");
     expectReal(expr, -42.5, "-42.5", false);
 }
 
@@ -173,14 +215,14 @@ TEST_F(NumericParserTest, IntegerNegativeExponent)
 
 TEST_F(NumericParserTest, RealZeroExponent)
 {
-    const char * text { "5.55e0" };
+    const char * text { "5.5500000e0" };
     ExprHandle expr = ExpressionFactory::makeNumeric(text);
     expectReal(expr, 5.55, "5.55", false);
 }
 
 TEST_F(NumericParserTest, RealPositiveExponent)
 {
-    const char * text { "-5.001e1" };
+    const char * text { "-5.0010000e1" };
     ExprHandle expr = ExpressionFactory::makeNumeric(text);
     expectReal(expr, -50.01, "-50.01", false);
 }

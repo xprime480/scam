@@ -23,22 +23,24 @@ namespace
     static const unsigned long SELECT_SYMBOL   { 1 << 5 };
     static const unsigned long SELECT_NUMERIC  { 1 << 6 };
     static const unsigned long SELECT_FLOAT    { 1 << 7 };
-    static const unsigned long SELECT_INTEGER  { 1 << 8 };
-    static const unsigned long SELECT_BOOLEAN  { 1 << 9 };
-    static const unsigned long SELECT_NIL      { 1 << 10 };
-    static const unsigned long SELECT_CONS     { 1 << 11 };
-    static const unsigned long SELECT_LIST     { 1 << 12 };
-    static const unsigned long SELECT_VECTOR   { 1 << 13 };
-    static const unsigned long SELECT_APPLY    { 1 << 14 };
-    static const unsigned long SELECT_PROC     { 1 << 15 };
-    static const unsigned long SELECT_CLASS    { 1 << 16 };
-    static const unsigned long SELECT_INSTANCE { 1 << 17 };
-    static const unsigned long SELECT_KEYWORD  { 1 << 18 };
-    static const unsigned long SELECT_DICT     { 1 << 19 };
-    static const unsigned long SELECT_MANAGED  { 1 << 20 };
+    static const unsigned long SELECT_RATIONAL { 1 << 8 };
+    static const unsigned long SELECT_INTEGER  { 1 << 9 };
+    static const unsigned long SELECT_BOOLEAN  { 1 << 10 };
+    static const unsigned long SELECT_NIL      { 1 << 11 };
+    static const unsigned long SELECT_CONS     { 1 << 12 };
+    static const unsigned long SELECT_LIST     { 1 << 13 };
+    static const unsigned long SELECT_VECTOR   { 1 << 14 };
+    static const unsigned long SELECT_APPLY    { 1 << 15 };
+    static const unsigned long SELECT_PROC     { 1 << 16 };
+    static const unsigned long SELECT_CLASS    { 1 << 17 };
+    static const unsigned long SELECT_INSTANCE { 1 << 18 };
+    static const unsigned long SELECT_KEYWORD  { 1 << 19 };
+    static const unsigned long SELECT_DICT     { 1 << 20 };
+    static const unsigned long SELECT_MANAGED  { 1 << 21 };
 
     static const unsigned long ALL_FLOAT      = SELECT_NUMERIC | SELECT_FLOAT | SELECT_MANAGED;
-    static const unsigned long ALL_INTEGER    = ALL_FLOAT | SELECT_INTEGER;
+    static const unsigned long ALL_RATIONAL   = ALL_FLOAT | SELECT_RATIONAL;
+    static const unsigned long ALL_INTEGER    = ALL_RATIONAL | SELECT_INTEGER;
     static const unsigned long ALL_NIL        = SELECT_NIL | SELECT_LIST;
     static const unsigned long ALL_PROC       = SELECT_APPLY | SELECT_PROC | SELECT_MANAGED;
     static const unsigned long ALL_CLASS      = SELECT_CLASS | ALL_PROC;
@@ -158,6 +160,7 @@ string decodePredicate(unsigned exp, unsigned act)
 
         DECODER(NUMERIC);
         DECODER(FLOAT);
+        DECODER(RATIONAL);
         DECODER(BOOLEAN);
 
         DECODER(NIL);
@@ -196,6 +199,7 @@ void TestBase::checkPredicates(ConstExprHandle expr, unsigned exp)
 
     act |= (expr->isNumeric() ? SELECT_NUMERIC : 0);
     act |= (expr->isReal() ? SELECT_FLOAT : 0);
+    act |= (expr->isRational() ? SELECT_RATIONAL : 0);
     act |= (expr->isInteger() ? SELECT_INTEGER : 0);
 
     act |= (expr->isNil() ? SELECT_NIL : 0);
@@ -219,11 +223,7 @@ void TestBase::checkPredicates(ConstExprHandle expr, unsigned exp)
 
 void expectNonNumeric(ConstExprHandle expr)
 {
-    EXPECT_THROW(expr->toReal(), ScamException)
-        << "got " << expr->toReal();
-
-    EXPECT_THROW(expr->toInteger(), ScamException)
-        << "got "  << expr->toInteger();
+    EXPECT_FALSE(expr->isNumeric());
 }
 
 void TestBase::expectNull(ConstExprHandle expr)
@@ -303,8 +303,28 @@ void TestBase::expectReal(ConstExprHandle expr,
         FAIL() << e.getMessage() << "\n";
     }
 
+    EXPECT_FALSE(expr->isRational());
     EXPECT_FALSE(expr->isInteger());
     EXPECT_EQ(exact, expr->isExact());
+}
+
+void TestBase::expectRational(ConstExprHandle expr,
+                              const std::pair<int, int> & value,
+                              std::string const & repr,
+                              bool exact)
+{
+    checkPredicates(expr, SELECT_TRUTH | ALL_RATIONAL);
+    EXPECT_EQ(repr, expr->toString());
+    try {
+        EXPECT_EQ(value, expr->toRational());
+    }
+    catch ( ScamException e ) {
+        FAIL() << e.getMessage() << "\n";
+    }
+
+    EXPECT_FALSE(expr->isInteger());
+    EXPECT_EQ(exact, expr->isExact());
+
 }
 
 void TestBase::expectInteger(ConstExprHandle expr,

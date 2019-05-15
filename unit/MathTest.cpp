@@ -36,10 +36,16 @@ TEST_F(MathTest, AddManyArgs)
     expectInteger(expr, 4, "4", true);
 }
 
+TEST_F(MathTest, AddRationals)
+{
+    ExprHandle expr = parseAndEvaluate("(+ 1/3 1/3)");
+    expectRational(expr, pair<int, int>(2,3), "2/3", true);
+}
+
 TEST_F(MathTest, AddTypeUnification)
 {
     ExprHandle expr = parseAndEvaluate("(+ 2 2.5)");
-    expectReal(expr, 4.5, "4.5", false);
+    expectRational(expr, pair<int, int>(9,2), "9/2", false);
 }
 
 TEST_F(MathTest, AddSimplificationRealToInt)
@@ -108,10 +114,16 @@ TEST_F(MathTest, SubManyArgs)
     expectInteger(expr, 0, "0", true);
 }
 
+TEST_F(MathTest, SubRationals)
+{
+    ExprHandle expr = parseAndEvaluate("(- 7/12 5/12)");
+    expectRational(expr, pair<int, int>(1,6), "1/6", true);
+}
+
 TEST_F(MathTest, SubTypeUnification)
 {
     ExprHandle expr = parseAndEvaluate("(- 2 1.5)");
-    expectReal(expr, 0.5, "0.5", false);
+    expectRational(expr, pair<int,int>(1,2), "1/2", false);
 }
 
 TEST_F(MathTest, SubSimplificationRealToInt)
@@ -180,10 +192,16 @@ TEST_F(MathTest, MulManyArgs)
     expectInteger(expr, -16, "-16", true);
 }
 
+TEST_F(MathTest, MulRationals)
+{
+    ExprHandle expr = parseAndEvaluate("(*  3/10 -2/3)");
+    expectRational(expr, pair<int, int>(-1,5), "-1/5", true);
+}
+
 TEST_F(MathTest, MulTypeUnification)
 {
     ExprHandle expr = parseAndEvaluate("(* 2 2.125)");
-    expectReal(expr, 4.25, "4.25", false);
+    expectRational(expr, pair<int,int>(17,4), "17/4", false);
 }
 
 TEST_F(MathTest, MulSimplificationRealToInt)
@@ -243,26 +261,31 @@ TEST_F(MathTest, DivZeroArgs)
 TEST_F(MathTest, DivOneArg)
 {
     ExprHandle expr = parseAndEvaluate("(/ 2)");
-    expectReal(expr, 0.5, "0.5", true);
+    expectRational(expr, pair<int,int>(1,2), "1/2", true);
 }
 
 TEST_F(MathTest, DivTwoArgs)
 {
     ExprHandle expr = parseAndEvaluate("(/ 2 5)");
-    expectReal(expr, 0.4, "0.4", true);
+    expectRational(expr, pair<int,int>(2,5), "2/5", true);
 }
 
 TEST_F(MathTest, DivManyArgs)
 {
     ExprHandle expr = parseAndEvaluate("(/ 1 2 2 2)");
-    expectReal(expr, 0.125, "0.125", true);
+    expectRational(expr, pair<int,int>(1,8), "1/8", true);
+}
+
+TEST_F(MathTest, DivRationals)
+{
+    ExprHandle expr = parseAndEvaluate("(/ 3/10 11/7)");
+    expectRational(expr, pair<int, int>(21,110), "21/110", true);
 }
 
 TEST_F(MathTest, DivTypeUnification)
 {
     ExprHandle expr = parseAndEvaluate("(/ 2.5 1)");
-    expectReal(expr, 2.5, "2.5", false);
-    EXPECT_FALSE(expr->isExact());
+    expectRational(expr, pair<int,int>(5,2), "5/2", false);
 }
 
 TEST_F(MathTest, DivSimplificationRealToInt)
@@ -428,16 +451,22 @@ TEST_F(MathTest, ModZeroBy)
     expectInteger(expr, 0, "0", true);
 }
 
+TEST_F(MathTest, ModRational)
+{
+    ExprHandle expr = parseAndEvaluate("(% 3/4 1/10)");
+    expectRational(expr, pair<int, int>(1,20), "1/20", true);
+}
+
 TEST_F(MathTest, ModReal)
 {
     ExprHandle expr = parseAndEvaluate("(% 0.75 0.5)");
-    expectReal(expr, 0.25, "0.25", false);
+    expectRational(expr, pair<int,int>(1,4), "1/4", false);
 }
 
 TEST_F(MathTest, Nested)
 {
     ExprHandle expr = parseAndEvaluate("(+ (* 2 3) (/ 1 5) (- 3))");
-    expectReal(expr, 3.2, "3.2", true);
+    expectRational(expr, pair<int,int>(16,5), "16/5", true);
 }
 
 TEST_F(MathTest, NestedWithError)

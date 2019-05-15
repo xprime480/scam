@@ -149,11 +149,20 @@ scam::operator+(const ExtendedNumeric & a, const ExtendedNumeric & b)
         const ExprHandle xA = a.get();
         const ExprHandle xB = b.get();
         const bool isInt = xA->isInteger() && xB->isInteger();
+        const bool isRational = xA->isRational() && xB->isRational();
         const bool isExact = xA->isExact() && xB->isExact();
 
         if ( isInt ) {
             const int rv = xA->toInteger() + xB->toInteger();
             expr = ExpressionFactory::makeInteger(rv, isExact);
+        }
+        else if ( isRational ) {
+            const pair<int, int> ratA = xA->toRational();
+            const pair<int, int> ratB = xB->toRational();
+            const int num = (ratA.first * ratB.second +
+                             ratB.first * ratA.second ) ;
+            const int den = ratA.second * ratB.second;
+            expr = ExpressionFactory::makeRational(num, den, isExact);
         }
         else {
             const double rv = xA->toReal() + xB->toReal();
@@ -214,19 +223,9 @@ scam::operator-(const ExtendedNumeric & a, const ExtendedNumeric & b)
     ExprHandle expr { nullptr };
 
     if ( ! a.isSpecialNumeric() && ! b.isSpecialNumeric() ) {
-        const ExprHandle xA = a.get();
-        const ExprHandle xB = b.get();
-        const bool isInt = xA->isInteger() && xB->isInteger();
-        const bool isExact = xA->isExact() && xB->isExact();
-
-        if ( isInt ) {
-            const int rv = xA->toInteger() - xB->toInteger();
-            expr = ExpressionFactory::makeInteger(rv, isExact);
-        }
-        else {
-            const double rv = xA->toReal() - xB->toReal();
-            expr = ExpressionFactory::makeReal(rv, isExact);
-        }
+        ExtendedNumeric minusOne(ExpressionFactory::makeInteger(-1, true));
+        ExtendedNumeric minusB = minusOne * b;
+        return a + minusB;
     }
     else if ( a.isNaN() || b.isNaN() ) {
         expr = ExpressionFactory::makeNaN();
@@ -279,11 +278,19 @@ scam::operator*(const ExtendedNumeric & a, const ExtendedNumeric & b)
 
     if ( ! a.isSpecialNumeric() && ! b.isSpecialNumeric() ) {
         const bool isInt = xA->isInteger() && xB->isInteger();
+        const bool isRational = xA->isRational() && xB->isRational();
         const bool isExact = xA->isExact() && xB->isExact();
 
         if ( isInt ) {
             const int rv = xA->toInteger() * xB->toInteger();
             expr = ExpressionFactory::makeInteger(rv, isExact);
+        }
+        else if ( isRational ) {
+            const pair<int, int> ratA = xA->toRational();
+            const pair<int, int> ratB = xB->toRational();
+            const int num = ratA.first * ratB.first;
+            const int den = ratA.second * ratB.second;
+            expr = ExpressionFactory::makeRational(num, den, isExact);
         }
         else {
             const double rv = xA->toReal() * xB->toReal();
@@ -344,6 +351,7 @@ scam::operator/(const ExtendedNumeric & a, const ExtendedNumeric & b)
 
     if ( ! a.isSpecialNumeric() && ! b.isSpecialNumeric() ) {
         const bool isInt = xA->isInteger() && xB->isInteger();
+        const bool isRational = xA->isRational() && xB->isRational();
         const bool isExact = xA->isExact() && xB->isExact();
 
         if ( isInt ) {
@@ -353,10 +361,23 @@ scam::operator/(const ExtendedNumeric & a, const ExtendedNumeric & b)
                 const int rv =  iA / iB;
                 expr = ExpressionFactory::makeInteger(rv, isExact);
             }
+            else if ( ::abs(iA) <= 1e9 && ::abs(iB) <= 1e9 ) {
+                expr = ExpressionFactory::makeRational(iA, iB, isExact);
+            }
             else {
                 const double rv = (double) iA / (double) iB;
                 expr = ExpressionFactory::makeReal(rv, isExact);
             }
+        }
+        else if ( isRational ) {
+            const pair<int, int> ratB = xB->toRational();
+            int s = ratB.first < 0 ? -1 : 1;
+            ExprHandle recipricolB =
+                ExpressionFactory::makeRational(s * ratB.second,
+                                                ::abs(ratB.first),
+                                                isExact);
+            ExtendedNumeric newB(recipricolB);
+            expr = (a * newB).get();
         }
         else {
             const double rv = xA->toReal() / xB->toReal();
@@ -398,11 +419,19 @@ scam::operator%(const ExtendedNumeric & a, const ExtendedNumeric & b)
 
     if ( ! a.isSpecialNumeric() && ! b.isSpecialNumeric() ) {
         const bool isInt = xA->isInteger() && xB->isInteger();
+        const bool isRational = xA->isRational() && xB->isRational();
         const bool isExact = xA->isExact() && xB->isExact();
 
         if ( isInt ) {
             const int rv = xA->toInteger() % xB->toInteger();
             expr = ExpressionFactory::makeInteger(rv, isExact);
+        }
+        else if ( isRational ) {
+            ExtendedNumeric quotient = a / b;
+            int q = (int) (0.0000001 + quotient.get()->toReal());
+            ExtendedNumeric x(ExpressionFactory::makeInteger(q, isExact));
+            ExtendedNumeric wp = x * b;
+            return a - wp;
         }
         else {
             const double rv = fmod(xA->toReal(), xB->toReal());

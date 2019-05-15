@@ -29,20 +29,28 @@ ExprHandle NumericConverter::simplify(ExprHandle value)
         return value;
     }
 
-    if ( value->isInteger() ) {
-        return value;
+    if ( value->isReal() && ! value->isRational() ) {
+        double v = value->toReal();
+        double frac = ::fmod(v, 1.0);
+        if ( 0.0 == frac ) {
+            value = ExpressionFactory::makeRational((int)v,
+                                                    1,
+                                                    value->isExact());
+        }
+        else {
+            return value;
+        }
     }
 
-    if ( value->isReal() ) {
-        double v = value->toReal();
-        if ( 0 == ::fmod(v, 1.0) ) {
-            value = ExpressionFactory::makeInteger((int)v, value->isExact());
+    if ( value->isRational() && ! value->isInteger() ) {
+        const pair<int, int> v = value->toRational();
+        if ( 1 == v.second ) {
+            value = ExpressionFactory::makeInteger(v.first, value->isExact());
         }
     }
 
     return value;
 }
-
 
 ExprHandle NumericConverter::getValue() const
 {
@@ -58,6 +66,10 @@ void NumericConverter::scanNum()
 {
     scanPrefix();
     scanComplex();
+
+    if ( ! StringTokenizer::isDelimiter(*pos) ) {
+        value = ExpressionFactory::makeNull();
+    }
 }
 
 void NumericConverter::scanComplex()
@@ -98,121 +110,83 @@ ExprHandle NumericConverter::scanUReal()
 {
     const char * original = pos;
 
+    ExprHandle rv10 { ExpressionFactory::makeNull() };
+    const char * pos10 = pos;
     if ( 10 == base ) {
-        ExprHandle rv = scanDecimal();
-        if ( ! rv->isNull() ) {
-            return rv;
+        rv10 = scanDecimal();
+        if ( ! rv10->isNull() ) {
+            pos10 = pos;
         }
     }
 
-    ExprHandle rv = scanUInteger();
-    if ( rv->isNull() ) {
-        pos = original;
+    pos = original;
+
+    ExprHandle rvN = scanUInteger();
+    if ( rvN->isNull() ) {
+        pos = pos10;
+        return rv10;
     }
 
+    const char * posN = pos;
+    original = pos;
+    if ( '/' != *pos ) {
+        if ( posN > pos10 ) {
+            pos = posN;
+            return rvN;
+        }
+        else {
+            pos = pos10;
+            return rv10;
+        }
+    }
+
+    ++pos;
+
+    ExprHandle rvD = scanUInteger();
+    if ( rvD->isNull() ) {
+        pos = original;
+        return ( posN > pos10 ) ? rvN : rv10;
+    }
+
+    ExprHandle rv = makeRationalWithExactness(rvN->toInteger(),
+                                              rvD->toInteger());
     return rv;
 }
 
 ExprHandle NumericConverter::scanDecimal()
 {
     const char * original = pos;
+    ExprHandle rv { ExpressionFactory::makeNull() };
 
-    ExprHandle rv = scanDecimalCase3();
-    if ( ! rv->isNull() ) {
-        return rv;
+    if ( scanRadixPoint() ) {
+        rv = makeFraction(1);
+        if ( rv->isNull() ) {
+            pos = original;
+            return rv;
+        }
     }
+    else {
+        rv = scanUInteger();
+        if ( rv->isNull() ) {
+            pos = original;
+            return rv;
+        }
 
-    rv = scanDecimalCase1();
-    if ( ! rv->isNull() ) {
-        return rv;
-    }
-
-    rv = scanDecimalCase2();
-    if ( ! rv->isNull() ) {
-        return rv;
-    }
-
-    pos = original;
-    return rv;
-}
-
-ExprHandle NumericConverter::scanDecimalCase1()
-{
-    const char * original = pos;
-
-    ExprHandle rv = scanUInteger();
-    if ( rv->isNull() ) {
-        pos = original;
-        return rv;
-    }
-
-    ExprHandle suffix = scanSuffix();
-    if ( ! suffix->isReal() ) {
-        return rv;
-    }
-
-    ExtendedNumeric lhs(rv);
-    ExtendedNumeric rhs(suffix);
-    ExtendedNumeric result = lhs * rhs;
-
-    return result.get();
-}
-
-ExprHandle NumericConverter::scanDecimalCase2()
-{
-    const char * original = pos;
-
-    if ( ! scanRadixPoint() ) {
-        return ExpressionFactory::makeNull();
-    }
-
-    ExprHandle rv = makeFraction(1);
-    if ( rv->isNull() ) {
-        pos = original;
-        return rv;
+        if ( scanRadixPoint() ) {
+            ExprHandle fp = makeFraction(0);
+            if ( ! rv->isNull() ) {
+                ExtendedNumeric lhs(rv);
+                ExtendedNumeric rhs(fp);
+                ExtendedNumeric result = lhs + rhs;
+                rv = result.get();
+            }
+        }
     }
 
     ExprHandle suffix = scanSuffix();
     if ( suffix->isReal() ) {
         ExtendedNumeric lhs(rv);
         ExtendedNumeric rhs(suffix);
-        ExtendedNumeric result = lhs * rhs;
-        rv = result.get();
-    }
-
-    return rv;
-}
-
-ExprHandle NumericConverter::scanDecimalCase3()
-{
-    const char * original = pos;
-
-    ExprHandle ip = scanUInteger();
-    if ( ip->isNull() ) {
-        pos = original;
-        return ip;
-    }
-
-    if ( ! scanRadixPoint() ) {
-        pos = original;
-        return ExpressionFactory::makeNull();
-    }
-
-    ExprHandle fp = makeFraction(0);
-    if ( fp->isNull() ) {
-        pos = original;
-        return fp;
-    }
-
-    ExtendedNumeric lhs(ip);
-    ExtendedNumeric rhs(fp);
-    ExtendedNumeric result = lhs + rhs;
-    ExprHandle rv = result.get();
-
-    ExprHandle xp = scanSuffix();
-    if ( xp->isReal() ) {
-        ExtendedNumeric lhs(rv);
-        ExtendedNumeric rhs(xp);
         ExtendedNumeric result = lhs * rhs;
         rv = result.get();
     }
@@ -359,38 +333,35 @@ void NumericConverter::baseSeen(char x)
 ExprHandle NumericConverter::makeFraction(unsigned minCount)
 {
     const char * original = pos;
+    ExprHandle rv = scanUInteger();
 
-    double value { 0.0 };
-    double divisor { 1.0 };
-    unsigned count { 0 };
-
-    while ( *pos ) {
-        int digit = convertDigit(*pos);
-        if ( -1 == digit ) {
-            break;
-        }
-
-        ++count;
-        ++pos;
-        divisor /= base;
-        value = value + divisor * digit;
-    }
-
+    unsigned count = pos - original;
     if ( count < minCount ) {
         pos = original;
         return ExpressionFactory::makeNull();
     }
 
-    return makeRealWithExactness(value);
+    bool makeExact = exactness == ExactnessType::ET_EXACT;
+
+    if ( rv->isNull() ) {
+        return ExpressionFactory::makeInteger(0, makeExact);
+    }
+
+    int value = rv->toInteger();
+    double multiplier = makeMultiplier(count);
+
+    if ( count > 6 ) {
+        return ExpressionFactory::makeReal(value / multiplier, makeExact);
+    }
+
+    return ExpressionFactory::makeRational(value, multiplier, makeExact);
 }
 
 bool NumericConverter::scanRadixPoint()
 {
     if ( '.' == *pos ) {
-        if ( 10 == base ) {
-            ++pos;
-            return true;
-        }
+        ++pos;
+        return true;
     }
 
     return false;
@@ -453,6 +424,12 @@ ExprHandle NumericConverter::makeRealWithExactness(double value) const
 {
     bool makeExact = exactness == ExactnessType::ET_EXACT;
     return simplify(ExpressionFactory::makeReal(value, makeExact));
+}
+
+ExprHandle NumericConverter::makeRationalWithExactness(int num, int den) const
+{
+    bool makeExact = ! (exactness == ExactnessType::ET_INEXACT);
+    return ExpressionFactory::makeRational(num, den, makeExact);
 }
 
 ExprHandle NumericConverter::makeIntegerWithExactness(int value) const

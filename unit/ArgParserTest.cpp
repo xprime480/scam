@@ -25,8 +25,6 @@
 #include "input/TypeParsers.hpp"
 #include "input/VrefParser.hpp"
 
-#include "util/DebugTrace.hpp"
-
 using namespace std;
 using namespace scam;
 
@@ -645,7 +643,7 @@ TEST_F(ArgParserTest, NumericMixedList)
     NumericListParser * parser = mm.make<NumericListParser>();
     acceptParse(parser, "(1.2 3 -750.0 0)");
     EXPECT_EQ(4, parser->size());
-    expectReal(parser->get(0), 1.2, "1.2", false);
+    expectRational(parser->get(0), pair<int,int>(6,5), "6/5", false);
     expectInteger(parser->get(1), 3, "3", true);
     expectInteger(parser->get(2), -750, "-750", false);
     expectInteger(parser->get(3), 0, "0", true);

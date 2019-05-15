@@ -50,6 +50,7 @@ namespace scam
         virtual bool isPosInf() const;
 
         virtual double toReal() const;
+        virtual std::pair<int, int> toRational() const;
         virtual int toInteger() const;
 
         virtual bool isNil() const;

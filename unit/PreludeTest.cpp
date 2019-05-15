@@ -16,7 +16,7 @@ TEST_F(PreludeTest, MaxIntegerTest)
 TEST_F(PreludeTest, MaxRealTest)
 {
     ExprHandle expr = parseAndEvaluate("(max 42.01 17.5)");
-    expectReal(expr, 42.01, "42.01", false);
+    expectRational(expr, pair<int, int>(4201, 100), "4201/100", false);
 }
 
 TEST_F(PreludeTest, MaxMixedNumericTest)
@@ -34,13 +34,13 @@ TEST_F(PreludeTest, MinIntegerTest)
 TEST_F(PreludeTest, MinRealTest)
 {
     ExprHandle expr = parseAndEvaluate("(min 42.01 17.5)");
-    expectReal(expr, 17.5, "17.5", false);
+    expectRational(expr, pair<int,int>(35,2), "35/2", false);
 }
 
 TEST_F(PreludeTest, MinMixedNumericTest)
 {
     ExprHandle expr = parseAndEvaluate("(min -5 -9.999)");
-    expectReal(expr, -9.999, "-9.999", false);
+    expectRational(expr, pair<int,int>(-9999,1000), "-9999/1000", false);
 }
 
 TEST_F(PreludeTest, MapTest)

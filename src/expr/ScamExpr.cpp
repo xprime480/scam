@@ -5,6 +5,7 @@
 #include "expr/ExpressionFactory.hpp"
 
 #include <sstream>
+#include <utility>
 
 using namespace scam;
 using namespace std;
@@ -157,6 +158,15 @@ double ScamExpr::toReal() const
     throw ScamException(s.str());
 
     return 0.0;
+}
+
+pair<int, int> ScamExpr::toRational() const
+{
+    stringstream s;
+    s << "Cannot convert <" << this->toString() << "> to float";
+    throw ScamException(s.str());
+
+    return make_pair<int, int>(0,0);
 }
 
 int ScamExpr::toInteger() const
