@@ -19,6 +19,31 @@ NumericConverter::NumericConverter(const char * pos)
     scanNum();
 }
 
+ExprHandle NumericConverter::simplify(ExprHandle value)
+{
+    if ( ! value->isNumeric() ) {
+        return value;
+    }
+
+    if ( value->isNaN() || value->isNegInf() || value->isPosInf() ) {
+        return value;
+    }
+
+    if ( value->isInteger() ) {
+        return value;
+    }
+
+    if ( value->isReal() ) {
+        double v = value->toReal();
+        if ( 0 == ::fmod(v, 1.0) ) {
+            value = ExpressionFactory::makeInteger((int)v, value->isExact());
+        }
+    }
+
+    return value;
+}
+
+
 ExprHandle NumericConverter::getValue() const
 {
     return value;
@@ -434,28 +459,4 @@ ExprHandle NumericConverter::makeIntegerWithExactness(int value) const
 {
     bool makeExact = ! (exactness == ExactnessType::ET_INEXACT);
     return ExpressionFactory::makeInteger(value, makeExact);
-}
-
-ExprHandle NumericConverter::simplify(ExprHandle value) const
-{
-    if ( ! value->isNumeric() ) {
-        return value;
-    }
-
-    if ( value->isNaN() || value->isNegInf() || value->isPosInf() ) {
-        return value;
-    }
-
-    if ( value->isInteger() ) {
-        return value;
-    }
-
-    if ( value->isReal() ) {
-        double v = value->toReal();
-        if ( 0 == ::fmod(v, 1.0) ) {
-            value = ExpressionFactory::makeInteger((int)v, value->isExact());
-        }
-    }
-
-    return value;
 }

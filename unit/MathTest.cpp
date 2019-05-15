@@ -42,6 +42,12 @@ TEST_F(MathTest, AddTypeUnification)
     expectReal(expr, 4.5, "4.5", false);
 }
 
+TEST_F(MathTest, AddSimplificationRealToInt)
+{
+    ExprHandle expr = parseAndEvaluate("(+ 2.5 2.5)");
+    expectInteger(expr, 5, "5", false);
+}
+
 TEST_F(MathTest, AddNegInf)
 {
     ExprHandle expr = parseAndEvaluate("(+ 2 -inf.0)");
@@ -108,6 +114,12 @@ TEST_F(MathTest, SubTypeUnification)
     expectReal(expr, 0.5, "0.5", false);
 }
 
+TEST_F(MathTest, SubSimplificationRealToInt)
+{
+    ExprHandle expr = parseAndEvaluate("(- 12.5 2.5)");
+    expectInteger(expr, 10, "10", false);
+}
+
 TEST_F(MathTest, SubNegInf)
 {
     ExprHandle expr = parseAndEvaluate("(- 2 -inf.0)");
@@ -172,6 +184,12 @@ TEST_F(MathTest, MulTypeUnification)
 {
     ExprHandle expr = parseAndEvaluate("(* 2 2.125)");
     expectReal(expr, 4.25, "4.25", false);
+}
+
+TEST_F(MathTest, MulSimplificationRealToInt)
+{
+    ExprHandle expr = parseAndEvaluate("(* #e0.125 8)");
+    expectInteger(expr, 1, "1", true);
 }
 
 TEST_F(MathTest, MulNegInf)
@@ -245,6 +263,12 @@ TEST_F(MathTest, DivTypeUnification)
     ExprHandle expr = parseAndEvaluate("(/ 2.5 1)");
     expectReal(expr, 2.5, "2.5", false);
     EXPECT_FALSE(expr->isExact());
+}
+
+TEST_F(MathTest, DivSimplificationRealToInt)
+{
+    ExprHandle expr = parseAndEvaluate("(/ 12.5 2.5)");
+    expectInteger(expr, 5, "5", false);
 }
 
 TEST_F(MathTest, DivZeroByInf)
@@ -335,6 +359,12 @@ TEST_F(MathTest, ModThreeIgnoresExtra)
 {
     ExprHandle expr = parseAndEvaluate("(% 5 2 0 0 0)");
     expectInteger(expr, 1, "1", true);
+}
+
+TEST_F(MathTest, ModSimplificationRealToInt)
+{
+    ExprHandle expr = parseAndEvaluate("(% 12.5 2.5)");
+    expectInteger(expr, 0, "0", false);
 }
 
 TEST_F(MathTest, ModZeroByInf)

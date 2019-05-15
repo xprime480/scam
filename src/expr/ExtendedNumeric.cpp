@@ -3,6 +3,7 @@
 #include "ScamException.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamExpr.hpp"
+#include "util/NumericConverter.hpp"
 
 #include <cmath>
 #include <sstream>
@@ -197,7 +198,7 @@ scam::operator+(const ExtendedNumeric & a, const ExtendedNumeric & b)
         }
     }
 
-    ExtendedNumeric tmp(expr);
+    ExtendedNumeric tmp(NumericConverter::simplify(expr));
     return tmp;
 }
 
@@ -265,7 +266,7 @@ scam::operator-(const ExtendedNumeric & a, const ExtendedNumeric & b)
         }
     }
 
-    ExtendedNumeric tmp(expr);
+    ExtendedNumeric tmp(NumericConverter::simplify(expr));
     return tmp;
 }
 
@@ -330,7 +331,7 @@ scam::operator*(const ExtendedNumeric & a, const ExtendedNumeric & b)
         }
     }
 
-    ExtendedNumeric tmp(expr);
+    ExtendedNumeric tmp(NumericConverter::simplify(expr));
     return tmp;
 }
 
@@ -384,7 +385,7 @@ scam::operator/(const ExtendedNumeric & a, const ExtendedNumeric & b)
         }
     }
 
-    ExtendedNumeric tmp(expr);
+    ExtendedNumeric tmp(NumericConverter::simplify(expr));
     return tmp;
 }
 
@@ -417,7 +418,7 @@ scam::operator%(const ExtendedNumeric & a, const ExtendedNumeric & b)
         }
     }
 
-    ExtendedNumeric tmp(expr);
+    ExtendedNumeric tmp(NumericConverter::simplify(expr));
     return tmp;
 }
 

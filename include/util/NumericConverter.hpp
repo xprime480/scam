@@ -17,6 +17,9 @@ namespace scam
 
     public:
         explicit NumericConverter(const char * pos);
+
+        static ExprHandle simplify(ExprHandle value);
+	
         ExprHandle getValue() const;
         const char * getPos() const;
 
@@ -56,8 +59,6 @@ namespace scam
 
         ExprHandle makeRealWithExactness(double value) const;
         ExprHandle makeIntegerWithExactness(int value) const;
-
-        ExprHandle simplify(ExprHandle value) const;
     };
 }
 
