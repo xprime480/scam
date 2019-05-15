@@ -15,20 +15,6 @@ namespace scam
              ET_CONTEXT
             };
 
-        enum class ScanState : unsigned char
-            {
-             SS_BEGIN,
-             SS_BASE,
-             SS_EXACT,
-             SS_BASE_AND_EXACT,
-             SS_SIGN,
-             SS_INTEGER_PART,
-             SS_RADIX_POINT,
-             SS_FRACTIONAL_PART,
-             SS_DONE,
-             SS_ERROR = 255
-            };
-
     public:
         explicit NumericConverter(const char * pos);
         ExprHandle getValue() const;
@@ -41,23 +27,28 @@ namespace scam
 
         int base;
         ExactnessType exactness;
-        bool negative;
-        bool exact = true;
-        double integerPart;
-        double fractionalPart;
-        double divisor;
-        ScanState state;
+        bool exact;
+        bool OK;
 
         void convert();
         bool scanSpecialValue();
+
         void scanInitial();
         void exactnessSeen(char x);
         void baseSeen(char x);
-        void handleChar(char c);
-        bool scanIntegerPart();
-        bool scanFractionalPart();
+
+        int scanInteger();
+        int scanSign();
+        int scanUnsigned();
+
+        double scanFraction();
+        bool scanRadixPoint();
+
+        int scanExponent();
+
         void finalizeExactness();
-        void makeResult();
+        void makeResult(int integerPart, double fractionalPart, int exponent);
+        double makeMultiplier(int exponent) const;
 
         int convertDigit(char digit);
     };

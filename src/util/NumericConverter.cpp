@@ -3,6 +3,7 @@
 #include "expr/ExpressionFactory.hpp"
 #include "input/StringTokenizer.hpp"
 
+#include <cmath>
 #include <cstring>
 
 using namespace scam;
@@ -13,12 +14,8 @@ NumericConverter::NumericConverter(const char * pos)
     , value(ExpressionFactory::makeNull())
     , base(10)
     , exactness(ExactnessType::ET_CONTEXT)
-    , negative(false)
     , exact(true)
-    , integerPart(0.0)
-    , fractionalPart(0.0)
-    , divisor(1.0)
-    , state(ScanState::SS_BEGIN)
+    , OK(true)
 {
     convert();
 }
@@ -40,26 +37,21 @@ void NumericConverter::convert()
     }
 
     scanInitial();
-    if ( ScanState::SS_ERROR == state ) {
+    const int integerPart = scanInteger();
+    const double fractionalPart = scanFraction();
+    const int exponent = scanExponent();
+    if ( ! StringTokenizer::isDelimiter(*pos) ) {
+        OK = false;
         return;
     }
 
-    while ( ! StringTokenizer::isDelimiter(*pos) ) {
-        const char c = *pos;
-        handleChar(c);
-        ++pos;
-        if ( ScanState::SS_ERROR == state ) {
-            return;
-        }
-    }
-
     finalizeExactness();
-    makeResult();
+    makeResult(integerPart, fractionalPart, exponent);
 }
 
 bool NumericConverter::scanSpecialValue()
 {
-    if ( ScanState::SS_BEGIN != state ) {
+    if ( ! OK ) {
         return false;
     }
 
@@ -78,11 +70,11 @@ bool NumericConverter::scanSpecialValue()
 
     if ( StringTokenizer::isDelimiter(pos[6]) ) {
         pos += 6;
-        state = ScanState::SS_DONE;
     }
     else {
         value = ExpressionFactory::makeNull();
-        state = ScanState::SS_ERROR;
+        OK = false;
+        return false;
     }
 
     return true;
@@ -90,7 +82,7 @@ bool NumericConverter::scanSpecialValue()
 
 void NumericConverter::scanInitial()
 {
-    if ( ScanState::SS_BEGIN != state ) {
+    if ( ! OK ) {
         return;
     }
 
@@ -113,36 +105,14 @@ void NumericConverter::scanInitial()
         }
 
         pos += 2;
-        if ( ScanState::SS_ERROR == state ) {
+        if ( ! OK ) {
             return;
         }
     }
-
-    if ( '+' == *pos ) {
-        state = ScanState::SS_SIGN;
-        ++pos;
-    }
-    else if ( '-' == *pos ) {
-        state = ScanState::SS_SIGN;
-        ++pos;
-        negative = true;
-   }
 }
 
 void NumericConverter::exactnessSeen(char x)
 {
-    switch ( state ) {
-    case ScanState::SS_BEGIN:
-        state = ScanState::SS_EXACT;
-        break;
-    case ScanState::SS_BASE:
-        state = ScanState::SS_BASE_AND_EXACT;
-        break;
-    default:
-        state = ScanState::SS_ERROR;
-        return;
-    }
-
     if ( 'e' == tolower(x) ) {
         exactness = ExactnessType::ET_EXACT;
     }
@@ -153,82 +123,128 @@ void NumericConverter::exactnessSeen(char x)
 
 void NumericConverter::baseSeen(char x)
 {
-    switch ( state ) {
-    case ScanState::SS_BEGIN:
-        state = ScanState::SS_BASE;
-        break;
-    case ScanState::SS_EXACT:
-        state = ScanState::SS_BASE_AND_EXACT;
-        break;
-    default:
-        state = ScanState::SS_ERROR;
-        return;
-    }
-
-    switch ( x ) {
-    case 'b': case 'B':
+    switch ( tolower(x) ) {
+    case 'b':
         base = 2;
         break;
-
-    case 'o': case 'O':
+    case 'o':
         base = 8;
         break;
-
-    case 'd': case 'D':
+    case 'd':
         base = 10;
         break;
-
-    case 'x': case 'X':
+    case 'x':
         base = 16;
         break;
-
     default:
-        state = ScanState::SS_ERROR;
+        OK = false;
         break;
     }
 }
 
-void NumericConverter::handleChar(char c)
+int NumericConverter::scanInteger()
 {
-    if ( '.' == c ) {
-        if ( 10 == base && ScanState::SS_INTEGER_PART == state ) {
-            state = ScanState::SS_RADIX_POINT;
+    if ( ! OK ) {
+        return 0;
+    }
+
+    const int sign = scanSign();
+    const int value = scanUnsigned();
+    return sign * value;
+}
+
+int NumericConverter::scanSign()
+{
+    if ( '+' == *pos ) {
+        ++pos;
+    }
+    else if ( '-' == *pos ) {
+        ++pos;
+        return -1;
+    }
+    return 1;
+}
+
+int NumericConverter::scanUnsigned()
+{
+    size_t count { 0 };
+    int value { 0 };
+
+    while ( *pos ) {
+        int digit = convertDigit(*pos);
+        if ( -1 == digit ) {
+            break;
+        }
+
+        ++pos;
+        ++count;
+        value = value * base + digit;
+    }
+
+    if ( count < 1 ) {
+        OK = false;
+    }
+
+    return value;
+}
+
+double NumericConverter::scanFraction()
+{
+    if ( ! OK ) {
+        return 0.0;
+    }
+
+    if ( ! scanRadixPoint() ) {
+        return 0.0;
+    }
+
+    double value { 0.0 };
+    double divisor { 1.0 };
+
+    while ( *pos ) {
+        int digit = convertDigit(*pos);
+        if ( -1 == digit ) {
+            break;
+        }
+
+        ++pos;
+        divisor /= base;
+        value = value + divisor * digit;
+    }
+
+    return value;
+}
+
+bool NumericConverter::scanRadixPoint()
+{
+    if ( '.' == *pos ) {
+        if ( 10 == base ) {
+            ++pos;
+            exact = false;
+            return true;
         }
         else {
-            state = ScanState::SS_ERROR;
+            OK = false;
         }
-        exact = false;
-        return;
+    }
+    return false;
+}
+
+int NumericConverter::scanExponent()
+{
+    if ( 'e' != tolower(*pos) ) {
+        return 0;
     }
 
-    int digit = convertDigit(*pos);
-    if ( -1 == digit ) {
-        state = ScanState::SS_ERROR;
-        return;
+    if ( 10 != base ) {
+        OK = false;
+        return 0;
     }
 
-    switch ( state ) {
-    case ScanState::SS_BEGIN:
-    case ScanState::SS_BASE:
-    case ScanState::SS_EXACT:
-    case ScanState::SS_BASE_AND_EXACT:
-    case ScanState::SS_SIGN:
-    case ScanState::SS_INTEGER_PART:
-        integerPart = integerPart * base + digit;
-        state = ScanState::SS_INTEGER_PART;
-        break;
+    ++pos;
+    exact = false;
 
-    case ScanState::SS_RADIX_POINT:
-    case ScanState::SS_FRACTIONAL_PART:
-        divisor /= base;
-        fractionalPart = fractionalPart + divisor * digit;
-        state = ScanState::SS_FRACTIONAL_PART;
-        break;
-
-    default:
-        state = ScanState::SS_ERROR;
-        break;
-    }
+    return scanInteger();
 }
 
 void NumericConverter::finalizeExactness()
@@ -245,26 +261,47 @@ void NumericConverter::finalizeExactness()
     }
 }
 
-void NumericConverter::makeResult()
+void NumericConverter::makeResult(int integerPart,
+                                  double fractionalPart,
+                                  int exponent)
 {
-    if ( ScanState::SS_INTEGER_PART == state ||
-         ( ScanState::SS_FRACTIONAL_PART == state &&
-           0.0 == fractionalPart )) {
-        int rv = (negative ? -1 : 1) * (int)integerPart;
-        value = ExpressionFactory::makeInteger(rv, exact);
-        state = ScanState::SS_DONE;
+    if ( ! OK ) {
+        return;
     }
 
-    else if ( ScanState::SS_FRACTIONAL_PART == state ) {
-        double t = integerPart + fractionalPart;
-        double rv = negative ? -t : t;
-        value = ExpressionFactory::makeReal(rv, exact);
-        state = ScanState::SS_DONE;
+    const double multiplier = makeMultiplier(exponent);
+    if ( integerPart < 0 ) {
+        fractionalPart *= -1;
     }
+    const double result = ((double) integerPart + fractionalPart) * multiplier;
 
+    if ( 0 == ::fmod(result, 1.0) ) {
+        value = ExpressionFactory::makeInteger((int) result, exact);
+    }
     else {
-        state = ScanState::SS_ERROR;
+        value = ExpressionFactory::makeReal(result, exact);
     }
+}
+
+double NumericConverter::makeMultiplier(int exponent) const
+{
+    if ( 0 == exponent ) {
+        return 1.0;
+    }
+    if ( 1 == exponent ) {
+        return (double) base;
+    }
+    if ( exponent < 0 ) {
+        return 1.0 / makeMultiplier(-1 * exponent);
+    }
+
+    double temp = makeMultiplier(exponent / 2);
+    temp = temp * temp;
+    if ( exponent & 1 ) {
+        temp = temp * base;
+    }
+
+    return temp;
 }
 
 int NumericConverter::convertDigit(char digit)

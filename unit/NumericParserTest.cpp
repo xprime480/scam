@@ -142,3 +142,45 @@ TEST_F(NumericParserTest, MinusInfinity)
     ExprHandle expr = ExpressionFactory::makeNumeric(text);
     expectSpecialNumeric(expr, text);
 }
+
+TEST_F(NumericParserTest, IntegerZeroExponent)
+{
+    const char * text { "5e0" };
+    ExprHandle expr = ExpressionFactory::makeNumeric(text);
+    expectInteger(expr, 5, "5", false);
+}
+
+TEST_F(NumericParserTest, IntegerPositiveExponent)
+{
+    const char * text { "5e1" };
+    ExprHandle expr = ExpressionFactory::makeNumeric(text);
+    expectInteger(expr, 50, "50", false);
+}
+
+TEST_F(NumericParserTest, IntegerNegativeExponent)
+{
+    const char * text { "5e-1" };
+    ExprHandle expr = ExpressionFactory::makeNumeric(text);
+    expectReal(expr, 0.5, "0.5", false);
+}
+
+TEST_F(NumericParserTest, RealZeroExponent)
+{
+    const char * text { "5.55e0" };
+    ExprHandle expr = ExpressionFactory::makeNumeric(text);
+    expectReal(expr, 5.55, "5.55", false);
+}
+
+TEST_F(NumericParserTest, RealPositiveExponent)
+{
+    const char * text { "-5.001e1" };
+    ExprHandle expr = ExpressionFactory::makeNumeric(text);
+    expectReal(expr, -50.01, "-50.01", false);
+}
+
+TEST_F(NumericParserTest, RealNegativeExponent)
+{
+    const char * text { "500.0e-2" };
+    ExprHandle expr = ExpressionFactory::makeNumeric(text);
+    expectInteger(expr, 5, "5", false);
+}
