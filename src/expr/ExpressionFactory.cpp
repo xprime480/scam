@@ -68,9 +68,9 @@ ScamNegInf * ExpressionFactory::makeNegInf()
     return standardMemoryManager.make<ScamNegInf>();
 }
 
-ScamReal * ExpressionFactory::makeReal(double value, bool exact)
+ScamNumeric * ExpressionFactory::makeReal(double value, bool exact)
 {
-    return standardMemoryManager.make<ScamReal>(value, exact);
+    return standardMemoryManager.make<ScamNumeric>(value, exact);
 }
 
 ScamNumeric * ExpressionFactory::makeRational(int num, int den, bool exact)

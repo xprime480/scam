@@ -22,7 +22,6 @@
 #include "expr/ScamNull.hpp"
 #include "expr/ScamNumeric.hpp"
 #include "expr/ScamPosInf.hpp"
-#include "expr/ScamReal.hpp"
 #include "expr/ScamString.hpp"
 #include "expr/ScamSymbol.hpp"
 #include "expr/ScamVector.hpp"

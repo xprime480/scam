@@ -12,6 +12,7 @@ namespace scam
     private:
         friend class MemoryManager;
 
+        ScamNumeric(double value, bool exact, bool managed = true);
         ScamNumeric(int num, int den, bool exact, bool managed = true);
         ScamNumeric(int value, bool exact, bool managed = true);
 
@@ -20,9 +21,12 @@ namespace scam
 
     private:
         static ScamNumeric *
+        makeInstance(double value, bool exact, bool managed = true);
+
+        static ScamNumeric *
         makeInstance(int num, int den, bool exact, bool managed = true);
 
-	static ScamNumeric *
+        static ScamNumeric *
         makeInstance(int value, bool exact, bool managed = true);
 
     public:
@@ -49,14 +53,15 @@ namespace scam
     private:
         bool exact;
         int type;
-	union
-	{
-	    int intValue;
-	    struct {
-		int num;
-		int den;
-	    } rationalValue;
-	} value;
+        union
+        {
+	    double realValue;
+            struct {
+                int num;
+                int den;
+            } rationalValue;
+            int intValue;
+        } value;
 
         static constexpr unsigned long ScamNumericComplexBit  { 1 << 0 };
         static constexpr unsigned long ScamNumericRealBit     { 1 << 1 };

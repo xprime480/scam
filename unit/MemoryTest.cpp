@@ -255,8 +255,8 @@ TEST_F(MemoryTest, TestScamReal)
     const float value { 2.5 };
     const string repr { "2.5" };
 
-    ScamReal * cut1 = mm.make<ScamReal>(value, false);
-    ScamReal * cut2 = mm.make<ScamReal>(value, false);
+    ScamNumeric * cut1 = mm.make<ScamNumeric>(value, false);
+    ScamNumeric * cut2 = mm.make<ScamNumeric>(value, false);
 
     expectReal(cut1, value, repr, false);
     expectReal(cut2, value, repr, false);

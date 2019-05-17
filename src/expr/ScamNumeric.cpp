@@ -11,6 +11,14 @@
 using namespace scam;
 using namespace std;
 
+ScamNumeric::ScamNumeric(double value, bool exact, bool managed)
+    : ScamExpr(managed)
+    , exact(exact)
+    , type(ScamNumericReal)
+{
+    this->value.realValue = value;
+}
+
 ScamNumeric::ScamNumeric(int num, int den, bool exact, bool managed)
     : ScamExpr(managed)
     , exact(exact)
@@ -37,6 +45,12 @@ ScamNumeric::ScamNumeric(bool exact, bool managed)
 }
 
 ScamNumeric *
+ScamNumeric::makeInstance(double value, bool exact, bool managed)
+{
+    return new ScamNumeric(value, exact, managed);
+}
+
+ScamNumeric *
 ScamNumeric::makeInstance(int num, int den, bool exact, bool managed)
 {
     return new ScamNumeric(num, den, exact, managed);
@@ -57,6 +71,9 @@ string ScamNumeric::toString() const
     }
     else if ( isRational() ) {
         s << value.rationalValue.num << "/" << value.rationalValue.den;
+    }
+    else if ( isReal() ) {
+        s << value.realValue;
     }
 
     return s.str();
@@ -153,9 +170,12 @@ double ScamNumeric::realPart() const
     if ( isInteger() ) {
         return (double) value.intValue;
     }
-    if ( isRational() ) {
+    else if ( isRational() ) {
         return ((double) value.rationalValue.num /
                 (double) value.rationalValue.den );
+    }
+    else if ( isReal() ) {
+        return value.realValue;
     }
 
     stringstream s;
