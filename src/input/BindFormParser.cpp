@@ -60,5 +60,5 @@ ExprHandle BindFormParser::getForm() const
     if ( parser->size() ) {
         return parser->get(1u);
     }
-    return nullptr;
+    return ExpressionFactory::makeNull();
 }

@@ -1,5 +1,6 @@
 #include "input/SymbolPlusManyParser.hpp"
 
+#include "expr/ExpressionFactory.hpp"
 #include "expr/ScamSymbol.hpp"
 #include "input/SequenceParser.hpp"
 #include "input/CountedListParser.hpp"
@@ -56,7 +57,7 @@ bool SymbolPlusManyParser::accept(ExprHandle expr)
 void SymbolPlusManyParser::clearValue()
 {
     ArgParser::clearValue();
-    forms = nullptr;
+    forms = ExpressionFactory::makeNull();
 }
 
 

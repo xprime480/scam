@@ -5,6 +5,8 @@
 
 * Make ArgParser classes return something other than nullptr for failed
       parses.
+  ** partially done -- still needs to be done when the return value
+     is either a parser or a subtype of ScamExpr.
 
 * Finish with the merge of branch arg-parse into arg-parse-2
   ** Then implement define-syntax

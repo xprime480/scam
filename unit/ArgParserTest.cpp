@@ -48,7 +48,7 @@ protected:
         bool accept = parser->accept(value);
         EXPECT_FALSE(accept);
         ConstExprHandle v = parser->getValue();
-        EXPECT_EQ(nullptr, v);
+        expectNull(v);
     }
 };
 
@@ -75,39 +75,6 @@ TEST_F(ArgParserTest, AcceptNil)
     acceptParse(parser, "()");
 }
 
-TEST_F(ArgParserTest, AcceptAnyInteger)
-{
-    IntegerParser * parser = mm.make<IntegerParser>();
-
-    acceptParse(parser, "-234134");
-    acceptParse(parser, "0");
-    acceptParse(parser, "1");
-    acceptParse(parser, "42");
-}
-
-TEST_F(ArgParserTest, AcceptOneInteger)
-{
-    const ScamInteger * target = ExpressionFactory::makeInteger(42, true);
-    IntegerParser * parser = mm.make<IntegerParser>(target);
-
-    rejectParse(parser, "-234134");
-    rejectParse(parser, "0");
-    rejectParse(parser, "1");
-    acceptParse(parser, "42");
-}
-
-TEST_F(ArgParserTest, RejectOneInteger)
-{
-    const ScamInteger * target = ExpressionFactory::makeInteger(42, true);
-    IntegerParser * parser =
-        mm.make<IntegerParser>(target, true);
-
-    acceptParse(parser, "-234134");
-    acceptParse(parser, "0");
-    acceptParse(parser, "1");
-    rejectParse(parser, "42");
-}
-
 TEST_F(ArgParserTest, AcceptAnyNumeric)
 {
     NumericParser * parser = mm.make<NumericParser>();
@@ -129,7 +96,7 @@ TEST_F(ArgParserTest, AcceptListOfAnything)
     acceptParse(parser, "(a symbol (+ 2 2) #\\c)");
     EXPECT_EQ(4u, parser->size());
     expectSymbol(parser->get(1), text);
-    EXPECT_EQ(nullptr, parser->get(4));
+    expectNull(parser->get(4));
 
     rejectParse(parser, text);
 }
@@ -148,9 +115,9 @@ TEST_F(ArgParserTest, AcceptListOfBooleans)
     rejectParse(parser, "(#t #FALSE i-am-not-a-boolean #f)");
 }
 
-TEST_F(ArgParserTest, AcceptOneToThreeIntegers)
+TEST_F(ArgParserTest, AcceptOneToThreeNumbers)
 {
-    IntegerParser     * ip = mm.make<IntegerParser>();
+    NumericParser     * ip = mm.make<NumericParser>();
     CountedListParser * parser =
         mm.make<CountedListParser>(ip, 1, 3);
 
@@ -159,16 +126,14 @@ TEST_F(ArgParserTest, AcceptOneToThreeIntegers)
     acceptParse(parser, "(1)");
     EXPECT_EQ(1u, parser->size());
 
-    acceptParse(parser, "(1 -1)");
+    acceptParse(parser, "(1 -1/2)");
     EXPECT_EQ(2u, parser->size());
 
-    acceptParse(parser, "(1 -1 70055)");
+    acceptParse(parser, "(1 -1 700.55)");
     EXPECT_EQ(3u, parser->size());
 
     rejectParse(parser, "(-5 -4 -3 -2)");
-    EXPECT_EQ(nullptr, parser->get(0));
-
-    rejectParse(parser, "(-3.75 -2)");
+    expectNull(parser->get(0));
 }
 
 TEST_F(ArgParserTest, AcceptSingletonAnything)
@@ -206,22 +171,19 @@ TEST_F(ArgParserTest, AcceptSingleKeyword)
 TEST_F(ArgParserTest, AcceptSeveral)
 {
     const ScamKeyword * kw = ExpressionFactory::makeKeyword(":sample");
-    KeywordParser  * kp = mm.make<KeywordParser>(kw);
-    IntegerParser  * ip = mm.make<IntegerParser>();
-    SequenceParser * parser =
-        mm.make<SequenceParser>(kp, ip);
+    KeywordParser  * kp     = mm.make<KeywordParser>(kw);
+    NumericParser  * ip     = mm.make<NumericParser>();
+    SequenceParser * parser = mm.make<SequenceParser>(kp, ip);
 
     acceptParse(parser, "(:sample 23)");
 
     rejectParse(parser, "(:sample)");
     rejectParse(parser, "(:sample 23 99)");
-    rejectParse(parser, "(:sample 23.5)");
 }
 
 TEST_F(ArgParserTest, RejectEmptyAlternative)
 {
-    AlternativeParser * parser =
-        mm.make<AlternativeParser>();
+    AlternativeParser * parser = mm.make<AlternativeParser>();
 
     rejectParse(parser, "()");
     rejectParse(parser, "(:sample)");
@@ -230,14 +192,11 @@ TEST_F(ArgParserTest, RejectEmptyAlternative)
 
 TEST_F(ArgParserTest, AcceptSingleAlternative)
 {
-    IntegerParser     * ip = mm.make<IntegerParser>();
-    AlternativeParser * parser =
-        mm.make<AlternativeParser>(ip);
+    NumericParser     * ip     = mm.make<NumericParser>();
+    AlternativeParser * parser = mm.make<AlternativeParser>(ip);
 
     acceptParse(parser, "9123913");
-
     rejectParse(parser, "(-823)");
-    rejectParse(parser, "1.234");
 }
 
 TEST_F(ArgParserTest, AcceptOneOfManyAlternatives)
@@ -245,10 +204,10 @@ TEST_F(ArgParserTest, AcceptOneOfManyAlternatives)
     const ScamKeyword * kw1 = ExpressionFactory::makeKeyword(":kw1");
     const ScamKeyword * kw2 = ExpressionFactory::makeKeyword(":kw2");
 
-    IntegerParser     * ip = mm.make<IntegerParser>();
-    BooleanParser     * bp = mm.make<BooleanParser>();
-    KeywordParser     * kp1 = mm.make<KeywordParser>(kw1);
-    KeywordParser     * kp2 = mm.make<KeywordParser>(kw2);
+    NumericParser     * ip     = mm.make<NumericParser>();
+    BooleanParser     * bp     = mm.make<BooleanParser>();
+    KeywordParser     * kp1    = mm.make<KeywordParser>(kw1);
+    KeywordParser     * kp2    = mm.make<KeywordParser>(kw2);
     AlternativeParser * parser = mm.make<AlternativeParser>(ip, bp, kp1, kp2);
 
     acceptParse(parser, "9123913");
@@ -259,7 +218,6 @@ TEST_F(ArgParserTest, AcceptOneOfManyAlternatives)
     EXPECT_EQ(kp2, parser->getMatch());
 
     rejectParse(parser, "(-823)");
-    rejectParse(parser, "1.234");
     rejectParse(parser, ":someOtherKeyword");
 }
 
@@ -433,7 +391,7 @@ TEST_F(ArgParserTest, DictGet)
     acceptParse(parser, "(:get anything)");
     expectKeyword(parser->getParsedOp(), ":get");
     expectSymbol(parser->getOpKey(), "anything");
-    EXPECT_EQ(nullptr, parser->getOpVal());
+    expectNull(parser->getOpVal());
 }
 
 TEST_F(ArgParserTest, DictPut)
@@ -452,8 +410,8 @@ TEST_F(ArgParserTest, DictLength)
 
     acceptParse(parser, "(:length)");
     expectKeyword(parser->getParsedOp(), ":length");
-    EXPECT_EQ(nullptr, parser->getOpKey());
-    EXPECT_EQ(nullptr, parser->getOpVal());
+    expectNull(parser->getOpKey());
+    expectNull(parser->getOpVal());
 }
 
 TEST_F(ArgParserTest, DictHas)
@@ -463,7 +421,7 @@ TEST_F(ArgParserTest, DictHas)
     acceptParse(parser, "(:has anything)");
     expectKeyword(parser->getParsedOp(), ":has");
     expectSymbol(parser->getOpKey(), "anything");
-    EXPECT_EQ(nullptr, parser->getOpVal());
+    expectNull(parser->getOpVal());
 }
 
 TEST_F(ArgParserTest, DictRemove)
@@ -473,7 +431,7 @@ TEST_F(ArgParserTest, DictRemove)
     acceptParse(parser, "(:remove anything)");
     expectKeyword(parser->getParsedOp(), ":remove");
     expectSymbol(parser->getOpKey(), "anything");
-    EXPECT_EQ(nullptr, parser->getOpVal());
+    expectNull(parser->getOpVal());
 }
 
 TEST_F(ArgParserTest, DictTooMany)

@@ -115,20 +115,24 @@ const ScamKeyword * DictOpsParser::getParsedOp() const
 
 ExprHandle DictOpsParser::getOpKey() const
 {
+    ExprHandle rv { ExpressionFactory::makeNull() };
     if ( matched ) {
         ArgParser * ap = matched->get(1);
-        ExprHandle expr = ap ? ap->getValue() : nullptr;
-        return expr;
+        if ( ap ) {
+            rv = ap->getValue();
+        }
     }
-    return nullptr;
+    return rv;
 }
 
 ExprHandle DictOpsParser::getOpVal() const
 {
+    ExprHandle rv { ExpressionFactory::makeNull() };
     if ( matched ) {
         ArgParser * ap = matched->get(2);
-        ExprHandle expr = ap ? ap->getValue() : nullptr;
-        return expr;
+        if ( ap ) {
+            rv = ap->getValue();
+        }
     }
-    return nullptr;
+    return rv;
 }

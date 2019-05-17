@@ -241,8 +241,8 @@ TEST_F(MemoryTest, TestScamInteger)
     const int value { 1 };
     const string repr { "1" };
 
-    ScamInteger * cut1 = mm.make<ScamInteger>(value, true);
-    ScamInteger * cut2 = mm.make<ScamInteger>(value, true);
+    ScamNumeric * cut1 = mm.make<ScamNumeric>(value, true);
+    ScamNumeric * cut2 = mm.make<ScamNumeric>(value, true);
 
     expectInteger(cut1, value, repr, true);
     expectInteger(cut2, value, repr, true);
@@ -329,8 +329,8 @@ TEST_F(MemoryTest, TestScamError)
 
 TEST_F(MemoryTest, TestScamCons)
 {
-    ExprHandle car = mm.make<ScamInteger>(1, true);
-    ExprHandle cdr = mm.make<ScamInteger>(2, true);
+    ExprHandle car = mm.make<ScamNumeric>(1, true);
+    ExprHandle cdr = mm.make<ScamNumeric>(2, true);
     ScamCons * cons1 = mm.make<ScamCons>(car, cdr);
 
     cons1->mark();
@@ -345,9 +345,9 @@ TEST_F(MemoryTest, TestScamDict)
     ScamDict * dict1 = mm.make<ScamDict>();
     ExprHandle key1 = mm.make<ScamKeyword>(":key1");
     ExprHandle key2 = mm.make<ScamKeyword>(":key2");
-    ExprHandle val1 = mm.make<ScamInteger>(1, true);
-    ExprHandle val2 = mm.make<ScamInteger>(2, true);
-    ExprHandle val3 = mm.make<ScamInteger>(3, true);
+    ExprHandle val1 = mm.make<ScamNumeric>(1, true);
+    ExprHandle val2 = mm.make<ScamNumeric>(2, true);
+    ExprHandle val3 = mm.make<ScamNumeric>(3, true);
 
     dict1->put(key1, val1);
     dict1->put(key2, val2);
@@ -360,9 +360,9 @@ TEST_F(MemoryTest, TestScamDict)
 
 TEST_F(MemoryTest, TestScamVector)
 {
-    ExprHandle val1 = mm.make<ScamInteger>(1, true);
-    ExprHandle val2 = mm.make<ScamInteger>(2, true);
-    ExprHandle val3 = mm.make<ScamInteger>(3, true);
+    ExprHandle val1 = mm.make<ScamNumeric>(1, true);
+    ExprHandle val2 = mm.make<ScamNumeric>(2, true);
+    ExprHandle val3 = mm.make<ScamNumeric>(3, true);
 
     ExprVec elts;
     elts.push_back(val1);

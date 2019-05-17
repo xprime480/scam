@@ -1,6 +1,6 @@
 #include "input/VrefParser.hpp"
 
-#include "expr/ScamInteger.hpp"
+#include "expr/ScamNumeric.hpp"
 #include "expr/ScamVector.hpp"
 #include "input/SequenceParser.hpp"
 
@@ -11,7 +11,7 @@ VrefParser::VrefParser()
     : ArgParser()
 {
     MemoryManager & mm = standardMemoryManager;
-    intVal = mm.make<IntegerParser>();
+    intVal = mm.make<NumericParser>();
     vecVal = mm.make<VectorParser>();
     parser = mm.make<SequenceParser>(intVal, vecVal);
 }
@@ -35,7 +35,8 @@ bool VrefParser::accept(ExprHandle expr)
         return false;
     }
 
-    if ( intVal->getValue()->toInteger() < 0 ) {
+    auto val = intVal->getValue();
+    if ( ! val->isInteger() || val->toInteger() < 0 ) {
         return false;
     }
 

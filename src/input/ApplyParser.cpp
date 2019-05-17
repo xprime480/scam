@@ -1,5 +1,6 @@
 #include "input/ApplyParser.hpp"
 
+#include "expr/ExpressionFactory.hpp"
 #include "input/CountedListParser.hpp"
 
 using namespace scam;
@@ -41,7 +42,7 @@ ExprHandle ApplyParser::getParsedOp() const
     if ( 2u == parser->size() ) {
         return parser->get(0);
     }
-    return nullptr;
+    return ExpressionFactory::makeNull();
 }
 
 ExprHandle ApplyParser::getArgs() const
@@ -49,5 +50,5 @@ ExprHandle ApplyParser::getArgs() const
     if ( 2u == parser->size() ) {
         return parser->get(1);
     }
-    return nullptr;
+    return ExpressionFactory::makeNull();
 }

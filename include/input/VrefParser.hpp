@@ -25,7 +25,7 @@ namespace scam
         ScamVector * getVector() const;
 
     private:
-        IntegerParser  * intVal;
+        NumericParser  * intVal;
         VectorParser   * vecVal;
         SequenceParser * parser;
     };

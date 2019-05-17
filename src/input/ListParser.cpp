@@ -1,5 +1,6 @@
 #include "input/ListParser.hpp"
 
+#include "expr/ExpressionFactory.hpp"
 #include "expr/ScamExpr.hpp"
 #include "util/MemoryManager.hpp"
 
@@ -81,7 +82,7 @@ size_t ListParser::size() const
 ExprHandle ListParser::get(size_t idx) const
 {
     if ( idx >= size() ) {
-        return nullptr;
+        return ExpressionFactory::makeNull();
     }
     return items[idx];
 }

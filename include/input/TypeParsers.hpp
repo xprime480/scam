@@ -74,7 +74,6 @@ namespace scam
     using KeywordParser = TypeParser<ScamKeyword>;
 
     using NumericParser = TypeParser<ScamNumeric>;
-    using IntegerParser = TypeParser<ScamInteger>;
     using RealParser    = TypeParser<ScamReal>;
 
     using ConsParser    = TypeParser<ScamCons>;

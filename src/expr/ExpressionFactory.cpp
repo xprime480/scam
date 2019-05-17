@@ -78,9 +78,9 @@ ScamRational * ExpressionFactory::makeRational(int num, int den, bool exact)
     return standardMemoryManager.make<ScamRational>(num, den, exact);
 }
 
-ScamInteger * ExpressionFactory::makeInteger(int value, bool exact)
+ScamNumeric * ExpressionFactory::makeInteger(int value, bool exact)
 {
-    return standardMemoryManager.make<ScamInteger>(value, exact);
+    return standardMemoryManager.make<ScamNumeric>(value, exact);
 }
 
 ScamNil * ExpressionFactory::makeNil()
