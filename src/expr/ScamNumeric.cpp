@@ -2,6 +2,7 @@
 
 #include "ScamException.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "util/NumericUtils.hpp"
 
 #include <cctype>
 #include <cmath>
@@ -10,12 +11,22 @@
 using namespace scam;
 using namespace std;
 
+ScamNumeric::ScamNumeric(int num, int den, bool exact, bool managed)
+    : ScamExpr(managed)
+    , exact(exact)
+    , type(ScamNumericRational)
+{
+    const int div = gcd(num, den);
+    value.rationalValue.num = num / div;
+    value.rationalValue.den = den / div;
+}
+
 ScamNumeric::ScamNumeric(int value, bool exact, bool managed)
     : ScamExpr(managed)
     , exact(exact)
     , type(ScamNumericInteger)
-    , value(value)
 {
+    this->value.intValue = value;
 }
 
 ScamNumeric::ScamNumeric(bool exact, bool managed)
@@ -23,6 +34,12 @@ ScamNumeric::ScamNumeric(bool exact, bool managed)
     , exact(exact)
     , type(0)
 {
+}
+
+ScamNumeric *
+ScamNumeric::makeInstance(int num, int den, bool exact, bool managed)
+{
+    return new ScamNumeric(num, den, exact, managed);
 }
 
 ScamNumeric *
@@ -34,7 +51,14 @@ ScamNumeric::makeInstance(int value, bool exact, bool managed)
 string ScamNumeric::toString() const
 {
     stringstream s;
-    s << value;
+
+    if ( isInteger() ) {
+        s << value.intValue;
+    }
+    else if ( isRational() ) {
+        s << value.rationalValue.num << "/" << value.rationalValue.den;
+    }
+
     return s.str();
 }
 
@@ -71,16 +95,27 @@ double ScamNumeric::toReal() const
         throw ScamException(s.str());
     }
 
-    return (double) value;
+    return realPart();
 }
 
 std::pair<int, int> ScamNumeric::toRational() const
 {
-    if ( ! isRational() ) {
+    int num { 0 };
+    int den { 1 };
+
+    if ( isInteger() ) {
+        num = value.intValue;
+    }
+    else if ( isRational() ) {
+        num = value.rationalValue.num;
+        den = value.rationalValue.den;
+    }
+    else {
+        stringstream s;
+        s << "Cannot convert <" << this->toString() << "> to rational";
+        throw ScamException(s.str());
     }
 
-    int num { value };
-    int den { 1 };
     return make_pair<int,int>(move(num), move(den));
 }
 
@@ -92,7 +127,7 @@ int ScamNumeric::toInteger() const
         throw ScamException(s.str());
     }
 
-    return value;
+    return value.intValue;
 }
 
 bool ScamNumeric::equals(ConstExprHandle expr) const
@@ -115,7 +150,19 @@ bool ScamNumeric::isExact() const
 
 double ScamNumeric::realPart() const
 {
-    return (double) value;
+    if ( isInteger() ) {
+        return (double) value.intValue;
+    }
+    if ( isRational() ) {
+        return ((double) value.rationalValue.num /
+                (double) value.rationalValue.den );
+    }
+
+    stringstream s;
+    s << "Don't know how to take the real part of <" << this->toString() << ">";
+    throw ScamException(s.str());
+
+    return 0.0;
 }
 
 double ScamNumeric::imagPart() const

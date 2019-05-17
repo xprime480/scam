@@ -59,7 +59,7 @@ namespace scam
         static ScamNegInf * makeNegInf();
 
         static ScamReal * makeReal(double value, bool exact);
-        static ScamRational * makeRational(int num, int den, bool exact);
+        static ScamNumeric * makeRational(int num, int den, bool exact);
         static ScamNumeric * makeInteger(int value, bool exact);
 
         static ScamNil * makeNil();
