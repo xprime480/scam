@@ -15,12 +15,9 @@ namespace scam
     class ScamExprAll;
     class ScamInstance;
     class ScamKeyword;
-    class ScamNaN;
-    class ScamNegInf;
     class ScamNil;
     class ScamNull;
     class ScamNumeric;
-    class ScamPosInf;
     class ScamSpecialNumeric;
     class ScamString;
     class ScamSymbol;

@@ -11,6 +11,60 @@
 using namespace scam;
 using namespace std;
 
+namespace
+{
+    constexpr unsigned long ScamNumericComplexBit  { 1 << 0 };
+    constexpr unsigned long ScamNumericRealBit     { 1 << 1 };
+    constexpr unsigned long ScamNumericRationalBit { 1 << 2 };
+    constexpr unsigned long ScamNumericIntegerBit  { 1 << 3 };
+
+    constexpr unsigned long ScamNumericNaNBit      { 1 << 4 };
+    constexpr unsigned long ScamNumericNegInfBit   { 1 << 5 };
+    constexpr unsigned long ScamNumericPosInfBit   { 1 << 6 };
+
+    constexpr unsigned long ScamNumericComplex =
+        ScamNumericComplexBit;
+
+    constexpr unsigned long ScamNumericReal =
+        ScamNumericComplex | ScamNumericRealBit;
+
+    constexpr unsigned long ScamNumericRational =
+        ScamNumericReal | ScamNumericRationalBit;
+
+    constexpr unsigned long ScamNumericInteger =
+        ScamNumericRational | ScamNumericIntegerBit;
+
+    constexpr unsigned long ScamNumericNaN =
+        ScamNumericReal | ScamNumericNaNBit;
+
+    constexpr unsigned long ScamNumericNegInf =
+        ScamNumericReal | ScamNumericNegInfBit;
+
+    constexpr unsigned long ScamNumericPosInf =
+        ScamNumericReal | ScamNumericPosInfBit;
+}
+
+ScamNumeric::ScamNumeric(NaNType tag)
+    : ScamExpr(false)
+    , exact(false)
+    , type(ScamNumericNaN)
+{
+}
+
+ScamNumeric::ScamNumeric(NegInfType tag)
+    : ScamExpr(false)
+    , exact(false)
+    , type(ScamNumericNegInf)
+{
+}
+
+ScamNumeric::ScamNumeric(PosInfType tag)
+    : ScamExpr(false)
+    , exact(false)
+    , type(ScamNumericPosInf)
+{
+}
+
 ScamNumeric::ScamNumeric(double value, bool exact, bool managed)
     : ScamExpr(managed)
     , exact(exact)
@@ -44,6 +98,24 @@ ScamNumeric::ScamNumeric(bool exact, bool managed)
 {
 }
 
+ScamNumeric * ScamNumeric::makeInstance(NaNType tag)
+{
+    static ScamNumeric instance(tag);
+    return &instance;
+}
+
+ScamNumeric * ScamNumeric::makeInstance(NegInfType tag)
+{
+    static ScamNumeric instance(tag);
+    return &instance;
+}
+
+ScamNumeric * ScamNumeric::makeInstance(PosInfType tag)
+{
+    static ScamNumeric instance(tag);
+    return &instance;
+}
+
 ScamNumeric *
 ScamNumeric::makeInstance(double value, bool exact, bool managed)
 {
@@ -66,7 +138,16 @@ string ScamNumeric::toString() const
 {
     stringstream s;
 
-    if ( isInteger() ) {
+    if ( isNaN() ) {
+        s << "+nan.0";
+    }
+    else if ( isNegInf() ) {
+        s << "-inf.0";
+    }
+    else if ( isPosInf() ) {
+        s << "+inf.0";
+    }
+    else if ( isInteger() ) {
         s << value.intValue;
     }
     else if ( isRational() ) {
@@ -104,9 +185,24 @@ bool ScamNumeric::isInteger() const
     return ScamNumericIntegerBit == (type & ScamNumericIntegerBit);
 }
 
+bool ScamNumeric::isNaN() const
+{
+    return ScamNumericNaNBit == (type & ScamNumericNaNBit);
+}
+
+bool ScamNumeric::isNegInf() const
+{
+    return ScamNumericNegInfBit == (type & ScamNumericNegInfBit);
+}
+
+bool ScamNumeric::isPosInf() const
+{
+    return ScamNumericPosInfBit == (type & ScamNumericPosInfBit);
+}
+
 double ScamNumeric::toReal() const
 {
-    if ( ! isReal() ) {
+    if ( ! isReal() || isNaN() || isNegInf() || isPosInf() ) {
         stringstream s;
         s << "Cannot convert <" << this->toString() << "> to real";
         throw ScamException(s.str());
@@ -153,6 +249,16 @@ bool ScamNumeric::equals(ConstExprHandle expr) const
         return false;
     }
 
+    if ( isNaN() || expr->isNaN() ) {
+        return isNaN() && expr->isNaN();
+    }
+    if ( isNegInf() || expr->isNegInf() ) {
+        return isNegInf() && expr->isNegInf();
+    }
+    if ( isPosInf() || expr->isPosInf() ) {
+        return isPosInf() && expr->isPosInf();
+    }
+
     const ScamNumeric * that = dynamic_cast<const ScamNumeric *>(expr);
 
     const bool rv = (::fabs(this->realPart() - that->realPart()) < 1e-9 &&
@@ -174,7 +280,7 @@ double ScamNumeric::realPart() const
         return ((double) value.rationalValue.num /
                 (double) value.rationalValue.den );
     }
-    else if ( isReal() ) {
+    else if ( ! isNaN() && ! isNegInf() && ! isPosInf() ) {
         return value.realValue;
     }
 

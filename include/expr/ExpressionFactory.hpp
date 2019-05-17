@@ -54,9 +54,9 @@ namespace scam
 
         static ExprHandle makeNumeric(std::string const & value);
 
-        static ScamNaN * makeNaN();
-        static ScamPosInf * makePosInf();
-        static ScamNegInf * makeNegInf();
+        static ScamNumeric * makeNaN();
+        static ScamNumeric * makePosInf();
+        static ScamNumeric * makeNegInf();
 
         static ScamNumeric * makeReal(double value, bool exact);
         static ScamNumeric * makeRational(int num, int den, bool exact);

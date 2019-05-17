@@ -7,10 +7,18 @@
 
 namespace scam
 {
+    class NaNType {};
+    class NegInfType {};
+    class PosInfType {};
+
     class ScamNumeric : public ScamExpr
     {
     private:
         friend class MemoryManager;
+
+        explicit ScamNumeric(NaNType tag);
+        explicit ScamNumeric(NegInfType tag);
+        explicit ScamNumeric(PosInfType tag);
 
         ScamNumeric(double value, bool exact, bool managed = true);
         ScamNumeric(int num, int den, bool exact, bool managed = true);
@@ -20,6 +28,10 @@ namespace scam
         explicit ScamNumeric(bool exact, bool managed = true);
 
     private:
+        static ScamNumeric * makeInstance(NaNType tag);
+        static ScamNumeric * makeInstance(NegInfType tag);
+        static ScamNumeric * makeInstance(PosInfType tag);
+
         static ScamNumeric *
         makeInstance(double value, bool exact, bool managed = true);
 
@@ -38,6 +50,10 @@ namespace scam
         bool isRational() const override;
         bool isInteger() const override;
 
+        bool isNaN() const override;
+        bool isNegInf() const override;
+        bool isPosInf() const override;
+
         double toReal() const override;
         std::pair<int, int> toRational() const override;
         int toInteger() const override;
@@ -52,30 +68,16 @@ namespace scam
 
     private:
         bool exact;
-        int type;
+        unsigned long type;
         union
         {
-	    double realValue;
+            double realValue;
             struct {
                 int num;
                 int den;
             } rationalValue;
             int intValue;
         } value;
-
-        static constexpr unsigned long ScamNumericComplexBit  { 1 << 0 };
-        static constexpr unsigned long ScamNumericRealBit     { 1 << 1 };
-        static constexpr unsigned long ScamNumericRationalBit { 1 << 2 };
-        static constexpr unsigned long ScamNumericIntegerBit  { 1 << 3 };
-
-        static constexpr unsigned long ScamNumericComplex =
-            ScamNumericComplexBit;
-        static constexpr unsigned long ScamNumericReal =
-            ScamNumericComplex | ScamNumericRealBit;
-        static constexpr unsigned long ScamNumericRational =
-            ScamNumericReal | ScamNumericRationalBit;
-        static constexpr unsigned long ScamNumericInteger =
-            ScamNumericRational | ScamNumericIntegerBit;
     };
 }
 
