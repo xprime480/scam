@@ -186,7 +186,6 @@ ExprHandle ScamDict::get(ExprHandle key) const
 ExprHandle ScamDict::put(ExprHandle key, ExprHandle val)
 {
     size_t prev = keys.size();
-    ExprHandle v = const_cast<ExprHandle>(val);
 
     for ( size_t jdx = 0 ; jdx < keys.size() ; ++jdx ) {
         if ( keys[jdx]->equals(key) ) {
@@ -197,13 +196,13 @@ ExprHandle ScamDict::put(ExprHandle key, ExprHandle val)
 
     if ( prev >= keys.size() ) {
         keys.push_back(key);
-        vals.push_back(v);
+        vals.push_back(val);
     }
     else {
-        vals[prev] = v;
+        vals[prev] = val;
     }
 
-    return v;
+    return val;
 }
 
 ExprHandle ScamDict::remove(ExprHandle key)

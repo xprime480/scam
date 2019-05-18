@@ -8,8 +8,6 @@
 #include "input/StringTokenizer.hpp"
 #include "util/ReadEvalString.hpp"
 
-#include "util/DebugTrace.hpp"
-
 using namespace scam;
 using namespace std;
 
@@ -22,24 +20,26 @@ namespace
     static const unsigned long SELECT_STRING   { 1 << 4 };
     static const unsigned long SELECT_SYMBOL   { 1 << 5 };
     static const unsigned long SELECT_NUMERIC  { 1 << 6 };
-    static const unsigned long SELECT_FLOAT    { 1 << 7 };
-    static const unsigned long SELECT_RATIONAL { 1 << 8 };
-    static const unsigned long SELECT_INTEGER  { 1 << 9 };
-    static const unsigned long SELECT_BOOLEAN  { 1 << 10 };
-    static const unsigned long SELECT_NIL      { 1 << 11 };
-    static const unsigned long SELECT_CONS     { 1 << 12 };
-    static const unsigned long SELECT_LIST     { 1 << 13 };
-    static const unsigned long SELECT_VECTOR   { 1 << 14 };
-    static const unsigned long SELECT_APPLY    { 1 << 15 };
-    static const unsigned long SELECT_PROC     { 1 << 16 };
-    static const unsigned long SELECT_CLASS    { 1 << 17 };
-    static const unsigned long SELECT_INSTANCE { 1 << 18 };
-    static const unsigned long SELECT_KEYWORD  { 1 << 19 };
-    static const unsigned long SELECT_DICT     { 1 << 20 };
-    static const unsigned long SELECT_MANAGED  { 1 << 21 };
+    static const unsigned long SELECT_COMPLEX  { 1 << 7 };
+    static const unsigned long SELECT_REAL     { 1 << 8 };
+    static const unsigned long SELECT_RATIONAL { 1 << 9 };
+    static const unsigned long SELECT_INTEGER  { 1 << 10 };
+    static const unsigned long SELECT_BOOLEAN  { 1 << 11 };
+    static const unsigned long SELECT_NIL      { 1 << 12 };
+    static const unsigned long SELECT_CONS     { 1 << 13 };
+    static const unsigned long SELECT_LIST     { 1 << 14 };
+    static const unsigned long SELECT_VECTOR   { 1 << 15 };
+    static const unsigned long SELECT_APPLY    { 1 << 16 };
+    static const unsigned long SELECT_PROC     { 1 << 17 };
+    static const unsigned long SELECT_CLASS    { 1 << 18 };
+    static const unsigned long SELECT_INSTANCE { 1 << 19 };
+    static const unsigned long SELECT_KEYWORD  { 1 << 20 };
+    static const unsigned long SELECT_DICT     { 1 << 21 };
+    static const unsigned long SELECT_MANAGED  { 1 << 22 };
 
-    static const unsigned long ALL_FLOAT      = SELECT_NUMERIC | SELECT_FLOAT | SELECT_MANAGED;
-    static const unsigned long ALL_RATIONAL   = ALL_FLOAT | SELECT_RATIONAL;
+    static const unsigned long ALL_COMPLEX    = SELECT_NUMERIC | SELECT_COMPLEX | SELECT_MANAGED;
+    static const unsigned long ALL_REAL       = ALL_COMPLEX | SELECT_REAL | SELECT_MANAGED;
+    static const unsigned long ALL_RATIONAL   = ALL_REAL | SELECT_RATIONAL;
     static const unsigned long ALL_INTEGER    = ALL_RATIONAL | SELECT_INTEGER;
     static const unsigned long ALL_NIL        = SELECT_NIL | SELECT_LIST;
     static const unsigned long ALL_PROC       = SELECT_APPLY | SELECT_PROC | SELECT_MANAGED;
@@ -159,7 +159,8 @@ string decodePredicate(unsigned exp, unsigned act)
         DECODER(KEYWORD);
 
         DECODER(NUMERIC);
-        DECODER(FLOAT);
+        DECODER(COMPLEX);
+        DECODER(REAL);
         DECODER(RATIONAL);
         DECODER(BOOLEAN);
 
@@ -198,7 +199,8 @@ void TestBase::checkPredicates(ConstExprHandle expr, unsigned exp)
     act |= (expr->isKeyword() ? SELECT_KEYWORD : 0);
 
     act |= (expr->isNumeric() ? SELECT_NUMERIC : 0);
-    act |= (expr->isReal() ? SELECT_FLOAT : 0);
+    act |= (expr->isComplex() ? SELECT_COMPLEX : 0);
+    act |= (expr->isReal() ? SELECT_REAL : 0);
     act |= (expr->isRational() ? SELECT_RATIONAL : 0);
     act |= (expr->isInteger() ? SELECT_INTEGER : 0);
 
@@ -288,16 +290,31 @@ void TestBase::expectSpecialNumeric(ConstExprHandle expr,
     EXPECT_FALSE(expr->isRational());
 }
 
+void TestBase::expectComplex(ConstExprHandle expr,
+                             ConstExprHandle real,
+                             ConstExprHandle imag,
+                             std::string const & repr,
+                             bool exact)
+{
+    checkPredicates(expr, SELECT_TRUTH | ALL_COMPLEX);
+    EXPECT_EQ(repr, expr->toString());
+
+    EXPECT_FALSE(expr->isReal());
+    EXPECT_FALSE(expr->isRational());
+    EXPECT_FALSE(expr->isInteger());
+    EXPECT_EQ(exact, expr->isExact());
+}
+
 void TestBase::expectReal(ConstExprHandle expr,
                           double value,
                           string const & repr,
                           bool exact)
 {
-    checkPredicates(expr, SELECT_TRUTH | ALL_FLOAT);
+    checkPredicates(expr, SELECT_TRUTH | ALL_REAL);
     EXPECT_EQ(repr, expr->toString());
 
     try {
-        EXPECT_FLOAT_EQ(value, expr->toReal());
+        EXPECT_FLOAT_EQ(value, expr->asDouble());
     }
     catch ( ScamException e ) {
         FAIL() << e.getMessage() << "\n";
@@ -316,7 +333,7 @@ void TestBase::expectRational(ConstExprHandle expr,
     checkPredicates(expr, SELECT_TRUTH | ALL_RATIONAL);
     EXPECT_EQ(repr, expr->toString());
     try {
-        EXPECT_EQ(value, expr->toRational());
+        EXPECT_EQ(value, expr->asRational());
     }
     catch ( ScamException e ) {
         FAIL() << e.getMessage() << "\n";
@@ -335,7 +352,7 @@ void TestBase::expectInteger(ConstExprHandle expr,
     checkPredicates(expr, SELECT_TRUTH | ALL_INTEGER);
     EXPECT_EQ(repr, expr->toString());
     try {
-        EXPECT_EQ(value, expr->toInteger());
+        EXPECT_EQ(value, expr->asInteger());
     }
     catch ( ScamException e ) {
         FAIL() << e.getMessage() << "\n";

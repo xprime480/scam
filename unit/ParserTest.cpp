@@ -393,7 +393,7 @@ TEST_F(ParserTest, VectorNonEmpty)
 
     ExprHandle expr = runTest(tokens);
     expectVector(expr, msg, 2);
-    EXPECT_EQ(42, expr->nthcar(1)->toInteger());
+    EXPECT_EQ(42, expr->nthcar(1)->asInteger());
 }
 
 TEST_F(ParserTest, Backtrack)

@@ -71,6 +71,11 @@ ScamNumeric * ExpressionFactory::makePosInf()
     return standardMemoryManager.make<ScamNumeric>(tag);
 }
 
+ScamNumeric * ExpressionFactory::makeComplex(ExprHandle real, ExprHandle imag)
+{
+    return standardMemoryManager.make<ScamNumeric>(real, imag);
+}
+
 ScamNumeric * ExpressionFactory::makeReal(double value, bool exact)
 {
     return standardMemoryManager.make<ScamNumeric>(value, exact);

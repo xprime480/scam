@@ -57,6 +57,12 @@ namespace scam
         void expectSpecialNumeric(ConstExprHandle expr,
                                   std::string const & repr);
 
+        void expectComplex(ConstExprHandle expr,
+                           ConstExprHandle real,
+                           ConstExprHandle imag,
+                           std::string const & repr,
+                           bool exact);
+
         void expectReal(ConstExprHandle expr,
                         double value,
                         std::string const & repr,

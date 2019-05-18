@@ -35,7 +35,7 @@ namespace
 
         static double convert(ExprHandle arg)
         {
-            return arg->toReal();
+            return arg->asDouble();
         }
 
         static string id() {

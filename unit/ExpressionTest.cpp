@@ -10,6 +10,11 @@ using namespace scam;
 
 class ExpressionTest : public TestBase
 {
+protected:
+    ExpressionTest()
+        : TestBase(false)
+    {
+    }
 };
 
 TEST_F(ExpressionTest, NullExpression)
@@ -42,6 +47,19 @@ TEST_F(ExpressionTest, BooleanFalse)
 {
     ExprHandle expr = ExpressionFactory::makeBoolean(false);
     booleanTest(expr, false, "#f");
+}
+
+TEST_F(ExpressionTest, ComplexTest)
+{
+    string const repr{ "6-1i" };
+
+    ExprHandle real = ExpressionFactory::makeReal(6, true);
+    ExprHandle imag = ExpressionFactory::makeReal(-1, true);
+    ExprHandle expr = ExpressionFactory::makeComplex(real, imag);
+    expectComplex(expr, real, imag, repr, true);
+
+    ExprHandle evaled = evaluate(expr);
+    expectComplex(evaled, real, imag, repr, true);
 }
 
 TEST_F(ExpressionTest, RealTest)

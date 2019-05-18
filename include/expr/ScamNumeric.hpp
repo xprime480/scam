@@ -20,6 +20,7 @@ namespace scam
         explicit ScamNumeric(NegInfType tag);
         explicit ScamNumeric(PosInfType tag);
 
+        ScamNumeric(ExprHandle real, ExprHandle imag, bool managed = true);
         ScamNumeric(double value, bool exact, bool managed = true);
         ScamNumeric(int num, int den, bool exact, bool managed = true);
         ScamNumeric(int value, bool exact, bool managed = true);
@@ -33,6 +34,9 @@ namespace scam
         static ScamNumeric * makeInstance(PosInfType tag);
 
         static ScamNumeric *
+        makeInstance(ExprHandle real, ExprHandle imag, bool managed = true);
+
+        static ScamNumeric *
         makeInstance(double value, bool exact, bool managed = true);
 
         static ScamNumeric *
@@ -42,6 +46,8 @@ namespace scam
         makeInstance(int value, bool exact, bool managed = true);
 
     public:
+        void mark() const override;
+
         std::string toString() const override;
 
         bool isNumeric() const override;
@@ -54,30 +60,37 @@ namespace scam
         bool isNegInf() const override;
         bool isPosInf() const override;
 
-        double toReal() const override;
-        std::pair<int, int> toRational() const override;
-        int toInteger() const override;
+        double asDouble() const override;
+        std::pair<int, int> asRational() const override;
+        int asInteger() const override;
 
         bool equals(ConstExprHandle expr) const override;
 
         bool isExact() const override;
-
-    protected:
-        virtual double realPart() const;
-        virtual double imagPart() const;
 
     private:
         bool exact;
         unsigned long type;
         union
         {
+            struct
+            {
+                ExprHandle real;
+                ExprHandle imag;
+            }  complexValue;
+
             double realValue;
+
             struct {
                 int num;
                 int den;
             } rationalValue;
+
             int intValue;
         } value;
+
+        ConstExprHandle realPart() const;
+        ConstExprHandle imagPart() const;
     };
 }
 

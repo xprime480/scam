@@ -36,7 +36,7 @@ bool VrefParser::accept(ExprHandle expr)
     }
 
     auto val = intVal->getValue();
-    if ( ! val->isInteger() || val->toInteger() < 0 ) {
+    if ( ! val->isInteger() || val->asInteger() < 0 ) {
         return false;
     }
 
@@ -46,7 +46,7 @@ bool VrefParser::accept(ExprHandle expr)
 
 size_t VrefParser::getIndex() const
 {
-    return static_cast<size_t>(intVal->getValue()->toInteger());
+    return static_cast<size_t>(intVal->getValue()->asInteger());
 }
 
 ScamVector * VrefParser::getVector() const

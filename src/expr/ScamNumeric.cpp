@@ -42,6 +42,11 @@ namespace
 
     constexpr unsigned long ScamNumericPosInf =
         ScamNumericReal | ScamNumericPosInfBit;
+
+    bool isPureComplex(ConstExprHandle expr)
+    {
+        return expr->isComplex() && ! expr->isReal();
+    }
 }
 
 ScamNumeric::ScamNumeric(NaNType tag)
@@ -63,6 +68,21 @@ ScamNumeric::ScamNumeric(PosInfType tag)
     , exact(false)
     , type(ScamNumericPosInf)
 {
+}
+
+ScamNumeric::ScamNumeric(ExprHandle real, ExprHandle imag, bool managed)
+    : ScamExpr(managed)
+    , exact(real->isExact() && imag->isExact())
+    , type(ScamNumericComplex)
+{
+    if ( isPureComplex(real) || isPureComplex(imag) ) {
+        static string msg =
+            "Cannot set either part a complex number to another complex number";
+        throw ScamException(msg);
+    }
+
+    this->value.complexValue.real = real;
+    this->value.complexValue.imag = imag;
 }
 
 ScamNumeric::ScamNumeric(double value, bool exact, bool managed)
@@ -116,6 +136,13 @@ ScamNumeric * ScamNumeric::makeInstance(PosInfType tag)
     return &instance;
 }
 
+
+ScamNumeric *
+ScamNumeric::makeInstance(ExprHandle real, ExprHandle imag, bool managed)
+{
+    return new ScamNumeric(real, imag, managed);
+}
+
 ScamNumeric *
 ScamNumeric::makeInstance(double value, bool exact, bool managed)
 {
@@ -132,6 +159,18 @@ ScamNumeric *
 ScamNumeric::makeInstance(int value, bool exact, bool managed)
 {
     return new ScamNumeric(value, exact, managed);
+}
+
+void ScamNumeric::mark() const
+{
+    if ( ! isMarked() ) {
+        ScamExpr::mark();
+
+        if ( isPureComplex(this) ) {
+            value.complexValue.real->mark();
+            value.complexValue.imag->mark();
+        }
+    }
 }
 
 string ScamNumeric::toString() const
@@ -155,6 +194,21 @@ string ScamNumeric::toString() const
     }
     else if ( isReal() ) {
         s << value.realValue;
+    }
+    else if ( isComplex() ) {
+        ExprHandle i { value.complexValue.imag };
+        const bool implicitSign =
+            ( i->isNaN() || i->isNegInf() || i->isPosInf() ||
+              (i->asDouble() < 0) );
+        s << value.complexValue.real->toString();
+        if ( ! implicitSign ) {
+            s << "+";
+        }
+        s << value.complexValue.imag->toString()
+          << "i";
+    }
+    else {
+        s << "@obj<" << this << ">";
     }
 
     return s.str();
@@ -200,7 +254,7 @@ bool ScamNumeric::isPosInf() const
     return ScamNumericPosInfBit == (type & ScamNumericPosInfBit);
 }
 
-double ScamNumeric::toReal() const
+double ScamNumeric::asDouble() const
 {
     if ( ! isReal() || isNaN() || isNegInf() || isPosInf() ) {
         stringstream s;
@@ -208,10 +262,28 @@ double ScamNumeric::toReal() const
         throw ScamException(s.str());
     }
 
-    return realPart();
+    if ( isInteger() ) {
+        return (double) value.intValue;
+    }
+    else if ( isRational() ) {
+        return ((double) value.rationalValue.num /
+                (double) value.rationalValue.den );
+    }
+    else if ( isNaN() || isNegInf() || isPosInf() ) {
+        // drop through to error case;
+    }
+    else if ( isReal() ) {
+        return value.realValue;
+    }
+
+    stringstream s;
+    s << "Cannot convert <" << this->toString() << "> to double";
+    throw ScamException(s.str());
+
+    return 0.0;
 }
 
-std::pair<int, int> ScamNumeric::toRational() const
+std::pair<int, int> ScamNumeric::asRational() const
 {
     int num { 0 };
     int den { 1 };
@@ -232,7 +304,7 @@ std::pair<int, int> ScamNumeric::toRational() const
     return make_pair<int,int>(move(num), move(den));
 }
 
-int ScamNumeric::toInteger() const
+int ScamNumeric::asInteger() const
 {
     if ( ! isInteger() ) {
         stringstream s;
@@ -261,9 +333,21 @@ bool ScamNumeric::equals(ConstExprHandle expr) const
 
     const ScamNumeric * that = dynamic_cast<const ScamNumeric *>(expr);
 
-    const bool rv = (::fabs(this->realPart() - that->realPart()) < 1e-9 &&
-                     ::fabs(this->imagPart() - that->imagPart()) < 1e-9 );
-    return rv;
+    const double thisR = this->realPart()->asDouble();
+    const double thatR = that->realPart()->asDouble();
+    if ( ::fabs(thisR- thatR) > 1e-9 ) {
+        return false;
+    }
+
+    if ( isPureComplex(this) || isPureComplex(expr) ) {
+        const double thisI = this->imagPart()->asDouble();
+        const double thatI = that->imagPart()->asDouble();
+        if ( ::fabs(thisI- thatI) > 1e-9 ) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 bool ScamNumeric::isExact() const
@@ -271,28 +355,20 @@ bool ScamNumeric::isExact() const
     return exact;
 }
 
-double ScamNumeric::realPart() const
+ConstExprHandle ScamNumeric::realPart() const
 {
-    if ( isInteger() ) {
-        return (double) value.intValue;
+    if ( isPureComplex(this) ) {
+        return value.complexValue.real;
     }
-    else if ( isRational() ) {
-        return ((double) value.rationalValue.num /
-                (double) value.rationalValue.den );
-    }
-    else if ( ! isNaN() && ! isNegInf() && ! isPosInf() ) {
-        return value.realValue;
-    }
-
-    stringstream s;
-    s << "Don't know how to take the real part of <" << this->toString() << ">";
-    throw ScamException(s.str());
-
-    return 0.0;
+    return this;
 }
 
-double ScamNumeric::imagPart() const
+ConstExprHandle ScamNumeric::imagPart() const
 {
-    return 0.0;
+    if ( isPureComplex(this) ) {
+        return value.complexValue.imag;
+    }
+
+    return ExpressionFactory::makeInteger(0, true);
 }
 

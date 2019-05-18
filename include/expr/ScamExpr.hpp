@@ -49,9 +49,9 @@ namespace scam
         virtual bool isNegInf() const;
         virtual bool isPosInf() const;
 
-        virtual double toReal() const;
-        virtual std::pair<int, int> toRational() const;
-        virtual int toInteger() const;
+        virtual double asDouble() const;
+        virtual std::pair<int, int> asRational() const;
+        virtual int asInteger() const;
 
         virtual bool isNil() const;
         virtual bool isCons() const;

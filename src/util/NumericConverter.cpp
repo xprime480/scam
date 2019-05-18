@@ -30,7 +30,7 @@ ExprHandle NumericConverter::simplify(ExprHandle value)
     }
 
     if ( value->isReal() && ! value->isRational() ) {
-        double v = value->toReal();
+        double v = value->asDouble();
         double frac = ::fmod(v, 1.0);
         if ( 0.0 == frac ) {
             value = ExpressionFactory::makeRational((int)v,
@@ -43,7 +43,7 @@ ExprHandle NumericConverter::simplify(ExprHandle value)
     }
 
     if ( value->isRational() && ! value->isInteger() ) {
-        const pair<int, int> v = value->toRational();
+        const pair<int, int> v = value->asRational();
         if ( 1 == v.second ) {
             value = ExpressionFactory::makeInteger(v.first, value->isExact());
         }
@@ -148,8 +148,8 @@ ExprHandle NumericConverter::scanUReal()
         return ( posN > pos10 ) ? rvN : rv10;
     }
 
-    ExprHandle rv = makeRationalWithExactness(rvN->toInteger(),
-                                              rvD->toInteger());
+    ExprHandle rv = makeRationalWithExactness(rvN->asInteger(),
+                                              rvD->asInteger());
     return rv;
 }
 
@@ -276,7 +276,7 @@ ExprHandle NumericConverter::scanSuffix()
         int sign = scanSign();
         ExprHandle value = scanUInteger();
         if ( value->isInteger() ) {
-            double suffix = makeMultiplier(sign * value->toInteger());
+            double suffix = makeMultiplier(sign * value->asInteger());
             rv = makeRealWithExactness(suffix);
         }
     }
@@ -347,7 +347,7 @@ ExprHandle NumericConverter::makeFraction(unsigned minCount)
         return ExpressionFactory::makeInteger(0, makeExact);
     }
 
-    int value = rv->toInteger();
+    int value = rv->asInteger();
     double multiplier = makeMultiplier(count);
 
     if ( count > 6 ) {

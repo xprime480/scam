@@ -42,7 +42,7 @@ protected:
 TEST_F(EnvTest, Fetch)
 {
     ExprHandle act = engine.getBinding(key);
-    EXPECT_EQ(exp->toInteger(), act->toInteger());
+    EXPECT_EQ(exp->asInteger(), act->asInteger());
 }
 
 TEST_F(EnvTest, FetchTraversesFrames)
@@ -53,7 +53,7 @@ TEST_F(EnvTest, FetchTraversesFrames)
     }
 
     ExprHandle act = engine.getBinding(key);
-    EXPECT_EQ(exp->toInteger(), act->toInteger());
+    EXPECT_EQ(exp->asInteger(), act->asInteger());
 }
 
 TEST_F(EnvTest, DuplicateKeys)
@@ -62,7 +62,7 @@ TEST_F(EnvTest, DuplicateKeys)
     EXPECT_THROW(engine.addBinding(key, val2), ScamException);
 
     ExprHandle act = engine.getBinding(key);
-    EXPECT_EQ(exp->toInteger(), act->toInteger());
+    EXPECT_EQ(exp->asInteger(), act->asInteger());
 }
 
 TEST_F(EnvTest, ExtensionTest)
@@ -72,13 +72,13 @@ TEST_F(EnvTest, ExtensionTest)
     engine.addBinding(key, exp2);
 
     ExprHandle act2 = engine.getBinding(key);
-    EXPECT_EQ(exp2->toInteger(), act2->toInteger());
+    EXPECT_EQ(exp2->asInteger(), act2->asInteger());
 
     // original environment is unchanged
     //
     engine.popFrame();
     ExprHandle act = engine.getBinding(key);
-    EXPECT_EQ(exp->toInteger(), act->toInteger());
+    EXPECT_EQ(exp->asInteger(), act->asInteger());
 }
 
 TEST_F(EnvTest, Assign)
@@ -86,7 +86,7 @@ TEST_F(EnvTest, Assign)
     ExprHandle newExp = ExpressionFactory::makeInteger(33, true);
     engine.rebind(key, newExp);
     ExprHandle act = engine.getBinding(key);
-    EXPECT_EQ(newExp->toInteger(), act->toInteger());
+    EXPECT_EQ(newExp->asInteger(), act->asInteger());
 }
 
 TEST_F(EnvTest, AssignToNonexistentKey)
@@ -102,13 +102,13 @@ TEST_F(EnvTest, AssignTraversesFrames)
     ExprHandle newExp = ExpressionFactory::makeInteger(33, true);
     engine.rebind(key, newExp);
     ExprHandle act = engine.getBinding(key);
-    EXPECT_EQ(newExp->toInteger(), act->toInteger());
+    EXPECT_EQ(newExp->asInteger(), act->asInteger());
 
     // it's in the original env
     //
     engine.popFrame();
     act = engine.getBinding(key);
-    EXPECT_EQ(newExp->toInteger(), act->toInteger());
+    EXPECT_EQ(newExp->asInteger(), act->asInteger());
 }
 
 TEST_F(EnvTest, Check)

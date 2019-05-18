@@ -151,25 +151,25 @@ bool ScamExpr::isPosInf() const
     return false;
 }
 
-double ScamExpr::toReal() const
+double ScamExpr::asDouble() const
 {
     stringstream s;
-    s << "Cannot convert <" << this->toString() << "> to float";
+    s << "Cannot convert <" << this->toString() << "> to double";
     throw ScamException(s.str());
 
     return 0.0;
 }
 
-pair<int, int> ScamExpr::toRational() const
+pair<int, int> ScamExpr::asRational() const
 {
     stringstream s;
-    s << "Cannot convert <" << this->toString() << "> to float";
+    s << "Cannot convert <" << this->toString() << "> to rational";
     throw ScamException(s.str());
 
     return make_pair<int, int>(0,0);
 }
 
-int ScamExpr::toInteger() const
+int ScamExpr::asInteger() const
 {
     stringstream s;
     s << "Cannot convert <" << this->toString() << "> to integer";
