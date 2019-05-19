@@ -8,6 +8,8 @@
 #include <cmath>
 #include <sstream>
 
+#include "util/DebugTrace.hpp"
+
 using namespace scam;
 using namespace std;
 
@@ -196,16 +198,38 @@ string ScamNumeric::toString() const
         s << value.realValue;
     }
     else if ( isComplex() ) {
+        //
+        // The complexity is so that the output is in the simplest
+        // form that will be read by the scanner as the same value.
+        // For example, An imaginary part of "-1i" is equivalent to
+        // "-i", so the latter is used for the representation.  The
+        // real pa
+        //
+        ExprHandle r { value.complexValue.real };
         ExprHandle i { value.complexValue.imag };
-        const bool implicitSign =
-            ( i->isNaN() || i->isNegInf() || i->isPosInf() ||
-              (i->asDouble() < 0) );
-        s << value.complexValue.real->toString();
-        if ( ! implicitSign ) {
+
+        if ( ! r->isInteger() || 0 != r->asInteger() ) {
+            s << value.complexValue.real->toString();
+        }
+
+        const string irepr = i->toString();
+        if ( irepr == "0" ) {
+            // nothing
+        }
+        if ( irepr == "1" ) {
             s << "+";
         }
-        s << value.complexValue.imag->toString()
-          << "i";
+        else if ( irepr == "-1" ) {
+            s << "-";
+        }
+        else {
+            const char lead = *irepr.c_str();
+            if ( ('+' != lead) && ('-' != lead) ) {
+                s << "+";
+            }
+            s << irepr;
+        }
+         s << "i";
     }
     else {
         s << "@obj<" << this << ">";

@@ -1,6 +1,7 @@
 #include "TestBase.hpp"
 
 #include "ScamException.hpp"
+#include "util/NumericConverter.hpp"
 
 using namespace std;
 using namespace scam;
@@ -232,4 +233,85 @@ TEST_F(NumericParserTest, RealNegativeExponent)
     const char * text { "500.0e-2" };
     ExprHandle expr = ExpressionFactory::makeNumeric(text);
     expectInteger(expr, 5, "5", false);
+}
+
+TEST_F(NumericParserTest, ComplexSimpleParts)
+{
+    const char * text { "5+3i" };
+    ExprHandle expr = ExpressionFactory::makeNumeric(text);
+    ExprHandle null  { ExpressionFactory::makeNull() };
+    expectComplex(expr, null, null, text, true);
+}
+
+TEST_F(NumericParserTest, ComplexSimplePartsNegativeImaginary)
+{
+    const char * text { "5-3i" };
+    ExprHandle expr = ExpressionFactory::makeNumeric(text);
+    ExprHandle null  { ExpressionFactory::makeNull() };
+    expectComplex(expr, null, null, text, true);
+}
+
+TEST_F(NumericParserTest, ComplexInfiniteImaginary)
+{
+    const char * text { "5-inf.0i" };
+    ExprHandle expr = ExpressionFactory::makeNumeric(text);
+    ExprHandle null  { ExpressionFactory::makeNull() };
+    expectComplex(expr, null, null, text, false);
+}
+
+TEST_F(NumericParserTest, ComplexNanImaginary)
+{
+    const char * text { "5+nan.0i" };
+    ExprHandle expr = ExpressionFactory::makeNumeric(text);
+    ExprHandle null  { ExpressionFactory::makeNull() };
+    expectComplex(expr, null, null, text, false);
+}
+
+TEST_F(NumericParserTest, ComplexJustNanImaginary)
+{
+    const char * text { "+nan.0i" };
+    ExprHandle expr = ExpressionFactory::makeNumeric(text);
+    ExprHandle null  { ExpressionFactory::makeNull() };
+    expectComplex(expr, null, null, text, false);
+}
+
+TEST_F(NumericParserTest, ComplexMinusI)
+{
+    const char * text { "-i" };
+    ExprHandle expr = ExpressionFactory::makeNumeric(text);
+    ExprHandle null  { ExpressionFactory::makeNull() };
+    expectComplex(expr, null, null, text, true);
+}
+
+TEST_F(NumericParserTest, ComplexCompletelyNan)
+{
+    const char * text { "+nan.0+nan.0i" };
+    ExprHandle expr = ExpressionFactory::makeNumeric(text);
+    ExprHandle null  { ExpressionFactory::makeNull() };
+    expectComplex(expr, null, null, text, false);
+}
+
+TEST_F(NumericParserTest, ComplexInfRealFiniteImag)
+{
+    const char * text { "-inf.0-7i" };
+    ExprHandle expr = ExpressionFactory::makeNumeric(text);
+    ExprHandle null  { ExpressionFactory::makeNull() };
+    expectComplex(expr, null, null, text, false);
+}
+
+TEST_F(NumericParserTest, ComplexPolarForm)
+{
+    const char * text { "1.41421356237@-0.78539816339" };
+    const char * repr { "1-i" };
+    ExprHandle expr = ExpressionFactory::makeNumeric(text);
+    ExprHandle null  { ExpressionFactory::makeNull() };
+    expectComplex(expr, null, null, repr, false);
+}
+
+TEST_F(NumericParserTest, RealFractionVeryLong)
+{
+    const char * text { "-0.78539816339" };
+    const char * repr { "-0.785398" };
+    ExprHandle expr = ExpressionFactory::makeNumeric(text);
+    expectReal(expr, -0.78539816339, repr, false);
 }

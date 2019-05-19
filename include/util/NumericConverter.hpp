@@ -41,7 +41,7 @@ namespace scam
         ExprHandle scanInfNan();
         ExprHandle scanSuffix();
 
-        int scanSign();
+        int scanSign(bool optional = true);
 
         void exactnessSeen(char x);
         void baseSeen(char x);
@@ -52,6 +52,7 @@ namespace scam
         double makeMultiplier(int exponent) const;
         int convertDigit(char digit) const;
 
+        ExprHandle makeComplexPolar(ExprHandle r, ExprHandle theta) const;
         ExprHandle makeRealWithExactness(double value) const;
         ExprHandle makeRationalWithExactness(int num, int den) const;
         ExprHandle makeIntegerWithExactness(int value) const;

@@ -296,6 +296,8 @@ void TestBase::expectComplex(ConstExprHandle expr,
                              std::string const & repr,
                              bool exact)
 {
+    ASSERT_TRUE(expr->isComplex()) << "Actual Value: " << expr->toString();
+
     checkPredicates(expr, SELECT_TRUTH | ALL_COMPLEX);
     EXPECT_EQ(repr, expr->toString());
 

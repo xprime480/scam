@@ -19,6 +19,17 @@ NumericConverter::NumericConverter(const char * pos)
     scanNum();
 }
 
+ExprHandle includeSign(int sign, ExprHandle expr)
+{
+    if ( sign < 0 ) {
+        ExtendedNumeric lhs(ExpressionFactory::makeInteger(sign, true));
+        ExtendedNumeric rhs(expr);
+        ExtendedNumeric result = lhs * rhs;
+        expr = result.get();
+    }
+    return expr;
+}
+
 ExprHandle NumericConverter::simplify(ExprHandle value)
 {
     if ( ! value->isNumeric() ) {
@@ -27,6 +38,14 @@ ExprHandle NumericConverter::simplify(ExprHandle value)
 
     if ( value->isNaN() || value->isNegInf() || value->isPosInf() ) {
         return value;
+    }
+
+    if ( value->isComplex() && ! value->isReal() ) {
+        ScamNumeric * tmp = dynamic_cast<ScamNumeric *>(value);
+        ExprHandle imag = simplify(const_cast<ExprHandle>(tmp->imagPart()));
+        if ( imag && imag->isInteger() && 0 == imag->asInteger() ) {
+            value = const_cast<ExprHandle>(tmp->realPart());
+        }
     }
 
     if ( value->isReal() && ! value->isRational() ) {
@@ -74,7 +93,97 @@ void NumericConverter::scanNum()
 
 void NumericConverter::scanComplex()
 {
-    ExprHandle rv = scanReal();
+    ExprHandle rv = ExpressionFactory::makeNull();
+    const char * original = pos;
+
+    ExprHandle real = scanInfNan();
+    ExprHandle imag = ExpressionFactory::makeNull();
+
+    if ( real->isNull() ) {  // not infnan
+        int sign = scanSign(false);
+        if ( 0 == sign ) {
+            rv = imag;
+        }
+        else {
+            real = makeIntegerWithExactness(0);
+            imag = scanUReal();
+            if ( imag->isNull() ) {
+                imag = makeIntegerWithExactness(1);
+            }
+            if ( 'i' == tolower(*pos) ) {
+                ++pos;
+                imag = includeSign(sign, imag);
+                rv = ExpressionFactory::makeComplex(real, imag);
+            }
+        }
+    }
+    else { // infnan
+        imag = scanReal();
+        if ( 'i' == tolower(*pos) ) {
+            ++pos;
+            if ( imag->isNull() ) {
+                imag = real;
+                real = makeIntegerWithExactness(0);
+            }
+            rv = ExpressionFactory::makeComplex(real, imag);
+        }
+        else {
+            rv = real;
+        }
+    }
+
+    if ( rv->isNull() ) {       // not infnan and not pure imaginary
+        // try again from the start for real [+/- imag]
+        pos = original;
+        real = scanReal();
+        if ( real->isNull() ) {
+            rv = real;          // not any kind of number
+        }
+        else {
+            original = pos;     // save in case rest does not compute
+            int sign = 1;
+            imag = scanInfNan();
+            if ( imag->isNull() ) {
+                sign = scanSign();
+                if ( 0 == sign ) {
+                    imag = makeIntegerWithExactness(0);
+                }
+                else {
+                    imag = scanUReal();
+                    if ( imag->isNull() ) {
+                        imag = makeIntegerWithExactness(1);
+                    }
+                }
+            }
+
+            if ( 'i' == tolower(*pos) ) {
+                ++pos;
+                imag = includeSign(sign, imag);
+            }
+            else {
+                pos = original;
+                rv = real;
+            }
+
+            if ( rv->isNull() ) {
+                rv = ExpressionFactory::makeComplex(real, imag);
+            }
+        }
+    }
+
+    if ( rv->isReal() ) {
+        if ( '@' == *pos ) {
+            ++pos;
+            imag = scanReal();
+            if ( imag->isNull() ) {
+                --pos;
+            }
+            else {
+                rv = makeComplexPolar(rv, imag);
+            }
+        }
+    }
+
     value = simplify(rv);
 }
 
@@ -95,14 +204,7 @@ ExprHandle NumericConverter::scanReal()
         return rv;
     }
 
-    if ( sign < 0 && rv->isReal() ) {
-        ExtendedNumeric lhs(ExpressionFactory::makeInteger(sign, true));
-        ExtendedNumeric rhs(rv);
-        ExtendedNumeric result = lhs * rhs;
-
-        rv = result.get();
-    }
-
+    rv = includeSign(sign, rv);
     return rv;
 }
 
@@ -288,16 +390,24 @@ ExprHandle NumericConverter::scanSuffix()
     return rv;
 }
 
-int NumericConverter::scanSign()
+int NumericConverter::scanSign(bool optional)
 {
     if ( '+' == *pos ) {
         ++pos;
+        return 1;
     }
     else if ( '-' == *pos ) {
         ++pos;
         return -1;
     }
-    return 1;
+    else {
+        if ( optional ) {
+            return 1;
+        }
+        else {
+            return 0;
+        }
+    }
 }
 
 void NumericConverter::exactnessSeen(char x)
@@ -347,14 +457,26 @@ ExprHandle NumericConverter::makeFraction(unsigned minCount)
         return ExpressionFactory::makeInteger(0, makeExact);
     }
 
-    int value = rv->asInteger();
-    double multiplier = makeMultiplier(count);
 
-    if ( count > 6 ) {
-        return ExpressionFactory::makeReal(value / multiplier, makeExact);
+    if ( count <= 6 ) {
+        int value = rv->asInteger();
+        double multiplier = makeMultiplier(count);
+        return ExpressionFactory::makeRational(value, multiplier, makeExact);
     }
+    else {
 
-    return ExpressionFactory::makeRational(value, multiplier, makeExact);
+        pos = original;
+        double divisor = 1.0;
+        double value = 0.0;
+
+        while ( isdigit(*pos) ) {
+            divisor /= base;
+            value += divisor * convertDigit(*pos);
+            ++pos;
+        }
+
+        return makeRealWithExactness(value);
+    }
 }
 
 bool NumericConverter::scanRadixPoint()
@@ -418,6 +540,37 @@ int NumericConverter::convertDigit(char digit) const
     }
 
     return -1;
+}
+
+ExprHandle
+NumericConverter::makeComplexPolar(ExprHandle r, ExprHandle theta) const
+{
+    ExprHandle nan = ExpressionFactory::makeNaN();
+    ExprHandle real;
+    ExprHandle imag;
+
+    if ( r->isNaN() || r->isNegInf() || r->isPosInf() ) {
+        real = imag = nan;
+    }
+    else if ( 0.0 == r->asDouble() ) {
+        real = imag = r;
+    }
+    else if ( theta->isNaN() || theta->isNegInf() || theta->isPosInf() ) {
+        real = imag = nan;
+    }
+    else {
+        const double radius = r->asDouble();
+        const double cosine = ::cos(theta->asDouble());
+        const double sine   = ::sin(theta->asDouble());
+
+        const double x = radius * cosine;
+        const double y = radius * sine;
+        real = ExpressionFactory::makeReal(x, false);
+        imag = ExpressionFactory::makeReal(y, false);
+    }
+
+    ExprHandle rv = ExpressionFactory::makeComplex(real, imag);
+    return rv;
 }
 
 ExprHandle NumericConverter::makeRealWithExactness(double value) const

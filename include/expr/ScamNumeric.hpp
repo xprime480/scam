@@ -68,6 +68,9 @@ namespace scam
 
         bool isExact() const override;
 
+        ConstExprHandle realPart() const;
+        ConstExprHandle imagPart() const;
+
     private:
         bool exact;
         unsigned long type;
@@ -88,9 +91,6 @@ namespace scam
 
             int intValue;
         } value;
-
-        ConstExprHandle realPart() const;
-        ConstExprHandle imagPart() const;
     };
 }
 

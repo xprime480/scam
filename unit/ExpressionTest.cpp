@@ -51,7 +51,7 @@ TEST_F(ExpressionTest, BooleanFalse)
 
 TEST_F(ExpressionTest, ComplexTest)
 {
-    string const repr{ "6-1i" };
+    string const repr{ "6-i" };
 
     ExprHandle real = ExpressionFactory::makeReal(6, true);
     ExprHandle imag = ExpressionFactory::makeReal(-1, true);
