@@ -276,6 +276,21 @@ This comment style can span lines!\n\
     }
 #endif
 
+    TEST(TokenizerTest, Complex)
+    {
+        string const input{ "1+2i +i 2-nan.0i 1@1" };
+        vector<Token> exp {
+            Token(TokenType::TT_NUMERIC, "1+2i"),
+            Token(TokenType::TT_NUMERIC, "+i"),
+            Token(TokenType::TT_NUMERIC, "2-nan.0i"),
+            Token(TokenType::TT_NUMERIC, "1@1")
+        };
+
+        return string2tokens(input, exp);
+    }
+
+
+
     TEST(TokenizerTest, Symbols)
     {
         string const input{ "Two Symbols || | | |23| |Two Symbols| |abc" };
