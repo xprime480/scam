@@ -32,6 +32,11 @@ TEST_F(EqualTest, EqPSingleReal)
     expectTrue("(eq? 3.14159)");
 }
 
+TEST_F(EqualTest, EqPSingleComplex)
+{
+    expectTrue("(eq? 3.14159+6i)");
+}
+
 TEST_F(EqualTest, EqPSingleString)
 {
     expectTrue("(eq? \"abc\")");
@@ -112,9 +117,24 @@ TEST_F(EqualTest, EqPTwoRealDifferent)
     expectFalse("(eq? 3.14159 -123.456)");
 }
 
+TEST_F(EqualTest, EqPTwoComplexSame)
+{
+    expectTrue("(eq? 3.14159+6i 3.14159+6i)");
+}
+
+TEST_F(EqualTest, EqPTwoComplexDifferent)
+{
+    expectFalse("(eq? 3.14159+6i 3.14159-6i)");
+}
+
 TEST_F(EqualTest, EqPMixedNumeric)
 {
     expectTrue("(eq? 1 1.0)");
+}
+
+TEST_F(EqualTest, EqPMixedNumericWithComplex)
+{
+    expectTrue("(eq? 1 1.0+0i)");
 }
 
 TEST_F(EqualTest, EqPTwoStringSame)
