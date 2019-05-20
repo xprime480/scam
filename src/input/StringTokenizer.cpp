@@ -8,8 +8,6 @@
 #include <cstring>
 #include <sstream>
 
-#include "util/DebugTrace.hpp"
-
 using namespace scam;
 using namespace std;
 
@@ -363,10 +361,8 @@ Token StringTokenizer::scanString()
 
 Token StringTokenizer::scanNumeric()
 {
-    scamTrace("scanNumeric looking at", pos);
     NumericConverter nc(pos);
     ExprHandle expr = nc.getValue();
-    scamTrace("scanNumeric got", expr->toString(), " looking at", pos);
     if( ! expr->isNumeric() ) {
         return none;
     }
@@ -375,13 +371,11 @@ Token StringTokenizer::scanNumeric()
     pos = nc.getPos();
 
     if ( ! isDelimiter(*pos) ) {
-        scamTrace("sorry, no delimiter");
         pos = original;
         return none;
     }
 
     string text(original, pos-original);
-    scamTrace("text", text);
     Token token(TokenType::TT_NUMERIC, text, expr);
     return token;
 }

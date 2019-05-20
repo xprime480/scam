@@ -108,7 +108,14 @@ bool scam::operator>(const ExtendedNumeric & a, const ExtendedNumeric & b)
         return false;
     }
 
-    const bool rv = a.get()->asDouble() > b.get()->asDouble();
+    ExprHandle hA = a.get();
+    ExprHandle hB = b.get();
+    if ( (hA->isComplex() && ! hA->isReal()) ||
+         (hB->isComplex() && ! hB->isReal()) ) {
+        return false;
+    }
+
+    const bool rv = hA->asDouble() > hB->asDouble();
     return rv;
 }
 
@@ -117,12 +124,20 @@ bool scam::operator>=(const ExtendedNumeric & a, const ExtendedNumeric & b)
     if ( a.isNaN() || b.isNaN() ) {
         return false;
     }
+
     return (a > b) || (a == b);
 }
 
 bool scam::operator<(const ExtendedNumeric & a, const ExtendedNumeric & b)
 {
     if ( a.isNaN() || b.isNaN() ) {
+        return false;
+    }
+
+    ExprHandle hA = a.get();
+    ExprHandle hB = b.get();
+    if ( (hA->isComplex() && ! hA->isReal()) ||
+         (hB->isComplex() && ! hB->isReal()) ) {
         return false;
     }
 
@@ -473,4 +488,3 @@ namespace
         return ExpressionFactory::makePosInf();
     }
 }
-
