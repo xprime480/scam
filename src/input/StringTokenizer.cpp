@@ -209,6 +209,11 @@ Token StringTokenizer::scanSpecial()
             pos += 2;
             return token;
         }
+        else if ( 'u' == tolower(pos[1]) && '8' == pos[2] && '(' == pos[3] ) {
+            static const Token token(TokenType::TT_OPEN_BYTE_VECTOR, "#u8(");
+            pos += 4;
+            return token;
+        }
     }
 
     if ( '.' == *pos ) {

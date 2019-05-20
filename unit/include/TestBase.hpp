@@ -107,6 +107,10 @@ namespace scam
                           std::string const & repr,
                           size_t len);
 
+        void expectByteVector(ConstExprHandle expr,
+                              std::string const & repr,
+                              size_t len);
+
         void expectProcedure(ConstExprHandle expr,
                              std::string const & repr);
 

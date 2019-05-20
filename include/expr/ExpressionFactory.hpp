@@ -16,6 +16,7 @@ namespace scam
     class ScamClass;
 
     using ExprVec = std::vector<ExprHandle>;
+    using ByteVec = std::vector<unsigned char>;
 
     class ExpressionFactory
     {
@@ -77,6 +78,7 @@ namespace scam
         }
 
         static ScamVector * makeVector(ExprVec const & elts);
+        static ScamByteVector * makeByteVector(ByteVec const & elts);
 
         static ScamClosure * makeClosure(const LambdaParser * parser,
                                          Env * env,

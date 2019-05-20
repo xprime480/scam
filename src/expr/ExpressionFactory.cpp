@@ -127,6 +127,11 @@ ScamVector * ExpressionFactory::makeVector(ExprVec const & elts)
     return standardMemoryManager.make<ScamVector>(elts);
 }
 
+ScamByteVector * ExpressionFactory::makeByteVector(ByteVec const & elts)
+{
+    return standardMemoryManager.make<ScamByteVector>(elts);
+}
+
 ScamClosure * ExpressionFactory::makeClosure(const LambdaParser * parser,
                                              Env * env,
                                              bool macrolike)

@@ -63,6 +63,7 @@ namespace scam
         virtual ExprHandle getCdr() const;
 
         virtual bool isVector() const;
+        virtual bool isByteVector() const;
 
         virtual bool isProcedure() const;
         virtual bool isClass() const;

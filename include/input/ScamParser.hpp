@@ -27,6 +27,7 @@ namespace scam
         ExprHandle parseList() const;
         ExprHandle parseDotContext() const;
         ExprHandle parseVector() const;
+        ExprHandle parseByteVector() const;
         ExprHandle parseDict() const;
         ExprHandle expand_reader_macro(std::string const & text) const;
     };

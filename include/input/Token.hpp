@@ -18,6 +18,7 @@ namespace scam
          TT_OPEN_CURLY,
          TT_CLOSE_CURLY,
          TT_OPEN_VECTOR,
+         TT_OPEN_BYTE_VECTOR,
 
          TT_DOT,
          TT_QUOTE,
@@ -95,6 +96,10 @@ namespace scam
 
         case TokenType::TT_OPEN_VECTOR:
             os << "Open Vector";
+            break;
+
+        case TokenType::TT_OPEN_BYTE_VECTOR:
+            os << "Open Bytevector";
             break;
 
         case TokenType::TT_DOT:

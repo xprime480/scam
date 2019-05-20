@@ -234,6 +234,11 @@ bool ScamExpr::isVector() const
     return false;
 }
 
+bool ScamExpr::isByteVector() const
+{
+    return false;
+}
+
 bool ScamExpr::isProcedure() const
 {
     return false;

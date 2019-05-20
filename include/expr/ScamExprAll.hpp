@@ -4,6 +4,7 @@
 #include "expr/ScamExpr.hpp"
 
 #include "expr/ScamBoolean.hpp"
+#include "expr/ScamByteVector.hpp"
 #include "expr/ScamCharacter.hpp"
 #include "expr/ScamClass.hpp"
 #include "expr/ScamClassAdapter.hpp"

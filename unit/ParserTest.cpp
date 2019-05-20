@@ -396,6 +396,39 @@ TEST_F(ParserTest, VectorNonEmpty)
     EXPECT_EQ(42, expr->nthcar(1)->asInteger());
 }
 
+TEST_F(ParserTest, ByteVectorEmpty)
+{
+    string const msg { "#u8()" };
+    vector<Token> tokens {
+        Token(TokenType::TT_OPEN_BYTE_VECTOR, "#u8("),
+        Token(TokenType::TT_CLOSE_PAREN, ")")
+    };
+
+    ExprHandle expr = runTest(tokens);
+    expectByteVector(expr, msg, 0);
+}
+
+TEST_F(ParserTest, ByteVectorNonEmpty)
+{
+    string const msg { "#u8(1 127 38)" };
+    vector<Token> tokens {
+        Token(TokenType::TT_OPEN_BYTE_VECTOR, "#u8("),
+        Token(TokenType::TT_NUMERIC,
+              "1",
+              ExpressionFactory::makeInteger(1, true)),
+        Token(TokenType::TT_NUMERIC,
+              "127",
+              ExpressionFactory::makeInteger(127, true)),
+        Token(TokenType::TT_NUMERIC,
+              "38",
+              ExpressionFactory::makeInteger(38, true)),
+        Token(TokenType::TT_CLOSE_PAREN, ")")
+    };
+
+    ExprHandle expr = runTest(tokens);
+    expectByteVector(expr, msg, 3);
+}
+
 TEST_F(ParserTest, Backtrack)
 {
     string const msg { "(backtrack)" };

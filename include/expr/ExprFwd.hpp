@@ -4,6 +4,7 @@
 namespace scam
 {
     class ScamBoolean;
+    class ScamByteVector;
     class ScamCharacter;
     class ScamClass;
     class ScamClosure;

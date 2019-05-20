@@ -54,6 +54,10 @@ ExprHandle ScamParser::tokenToExpr(Token const & token) const
         rv = parseVector();
         break;
 
+    case TokenType::TT_OPEN_BYTE_VECTOR:
+        rv = parseByteVector();
+        break;
+
     case TokenType::TT_CLOSE_BRACKET:
         rv = ExpressionFactory::makeError("Extra ']' in input");
         break;
@@ -222,6 +226,48 @@ ExprHandle ScamParser::parseVector() const
         }
 
         vec.push_back(expr);
+    }
+}
+
+ExprHandle ScamParser::parseByteVector() const
+{
+    ByteVec vec;
+
+    while ( true ) {
+        Token token = tokenizer.next();
+        TokenType type = token.getType();
+
+        if ( TokenType::TT_END_OF_INPUT == type ) {
+            ExprHandle err =
+                ExpressionFactory::makeError("Unterminated Byte Vector");
+            tagPartial(err);
+            return err;
+        }
+
+        if ( TokenType::TT_SCAN_ERROR == type ) {
+            return ExpressionFactory::makeError(token.getText());
+        }
+
+        if ( TokenType::TT_CLOSE_PAREN == type ) {
+            return ExpressionFactory::makeByteVector(vec);
+        }
+
+        ExprHandle expr = tokenToExpr(token);
+        if ( expr->error() ) {
+            return expr;
+        }
+
+        if ( ! expr->isInteger() ) {
+            ExprHandle err =
+                ExpressionFactory::makeError("Non-integer in Byte Vector");
+            return err;
+        }
+
+        int i = expr->asInteger();
+        if ( i < 0 || i > 255 || ! expr->isExact() ) {
+        }
+
+        vec.push_back((unsigned char)i);
     }
 }
 

@@ -351,19 +351,50 @@ TEST_F(ExpressionTest, VectorNonEmpty)
 {
     string const value { "#(1 2 3)" };
     ExprVec vec;
-    for ( auto i : { 1, 2, 3 } ) {
-        vec.push_back(ExpressionFactory::makeInteger(i, true));
-    }
+    vec.push_back(ExpressionFactory::makeInteger(1, true));
+    vec.push_back(ExpressionFactory::makeString("2"));
+    vec.push_back(ExpressionFactory::makeInteger(3, true));
 
     auto f = [this, &value] (ExprHandle expr) {
                  expectVector(expr, value, 3u);
+                 expectInteger(expr->nthcar(0), 1, "1", true);
+                 expectString(expr->nthcar(1), "2");
+                 expectInteger(expr->nthcar(2), 3, "3", true);
+                 expectError(expr->nthcar(3));
+             };
+
+    ExprHandle expr  = ExpressionFactory::makeVector(vec);
+    f(expr);
+
+    ExprHandle evaled = evaluate(expr);
+    f(evaled);
+}
+
+TEST_F(ExpressionTest, ByteVectorEmpty)
+{
+    string const value { "#u8()" };
+    ByteVec vec;
+    ExprHandle expr  = ExpressionFactory::makeByteVector(vec);
+    expectByteVector(expr, value, 0);
+
+    ExprHandle evaled = evaluate(expr);
+    expectByteVector(evaled, value, 0);
+}
+
+TEST_F(ExpressionTest, ByteVectorNonEmpty)
+{
+    string const value { "#u8(1 2 3)" };
+    ByteVec vec { 1, 2, 3 };
+
+    auto f = [this, &value] (ExprHandle expr) {
+                 expectByteVector(expr, value, 3u);
                  expectInteger(expr->nthcar(0), 1, "1", true);
                  expectInteger(expr->nthcar(1), 2, "2", true);
                  expectInteger(expr->nthcar(2), 3, "3", true);
                  expectError(expr->nthcar(3));
              };
 
-    ExprHandle expr  = ExpressionFactory::makeVector(vec);
+    ExprHandle expr  = ExpressionFactory::makeByteVector(vec);
     f(expr);
 
     ExprHandle evaled = evaluate(expr);

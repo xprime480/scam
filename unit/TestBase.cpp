@@ -13,29 +13,30 @@ using namespace std;
 
 namespace
 {
-    static const unsigned long SELECT_NULL     { 1 << 0 };
-    static const unsigned long SELECT_ERROR    { 1 << 1 };
-    static const unsigned long SELECT_TRUTH    { 1 << 2 };
-    static const unsigned long SELECT_CHAR     { 1 << 3 };
-    static const unsigned long SELECT_STRING   { 1 << 4 };
-    static const unsigned long SELECT_SYMBOL   { 1 << 5 };
-    static const unsigned long SELECT_NUMERIC  { 1 << 6 };
-    static const unsigned long SELECT_COMPLEX  { 1 << 7 };
-    static const unsigned long SELECT_REAL     { 1 << 8 };
-    static const unsigned long SELECT_RATIONAL { 1 << 9 };
-    static const unsigned long SELECT_INTEGER  { 1 << 10 };
-    static const unsigned long SELECT_BOOLEAN  { 1 << 11 };
-    static const unsigned long SELECT_NIL      { 1 << 12 };
-    static const unsigned long SELECT_CONS     { 1 << 13 };
-    static const unsigned long SELECT_LIST     { 1 << 14 };
-    static const unsigned long SELECT_VECTOR   { 1 << 15 };
-    static const unsigned long SELECT_APPLY    { 1 << 16 };
-    static const unsigned long SELECT_PROC     { 1 << 17 };
-    static const unsigned long SELECT_CLASS    { 1 << 18 };
-    static const unsigned long SELECT_INSTANCE { 1 << 19 };
-    static const unsigned long SELECT_KEYWORD  { 1 << 20 };
-    static const unsigned long SELECT_DICT     { 1 << 21 };
-    static const unsigned long SELECT_MANAGED  { 1 << 22 };
+    static const unsigned long SELECT_NULL       { 1 << 0 };
+    static const unsigned long SELECT_ERROR      { 1 << 1 };
+    static const unsigned long SELECT_TRUTH      { 1 << 2 };
+    static const unsigned long SELECT_CHAR       { 1 << 3 };
+    static const unsigned long SELECT_STRING     { 1 << 4 };
+    static const unsigned long SELECT_SYMBOL     { 1 << 5 };
+    static const unsigned long SELECT_NUMERIC    { 1 << 6 };
+    static const unsigned long SELECT_COMPLEX    { 1 << 7 };
+    static const unsigned long SELECT_REAL       { 1 << 8 };
+    static const unsigned long SELECT_RATIONAL   { 1 << 9 };
+    static const unsigned long SELECT_INTEGER    { 1 << 10 };
+    static const unsigned long SELECT_BOOLEAN    { 1 << 11 };
+    static const unsigned long SELECT_NIL        { 1 << 12 };
+    static const unsigned long SELECT_CONS       { 1 << 13 };
+    static const unsigned long SELECT_LIST       { 1 << 14 };
+    static const unsigned long SELECT_VECTOR     { 1 << 15 };
+    static const unsigned long SELECT_BYTEVECTOR { 1 << 16 };
+    static const unsigned long SELECT_APPLY      { 1 << 17 };
+    static const unsigned long SELECT_PROC       { 1 << 18 };
+    static const unsigned long SELECT_CLASS      { 1 << 19 };
+    static const unsigned long SELECT_INSTANCE   { 1 << 20 };
+    static const unsigned long SELECT_KEYWORD    { 1 << 21 };
+    static const unsigned long SELECT_DICT       { 1 << 22 };
+    static const unsigned long SELECT_MANAGED    { 1 << 23 };
 
     static const unsigned long ALL_COMPLEX    = SELECT_NUMERIC | SELECT_COMPLEX | SELECT_MANAGED;
     static const unsigned long ALL_REAL       = ALL_COMPLEX | SELECT_REAL | SELECT_MANAGED;
@@ -168,6 +169,7 @@ string decodePredicate(unsigned exp, unsigned act)
         DECODER(CONS);
         DECODER(LIST);
         DECODER(VECTOR);
+        DECODER(BYTEVECTOR);
 
         DECODER(APPLY);
         DECODER(PROC);
@@ -208,6 +210,7 @@ void TestBase::checkPredicates(ConstExprHandle expr, unsigned exp)
     act |= (expr->isCons() ? SELECT_CONS : 0);
     act |= (expr->isList() ? SELECT_LIST : 0);
     act |= (expr->isVector() ? SELECT_VECTOR : 0);
+    act |= (expr->isByteVector() ? SELECT_BYTEVECTOR : 0);
 
     act |= (expr->hasApply() ? SELECT_APPLY : 0);
     act |= (expr->isProcedure() ? SELECT_PROC : 0);
@@ -230,7 +233,7 @@ void expectNonNumeric(ConstExprHandle expr)
 
 void TestBase::expectNull(ConstExprHandle expr)
 {
-    ASSERT_TRUE(expr->isNull()) << "Actual Value: " << expr->toString();;
+    ASSERT_TRUE(expr->isNull()) << "Actual Value: " << expr->toString();
 
     checkPredicates(expr, SELECT_NULL);
     EXPECT_EQ("null", expr->toString());
@@ -242,7 +245,7 @@ void TestBase::expectError(ConstExprHandle expr,
                            string const msg,
                            bool managed)
 {
-    ASSERT_TRUE(expr->error()) << "Actual Value: " << expr->toString();;
+    ASSERT_TRUE(expr->error()) << "Actual Value: " << expr->toString();
 
     auto pred = SELECT_TRUTH | SELECT_ERROR;
     pred |= (managed ? SELECT_MANAGED : 0x0);
@@ -259,7 +262,7 @@ void TestBase::expectBoolean(ConstExprHandle expr,
                              bool value,
                              string const & repr)
 {
-    ASSERT_TRUE(expr->isBoolean()) << "Actual Value: " << expr->toString();;
+    ASSERT_TRUE(expr->isBoolean()) << "Actual Value: " << expr->toString();
 
     checkPredicates(expr, SELECT_BOOLEAN | (value ? SELECT_TRUTH : 0));
     EXPECT_EQ(repr, expr->toString());
@@ -292,7 +295,7 @@ void TestBase::expectSpecialNumeric(ConstExprHandle expr,
                                     std::string const & repr)
 {
     ASSERT_TRUE(expr->isNaN() || expr->isNegInf() || expr->isPosInf())
-        << "Actual Value: " << expr->toString();;
+        << "Actual Value: " << expr->toString();
 
     EXPECT_EQ(repr, expr->toString());
     EXPECT_TRUE(expr->isReal());
@@ -321,7 +324,7 @@ void TestBase::expectReal(ConstExprHandle expr,
                           string const & repr,
                           bool exact)
 {
-    ASSERT_TRUE(expr->isReal()) << "Actual Value: " << expr->toString();;
+    ASSERT_TRUE(expr->isReal()) << "Actual Value: " << expr->toString();
 
     checkPredicates(expr, SELECT_TRUTH | ALL_REAL);
     EXPECT_EQ(repr, expr->toString());
@@ -343,7 +346,7 @@ void TestBase::expectRational(ConstExprHandle expr,
                               std::string const & repr,
                               bool exact)
 {
-    ASSERT_TRUE(expr->isRational()) << "Actual Value: " << expr->toString();;
+    ASSERT_TRUE(expr->isRational()) << "Actual Value: " << expr->toString();
 
     checkPredicates(expr, SELECT_TRUTH | ALL_RATIONAL);
     EXPECT_EQ(repr, expr->toString());
@@ -364,7 +367,7 @@ void TestBase::expectInteger(ConstExprHandle expr,
                              string const & repr,
                              bool exact)
 {
-    ASSERT_TRUE(expr->isInteger()) << "Actual Value: " << expr->toString();;
+    ASSERT_TRUE(expr->isInteger()) << "Actual Value: " << expr->toString();
 
     checkPredicates(expr, SELECT_TRUTH | ALL_INTEGER);
     EXPECT_EQ(repr, expr->toString());
@@ -382,7 +385,7 @@ void TestBase::expectChar(ConstExprHandle expr,
                           char value,
                           string const & repr)
 {
-    ASSERT_TRUE(expr->isChar()) << "Actual Value: " << expr->toString();;
+    ASSERT_TRUE(expr->isChar()) << "Actual Value: " << expr->toString();
 
     checkPredicates(expr, SELECT_TRUTH | SELECT_CHAR | SELECT_MANAGED);
     EXPECT_EQ(repr, expr->toString());
@@ -391,7 +394,7 @@ void TestBase::expectChar(ConstExprHandle expr,
 
 void TestBase::expectString(ConstExprHandle expr, string const & value)
 {
-    ASSERT_TRUE(expr->isString()) << "Actual Value: " << expr->toString();;
+    ASSERT_TRUE(expr->isString()) << "Actual Value: " << expr->toString();
 
     const auto flags = SELECT_TRUTH | SELECT_STRING | SELECT_MANAGED;
     checkPredicates(expr, flags);
@@ -400,7 +403,7 @@ void TestBase::expectString(ConstExprHandle expr, string const & value)
 
 void TestBase::expectSymbol(ConstExprHandle expr, string const & name)
 {
-    ASSERT_TRUE(expr->isSymbol()) << "Actual Value: " << expr->toString();;
+    ASSERT_TRUE(expr->isSymbol()) << "Actual Value: " << expr->toString();
 
     const auto flags = SELECT_TRUTH | SELECT_SYMBOL | SELECT_MANAGED;
     checkPredicates(expr, flags);
@@ -409,7 +412,7 @@ void TestBase::expectSymbol(ConstExprHandle expr, string const & name)
 
 void TestBase::expectKeyword(ConstExprHandle expr, string const & name)
 {
-    ASSERT_TRUE(expr->isKeyword()) << "Actual Value: " << expr->toString();;
+    ASSERT_TRUE(expr->isKeyword()) << "Actual Value: " << expr->toString();
 
     const auto flags = SELECT_TRUTH | SELECT_KEYWORD | SELECT_MANAGED;
     checkPredicates(expr, flags);
@@ -418,7 +421,7 @@ void TestBase::expectKeyword(ConstExprHandle expr, string const & name)
 
 void TestBase::expectNil(ConstExprHandle expr)
 {
-    ASSERT_TRUE(expr->isNil()) << "Actual Value: " << expr->toString();;
+    ASSERT_TRUE(expr->isNil()) << "Actual Value: " << expr->toString();
 
     static const string repr { "()" };
     checkPredicates(expr, SELECT_TRUTH | ALL_NIL);
@@ -429,7 +432,7 @@ void TestBase::expectList(ConstExprHandle expr,
                           string const & repr,
                           size_t len)
 {
-    ASSERT_TRUE(expr->isList()) << "Actual Value: " << expr->toString();;
+    ASSERT_TRUE(expr->isList()) << "Actual Value: " << expr->toString();
 
     const auto flags =
         SELECT_TRUTH | SELECT_CONS | SELECT_LIST | SELECT_MANAGED;
@@ -446,7 +449,7 @@ void TestBase::expectList(ConstExprHandle expr,
 
 void TestBase::expectCons(ConstExprHandle expr, string const & repr)
 {
-    ASSERT_TRUE(expr->isCons()) << "Actual Value: " << expr->toString();;
+    ASSERT_TRUE(expr->isCons()) << "Actual Value: " << expr->toString();
 
     checkPredicates(expr, SELECT_TRUTH | SELECT_CONS | SELECT_MANAGED);
     EXPECT_EQ(repr, expr->toString());
@@ -455,7 +458,7 @@ void TestBase::expectCons(ConstExprHandle expr, string const & repr)
 void
 TestBase::expectApplicable(ConstExprHandle expr, string const & repr)
 {
-    ASSERT_TRUE(expr->hasApply()) << "Actual Value: " << expr->toString();;
+    ASSERT_TRUE(expr->hasApply()) << "Actual Value: " << expr->toString();
 
     const auto flags = SELECT_TRUTH | SELECT_APPLY;
     checkPredicates(expr, flags);
@@ -466,9 +469,21 @@ void TestBase::expectVector(ConstExprHandle expr,
                             string const & repr,
                             size_t len)
 {
-    ASSERT_TRUE(expr->isVector()) << "Actual Value: " << expr->toString();;
+    ASSERT_TRUE(expr->isVector()) << "Actual Value: " << expr->toString();
 
     const auto flags = SELECT_TRUTH | SELECT_VECTOR | SELECT_MANAGED;
+    checkPredicates(expr, flags);
+    EXPECT_EQ(repr, expr->toString());
+    EXPECT_EQ(len, expr->length());
+}
+
+void TestBase::expectByteVector(ConstExprHandle expr,
+                                string const & repr,
+                                size_t len)
+{
+    ASSERT_TRUE(expr->isByteVector()) << "Actual Value: " << expr->toString();
+
+    const auto flags = SELECT_TRUTH | SELECT_BYTEVECTOR | SELECT_MANAGED;
     checkPredicates(expr, flags);
     EXPECT_EQ(repr, expr->toString());
     EXPECT_EQ(len, expr->length());
@@ -477,7 +492,7 @@ void TestBase::expectVector(ConstExprHandle expr,
 void TestBase::expectProcedure(ConstExprHandle expr,
                                string const & repr)
 {
-    ASSERT_TRUE(expr->isProcedure()) << "Actual Value: " << expr->toString();;
+    ASSERT_TRUE(expr->isProcedure()) << "Actual Value: " << expr->toString();
 
     checkPredicates(expr, SELECT_TRUTH | ALL_PROC);
     EXPECT_EQ(repr, expr->toString());
@@ -485,7 +500,7 @@ void TestBase::expectProcedure(ConstExprHandle expr,
 
 void TestBase::expectClass(ConstExprHandle expr)
 {
-    ASSERT_TRUE(expr->isClass()) << "Actual Value: " << expr->toString();;
+    ASSERT_TRUE(expr->isClass()) << "Actual Value: " << expr->toString();
 
     checkPredicates(expr, SELECT_TRUTH | ALL_CLASS);
     EXPECT_EQ("class", expr->toString());
@@ -493,7 +508,7 @@ void TestBase::expectClass(ConstExprHandle expr)
 
 void TestBase::expectInstance(ConstExprHandle expr)
 {
-    ASSERT_TRUE(expr->isInstance()) << "Actual Value: " << expr->toString();;
+    ASSERT_TRUE(expr->isInstance()) << "Actual Value: " << expr->toString();
 
     checkPredicates(expr, SELECT_TRUTH | ALL_INSTANCE);
     EXPECT_EQ("instance", expr->toString());
@@ -503,7 +518,7 @@ void TestBase::expectDict(ConstExprHandle expr,
                           int count,
                           string const & repr)
 {
-    ASSERT_TRUE(expr->isDict()) << "Actual Value: " << expr->toString();;
+    ASSERT_TRUE(expr->isDict()) << "Actual Value: " << expr->toString();
 
     checkPredicates(expr, SELECT_TRUTH | ALL_DICT);
     EXPECT_EQ(repr, expr->toString());
