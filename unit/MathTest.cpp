@@ -54,6 +54,13 @@ TEST_F(MathTest, AddSimplificationRealToInt)
     expectInteger(expr, 5, "5", false);
 }
 
+TEST_F(MathTest, AddComplex)
+{
+    ExprHandle expr = parseAndEvaluate("(+ 1+I 1+I)");
+    ExprHandle null = ExpressionFactory::makeNull();
+    expectComplex(expr, null, null, "2+2i", true);
+}
+
 TEST_F(MathTest, AddNegInf)
 {
     ExprHandle expr = parseAndEvaluate("(+ 2 -inf.0)");
@@ -130,6 +137,13 @@ TEST_F(MathTest, SubSimplificationRealToInt)
 {
     ExprHandle expr = parseAndEvaluate("(- 12.5 2.5)");
     expectInteger(expr, 10, "10", false);
+}
+
+TEST_F(MathTest, SubComplex)
+{
+    ExprHandle expr = parseAndEvaluate("(- 1+i 2-3i)");
+    ExprHandle null = ExpressionFactory::makeNull();
+    expectComplex(expr, null, null, "-1+4i", true);
 }
 
 TEST_F(MathTest, SubNegInf)
@@ -210,6 +224,27 @@ TEST_F(MathTest, MulSimplificationRealToInt)
     expectInteger(expr, 1, "1", true);
 }
 
+TEST_F(MathTest, MulComplex)
+{
+    ExprHandle expr = parseAndEvaluate("(* 1+i 2-3i)");
+    ExprHandle null = ExpressionFactory::makeNull();
+    expectComplex(expr, null, null, "5-i", true);
+}
+
+TEST_F(MathTest, MulComplexNaN)
+{
+    ExprHandle expr = parseAndEvaluate("(* 1+i 2-nan.0i)");
+    ExprHandle null = ExpressionFactory::makeNull();
+    expectComplex(expr, null, null, "+nan.0+nan.0i", false);
+}
+
+TEST_F(MathTest, MulComplexInf)
+{
+    ExprHandle expr = parseAndEvaluate("(* 1+inf.0i 1-inf.0i)");
+    ExprHandle null = ExpressionFactory::makeNull();
+    expectComplex(expr, null, null, "+inf.0+nan.0i", false);
+}
+
 TEST_F(MathTest, MulNegInf)
 {
     ExprHandle expr = parseAndEvaluate("(* 2 -inf.0)");
@@ -286,6 +321,13 @@ TEST_F(MathTest, DivTypeUnification)
 {
     ExprHandle expr = parseAndEvaluate("(/ 2.5 1)");
     expectRational(expr, pair<int,int>(5,2), "5/2", false);
+}
+
+TEST_F(MathTest, DivComplex)
+{
+    ExprHandle expr = parseAndEvaluate("(/ 1+i 1-i)");
+    ExprHandle null = ExpressionFactory::makeNull();
+    expectComplex(expr, null, null, "+i", true);
 }
 
 TEST_F(MathTest, DivSimplificationRealToInt)

@@ -64,12 +64,12 @@ namespace scam
         std::pair<int, int> asRational() const override;
         int asInteger() const override;
 
+        ConstExprHandle realPart() const override;
+        ConstExprHandle imagPart() const override;
+
         bool equals(ConstExprHandle expr) const override;
 
         bool isExact() const override;
-
-        ConstExprHandle realPart() const;
-        ConstExprHandle imagPart() const;
 
     private:
         bool exact;

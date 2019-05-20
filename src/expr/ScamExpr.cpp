@@ -178,6 +178,24 @@ int ScamExpr::asInteger() const
     return 0;
 }
 
+ConstExprHandle ScamExpr::realPart() const
+{
+    stringstream s;
+    s << "<" << this->toString() << "> has no real part";
+    throw ScamException(s.str());
+
+    return this;
+}
+
+ConstExprHandle ScamExpr::imagPart() const
+{
+    stringstream s;
+    s << "<" << this->toString() << "> has no imaginary part";
+    throw ScamException(s.str());
+
+    return this;
+}
+
 bool ScamExpr::isNil() const
 {
     return false;

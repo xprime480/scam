@@ -16,7 +16,7 @@ namespace
     extern ExprHandle signCheckRI(ExprHandle r, ExprHandle b);
 }
 
-ExtendedNumeric::ExtendedNumeric(ExprHandle expr)
+ExtendedNumeric::ExtendedNumeric(ConstExprHandle expr)
     : expr(expr)
 {
     if ( ! expr->isNumeric() ) {
@@ -28,7 +28,7 @@ ExtendedNumeric::ExtendedNumeric(ExprHandle expr)
 
 ExprHandle ExtendedNumeric::get() const
 {
-    return expr;
+    return const_cast<ExprHandle>(expr);
 }
 
 bool ExtendedNumeric::isNaN() const
@@ -165,6 +165,7 @@ scam::operator+(const ExtendedNumeric & a, const ExtendedNumeric & b)
         const ExprHandle xB = b.get();
         const bool isInt = xA->isInteger() && xB->isInteger();
         const bool isRational = xA->isRational() && xB->isRational();
+        const bool isReal = xA->isReal() && xB->isReal();
         const bool isExact = xA->isExact() && xB->isExact();
 
         if ( isInt ) {
@@ -179,9 +180,20 @@ scam::operator+(const ExtendedNumeric & a, const ExtendedNumeric & b)
             const int den = ratA.second * ratB.second;
             expr = ExpressionFactory::makeRational(num, den, isExact);
         }
-        else {
+        else if ( isReal ) {
             const double rv = xA->asDouble() + xB->asDouble();
             expr = ExpressionFactory::makeReal(rv, isExact);
+        }
+        else {
+            ExtendedNumeric rA(xA->realPart());
+            ExtendedNumeric rB(xB->realPart());
+            ExtendedNumeric iA(xA->imagPart());
+            ExtendedNumeric iB(xB->imagPart());
+
+            ExtendedNumeric rC = rA + rB;
+            ExtendedNumeric iC = iA + iB;
+
+            expr = ExpressionFactory::makeComplex(rC.get(), iC.get());
         }
     }
     else if ( a.isNaN() || b.isNaN() ) {
@@ -294,6 +306,7 @@ scam::operator*(const ExtendedNumeric & a, const ExtendedNumeric & b)
     if ( ! a.isSpecialNumeric() && ! b.isSpecialNumeric() ) {
         const bool isInt = xA->isInteger() && xB->isInteger();
         const bool isRational = xA->isRational() && xB->isRational();
+        const bool isReal = xA->isReal() && xB->isReal();
         const bool isExact = xA->isExact() && xB->isExact();
 
         if ( isInt ) {
@@ -307,9 +320,20 @@ scam::operator*(const ExtendedNumeric & a, const ExtendedNumeric & b)
             const int den = ratA.second * ratB.second;
             expr = ExpressionFactory::makeRational(num, den, isExact);
         }
-        else {
+        else if ( isReal ) {
             const double rv = xA->asDouble() * xB->asDouble();
             expr = ExpressionFactory::makeReal(rv, isExact);
+        }
+        else {
+            ExtendedNumeric rA(xA->realPart());
+            ExtendedNumeric rB(xB->realPart());
+            ExtendedNumeric iA(xA->imagPart());
+            ExtendedNumeric iB(xB->imagPart());
+
+            ExtendedNumeric rC = rA * rB - iA * iB;
+            ExtendedNumeric iC = rA * iB + iA * rB;
+
+            expr = ExpressionFactory::makeComplex(rC.get(), iC.get());
         }
     }
     else if ( a.isNaN() || b.isNaN() ) {
@@ -367,6 +391,7 @@ scam::operator/(const ExtendedNumeric & a, const ExtendedNumeric & b)
     if ( ! a.isSpecialNumeric() && ! b.isSpecialNumeric() ) {
         const bool isInt = xA->isInteger() && xB->isInteger();
         const bool isRational = xA->isRational() && xB->isRational();
+        const bool isReal = xA->isReal() && xB->isReal();
         const bool isExact = xA->isExact() && xB->isExact();
 
         if ( isInt ) {
@@ -394,9 +419,31 @@ scam::operator/(const ExtendedNumeric & a, const ExtendedNumeric & b)
             ExtendedNumeric newB(recipricolB);
             expr = (a * newB).get();
         }
-        else {
+        else if ( isReal ) {
             const double rv = xA->asDouble() / xB->asDouble();
             expr = ExpressionFactory::makeReal(rv, isExact);
+        }
+        else {
+            ExtendedNumeric rB(xB->realPart());
+            ExtendedNumeric iB(xB->imagPart());
+            ExtendedNumeric iBNeg = -iB;
+            ExtendedNumeric bConj(ExpressionFactory::makeComplex(rB.get(),
+                                                                 iBNeg.get()));
+
+            ExtendedNumeric num = a * bConj;
+            ExtendedNumeric den = b * bConj;
+
+            if ( den.isNaN() ) {
+                expr = den.get();
+            }
+            else {
+                ExtendedNumeric rNum(num.get()->realPart());
+                ExtendedNumeric iNum(num.get()->imagPart());
+                ExtendedNumeric rC = rNum / den;
+                ExtendedNumeric iC = iNum / den;
+
+                expr = ExpressionFactory::makeComplex(rC.get(), iC.get());
+            }
         }
     }
     else if ( a.isNaN() || b.isNaN() ) {

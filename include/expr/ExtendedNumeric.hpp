@@ -9,7 +9,7 @@ namespace scam
     class ExtendedNumeric
     {
     public:
-        explicit ExtendedNumeric(ExprHandle expr);
+        explicit ExtendedNumeric(ConstExprHandle expr);
 
         ExprHandle get() const;
 
@@ -20,7 +20,7 @@ namespace scam
         bool isSpecialNumeric() const;
 
     private:
-        ExprHandle expr;
+        ConstExprHandle expr;
     };
 
     /* relational operators on extended numerics */

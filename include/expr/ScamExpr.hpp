@@ -53,6 +53,9 @@ namespace scam
         virtual std::pair<int, int> asRational() const;
         virtual int asInteger() const;
 
+        virtual ConstExprHandle realPart() const;
+        virtual ConstExprHandle imagPart() const;
+
         virtual bool isNil() const;
         virtual bool isCons() const;
         virtual bool isList() const;
