@@ -20,6 +20,8 @@ namespace scam
         static ScamDict * makeInstance(ValVec const & args);
 
     public:
+        ~ScamDict();
+	
         void mark() const override;
 
         std::string toString() const override;
@@ -36,10 +38,6 @@ namespace scam
         ExprHandle put(ExprHandle key, ExprHandle val);
         ExprHandle remove(ExprHandle key);
         KeyVec const & getKeys() const;
-
-    private:
-        KeyVec keys;
-        ValVec vals;
     };
 }
 

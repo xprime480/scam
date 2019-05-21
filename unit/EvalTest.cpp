@@ -3,12 +3,15 @@
 using namespace std;
 using namespace scam;
 
+#include "util/DebugTrace.hpp"
+
 class EvalTest : public TestBase
 {
 };
 
 TEST_F(EvalTest, QuoteBasic)
 {
+    ScamTraceScope _;
     ExprHandle expr = parseAndEvaluate("(quote (+ 2 2))");
     expectList(expr, "(+ 2 2)", 3);
 }

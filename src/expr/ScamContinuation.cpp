@@ -7,9 +7,11 @@
 using namespace scam;
 using namespace std;
 
+#define CONTINUATION(data) ((data).value.contData)
+
 ScamContinuation::ScamContinuation(Continuation * cont)
-    : cont(cont)
 {
+    CONTINUATION(data) = cont;
 }
 
 ScamContinuation * ScamContinuation::makeInstance(Continuation * cont)
@@ -21,7 +23,7 @@ void ScamContinuation::mark() const
 {
     if ( ! isMarked() ) {
         ScamExpr::mark();
-        cont->mark();
+        CONTINUATION(data)->mark();
     }
 }
 
@@ -38,7 +40,7 @@ void ScamContinuation::apply(ExprHandle args, Continuation * cont,  Env * env)
 
     if ( accepted ) {
         ExprHandle arg = const_cast<ExprHandle >(parser->get());
-        this->cont->run(arg);
+        CONTINUATION(data)->run(arg);
     }
     else {
         failedArgParseMessage(toString().c_str(), "(form)", args, cont);

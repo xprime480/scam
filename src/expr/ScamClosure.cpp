@@ -11,12 +11,17 @@
 using namespace scam;
 using namespace std;
 
+#define CLOSUREDEF(data) ((data).value.closureData.parser)
+#define CLOSUREENV(data) ((data).value.closureData.env)
+#define MACROLIKE(data) ((data).value.closureData.macrolike)
+
 ScamClosure::ScamClosure(const LambdaParser * parser, Env * env, bool macrolike)
-    : parser(parser)
-    , env(env)
-    , macrolike(macrolike)
 {
     data.type = ScamData::Closure;
+
+    CLOSUREDEF(data) = parser;
+    CLOSUREENV(data) = env;
+    MACROLIKE(data) = macrolike;
 }
 
 ScamClosure * ScamClosure::makeInstance(const LambdaParser * parser,
@@ -30,8 +35,8 @@ void ScamClosure::mark() const
 {
     if ( ! isMarked() ) {
         ScamExpr::mark();
-        parser->mark();
-        env->mark();
+        CLOSUREDEF(data)->mark();
+        CLOSUREENV(data)->mark();
     }
 }
 
@@ -40,21 +45,21 @@ string ScamClosure::toString() const
     stringstream s;
     s << "(";
 
-    if ( macrolike ) {
+    if ( MACROLIKE(data) ) {
         s << "macro ";
     }
     else {
         s << "lambda ";
     }
-    s << parser->getArgs()->getValue()->toString();
+    s << CLOSUREDEF(data)->getArgs()->getValue()->toString();
     s << " ";
 
-    const size_t count = parser->getFormCount();
+    const size_t count = CLOSUREDEF(data)->getFormCount();
     for ( size_t idx = 0 ; idx < count ; ++ idx ) {
         if ( idx > 0 ) {
             s << " ";
         }
-        s << parser->getForm(idx)->toString();
+        s << CLOSUREDEF(data)->getForm(idx)->toString();
     }
 
     s << ")";
@@ -63,15 +68,15 @@ string ScamClosure::toString() const
 
 void ScamClosure::apply(ExprHandle args, Continuation * cont, Env * env)
 {
-    workQueueHelper<ClosureWorker>(parser,
-                                   this->env,
+    workQueueHelper<ClosureWorker>(CLOSUREDEF(data),
+                                   CLOSUREENV(data),
                                    cont,
                                    args,
                                    env,
-                                   macrolike);
+                                   MACROLIKE(data));
 }
 
 ExprHandle ScamClosure::withEnvUpdate(Env * updated) const
 {
-    return ExpressionFactory::makeClosure(parser, updated);
+    return ExpressionFactory::makeClosure(CLOSUREDEF(data), updated);
 }

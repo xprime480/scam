@@ -4,9 +4,15 @@
 #include "ScamFwd.hpp"
 
 #include <string>
+#include <vector>
 
 namespace scam
 {
+    class ClassDefParser;
+    class Continuation;
+    class Env;
+    class LambdaParser;
+
     struct ScamData
     {
     public:
@@ -55,14 +61,14 @@ namespace scam
         constexpr static unsigned long Closure      { 1 << 19 };
         constexpr static unsigned long Class        { 1 << 20 };
         constexpr static unsigned long Instance     { 1 << 21 };
-        constexpr static unsigned long Continuation { 1 << 22 };
+        constexpr static unsigned long Cont         { 1 << 22 };
 
         constexpr static unsigned long Procedure = Closure | Class | Instance;
 
         constexpr static unsigned long Primitive   { 1 << 23 };
         constexpr static unsigned long SpecialForm { 1 << 24 };
 
-        constexpr static unsigned long Applicable = Dict | Procedure | Primitive | SpecialForm | Continuation;
+        constexpr static unsigned long Applicable = Dict | Procedure | Primitive | SpecialForm | Cont;
 
         /**
          * member data
@@ -81,6 +87,16 @@ namespace scam
                 ExprHandle car;
                 ExprHandle cdr;
             }  consValue;
+
+            std::vector<ExprHandle> * vectorData;
+
+            std::vector<unsigned char> * byteVectorData;
+
+            struct
+            {
+                std::vector<ExprHandle> * keys;
+                std::vector<ExprHandle> * vals;
+            } dictData;
 
             struct
             {
@@ -104,9 +120,35 @@ namespace scam
                 } value;
             } numericValue ;
 
+            struct
+            {
+                ClassDefParser * def;
+                Env            * capture;
+            } classValue;
+
+            struct
+            {
+                const LambdaParser * parser;
+                Env * env;
+                bool macrolike;
+            } closureData;
+
+            struct
+            {
+                Env * priv;
+                Env * local;
+            } instanceData;
+
+            Continuation * contData;
+
         } value;
 
+        /*
+         * The following cannot go in a union.
+         */
+
         std::string strVal;
+
     };
 }
 
@@ -116,5 +158,17 @@ namespace scam
 #define EXACT(data) (NUMERIC(data).exact)
 
 #define STRVAL(data) ((data).strVal)
+
+#define VECTORP(data) ((data).value.vectorData)
+#define VECTOR(data) (*(VECTORP(data)))
+
+#define BYTEVECTORP(data) ((data).value.byteVectorData)
+#define BYTEVECTOR(data) (*(BYTEVECTORP(data)))
+
+#define CLASSDEF(data) ((data).value.classValue.def)
+#define CLASSENV(data) ((data).value.classValue.capture)
+
+#define INSTANCEPRIVENV(data) ((data).value.instanceData.priv)
+#define INSTANCELOCALENV(data) ((data).value.instanceData.local)
 
 #endif

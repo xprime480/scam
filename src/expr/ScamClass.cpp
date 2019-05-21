@@ -9,10 +9,11 @@ using namespace scam;
 using namespace std;
 
 ScamClass::ScamClass(ClassDefParser * def, Env * capture)
-    : def(def)
-    , capture(capture)
 {
     data.type = ScamData::Class;
+
+    CLASSDEF(data) = def;
+    CLASSENV(data) = capture;
 }
 
 ScamClass * ScamClass::makeInstance(ClassDefParser * def, Env * capture)
@@ -24,8 +25,8 @@ void ScamClass::mark() const
 {
     if ( ! isMarked() ) {
         ScamExpr::mark();
-        def->mark();
-        capture->mark();
+        CLASSDEF(data)->mark();
+        CLASSENV(data)->mark();
     }
 }
 

@@ -17,15 +17,14 @@ namespace scam
         static ScamByteVector * makeInstance(ByteVec const & elts);
 
     public:
+        ~ScamByteVector();
+
         std::string toString() const override;
 
         size_t length() const override;
         ExprHandle nthcar(size_t n) const override;
 
         bool equals(ConstExprHandle expr) const override;
-
-    private:
-        ByteVec elts;
     };
 }
 

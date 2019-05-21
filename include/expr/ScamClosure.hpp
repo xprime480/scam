@@ -30,11 +30,6 @@ namespace scam
         apply(ExprHandle args, Continuation * cont, Env * env) override;
 
         ExprHandle withEnvUpdate(Env * updated) const override;
-
-    private:
-        const LambdaParser * parser;
-        Env * env;
-        bool macrolike;
     };
 }
 

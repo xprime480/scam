@@ -20,9 +20,6 @@ namespace scam
         std::string toString() const override;
 
         void apply(ExprHandle args, Continuation * cont, Env * env) override;
-
-    private:
-        Continuation * cont;
     };
 }
 

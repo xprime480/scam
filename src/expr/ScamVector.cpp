@@ -9,9 +9,16 @@ using namespace scam;
 using namespace std;
 
 ScamVector::ScamVector(ExprVec const & elts)
-    : elts(elts)
 {
     data.type = ScamData::Vector;
+
+    VECTORP(data) = new remove_reference<decltype(VECTOR(data))>::type;
+    VECTOR(data) = elts;
+}
+
+ScamVector::~ScamVector()
+{
+    delete VECTORP(data);
 }
 
 ScamVector * ScamVector::makeInstance(ExprVec const & elts)
@@ -23,7 +30,7 @@ void ScamVector::mark() const
 {
     if ( ! isMarked() ) {
         ScamExpr::mark();
-        for ( auto const & e : elts ) {
+        for ( auto const & e : VECTOR(data) ) {
             e->mark();
         }
     }
@@ -35,7 +42,7 @@ string ScamVector::toString() const
     string sep { "" };
 
     s << "#(";
-    for ( auto const & e : elts ) {
+    for ( auto const & e : VECTOR(data) ) {
         s << sep << e->toString();
         sep = " ";
     }
@@ -46,7 +53,7 @@ string ScamVector::toString() const
 
 size_t ScamVector::length() const
 {
-    return elts.size();
+    return VECTOR(data).size();
 }
 
 ExprHandle ScamVector::nthcar(size_t n) const
@@ -59,7 +66,7 @@ ExprHandle ScamVector::nthcar(size_t n) const
                                             "-element vector");
     }
 
-    return elts[n];
+    return VECTOR(data)[n];
 }
 
 bool ScamVector::equals(ConstExprHandle expr) const
@@ -68,11 +75,11 @@ bool ScamVector::equals(ConstExprHandle expr) const
         return false;
     }
     ScamVector const * that = dynamic_cast<ScamVector const *>(expr);
-    if ( elts.size() != that->elts.size() ) {
+    if ( VECTOR(data).size() != VECTOR(that->data).size() ) {
         return false;
     }
-    for ( size_t idx = 0 ; idx < elts.size() ; ++idx ) {
-        if ( ! elts[idx]->equals(that->elts[idx]) ) {
+    for ( size_t idx = 0 ; idx < VECTOR(data).size() ; ++idx ) {
+        if ( ! VECTOR(data)[idx]->equals(VECTOR(that->data)[idx]) ) {
             return false;
         }
     }

@@ -32,10 +32,6 @@ namespace scam
         void setParent(ExprHandle expr) const override;
 
         friend class ScamInstanceAdapter;
-
-    private:
-        Env *         priv;
-        mutable Env * local;
     };
 }
 

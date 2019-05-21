@@ -10,15 +10,22 @@
 using namespace scam;
 using namespace std;
 
+#define DICTKEYSP(data) ((data).value.dictData.keys)
+#define DICTKEYS(data) (*(DICTKEYSP(data)))
+#define DICTVALSP(data) ((data).value.dictData.vals)
+#define DICTVALS(data) (*(DICTVALSP(data)))
+
 ScamDict::ScamDict()
 {
     data.type = ScamData::Dict;
+
+    DICTKEYSP(data) = new remove_reference<decltype(DICTKEYS(data))>::type;
+    DICTVALSP(data) = new remove_reference<decltype(DICTVALS(data))>::type;
 }
 
 ScamDict::ScamDict(ValVec const & args)
+    : ScamDict()
 {
-    data.type = ScamData::Dict;
-
     ValVec input = args;
     if ( 1 == (input.size() % 2) ) {
         input.push_back(ExpressionFactory::makeNil());
@@ -29,6 +36,12 @@ ScamDict::ScamDict(ValVec const & args)
         ExprHandle val = input[idx+1];
         put(key, val);
     }
+}
+
+ScamDict::~ScamDict()
+{
+    delete DICTKEYSP(data);
+    delete DICTVALSP(data);
 }
 
 ScamDict * ScamDict::makeInstance()
@@ -45,9 +58,9 @@ void ScamDict::mark() const
 {
     if ( ! isMarked() ) {
         ScamExpr::mark();
-        for ( size_t idx = 0 ; idx < keys.size() ; ++idx ) {
-            keys[idx]->mark();
-            vals[idx]->mark();
+        for ( size_t idx = 0 ; idx < DICTKEYS(data).size() ; ++idx ) {
+            DICTKEYS(data)[idx]->mark();
+            DICTVALS(data)[idx]->mark();
         }
     }
 }
@@ -57,14 +70,15 @@ string ScamDict::toString() const
     stringstream s;
     s << "{";
 
-    for ( size_t idx = 0 ; idx < keys.size() ; ++idx ) {
-        s << " " << keys[idx]->toString()
-          << " " << vals[idx]->toString();
+    for ( size_t idx = 0 ; idx < DICTKEYS(data).size() ; ++idx ) {
+        s << " " << DICTKEYS(data)[idx]->toString()
+          << " " << DICTVALS(data)[idx]->toString();
     }
 
-    if ( keys.size() ) {
+    if ( DICTKEYS(data).size() ) {
         s << " ";
     }
+
     s << "}";
 
     return s.str();
@@ -110,7 +124,7 @@ void ScamDict::apply(ExprHandle args, Continuation * cont, Env * env)
 
 size_t ScamDict::length() const
 {
-    return keys.size();
+    return DICTKEYS(data).size();
 }
 
 bool ScamDict::equals(ConstExprHandle expr) const
@@ -120,19 +134,19 @@ bool ScamDict::equals(ConstExprHandle expr) const
     }
     ScamDict const * that = dynamic_cast<ScamDict const *>(expr);
 
-    if ( this->keys.size() != that->keys.size() ) {
+    if ( DICTKEYS(data).size() != DICTKEYS(that->data).size() ) {
         return false;
     }
 
-    size_t len = this->length();
+    size_t len = length();
     size_t otherIdx = len+1;
 
     for ( size_t thisIdx = 0 ; thisIdx < len ; ++thisIdx ) {
-        ExprHandle myKey = this->keys[thisIdx];
+        ExprHandle myKey = DICTKEYS(data)[thisIdx];
         for ( otherIdx = 0 ; otherIdx < len ; ++otherIdx ) {
-            if ( that->keys[otherIdx]->equals(myKey) ) {
-                ExprHandle myVal = this->vals[thisIdx];
-                if ( ! that->vals[otherIdx]->equals(myVal) ) {
+            if ( DICTKEYS(that->data)[otherIdx]->equals(myKey) ) {
+                ExprHandle myVal = DICTVALS(data)[thisIdx];
+                if ( ! DICTVALS(that->data)[otherIdx]->equals(myVal) ) {
                     return false;
                 }
                 break;
@@ -149,8 +163,8 @@ bool ScamDict::equals(ConstExprHandle expr) const
 
 bool ScamDict::has(ExprHandle key) const
 {
-    for ( size_t jdx = 0 ; jdx < keys.size() ; ++jdx ) {
-        if ( keys[jdx]->equals(key) ) {
+    for ( size_t jdx = 0 ; jdx < DICTKEYS(data).size() ; ++jdx ) {
+        if ( DICTKEYS(data)[jdx]->equals(key) ) {
             return true;
         }
     }
@@ -160,9 +174,9 @@ bool ScamDict::has(ExprHandle key) const
 
 ExprHandle ScamDict::get(ExprHandle key) const
 {
-    for ( size_t jdx = 0 ; jdx < keys.size() ; ++jdx ) {
-        if ( keys[jdx]->equals(key) ) {
-            return vals[jdx];
+    for ( size_t jdx = 0 ; jdx < DICTKEYS(data).size() ; ++jdx ) {
+        if ( DICTKEYS(data)[jdx]->equals(key) ) {
+            return DICTVALS(data)[jdx];
         }
     }
 
@@ -173,21 +187,21 @@ ExprHandle ScamDict::get(ExprHandle key) const
 
 ExprHandle ScamDict::put(ExprHandle key, ExprHandle val)
 {
-    size_t prev = keys.size();
+    size_t prev = DICTKEYS(data).size();
 
-    for ( size_t jdx = 0 ; jdx < keys.size() ; ++jdx ) {
-        if ( keys[jdx]->equals(key) ) {
+    for ( size_t jdx = 0 ; jdx < DICTKEYS(data).size() ; ++jdx ) {
+        if ( DICTKEYS(data)[jdx]->equals(key) ) {
             prev = jdx;
             break;
         }
     }
 
-    if ( prev >= keys.size() ) {
-        keys.push_back(key);
-        vals.push_back(val);
+    if ( prev >= DICTKEYS(data).size() ) {
+        DICTKEYS(data).push_back(key);
+        DICTVALS(data).push_back(val);
     }
     else {
-        vals[prev] = val;
+        DICTVALS(data)[prev] = val;
     }
 
     return val;
@@ -197,11 +211,11 @@ ExprHandle ScamDict::remove(ExprHandle key)
 {
     ExprHandle rv = ExpressionFactory::makeNil();
 
-    for ( size_t jdx = 0 ; jdx < keys.size() ; ++jdx ) {
-        if ( keys[jdx]->equals(key) ) {
-            keys.erase(keys.begin() + jdx);
-            rv = vals[jdx];
-            vals.erase(vals.begin() + jdx);
+    for ( size_t jdx = 0 ; jdx < DICTKEYS(data).size() ; ++jdx ) {
+        if ( DICTKEYS(data)[jdx]->equals(key) ) {
+            DICTKEYS(data).erase(DICTKEYS(data).begin() + jdx);
+            rv = DICTVALS(data)[jdx];
+            DICTVALS(data).erase(DICTVALS(data).begin() + jdx);
             break;
         }
     }
@@ -211,5 +225,5 @@ ExprHandle ScamDict::remove(ExprHandle key)
 
 KeyVec const & ScamDict::getKeys() const
 {
-    return keys;
+    return DICTKEYS(data);
 }

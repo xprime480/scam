@@ -25,10 +25,6 @@ namespace scam
         apply(ExprHandle args, Continuation * cont, Env * env) override;
 
         friend class ScamClassAdapter;
-
-    private:
-        ClassDefParser * def;
-        Env            * capture;
     };
 }
 

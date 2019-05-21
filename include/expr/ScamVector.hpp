@@ -17,6 +17,8 @@ namespace scam
         static ScamVector * makeInstance(ExprVec const & elts);
 
     public:
+        ~ScamVector();
+	
         void mark() const override;
 
         std::string toString() const override;
@@ -25,9 +27,6 @@ namespace scam
         ExprHandle nthcar(size_t n) const override;
 
         bool equals(ConstExprHandle expr) const override;
-
-    private:
-        ExprVec elts;
     };
 }
 
