@@ -57,6 +57,13 @@ namespace scam
 
         constexpr static unsigned long Procedure = Closure | Class | Instance;
 
+        constexpr static unsigned long Primitive { 1 << 23 };
+
+
+        /**
+         * member data
+         */
+
         unsigned long type;
 
         union

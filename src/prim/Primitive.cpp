@@ -11,6 +11,7 @@ using namespace std;
 Primitive::Primitive(string const & name)
     : name(name)
 {
+    data.type = ScamData::Primitive;
 }
 
 string Primitive::toString() const
