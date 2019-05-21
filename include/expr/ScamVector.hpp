@@ -21,8 +21,6 @@ namespace scam
 
         std::string toString() const override;
 
-        void eval(Continuation * cont, Env * env) const override;
-
         bool isVector() const override;
 
         size_t length() const override;

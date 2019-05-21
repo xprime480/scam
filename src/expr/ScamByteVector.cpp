@@ -2,7 +2,6 @@
 
 #include "WorkQueue.hpp"
 #include "expr/ExpressionFactory.hpp"
-#include "expr/VectorWorker.hpp"
 
 #include <sstream>
 

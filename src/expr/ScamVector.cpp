@@ -2,7 +2,6 @@
 
 #include "WorkQueue.hpp"
 #include "expr/ExpressionFactory.hpp"
-#include "expr/VectorWorker.hpp"
 
 #include <sstream>
 
@@ -42,11 +41,6 @@ string ScamVector::toString() const
     s << ")";
 
     return s.str();
-}
-
-void ScamVector::eval(Continuation * cont, Env * env) const
-{
-    workQueueHelper<VectorWorker>(cont, env, elts);
 }
 
 bool ScamVector::isVector() const
