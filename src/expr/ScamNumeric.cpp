@@ -218,46 +218,6 @@ string ScamNumeric::toString() const
     return s.str();
 }
 
-bool ScamNumeric::isNumeric() const
-{
-    return true;
-}
-
-bool ScamNumeric::isComplex() const
-{
-    return ScamData::ComplexBit == (data.type & ScamData::ComplexBit);
-}
-
-bool ScamNumeric::isReal() const
-{
-    return ScamData::RealBit == (data.type & ScamData::RealBit);
-}
-
-bool ScamNumeric::isRational() const
-{
-    return ScamData::RationalBit == (data.type & ScamData::RationalBit);
-}
-
-bool ScamNumeric::isInteger() const
-{
-    return ScamData::IntegerBit == (data.type & ScamData::IntegerBit);
-}
-
-bool ScamNumeric::isNaN() const
-{
-    return ScamData::NaNBit == (data.type & ScamData::NaNBit);
-}
-
-bool ScamNumeric::isNegInf() const
-{
-    return ScamData::NegInfBit == (data.type & ScamData::NegInfBit);
-}
-
-bool ScamNumeric::isPosInf() const
-{
-    return ScamData::PosInfBit == (data.type & ScamData::PosInfBit);
-}
-
 double ScamNumeric::asDouble() const
 {
     if ( ! isReal() || isNaN() || isNegInf() || isPosInf() ) {

@@ -11,6 +11,7 @@ using namespace std;
 ScamByteVector::ScamByteVector(ByteVec const & elts)
     : elts(elts)
 {
+    data.type = ScamData::ByteVector;
 }
 
 ScamByteVector * ScamByteVector::makeInstance(ByteVec const & elts)
@@ -31,11 +32,6 @@ string ScamByteVector::toString() const
     s << ")";
 
     return s.str();
-}
-
-bool ScamByteVector::isByteVector() const
-{
-    return true;
 }
 
 size_t ScamByteVector::length() const

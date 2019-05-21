@@ -26,9 +26,6 @@ namespace scam
         void
         apply(ExprHandle args, Continuation * cont, Env * env) override;
 
-        bool isProcedure() const override;
-        bool isClass() const override;
-
         friend class ScamClassAdapter;
 
     private:

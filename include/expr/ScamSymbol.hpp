@@ -17,8 +17,6 @@ namespace scam
         std::string toString() const override;
         void eval(Continuation * cont, Env * env) const override;
 
-        bool isSymbol() const override;
-
         bool equals(ConstExprHandle expr) const override;
 
     private:

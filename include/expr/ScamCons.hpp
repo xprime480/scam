@@ -19,9 +19,6 @@ namespace scam
         void eval(Continuation * cont, Env * env) const override;
         void mapEval(Continuation * cont, Env * env) const override;
 
-        bool isCons() const override;
-        bool isList() const override;
-
         ExprHandle getCar() const override;
         ExprHandle getCdr() const override;
 

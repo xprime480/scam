@@ -7,6 +7,7 @@ ScamKeyword::ScamKeyword(string const & value, bool managed)
     : ScamExpr(managed)
     , value(value)
 {
+    data.type = ScamData::Keyword;
 }
 
 ScamKeyword * ScamKeyword::makeInstance(std::string const & value, bool managed)
@@ -17,11 +18,6 @@ ScamKeyword * ScamKeyword::makeInstance(std::string const & value, bool managed)
 string ScamKeyword::toString() const
 {
     return value;
-}
-
-bool ScamKeyword::isKeyword() const
-{
-    return true;
 }
 
 bool ScamKeyword::equals(ConstExprHandle expr) const

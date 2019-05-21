@@ -12,10 +12,13 @@ using namespace std;
 
 ScamDict::ScamDict()
 {
+    data.type = ScamData::Dict;
 }
 
 ScamDict::ScamDict(ValVec const & args)
 {
+    data.type = ScamData::Dict;
+
     ValVec input = args;
     if ( 1 == (input.size() % 2) ) {
         input.push_back(ExpressionFactory::makeNil());
@@ -108,16 +111,6 @@ void ScamDict::apply(ExprHandle args, Continuation * cont, Env * env)
     }
 
     cont->run(rv);
-}
-
-bool ScamDict::truth() const
-{
-    return true;
-}
-
-bool ScamDict::isDict() const
-{
-    return true;
 }
 
 size_t ScamDict::length() const

@@ -26,6 +26,8 @@ ScamInstance::ScamInstance(const ScamClass * cls, Env * env)
     : priv(standardMemoryManager.make<Env>())
     , local(env->extend())
 {
+    data.type = ScamData::Instance;
+
     ScamClassAdapter adapter(cls);
 
     size_t var_count = adapter.getVarCount();
@@ -85,16 +87,6 @@ void ScamInstance::apply(ExprHandle args, Continuation * cont, Env * env)
     Continuation * newCont =
         standardMemoryManager.make<InstanceCont>(this, name, cont);
     funargs->mapEval(newCont, env);
-}
-
-bool ScamInstance::isProcedure() const
-{
-    return true;
-}
-
-bool ScamInstance::isInstance() const
-{
-    return true;
 }
 
 void ScamInstance::setSelf(ExprHandle expr) const

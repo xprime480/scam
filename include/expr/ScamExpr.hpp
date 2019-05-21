@@ -28,27 +28,27 @@ namespace scam
 
         virtual void mapEval(Continuation * cont, Env * env) const;
 
-        virtual bool isNull() const;
-        virtual bool error() const;
-        virtual bool truth() const;
+        bool isNull() const;
+        bool error() const;
+	bool truth() const;
 
-        virtual bool isBoolean() const;
-        virtual bool isChar() const;
+        bool isBoolean() const;
+        bool isChar() const;
         virtual char toChar() const;
-        virtual bool isString() const;
-        virtual bool isSymbol() const;
-        virtual bool isKeyword() const;
+        bool isString() const;
+        bool isSymbol() const;
+        bool isKeyword() const;
 
-        virtual bool isNumeric() const;
+        bool isNumeric() const;
         virtual bool isExact() const;
-        virtual bool isComplex() const;
-        virtual bool isReal() const;
-        virtual bool isRational() const;
-        virtual bool isInteger() const;
+        bool isComplex() const;
+        bool isReal() const;
+        bool isRational() const;
+        bool isInteger() const;
 
-        virtual bool isNaN() const;
-        virtual bool isNegInf() const;
-        virtual bool isPosInf() const;
+        bool isNaN() const;
+        bool isNegInf() const;
+        bool isPosInf() const;
 
         virtual double asDouble() const;
         virtual std::pair<int, int> asRational() const;
@@ -57,20 +57,20 @@ namespace scam
         virtual ConstExprHandle realPart() const;
         virtual ConstExprHandle imagPart() const;
 
-        virtual bool isNil() const;
-        virtual bool isCons() const;
-        virtual bool isList() const;
+        bool isNil() const;
+        bool isCons() const;
+        bool isList() const;
         virtual ExprHandle getCar() const;
         virtual ExprHandle getCdr() const;
 
-        virtual bool isVector() const;
-        virtual bool isByteVector() const;
+        bool isVector() const;
+        bool isByteVector() const;
 
-        virtual bool isProcedure() const;
-        virtual bool isClass() const;
-        virtual bool isInstance() const;
+        bool isProcedure() const;
+        bool isClass() const;
+        bool isInstance() const;
 
-        virtual bool isDict() const;
+        bool isDict() const;
 
         virtual size_t length() const;
         virtual ExprHandle nthcar(size_t n) const;
@@ -88,7 +88,7 @@ namespace scam
         ExprHandle getMeta(std::string const & key) const;
 
     protected:
-	ScamData data;
+        ScamData data;
 
     private:
         mutable Env * metadata;

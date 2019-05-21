@@ -7,6 +7,8 @@
 #include <sstream>
 #include <utility>
 
+#include "util/DebugTrace.hpp"
+
 using namespace scam;
 using namespace std;
 
@@ -55,27 +57,34 @@ void ScamExpr::mapEval(Continuation * cont, Env * env) const
 
 bool ScamExpr::isNull() const
 {
-    return false;
+    return data.type == ScamData::Null;
 }
 
 bool ScamExpr::error() const
 {
-    return false;
+    return data.type == ScamData::Error;
 }
 
 bool ScamExpr::truth() const
 {
-    return true;
+    if ( isNull() ) {
+        return false;
+    }
+    if ( ! isBoolean() ) {
+        return true;
+    }
+
+    return BOOLVAL(data);
 }
 
 bool ScamExpr::isBoolean() const
 {
-    return false;
+    return data.type == ScamData::Boolean;
 }
 
 bool ScamExpr::isChar() const
 {
-    return false;
+    return data.type == ScamData::Character;
 }
 
 char ScamExpr::toChar() const
@@ -89,22 +98,22 @@ char ScamExpr::toChar() const
 
 bool ScamExpr::isString() const
 {
-    return false;
+    return data.type == ScamData::String;
 }
 
 bool ScamExpr::isSymbol() const
 {
-    return false;
+    return data.type == ScamData::Symbol;
 }
 
 bool ScamExpr::isKeyword() const
 {
-    return false;
+    return data.type == ScamData::Keyword;
 }
 
 bool ScamExpr::isNumeric() const
 {
-    return false;
+    return 0 != (data.type & ScamData::Numeric);
 }
 
 bool ScamExpr::isExact() const
@@ -118,37 +127,37 @@ bool ScamExpr::isExact() const
 
 bool ScamExpr::isComplex() const
 {
-    return false;
+    return ScamData::ComplexBit == (data.type & ScamData::ComplexBit);
 }
 
 bool ScamExpr::isReal() const
 {
-    return false;
+    return ScamData::RealBit == (data.type & ScamData::RealBit);
 }
 
 bool ScamExpr::isRational() const
 {
-    return false;
+    return ScamData::RationalBit == (data.type & ScamData::RationalBit);
 }
 
 bool ScamExpr::isInteger() const
 {
-    return false;
+    return ScamData::IntegerBit == (data.type & ScamData::IntegerBit);
 }
 
 bool ScamExpr::isNaN() const
 {
-    return false;
+    return ScamData::NaNBit == (data.type & ScamData::NaNBit);
 }
 
 bool ScamExpr::isNegInf() const
 {
-    return false;
+    return ScamData::NegInfBit == (data.type & ScamData::NegInfBit);
 }
 
 bool ScamExpr::isPosInf() const
 {
-    return false;
+    return ScamData::PosInfBit == (data.type & ScamData::PosInfBit);
 }
 
 double ScamExpr::asDouble() const
@@ -198,16 +207,23 @@ ConstExprHandle ScamExpr::imagPart() const
 
 bool ScamExpr::isNil() const
 {
-    return false;
+    return data.type == ScamData::Nil;
 }
 
 bool ScamExpr::isCons() const
 {
-    return false;
+    return data.type == ScamData::Cons;
 }
 
 bool ScamExpr::isList() const
 {
+    if ( isNil() ) {
+	return true;
+    }
+    if ( isCons() ) {
+	return getCdr()->isList();
+    }
+    
     return false;
 }
 
@@ -231,32 +247,32 @@ ExprHandle ScamExpr::getCdr() const
 
 bool ScamExpr::isVector() const
 {
-    return false;
+    return data.type == ScamData::Vector;
 }
 
 bool ScamExpr::isByteVector() const
 {
-    return false;
+    return data.type == ScamData::ByteVector;
 }
 
 bool ScamExpr::isProcedure() const
 {
-    return false;
+    return 0 != (data.type & ScamData::Procedure);
 }
 
 bool ScamExpr::isClass() const
 {
-    return false;
+    return data.type == ScamData::Class;
 }
 
 bool ScamExpr::isInstance() const
 {
-    return false;
+    return data.type == ScamData::Instance;
 }
 
 bool ScamExpr::isDict() const
 {
-    return false;
+    return data.type == ScamData::Dict;
 }
 
 size_t ScamExpr::length() const

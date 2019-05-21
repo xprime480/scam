@@ -6,6 +6,7 @@ using namespace std;
 ScamString::ScamString(string const & value)
     : value(value)
 {
+    data.type = ScamData::String;
 }
 
 ScamString * ScamString::makeInstance(std::string const & value)
@@ -16,11 +17,6 @@ ScamString * ScamString::makeInstance(std::string const & value)
 string ScamString::toString() const
 {
     return value;
-}
-
-bool ScamString::isString() const
-{
-    return true;
 }
 
 bool ScamString::equals(ConstExprHandle expr) const

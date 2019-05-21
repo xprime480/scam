@@ -12,6 +12,7 @@ ScamClass::ScamClass(ClassDefParser * def, Env * capture)
     : def(def)
     , capture(capture)
 {
+    data.type = ScamData::Class;
 }
 
 ScamClass * ScamClass::makeInstance(ClassDefParser * def, Env * capture)
@@ -45,14 +46,4 @@ void ScamClass::apply(ExprHandle args, Continuation * cont, Env * env)
      ** is found.
      **/
     workQueueHelper<ClassWorker>(this, args, cont, env);
-}
-
-bool ScamClass::isProcedure() const
-{
-    return true;
-}
-
-bool ScamClass::isClass() const
-{
-    return true;
 }

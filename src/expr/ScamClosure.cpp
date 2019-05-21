@@ -16,6 +16,7 @@ ScamClosure::ScamClosure(const LambdaParser * parser, Env * env, bool macrolike)
     , env(env)
     , macrolike(macrolike)
 {
+    data.type = ScamData::Closure;
 }
 
 ScamClosure * ScamClosure::makeInstance(const LambdaParser * parser,
@@ -73,11 +74,6 @@ void ScamClosure::apply(ExprHandle args, Continuation * cont, Env * env)
                                    args,
                                    env,
                                    macrolike);
-}
-
-bool ScamClosure::isProcedure() const
-{
-    return true;
 }
 
 ExprHandle ScamClosure::withEnvUpdate(Env * updated) const

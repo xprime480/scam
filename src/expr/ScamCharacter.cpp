@@ -27,11 +27,6 @@ string ScamCharacter::toString() const
     return s.str();
 }
 
-bool ScamCharacter::isChar() const
-{
-    return true;
-}
-
 char ScamCharacter::toChar() const
 {
     return CHARVAL(data);

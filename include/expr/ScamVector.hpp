@@ -21,8 +21,6 @@ namespace scam
 
         std::string toString() const override;
 
-        bool isVector() const override;
-
         size_t length() const override;
         ExprHandle nthcar(size_t n) const override;
 

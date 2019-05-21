@@ -19,8 +19,6 @@ namespace scam
     public:
         std::string toString() const override;
 
-        bool isByteVector() const override;
-
         size_t length() const override;
         ExprHandle nthcar(size_t n) const override;
 

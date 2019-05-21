@@ -31,18 +31,7 @@ void ScamNull::eval(Continuation * cont, Env * env) const
     cont->run(expr);
 }
 
-bool ScamNull::isNull() const
-{
-    return true;
-}
-
-bool ScamNull::truth() const
-{
-    return false;
-}
-
 bool ScamNull::equals(ConstExprHandle expr) const
 {
     return false;
 }
-

@@ -47,16 +47,6 @@ namespace scam
 
         std::string toString() const override;
 
-        bool isNumeric() const override;
-        bool isComplex() const override;
-        bool isReal() const override;
-        bool isRational() const override;
-        bool isInteger() const override;
-
-        bool isNaN() const override;
-        bool isNegInf() const override;
-        bool isPosInf() const override;
-
         double asDouble() const override;
         std::pair<int, int> asRational() const override;
         int asInteger() const override;

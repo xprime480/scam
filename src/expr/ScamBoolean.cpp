@@ -5,8 +5,6 @@
 using namespace scam;
 using namespace std;
 
-#define BOOLVAL(data) ((data).value.boolValue)
-
 ScamBoolean::ScamBoolean(bool value)
     : ScamExpr(false)
 {
@@ -28,16 +26,6 @@ string ScamBoolean::toString() const
         return "#t";
     }
     return "#f";
-}
-
-bool ScamBoolean::truth() const
-{
-    return BOOLVAL(data);
-}
-
-bool ScamBoolean::isBoolean() const
-{
-    return true;
 }
 
 bool ScamBoolean::equals(ConstExprHandle expr) const

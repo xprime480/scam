@@ -15,8 +15,6 @@ namespace scam
     public:
         std::string toString() const override;
 
-        bool isString() const override;
-
         bool equals(ConstExprHandle expr) const override;
 
     private:

@@ -15,10 +15,6 @@ namespace scam
     public:
         std::string toString() const override;
 
-        bool truth() const override;
-
-        bool isBoolean() const override;
-
         bool equals(ConstExprHandle expr) const override;
     };
 }

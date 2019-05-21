@@ -6,6 +6,7 @@ using namespace std;
 ScamNil::ScamNil()
     : ScamExpr(false)
 {
+    data.type = ScamData::Nil;
 }
 
 ScamNil * ScamNil::makeInstance()
@@ -18,16 +19,6 @@ string ScamNil::toString() const
 {
     static const string value{ "()" };
     return value;
-}
-
-bool ScamNil::isNil() const
-{
-    return true;
-}
-
-bool ScamNil::isList() const
-{
-    return true;
 }
 
 size_t ScamNil::length() const

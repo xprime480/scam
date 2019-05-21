@@ -8,6 +8,8 @@ namespace scam
     struct ScamData
     {
     public:
+        ScamData();
+
         /*
          * tags and types for numeric types
          */
@@ -31,13 +33,29 @@ namespace scam
         constexpr static unsigned long NaN      = Real | NaNBit;
         constexpr static unsigned long NegInf   = Real | NegInfBit;
         constexpr static unsigned long PosInf   = Real | PosInfBit;
+        constexpr static unsigned long Numeric  = (1 << 7) - 1;
 
         /*
          * tags and types for other atoms
          */
-        constexpr static unsigned long Null      { 1 << 7 };
-        constexpr static unsigned long Boolean   { 1 << 8 };
-        constexpr static unsigned long Character { 1 << 9 };
+        constexpr static unsigned long Null         { 1 << 7 };
+        constexpr static unsigned long Nil          { 1 << 8 };
+        constexpr static unsigned long Boolean      { 1 << 9 };
+        constexpr static unsigned long Character    { 1 << 10 };
+        constexpr static unsigned long Symbol       { 1 << 11 };
+        constexpr static unsigned long Keyword      { 1 << 12 };
+        constexpr static unsigned long String       { 1 << 13 };
+        constexpr static unsigned long Error        { 1 << 14 };
+        constexpr static unsigned long Cons         { 1 << 15 };
+        constexpr static unsigned long Vector       { 1 << 16 };
+        constexpr static unsigned long ByteVector   { 1 << 17 };
+        constexpr static unsigned long Dict         { 1 << 18 };
+        constexpr static unsigned long Closure      { 1 << 19 };
+        constexpr static unsigned long Class        { 1 << 20 };
+        constexpr static unsigned long Instance     { 1 << 21 };
+        constexpr static unsigned long Continuation { 1 << 22 };
+
+        constexpr static unsigned long Procedure = Closure | Class | Instance;
 
         unsigned long type;
 
@@ -45,7 +63,7 @@ namespace scam
         {
             bool boolValue;
 
-	    char charValue;
+            char charValue;
 
             struct
             {
@@ -72,5 +90,7 @@ namespace scam
         } value;
     };
 }
+
+#define BOOLVAL(data) ((data).value.boolValue)
 
 #endif

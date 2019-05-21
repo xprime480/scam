@@ -11,6 +11,7 @@ using namespace std;
 ScamVector::ScamVector(ExprVec const & elts)
     : elts(elts)
 {
+    data.type = ScamData::Vector;
 }
 
 ScamVector * ScamVector::makeInstance(ExprVec const & elts)
@@ -41,11 +42,6 @@ string ScamVector::toString() const
     s << ")";
 
     return s.str();
-}
-
-bool ScamVector::isVector() const
-{
-    return true;
 }
 
 size_t ScamVector::length() const

@@ -11,6 +11,7 @@ ScamError::ScamError(char const * msg, bool managed)
     : ScamExpr(managed)
     , msg(msg)
 {
+    data.type = ScamData::Error;
 }
 
 ScamError * ScamError::makeInstance(char const * msg, bool managed)
@@ -21,16 +22,6 @@ ScamError * ScamError::makeInstance(char const * msg, bool managed)
 string ScamError::toString() const
 {
     return msg;
-}
-
-bool ScamError::isNull() const
-{
-    return false;
-}
-
-bool ScamError::error() const
-{
-    return true;
 }
 
 bool ScamError::equals(ConstExprHandle expr) const

@@ -30,9 +30,6 @@ namespace scam
         void
         apply(ExprHandle args, Continuation * cont, Env * env) override;
 
-        bool isProcedure() const override;
-        bool isInstance() const override;
-
         void setSelf(ExprHandle expr) const override;
         void setParent(ExprHandle expr) const override;
 

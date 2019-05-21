@@ -31,8 +31,6 @@ namespace scam
         void
         apply(ExprHandle args, Continuation * cont, Env * env) override;
 
-        bool isProcedure() const override;
-
         ExprHandle withEnvUpdate(Env * updated) const override;
 
     private:

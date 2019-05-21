@@ -12,6 +12,7 @@ ScamSymbol::ScamSymbol(string const & value, bool managed)
     : ScamExpr(managed)
     , value(value)
 {
+    data.type = ScamData::Symbol;
 }
 
 ScamSymbol * ScamSymbol::makeInstance(std::string const & value, bool managed)
@@ -40,11 +41,6 @@ void ScamSymbol::eval(Continuation * cont, Env * env) const
     }
 
     cont->run(evaluated);
-}
-
-bool ScamSymbol::isSymbol() const
-{
-    return true;
 }
 
 bool ScamSymbol::equals(ConstExprHandle expr) const

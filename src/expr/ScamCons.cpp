@@ -15,6 +15,7 @@ ScamCons::ScamCons(ExprHandle car, ExprHandle cdr)
     : car(car)
     , cdr(cdr)
 {
+    data.type = ScamData::Cons;
 }
 
 ScamCons * ScamCons::makeInstance(ExprHandle car, ExprHandle cdr)
@@ -60,22 +61,6 @@ void ScamCons::eval(Continuation * cont, Env * env) const
 void ScamCons::mapEval(Continuation * cont, Env * env) const
 {
     workQueueHelper<MapWorker>(cont, env, car, cdr);
-}
-
-bool ScamCons::isCons() const
-{
-    return true;
-}
-
-bool ScamCons::isList() const
-{
-    if ( cdr->isNil() ) {
-        return true;
-    }
-    if ( ! cdr->isCons() ) {
-        return false;
-    }
-    return cdr->isList();
 }
 
 bool ScamCons::equals(ConstExprHandle expr) const

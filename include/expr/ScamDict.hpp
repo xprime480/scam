@@ -29,10 +29,6 @@ namespace scam
         void
         apply(ExprHandle args, Continuation * cont, Env * env) override;
 
-        bool truth() const override;
-
-        bool isDict() const override;
-
         size_t length() const override;
 
         bool equals(ConstExprHandle expr) const override;
