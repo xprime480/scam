@@ -13,9 +13,6 @@
 using namespace scam;
 using namespace std;
 
-#define NUMERIC(data) ((data).value.numericValue)
-#define EXACT(data) (NUMERIC(data).exact)
-
 #define REALPART(data) (NUMERIC(data).value.complexValue.real)
 #define IMAGPART(data) (NUMERIC(data).value.complexValue.imag)
 
@@ -311,11 +308,6 @@ bool ScamNumeric::equals(ConstExprHandle expr) const
     }
 
     return true;
-}
-
-bool ScamNumeric::isExact() const
-{
-    return EXACT(data);
 }
 
 ConstExprHandle ScamNumeric::realPart() const

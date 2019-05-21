@@ -30,7 +30,7 @@ namespace scam
 
         bool isNull() const;
         bool error() const;
-	bool truth() const;
+        bool truth() const;
 
         bool isBoolean() const;
         bool isChar() const;
@@ -40,7 +40,7 @@ namespace scam
         bool isKeyword() const;
 
         bool isNumeric() const;
-        virtual bool isExact() const;
+        bool isExact() const;
         bool isComplex() const;
         bool isReal() const;
         bool isRational() const;

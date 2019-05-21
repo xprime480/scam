@@ -62,7 +62,6 @@ namespace scam
 
         constexpr static unsigned long Applicable = Dict | Procedure | Primitive | SpecialForm | Continuation;
 
-
         /**
          * member data
          */
@@ -108,5 +107,9 @@ namespace scam
 }
 
 #define BOOLVAL(data) ((data).value.boolValue)
+
+#define NUMERIC(data) ((data).value.numericValue)
+#define EXACT(data) (NUMERIC(data).exact)
+
 
 #endif

@@ -118,11 +118,13 @@ bool ScamExpr::isNumeric() const
 
 bool ScamExpr::isExact() const
 {
-    stringstream s;
-    s << "Exactness has no meaning for <" << this->toString() << ">";
-    throw ScamException(s.str());
+    if ( ! isNumeric() ) {
+        stringstream s;
+        s << "Exactness has no meaning for <" << this->toString() << ">";
+        throw ScamException(s.str());
+    }
 
-    return false;
+    return EXACT(data);
 }
 
 bool ScamExpr::isComplex() const
@@ -218,12 +220,12 @@ bool ScamExpr::isCons() const
 bool ScamExpr::isList() const
 {
     if ( isNil() ) {
-	return true;
+        return true;
     }
     if ( isCons() ) {
-	return getCdr()->isList();
+        return getCdr()->isList();
     }
-    
+
     return false;
 }
 

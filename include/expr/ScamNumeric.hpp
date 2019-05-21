@@ -55,8 +55,6 @@ namespace scam
         ConstExprHandle imagPart() const override;
 
         bool equals(ConstExprHandle expr) const override;
-
-        bool isExact() const override;
     };
 }
 
