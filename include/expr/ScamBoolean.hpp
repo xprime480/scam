@@ -20,9 +20,6 @@ namespace scam
         bool isBoolean() const override;
 
         bool equals(ConstExprHandle expr) const override;
-
-    private:
-        bool value;
     };
 }
 

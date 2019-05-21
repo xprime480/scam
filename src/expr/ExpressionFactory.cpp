@@ -55,19 +55,19 @@ ExprHandle ExpressionFactory::makeNumeric(string const & value)
 
 ScamNumeric * ExpressionFactory::makeNaN()
 {
-    static NaNType tag;
+    static ScamData::NaNType tag;
     return standardMemoryManager.make<ScamNumeric>(tag);
 }
 
 ScamNumeric * ExpressionFactory::makeNegInf()
 {
-    static NegInfType tag;
+    static ScamData::NegInfType tag;
     return standardMemoryManager.make<ScamNumeric>(tag);
 }
 
 ScamNumeric * ExpressionFactory::makePosInf()
 {
-    static PosInfType tag;
+    static ScamData::PosInfType tag;
     return standardMemoryManager.make<ScamNumeric>(tag);
 }
 

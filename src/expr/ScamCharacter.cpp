@@ -7,9 +7,12 @@
 using namespace scam;
 using namespace std;
 
+#define CHARVAL(data) ((data).value.charValue)
+
 ScamCharacter::ScamCharacter(const string & value)
-    : value(0 == value.size() ? '\0' : value[value.size() - 1])
 {
+    data.type = ScamData::Character;
+    CHARVAL(data) = 0 == value.size() ? '\0' : value[value.size() - 1];
 }
 
 ScamCharacter * ScamCharacter::makeInstance(const string & value)
@@ -20,7 +23,7 @@ ScamCharacter * ScamCharacter::makeInstance(const string & value)
 string ScamCharacter::toString() const
 {
     stringstream s;
-    s << "#\\" << value;
+    s << "#\\" << CHARVAL(data);
     return s.str();
 }
 
@@ -31,7 +34,7 @@ bool ScamCharacter::isChar() const
 
 char ScamCharacter::toChar() const
 {
-    return value;
+    return CHARVAL(data);
 }
 
 bool ScamCharacter::equals(ConstExprHandle expr) const
@@ -40,5 +43,5 @@ bool ScamCharacter::equals(ConstExprHandle expr) const
         return false;
     }
     ScamCharacter const * that = dynamic_cast<ScamCharacter const *>(expr);
-    return value == that->value;
+    return CHARVAL(data) == CHARVAL(that->data);
 }

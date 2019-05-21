@@ -19,9 +19,6 @@ namespace scam
         char toChar() const override;
 
         bool equals(ConstExprHandle expr) const override;
-
-    private:
-        const char value;
     };
 }
 

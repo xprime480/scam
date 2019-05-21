@@ -5,10 +5,13 @@
 using namespace scam;
 using namespace std;
 
+#define BOOLVAL(data) ((data).value.boolValue)
+
 ScamBoolean::ScamBoolean(bool value)
     : ScamExpr(false)
-    , value(value)
 {
+    data.type = ScamData::Boolean;
+    BOOLVAL(data) = value;
 }
 
 ScamBoolean * ScamBoolean::makeInstance(bool value)
@@ -21,7 +24,7 @@ ScamBoolean * ScamBoolean::makeInstance(bool value)
 
 string ScamBoolean::toString() const
 {
-    if ( value ) {
+    if ( BOOLVAL(data) ) {
         return "#t";
     }
     return "#f";
@@ -29,7 +32,7 @@ string ScamBoolean::toString() const
 
 bool ScamBoolean::truth() const
 {
-    return value;
+    return BOOLVAL(data);
 }
 
 bool ScamBoolean::isBoolean() const
@@ -43,5 +46,5 @@ bool ScamBoolean::equals(ConstExprHandle expr) const
         return false;
     }
     ScamBoolean const * that = dynamic_cast<ScamBoolean const *>(expr);
-    return value == that->value;
+    return BOOLVAL(data) == BOOLVAL(that->data);
 }

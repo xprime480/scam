@@ -2,23 +2,20 @@
 #define SCAMNUMERIC_H 1
 
 #include "expr/ScamExpr.hpp"
+#include "expr/ScamData.hpp"
 
 #include <string>
 
 namespace scam
 {
-    class NaNType {};
-    class NegInfType {};
-    class PosInfType {};
-
     class ScamNumeric : public ScamExpr
     {
     private:
         friend class MemoryManager;
 
-        explicit ScamNumeric(NaNType tag);
-        explicit ScamNumeric(NegInfType tag);
-        explicit ScamNumeric(PosInfType tag);
+        explicit ScamNumeric(ScamData::NaNType tag);
+        explicit ScamNumeric(ScamData::NegInfType tag);
+        explicit ScamNumeric(ScamData::PosInfType tag);
 
         ScamNumeric(ExprHandle real, ExprHandle imag, bool managed = true);
         ScamNumeric(double value, bool exact, bool managed = true);
@@ -29,9 +26,9 @@ namespace scam
         explicit ScamNumeric(bool exact, bool managed = true);
 
     private:
-        static ScamNumeric * makeInstance(NaNType tag);
-        static ScamNumeric * makeInstance(NegInfType tag);
-        static ScamNumeric * makeInstance(PosInfType tag);
+        static ScamNumeric * makeInstance(ScamData::NaNType tag);
+        static ScamNumeric * makeInstance(ScamData::NegInfType tag);
+        static ScamNumeric * makeInstance(ScamData::PosInfType tag);
 
         static ScamNumeric *
         makeInstance(ExprHandle real, ExprHandle imag, bool managed = true);
@@ -70,27 +67,6 @@ namespace scam
         bool equals(ConstExprHandle expr) const override;
 
         bool isExact() const override;
-
-    private:
-        bool exact;
-        unsigned long type;
-        union
-        {
-            struct
-            {
-                ExprHandle real;
-                ExprHandle imag;
-            }  complexValue;
-
-            double realValue;
-
-            struct {
-                int num;
-                int den;
-            } rationalValue;
-
-            int intValue;
-        } value;
     };
 }
 

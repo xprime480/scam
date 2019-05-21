@@ -4,6 +4,7 @@
 #include "util/ManagedObject.hpp"
 
 #include "ScamFwd.hpp"
+#include "expr/ScamData.hpp"
 
 #include <string>
 
@@ -85,6 +86,9 @@ namespace scam
         void setMeta(std::string const & key, ExprHandle value) const;
         bool hasMeta(std::string const & key) const;
         ExprHandle getMeta(std::string const & key) const;
+
+    protected:
+	ScamData data;
 
     private:
         mutable Env * metadata;
