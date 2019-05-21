@@ -67,6 +67,12 @@ namespace scam
 
             struct
             {
+                ExprHandle car;
+                ExprHandle cdr;
+            }  consValue;
+
+            struct
+            {
                 bool exact;
                 union
                 {

@@ -27,10 +27,6 @@ namespace scam
         ExprHandle nthcdr(size_t n) const override;
 
         bool equals(ConstExprHandle expr) const override;
-
-    private:
-        ExprHandle car;
-        ExprHandle cdr;
     };
 }
 

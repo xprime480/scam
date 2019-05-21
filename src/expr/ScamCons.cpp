@@ -11,11 +11,15 @@
 using namespace scam;
 using namespace std;
 
+#define CAR(data) (data.value.consValue.car)
+#define CDR(data) (data.value.consValue.cdr)
+
 ScamCons::ScamCons(ExprHandle car, ExprHandle cdr)
-    : car(car)
-    , cdr(cdr)
 {
     data.type = ScamData::Cons;
+
+    CAR(data) = car;
+    CDR(data) = cdr;
 }
 
 ScamCons * ScamCons::makeInstance(ExprHandle car, ExprHandle cdr)
@@ -27,8 +31,8 @@ void ScamCons::mark() const
 {
     if ( ! isMarked() ) {
         ScamExpr::mark();
-        car->mark();
-        cdr->mark();
+        CAR(data)->mark();
+        CDR(data)->mark();
     }
 }
 
@@ -36,8 +40,8 @@ string ScamCons::toString() const
 {
     stringstream s;
     s << "(";
-    s << car->toString();
-    ExprHandle next = cdr;
+    s << CAR(data)->toString();
+    ExprHandle next = CDR(data);
     while ( ! next->isNil() ) {
         if ( next->isCons() ) {
             s << " " << next->getCar()->toString();
@@ -55,12 +59,12 @@ string ScamCons::toString() const
 
 void ScamCons::eval(Continuation * cont, Env * env) const
 {
-    workQueueHelper<ConsWorker>(cont, env, car, cdr);
+    workQueueHelper<ConsWorker>(cont, env, CAR(data), CDR(data));
 }
 
 void ScamCons::mapEval(Continuation * cont, Env * env) const
 {
-    workQueueHelper<MapWorker>(cont, env, car, cdr);
+    workQueueHelper<MapWorker>(cont, env, CAR(data), CDR(data));
 }
 
 bool ScamCons::equals(ConstExprHandle expr) const
@@ -69,21 +73,23 @@ bool ScamCons::equals(ConstExprHandle expr) const
         return false;
     }
     ScamCons const * that = dynamic_cast<ScamCons const *>(expr);
-    return (car->equals(that->car) && cdr->equals(that->cdr) );
+    return (CAR(data)->equals(CAR(that->data)) &&
+            CDR(data)->equals(CDR(that->data)) );
 }
 
 ExprHandle ScamCons::getCar() const
 {
-    return car;
+    return CAR(data);
 }
 
 ExprHandle ScamCons::getCdr() const
 {
-    return cdr;
+    return CDR(data);
 }
 
 size_t ScamCons::length() const
 {
+    ExprHandle cdr = CDR(data);
     size_t len = 1;
     if ( cdr->isCons() ) {
         len += cdr->length();
@@ -104,10 +110,11 @@ ExprHandle ScamCons::nthcar(size_t n) const
                                             toString());
     };
 
+    ExprHandle cdr = CDR(data);
     ExprHandle rv;
 
     if ( 0 == n ) {
-        rv = car;
+        rv = CAR(data);
     }
     else if ( cdr->isCons() ) {
         rv = cdr->nthcar(n-1);
@@ -134,6 +141,7 @@ ExprHandle ScamCons::nthcdr(size_t n) const
                                             toString());
     };
 
+    ExprHandle cdr = CDR(data);
     ExprHandle rv;
 
     if ( 0 == n ) {
