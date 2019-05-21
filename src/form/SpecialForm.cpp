@@ -9,6 +9,7 @@ SpecialForm::SpecialForm(string const & name, bool managed)
     : ScamExpr(managed)
     , name(name)
 {
+    data.type = ScamData::SpecialForm;
 }
 
 string SpecialForm::toString() const
@@ -16,9 +17,4 @@ string SpecialForm::toString() const
     stringstream s;
     s << "Special Form " << name;
     return s.str();
-}
-
-bool SpecialForm::hasApply() const
-{
-    return true;
 }

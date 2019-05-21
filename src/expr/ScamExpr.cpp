@@ -36,7 +36,7 @@ void ScamExpr::eval(Continuation * cont, Env * env) const
 
 bool ScamExpr::hasApply() const
 {
-    return false;
+    return 0 != (data.type & ScamData::Applicable);
 }
 
 void ScamExpr::apply(ExprHandle args, Continuation * cont, Env * env)

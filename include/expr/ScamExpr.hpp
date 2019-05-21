@@ -21,7 +21,7 @@ namespace scam
         virtual std::string toString() const = 0;
         virtual void eval(Continuation * cont, Env * env) const;
 
-        virtual bool hasApply() const;
+        bool hasApply() const;
 
         virtual void
         apply(ExprHandle args, Continuation * cont, Env * env);

@@ -21,11 +21,6 @@ string Primitive::toString() const
     return s.str();
 }
 
-bool Primitive::hasApply() const
-{
-    return true;
-}
-
 void Primitive::apply(ExprHandle args, Continuation * cont, Env * env)
 {
     /*

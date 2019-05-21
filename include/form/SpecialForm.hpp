@@ -12,8 +12,6 @@ namespace scam
 
         std::string toString() const override;
 
-        bool hasApply() const override;
-
     private:
         std::string const name;
     };

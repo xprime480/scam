@@ -57,7 +57,10 @@ namespace scam
 
         constexpr static unsigned long Procedure = Closure | Class | Instance;
 
-        constexpr static unsigned long Primitive { 1 << 23 };
+        constexpr static unsigned long Primitive   { 1 << 23 };
+        constexpr static unsigned long SpecialForm { 1 << 24 };
+
+        constexpr static unsigned long Applicable = Dict | Procedure | Primitive | SpecialForm | Continuation;
 
 
         /**

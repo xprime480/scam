@@ -61,11 +61,6 @@ string ScamClosure::toString() const
     return s.str();
 }
 
-bool ScamClosure::hasApply() const
-{
-    return true;
-}
-
 void ScamClosure::apply(ExprHandle args, Continuation * cont, Env * env)
 {
     workQueueHelper<ClosureWorker>(parser,

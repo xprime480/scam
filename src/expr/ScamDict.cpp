@@ -70,11 +70,6 @@ string ScamDict::toString() const
     return s.str();
 }
 
-bool ScamDict::hasApply() const
-{
-    return true;
-}
-
 void ScamDict::apply(ExprHandle args, Continuation * cont, Env * env)
 {
     DictOpsParser * parser = standardMemoryManager.make<DictOpsParser>();

@@ -31,11 +31,6 @@ string ScamContinuation::toString() const
     return value;
 }
 
-bool ScamContinuation::hasApply() const
-{
-    return true;
-}
-
 void ScamContinuation::apply(ExprHandle args, Continuation * cont,  Env * env)
 {
     SingletonParser * parser = getSingletonOfAnythingParser();
