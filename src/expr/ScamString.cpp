@@ -4,9 +4,9 @@ using namespace scam;
 using namespace std;
 
 ScamString::ScamString(string const & value)
-    : value(value)
 {
     data.type = ScamData::String;
+    STRVAL(data) = value;
 }
 
 ScamString * ScamString::makeInstance(std::string const & value)
@@ -16,7 +16,7 @@ ScamString * ScamString::makeInstance(std::string const & value)
 
 string ScamString::toString() const
 {
-    return value;
+    return STRVAL(data);
 }
 
 bool ScamString::equals(ConstExprHandle expr) const
@@ -25,6 +25,6 @@ bool ScamString::equals(ConstExprHandle expr) const
         return false;
     }
     ScamString const * that = dynamic_cast<ScamString const *>(expr);
-    return value == that->value;
+    return STRVAL(data) == STRVAL(that->data);
 }
 

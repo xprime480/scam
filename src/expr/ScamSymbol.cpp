@@ -10,9 +10,9 @@ using namespace std;
 
 ScamSymbol::ScamSymbol(string const & value, bool managed)
     : ScamExpr(managed)
-    , value(value)
 {
     data.type = ScamData::Symbol;
+    STRVAL(data) = value;
 }
 
 ScamSymbol * ScamSymbol::makeInstance(std::string const & value, bool managed)
@@ -22,7 +22,7 @@ ScamSymbol * ScamSymbol::makeInstance(std::string const & value, bool managed)
 
 string ScamSymbol::toString() const
 {
-    return value;
+    return STRVAL(data);
 }
 
 void ScamSymbol::eval(Continuation * cont, Env * env) const
@@ -35,7 +35,7 @@ void ScamSymbol::eval(Continuation * cont, Env * env) const
     else {
         evaluated =
             ExpressionFactory::makeError("Symbol ",
-                                         value,
+                                         STRVAL(data),
                                          " does not exist",
                                          " in the current environment");
     }
@@ -49,7 +49,7 @@ bool ScamSymbol::equals(ConstExprHandle expr) const
         return false;
     }
     ScamSymbol const * that = dynamic_cast<ScamSymbol const *>(expr);
-    return value == that->value;
+    return STRVAL(data) == STRVAL(that->data);
 }
 
 

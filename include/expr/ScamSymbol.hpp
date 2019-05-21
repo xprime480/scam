@@ -18,9 +18,6 @@ namespace scam
         void eval(Continuation * cont, Env * env) const override;
 
         bool equals(ConstExprHandle expr) const override;
-
-    private:
-        std::string const value;
     };
 }
 

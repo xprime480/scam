@@ -18,9 +18,6 @@ namespace scam
         std::string toString() const override;
 
         bool equals(ConstExprHandle expr) const override;
-
-    private:
-        std::string const msg;
     };
 }
 

@@ -9,9 +9,9 @@ using namespace std;
 
 ScamError::ScamError(char const * msg, bool managed)
     : ScamExpr(managed)
-    , msg(msg)
 {
     data.type = ScamData::Error;
+    STRVAL(data) = msg;
 }
 
 ScamError * ScamError::makeInstance(char const * msg, bool managed)
@@ -21,7 +21,7 @@ ScamError * ScamError::makeInstance(char const * msg, bool managed)
 
 string ScamError::toString() const
 {
-    return msg;
+    return STRVAL(data);
 }
 
 bool ScamError::equals(ConstExprHandle expr) const
@@ -31,6 +31,6 @@ bool ScamError::equals(ConstExprHandle expr) const
     }
 
     ScamError const * that = dynamic_cast<ScamError const *>(expr);
-    return msg == that->msg;
+    return STRVAL(data) == STRVAL(that->data);
 }
 

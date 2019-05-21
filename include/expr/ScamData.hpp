@@ -3,6 +3,8 @@
 
 #include "ScamFwd.hpp"
 
+#include <string>
+
 namespace scam
 {
     struct ScamData
@@ -103,6 +105,8 @@ namespace scam
             } numericValue ;
 
         } value;
+
+        std::string strVal;
     };
 }
 
@@ -111,5 +115,6 @@ namespace scam
 #define NUMERIC(data) ((data).value.numericValue)
 #define EXACT(data) (NUMERIC(data).exact)
 
+#define STRVAL(data) ((data).strVal)
 
 #endif
