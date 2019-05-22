@@ -11,13 +11,7 @@ using namespace std;
 ScamVector::ScamVector(ExprVec const & elts)
     : ScamExpr(ScamData::Vector)
 {
-    VECTORP(data) = new remove_reference<decltype(VECTOR(data))>::type;
     VECTOR(data) = elts;
-}
-
-ScamVector::~ScamVector()
-{
-    delete VECTORP(data);
 }
 
 ScamVector * ScamVector::makeInstance(ExprVec const & elts)

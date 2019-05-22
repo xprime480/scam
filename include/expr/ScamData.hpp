@@ -17,6 +17,12 @@ namespace scam
     {
     public:
         ScamData(unsigned long type);
+        ~ScamData();
+
+        ScamData(const ScamData &) = delete;
+        ScamData operator=(const ScamData &) = delete;
+        ScamData(ScamData &&) = delete;
+        ScamData operator=(ScamData &&) = delete;
 
         /*
          * tags and types for numeric types
@@ -82,6 +88,8 @@ namespace scam
 
             char charValue;
 
+            std::string * strVal;
+
             struct
             {
                 ExprHandle car;
@@ -142,12 +150,6 @@ namespace scam
             Continuation * contData;
 
         } value;
-
-        /*
-         * The following cannot go in a union.
-         */
-        std::string strVal;
-
     };
 }
 
@@ -156,13 +158,19 @@ namespace scam
 #define NUMERIC(data) ((data).value.numericValue)
 #define EXACT(data) (NUMERIC(data).exact)
 
-#define STRVAL(data) ((data).strVal)
+#define STRVALP(data) ((data).value.strVal)
+#define STRVAL(data) (*(STRVALP(data)))
 
 #define VECTORP(data) ((data).value.vectorData)
 #define VECTOR(data) (*(VECTORP(data)))
 
 #define BYTEVECTORP(data) ((data).value.byteVectorData)
 #define BYTEVECTOR(data) (*(BYTEVECTORP(data)))
+
+#define DICTKEYSP(data) ((data).value.dictData.keys)
+#define DICTKEYS(data) (*(DICTKEYSP(data)))
+#define DICTVALSP(data) ((data).value.dictData.vals)
+#define DICTVALS(data) (*(DICTVALSP(data)))
 
 #define CLASSDEF(data) ((data).value.classValue.def)
 #define CLASSENV(data) ((data).value.classValue.capture)

@@ -17,8 +17,6 @@ namespace scam
         static ScamByteVector * makeInstance(ByteVec const & elts);
 
     public:
-        ~ScamByteVector();
-
         std::string toString() const override;
 
         size_t length() const override;

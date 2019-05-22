@@ -10,16 +10,9 @@
 using namespace scam;
 using namespace std;
 
-#define DICTKEYSP(data) ((data).value.dictData.keys)
-#define DICTKEYS(data) (*(DICTKEYSP(data)))
-#define DICTVALSP(data) ((data).value.dictData.vals)
-#define DICTVALS(data) (*(DICTVALSP(data)))
-
 ScamDict::ScamDict()
     : ScamExpr(ScamData::Dict)
 {
-    DICTKEYSP(data) = new remove_reference<decltype(DICTKEYS(data))>::type;
-    DICTVALSP(data) = new remove_reference<decltype(DICTVALS(data))>::type;
 }
 
 ScamDict::ScamDict(ValVec const & args)
@@ -35,12 +28,6 @@ ScamDict::ScamDict(ValVec const & args)
         ExprHandle val = input[idx+1];
         put(key, val);
     }
-}
-
-ScamDict::~ScamDict()
-{
-    delete DICTKEYSP(data);
-    delete DICTVALSP(data);
 }
 
 ScamDict * ScamDict::makeInstance()

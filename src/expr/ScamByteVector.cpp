@@ -11,13 +11,7 @@ using namespace std;
 ScamByteVector::ScamByteVector(ByteVec const & elts)
     : ScamExpr(ScamData::ByteVector)
 {
-    BYTEVECTORP(data) = new remove_reference<decltype(BYTEVECTOR(data))>::type;
     BYTEVECTOR(data) = elts;
-}
-
-ScamByteVector::~ScamByteVector()
-{
-    delete BYTEVECTORP(data);
 }
 
 ScamByteVector * ScamByteVector::makeInstance(ByteVec const & elts)

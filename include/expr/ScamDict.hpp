@@ -20,8 +20,6 @@ namespace scam
         static ScamDict * makeInstance(ValVec const & args);
 
     public:
-        ~ScamDict();
-	
         void mark() const override;
 
         std::string toString() const override;

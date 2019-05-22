@@ -17,8 +17,6 @@ namespace scam
         static ScamVector * makeInstance(ExprVec const & elts);
 
     public:
-        ~ScamVector();
-	
         void mark() const override;
 
         std::string toString() const override;
