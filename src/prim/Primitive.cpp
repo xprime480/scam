@@ -10,14 +10,14 @@ using namespace std;
 
 Primitive::Primitive(string const & name)
     : ScamExpr(ScamData::Primitive)
-    , name(name)
 {
+    STRVAL(data) = name;
 }
 
 string Primitive::toString() const
 {
     stringstream s;
-    s << "Primitive " << name;
+    s << "Primitive " << STRVAL(data);
     return s.str();
 }
 

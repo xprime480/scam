@@ -7,13 +7,13 @@ using namespace std;
 
 SpecialForm::SpecialForm(string const & name, bool managed)
     : ScamExpr(ScamData::SpecialForm, managed)
-    , name(name)
 {
+    STRVAL(data) = name;
 }
 
 string SpecialForm::toString() const
 {
     stringstream s;
-    s << "Special Form " << name;
+    s << "Special Form " << STRVAL(data);
     return s.str();
 }

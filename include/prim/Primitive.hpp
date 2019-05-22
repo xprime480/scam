@@ -18,9 +18,6 @@ namespace scam
 
         virtual void
         applyArgs(ExprHandle args, Continuation * cont) = 0;
-
-    protected:
-        std::string const name;
     };
 }
 
