@@ -21,8 +21,6 @@ namespace scam
         static ScamInstance* makeInstance(const ScamClass * cls, Env * env);
 
     public:
-        void mark() const override;
-
         void
         apply(ExprHandle args, Continuation * cont, Env * env) override;
 

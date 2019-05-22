@@ -16,30 +16,30 @@ ScamClassAdapter::ScamClassAdapter(const ScamClass * cls)
 
 const ScamSymbol * ScamClassAdapter::getBase() const
 {
-    return CLASSDEF(cls->data)->getBase();
+    return CLASSDEF(cls)->getBase();
 }
 
 size_t ScamClassAdapter::getVarCount() const
 {
-    return CLASSDEF(cls->data)->getVarCount();
+    return CLASSDEF(cls)->getVarCount();
 }
 
 const ScamSymbol * ScamClassAdapter::getVar(size_t idx) const
 {
-    return CLASSDEF(cls->data)->getVar(idx);
+    return CLASSDEF(cls)->getVar(idx);
 }
 
 size_t ScamClassAdapter::getMethodCount() const
 {
-    return CLASSDEF(cls->data)->getMethodCount();
+    return CLASSDEF(cls)->getMethodCount();
 }
 
 const FunctionDefParser * ScamClassAdapter::getMethod(size_t idx) const
 {
-    return CLASSDEF(cls->data)->getMethod(idx);
+    return CLASSDEF(cls)->getMethod(idx);
 }
 
 Env * ScamClassAdapter::getCapture() const
 {
-    return CLASSENV(cls->data);
+    return CLASSENV(cls);
 }

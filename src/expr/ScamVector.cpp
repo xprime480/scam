@@ -9,7 +9,7 @@ using namespace std;
 ScamVector::ScamVector(ExprVec const & elts)
     : ScamExpr(ScamData::Vector)
 {
-    VECTOR(data) = elts;
+    VECTOR(this) = elts;
 }
 
 ScamVector * ScamVector::makeInstance(ExprVec const & elts)
@@ -17,19 +17,9 @@ ScamVector * ScamVector::makeInstance(ExprVec const & elts)
     return new ScamVector(elts);
 }
 
-void ScamVector::mark() const
-{
-    if ( ! isMarked() ) {
-        ScamExpr::mark();
-        for ( auto const & e : VECTOR(data) ) {
-            e->mark();
-        }
-    }
-}
-
 size_t ScamVector::length() const
 {
-    return VECTOR(data).size();
+    return VECTOR(this).size();
 }
 
 ExprHandle ScamVector::nthcar(size_t n) const
@@ -42,7 +32,7 @@ ExprHandle ScamVector::nthcar(size_t n) const
                                             "-element vector");
     }
 
-    return VECTOR(data)[n];
+    return VECTOR(this)[n];
 }
 
 bool ScamVector::equals(ConstExprHandle expr) const
@@ -50,12 +40,12 @@ bool ScamVector::equals(ConstExprHandle expr) const
     if ( ! expr->isVector() ) {
         return false;
     }
-    ScamVector const * that = dynamic_cast<ScamVector const *>(expr);
-    if ( VECTOR(data).size() != VECTOR(that->data).size() ) {
+
+    if ( VECTOR(this).size() != VECTOR(expr).size() ) {
         return false;
     }
-    for ( size_t idx = 0 ; idx < VECTOR(data).size() ; ++idx ) {
-        if ( ! VECTOR(data)[idx]->equals(VECTOR(that->data)[idx]) ) {
+    for ( size_t idx = 0 ; idx < VECTOR(this).size() ; ++idx ) {
+        if ( ! VECTOR(this)[idx]->equals(VECTOR(expr)[idx]) ) {
             return false;
         }
     }

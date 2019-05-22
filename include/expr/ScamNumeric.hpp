@@ -11,21 +11,22 @@ namespace scam
     class ScamNumeric : public ScamExpr
     {
     public:
-        static bool isNumeric(const ScamData & data);
-        static bool isExact(const ScamData & data);
-        static bool isComplex(const ScamData & data);
-        static bool isReal(const ScamData & data);
-        static bool isRational(const ScamData & data);
-        static bool isInteger(const ScamData & data);
-        static bool isNaN(const ScamData & data);
-        static bool isNegInf(const ScamData & data);
-        static bool isPosInf(const ScamData & data);
-        static double asDouble(const ScamData & data);
-        static std::pair<int, int> asRational(const ScamData & data);
-        static int asInteger(const ScamData & data);
+        static bool isNumeric(const ScamData * data);
+        static bool isExact(const ScamData * data);
+        static bool isComplex(const ScamData * data);
+        static bool isPureComplex(const ScamData * data);
+        static bool isReal(const ScamData * data);
+        static bool isRational(const ScamData * data);
+        static bool isInteger(const ScamData * data);
+        static bool isNaN(const ScamData * data);
+        static bool isNegInf(const ScamData * data);
+        static bool isPosInf(const ScamData * data);
+        static double asDouble(const ScamData * data);
+        static std::pair<int, int> asRational(const ScamData * data);
+        static int asInteger(const ScamData * data);
 
-        static ConstExprHandle realPart(const ScamData & data);
-        static ConstExprHandle imagPart(const ScamData & data);
+        static ConstExprHandle realPart(const ScamData * data);
+        static ConstExprHandle imagPart(const ScamData * data);
 
     private:
         friend class MemoryManager;
@@ -60,8 +61,6 @@ namespace scam
         makeInstance(int value, bool exact, bool managed = true);
 
     public:
-        void mark() const override;
-
         bool equals(ConstExprHandle expr) const override;
     };
 }

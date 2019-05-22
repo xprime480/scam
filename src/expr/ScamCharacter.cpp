@@ -6,7 +6,7 @@ using namespace std;
 ScamCharacter::ScamCharacter(const string & value)
     : ScamExpr(ScamData::Character)
 {
-    CHARVAL(data) = 0 == value.size() ? '\0' : value[value.size() - 1];
+    CHARVAL(this) = 0 == value.size() ? '\0' : value[value.size() - 1];
 }
 
 ScamCharacter * ScamCharacter::makeInstance(const string & value)
@@ -16,7 +16,7 @@ ScamCharacter * ScamCharacter::makeInstance(const string & value)
 
 char ScamCharacter::toChar() const
 {
-    return CHARVAL(data);
+    return CHARVAL(this);
 }
 
 bool ScamCharacter::equals(ConstExprHandle expr) const
@@ -24,6 +24,6 @@ bool ScamCharacter::equals(ConstExprHandle expr) const
     if ( ! expr->isChar() ) {
         return false;
     }
-    ScamCharacter const * that = dynamic_cast<ScamCharacter const *>(expr);
-    return CHARVAL(data) == CHARVAL(that->data);
+
+    return CHARVAL(this) == CHARVAL(expr);
 }

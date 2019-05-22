@@ -22,20 +22,20 @@ ScamInstanceAdapter::ScamInstanceAdapter(ExprHandle expr)
 
 Env * ScamInstanceAdapter::getFunctionMap() const
 {
-    return INSTANCEPRIVENV(instance->data);
+    return INSTANCEPRIVENV(instance);
 }
 
 Env * ScamInstanceAdapter::getEnv() const
 {
-    return INSTANCELOCALENV(instance->data);
+    return INSTANCELOCALENV(instance);
 }
 
 ExprHandle ScamInstanceAdapter::getParent() const
 {
     static ScamEnvKeyType parent = ScamInstance::parent;
 
-    if ( INSTANCELOCALENV(instance->data)->check(parent) ) {
-        return INSTANCELOCALENV(instance->data)->get(parent);
+    if ( INSTANCELOCALENV(instance)->check(parent) ) {
+        return INSTANCELOCALENV(instance)->get(parent);
     }
 
     return ExpressionFactory::makeNil();

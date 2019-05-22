@@ -8,7 +8,7 @@ using namespace std;
 ScamBoolean::ScamBoolean(bool value)
     : ScamExpr(ScamData::Boolean, false)
 {
-    BOOLVAL(data) = value;
+    BOOLVAL(this) = value;
 }
 
 ScamBoolean * ScamBoolean::makeInstance(bool value)
@@ -24,6 +24,6 @@ bool ScamBoolean::equals(ConstExprHandle expr) const
     if ( ! expr->isBoolean() ) {
         return false;
     }
-    ScamBoolean const * that = dynamic_cast<ScamBoolean const *>(expr);
-    return BOOLVAL(data) == BOOLVAL(that->data);
+
+    return BOOLVAL(this) == BOOLVAL(expr);
 }

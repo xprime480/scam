@@ -9,7 +9,7 @@ using namespace std;
 ScamByteVector::ScamByteVector(ByteVec const & elts)
     : ScamExpr(ScamData::ByteVector)
 {
-    BYTEVECTOR(data) = elts;
+    BYTEVECTOR(this) = elts;
 }
 
 ScamByteVector * ScamByteVector::makeInstance(ByteVec const & elts)
@@ -19,7 +19,7 @@ ScamByteVector * ScamByteVector::makeInstance(ByteVec const & elts)
 
 size_t ScamByteVector::length() const
 {
-    return BYTEVECTOR(data).size();
+    return BYTEVECTOR(this).size();
 }
 
 ExprHandle ScamByteVector::nthcar(size_t n) const
@@ -32,7 +32,7 @@ ExprHandle ScamByteVector::nthcar(size_t n) const
                                             "-element byteVector");
     }
 
-    return ExpressionFactory::makeInteger(BYTEVECTOR(data)[n], true);
+    return ExpressionFactory::makeInteger(BYTEVECTOR(this)[n], true);
 }
 
 bool ScamByteVector::equals(ConstExprHandle expr) const
@@ -40,12 +40,12 @@ bool ScamByteVector::equals(ConstExprHandle expr) const
     if ( ! expr->isByteVector() ) {
         return false;
     }
-    ScamByteVector const * that = dynamic_cast<ScamByteVector const *>(expr);
-    if ( BYTEVECTOR(data).size() != BYTEVECTOR(that->data).size() ) {
+
+    if ( BYTEVECTOR(this).size() != BYTEVECTOR(expr).size() ) {
         return false;
     }
-    for ( size_t idx = 0 ; idx < BYTEVECTOR(data).size() ; ++idx ) {
-        if ( BYTEVECTOR(data)[idx] != BYTEVECTOR(that->data)[idx] ) {
+    for ( size_t idx = 0 ; idx < BYTEVECTOR(expr).size() ; ++idx ) {
+        if ( BYTEVECTOR(this)[idx] != BYTEVECTOR(expr)[idx] ) {
             return false;
         }
     }

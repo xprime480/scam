@@ -6,7 +6,7 @@ using namespace std;
 ScamKeyword::ScamKeyword(string const & value, bool managed)
     : ScamExpr(ScamData::Keyword, managed)
 {
-    STRVAL(data) = value;
+    STRVAL(this) = value;
 }
 
 ScamKeyword * ScamKeyword::makeInstance(std::string const & value, bool managed)
@@ -19,7 +19,7 @@ bool ScamKeyword::equals(ConstExprHandle expr) const
     if ( ! expr->isKeyword() ) {
         return false;
     }
-    ScamKeyword const * that = dynamic_cast<ScamKeyword const *>(expr);
-    return STRVAL(data) == STRVAL(that->data);
+
+    return STRVAL(this) == STRVAL(expr);
 }
 

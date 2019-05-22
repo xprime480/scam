@@ -12,9 +12,9 @@ using namespace std;
 ScamClosure::ScamClosure(const LambdaParser * parser, Env * env, bool macrolike)
     : ScamExpr(ScamData::Closure)
 {
-    CLOSUREDEF(data) = parser;
-    CLOSUREENV(data) = env;
-    MACROLIKE(data) = macrolike;
+    CLOSUREDEF(this) = parser;
+    CLOSUREENV(this) = env;
+    MACROLIKE(this) = macrolike;
 }
 
 ScamClosure * ScamClosure::makeInstance(const LambdaParser * parser,
@@ -24,26 +24,17 @@ ScamClosure * ScamClosure::makeInstance(const LambdaParser * parser,
     return new ScamClosure(parser, env, macrolike);
 }
 
-void ScamClosure::mark() const
-{
-    if ( ! isMarked() ) {
-        ScamExpr::mark();
-        CLOSUREDEF(data)->mark();
-        CLOSUREENV(data)->mark();
-    }
-}
-
 void ScamClosure::apply(ExprHandle args, Continuation * cont, Env * env)
 {
-    workQueueHelper<ClosureWorker>(CLOSUREDEF(data),
-                                   CLOSUREENV(data),
+    workQueueHelper<ClosureWorker>(CLOSUREDEF(this),
+                                   CLOSUREENV(this),
                                    cont,
                                    args,
                                    env,
-                                   MACROLIKE(data));
+                                   MACROLIKE(this));
 }
 
 ExprHandle ScamClosure::withEnvUpdate(Env * updated) const
 {
-    return ExpressionFactory::makeClosure(CLOSUREDEF(data), updated);
+    return ExpressionFactory::makeClosure(CLOSUREDEF(this), updated);
 }

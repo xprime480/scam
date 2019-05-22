@@ -11,7 +11,7 @@
 using namespace scam;
 using namespace std;
 
-string ExprWriter::write(const ScamData & data)
+string ExprWriter::write(const ScamData * data)
 {
     stringstream s;
 
@@ -19,7 +19,7 @@ string ExprWriter::write(const ScamData & data)
         writeNumeric(s, data);
     }
     else {
-        switch ( data.type ) {
+        switch ( data->type ) {
         case ScamData::Boolean:
             s << (BOOLVAL(data) ? "#t" : "#f");
             break;
@@ -85,7 +85,7 @@ string ExprWriter::write(const ScamData & data)
 
         default:
             s << "don't know how to represent this object, type = "
-              << data.type;
+              << data->type;
             break;
         }
     }
@@ -93,7 +93,7 @@ string ExprWriter::write(const ScamData & data)
     return s.str() ;
 }
 
-void ExprWriter::writeByteVector(stringstream & s, const ScamData & data)
+void ExprWriter::writeByteVector(stringstream & s, const ScamData * data)
 {
     string sep { "" };
 
@@ -105,7 +105,7 @@ void ExprWriter::writeByteVector(stringstream & s, const ScamData & data)
     s << ")";
 }
 
-void ExprWriter::writeClosure(stringstream & s, const ScamData & data)
+void ExprWriter::writeClosure(stringstream & s, const ScamData * data)
 {
     s << "(";
 
@@ -129,7 +129,7 @@ void ExprWriter::writeClosure(stringstream & s, const ScamData & data)
     s << ")";
 }
 
-void ExprWriter::writeCons(stringstream & s, const ScamData & data)
+void ExprWriter::writeCons(stringstream & s, const ScamData * data)
 {
     s << "(";
     s << CAR(data)->toString();
@@ -147,7 +147,7 @@ void ExprWriter::writeCons(stringstream & s, const ScamData & data)
     s << ")";
 }
 
-void ExprWriter::writeDict(stringstream & s, const ScamData & data)
+void ExprWriter::writeDict(stringstream & s, const ScamData * data)
 {
     s << "{";
 
@@ -163,7 +163,7 @@ void ExprWriter::writeDict(stringstream & s, const ScamData & data)
     s << "}";
 }
 
-void ExprWriter::writeNumeric(stringstream & s, const ScamData & data)
+void ExprWriter::writeNumeric(stringstream & s, const ScamData * data)
 {
     if ( ScamNumeric::isNaN(data) ) {
         s << "+nan.0";
@@ -222,7 +222,7 @@ void ExprWriter::writeNumeric(stringstream & s, const ScamData & data)
     }
 }
 
-void ExprWriter::writeVector(stringstream & s, const ScamData & data)
+void ExprWriter::writeVector(stringstream & s, const ScamData * data)
 {
     string sep { "" };
 

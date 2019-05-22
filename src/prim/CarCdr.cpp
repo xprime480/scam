@@ -25,7 +25,7 @@ void CarCdr::applyArgs(ExprHandle args, Continuation * cont)
     ConsParser * cp = standardMemoryManager.make<ConsParser>();
     SingletonParser * parser = standardMemoryManager.make<SingletonParser>(cp);
     if ( ! parser->accept(args) ) {
-        failedArgParseMessage(STRVAL(data).c_str(), "(a-cons)", args, cont);
+        failedArgParseMessage(STRVAL(this).c_str(), "(a-cons)", args, cont);
         return;
     }
 

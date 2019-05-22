@@ -1,6 +1,8 @@
 #if ! defined(SCAMDATA_HPP)
 #define SCAMDATA_HPP 1
 
+#include "util/ManagedObject.hpp"
+
 #include "ScamFwd.hpp"
 
 #include <string>
@@ -13,16 +15,22 @@ namespace scam
     class Env;
     class LambdaParser;
 
-    struct ScamData
+    struct ScamData : public ManagedObject
     {
     public:
-        ScamData(unsigned long type);
+        explicit ScamData(unsigned long type, bool managed = true);
         ~ScamData();
 
         ScamData(const ScamData &) = delete;
         ScamData operator=(const ScamData &) = delete;
         ScamData(ScamData &&) = delete;
         ScamData operator=(ScamData &&) = delete;
+
+        void mark() const override final;
+
+        void setMeta(std::string const & key, ExprHandle value) const;
+        bool hasMeta(std::string const & key) const;
+        ExprHandle getMeta(std::string const & key) const;
 
         /*
          * tags and types for numeric types
@@ -150,14 +158,16 @@ namespace scam
             Continuation * contData;
 
         } value;
+
+        mutable Env * metadata;
     };
 }
 
-#define BOOLVAL(data) ((data).value.boolValue)
+#define BOOLVAL(data) ((data)->value.boolValue)
 
-#define CHARVAL(data) ((data).value.charValue)
+#define CHARVAL(data) ((data)->value.charValue)
 
-#define NUMERIC(data) ((data).value.numericValue)
+#define NUMERIC(data) ((data)->value.numericValue)
 #define EXACT(data) (NUMERIC(data).exact)
 
 #define REALPART(data) (NUMERIC(data).value.complexValue.real)
@@ -170,31 +180,33 @@ namespace scam
 
 #define INTVAL(data) (NUMERIC(data).value.intValue)
 
-#define STRVALP(data) ((data).value.strVal)
+#define STRVALP(data) ((data)->value.strVal)
 #define STRVAL(data) (*(STRVALP(data)))
 
-#define CAR(data) (data.value.consValue.car)
-#define CDR(data) (data.value.consValue.cdr)
+#define CAR(data) ((data)->value.consValue.car)
+#define CDR(data) ((data)->value.consValue.cdr)
 
-#define VECTORP(data) ((data).value.vectorData)
+#define VECTORP(data) ((data)->value.vectorData)
 #define VECTOR(data) (*(VECTORP(data)))
 
-#define BYTEVECTORP(data) ((data).value.byteVectorData)
+#define BYTEVECTORP(data) ((data)->value.byteVectorData)
 #define BYTEVECTOR(data) (*(BYTEVECTORP(data)))
 
-#define DICTKEYSP(data) ((data).value.dictData.keys)
+#define DICTKEYSP(data) ((data)->value.dictData.keys)
 #define DICTKEYS(data) (*(DICTKEYSP(data)))
-#define DICTVALSP(data) ((data).value.dictData.vals)
+#define DICTVALSP(data) ((data)->value.dictData.vals)
 #define DICTVALS(data) (*(DICTVALSP(data)))
 
-#define CLOSUREDEF(data) ((data).value.closureData.parser)
-#define CLOSUREENV(data) ((data).value.closureData.env)
-#define MACROLIKE(data) ((data).value.closureData.macrolike)
+#define CLOSUREDEF(data) ((data)->value.closureData.parser)
+#define CLOSUREENV(data) ((data)->value.closureData.env)
+#define MACROLIKE(data) ((data)->value.closureData.macrolike)
 
-#define CLASSDEF(data) ((data).value.classValue.def)
-#define CLASSENV(data) ((data).value.classValue.capture)
+#define CLASSDEF(data) ((data)->value.classValue.def)
+#define CLASSENV(data) ((data)->value.classValue.capture)
 
-#define INSTANCEPRIVENV(data) ((data).value.instanceData.priv)
-#define INSTANCELOCALENV(data) ((data).value.instanceData.local)
+#define INSTANCEPRIVENV(data) ((data)->value.instanceData.priv)
+#define INSTANCELOCALENV(data) ((data)->value.instanceData.local)
+
+#define CONTINUATION(data) ((data)->value.contData)
 
 #endif

@@ -27,15 +27,15 @@ scam::ScamEnvKeyType ScamInstance::parent =
 ScamInstance::ScamInstance(const ScamClass * cls, Env * env)
     : ScamExpr(ScamData::Instance)
 {
-    INSTANCEPRIVENV(data) = standardMemoryManager.make<Env>();
-    INSTANCELOCALENV(data) = env->extend();
+    INSTANCEPRIVENV(this) = standardMemoryManager.make<Env>();
+    INSTANCELOCALENV(this) = env->extend();
 
     ScamClassAdapter adapter(cls);
 
     size_t var_count = adapter.getVarCount();
     for ( size_t n = 0 ; n < var_count ; ++n ) {
         const ScamSymbol * var = adapter.getVar(n);
-        INSTANCELOCALENV(data)->put(var, nil);
+        INSTANCELOCALENV(this)->put(var, nil);
     }
 
     size_t fun_count = adapter.getMethodCount();
@@ -44,24 +44,15 @@ ScamInstance::ScamInstance(const ScamClass * cls, Env * env)
 
         const ScamSymbol * name = fun->getName();
         const LambdaParser * lambda = fun->getLambda();
-        ExprHandle impl = ExpressionFactory::makeClosure(lambda, INSTANCELOCALENV(data), false);
+        ExprHandle impl = ExpressionFactory::makeClosure(lambda, INSTANCELOCALENV(this), false);
 
-        INSTANCEPRIVENV(data)->put(name, impl);
+        INSTANCEPRIVENV(this)->put(name, impl);
     }
 }
 
 ScamInstance * ScamInstance::makeInstance(const ScamClass * cls, Env * env)
 {
     return new ScamInstance(cls, env);
-}
-
-void ScamInstance::mark() const
-{
-    if ( ! isMarked() ) {
-        ScamExpr::mark();
-        INSTANCELOCALENV(data)->mark();
-        INSTANCEPRIVENV(data)->mark();
-    }
 }
 
 void ScamInstance::apply(ExprHandle args, Continuation * cont, Env * env)
@@ -88,10 +79,10 @@ void ScamInstance::apply(ExprHandle args, Continuation * cont, Env * env)
 
 void ScamInstance::setSelf(ExprHandle expr) const
 {
-    INSTANCELOCALENV(data)->put(self, expr);
+    INSTANCELOCALENV(this)->put(self, expr);
 }
 
 void ScamInstance::setParent(ExprHandle expr) const
 {
-    INSTANCELOCALENV(data)->put(parent, expr);
+    INSTANCELOCALENV(this)->put(parent, expr);
 }

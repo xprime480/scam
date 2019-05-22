@@ -12,20 +12,12 @@
 using namespace scam;
 using namespace std;
 
-namespace
+bool ScamNumeric::isNumeric(const ScamData * data)
 {
-    bool isPureComplex(const ScamData & data)
-    {
-        return ScamNumeric::isComplex(data) && ! ScamNumeric::isReal(data);
-    }
+    return 0 != (data->type & ScamData::Numeric);
 }
 
-bool ScamNumeric::isNumeric(const ScamData & data)
-{
-    return 0 != (data.type & ScamData::Numeric);
-}
-
-bool ScamNumeric::isExact(const ScamData & data)
+bool ScamNumeric::isExact(const ScamData * data)
 {
     if ( ! isNumeric(data) ) {
         stringstream s;
@@ -36,42 +28,47 @@ bool ScamNumeric::isExact(const ScamData & data)
     return EXACT(data);
 }
 
-bool ScamNumeric::isComplex(const ScamData & data)
+bool ScamNumeric::isComplex(const ScamData * data)
 {
-    return ScamData::ComplexBit == (data.type & ScamData::ComplexBit);
+    return ScamData::ComplexBit == (data->type & ScamData::ComplexBit);
 }
 
-bool ScamNumeric::isReal(const ScamData & data)
+bool ScamNumeric::isPureComplex(const ScamData * data)
 {
-    return ScamData::RealBit == (data.type & ScamData::RealBit);
+    return isComplex(data) && ! isReal(data);
 }
 
-bool ScamNumeric::isRational(const ScamData & data)
+bool ScamNumeric::isReal(const ScamData * data)
 {
-    return ScamData::RationalBit == (data.type & ScamData::RationalBit);
+    return ScamData::RealBit == (data->type & ScamData::RealBit);
 }
 
-bool ScamNumeric::isInteger(const ScamData & data)
+bool ScamNumeric::isRational(const ScamData * data)
 {
-    return ScamData::IntegerBit == (data.type & ScamData::IntegerBit);
+    return ScamData::RationalBit == (data->type & ScamData::RationalBit);
 }
 
-bool ScamNumeric::isNaN(const ScamData & data)
+bool ScamNumeric::isInteger(const ScamData * data)
 {
-    return ScamData::NaNBit == (data.type & ScamData::NaNBit);
+    return ScamData::IntegerBit == (data->type & ScamData::IntegerBit);
 }
 
-bool ScamNumeric::isNegInf(const ScamData & data)
+bool ScamNumeric::isNaN(const ScamData * data)
 {
-    return ScamData::NegInfBit == (data.type & ScamData::NegInfBit);
+    return ScamData::NaNBit == (data->type & ScamData::NaNBit);
 }
 
-bool ScamNumeric::isPosInf(const ScamData & data)
+bool ScamNumeric::isNegInf(const ScamData * data)
 {
-    return ScamData::PosInfBit == (data.type & ScamData::PosInfBit);
+    return ScamData::NegInfBit == (data->type & ScamData::NegInfBit);
 }
 
-double ScamNumeric::asDouble(const ScamData & data)
+bool ScamNumeric::isPosInf(const ScamData * data)
+{
+    return ScamData::PosInfBit == (data->type & ScamData::PosInfBit);
+}
+
+double ScamNumeric::asDouble(const ScamData * data)
 {
     if ( ! isReal(data) ) {
         stringstream s;
@@ -95,7 +92,7 @@ double ScamNumeric::asDouble(const ScamData & data)
     return 0.0;
 }
 
-std::pair<int, int> ScamNumeric::asRational(const ScamData & data)
+std::pair<int, int> ScamNumeric::asRational(const ScamData * data)
 {
     if ( ! isRational(data) ) {
         stringstream s;
@@ -117,7 +114,7 @@ std::pair<int, int> ScamNumeric::asRational(const ScamData & data)
     return make_pair<int,int>(move(num), move(den));
 }
 
-int ScamNumeric::asInteger(const ScamData & data)
+int ScamNumeric::asInteger(const ScamData * data)
 {
     if ( ! isInteger(data) ) {
         stringstream s;
@@ -128,7 +125,7 @@ int ScamNumeric::asInteger(const ScamData & data)
     return INTVAL(data);
 }
 
-ConstExprHandle ScamNumeric::realPart(const ScamData & data)
+ConstExprHandle ScamNumeric::realPart(const ScamData * data)
 {
     if ( ! isNumeric(data) ) {
         stringstream s;
@@ -144,7 +141,7 @@ ConstExprHandle ScamNumeric::realPart(const ScamData & data)
     return ExpressionFactory::makeNull(); // temporary hack!!
 }
 
-ConstExprHandle ScamNumeric::imagPart(const ScamData & data)
+ConstExprHandle ScamNumeric::imagPart(const ScamData * data)
 {
     if ( ! isNumeric(data) ) {
         stringstream s;
@@ -164,58 +161,58 @@ ConstExprHandle ScamNumeric::imagPart(const ScamData & data)
 ScamNumeric::ScamNumeric(ScamData::NaNType tag)
     : ScamExpr(ScamData::NaN, false)
 {
-    EXACT(data) = false;
+    EXACT(this) = false;
 }
 
 ScamNumeric::ScamNumeric(ScamData::NegInfType tag)
     : ScamExpr(ScamData::NegInf, false)
 {
-    EXACT(data) = false;
+    EXACT(this) = false;
 }
 
 ScamNumeric::ScamNumeric(ScamData::PosInfType tag)
     : ScamExpr(ScamData::PosInf, false)
 {
-    EXACT(data) = false;
+    EXACT(this) = false;
 }
 
 ScamNumeric::ScamNumeric(ExprHandle real, ExprHandle imag, bool managed)
     : ScamExpr(ScamData::Complex, managed)
 {
-    EXACT(data) = real->isExact() && imag->isExact();
+    EXACT(this) = EXACT(real) && EXACT(imag);
 
-    if ( isPureComplex(real->getData()) || isPureComplex(imag->getData()) ) {
+    if ( isPureComplex(real) || isPureComplex(imag) ) {
         static string msg =
             "Cannot set either part a complex number to another complex number";
         throw ScamException(msg);
     }
 
-    REALPART(data) = real;
-    IMAGPART(data) = imag;
+    REALPART(this) = real;
+    IMAGPART(this) = imag;
 }
 
 ScamNumeric::ScamNumeric(double value, bool exact, bool managed)
     : ScamExpr(ScamData::Real, managed)
 {
-    EXACT(data) = exact;
-    REALVAL(data) = value;
+    EXACT(this) = exact;
+    REALVAL(this) = value;
 }
 
 ScamNumeric::ScamNumeric(int num, int den, bool exact, bool managed)
     : ScamExpr(ScamData::Rational, managed)
 {
-    EXACT(data) = exact;
+    EXACT(this) = exact;
 
     const int div = gcd(num, den);
-    NUMPART(data) = num / div;
-    DENPART(data) = den / div;
+    NUMPART(this) = num / div;
+    DENPART(this) = den / div;
 }
 
 ScamNumeric::ScamNumeric(int value, bool exact, bool managed)
     : ScamExpr(ScamData::Integer, managed)
 {
-    EXACT(data) = exact;
-    INTVAL(data) = value;
+    EXACT(this) = exact;
+    INTVAL(this) = value;
 }
 
 ScamNumeric * ScamNumeric::makeInstance(ScamData::NaNType tag)
@@ -260,50 +257,36 @@ ScamNumeric::makeInstance(int value, bool exact, bool managed)
     return new ScamNumeric(value, exact, managed);
 }
 
-void ScamNumeric::mark() const
-{
-    if ( ! isMarked() ) {
-        ScamExpr::mark();
-
-        if ( isPureComplex(data) ) {
-            REALPART(data)->mark();
-            IMAGPART(data)->mark();
-        }
-    }
-}
-
 bool ScamNumeric::equals(ConstExprHandle expr) const
 {
-    const ScamData & that = expr->getData();
-
-    if ( ! isNumeric(that) ) {
+    if ( ! isNumeric(expr) ) {
         return false;
     }
 
-    if ( isNaN(data) || isNaN(that) ) {
-        return isNaN(data) && isNaN(data);
+    if ( isNaN(this) || isNaN(expr) ) {
+        return isNaN(this) && isNaN(expr);
     }
-    if ( isNegInf(data) || isNegInf(that) ) {
-        return isNegInf(data) && isNegInf(data);
+    if ( isNegInf(this) || isNegInf(expr) ) {
+        return isNegInf(this) && isNegInf(expr);
     }
-    if ( isPosInf(data) || isPosInf(that) ) {
-        return isPosInf(data) && isPosInf(that);
+    if ( isPosInf(this) || isPosInf(expr) ) {
+        return isPosInf(this) && isPosInf(expr);
     }
 
     /* temporary hack!!! */
-    ConstExprHandle thisH = realPart(data);
-    ConstExprHandle thatH = realPart(that);
-    
-    const double thisR = asDouble(thisH->isNull() ? data : thisH->getData());
-    const double thatR = asDouble(thatH->isNull() ? that : thatH->getData());
+    ConstExprHandle thisH = realPart(this);
+    ConstExprHandle thatH = realPart(expr);
+
+    const double thisR = asDouble(thisH->isNull() ? this : thisH);
+    const double thatR = asDouble(thatH->isNull() ? expr : thatH);
 
     if ( ::fabs(thisR- thatR) > 1e-9 ) {
         return false;
     }
 
-    if ( isPureComplex(data) || isPureComplex(that) ) {
-        const double thisI = imagPart(data)->asDouble();
-        const double thatI = imagPart(that)->asDouble();
+    if ( isPureComplex(this) || isPureComplex(expr) ) {
+        const double thisI = imagPart(this)->asDouble();
+        const double thatI = imagPart(expr)->asDouble();
         if ( ::fabs(thisI- thatI) > 1e-9 ) {
             return false;
         }

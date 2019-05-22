@@ -11,7 +11,7 @@ using namespace std;
 Primitive::Primitive(string const & name)
     : ScamExpr(ScamData::Primitive)
 {
-    STRVAL(data) = name;
+    STRVAL(this) = name;
 }
 
 void Primitive::apply(ExprHandle args, Continuation * cont, Env * env)

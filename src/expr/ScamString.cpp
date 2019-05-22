@@ -6,7 +6,7 @@ using namespace std;
 ScamString::ScamString(string const & value)
     : ScamExpr(ScamData::String)
 {
-    STRVAL(data) = value;
+    STRVAL(this) = value;
 }
 
 ScamString * ScamString::makeInstance(std::string const & value)
@@ -19,7 +19,7 @@ bool ScamString::equals(ConstExprHandle expr) const
     if ( ! expr->isString() ) {
         return false;
     }
-    ScamString const * that = dynamic_cast<ScamString const *>(expr);
-    return STRVAL(data) == STRVAL(that->data);
+
+    return STRVAL(this) == STRVAL(expr);
 }
 

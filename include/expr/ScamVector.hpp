@@ -17,8 +17,6 @@ namespace scam
         static ScamVector * makeInstance(ExprVec const & elts);
 
     public:
-        void mark() const override;
-
         size_t length() const override;
         ExprHandle nthcar(size_t n) const override;
 

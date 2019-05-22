@@ -22,8 +22,6 @@ namespace scam
                                           bool macrolike = false);
 
     public:
-        void mark() const override;
-
         void
         apply(ExprHandle args, Continuation * cont, Env * env) override;
 

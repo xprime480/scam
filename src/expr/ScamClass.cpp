@@ -11,22 +11,13 @@ using namespace std;
 ScamClass::ScamClass(ClassDefParser * def, Env * capture)
     : ScamExpr(ScamData::Class)
 {
-    CLASSDEF(data) = def;
-    CLASSENV(data) = capture;
+    CLASSDEF(this) = def;
+    CLASSENV(this) = capture;
 }
 
 ScamClass * ScamClass::makeInstance(ClassDefParser * def, Env * capture)
 {
     return new ScamClass(def, capture);
-}
-
-void ScamClass::mark() const
-{
-    if ( ! isMarked() ) {
-        ScamExpr::mark();
-        CLASSDEF(data)->mark();
-        CLASSENV(data)->mark();
-    }
 }
 
 void ScamClass::apply(ExprHandle args, Continuation * cont, Env * env)

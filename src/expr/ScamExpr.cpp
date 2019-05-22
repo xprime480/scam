@@ -14,30 +14,13 @@ using namespace scam;
 using namespace std;
 
 ScamExpr::ScamExpr(unsigned long type, bool managed)
-    : ManagedObject(managed)
-    , data(type)
-    , metadata(nullptr)
+    : ScamData(type, managed)
 {
-}
-
-void ScamExpr::mark() const
-{
-    if ( ! isMarked() ) {
-        ManagedObject::mark();
-        if ( metadata ) {
-            metadata->mark();
-        }
-    }
-}
-
-const ScamData & ScamExpr::getData() const
-{
-    return data;
 }
 
 string ScamExpr::toString() const
 {
-    return ExprWriter::write(data);
+    return ExprWriter::write(this);
 }
 
 void ScamExpr::eval(Continuation * cont, Env * env) const
@@ -48,7 +31,7 @@ void ScamExpr::eval(Continuation * cont, Env * env) const
 
 bool ScamExpr::hasApply() const
 {
-    return 0 != (data.type & ScamData::Applicable);
+    return 0 != (type & ScamData::Applicable);
 }
 
 void ScamExpr::apply(ExprHandle args, Continuation * cont, Env * env)
@@ -69,12 +52,12 @@ void ScamExpr::mapEval(Continuation * cont, Env * env) const
 
 bool ScamExpr::isNull() const
 {
-    return data.type == ScamData::Null;
+    return type == ScamData::Null;
 }
 
 bool ScamExpr::error() const
 {
-    return data.type == ScamData::Error;
+    return type == ScamData::Error;
 }
 
 bool ScamExpr::truth() const
@@ -86,17 +69,17 @@ bool ScamExpr::truth() const
         return true;
     }
 
-    return BOOLVAL(data);
+    return BOOLVAL(this);
 }
 
 bool ScamExpr::isBoolean() const
 {
-    return data.type == ScamData::Boolean;
+    return type == ScamData::Boolean;
 }
 
 bool ScamExpr::isChar() const
 {
-    return data.type == ScamData::Character;
+    return type == ScamData::Character;
 }
 
 char ScamExpr::toChar() const
@@ -110,83 +93,83 @@ char ScamExpr::toChar() const
 
 bool ScamExpr::isString() const
 {
-    return data.type == ScamData::String;
+    return type == ScamData::String;
 }
 
 bool ScamExpr::isSymbol() const
 {
-    return data.type == ScamData::Symbol;
+    return type == ScamData::Symbol;
 }
 
 bool ScamExpr::isKeyword() const
 {
-    return data.type == ScamData::Keyword;
+    return type == ScamData::Keyword;
 }
 
 bool ScamExpr::isNumeric() const
 {
-    return ScamNumeric::isNumeric(data);
+    return ScamNumeric::isNumeric(this);
 }
 
 bool ScamExpr::isExact() const
 {
-    return ScamNumeric::isExact(data);
+    return ScamNumeric::isExact(this);
 }
 
 bool ScamExpr::isComplex() const
 {
-    return ScamNumeric::isComplex(data);
+    return ScamNumeric::isComplex(this);
 }
 
 bool ScamExpr::isReal() const
 {
-    return ScamNumeric::isReal(data);
+    return ScamNumeric::isReal(this);
 }
 
 bool ScamExpr::isRational() const
 {
-    return ScamNumeric::isRational(data);
+    return ScamNumeric::isRational(this);
 }
 
 bool ScamExpr::isInteger() const
 {
-    return ScamNumeric::isInteger(data);
+    return ScamNumeric::isInteger(this);
 }
 
 bool ScamExpr::isNaN() const
 {
-    return ScamNumeric::isNaN(data);
+    return ScamNumeric::isNaN(this);
 }
 
 bool ScamExpr::isNegInf() const
 {
-    return ScamNumeric::isNegInf(data);
+    return ScamNumeric::isNegInf(this);
 }
 
 bool ScamExpr::isPosInf() const
 {
-    return ScamNumeric::isPosInf(data);
+    return ScamNumeric::isPosInf(this);
 }
 
 double ScamExpr::asDouble() const
 {
-    return ScamNumeric::asDouble(data);
+    return ScamNumeric::asDouble(this);
 }
 
 pair<int, int> ScamExpr::asRational() const
 {
-    return ScamNumeric::asRational(data);
+    return ScamNumeric::asRational(this);
 }
 
 int ScamExpr::asInteger() const
 {
-    return ScamNumeric::asInteger(data);
+    return ScamNumeric::asInteger(this);
 }
 
 ConstExprHandle ScamExpr::realPart() const
 {
     // temporary hack!!!
-    ConstExprHandle rv = ScamNumeric::realPart(data);
+    ConstExprHandle rv = ScamNumeric::realPart(this);
     if ( rv->isNull() ) {
         rv = this;
     }
@@ -195,17 +178,17 @@ ConstExprHandle ScamExpr::realPart() const
 
 ConstExprHandle ScamExpr::imagPart() const
 {
-    return ScamNumeric::imagPart(data);
+    return ScamNumeric::imagPart(this);
 }
 
 bool ScamExpr::isNil() const
 {
-    return data.type == ScamData::Nil;
+    return type == ScamData::Nil;
 }
 
 bool ScamExpr::isCons() const
 {
-    return data.type == ScamData::Cons;
+    return type == ScamData::Cons;
 }
 
 bool ScamExpr::isList() const
@@ -240,32 +223,32 @@ ExprHandle ScamExpr::getCdr() const
 
 bool ScamExpr::isVector() const
 {
-    return data.type == ScamData::Vector;
+    return type == ScamData::Vector;
 }
 
 bool ScamExpr::isByteVector() const
 {
-    return data.type == ScamData::ByteVector;
+    return type == ScamData::ByteVector;
 }
 
 bool ScamExpr::isProcedure() const
 {
-    return 0 != (data.type & ScamData::Procedure);
+    return 0 != (type & ScamData::Procedure);
 }
 
 bool ScamExpr::isClass() const
 {
-    return data.type == ScamData::Class;
+    return type == ScamData::Class;
 }
 
 bool ScamExpr::isInstance() const
 {
-    return data.type == ScamData::Instance;
+    return type == ScamData::Instance;
 }
 
 bool ScamExpr::isDict() const
 {
-    return data.type == ScamData::Dict;
+    return type == ScamData::Dict;
 }
 
 size_t ScamExpr::length() const
@@ -323,43 +306,3 @@ bool ScamExpr::equals(ConstExprHandle expr) const
     return this == expr;
 }
 
-void ScamExpr::setMeta(string const & key, ExprHandle value) const
-{
-    if ( ! metadata ) {
-        metadata = standardMemoryManager.make<Env>();
-    }
-
-    ScamEnvKeyType k = ExpressionFactory::makeSymbol(key);
-
-    if ( metadata->check(k) ) {
-        metadata->assign(k, value);
-    }
-    else {
-        metadata->put(k, value);
-    }
-}
-
-bool ScamExpr::hasMeta(string const & key) const
-{
-    if ( ! metadata ) {
-        return false;
-    }
-
-    ScamEnvKeyType k = ExpressionFactory::makeSymbol(key);
-    return metadata->check(k);
-}
-
-ExprHandle ScamExpr::getMeta(string const & key) const
-{
-    ExprHandle rv = ExpressionFactory::makeNil();
-    if ( ! metadata ) {
-        return rv;
-    }
-
-    ScamEnvKeyType k  = ExpressionFactory::makeSymbol(key);
-    if ( metadata->check(k) ) {
-        rv = metadata->get(k);
-    }
-
-    return rv;
-}

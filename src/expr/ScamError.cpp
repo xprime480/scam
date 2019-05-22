@@ -8,7 +8,7 @@ using namespace std;
 ScamError::ScamError(char const * msg, bool managed)
     : ScamExpr(ScamData::Error, managed)
 {
-    STRVAL(data) = msg;
+    STRVAL(this) = msg;
 }
 
 ScamError * ScamError::makeInstance(char const * msg, bool managed)
@@ -22,7 +22,6 @@ bool ScamError::equals(ConstExprHandle expr) const
         return false;
     }
 
-    ScamError const * that = dynamic_cast<ScamError const *>(expr);
-    return STRVAL(data) == STRVAL(that->data);
+    return STRVAL(this) == STRVAL(expr);
 }
 

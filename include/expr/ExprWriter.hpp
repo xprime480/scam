@@ -11,18 +11,17 @@ namespace scam
     class ExprWriter
     {
     public:
-        static std::string write(const ScamData & data);
+        static std::string write(const ScamData * data);
 
     private:
         static void
-        writeByteVector(std::stringstream & s, const ScamData & data);
+        writeByteVector(std::stringstream & s, const ScamData * data);
 
-        static void writeClosure(std::stringstream & s, const ScamData & data);
-        static void writeCons(std::stringstream & s, const ScamData & data);
-        static void writeDict(std::stringstream & s, const ScamData & data);
-        static void writeNumeric(std::stringstream & s, const ScamData & data);
-        static void writeVector(std::stringstream & s, const ScamData & data);
-
+        static void writeClosure(std::stringstream & s, const ScamData * data);
+        static void writeCons(std::stringstream & s, const ScamData * data);
+        static void writeDict(std::stringstream & s, const ScamData * data);
+        static void writeNumeric(std::stringstream & s, const ScamData * data);
+        static void writeVector(std::stringstream & s, const ScamData * data);
     };
 }
 

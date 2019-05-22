@@ -1,25 +1,20 @@
-#if ! defined(SCAMEXPR_H)
-#define SCAMEXPR_H 1
+#if ! defined(SCAMEXPR_HPP)
+#define SCAMEXPR_HPP 1
 
-#include "util/ManagedObject.hpp"
+#include "expr/ScamData.hpp"
 
 #include "ScamFwd.hpp"
-#include "expr/ScamData.hpp"
 
 #include <string>
 
 namespace scam
 {
-    class ScamExpr: public ManagedObject
+    class ScamExpr : public ScamData
     {
     protected:
         ScamExpr(unsigned long type, bool managed = true);
 
     public:
-        void mark() const override;
-
-	const ScamData & getData() const;
-
         std::string toString() const;
         virtual void eval(Continuation * cont, Env * env) const;
 
@@ -84,16 +79,6 @@ namespace scam
         virtual void setParent(ExprHandle expr) const;
 
         virtual bool equals(ConstExprHandle expr) const;
-
-        void setMeta(std::string const & key, ExprHandle value) const;
-        bool hasMeta(std::string const & key) const;
-        ExprHandle getMeta(std::string const & key) const;
-
-    protected:
-        ScamData data;
-
-    private:
-        mutable Env * metadata;
     };
 }
 

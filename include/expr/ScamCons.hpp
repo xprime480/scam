@@ -13,8 +13,6 @@ namespace scam
         static ScamCons * makeInstance(ExprHandle car, ExprHandle cdr);
 
     public:
-        void mark() const override;
-
         void eval(Continuation * cont, Env * env) const override;
         void mapEval(Continuation * cont, Env * env) const override;
 
