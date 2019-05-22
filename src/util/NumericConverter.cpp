@@ -41,10 +41,9 @@ ExprHandle NumericConverter::simplify(ExprHandle value)
     }
 
     if ( value->isComplex() && ! value->isReal() ) {
-        ScamNumeric * tmp = dynamic_cast<ScamNumeric *>(value);
-        ExprHandle imag = simplify(const_cast<ExprHandle>(tmp->imagPart()));
+        ExprHandle imag = simplify(const_cast<ExprHandle>(value->imagPart()));
         if ( imag && imag->isInteger() && 0 == imag->asInteger() ) {
-            value = const_cast<ExprHandle>(tmp->realPart());
+            value = const_cast<ExprHandle>(value->realPart());
         }
     }
 

@@ -30,6 +30,11 @@ void ScamExpr::mark() const
     }
 }
 
+const ScamData & ScamExpr::getData() const
+{
+    return data;
+}
+
 string ScamExpr::toString() const
 {
     return ExprWriter::write(data);
@@ -165,47 +170,32 @@ bool ScamExpr::isPosInf() const
 
 double ScamExpr::asDouble() const
 {
-    stringstream s;
-    s << "Cannot convert <" << this->toString() << "> to double";
-    throw ScamException(s.str());
-
-    return 0.0;
+    return ScamNumeric::asDouble(data);
 }
 
 pair<int, int> ScamExpr::asRational() const
 {
-    stringstream s;
-    s << "Cannot convert <" << this->toString() << "> to rational";
-    throw ScamException(s.str());
-
-    return make_pair<int, int>(0,0);
+    return ScamNumeric::asRational(data);
 }
 
 int ScamExpr::asInteger() const
 {
-    stringstream s;
-    s << "Cannot convert <" << this->toString() << "> to integer";
-    throw ScamException(s.str());
-
-    return 0;
+    return ScamNumeric::asInteger(data);
 }
 
 ConstExprHandle ScamExpr::realPart() const
 {
-    stringstream s;
-    s << "<" << this->toString() << "> has no real part";
-    throw ScamException(s.str());
-
-    return this;
+    // temporary hack!!!
+    ConstExprHandle rv = ScamNumeric::realPart(data);
+    if ( rv->isNull() ) {
+        rv = this;
+    }
+    return rv;
 }
 
 ConstExprHandle ScamExpr::imagPart() const
 {
-    stringstream s;
-    s << "<" << this->toString() << "> has no imaginary part";
-    throw ScamException(s.str());
-
-    return this;
+    return ScamNumeric::imagPart(data);
 }
 
 bool ScamExpr::isNil() const

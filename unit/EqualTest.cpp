@@ -1,5 +1,7 @@
 #include "TestBase.hpp"
 
+#include "util/DebugTrace.hpp"
+
 using namespace std;
 using namespace scam;
 
@@ -99,6 +101,7 @@ TEST_F(EqualTest, EqPTwoBoolDifferent)
 
 TEST_F(EqualTest, EqPTwoIntegerSame)
 {
+    ScamTraceScope _;
     expectTrue("(eq? 1 1)");
 }
 

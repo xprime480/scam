@@ -20,6 +20,12 @@ namespace scam
         static bool isNaN(const ScamData & data);
         static bool isNegInf(const ScamData & data);
         static bool isPosInf(const ScamData & data);
+        static double asDouble(const ScamData & data);
+        static std::pair<int, int> asRational(const ScamData & data);
+        static int asInteger(const ScamData & data);
+
+        static ConstExprHandle realPart(const ScamData & data);
+        static ConstExprHandle imagPart(const ScamData & data);
 
     private:
         friend class MemoryManager;
@@ -55,13 +61,6 @@ namespace scam
 
     public:
         void mark() const override;
-
-        double asDouble() const override;
-        std::pair<int, int> asRational() const override;
-        int asInteger() const override;
-
-        ConstExprHandle realPart() const override;
-        ConstExprHandle imagPart() const override;
 
         bool equals(ConstExprHandle expr) const override;
     };

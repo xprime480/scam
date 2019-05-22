@@ -18,6 +18,8 @@ namespace scam
     public:
         void mark() const override;
 
+	const ScamData & getData() const;
+
         std::string toString() const;
         virtual void eval(Continuation * cont, Env * env) const;
 
@@ -50,12 +52,12 @@ namespace scam
         bool isNegInf() const;
         bool isPosInf() const;
 
-        virtual double asDouble() const;
-        virtual std::pair<int, int> asRational() const;
-        virtual int asInteger() const;
+        double asDouble() const;
+        std::pair<int, int> asRational() const;
+        int asInteger() const;
 
-        virtual ConstExprHandle realPart() const;
-        virtual ConstExprHandle imagPart() const;
+        ConstExprHandle realPart() const;
+        ConstExprHandle imagPart() const;
 
         bool isNil() const;
         bool isCons() const;

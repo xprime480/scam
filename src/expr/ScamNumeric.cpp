@@ -9,16 +9,14 @@
 #include <cmath>
 #include <sstream>
 
-#include "util/DebugTrace.hpp"
-
 using namespace scam;
 using namespace std;
 
 namespace
 {
-    bool isPureComplex(ConstExprHandle expr)
+    bool isPureComplex(const ScamData & data)
     {
-        return expr->isComplex() && ! expr->isReal();
+        return ScamNumeric::isComplex(data) && ! ScamNumeric::isReal(data);
     }
 }
 
@@ -73,6 +71,96 @@ bool ScamNumeric::isPosInf(const ScamData & data)
     return ScamData::PosInfBit == (data.type & ScamData::PosInfBit);
 }
 
+double ScamNumeric::asDouble(const ScamData & data)
+{
+    if ( ! isReal(data) ) {
+        stringstream s;
+        s << "Cannot convert <" << ExprWriter::write(data) << "> to double";
+        throw ScamException(s.str());
+    }
+
+    if ( isInteger(data) ) {
+        return (double) INTVAL(data);
+    }
+    else if ( isRational(data) ) {
+        return ((double) NUMPART(data) / (double) DENPART(data) );
+    }
+    else if ( isNaN(data) || isNegInf(data) || isPosInf(data) ) {
+        // drop through to error case;
+    }
+    else if ( isReal(data) ) {
+        return REALVAL(data);
+    }
+
+    return 0.0;
+}
+
+std::pair<int, int> ScamNumeric::asRational(const ScamData & data)
+{
+    if ( ! isRational(data) ) {
+        stringstream s;
+        s << "Cannot convert <" << ExprWriter::write(data) << "> to rational";
+        throw ScamException(s.str());
+    }
+
+    int num { 0 };
+    int den { 1 };
+
+    if ( isInteger(data) ) {
+        num = INTVAL(data);
+    }
+    else {
+        num = NUMPART(data);
+        den = DENPART(data);
+    }
+
+    return make_pair<int,int>(move(num), move(den));
+}
+
+int ScamNumeric::asInteger(const ScamData & data)
+{
+    if ( ! isInteger(data) ) {
+        stringstream s;
+        s << "Cannot convert <" << ExprWriter::write(data) << "> to integer";
+        throw ScamException(s.str());
+    }
+
+    return INTVAL(data);
+}
+
+ConstExprHandle ScamNumeric::realPart(const ScamData & data)
+{
+    if ( ! isNumeric(data) ) {
+        stringstream s;
+        s << "<" << ExprWriter::write(data)
+          << "> is not numeric; has no real part";
+        throw ScamException(s.str());
+    }
+
+    if ( isPureComplex(data) ) {
+        return REALPART(data);
+    }
+
+    return ExpressionFactory::makeNull(); // temporary hack!!
+}
+
+ConstExprHandle ScamNumeric::imagPart(const ScamData & data)
+{
+    if ( ! isNumeric(data) ) {
+        stringstream s;
+        s << "<" << ExprWriter::write(data)
+          << "> is not numeric; has no imaginary part";
+        throw ScamException(s.str());
+    }
+
+    if ( isPureComplex(data) ) {
+        return IMAGPART(data);
+    }
+
+    return ExpressionFactory::makeInteger(0, true);
+}
+
+
 ScamNumeric::ScamNumeric(ScamData::NaNType tag)
     : ScamExpr(ScamData::NaN, false)
 {
@@ -96,7 +184,7 @@ ScamNumeric::ScamNumeric(ExprHandle real, ExprHandle imag, bool managed)
 {
     EXACT(data) = real->isExact() && imag->isExact();
 
-    if ( isPureComplex(real) || isPureComplex(imag) ) {
+    if ( isPureComplex(real->getData()) || isPureComplex(imag->getData()) ) {
         static string msg =
             "Cannot set either part a complex number to another complex number";
         throw ScamException(msg);
@@ -177,121 +265,49 @@ void ScamNumeric::mark() const
     if ( ! isMarked() ) {
         ScamExpr::mark();
 
-        if ( isPureComplex(this) ) {
+        if ( isPureComplex(data) ) {
             REALPART(data)->mark();
             IMAGPART(data)->mark();
         }
     }
 }
 
-double ScamNumeric::asDouble() const
-{
-    if ( ! isReal(data) || isNaN(data) || isNegInf(data) || isPosInf(data) ) {
-        stringstream s;
-        s << "Cannot convert <" << this->toString() << "> to real";
-        throw ScamException(s.str());
-    }
-
-    if ( isInteger(data) ) {
-        return (double) INTVAL(data);
-    }
-    else if ( isRational(data) ) {
-        return ((double) NUMPART(data) / (double) DENPART(data) );
-    }
-    else if ( isNaN(data) || isNegInf(data) || isPosInf(data) ) {
-        // drop through to error case;
-    }
-    else if ( isReal(data) ) {
-        return REALVAL(data);
-    }
-
-    stringstream s;
-    s << "Cannot convert <" << ExprWriter::write(data) << "> to double";
-    throw ScamException(s.str());
-
-    return 0.0;
-}
-
-std::pair<int, int> ScamNumeric::asRational() const
-{
-    int num { 0 };
-    int den { 1 };
-
-    if ( isInteger(data) ) {
-        num = INTVAL(data);
-    }
-    else if ( isRational(data) ) {
-        num = NUMPART(data);
-        den = DENPART(data);
-    }
-    else {
-        stringstream s;
-        s << "Cannot convert <" << ExprWriter::write(data) << "> to rational";
-        throw ScamException(s.str());
-    }
-
-    return make_pair<int,int>(move(num), move(den));
-}
-
-int ScamNumeric::asInteger() const
-{
-    if ( ! isInteger(data) ) {
-        stringstream s;
-        s << "Cannot convert <" << ExprWriter::write(data) << "> to integer";
-        throw ScamException(s.str());
-    }
-
-    return INTVAL(data);
-}
-
 bool ScamNumeric::equals(ConstExprHandle expr) const
 {
-    if ( ! expr->isNumeric() ) {
+    const ScamData & that = expr->getData();
+
+    if ( ! isNumeric(that) ) {
         return false;
     }
 
-    if ( isNaN(data) || expr->isNaN() ) {
-        return isNaN(data) && expr->isNaN();
+    if ( isNaN(data) || isNaN(that) ) {
+        return isNaN(data) && isNaN(data);
     }
-    if ( isNegInf(data) || expr->isNegInf() ) {
-        return isNegInf(data) && expr->isNegInf();
+    if ( isNegInf(data) || isNegInf(that) ) {
+        return isNegInf(data) && isNegInf(data);
     }
-    if ( isPosInf(data) || expr->isPosInf() ) {
-        return isPosInf(data) && expr->isPosInf();
+    if ( isPosInf(data) || isPosInf(that) ) {
+        return isPosInf(data) && isPosInf(that);
     }
 
-    const ScamNumeric * that = dynamic_cast<const ScamNumeric *>(expr);
+    /* temporary hack!!! */
+    ConstExprHandle thisH = realPart(data);
+    ConstExprHandle thatH = realPart(that);
+    
+    const double thisR = asDouble(thisH->isNull() ? data : thisH->getData());
+    const double thatR = asDouble(thatH->isNull() ? that : thatH->getData());
 
-    const double thisR = this->realPart()->asDouble();
-    const double thatR = that->realPart()->asDouble();
     if ( ::fabs(thisR- thatR) > 1e-9 ) {
         return false;
     }
 
-    if ( isPureComplex(this) || isPureComplex(expr) ) {
-        const double thisI = this->imagPart()->asDouble();
-        const double thatI = that->imagPart()->asDouble();
+    if ( isPureComplex(data) || isPureComplex(that) ) {
+        const double thisI = imagPart(data)->asDouble();
+        const double thatI = imagPart(that)->asDouble();
         if ( ::fabs(thisI- thatI) > 1e-9 ) {
             return false;
         }
     }
 
     return true;
-}
-
-ConstExprHandle ScamNumeric::realPart() const
-{
-    if ( isPureComplex(this) ) {
-        return REALPART(data);
-    }
-    return this;
-}
-
-ConstExprHandle ScamNumeric::imagPart() const
-{
-    if ( isPureComplex(this) ) {
-        return IMAGPART(data);
-    }
-
-    return ExpressionFactory::makeInteger(0, true);
 }
