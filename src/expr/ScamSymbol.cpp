@@ -19,11 +19,6 @@ ScamSymbol * ScamSymbol::makeInstance(std::string const & value, bool managed)
     return new ScamSymbol(value, managed);
 }
 
-string ScamSymbol::toString() const
-{
-    return STRVAL(data);
-}
-
 void ScamSymbol::eval(Continuation * cont, Env * env) const
 {
     ExprHandle evaluated;

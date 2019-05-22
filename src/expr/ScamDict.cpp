@@ -51,25 +51,6 @@ void ScamDict::mark() const
     }
 }
 
-string ScamDict::toString() const
-{
-    stringstream s;
-    s << "{";
-
-    for ( size_t idx = 0 ; idx < DICTKEYS(data).size() ; ++idx ) {
-        s << " " << DICTKEYS(data)[idx]->toString()
-          << " " << DICTVALS(data)[idx]->toString();
-    }
-
-    if ( DICTKEYS(data).size() ) {
-        s << " ";
-    }
-
-    s << "}";
-
-    return s.str();
-}
-
 void ScamDict::apply(ExprHandle args, Continuation * cont, Env * env)
 {
     DictOpsParser * parser = standardMemoryManager.make<DictOpsParser>();

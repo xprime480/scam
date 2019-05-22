@@ -14,13 +14,6 @@ Primitive::Primitive(string const & name)
     STRVAL(data) = name;
 }
 
-string Primitive::toString() const
-{
-    stringstream s;
-    s << "Primitive " << STRVAL(data);
-    return s.str();
-}
-
 void Primitive::apply(ExprHandle args, Continuation * cont, Env * env)
 {
     /*

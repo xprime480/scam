@@ -6,14 +6,8 @@
 #include "expr/ClosureWorker.hpp"
 #include "input/ParameterListParser.hpp"
 
-#include <sstream>
-
 using namespace scam;
 using namespace std;
-
-#define CLOSUREDEF(data) ((data).value.closureData.parser)
-#define CLOSUREENV(data) ((data).value.closureData.env)
-#define MACROLIKE(data) ((data).value.closureData.macrolike)
 
 ScamClosure::ScamClosure(const LambdaParser * parser, Env * env, bool macrolike)
     : ScamExpr(ScamData::Closure)
@@ -37,32 +31,6 @@ void ScamClosure::mark() const
         CLOSUREDEF(data)->mark();
         CLOSUREENV(data)->mark();
     }
-}
-
-string ScamClosure::toString() const
-{
-    stringstream s;
-    s << "(";
-
-    if ( MACROLIKE(data) ) {
-        s << "macro ";
-    }
-    else {
-        s << "lambda ";
-    }
-    s << CLOSUREDEF(data)->getArgs()->getValue()->toString();
-    s << " ";
-
-    const size_t count = CLOSUREDEF(data)->getFormCount();
-    for ( size_t idx = 0 ; idx < count ; ++ idx ) {
-        if ( idx > 0 ) {
-            s << " ";
-        }
-        s << CLOSUREDEF(data)->getForm(idx)->toString();
-    }
-
-    s << ")";
-    return s.str();
 }
 
 void ScamClosure::apply(ExprHandle args, Continuation * cont, Env * env)

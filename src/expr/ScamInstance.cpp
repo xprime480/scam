@@ -64,11 +64,6 @@ void ScamInstance::mark() const
     }
 }
 
-string ScamInstance::toString() const
-{
-    return "instance";
-}
-
 void ScamInstance::apply(ExprHandle args, Continuation * cont, Env * env)
 {
     InstanceParser * parser = standardMemoryManager.make<InstanceParser>();

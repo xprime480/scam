@@ -14,12 +14,6 @@ ScamNil * ScamNil::makeInstance()
     return &nil;
 }
 
-string ScamNil::toString() const
-{
-    static const string value{ "()" };
-    return value;
-}
-
 size_t ScamNil::length() const
 {
     return 0u;

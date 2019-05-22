@@ -2,8 +2,6 @@
 
 #include "expr/ExpressionFactory.hpp"
 
-#include <string>
-
 using namespace scam;
 using namespace std;
 
@@ -16,11 +14,6 @@ ScamError::ScamError(char const * msg, bool managed)
 ScamError * ScamError::makeInstance(char const * msg, bool managed)
 {
     return new ScamError(msg, managed);
-}
-
-string ScamError::toString() const
-{
-    return STRVAL(data);
 }
 
 bool ScamError::equals(ConstExprHandle expr) const

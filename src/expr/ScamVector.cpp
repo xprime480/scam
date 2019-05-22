@@ -3,8 +3,6 @@
 #include "WorkQueue.hpp"
 #include "expr/ExpressionFactory.hpp"
 
-#include <sstream>
-
 using namespace scam;
 using namespace std;
 
@@ -27,21 +25,6 @@ void ScamVector::mark() const
             e->mark();
         }
     }
-}
-
-string ScamVector::toString() const
-{
-    stringstream s;
-    string sep { "" };
-
-    s << "#(";
-    for ( auto const & e : VECTOR(data) ) {
-        s << sep << e->toString();
-        sep = " ";
-    }
-    s << ")";
-
-    return s.str();
 }
 
 size_t ScamVector::length() const

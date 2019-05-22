@@ -14,8 +14,6 @@ namespace scam
                                           bool managed = true);
 
     public:
-        std::string toString() const override;
-
         bool equals(ConstExprHandle expr) const override;
     };
 }

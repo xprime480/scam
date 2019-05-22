@@ -14,11 +14,6 @@ ScamString * ScamString::makeInstance(std::string const & value)
     return new ScamString(value);
 }
 
-string ScamString::toString() const
-{
-    return STRVAL(data);
-}
-
 bool ScamString::equals(ConstExprHandle expr) const
 {
     if ( ! expr->isString() ) {

@@ -12,8 +12,6 @@ namespace scam
     public:
         Primitive(std::string const & name);
 
-        std::string toString() const override;
-
         void apply(ExprHandle args, Continuation * cont, Env * env) override;
 
         virtual void

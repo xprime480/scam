@@ -155,11 +155,26 @@ namespace scam
 
 #define BOOLVAL(data) ((data).value.boolValue)
 
+#define CHARVAL(data) ((data).value.charValue)
+
 #define NUMERIC(data) ((data).value.numericValue)
 #define EXACT(data) (NUMERIC(data).exact)
 
+#define REALPART(data) (NUMERIC(data).value.complexValue.real)
+#define IMAGPART(data) (NUMERIC(data).value.complexValue.imag)
+
+#define REALVAL(data) (NUMERIC(data).value.realValue)
+
+#define NUMPART(data) (NUMERIC(data).value.rationalValue.num)
+#define DENPART(data) (NUMERIC(data).value.rationalValue.den)
+
+#define INTVAL(data) (NUMERIC(data).value.intValue)
+
 #define STRVALP(data) ((data).value.strVal)
 #define STRVAL(data) (*(STRVALP(data)))
+
+#define CAR(data) (data.value.consValue.car)
+#define CDR(data) (data.value.consValue.cdr)
 
 #define VECTORP(data) ((data).value.vectorData)
 #define VECTOR(data) (*(VECTORP(data)))
@@ -171,6 +186,10 @@ namespace scam
 #define DICTKEYS(data) (*(DICTKEYSP(data)))
 #define DICTVALSP(data) ((data).value.dictData.vals)
 #define DICTVALS(data) (*(DICTVALSP(data)))
+
+#define CLOSUREDEF(data) ((data).value.closureData.parser)
+#define CLOSUREENV(data) ((data).value.closureData.env)
+#define MACROLIKE(data) ((data).value.closureData.macrolike)
 
 #define CLASSDEF(data) ((data).value.classValue.def)
 #define CLASSENV(data) ((data).value.classValue.capture)

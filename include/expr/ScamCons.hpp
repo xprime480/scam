@@ -15,7 +15,6 @@ namespace scam
     public:
         void mark() const override;
 
-        std::string toString() const override;
         void eval(Continuation * cont, Env * env) const override;
         void mapEval(Continuation * cont, Env * env) const override;
 

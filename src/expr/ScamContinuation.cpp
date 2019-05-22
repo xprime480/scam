@@ -28,12 +28,6 @@ void ScamContinuation::mark() const
     }
 }
 
-string ScamContinuation::toString() const
-{
-    static const string value { "continuation" };
-    return value;
-}
-
 void ScamContinuation::apply(ExprHandle args, Continuation * cont,  Env * env)
 {
     SingletonParser * parser = getSingletonOfAnythingParser();

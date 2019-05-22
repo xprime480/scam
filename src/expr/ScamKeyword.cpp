@@ -14,11 +14,6 @@ ScamKeyword * ScamKeyword::makeInstance(std::string const & value, bool managed)
     return new ScamKeyword(value, managed);
 }
 
-string ScamKeyword::toString() const
-{
-    return STRVAL(data);
-}
-
 bool ScamKeyword::equals(ConstExprHandle expr) const
 {
     if ( ! expr->isKeyword() ) {

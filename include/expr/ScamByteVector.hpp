@@ -17,8 +17,6 @@ namespace scam
         static ScamByteVector * makeInstance(ByteVec const & elts);
 
     public:
-        std::string toString() const override;
-
         size_t length() const override;
         ExprHandle nthcar(size_t n) const override;
 

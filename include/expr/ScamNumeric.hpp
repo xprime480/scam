@@ -10,6 +10,17 @@ namespace scam
 {
     class ScamNumeric : public ScamExpr
     {
+    public:
+        static bool isNumeric(const ScamData & data);
+        static bool isExact(const ScamData & data);
+        static bool isComplex(const ScamData & data);
+        static bool isReal(const ScamData & data);
+        static bool isRational(const ScamData & data);
+        static bool isInteger(const ScamData & data);
+        static bool isNaN(const ScamData & data);
+        static bool isNegInf(const ScamData & data);
+        static bool isPosInf(const ScamData & data);
+
     private:
         friend class MemoryManager;
 
@@ -44,8 +55,6 @@ namespace scam
 
     public:
         void mark() const override;
-
-        std::string toString() const override;
 
         double asDouble() const override;
         std::pair<int, int> asRational() const override;

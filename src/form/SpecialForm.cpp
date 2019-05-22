@@ -10,10 +10,3 @@ SpecialForm::SpecialForm(string const & name, bool managed)
 {
     STRVAL(data) = name;
 }
-
-string SpecialForm::toString() const
-{
-    stringstream s;
-    s << "Special Form " << STRVAL(data);
-    return s.str();
-}

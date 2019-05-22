@@ -17,12 +17,6 @@ ScamNull * ScamNull::makeInstance()
     return &instance;
 }
 
-std::string ScamNull::toString() const
-{
-    static const std::string null{ "null" };
-    return null;
-}
-
 void ScamNull::eval(Continuation * cont, Env * env) const
 {
     static const string msg{ "The null type cannot be evaluated." };

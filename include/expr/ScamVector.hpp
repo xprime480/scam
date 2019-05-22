@@ -19,8 +19,6 @@ namespace scam
     public:
         void mark() const override;
 
-        std::string toString() const override;
-
         size_t length() const override;
         ExprHandle nthcar(size_t n) const override;
 

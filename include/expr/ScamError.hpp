@@ -15,8 +15,6 @@ namespace scam
         static ScamError * makeInstance(char const * msg, bool managed = true);
 
     public:
-        std::string toString() const override;
-
         bool equals(ConstExprHandle expr) const override;
     };
 }

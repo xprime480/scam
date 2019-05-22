@@ -3,8 +3,6 @@
 #include "WorkQueue.hpp"
 #include "expr/ExpressionFactory.hpp"
 
-#include <sstream>
-
 using namespace scam;
 using namespace std;
 
@@ -17,21 +15,6 @@ ScamByteVector::ScamByteVector(ByteVec const & elts)
 ScamByteVector * ScamByteVector::makeInstance(ByteVec const & elts)
 {
     return new ScamByteVector(elts);
-}
-
-string ScamByteVector::toString() const
-{
-    stringstream s;
-    string sep { "" };
-
-    s << "#u8(";
-    for ( auto const & e : BYTEVECTOR(data) ) {
-        s << sep << (int)e;
-        sep = " ";
-    }
-    s << ")";
-
-    return s.str();
 }
 
 size_t ScamByteVector::length() const

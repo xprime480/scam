@@ -18,7 +18,7 @@ namespace scam
     public:
         void mark() const override;
 
-        virtual std::string toString() const = 0;
+        std::string toString() const;
         virtual void eval(Continuation * cont, Env * env) const;
 
         bool hasApply() const;

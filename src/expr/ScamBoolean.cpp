@@ -19,14 +19,6 @@ ScamBoolean * ScamBoolean::makeInstance(bool value)
     return value ? &yes : &no;
 }
 
-string ScamBoolean::toString() const
-{
-    if ( BOOLVAL(data) ) {
-        return "#t";
-    }
-    return "#f";
-}
-
 bool ScamBoolean::equals(ConstExprHandle expr) const
 {
     if ( ! expr->isBoolean() ) {

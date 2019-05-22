@@ -16,7 +16,6 @@ namespace scam
         static ScamNull * makeInstance();
 
     public:
-        std::string toString() const override;
         void eval(Continuation * cont, Env * env) const override;
 
         bool equals(ConstExprHandle expr) const override;

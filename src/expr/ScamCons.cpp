@@ -11,9 +11,6 @@
 using namespace scam;
 using namespace std;
 
-#define CAR(data) (data.value.consValue.car)
-#define CDR(data) (data.value.consValue.cdr)
-
 ScamCons::ScamCons(ExprHandle car, ExprHandle cdr)
     : ScamExpr(ScamData::Cons)
 {
@@ -33,27 +30,6 @@ void ScamCons::mark() const
         CAR(data)->mark();
         CDR(data)->mark();
     }
-}
-
-string ScamCons::toString() const
-{
-    stringstream s;
-    s << "(";
-    s << CAR(data)->toString();
-    ExprHandle next = CDR(data);
-    while ( ! next->isNil() ) {
-        if ( next->isCons() ) {
-            s << " " << next->getCar()->toString();
-            next = next->getCdr();
-        }
-        else {
-            s << " . " << next->toString();
-            break;
-        }
-    }
-    s << ")";
-
-    return s.str();
 }
 
 void ScamCons::eval(Continuation * cont, Env * env) const

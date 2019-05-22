@@ -9,8 +9,6 @@ namespace scam
     {
     public:
         SpecialForm(std::string const & name, bool managed = false);
-
-        std::string toString() const override;
     };
 }
 

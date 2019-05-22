@@ -29,11 +29,6 @@ void ScamClass::mark() const
     }
 }
 
-string ScamClass::toString() const
-{
-    return "class";
-}
-
 void ScamClass::apply(ExprHandle args, Continuation * cont, Env * env)
 {
     /** It is not meaningful to do argument validation here as the

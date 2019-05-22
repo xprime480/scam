@@ -1,6 +1,7 @@
 #include "expr/ScamNumeric.hpp"
 
 #include "ScamException.hpp"
+#include "expr/ExprWriter.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "util/NumericUtils.hpp"
 
@@ -13,22 +14,63 @@
 using namespace scam;
 using namespace std;
 
-#define REALPART(data) (NUMERIC(data).value.complexValue.real)
-#define IMAGPART(data) (NUMERIC(data).value.complexValue.imag)
-
-#define REALVAL(data) (NUMERIC(data).value.realValue)
-
-#define NUMPART(data) (NUMERIC(data).value.rationalValue.num)
-#define DENPART(data) (NUMERIC(data).value.rationalValue.den)
-
-#define INTVAL(data) (NUMERIC(data).value.intValue)
-
 namespace
 {
     bool isPureComplex(ConstExprHandle expr)
     {
         return expr->isComplex() && ! expr->isReal();
     }
+}
+
+bool ScamNumeric::isNumeric(const ScamData & data)
+{
+    return 0 != (data.type & ScamData::Numeric);
+}
+
+bool ScamNumeric::isExact(const ScamData & data)
+{
+    if ( ! isNumeric(data) ) {
+        stringstream s;
+        s << "Exactness has no meaning for <" << ExprWriter::write(data) << ">";
+        throw ScamException(s.str());
+    }
+
+    return EXACT(data);
+}
+
+bool ScamNumeric::isComplex(const ScamData & data)
+{
+    return ScamData::ComplexBit == (data.type & ScamData::ComplexBit);
+}
+
+bool ScamNumeric::isReal(const ScamData & data)
+{
+    return ScamData::RealBit == (data.type & ScamData::RealBit);
+}
+
+bool ScamNumeric::isRational(const ScamData & data)
+{
+    return ScamData::RationalBit == (data.type & ScamData::RationalBit);
+}
+
+bool ScamNumeric::isInteger(const ScamData & data)
+{
+    return ScamData::IntegerBit == (data.type & ScamData::IntegerBit);
+}
+
+bool ScamNumeric::isNaN(const ScamData & data)
+{
+    return ScamData::NaNBit == (data.type & ScamData::NaNBit);
+}
+
+bool ScamNumeric::isNegInf(const ScamData & data)
+{
+    return ScamData::NegInfBit == (data.type & ScamData::NegInfBit);
+}
+
+bool ScamNumeric::isPosInf(const ScamData & data)
+{
+    return ScamData::PosInfBit == (data.type & ScamData::PosInfBit);
 }
 
 ScamNumeric::ScamNumeric(ScamData::NaNType tag)
@@ -142,92 +184,29 @@ void ScamNumeric::mark() const
     }
 }
 
-string ScamNumeric::toString() const
-{
-    stringstream s;
-
-    if ( isNaN() ) {
-        s << "+nan.0";
-    }
-    else if ( isNegInf() ) {
-        s << "-inf.0";
-    }
-    else if ( isPosInf() ) {
-        s << "+inf.0";
-    }
-    else if ( isInteger() ) {
-        s << INTVAL(data);
-    }
-    else if ( isRational() ) {
-        s << NUMPART(data) << "/" << DENPART(data);
-    }
-    else if ( isReal() ) {
-        s << REALVAL(data);
-    }
-    else if ( isComplex() ) {
-        //
-        // The complexity is so that the output is in the simplest
-        // form that will be read by the scanner as the same value.
-        // For example, An imaginary part of "-1i" is equivalent to
-        // "-i", so the latter is used for the representation.  The
-        // real pa
-        //
-        ExprHandle r { REALPART(data) };
-        ExprHandle i { IMAGPART(data) };
-
-        if ( ! r->isInteger() || 0 != r->asInteger() ) {
-            s << r->toString();
-        }
-
-        const string irepr = i->toString();
-        if ( irepr == "0" ) {
-            // nothing
-        }
-        if ( irepr == "1" ) {
-            s << "+";
-        }
-        else if ( irepr == "-1" ) {
-            s << "-";
-        }
-        else {
-            const char lead = *irepr.c_str();
-            if ( ('+' != lead) && ('-' != lead) ) {
-                s << "+";
-            }
-            s << irepr;
-        }
-         s << "i";
-    }
-    else {
-        s << "@obj<" << this << ">";
-    }
-
-    return s.str();
-}
-
 double ScamNumeric::asDouble() const
 {
-    if ( ! isReal() || isNaN() || isNegInf() || isPosInf() ) {
+    if ( ! isReal(data) || isNaN(data) || isNegInf(data) || isPosInf(data) ) {
         stringstream s;
         s << "Cannot convert <" << this->toString() << "> to real";
         throw ScamException(s.str());
     }
 
-    if ( isInteger() ) {
+    if ( isInteger(data) ) {
         return (double) INTVAL(data);
     }
-    else if ( isRational() ) {
+    else if ( isRational(data) ) {
         return ((double) NUMPART(data) / (double) DENPART(data) );
     }
-    else if ( isNaN() || isNegInf() || isPosInf() ) {
+    else if ( isNaN(data) || isNegInf(data) || isPosInf(data) ) {
         // drop through to error case;
     }
-    else if ( isReal() ) {
+    else if ( isReal(data) ) {
         return REALVAL(data);
     }
 
     stringstream s;
-    s << "Cannot convert <" << this->toString() << "> to double";
+    s << "Cannot convert <" << ExprWriter::write(data) << "> to double";
     throw ScamException(s.str());
 
     return 0.0;
@@ -238,16 +217,16 @@ std::pair<int, int> ScamNumeric::asRational() const
     int num { 0 };
     int den { 1 };
 
-    if ( isInteger() ) {
+    if ( isInteger(data) ) {
         num = INTVAL(data);
     }
-    else if ( isRational() ) {
+    else if ( isRational(data) ) {
         num = NUMPART(data);
         den = DENPART(data);
     }
     else {
         stringstream s;
-        s << "Cannot convert <" << this->toString() << "> to rational";
+        s << "Cannot convert <" << ExprWriter::write(data) << "> to rational";
         throw ScamException(s.str());
     }
 
@@ -256,9 +235,9 @@ std::pair<int, int> ScamNumeric::asRational() const
 
 int ScamNumeric::asInteger() const
 {
-    if ( ! isInteger() ) {
+    if ( ! isInteger(data) ) {
         stringstream s;
-        s << "Cannot convert <" << this->toString() << "> to integer";
+        s << "Cannot convert <" << ExprWriter::write(data) << "> to integer";
         throw ScamException(s.str());
     }
 
@@ -271,14 +250,14 @@ bool ScamNumeric::equals(ConstExprHandle expr) const
         return false;
     }
 
-    if ( isNaN() || expr->isNaN() ) {
-        return isNaN() && expr->isNaN();
+    if ( isNaN(data) || expr->isNaN() ) {
+        return isNaN(data) && expr->isNaN();
     }
-    if ( isNegInf() || expr->isNegInf() ) {
-        return isNegInf() && expr->isNegInf();
+    if ( isNegInf(data) || expr->isNegInf() ) {
+        return isNegInf(data) && expr->isNegInf();
     }
-    if ( isPosInf() || expr->isPosInf() ) {
-        return isPosInf() && expr->isPosInf();
+    if ( isPosInf(data) || expr->isPosInf() ) {
+        return isPosInf(data) && expr->isPosInf();
     }
 
     const ScamNumeric * that = dynamic_cast<const ScamNumeric *>(expr);

@@ -2,6 +2,7 @@
 
 #include "Continuation.hpp"
 #include "ScamException.hpp"
+#include "expr/ExprWriter.hpp"
 #include "expr/ExpressionFactory.hpp"
 
 #include <sstream>
@@ -27,6 +28,11 @@ void ScamExpr::mark() const
             metadata->mark();
         }
     }
+}
+
+string ScamExpr::toString() const
+{
+    return ExprWriter::write(data);
 }
 
 void ScamExpr::eval(Continuation * cont, Env * env) const
@@ -114,53 +120,47 @@ bool ScamExpr::isKeyword() const
 
 bool ScamExpr::isNumeric() const
 {
-    return 0 != (data.type & ScamData::Numeric);
+    return ScamNumeric::isNumeric(data);
 }
 
 bool ScamExpr::isExact() const
 {
-    if ( ! isNumeric() ) {
-        stringstream s;
-        s << "Exactness has no meaning for <" << this->toString() << ">";
-        throw ScamException(s.str());
-    }
-
-    return EXACT(data);
+    return ScamNumeric::isExact(data);
 }
 
 bool ScamExpr::isComplex() const
 {
-    return ScamData::ComplexBit == (data.type & ScamData::ComplexBit);
+    return ScamNumeric::isComplex(data);
 }
 
 bool ScamExpr::isReal() const
 {
-    return ScamData::RealBit == (data.type & ScamData::RealBit);
+    return ScamNumeric::isReal(data);
 }
 
 bool ScamExpr::isRational() const
 {
-    return ScamData::RationalBit == (data.type & ScamData::RationalBit);
+    return ScamNumeric::isRational(data);
 }
 
 bool ScamExpr::isInteger() const
 {
-    return ScamData::IntegerBit == (data.type & ScamData::IntegerBit);
+    return ScamNumeric::isInteger(data);
 }
 
 bool ScamExpr::isNaN() const
 {
-    return ScamData::NaNBit == (data.type & ScamData::NaNBit);
+    return ScamNumeric::isNaN(data);
 }
 
 bool ScamExpr::isNegInf() const
 {
-    return ScamData::NegInfBit == (data.type & ScamData::NegInfBit);
+    return ScamNumeric::isNegInf(data);
 }
 
 bool ScamExpr::isPosInf() const
 {
-    return ScamData::PosInfBit == (data.type & ScamData::PosInfBit);
+    return ScamNumeric::isPosInf(data);
 }
 
 double ScamExpr::asDouble() const

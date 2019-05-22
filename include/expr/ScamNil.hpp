@@ -13,8 +13,6 @@ namespace scam
         static ScamNil * makeInstance();
 
     public:
-        std::string toString() const override;
-
         size_t length() const override;
 
         bool equals(ConstExprHandle expr) const override;

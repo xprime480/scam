@@ -1,13 +1,7 @@
 #include "expr/ScamCharacter.hpp"
 
-#include "expr/ExpressionFactory.hpp"
-
-#include <sstream>
-
 using namespace scam;
 using namespace std;
-
-#define CHARVAL(data) ((data).value.charValue)
 
 ScamCharacter::ScamCharacter(const string & value)
     : ScamExpr(ScamData::Character)
@@ -18,13 +12,6 @@ ScamCharacter::ScamCharacter(const string & value)
 ScamCharacter * ScamCharacter::makeInstance(const string & value)
 {
     return new ScamCharacter(value);
-}
-
-string ScamCharacter::toString() const
-{
-    stringstream s;
-    s << "#\\" << CHARVAL(data);
-    return s.str();
 }
 
 char ScamCharacter::toChar() const
