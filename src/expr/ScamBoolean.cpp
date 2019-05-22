@@ -6,9 +6,8 @@ using namespace scam;
 using namespace std;
 
 ScamBoolean::ScamBoolean(bool value)
-    : ScamExpr(false)
+    : ScamExpr(ScamData::Boolean, false)
 {
-    data.type = ScamData::Boolean;
     BOOLVAL(data) = value;
 }
 

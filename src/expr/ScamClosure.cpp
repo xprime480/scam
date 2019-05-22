@@ -16,9 +16,8 @@ using namespace std;
 #define MACROLIKE(data) ((data).value.closureData.macrolike)
 
 ScamClosure::ScamClosure(const LambdaParser * parser, Env * env, bool macrolike)
+    : ScamExpr(ScamData::Closure)
 {
-    data.type = ScamData::Closure;
-
     CLOSUREDEF(data) = parser;
     CLOSUREENV(data) = env;
     MACROLIKE(data) = macrolike;

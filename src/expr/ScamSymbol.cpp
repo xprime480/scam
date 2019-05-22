@@ -9,9 +9,8 @@ using namespace scam;
 using namespace std;
 
 ScamSymbol::ScamSymbol(string const & value, bool managed)
-    : ScamExpr(managed)
+    : ScamExpr(ScamData::Symbol, managed)
 {
-    data.type = ScamData::Symbol;
     STRVAL(data) = value;
 }
 

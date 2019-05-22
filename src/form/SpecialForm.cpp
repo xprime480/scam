@@ -6,10 +6,9 @@ using namespace scam;
 using namespace std;
 
 SpecialForm::SpecialForm(string const & name, bool managed)
-    : ScamExpr(managed)
+    : ScamExpr(ScamData::SpecialForm, managed)
     , name(name)
 {
-    data.type = ScamData::SpecialForm;
 }
 
 string SpecialForm::toString() const

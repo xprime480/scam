@@ -10,8 +10,8 @@ using namespace std;
 #define CHARVAL(data) ((data).value.charValue)
 
 ScamCharacter::ScamCharacter(const string & value)
+    : ScamExpr(ScamData::Character)
 {
-    data.type = ScamData::Character;
     CHARVAL(data) = 0 == value.size() ? '\0' : value[value.size() - 1];
 }
 

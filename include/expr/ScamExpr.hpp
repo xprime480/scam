@@ -13,7 +13,7 @@ namespace scam
     class ScamExpr: public ManagedObject
     {
     protected:
-        ScamExpr(bool managed = true);
+        ScamExpr(unsigned long type, bool managed = true);
 
     public:
         void mark() const override;

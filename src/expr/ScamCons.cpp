@@ -15,9 +15,8 @@ using namespace std;
 #define CDR(data) (data.value.consValue.cdr)
 
 ScamCons::ScamCons(ExprHandle car, ExprHandle cdr)
+    : ScamExpr(ScamData::Cons)
 {
-    data.type = ScamData::Cons;
-
     CAR(data) = car;
     CDR(data) = cdr;
 }

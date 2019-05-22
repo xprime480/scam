@@ -8,9 +8,8 @@ using namespace scam;
 using namespace std;
 
 ScamError::ScamError(char const * msg, bool managed)
-    : ScamExpr(managed)
+    : ScamExpr(ScamData::Error, managed)
 {
-    data.type = ScamData::Error;
     STRVAL(data) = msg;
 }
 

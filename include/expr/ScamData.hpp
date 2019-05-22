@@ -16,7 +16,7 @@ namespace scam
     struct ScamData
     {
     public:
-        ScamData();
+        ScamData(unsigned long type);
 
         /*
          * tags and types for numeric types
@@ -74,7 +74,7 @@ namespace scam
          * member data
          */
 
-        unsigned long type;
+        const unsigned long type;
 
         union
         {
@@ -146,7 +146,6 @@ namespace scam
         /*
          * The following cannot go in a union.
          */
-
         std::string strVal;
 
     };

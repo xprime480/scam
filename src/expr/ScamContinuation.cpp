@@ -10,6 +10,7 @@ using namespace std;
 #define CONTINUATION(data) ((data).value.contData)
 
 ScamContinuation::ScamContinuation(Continuation * cont)
+    : ScamExpr(ScamData::Cont)
 {
     CONTINUATION(data) = cont;
 }

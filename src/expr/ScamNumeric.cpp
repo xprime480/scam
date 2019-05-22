@@ -32,30 +32,26 @@ namespace
 }
 
 ScamNumeric::ScamNumeric(ScamData::NaNType tag)
-    : ScamExpr(false)
+    : ScamExpr(ScamData::NaN, false)
 {
-    data.type = ScamData::NaN;
     EXACT(data) = false;
 }
 
 ScamNumeric::ScamNumeric(ScamData::NegInfType tag)
-    : ScamExpr(false)
+    : ScamExpr(ScamData::NegInf, false)
 {
-    data.type = ScamData::NegInf;
     EXACT(data) = false;
 }
 
 ScamNumeric::ScamNumeric(ScamData::PosInfType tag)
-    : ScamExpr(false)
+    : ScamExpr(ScamData::PosInf, false)
 {
-    data.type = ScamData::PosInf;
     EXACT(data) = false;
 }
 
 ScamNumeric::ScamNumeric(ExprHandle real, ExprHandle imag, bool managed)
-    : ScamExpr(managed)
+    : ScamExpr(ScamData::Complex, managed)
 {
-    data.type  = ScamData::Complex;
     EXACT(data) = real->isExact() && imag->isExact();
 
     if ( isPureComplex(real) || isPureComplex(imag) ) {
@@ -69,19 +65,16 @@ ScamNumeric::ScamNumeric(ExprHandle real, ExprHandle imag, bool managed)
 }
 
 ScamNumeric::ScamNumeric(double value, bool exact, bool managed)
-    : ScamExpr(managed)
+    : ScamExpr(ScamData::Real, managed)
 {
-    data.type = ScamData::Real;
-
     EXACT(data) = exact;
     REALVAL(data) = value;
 }
 
 ScamNumeric::ScamNumeric(int num, int den, bool exact, bool managed)
-    : ScamExpr(managed)
+    : ScamExpr(ScamData::Rational, managed)
 {
     EXACT(data) = exact;
-    data.type  = ScamData::Rational;
 
     const int div = gcd(num, den);
     NUMPART(data) = num / div;
@@ -89,10 +82,8 @@ ScamNumeric::ScamNumeric(int num, int den, bool exact, bool managed)
 }
 
 ScamNumeric::ScamNumeric(int value, bool exact, bool managed)
-    : ScamExpr(managed)
+    : ScamExpr(ScamData::Integer, managed)
 {
-    data.type = ScamData::Integer;
-
     EXACT(data) = exact;
     INTVAL(data) = value;
 }
@@ -114,7 +105,6 @@ ScamNumeric * ScamNumeric::makeInstance(ScamData::PosInfType tag)
     static ScamNumeric instance(tag);
     return &instance;
 }
-
 
 ScamNumeric *
 ScamNumeric::makeInstance(ExprHandle real, ExprHandle imag, bool managed)

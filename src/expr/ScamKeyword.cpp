@@ -4,9 +4,8 @@ using namespace scam;
 using namespace std;
 
 ScamKeyword::ScamKeyword(string const & value, bool managed)
-    : ScamExpr(managed)
+    : ScamExpr(ScamData::Keyword, managed)
 {
-    data.type = ScamData::Keyword;
     STRVAL(data) = value;
 }
 

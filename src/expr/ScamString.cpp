@@ -4,8 +4,8 @@ using namespace scam;
 using namespace std;
 
 ScamString::ScamString(string const & value)
+    : ScamExpr(ScamData::String)
 {
-    data.type = ScamData::String;
     STRVAL(data) = value;
 }
 

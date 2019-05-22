@@ -7,9 +7,8 @@ using namespace scam;
 using namespace std;
 
 ScamNull::ScamNull()
-    : ScamExpr(false)
+    : ScamExpr(ScamData::Null, false)
 {
-    data.type = ScamData::Null;
 }
 
 ScamNull * ScamNull::makeInstance()

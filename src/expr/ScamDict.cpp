@@ -16,9 +16,8 @@ using namespace std;
 #define DICTVALS(data) (*(DICTVALSP(data)))
 
 ScamDict::ScamDict()
+    : ScamExpr(ScamData::Dict)
 {
-    data.type = ScamData::Dict;
-
     DICTKEYSP(data) = new remove_reference<decltype(DICTKEYS(data))>::type;
     DICTVALSP(data) = new remove_reference<decltype(DICTVALS(data))>::type;
 }

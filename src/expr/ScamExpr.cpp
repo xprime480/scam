@@ -12,8 +12,9 @@
 using namespace scam;
 using namespace std;
 
-ScamExpr::ScamExpr(bool managed)
+ScamExpr::ScamExpr(unsigned long type, bool managed)
     : ManagedObject(managed)
+    , data(type)
     , metadata(nullptr)
 {
 }

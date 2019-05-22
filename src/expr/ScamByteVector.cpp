@@ -9,9 +9,8 @@ using namespace scam;
 using namespace std;
 
 ScamByteVector::ScamByteVector(ByteVec const & elts)
+    : ScamExpr(ScamData::ByteVector)
 {
-    data.type = ScamData::ByteVector;
-    
     BYTEVECTORP(data) = new remove_reference<decltype(BYTEVECTOR(data))>::type;
     BYTEVECTOR(data) = elts;
 }

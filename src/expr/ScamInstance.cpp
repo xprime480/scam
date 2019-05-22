@@ -25,8 +25,8 @@ scam::ScamEnvKeyType ScamInstance::parent =
     ExpressionFactory::makeSymbol("parent", false);
 
 ScamInstance::ScamInstance(const ScamClass * cls, Env * env)
+    : ScamExpr(ScamData::Instance)
 {
-    data.type = ScamData::Instance;
     INSTANCEPRIVENV(data) = standardMemoryManager.make<Env>();
     INSTANCELOCALENV(data) = env->extend();
 

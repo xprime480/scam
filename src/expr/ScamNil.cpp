@@ -4,9 +4,8 @@ using namespace scam;
 using namespace std;
 
 ScamNil::ScamNil()
-    : ScamExpr(false)
+    : ScamExpr(ScamData::Nil, false)
 {
-    data.type = ScamData::Nil;
 }
 
 ScamNil * ScamNil::makeInstance()

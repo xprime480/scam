@@ -2,7 +2,7 @@
 
 using namespace scam;
 
-ScamData::ScamData()
-    : type(0u)
+ScamData::ScamData(unsigned long type)
+    : type(type)
 {
 }

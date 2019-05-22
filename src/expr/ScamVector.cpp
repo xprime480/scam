@@ -9,9 +9,8 @@ using namespace scam;
 using namespace std;
 
 ScamVector::ScamVector(ExprVec const & elts)
+    : ScamExpr(ScamData::Vector)
 {
-    data.type = ScamData::Vector;
-
     VECTORP(data) = new remove_reference<decltype(VECTOR(data))>::type;
     VECTOR(data) = elts;
 }
