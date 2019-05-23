@@ -1,6 +1,7 @@
 #include "TestBase.hpp"
 #include "StaticTokenizer.hpp"
 
+#include "expr/ScamToInternal.hpp"
 #include "input/ScamParser.hpp"
 
 #include <vector>
@@ -393,7 +394,7 @@ TEST_F(ParserTest, VectorNonEmpty)
 
     ScamValue expr = runTest(tokens);
     expectVector(expr, msg, 2);
-    EXPECT_EQ(42, expr->nthcar(1)->asInteger());
+    EXPECT_EQ(42, asInteger(expr->nthcar(1)));
 }
 
 TEST_F(ParserTest, ByteVectorEmpty)

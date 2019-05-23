@@ -1,5 +1,7 @@
 #include "TestBase.hpp"
 
+#include "expr/ScamToInternal.hpp"
+
 using namespace std;
 using namespace scam;
 
@@ -16,7 +18,8 @@ TEST_F(PreludeTest, MaxIntegerTest)
 TEST_F(PreludeTest, MaxRealTest)
 {
     ScamValue expr = parseAndEvaluate("(max 42.01 17.5)");
-    expectRational(expr, pair<int, int>(4201, 100), "4201/100", false);
+    RationalPair value { 4201, 100 };
+    expectRational(expr, value, "4201/100", false);
 }
 
 TEST_F(PreludeTest, MaxMixedNumericTest)
@@ -34,13 +37,15 @@ TEST_F(PreludeTest, MinIntegerTest)
 TEST_F(PreludeTest, MinRealTest)
 {
     ScamValue expr = parseAndEvaluate("(min 42.01 17.5)");
-    expectRational(expr, pair<int,int>(35,2), "35/2", false);
+    RationalPair value { 35, 2 };
+    expectRational(expr, value, "35/2", false);
 }
 
 TEST_F(PreludeTest, MinMixedNumericTest)
 {
     ScamValue expr = parseAndEvaluate("(min -5 -9.999)");
-    expectRational(expr, pair<int,int>(-9999,1000), "-9999/1000", false);
+    RationalPair value { -9999, 1000 };
+    expectRational(expr, value, "-9999/1000", false);
 }
 
 TEST_F(PreludeTest, MapTest)

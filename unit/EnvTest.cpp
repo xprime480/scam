@@ -4,6 +4,7 @@
 #include "ScamException.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamExpr.hpp"
+#include "expr/ScamToInternal.hpp"
 
 #include "gtest/gtest.h"
 
@@ -42,7 +43,7 @@ protected:
 TEST_F(EnvTest, Fetch)
 {
     ScamValue act = engine.getBinding(key);
-    EXPECT_EQ(exp->asInteger(), act->asInteger());
+    EXPECT_EQ(asInteger(exp), asInteger(act));
 }
 
 TEST_F(EnvTest, FetchTraversesFrames)
@@ -53,7 +54,7 @@ TEST_F(EnvTest, FetchTraversesFrames)
     }
 
     ScamValue act = engine.getBinding(key);
-    EXPECT_EQ(exp->asInteger(), act->asInteger());
+    EXPECT_EQ(asInteger(exp), asInteger(act));
 }
 
 TEST_F(EnvTest, DuplicateKeys)
@@ -62,7 +63,7 @@ TEST_F(EnvTest, DuplicateKeys)
     EXPECT_THROW(engine.addBinding(key, val2), ScamException);
 
     ScamValue act = engine.getBinding(key);
-    EXPECT_EQ(exp->asInteger(), act->asInteger());
+    EXPECT_EQ(asInteger(exp), asInteger(act));
 }
 
 TEST_F(EnvTest, ExtensionTest)
@@ -72,13 +73,13 @@ TEST_F(EnvTest, ExtensionTest)
     engine.addBinding(key, exp2);
 
     ScamValue act2 = engine.getBinding(key);
-    EXPECT_EQ(exp2->asInteger(), act2->asInteger());
+    EXPECT_EQ(asInteger(exp2), asInteger(act2));
 
     // original environment is unchanged
     //
     engine.popFrame();
     ScamValue act = engine.getBinding(key);
-    EXPECT_EQ(exp->asInteger(), act->asInteger());
+    EXPECT_EQ(asInteger(exp), asInteger(act));
 }
 
 TEST_F(EnvTest, Assign)
@@ -86,7 +87,7 @@ TEST_F(EnvTest, Assign)
     ScamValue newExp = ExpressionFactory::makeInteger(33, true);
     engine.rebind(key, newExp);
     ScamValue act = engine.getBinding(key);
-    EXPECT_EQ(newExp->asInteger(), act->asInteger());
+    EXPECT_EQ(asInteger(newExp), asInteger(act));
 }
 
 TEST_F(EnvTest, AssignToNonexistentKey)
@@ -102,13 +103,13 @@ TEST_F(EnvTest, AssignTraversesFrames)
     ScamValue newExp = ExpressionFactory::makeInteger(33, true);
     engine.rebind(key, newExp);
     ScamValue act = engine.getBinding(key);
-    EXPECT_EQ(newExp->asInteger(), act->asInteger());
+    EXPECT_EQ(asInteger(newExp), asInteger(act));
 
     // it's in the original env
     //
     engine.popFrame();
     act = engine.getBinding(key);
-    EXPECT_EQ(newExp->asInteger(), act->asInteger());
+    EXPECT_EQ(asInteger(newExp), asInteger(act));
 }
 
 TEST_F(EnvTest, Check)

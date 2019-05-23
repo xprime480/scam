@@ -1,5 +1,7 @@
 #include "TestBase.hpp"
 
+#include "expr/ScamToInternal.hpp"
+
 using namespace std;
 using namespace scam;
 
@@ -39,13 +41,15 @@ TEST_F(MathTest, AddManyArgs)
 TEST_F(MathTest, AddRationals)
 {
     ScamValue expr = parseAndEvaluate("(+ 1/3 1/3)");
-    expectRational(expr, pair<int, int>(2,3), "2/3", true);
+    RationalPair value { 2, 3 };
+    expectRational(expr, value, "2/3", true);
 }
 
 TEST_F(MathTest, AddTypeUnification)
 {
     ScamValue expr = parseAndEvaluate("(+ 2 2.5)");
-    expectRational(expr, pair<int, int>(9,2), "9/2", false);
+    RationalPair value{ 9, 2 };
+    expectRational(expr, value, "9/2", false);
 }
 
 TEST_F(MathTest, AddSimplificationRealToInt)
@@ -124,13 +128,15 @@ TEST_F(MathTest, SubManyArgs)
 TEST_F(MathTest, SubRationals)
 {
     ScamValue expr = parseAndEvaluate("(- 7/12 5/12)");
-    expectRational(expr, pair<int, int>(1,6), "1/6", true);
+    RationalPair value { 1, 6 };
+    expectRational(expr, value, "1/6", true);
 }
 
 TEST_F(MathTest, SubTypeUnification)
 {
     ScamValue expr = parseAndEvaluate("(- 2 1.5)");
-    expectRational(expr, pair<int,int>(1,2), "1/2", false);
+    RationalPair value { 1, 2 };
+    expectRational(expr, value, "1/2", false);
 }
 
 TEST_F(MathTest, SubSimplificationRealToInt)
@@ -209,13 +215,15 @@ TEST_F(MathTest, MulManyArgs)
 TEST_F(MathTest, MulRationals)
 {
     ScamValue expr = parseAndEvaluate("(*  3/10 -2/3)");
-    expectRational(expr, pair<int, int>(-1,5), "-1/5", true);
+    RationalPair value { -1, 5 };
+    expectRational(expr, value, "-1/5", true);
 }
 
 TEST_F(MathTest, MulTypeUnification)
 {
     ScamValue expr = parseAndEvaluate("(* 2 2.125)");
-    expectRational(expr, pair<int,int>(17,4), "17/4", false);
+    RationalPair value { 17, 4 };
+    expectRational(expr, value, "17/4", false);
 }
 
 TEST_F(MathTest, MulSimplificationRealToInt)
@@ -296,31 +304,36 @@ TEST_F(MathTest, DivZeroArgs)
 TEST_F(MathTest, DivOneArg)
 {
     ScamValue expr = parseAndEvaluate("(/ 2)");
-    expectRational(expr, pair<int,int>(1,2), "1/2", true);
+    RationalPair value { 1, 2 };
+    expectRational(expr, value, "1/2", true);
 }
 
 TEST_F(MathTest, DivTwoArgs)
 {
     ScamValue expr = parseAndEvaluate("(/ 2 5)");
-    expectRational(expr, pair<int,int>(2,5), "2/5", true);
+    RationalPair value { 2, 5 };
+    expectRational(expr, value, "2/5", true);
 }
 
 TEST_F(MathTest, DivManyArgs)
 {
     ScamValue expr = parseAndEvaluate("(/ 1 2 2 2)");
-    expectRational(expr, pair<int,int>(1,8), "1/8", true);
+    RationalPair value { 1, 8 };
+    expectRational(expr, value, "1/8", true);
 }
 
 TEST_F(MathTest, DivRationals)
 {
     ScamValue expr = parseAndEvaluate("(/ 3/10 11/7)");
-    expectRational(expr, pair<int, int>(21,110), "21/110", true);
+    RationalPair value { 21, 110 };
+    expectRational(expr, value, "21/110", true);
 }
 
 TEST_F(MathTest, DivTypeUnification)
 {
     ScamValue expr = parseAndEvaluate("(/ 2.5 1)");
-    expectRational(expr, pair<int,int>(5,2), "5/2", false);
+    RationalPair value { 5, 2 };
+    expectRational(expr, value, "5/2", false);
 }
 
 TEST_F(MathTest, DivComplex)
@@ -496,19 +509,22 @@ TEST_F(MathTest, ModZeroBy)
 TEST_F(MathTest, ModRational)
 {
     ScamValue expr = parseAndEvaluate("(% 3/4 1/10)");
-    expectRational(expr, pair<int, int>(1,20), "1/20", true);
+    RationalPair value { 1, 20 };
+    expectRational(expr, value, "1/20", true);
 }
 
 TEST_F(MathTest, ModReal)
 {
     ScamValue expr = parseAndEvaluate("(% 0.75 0.5)");
-    expectRational(expr, pair<int,int>(1,4), "1/4", false);
+    RationalPair value { 1, 4 };
+    expectRational(expr, value, "1/4", false);
 }
 
 TEST_F(MathTest, Nested)
 {
     ScamValue expr = parseAndEvaluate("(+ (* 2 3) (/ 1 5) (- 3))");
-    expectRational(expr, pair<int,int>(16,5), "16/5", true);
+    RationalPair value { 16, 5 };
+    expectRational(expr, value, "16/5", true);
 }
 
 TEST_F(MathTest, NestedWithError)

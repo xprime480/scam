@@ -2,6 +2,7 @@
 
 #include "ScamException.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "expr/ScamToInternal.hpp"
 #include "expr/TypePredicates.hpp"
 
 #include <iostream>
@@ -57,7 +58,7 @@ bool ScamRepl::load_prelude()
     }
 
     ScamValue rv = eval(expr);
-    return TypePredicates::isInteger(rv) && 1 == rv->asInteger();
+    return TypePredicates::isInteger(rv) && 1 == asInteger(rv);
 }
 
 int ScamRepl::repl()

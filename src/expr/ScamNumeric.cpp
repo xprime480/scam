@@ -3,6 +3,7 @@
 #include "ScamException.hpp"
 #include "expr/ExprWriter.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "expr/ScamToInternal.hpp"
 #include "expr/TypePredicates.hpp"
 #include "util/NumericUtils.hpp"
 
@@ -12,65 +13,6 @@
 
 using namespace scam;
 using namespace std;
-
-double ScamNumeric::asDouble(const ScamData * data)
-{
-    if ( ! TypePredicates::isReal(data) ) {
-        stringstream s;
-        s << "Cannot convert <" << ExprWriter::write(data) << "> to double";
-        throw ScamException(s.str());
-    }
-
-    if ( TypePredicates::isInteger(data) ) {
-        return (double) INTVAL(data);
-    }
-    else if ( TypePredicates::isRational(data) ) {
-        return ((double) NUMPART(data) / (double) DENPART(data) );
-    }
-    else if ( TypePredicates::isNaN(data) ||
-              TypePredicates::isNegInf(data) ||
-              TypePredicates::isPosInf(data) ) {
-        // drop through to error case;
-    }
-    else if ( TypePredicates::isReal(data) ) {
-        return REALVAL(data);
-    }
-
-    return 0.0;
-}
-
-std::pair<int, int> ScamNumeric::asRational(const ScamData * data)
-{
-    if ( ! TypePredicates::isRational(data) ) {
-        stringstream s;
-        s << "Cannot convert <" << ExprWriter::write(data) << "> to rational";
-        throw ScamException(s.str());
-    }
-
-    int num { 0 };
-    int den { 1 };
-
-    if ( TypePredicates::isInteger(data) ) {
-        num = INTVAL(data);
-    }
-    else {
-        num = NUMPART(data);
-        den = DENPART(data);
-    }
-
-    return make_pair<int,int>(move(num), move(den));
-}
-
-int ScamNumeric::asInteger(const ScamData * data)
-{
-    if ( ! TypePredicates::isInteger(data) ) {
-        stringstream s;
-        s << "Cannot convert <" << ExprWriter::write(data) << "> to integer";
-        throw ScamException(s.str());
-    }
-
-    return INTVAL(data);
-}
 
 ConstScamValue ScamNumeric::realPart(const ScamData * data)
 {
@@ -233,8 +175,8 @@ bool ScamNumeric::equals(ConstScamValue expr) const
 
     if ( TypePredicates::isPureComplex(this) ||
          TypePredicates::isPureComplex(expr) ) {
-        const double thisI = imagPart(this)->asDouble();
-        const double thatI = imagPart(expr)->asDouble();
+        const double thisI = asDouble(imagPart(this));
+        const double thatI = asDouble(imagPart(expr));
         if ( ::fabs(thisI- thatI) > 1e-9 ) {
             return false;
         }

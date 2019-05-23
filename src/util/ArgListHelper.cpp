@@ -3,6 +3,7 @@
 #include "Continuation.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ExtendedNumeric.hpp"
+#include "expr/ScamToInternal.hpp"
 #include "expr/TypePredicates.hpp"
 #include "input/NumericListParser.hpp"
 #include "input/RelopsListParser.hpp"
@@ -36,7 +37,7 @@ namespace
 
         static double convert(ScamValue arg)
         {
-            return arg->asDouble();
+            return asDouble(arg);
         }
 
         static string id() {

@@ -1,6 +1,7 @@
 #include "TestBase.hpp"
 
 #include "ScamException.hpp"
+#include "expr/ScamToInternal.hpp"
 #include "input/LambdaParser.hpp"
 
 using namespace std;
@@ -84,7 +85,8 @@ TEST_F(ClosureTest, LambdaCaptures)
 TEST_F(ClosureTest, LambdaFormalsMaskEnv)
 {
     ScamValue expr = parseAndEvaluateFile("scripts/closure/formalsmask.scm");
-    expectRational(expr, pair<int,int>(1,2), "1/2", false);
+    RationalPair value { 1, 2 };
+    expectRational(expr, value, "1/2", false);
 
     expr = parseAndEvaluate("x");
     expectInteger(expr, 0, "0", false);

@@ -2,6 +2,7 @@
 
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ExtendedNumeric.hpp"
+#include "expr/ScamToInternal.hpp"
 #include "expr/TypePredicates.hpp"
 #include "input/StringTokenizer.hpp"
 
@@ -46,15 +47,14 @@ ScamValue NumericConverter::simplify(ScamValue value)
     if ( TypePredicates::isComplex(value) &&
          ! TypePredicates::isReal(value) ) {
         ScamValue imag = simplify(const_cast<ScamValue>(value->imagPart()));
-        if ( imag && TypePredicates::isInteger(imag) &&
-             0 == imag->asInteger() ) {
+        if ( TypePredicates::isInteger(imag) && 0 == asInteger(imag) ) {
             value = const_cast<ScamValue>(value->realPart());
         }
     }
 
     if ( TypePredicates::isReal(value) &&
          ! TypePredicates::isRational(value) ) {
-        double v = value->asDouble();
+        double v = asDouble(value);
         double frac = ::fmod(v, 1.0);
         if ( 0.0 == frac ) {
             const bool ex = TypePredicates::isExact(value);
@@ -67,10 +67,10 @@ ScamValue NumericConverter::simplify(ScamValue value)
 
     if ( TypePredicates::isRational(value) &&
          ! TypePredicates::isInteger(value) ) {
-        const pair<int, int> v = value->asRational();
-        if ( 1 == v.second ) {
+        const RationalPair v = asRational(value);
+        if ( 1 == v.den ) {
             const bool ex = TypePredicates::isExact(value);
-            value = ExpressionFactory::makeInteger(v.first, ex);
+            value = ExpressionFactory::makeInteger(v.num, ex);
         }
     }
 
@@ -256,8 +256,7 @@ ScamValue NumericConverter::scanUReal()
         return ( posN > pos10 ) ? rvN : rv10;
     }
 
-    ScamValue rv = makeRationalWithExactness(rvN->asInteger(),
-                                              rvD->asInteger());
+    ScamValue rv = makeRationalWithExactness(asInteger(rvN), asInteger(rvD));
     return rv;
 }
 
@@ -384,7 +383,7 @@ ScamValue NumericConverter::scanSuffix()
         int sign = scanSign();
         ScamValue value = scanUInteger();
         if ( TypePredicates::isInteger(value) ) {
-            double suffix = makeMultiplier(sign * value->asInteger());
+            double suffix = makeMultiplier(sign * asInteger(value));
             rv = makeRealWithExactness(suffix);
         }
     }
@@ -465,7 +464,7 @@ ScamValue NumericConverter::makeFraction(unsigned minCount)
 
 
     if ( count <= 6 ) {
-        int value = rv->asInteger();
+        int value = asInteger(rv);
         double multiplier = makeMultiplier(count);
         return ExpressionFactory::makeRational(value, multiplier, makeExact);
     }
@@ -560,7 +559,7 @@ NumericConverter::makeComplexPolar(ScamValue r, ScamValue theta) const
          TypePredicates::isPosInf(r) ) {
         real = imag = nan;
     }
-    else if ( 0.0 == r->asDouble() ) {
+    else if ( 0.0 == asDouble(r) ) {
         real = imag = r;
     }
     else if ( TypePredicates::isNaN(theta) ||
@@ -569,9 +568,9 @@ NumericConverter::makeComplexPolar(ScamValue r, ScamValue theta) const
         real = imag = nan;
     }
     else {
-        const double radius = r->asDouble();
-        const double cosine = ::cos(theta->asDouble());
-        const double sine   = ::sin(theta->asDouble());
+        const double radius = asDouble(r);
+        const double cosine = ::cos(asDouble(theta));
+        const double sine   = ::sin(asDouble(theta));
 
         const double x = radius * cosine;
         const double y = radius * sine;

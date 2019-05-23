@@ -4,6 +4,7 @@
 #include "ScamException.hpp"
 #include "WorkQueue.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "expr/ScamToInternal.hpp"
 #include "expr/TypePredicates.hpp"
 #include "input/ScamParser.hpp"
 #include "input/StringTokenizer.hpp"
@@ -338,7 +339,7 @@ void TestBase::expectReal(ConstScamValue expr,
     EXPECT_EQ(repr, ExprWriter::write(expr));
 
     try {
-        EXPECT_FLOAT_EQ(value, expr->asDouble());
+        EXPECT_FLOAT_EQ(value, asDouble(expr));
     }
     catch ( ScamException e ) {
         FAIL() << e.getMessage() << "\n";
@@ -350,7 +351,7 @@ void TestBase::expectReal(ConstScamValue expr,
 }
 
 void TestBase::expectRational(ConstScamValue expr,
-                              const std::pair<int, int> & value,
+                              const RationalPair & value,
                               std::string const & repr,
                               bool exact)
 {
@@ -360,7 +361,9 @@ void TestBase::expectRational(ConstScamValue expr,
     checkPredicates(expr, SELECT_TRUTH | ALL_RATIONAL);
     EXPECT_EQ(repr, ExprWriter::write(expr));
     try {
-        EXPECT_EQ(value, expr->asRational());
+        const auto act = asRational(expr);
+        EXPECT_EQ(value.num, act.num);
+        EXPECT_EQ(value.den, act.den);
     }
     catch ( ScamException e ) {
         FAIL() << e.getMessage() << "\n";
@@ -382,7 +385,7 @@ void TestBase::expectInteger(ConstScamValue expr,
     checkPredicates(expr, SELECT_TRUTH | ALL_INTEGER);
     EXPECT_EQ(repr, ExprWriter::write(expr));
     try {
-        EXPECT_EQ(value, expr->asInteger());
+        EXPECT_EQ(value, asInteger(expr));
     }
     catch ( ScamException e ) {
         FAIL() << e.getMessage() << "\n";
@@ -400,7 +403,7 @@ void TestBase::expectChar(ConstScamValue expr,
 
     checkPredicates(expr, SELECT_TRUTH | SELECT_CHAR | SELECT_MANAGED);
     EXPECT_EQ(repr, ExprWriter::write(expr));
-    EXPECT_EQ(value, expr->asChar());
+    EXPECT_EQ(value, asChar(expr));
 }
 
 void TestBase::expectString(ConstScamValue expr, string const & value)

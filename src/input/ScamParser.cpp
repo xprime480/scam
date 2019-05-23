@@ -1,6 +1,7 @@
 #include "input/ScamParser.hpp"
 
 #include "expr/ExpressionFactory.hpp"
+#include "expr/ScamToInternal.hpp"
 #include "expr/TypePredicates.hpp"
 
 #include <vector>
@@ -264,7 +265,7 @@ ScamValue ScamParser::parseByteVector() const
             return err;
         }
 
-        int i = expr->asInteger();
+        int i = asInteger(expr);
         if ( i < 0 || i > 255 || ! TypePredicates::isExact(expr) ) {
         }
 

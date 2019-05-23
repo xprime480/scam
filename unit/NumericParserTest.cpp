@@ -1,6 +1,7 @@
 #include "TestBase.hpp"
 
 #include "ScamException.hpp"
+#include "expr/ScamToInternal.hpp"
 #include "util/NumericConverter.hpp"
 
 using namespace std;
@@ -60,37 +61,43 @@ TEST_F(NumericParserTest, NegativeIntegerInexact)
 TEST_F(NumericParserTest, PositiveRationalExact)
 {
     ScamValue expr = ExpressionFactory::makeNumeric("22/7");
-    expectRational(expr, make_pair<int, int>(22, 7), "22/7", true);
+    RationalPair value { 22, 7 };
+    expectRational(expr, value, "22/7", true);
 }
 
 TEST_F(NumericParserTest, PositiveRationalInexact)
 {
     ScamValue expr = ExpressionFactory::makeNumeric("#i22/7");
-    expectRational(expr, make_pair<int, int>(22, 7), "22/7", false);
+    RationalPair value { 22, 7 };
+    expectRational(expr, value, "22/7", false);
 }
 
 TEST_F(NumericParserTest, NegativeRationalExact)
 {
     ScamValue expr = ExpressionFactory::makeNumeric("-22/7");
-    expectRational(expr, make_pair<int, int>(-22, 7), "-22/7", true);
+    RationalPair value { -22, 7 };
+    expectRational(expr, value, "-22/7", true);
 }
 
 TEST_F(NumericParserTest, NegativeRationalInexact)
 {
     ScamValue expr = ExpressionFactory::makeNumeric("#I-22/7");
-    expectRational(expr, make_pair<int, int>(-22, 7), "-22/7", false);
+    RationalPair value { -22, 7 };
+    expectRational(expr, value, "-22/7", false);
 }
 
 TEST_F(NumericParserTest, HexadecimalRational)
 {
     ScamValue expr = ExpressionFactory::makeNumeric("#x3/10");
-    expectRational(expr, make_pair<int, int>(3, 16), "3/16", true);
+    RationalPair value { 3, 16 };
+    expectRational(expr, value, "3/16", true);
 }
 
 TEST_F(NumericParserTest, RationalLowestTerms)
 {
     ScamValue expr = ExpressionFactory::makeNumeric("50/100");
-    expectRational(expr, make_pair<int, int>(1, 2), "1/2", true);
+    RationalPair value { 1, 2 };
+    expectRational(expr, value, "1/2", true);
 }
 
 TEST_F(NumericParserTest, RationalWithUnitDenominator)

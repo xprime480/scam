@@ -11,10 +11,6 @@ namespace scam
     class ScamNumeric : public ScamExpr
     {
     public:
-        static double asDouble(const ScamData * data);
-        static std::pair<int, int> asRational(const ScamData * data);
-        static int asInteger(const ScamData * data);
-
         static ConstScamValue realPart(const ScamData * data);
         static ConstScamValue imagPart(const ScamData * data);
 
@@ -29,9 +25,6 @@ namespace scam
         ScamNumeric(double value, bool exact, bool managed = true);
         ScamNumeric(int num, int den, bool exact, bool managed = true);
         ScamNumeric(int value, bool exact, bool managed = true);
-
-    protected:
-        explicit ScamNumeric(bool exact, bool managed = true);
 
     private:
         static ScamNumeric * makeInstance(ScamData::NaNType tag);

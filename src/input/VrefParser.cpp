@@ -1,6 +1,7 @@
 #include "input/VrefParser.hpp"
 
 #include "expr/ScamNumeric.hpp"
+#include "expr/ScamToInternal.hpp"
 #include "expr/ScamVector.hpp"
 #include "expr/TypePredicates.hpp"
 #include "input/SequenceParser.hpp"
@@ -37,7 +38,7 @@ bool VrefParser::accept(ScamValue expr)
     }
 
     auto val = intVal->getValue();
-    if ( ! TypePredicates::isInteger(val) || val->asInteger() < 0 ) {
+    if ( ! TypePredicates::isInteger(val) || asInteger(val) < 0 ) {
         return false;
     }
 
@@ -47,7 +48,7 @@ bool VrefParser::accept(ScamValue expr)
 
 size_t VrefParser::getIndex() const
 {
-    return static_cast<size_t>(intVal->getValue()->asInteger());
+    return static_cast<size_t>(asInteger(intVal->getValue()));
 }
 
 ScamVector * VrefParser::getVector() const

@@ -76,7 +76,7 @@ TEST_F(ExpressionTest, RealTest)
 
 TEST_F(ExpressionTest, RationalTest)
 {
-    pair<int, int> value(8, 3);
+    RationalPair value { 8, 3 };
     string const repr{ "8/3" };
 
     ScamValue expr = ExpressionFactory::makeRational(8, 3, true);

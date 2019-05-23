@@ -24,17 +24,11 @@ namespace scam
 
         virtual void mapEval(Continuation * cont, Env * env) const;
 
-        char asChar() const;
-        double asDouble() const;
-        std::pair<int, int> asRational() const;
-        int asInteger() const;
-
         ConstScamValue realPart() const;
         ConstScamValue imagPart() const;
 
         virtual ScamValue getCar() const;
         virtual ScamValue getCdr() const;
-
 
         virtual size_t length() const;
         virtual ScamValue nthcar(size_t n) const;

@@ -3,6 +3,7 @@
 
 #include "Extractor.hpp"
 #include "ScamEngine.hpp"
+#include "expr/ScamToInternal.hpp"
 
 #include <memory>
 #include <string>
@@ -69,7 +70,7 @@ namespace scam
                         bool exact);
 
         void expectRational(ConstScamValue expr,
-                            const std::pair<int, int> & value,
+                            const RationalPair & value,
                             std::string const & repr,
                             bool exact);
 

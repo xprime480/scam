@@ -2,6 +2,7 @@
 
 #include "expr/ScamData.hpp"
 #include "expr/ScamExpr.hpp"
+#include "expr/ScamToInternal.hpp"
 #include "expr/TypePredicates.hpp"
 #include "input/LambdaParser.hpp"
 #include "input/ParameterListParser.hpp"
@@ -194,7 +195,7 @@ void ExprWriter::writeNumeric(stringstream & s, const ScamData * data)
         ScamValue r { REALPART(data) };
         ScamValue i { IMAGPART(data) };
 
-        if ( ! TypePredicates::isInteger(r) || 0 != r->asInteger() ) {
+        if ( ! TypePredicates::isInteger(r) || 0 != asInteger(r) ) {
             s << write(r);
         }
 
