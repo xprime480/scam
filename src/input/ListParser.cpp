@@ -37,17 +37,17 @@ bool ListParser::accept(ScamValue expr)
 
     clearValue();
 
-    if ( ! TypePredicates::isCons(expr) && ! TypePredicates::isNil(expr) ) {
+    if ( ! isCons(expr) && ! isNil(expr) ) {
         return false;
     }
 
-    if ( TypePredicates::isNil(expr) ) {
+    if ( isNil(expr) ) {
         callback(expr);
         return true;
     }
 
     ScamValue current = expr;
-    while ( TypePredicates::isCons(current) ) {
+    while ( isCons(current) ) {
         ScamValue item = current->getCar();
         current = current->getCdr();
         if ( ! itemParser->accept(item) ) {
@@ -57,7 +57,7 @@ bool ListParser::accept(ScamValue expr)
         items.push_back(item);
     }
 
-    if ( ! TypePredicates::isNil(current) ) {
+    if ( ! isNil(current) ) {
         if ( ! itemParser->accept(current) )  {
             clearValue();
             return false;

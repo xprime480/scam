@@ -148,11 +148,11 @@ ScamValue ScamParser::parseList() const
     }
 
     ScamValue car = tokenToExpr(token);
-    if ( TypePredicates::error(car) ) {
+    if ( error(car) ) {
         return car;
     }
     ScamValue cdr = parseList();
-    if ( TypePredicates::error(cdr) ) {
+    if ( error(cdr) ) {
         return cdr;
     }
     return ExpressionFactory::makeCons(car, cdr);
@@ -223,7 +223,7 @@ ScamValue ScamParser::parseVector() const
         }
 
         ScamValue expr = tokenToExpr(token);
-        if ( TypePredicates::error(expr) ) {
+        if ( error(expr) ) {
             return expr;
         }
 
@@ -255,18 +255,18 @@ ScamValue ScamParser::parseByteVector() const
         }
 
         ScamValue expr = tokenToExpr(token);
-        if ( TypePredicates::error(expr) ) {
+        if ( error(expr) ) {
             return expr;
         }
 
-        if ( ! TypePredicates::isInteger(expr) ) {
+        if ( ! isInteger(expr) ) {
             ScamValue err =
                 ExpressionFactory::makeError("Non-integer in Byte Vector");
             return err;
         }
 
         int i = asInteger(expr);
-        if ( i < 0 || i > 255 || ! TypePredicates::isExact(expr) ) {
+        if ( i < 0 || i > 255 || ! isExact(expr) ) {
         }
 
         vec.push_back((unsigned char)i);
@@ -297,7 +297,7 @@ ScamValue ScamParser::parseDict() const
         }
 
         ScamValue expr = tokenToExpr(token);
-        if ( TypePredicates::error(expr) ) {
+        if ( error(expr) ) {
             return expr;
         }
 
@@ -325,10 +325,10 @@ ScamValue ScamParser::expand_reader_macro(std::string const & text) const
     }
 
     ScamValue expr = parseSubExpr();
-    if ( TypePredicates::isNull(expr) ) {
+    if ( isNull(expr) ) {
         return ExpressionFactory::makeError("Unterminated macro: ", name);
     }
-    if ( TypePredicates::error(expr) ) {
+    if ( error(expr) ) {
         return ExpressionFactory::makeError("Error getting form for ",
                                             name,
                                             " macro",

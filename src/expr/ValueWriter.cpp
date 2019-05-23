@@ -26,7 +26,7 @@ string scam::writeValue(const ScamData * data)
 {
     stringstream s;
 
-    if ( TypePredicates::isNumeric(data) ) {
+    if ( isNumeric(data) ) {
         writeNumeric(s, data);
     }
     else {
@@ -147,8 +147,8 @@ namespace
         s << "(";
         s << writeValue(CAR(data));
         ScamValue next = CDR(data);
-        while ( ! TypePredicates::isNil(next) ) {
-            if ( TypePredicates::isCons(next) ) {
+        while ( ! isNil(next) ) {
+            if ( isCons(next) ) {
                 s << " " << writeValue(next->getCar());
                 next = next->getCdr();
             }
@@ -178,25 +178,25 @@ namespace
 
     void writeNumeric(stringstream & s, const ScamData * data)
     {
-        if ( TypePredicates::isNaN(data) ) {
+        if ( isNaN(data) ) {
             s << "+nan.0";
         }
-        else if ( TypePredicates::isNegInf(data) ) {
+        else if ( isNegInf(data) ) {
             s << "-inf.0";
         }
-        else if ( TypePredicates::isPosInf(data) ) {
+        else if ( isPosInf(data) ) {
             s << "+inf.0";
         }
-        else if ( TypePredicates::isInteger(data) ) {
+        else if ( isInteger(data) ) {
             s << INTVAL(data);
         }
-        else if ( TypePredicates::isRational(data) ) {
+        else if ( isRational(data) ) {
             s << NUMPART(data) << "/" << DENPART(data);
         }
-        else if ( TypePredicates::isReal(data) ) {
+        else if ( isReal(data) ) {
             s << REALVAL(data);
         }
-        else if ( TypePredicates::isComplex(data) ) {
+        else if ( isComplex(data) ) {
             //
             // The complexity is so that the output is in the simplest
             // form that will be read by the scanner as the same value.
@@ -207,7 +207,7 @@ namespace
             ScamValue r { REALPART(data) };
             ScamValue i { IMAGPART(data) };
 
-            if ( ! TypePredicates::isInteger(r) || 0 != asInteger(r) ) {
+            if ( ! isInteger(r) || 0 != asInteger(r) ) {
                 s << writeValue(r);
             }
 

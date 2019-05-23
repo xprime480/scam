@@ -36,7 +36,7 @@ void PrimWorkerData::mapEval() const
 
 void PrimWorkerData::handleResult(ScamValue expr)
 {
-    if ( TypePredicates::error(expr) ) {
+    if ( error(expr) ) {
         original->run(expr);
     }
     else {

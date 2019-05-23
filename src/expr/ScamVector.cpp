@@ -38,7 +38,7 @@ ScamValue ScamVector::nthcar(size_t n) const
 
 bool ScamVector::equals(ConstScamValue expr) const
 {
-    if ( ! TypePredicates::isVector(expr) ) {
+    if ( ! isVector(expr) ) {
         return false;
     }
 

@@ -59,7 +59,7 @@ void LetCont::rebind_procs(Env * extended)
     for ( size_t n = 0 ; n < len ; ++n ) {
         ScamEnvKeyType k = dynamic_cast<ScamSymbol *>(formals->nthcar(n));
         ScamValue v = extended->get(k);
-        if ( TypePredicates::isProcedure(v) ) {
+        if ( isProcedure(v) ) {
             ScamValue newV = v->withEnvUpdate(extended);
             extended->assign(k, newV);
         }

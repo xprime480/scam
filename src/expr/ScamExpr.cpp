@@ -48,7 +48,7 @@ ConstScamValue ScamExpr::realPart() const
 {
     // temporary hack!!!
     ConstScamValue rv = ScamNumeric::realPart(this);
-    if ( TypePredicates::isNull(rv) ) {
+    if ( isNull(rv) ) {
         rv = this;
     }
     return rv;

@@ -39,7 +39,7 @@ void QQConsListCdrCont::mark() const
 void QQConsListCdrCont::run(ScamValue expr)
 {
     Continuation::run(expr);
-    if ( TypePredicates::error(expr) ) {
+    if ( error(expr) ) {
         cont->run(expr);
     }
     else {
@@ -57,9 +57,9 @@ void QQConsListCdrCont::handle(ScamValue expr)
 
 bool QQConsListCdrCont::check_splice(ScamValue expr)
 {
-    if ( TypePredicates::isCons(car) ) {
+    if ( isCons(car) ) {
         ScamValue first = car->nthcar(0);
-        if ( TypePredicates::isSymbol(first) ) {
+        if ( isSymbol(first) ) {
             if ( writeValue(first) == writeValue(QuasiQuote::spliceTag) ) {
                 do_splice(expr);
                 return true;

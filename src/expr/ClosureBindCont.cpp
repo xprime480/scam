@@ -50,7 +50,7 @@ void ClosureBindCont::run(ScamValue expr)
 {
     Continuation::run(expr);
 
-    if ( TypePredicates::error(expr) ) {
+    if ( error(expr) ) {
         cont->run(expr);
     }
     else if ( malformedActuals(expr) ) {
@@ -63,9 +63,7 @@ void ClosureBindCont::run(ScamValue expr)
 
 bool ClosureBindCont::malformedActuals(ScamValue expr) const
 {
-    if ( TypePredicates::isCons(expr) ||
-         TypePredicates::isNil(expr) ||
-         TypePredicates::isSymbol(expr) ) {
+    if ( isCons(expr) || isNil(expr) || isSymbol(expr) ) {
         return false;
     }
 

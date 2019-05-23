@@ -11,7 +11,7 @@ using namespace std;
 
 char scam::asChar(const ScamData * data)
 {
-    if ( ! TypePredicates::isChar(data) ) {
+    if ( ! isChar(data) ) {
         stringstream s;
         s << "Cannot convert <" << writeValue(data) << "> to character";
         throw ScamException(s.str());
@@ -22,24 +22,22 @@ char scam::asChar(const ScamData * data)
 
 double scam::asDouble(const ScamData * data)
 {
-    if ( ! TypePredicates::isReal(data) ) {
+    if ( ! isReal(data) ) {
         stringstream s;
         s << "Cannot convert <" << writeValue(data) << "> to double";
         throw ScamException(s.str());
     }
 
-    if ( TypePredicates::isInteger(data) ) {
+    if ( isInteger(data) ) {
         return (double) INTVAL(data);
     }
-    else if ( TypePredicates::isRational(data) ) {
+    else if ( isRational(data) ) {
         return ((double) NUMPART(data) / (double) DENPART(data) );
     }
-    else if ( TypePredicates::isNaN(data) ||
-              TypePredicates::isNegInf(data) ||
-              TypePredicates::isPosInf(data) ) {
+    else if ( isSpecialNumeric(data) ) {
         // drop through to error case;
     }
-    else if ( TypePredicates::isReal(data) ) {
+    else if ( isReal(data) ) {
         return REALVAL(data);
     }
 
@@ -48,7 +46,7 @@ double scam::asDouble(const ScamData * data)
 
 RationalPair scam::asRational(const ScamData * data)
 {
-    if ( ! TypePredicates::isRational(data) ) {
+    if ( ! isRational(data) ) {
         stringstream s;
         s << "Cannot convert <" << writeValue(data) << "> to rational";
         throw ScamException(s.str());
@@ -56,7 +54,7 @@ RationalPair scam::asRational(const ScamData * data)
 
     RationalPair pair { 0, 1 };
 
-    if ( TypePredicates::isInteger(data) ) {
+    if ( isInteger(data) ) {
         pair.num = INTVAL(data);
     }
     else {
@@ -69,7 +67,7 @@ RationalPair scam::asRational(const ScamData * data)
 
 int scam::asInteger(const ScamData * data)
 {
-    if ( ! TypePredicates::isInteger(data) ) {
+    if ( ! isInteger(data) ) {
         stringstream s;
         s << "Cannot convert <" << writeValue(data) << "> to integer";
         throw ScamException(s.str());

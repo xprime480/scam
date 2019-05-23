@@ -87,8 +87,8 @@ void ScamData::mark() const
         metadata->mark();
     }
 
-    if ( TypePredicates::isNumeric(this) ) {
-        if ( TypePredicates::isPureComplex(this) ) {
+    if ( isNumeric(this) ) {
+        if ( isPureComplex(this) ) {
             REALPART(this)->mark();
             IMAGPART(this)->mark();
         }

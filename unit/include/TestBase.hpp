@@ -5,6 +5,7 @@
 #include "ScamEngine.hpp"
 #include "expr/ScamToInternal.hpp"
 
+#include <functional>
 #include <memory>
 #include <string>
 
@@ -37,6 +38,9 @@ namespace scam
         void doCheck(bool act, unsigned selector, unsigned which);
 
         void checkPredicates(ConstScamValue expr, unsigned selector);
+        void assertType(ConstScamValue value,
+                        const char * name,
+                        std::function<bool(ConstScamValue)> pred);
 
         void expectNull(ConstScamValue expr);
 

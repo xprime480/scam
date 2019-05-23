@@ -27,8 +27,7 @@ namespace
         engine.pushFrame();
         ReadEvalString helper(&engine, testforms);
         ScamValue status = helper.run();
-        if ( TypePredicates::isNull(status) ||
-             TypePredicates::error(status) ) {
+        if ( isNull(status) || error(status) ) {
             return false;
         }
         else {

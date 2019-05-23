@@ -18,7 +18,7 @@ ScamKeyword * ScamKeyword::makeInstance(std::string const & value, bool managed)
 
 bool ScamKeyword::equals(ConstScamValue expr) const
 {
-    if ( ! TypePredicates::isKeyword(expr) ) {
+    if ( ! isKeyword(expr) ) {
         return false;
     }
 

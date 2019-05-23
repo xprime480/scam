@@ -20,7 +20,7 @@ bool ExtendedNumericParser::accept(ScamValue expr)
 {
     clearValue();
 
-    if ( ! TypePredicates::isNumeric(expr) ) {
+    if ( ! isNumeric(expr) ) {
         return false;
     }
 

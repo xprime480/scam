@@ -39,7 +39,7 @@ void IncludeCont::mark() const
 
 void IncludeCont::run(ScamValue expr)
 {
-    if ( TypePredicates::error(expr) ) {
+    if ( error(expr) ) {
         cont->run(expr);
         return;
     }

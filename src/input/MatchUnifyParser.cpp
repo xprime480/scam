@@ -36,9 +36,7 @@ bool MatchUnifyParser::accept(ScamValue expr)
         return false;
     }
 
-    if ( ! match &&
-         3 == parser->size() &&
-         ! TypePredicates::isDict(parser->get(2)) ) {
+    if ( ! match && 3 == parser->size() && ! isDict(parser->get(2)) ) {
         return false;
     }
 

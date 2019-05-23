@@ -9,17 +9,17 @@
 using namespace scam;
 using namespace std;
 
-bool TypePredicates::isNull(const ScamData * data)
+bool scam::isNull(const ScamData * data)
 {
     return data->type == ScamData::Null;
 }
 
-bool TypePredicates::error(const ScamData * data)
+bool scam::error(const ScamData * data)
 {
     return data->type == ScamData::Error;
 }
 
-bool TypePredicates::truth(const ScamData * data)
+bool scam::truth(const ScamData * data)
 {
     if ( isNull(data) ) {
         return false;
@@ -31,37 +31,37 @@ bool TypePredicates::truth(const ScamData * data)
     return BOOLVAL(data);
 }
 
-bool TypePredicates::isBoolean(const ScamData * data)
+bool scam::isBoolean(const ScamData * data)
 {
     return data->type == ScamData::Boolean;
 }
 
-bool TypePredicates::isChar(const ScamData * data)
+bool scam::isChar(const ScamData * data)
 {
     return data->type == ScamData::Character;
 }
 
-bool TypePredicates::isString(const ScamData * data)
+bool scam::isString(const ScamData * data)
 {
     return data->type == ScamData::String;
 }
 
-bool TypePredicates::isSymbol(const ScamData * data)
+bool scam::isSymbol(const ScamData * data)
 {
     return data->type == ScamData::Symbol;
 }
 
-bool TypePredicates::isKeyword(const ScamData * data)
+bool scam::isKeyword(const ScamData * data)
 {
     return data->type == ScamData::Keyword;
 }
 
-bool TypePredicates::isNumeric(const ScamData * data)
+bool scam::isNumeric(const ScamData * data)
 {
     return 0 != (data->type & ScamData::Numeric);
 }
 
-bool TypePredicates::isExact(const ScamData * data)
+bool scam::isExact(const ScamData * data)
 {
     if ( ! isNumeric(data) ) {
         stringstream s;
@@ -72,57 +72,62 @@ bool TypePredicates::isExact(const ScamData * data)
     return EXACT(data);
 }
 
-bool TypePredicates::isComplex(const ScamData * data)
+bool scam::isComplex(const ScamData * data)
 {
     return ScamData::ComplexBit == (data->type & ScamData::ComplexBit);
 }
 
-bool TypePredicates::isPureComplex(const ScamData * data)
+bool scam::isPureComplex(const ScamData * data)
 {
     return isComplex(data) && ! isReal(data);
 }
 
-bool TypePredicates::isReal(const ScamData * data)
+bool scam::isReal(const ScamData * data)
 {
     return ScamData::RealBit == (data->type & ScamData::RealBit);
 }
 
-bool TypePredicates::isRational(const ScamData * data)
+bool scam::isRational(const ScamData * data)
 {
     return ScamData::RationalBit == (data->type & ScamData::RationalBit);
 }
 
-bool TypePredicates::isInteger(const ScamData * data)
+bool scam::isInteger(const ScamData * data)
 {
     return ScamData::IntegerBit == (data->type & ScamData::IntegerBit);
 }
 
-bool TypePredicates::isNaN(const ScamData * data)
+bool scam::isNaN(const ScamData * data)
 {
     return ScamData::NaNBit == (data->type & ScamData::NaNBit);
 }
 
-bool TypePredicates::isNegInf(const ScamData * data)
+bool scam::isNegInf(const ScamData * data)
 {
     return ScamData::NegInfBit == (data->type & ScamData::NegInfBit);
 }
 
-bool TypePredicates::isPosInf(const ScamData * data)
+bool scam::isPosInf(const ScamData * data)
 {
     return ScamData::PosInfBit == (data->type & ScamData::PosInfBit);
 }
 
-bool TypePredicates::isNil(const ScamData * data)
+bool scam::isSpecialNumeric(const ScamData * data)
+{
+    return 0 != (data->type & ScamData::SpecialNumeric);
+}
+
+bool scam::isNil(const ScamData * data)
 {
     return data->type == ScamData::Nil;
 }
 
-bool TypePredicates::isCons(const ScamData * data)
+bool scam::isCons(const ScamData * data)
 {
     return data->type == ScamData::Cons;
 }
 
-bool TypePredicates::isList(const ScamData * data)
+bool scam::isList(const ScamData * data)
 {
     if ( isNil(data) ) {
         return true;
@@ -135,32 +140,32 @@ bool TypePredicates::isList(const ScamData * data)
     return false;
 }
 
-bool TypePredicates::isVector(const ScamData * data)
+bool scam::isVector(const ScamData * data)
 {
     return data->type == ScamData::Vector;
 }
 
-bool TypePredicates::isByteVector(const ScamData * data)
+bool scam::isByteVector(const ScamData * data)
 {
     return data->type == ScamData::ByteVector;
 }
 
-bool TypePredicates::isProcedure(const ScamData * data)
+bool scam::isProcedure(const ScamData * data)
 {
     return 0 != (data->type & ScamData::Procedure);
 }
 
-bool TypePredicates::isClass(const ScamData * data)
+bool scam::isClass(const ScamData * data)
 {
     return data->type == ScamData::Class;
 }
 
-bool TypePredicates::isInstance(const ScamData * data)
+bool scam::isInstance(const ScamData * data)
 {
     return data->type == ScamData::Instance;
 }
 
-bool TypePredicates::isDict(const ScamData * data)
+bool scam::isDict(const ScamData * data)
 {
     return data->type == ScamData::Dict;
 }

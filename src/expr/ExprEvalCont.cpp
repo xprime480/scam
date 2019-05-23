@@ -29,7 +29,7 @@ void ExprEvalCont::run(ScamValue expr)
 {
     Continuation::run(expr);
 
-    if ( TypePredicates::error(expr) ) {
+    if ( error(expr) ) {
         data.original->run(expr);
     }
     else {

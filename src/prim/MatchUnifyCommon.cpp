@@ -30,7 +30,7 @@ void MatchUnifyCommon::solve()
     ScamDict * dict = parser->getDict();
 
     ScamValue result = exec(dict, lhs, rhs);
-    if ( ! parser->isMatch() && TypePredicates::isDict(result) ) {
+    if ( ! parser->isMatch() && isDict(result) ) {
         result = resolve(result);
     }
 
@@ -66,9 +66,9 @@ ScamValue MatchUnifyCommon::check_keyword(ScamDict * dict,
                                            ScamValue lhs,
                                            ScamValue rhs)
 {
-    if ( TypePredicates::isKeyword(lhs) && ! TypePredicates::isNil(rhs) ) {
+    if ( isKeyword(lhs) && ! isNil(rhs) ) {
         ScamValue old = dict->get(lhs);
-        if ( TypePredicates::error(old) ) {
+        if ( error(old) ) {
             dict->put(lhs, rhs);
         }
         else if ( ! old->equals(rhs) ) {
@@ -102,11 +102,11 @@ ScamValue MatchUnifyCommon::check_cons(ScamDict * dict,
                                         ScamValue lhs,
                                         ScamValue rhs)
 {
-    if ( TypePredicates::isCons(lhs) && TypePredicates::isCons(rhs) ) {
+    if ( isCons(lhs) && isCons(rhs) ) {
         ScamValue lhsCar  = lhs->getCar();
         ScamValue rhsCar  = rhs->getCar();
         ScamValue carMatch = exec(dict, lhsCar, rhsCar);
-        if ( ! TypePredicates::isDict(carMatch) ) {
+        if ( ! isDict(carMatch) ) {
             return carMatch;
         }
 
@@ -122,7 +122,7 @@ ScamValue MatchUnifyCommon::check_vector(ScamDict * dict,
                                           ScamValue lhs,
                                           ScamValue rhs)
 {
-    if ( TypePredicates::isVector(lhs) && TypePredicates::isVector(rhs) ) {
+    if ( isVector(lhs) && isVector(rhs) ) {
         if ( lhs->length() != rhs->length() ) {
             stringstream s;
             s << "matching vectors of unequal length: "
@@ -135,7 +135,7 @@ ScamValue MatchUnifyCommon::check_vector(ScamDict * dict,
             ScamValue lhsN = lhs->nthcar(idx);
             ScamValue rhsN = rhs->nthcar(idx);
             ScamValue matchN = exec(dict, lhsN, rhsN);
-            if ( ! TypePredicates::isDict(matchN) ) {
+            if ( ! isDict(matchN) ) {
                 return matchN;
             }
         }
@@ -150,7 +150,7 @@ ScamValue MatchUnifyCommon::check_dict(ScamDict * dict,
                                         ScamValue lhs,
                                         ScamValue rhs)
 {
-    if ( TypePredicates::isDict(lhs) && TypePredicates::isDict(rhs) ) {
+    if ( isDict(lhs) && isDict(rhs) ) {
         if ( lhs->length() != rhs->length() ) {
             stringstream s;
             s << "dictionaries do not match " << writeValue(lhs)
@@ -164,12 +164,12 @@ ScamValue MatchUnifyCommon::check_dict(ScamDict * dict,
 
         for ( auto key : keys ) {
             ScamValue d = rhsAsDict->get(key);
-            if ( TypePredicates::error(d) ) {
+            if ( error(d) ) {
                 return make_common_error(writeValue(d).c_str());
             }
             ScamValue p = lhsAsDict->get(key);
             ScamValue result = exec(dict, p, d);
-            if ( ! TypePredicates::isDict(result) ) {
+            if ( ! isDict(result) ) {
                 return result;
             }
         }
@@ -201,7 +201,7 @@ ScamValue MatchUnifyCommon::exec(ScamDict * dict,
 
     for ( auto checker : checkers ) {
         ScamValue rv = (this->*checker)(dict, lhs, rhs);
-        if ( ! TypePredicates::isNil(rv) ) {
+        if ( ! isNil(rv) ) {
           return rv;
         }
     }

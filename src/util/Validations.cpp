@@ -12,7 +12,7 @@ using namespace std;
 
 ScamValue scam::validateClosureArgs(ScamValue args, const char * name)
 {
-    if ( ! TypePredicates::isCons(args) ) {
+    if ( ! isCons(args) ) {
         ScamValue nameSymbol = ExpressionFactory::makeSymbol(name);
         ScamValue extended = ExpressionFactory::makeCons(nameSymbol, args);
         return ExpressionFactory::makeError("Expected (", name, " args body*)",
@@ -29,11 +29,11 @@ ScamValue scam::validateFormals(ScamValue formals)
 {
     ScamValue ok = ExpressionFactory::makeNil();
 
-    if ( TypePredicates::isSymbol(formals) || TypePredicates::isNil(formals) ) {
+    if ( isSymbol(formals) || isNil(formals) ) {
         return ok;
     }
 
-    if ( ! TypePredicates::isCons(formals) ) {
+    if ( ! isCons(formals) ) {
         return ExpressionFactory::makeError("Formals should be list or symbol",
                                             "; got: ",
                                             writeValue(formals));
@@ -42,7 +42,7 @@ ScamValue scam::validateFormals(ScamValue formals)
     set<string> parms;
     while ( true ) {
         ScamValue arg = formals->getCar();
-        if ( ! TypePredicates::isSymbol(arg) ) {
+        if ( ! isSymbol(arg) ) {
             return ExpressionFactory::makeError("Formal parameter should ",
                                                 "be a symbol; got: ",
                                                 writeValue(arg));
@@ -58,11 +58,11 @@ ScamValue scam::validateFormals(ScamValue formals)
         parms.insert(name);
 
         formals = formals->getCdr();
-        if ( TypePredicates::isNil(formals) ) {
+        if ( isNil(formals) ) {
             break;
         }
 
-        if ( TypePredicates::isSymbol(formals) ) {
+        if ( isSymbol(formals) ) {
             name = writeValue(formals);
             if ( parms.end() == parms.find(name) ) {
                 break;
@@ -74,7 +74,7 @@ ScamValue scam::validateFormals(ScamValue formals)
             }
         }
 
-        if ( ! TypePredicates::isCons(formals) ) {
+        if ( ! isCons(formals) ) {
             return ExpressionFactory::makeError("Formal parameter should ",
                                                 "be a symbol; got: ",
                                                 writeValue(formals));

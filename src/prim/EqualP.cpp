@@ -87,7 +87,7 @@ namespace
     {
         const size_t len = args->length();
         for ( size_t idx = 0 ; idx < len ; ++idx ) {
-            if ( TypePredicates::truth(args->nthcar(idx)) ) {
+            if ( truth(args->nthcar(idx)) ) {
                 return yes;
             }
         }
@@ -97,10 +97,10 @@ namespace
     bool has_nulls(ListParser * parser, Continuation * cont)
     {
         auto fn = [](ScamValue arg) -> ScamValue {
-            return ExpressionFactory::makeBoolean(TypePredicates::isNull(arg));
+            return ExpressionFactory::makeBoolean(isNull(arg));
         };
         ScamValue answer = map_reduce(parser, fn, any);
-        return TypePredicates::truth(answer);
+        return truth(answer);
     }
 
     bool one_arg(ListParser * parser, Continuation * cont)

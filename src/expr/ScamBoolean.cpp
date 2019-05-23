@@ -22,7 +22,7 @@ ScamBoolean * ScamBoolean::makeInstance(bool value)
 
 bool ScamBoolean::equals(ConstScamValue expr) const
 {
-    if ( ! TypePredicates::isBoolean(expr) ) {
+    if ( ! isBoolean(expr) ) {
         return false;
     }
 

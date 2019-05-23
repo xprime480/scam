@@ -30,12 +30,12 @@ void NotCont::run(ScamValue expr)
 {
     Continuation::run(expr);
 
-    if ( TypePredicates::error(expr) ) {
+    if ( error(expr) ) {
         cont->run(expr);
     }
     else {
         ScamValue rv =
-            ExpressionFactory::makeBoolean(! TypePredicates::truth(expr));
+            ExpressionFactory::makeBoolean(! truth(expr));
         cont->run(rv);
     }
 }

@@ -13,13 +13,7 @@ namespace scam
         explicit ExtendedNumeric(ConstScamValue expr);
 
         ScamValue get() const;
-
-        bool isNaN() const;
-        bool isNegInf() const;
-        bool isPosInf() const;
-
-        bool isSpecialNumeric() const;
-
+	
     private:
         ConstScamValue expr;
     };

@@ -35,7 +35,7 @@ void ApplyArgsCont::run(ScamValue expr)
 {
     Continuation::run(expr);
 
-    if ( TypePredicates::error(expr) ) {
+    if ( error(expr) ) {
         cont->run(expr);
     }
     else {

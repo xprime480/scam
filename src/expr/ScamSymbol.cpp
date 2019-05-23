@@ -40,7 +40,7 @@ void ScamSymbol::eval(Continuation * cont, Env * env) const
 
 bool ScamSymbol::equals(ConstScamValue expr) const
 {
-    if ( ! TypePredicates::isSymbol(expr) ) {
+    if ( ! isSymbol(expr) ) {
         return false;
     }
 

@@ -86,7 +86,7 @@ size_t ScamDict::length() const
 
 bool ScamDict::equals(ConstScamValue expr) const
 {
-    if ( ! TypePredicates::isDict(expr) ) {
+    if ( ! isDict(expr) ) {
         return false;
     }
 

@@ -35,7 +35,7 @@ bool ArgParser::accept(ScamValue expr)
 {
     clearValue();
 
-    if ( nullptr != expr && ! TypePredicates::isNull(expr) ) {
+    if ( nullptr != expr && ! isNull(expr) ) {
         value = expr;
         return true;
     }

@@ -61,7 +61,7 @@ bool ParameterListParser::accept(ScamValue expr)
         return false;
     }
 
-    if ( ! TypePredicates::isList(expr) ) {
+    if ( ! isList(expr) ) {
         restParameter = parameters.back();
     }
 

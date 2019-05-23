@@ -33,7 +33,7 @@ void CallCont::mark() const
 
 void CallCont::run(ScamValue expr)
 {
-    if ( TypePredicates::error(expr) ) {
+    if ( error(expr) ) {
         cont->run(expr);
         return;
     }

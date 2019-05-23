@@ -23,7 +23,7 @@ Spawn * Spawn::makeInstance()
 
 void Spawn::applyArgs(ScamValue args, Continuation * cont)
 {
-    if ( ! TypePredicates::isNil(args) ) {
+    if ( ! isNil(args) ) {
         failedArgParseMessage(myName, "()", args, cont);
     }
     else {

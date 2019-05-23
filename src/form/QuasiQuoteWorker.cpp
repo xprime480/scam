@@ -48,7 +48,7 @@ void QuasiQuoteWorker::run()
 
 bool QuasiQuoteWorker::verify_single_form(ScamValue input, Continuation * cont)
 {
-    if ( ! TypePredicates::isList(input) || 1 != input->length() ) {
+    if ( ! isList(input) || 1 != input->length() ) {
         failedArgParseMessage(myName, "form", input, cont);
         return false;
     }
@@ -88,7 +88,7 @@ void QuasiQuoteWorker::build_qq_list(ScamValue input, Continuation * cont)
     ScamValue first = input->nthcar(0);
     ScamValue rest  = input->nthcdr(0);
 
-    const bool isSym = TypePredicates::isSymbol(first);
+    const bool isSym = isSymbol(first);
     string const sym = writeValue(first);
     if ( isSym && sym == "unquote" ) {
         unquote_form(rest, cont);
@@ -103,7 +103,7 @@ void QuasiQuoteWorker::build_qq_list(ScamValue input, Continuation * cont)
 
 void QuasiQuoteWorker::build_qq_form(ScamValue input, Continuation * cont)
 {
-    if ( ! TypePredicates::isList(input) || TypePredicates::isNil(input) ) {
+    if ( ! isList(input) || isNil(input) ) {
         cont->run(input);
     }
     else {

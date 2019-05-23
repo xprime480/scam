@@ -192,35 +192,35 @@ void TestBase::checkPredicates(ConstScamValue expr, unsigned exp)
     ASSERT_NE(nullptr, expr);
     unsigned act { 0 };
 
-    act |= (TypePredicates::isNull(expr) ? SELECT_NULL : 0);
-    act |= (TypePredicates::error(expr) ? SELECT_ERROR : 0);
-    act |= (TypePredicates::truth(expr) ? SELECT_TRUTH : 0);
+    act |= (isNull(expr) ? SELECT_NULL : 0);
+    act |= (error(expr) ? SELECT_ERROR : 0);
+    act |= (truth(expr) ? SELECT_TRUTH : 0);
 
-    act |= (TypePredicates::isBoolean(expr) ? SELECT_BOOLEAN : 0);
-    act |= (TypePredicates::isChar(expr) ? SELECT_CHAR : 0);
-    act |= (TypePredicates::isString(expr) ? SELECT_STRING : 0);
-    act |= (TypePredicates::isSymbol(expr) ? SELECT_SYMBOL : 0);
-    act |= (TypePredicates::isKeyword(expr) ? SELECT_KEYWORD : 0);
+    act |= (isBoolean(expr) ? SELECT_BOOLEAN : 0);
+    act |= (isChar(expr) ? SELECT_CHAR : 0);
+    act |= (isString(expr) ? SELECT_STRING : 0);
+    act |= (isSymbol(expr) ? SELECT_SYMBOL : 0);
+    act |= (isKeyword(expr) ? SELECT_KEYWORD : 0);
 
-    act |= (TypePredicates::isNumeric(expr) ? SELECT_NUMERIC : 0);
-    act |= (TypePredicates::isComplex(expr) ? SELECT_COMPLEX : 0);
-    act |= (TypePredicates::isReal(expr) ? SELECT_REAL : 0);
-    act |= (TypePredicates::isRational(expr) ? SELECT_RATIONAL : 0);
-    act |= (TypePredicates::isInteger(expr) ? SELECT_INTEGER : 0);
+    act |= (isNumeric(expr) ? SELECT_NUMERIC : 0);
+    act |= (isComplex(expr) ? SELECT_COMPLEX : 0);
+    act |= (isReal(expr) ? SELECT_REAL : 0);
+    act |= (isRational(expr) ? SELECT_RATIONAL : 0);
+    act |= (isInteger(expr) ? SELECT_INTEGER : 0);
 
-    act |= (TypePredicates::isNil(expr) ? SELECT_NIL : 0);
-    act |= (TypePredicates::isCons(expr) ? SELECT_CONS : 0);
-    act |= (TypePredicates::isList(expr) ? SELECT_LIST : 0);
-    act |= (TypePredicates::isVector(expr) ? SELECT_VECTOR : 0);
-    act |= (TypePredicates::isByteVector(expr) ? SELECT_BYTEVECTOR : 0);
+    act |= (isNil(expr) ? SELECT_NIL : 0);
+    act |= (isCons(expr) ? SELECT_CONS : 0);
+    act |= (isList(expr) ? SELECT_LIST : 0);
+    act |= (isVector(expr) ? SELECT_VECTOR : 0);
+    act |= (isByteVector(expr) ? SELECT_BYTEVECTOR : 0);
 
     act |= (expr->hasApply() ? SELECT_APPLY : 0);
-    act |= (TypePredicates::isProcedure(expr) ? SELECT_PROC : 0);
+    act |= (isProcedure(expr) ? SELECT_PROC : 0);
 
-    act |= (TypePredicates::isClass(expr) ? SELECT_CLASS : 0);
-    act |= (TypePredicates::isInstance(expr) ? SELECT_INSTANCE : 0);
+    act |= (isClass(expr) ? SELECT_CLASS : 0);
+    act |= (isInstance(expr) ? SELECT_INSTANCE : 0);
 
-    act |= (TypePredicates::isDict(expr) ? SELECT_DICT : 0);
+    act |= (isDict(expr) ? SELECT_DICT : 0);
 
     act |= (expr->isManaged() ? SELECT_MANAGED : 0);
 
@@ -228,16 +228,24 @@ void TestBase::checkPredicates(ConstScamValue expr, unsigned exp)
                         << "\n\tvalue: " << writeValue(expr);
 }
 
+void TestBase::assertType(ConstScamValue value,
+                          const char * name,
+                          function<bool(ConstScamValue)> pred)
+{
+    ASSERT_TRUE(pred(value))
+        << "Expected type " << name << "; got " << writeValue(value);
+
+}
+
+
 void expectNonNumeric(ConstScamValue expr)
 {
-    EXPECT_FALSE(TypePredicates::isNumeric(expr));
+    EXPECT_FALSE(isNumeric(expr));
 }
 
 void TestBase::expectNull(ConstScamValue expr)
 {
-    ASSERT_TRUE(TypePredicates::isNull(expr))
-        << "Actual Value: " << writeValue(expr);
-
+    assertType(expr, "null", isNull);
     checkPredicates(expr, SELECT_NULL);
     EXPECT_EQ("null", writeValue(expr));
 
@@ -248,9 +256,7 @@ void TestBase::expectError(ConstScamValue expr,
                            string const msg,
                            bool managed)
 {
-    ASSERT_TRUE(TypePredicates::error(expr))
-        << "Actual Value: " << writeValue(expr);
-
+    assertType(expr, "error", error);
     auto pred = SELECT_TRUTH | SELECT_ERROR;
     pred |= (managed ? SELECT_MANAGED : 0x0);
     checkPredicates(expr, pred);
@@ -266,9 +272,7 @@ void TestBase::expectBoolean(ConstScamValue expr,
                              bool value,
                              string const & repr)
 {
-    ASSERT_TRUE(TypePredicates::isBoolean(expr))
-        << "Actual Value: " << writeValue(expr);
-
+    assertType(expr, "boolean", isBoolean);
     checkPredicates(expr, SELECT_BOOLEAN | (value ? SELECT_TRUTH : 0));
     EXPECT_EQ(repr, writeValue(expr));
 
@@ -299,14 +303,10 @@ void TestBase::booleanTest(ConstScamValue expr,
 void TestBase::expectSpecialNumeric(ConstScamValue expr,
                                     std::string const & repr)
 {
-    ASSERT_TRUE(TypePredicates::isNaN(expr) ||
-                TypePredicates::isNegInf(expr) ||
-                TypePredicates::isPosInf(expr))
-        << "Actual Value: " << writeValue(expr);
-
+    assertType(expr, "special numeric", isSpecialNumeric);
     EXPECT_EQ(repr, writeValue(expr));
-    EXPECT_TRUE(TypePredicates::isReal(expr));
-    EXPECT_FALSE(TypePredicates::isRational(expr));
+    EXPECT_TRUE(isReal(expr));
+    EXPECT_FALSE(isRational(expr));
 }
 
 void TestBase::expectComplex(ConstScamValue expr,
@@ -315,16 +315,14 @@ void TestBase::expectComplex(ConstScamValue expr,
                              std::string const & repr,
                              bool exact)
 {
-    ASSERT_TRUE(TypePredicates::isComplex(expr))
-        << "Actual Value: " << writeValue(expr);
-
+    assertType(expr, "complex", isComplex);
     checkPredicates(expr, SELECT_TRUTH | ALL_COMPLEX);
     EXPECT_EQ(repr, writeValue(expr));
 
-    EXPECT_FALSE(TypePredicates::isReal(expr));
-    EXPECT_FALSE(TypePredicates::isRational(expr));
-    EXPECT_FALSE(TypePredicates::isInteger(expr));
-    EXPECT_EQ(exact, TypePredicates::isExact(expr));
+    EXPECT_FALSE(isReal(expr));
+    EXPECT_FALSE(isRational(expr));
+    EXPECT_FALSE(isInteger(expr));
+    EXPECT_EQ(exact, isExact(expr));
 }
 
 void TestBase::expectReal(ConstScamValue expr,
@@ -332,22 +330,14 @@ void TestBase::expectReal(ConstScamValue expr,
                           string const & repr,
                           bool exact)
 {
-    ASSERT_TRUE(TypePredicates::isReal(expr))
-        << "Actual Value: " << writeValue(expr);
-
+    assertType(expr, "real", isReal);
     checkPredicates(expr, SELECT_TRUTH | ALL_REAL);
     EXPECT_EQ(repr, writeValue(expr));
 
-    try {
-        EXPECT_FLOAT_EQ(value, asDouble(expr));
-    }
-    catch ( ScamException e ) {
-        FAIL() << e.getMessage() << "\n";
-    }
-
-    EXPECT_FALSE(TypePredicates::isRational(expr));
-    EXPECT_FALSE(TypePredicates::isInteger(expr));
-    EXPECT_EQ(exact, TypePredicates::isExact(expr));
+    EXPECT_FLOAT_EQ(value, asDouble(expr));
+    EXPECT_FALSE(isRational(expr));
+    EXPECT_FALSE(isInteger(expr));
+    EXPECT_EQ(exact, isExact(expr));
 }
 
 void TestBase::expectRational(ConstScamValue expr,
@@ -355,22 +345,16 @@ void TestBase::expectRational(ConstScamValue expr,
                               std::string const & repr,
                               bool exact)
 {
-    ASSERT_TRUE(TypePredicates::isRational(expr))
-        << "Actual Value: " << writeValue(expr);
-
+    assertType(expr, "rational", isRational);
     checkPredicates(expr, SELECT_TRUTH | ALL_RATIONAL);
     EXPECT_EQ(repr, writeValue(expr));
-    try {
-        const auto act = asRational(expr);
-        EXPECT_EQ(value.num, act.num);
-        EXPECT_EQ(value.den, act.den);
-    }
-    catch ( ScamException e ) {
-        FAIL() << e.getMessage() << "\n";
-    }
 
-    EXPECT_FALSE(TypePredicates::isInteger(expr));
-    EXPECT_EQ(exact, TypePredicates::isExact(expr));
+    const auto act = asRational(expr);
+    EXPECT_EQ(value.num, act.num);
+    EXPECT_EQ(value.den, act.den);
+
+    EXPECT_FALSE(isInteger(expr));
+    EXPECT_EQ(exact, isExact(expr));
 
 }
 
@@ -379,9 +363,7 @@ void TestBase::expectInteger(ConstScamValue expr,
                              string const & repr,
                              bool exact)
 {
-    ASSERT_TRUE(TypePredicates::isInteger(expr))
-        << "Actual Value: " << writeValue(expr);
-
+    assertType(expr, "integer", isInteger);
     checkPredicates(expr, SELECT_TRUTH | ALL_INTEGER);
     EXPECT_EQ(repr, writeValue(expr));
     try {
@@ -391,16 +373,14 @@ void TestBase::expectInteger(ConstScamValue expr,
         FAIL() << e.getMessage() << "\n";
     }
 
-    EXPECT_EQ(exact, TypePredicates::isExact(expr));
+    EXPECT_EQ(exact, isExact(expr));
 }
 
 void TestBase::expectChar(ConstScamValue expr,
                           char value,
                           string const & repr)
 {
-    ASSERT_TRUE(TypePredicates::isChar(expr))
-        << "Actual Value: " << writeValue(expr);
-
+    assertType(expr, "character", isChar);
     checkPredicates(expr, SELECT_TRUTH | SELECT_CHAR | SELECT_MANAGED);
     EXPECT_EQ(repr, writeValue(expr));
     EXPECT_EQ(value, asChar(expr));
@@ -408,9 +388,7 @@ void TestBase::expectChar(ConstScamValue expr,
 
 void TestBase::expectString(ConstScamValue expr, string const & value)
 {
-    ASSERT_TRUE(TypePredicates::isString(expr))
-        << "Actual Value: " << writeValue(expr);
-
+    assertType(expr, "string", isString);
     const auto flags = SELECT_TRUTH | SELECT_STRING | SELECT_MANAGED;
     checkPredicates(expr, flags);
     EXPECT_EQ(value, writeValue(expr));
@@ -418,9 +396,7 @@ void TestBase::expectString(ConstScamValue expr, string const & value)
 
 void TestBase::expectSymbol(ConstScamValue expr, string const & name)
 {
-    ASSERT_TRUE(TypePredicates::isSymbol(expr))
-        << "Actual Value: " << writeValue(expr);
-
+    assertType(expr, "symbol", isSymbol);
     const auto flags = SELECT_TRUTH | SELECT_SYMBOL | SELECT_MANAGED;
     checkPredicates(expr, flags);
     EXPECT_EQ(name, writeValue(expr));
@@ -428,9 +404,7 @@ void TestBase::expectSymbol(ConstScamValue expr, string const & name)
 
 void TestBase::expectKeyword(ConstScamValue expr, string const & name)
 {
-    ASSERT_TRUE(TypePredicates::isKeyword(expr))
-        << "Actual Value: " << writeValue(expr);
-
+    assertType(expr, "keyword", isKeyword);
     const auto flags = SELECT_TRUTH | SELECT_KEYWORD | SELECT_MANAGED;
     checkPredicates(expr, flags);
     EXPECT_EQ(name, writeValue(expr));
@@ -438,39 +412,26 @@ void TestBase::expectKeyword(ConstScamValue expr, string const & name)
 
 void TestBase::expectNil(ConstScamValue expr)
 {
-    ASSERT_TRUE(TypePredicates::isNil(expr))
-        << "Actual Value: " << writeValue(expr);
-
+    assertType(expr, "nil", isNil);
     static const string repr { "()" };
     checkPredicates(expr, SELECT_TRUTH | ALL_NIL);
     EXPECT_EQ(repr, writeValue(expr));
 }
 
-void TestBase::expectList(ConstScamValue expr,
-                          string const & repr,
-                          size_t len)
+void TestBase::expectList(ConstScamValue expr, string const & repr, size_t len)
 {
-    ASSERT_TRUE(TypePredicates::isList(expr))
-        << "Actual Value: " << writeValue(expr);
-
+    assertType(expr, "list", isList);
     const auto flags =
         SELECT_TRUTH | SELECT_CONS | SELECT_LIST | SELECT_MANAGED;
 
     checkPredicates(expr, flags);
     EXPECT_EQ(repr, writeValue(expr));
-    try {
-        EXPECT_EQ(len, expr->length());
-    }
-    catch ( ScamException e ) {
-        FAIL() << e.getMessage() << "\n";
-    }
+    EXPECT_EQ(len, expr->length());
 }
 
 void TestBase::expectCons(ConstScamValue expr, string const & repr)
 {
-    ASSERT_TRUE(TypePredicates::isCons(expr))
-        << "Actual Value: " << writeValue(expr);
-
+    assertType(expr, "cons", isCons);
     checkPredicates(expr, SELECT_TRUTH | SELECT_CONS | SELECT_MANAGED);
     EXPECT_EQ(repr, writeValue(expr));
 }
@@ -478,8 +439,7 @@ void TestBase::expectCons(ConstScamValue expr, string const & repr)
 void
 TestBase::expectApplicable(ConstScamValue expr, string const & repr)
 {
-    ASSERT_TRUE(expr->hasApply())
-        << "Actual Value: " << writeValue(expr);
+    ASSERT_TRUE(expr->hasApply()) << "Actual Value: " << writeValue(expr);
 
     const auto flags = SELECT_TRUTH | SELECT_APPLY;
     checkPredicates(expr, flags);
@@ -490,9 +450,7 @@ void TestBase::expectVector(ConstScamValue expr,
                             string const & repr,
                             size_t len)
 {
-    ASSERT_TRUE(TypePredicates::isVector(expr))
-        << "Actual Value: " << writeValue(expr);
-
+    assertType(expr, "vector", isVector);
     const auto flags = SELECT_TRUTH | SELECT_VECTOR | SELECT_MANAGED;
     checkPredicates(expr, flags);
     EXPECT_EQ(repr, writeValue(expr));
@@ -503,57 +461,38 @@ void TestBase::expectByteVector(ConstScamValue expr,
                                 string const & repr,
                                 size_t len)
 {
-    ASSERT_TRUE(TypePredicates::isByteVector(expr))
-        << "Actual Value: " << writeValue(expr);
-
+    assertType(expr, "byte vector", isByteVector);
     const auto flags = SELECT_TRUTH | SELECT_BYTEVECTOR | SELECT_MANAGED;
     checkPredicates(expr, flags);
     EXPECT_EQ(repr, writeValue(expr));
     EXPECT_EQ(len, expr->length());
 }
 
-void TestBase::expectProcedure(ConstScamValue expr,
-                               string const & repr)
+void TestBase::expectProcedure(ConstScamValue expr, string const & repr)
 {
-    ASSERT_TRUE(TypePredicates::isProcedure(expr))
-        << "Actual Value: " << writeValue(expr);
-
+    assertType(expr, "procedure", isProcedure);
     checkPredicates(expr, SELECT_TRUTH | ALL_PROC);
     EXPECT_EQ(repr, writeValue(expr));
 }
 
 void TestBase::expectClass(ConstScamValue expr)
 {
-    ASSERT_TRUE(TypePredicates::isClass(expr))
-        << "Actual Value: " << writeValue(expr);
-
+    assertType(expr, "class", isClass);
     checkPredicates(expr, SELECT_TRUTH | ALL_CLASS);
     EXPECT_EQ("class", writeValue(expr));
 }
 
 void TestBase::expectInstance(ConstScamValue expr)
 {
-    ASSERT_TRUE(TypePredicates::isInstance(expr))
-        << "Actual Value: " << writeValue(expr);
-
+    assertType(expr, "instance", isInstance);
     checkPredicates(expr, SELECT_TRUTH | ALL_INSTANCE);
     EXPECT_EQ("instance", writeValue(expr));
 }
 
-void TestBase::expectDict(ConstScamValue expr,
-                          int count,
-                          string const & repr)
+void TestBase::expectDict(ConstScamValue expr, int count, string const & repr)
 {
-    ASSERT_TRUE(TypePredicates::isDict(expr))
-        << "Actual Value: " << writeValue(expr);
-
+    assertType(expr, "dictionary", isDict);
     checkPredicates(expr, SELECT_TRUTH | ALL_DICT);
     EXPECT_EQ(repr, writeValue(expr));
-
-    try {
-        EXPECT_EQ(count, expr->length());
-    }
-    catch ( ScamException e ) {
-        FAIL() << e.getMessage() << "\n";
-    }
+    EXPECT_EQ(count, expr->length());
 }

@@ -55,6 +55,8 @@ namespace scam
         constexpr static unsigned long NaN      = Real | NaNBit;
         constexpr static unsigned long NegInf   = Real | NegInfBit;
         constexpr static unsigned long PosInf   = Real | PosInfBit;
+
+        constexpr static unsigned long SpecialNumeric = NaNBit | NegInfBit | PosInfBit;
         constexpr static unsigned long Numeric  = (1 << 7) - 1;
 
         /*

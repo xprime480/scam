@@ -22,12 +22,12 @@ Env * Binder::bind(ScamValue formals, ScamValue actuals) const
 
 void Binder::bindOne(Env * env, ScamValue syms, ScamValue vals) const
 {
-    if ( TypePredicates::isCons(syms) ) {
+    if ( isCons(syms) ) {
         ScamEnvKeyType key = dynamic_cast<ScamEnvKeyType>(syms->getCar());
         env->put(key, vals->getCar());
         bindOne(env, syms->getCdr(), vals->getCdr());
     }
-    else if ( ! TypePredicates::isNil(syms) ) {
+    else if ( ! isNil(syms) ) {
         ScamEnvKeyType key = dynamic_cast<ScamEnvKeyType>(syms);
         env->put(key, vals);
     }

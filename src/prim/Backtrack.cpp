@@ -25,7 +25,7 @@ Backtrack * Backtrack::makeInstance(ScamEngine * engine)
 
 void Backtrack::applyArgs(ScamValue args, Continuation * cont)
 {
-    if ( ! TypePredicates::isNil(args) ) {
+    if ( ! isNil(args) ) {
         failedArgParseMessage(myName, "()", args, cont);
         return;
     }

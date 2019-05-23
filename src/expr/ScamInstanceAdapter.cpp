@@ -14,7 +14,7 @@ using namespace std;
 ScamInstanceAdapter::ScamInstanceAdapter(ScamValue expr)
     : instance(dynamic_cast<ScamInstance const *>(expr))
 {
-    if ( ! TypePredicates::isInstance(expr) ) {
+    if ( ! isInstance(expr) ) {
         stringstream s;
         s << "ScamInstanceAdapter expected an instance, got: "
           << writeValue(expr);

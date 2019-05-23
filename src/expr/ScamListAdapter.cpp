@@ -13,10 +13,10 @@ using namespace std;
 
 ScamListAdapter::ScamListAdapter(ConstScamValue expr)
     : lst(dynamic_cast<ScamCons const *>(expr))
-    , isNil(TypePredicates::isNil(expr))
+    , iAmNil(isNil(expr))
     , len(0u)
 {
-    if ( ! TypePredicates::isList(expr) ) {
+    if ( ! isList(expr) ) {
         stringstream s;
         s << "ScamListAdapter expected a list, got: " << writeValue(expr);
         throw ScamException(s.str());
@@ -38,7 +38,7 @@ size_t ScamListAdapter::getLength() const
 
 ScamValue ScamListAdapter::append(ScamValue tail) const
 {
-    if ( isNil ) {
+    if ( iAmNil ) {
         return ExpressionFactory::makeList(tail);
     }
 

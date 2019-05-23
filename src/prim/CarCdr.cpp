@@ -18,7 +18,7 @@ CarCdr::CarCdr(char const * name)
 
 void CarCdr::applyArgs(ScamValue args, Continuation * cont)
 {
-    if ( TypePredicates::error(args) ) {
+    if ( error(args) ) {
         cont->run(args);
         return;
     }

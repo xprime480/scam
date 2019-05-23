@@ -21,16 +21,16 @@ ScamValue Substitutor::resolve_value(ScamValue expr)
 {
     ScamValue rv;
 
-    if ( TypePredicates::isCons(expr) ) {
+    if ( isCons(expr) ) {
         rv = resolve_cons(expr);
     }
-    else if ( TypePredicates::isVector(expr) ) {
+    else if ( isVector(expr) ) {
         rv = resolve_vector(expr);
     }
-    else if ( TypePredicates::isDict(expr) ) {
+    else if ( isDict(expr) ) {
         rv = resolve_dict(expr);
     }
-    else if ( TypePredicates::isKeyword(expr) ) {
+    else if ( isKeyword(expr) ) {
         rv = resolve_keyword(expr);
     }
     else {
@@ -58,7 +58,7 @@ ScamValue Substitutor::resolve_vector(ScamValue expr)
 bool Substitutor::have_seen(ScamValue expr)
 {
     ScamValue t = helper;
-    while ( ! TypePredicates::isNil(t) ) {
+    while ( ! isNil(t) ) {
         if ( t->nthcar(0)->equals(expr) ) {
             return true;
         }

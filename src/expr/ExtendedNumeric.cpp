@@ -15,13 +15,24 @@ using namespace std;
 
 namespace
 {
+    struct JointValues
+    {
+        bool special;
+        bool complex;
+        bool real;
+        bool rational;
+        bool integer;
+        bool exact;
+    };
+
     extern ScamValue signCheckRI(ScamValue r, ScamValue b);
+    extern JointValues computeJoint(ScamValue lhs, ScamValue rhs);
 }
 
 ExtendedNumeric::ExtendedNumeric(ConstScamValue expr)
     : expr(expr)
 {
-    if ( ! TypePredicates::isNumeric(expr) ) {
+    if ( ! isNumeric(expr) ) {
         stringstream s;
         s << "Attempting to make ExtendedNumeric from " << writeValue(expr);
         throw ScamException(s.str());
@@ -33,38 +44,21 @@ ScamValue ExtendedNumeric::get() const
     return const_cast<ScamValue>(expr);
 }
 
-bool ExtendedNumeric::isNaN() const
-{
-    return TypePredicates::isNaN(expr);
-}
-
-bool ExtendedNumeric::isNegInf() const
-{
-    return TypePredicates::isNegInf(expr);
-}
-
-bool ExtendedNumeric::isPosInf() const
-{
-    return TypePredicates::isPosInf(expr);
-}
-
-bool ExtendedNumeric::isSpecialNumeric() const
-{
-    return isNaN() || isNegInf() || isPosInf();
-}
-
 //////////////////////////////////////////
 
 bool scam::operator==(const ExtendedNumeric & a, const ExtendedNumeric & b)
 {
-    if ( a.isNaN() || b.isNaN() ) {
+    ScamValue dA = a.get();
+    ScamValue dB = b.get();
+
+    if ( isNaN(dA) || isNaN(dB) ) {
         return false;
     }
 
-    const bool aNegInf = a.isNegInf();
-    const bool aPosInf = a.isPosInf();
-    const bool bNegInf = b.isNegInf();
-    const bool bPosInf = b.isPosInf();
+    const bool aNegInf = isNegInf(dA);
+    const bool aPosInf = isPosInf(dA);
+    const bool bNegInf = isNegInf(dB);
+    const bool bPosInf = isPosInf(dB);
 
     if (( aNegInf && bNegInf ) || ( aPosInf && bPosInf)) {
         return true;
@@ -73,13 +67,16 @@ bool scam::operator==(const ExtendedNumeric & a, const ExtendedNumeric & b)
         return false;
     }
 
-    const bool rv = a.get()->equals(b.get());
+    const bool rv = dA->equals(dB);
     return rv;
 }
 
 bool scam::operator!=(const ExtendedNumeric & a, const ExtendedNumeric & b)
 {
-    if ( a.isNaN() || b.isNaN() ) {
+    ScamValue dA = a.get();
+    ScamValue dB = b.get();
+
+    if ( isNaN(dA) || isNaN(dB) ) {
         return false;
     }
 
@@ -89,14 +86,17 @@ bool scam::operator!=(const ExtendedNumeric & a, const ExtendedNumeric & b)
 
 bool scam::operator>(const ExtendedNumeric & a, const ExtendedNumeric & b)
 {
-    if ( a.isNaN() || b.isNaN() ) {
+    ScamValue dA = a.get();
+    ScamValue dB = b.get();
+
+    if ( isNaN(dA) || isNaN(dB) ) {
         return false;
     }
 
-    const bool aNegInf = a.isNegInf();
-    const bool aPosInf = a.isPosInf();
-    const bool bNegInf = b.isNegInf();
-    const bool bPosInf = b.isPosInf();
+    const bool aNegInf = isNegInf(dA);
+    const bool aPosInf = isPosInf(dA);
+    const bool bNegInf = isNegInf(dB);
+    const bool bPosInf = isPosInf(dB);
 
     if ( aPosInf ) {
         const bool rv = ! bPosInf;
@@ -110,20 +110,20 @@ bool scam::operator>(const ExtendedNumeric & a, const ExtendedNumeric & b)
         return false;
     }
 
-    ScamValue hA = a.get();
-    ScamValue hB = b.get();
-    if ( (TypePredicates::isComplex(hA) && ! TypePredicates::isReal(hA)) ||
-         (TypePredicates::isComplex(hB) && ! TypePredicates::isReal(hB)) ) {
+    if ( isPureComplex(dA) || isPureComplex(dB) ) {
         return false;
     }
 
-    const bool rv = asDouble(hA) > asDouble(hB);
+    const bool rv = asDouble(dA) > asDouble(dB);
     return rv;
 }
 
 bool scam::operator>=(const ExtendedNumeric & a, const ExtendedNumeric & b)
 {
-    if ( a.isNaN() || b.isNaN() ) {
+    ScamValue dA = a.get();
+    ScamValue dB = b.get();
+
+    if ( isNaN(dA) || isNaN(dB) ) {
         return false;
     }
 
@@ -132,14 +132,14 @@ bool scam::operator>=(const ExtendedNumeric & a, const ExtendedNumeric & b)
 
 bool scam::operator<(const ExtendedNumeric & a, const ExtendedNumeric & b)
 {
-    if ( a.isNaN() || b.isNaN() ) {
+    ScamValue dA = a.get();
+    ScamValue dB = b.get();
+
+    if ( isNaN(dA) || isNaN(dB) ) {
         return false;
     }
 
-    ScamValue hA = a.get();
-    ScamValue hB = b.get();
-    if ( (TypePredicates::isComplex(hA) && ! TypePredicates::isReal(hA)) ||
-         (TypePredicates::isComplex(hB) && ! TypePredicates::isReal(hB)) ) {
+    if ( isPureComplex(dA) || isPureComplex(dB) ) {
         return false;
     }
 
@@ -149,7 +149,10 @@ bool scam::operator<(const ExtendedNumeric & a, const ExtendedNumeric & b)
 
 bool scam::operator<=(const ExtendedNumeric & a, const ExtendedNumeric & b)
 {
-    if ( a.isNaN() || b.isNaN() ) {
+    ScamValue dA = a.get();
+    ScamValue dB = b.get();
+
+    if ( isNaN(dA) || isNaN(dB) ) {
         return false;
     }
 
@@ -160,40 +163,32 @@ bool scam::operator<=(const ExtendedNumeric & a, const ExtendedNumeric & b)
 ExtendedNumeric
 scam::operator+(const ExtendedNumeric & a, const ExtendedNumeric & b)
 {
+    ScamValue dA = a.get();
+    ScamValue dB = b.get();
     ScamValue expr { nullptr };
 
-    if ( ! a.isSpecialNumeric() && ! b.isSpecialNumeric() ) {
-        const ScamValue xA = a.get();
-        const ScamValue xB = b.get();
-        const bool isInt =
-            TypePredicates::isInteger(xA) && TypePredicates::isInteger(xB);
-        const bool isRational =
-            TypePredicates::isRational(xA) && TypePredicates::isRational(xB);
-        const bool isReal =
-            TypePredicates::isReal(xA) && TypePredicates::isReal(xB);
-        const bool isExact =
-            TypePredicates::isExact(xA) && TypePredicates::isExact(xB);
-
-        if ( isInt ) {
-            const int rv = asInteger(xA) + asInteger(xB);
-            expr = ExpressionFactory::makeInteger(rv, isExact);
+    const auto joint = computeJoint(dA, dB);
+    if ( ! joint.special ) {
+        if ( joint.integer ) {
+            const int rv = asInteger(dA) + asInteger(dB);
+            expr = ExpressionFactory::makeInteger(rv, joint.exact);
         }
-        else if ( isRational ) {
-            const RationalPair ratA = asRational(xA);
-            const RationalPair ratB = asRational(xB);
+        else if ( joint.rational ) {
+            const RationalPair ratA = asRational(dA);
+            const RationalPair ratB = asRational(dB);
             const int num = ratA.num * ratB.den + ratB.num * ratA.den;
             const int den = ratA.den * ratB.den;
-            expr = ExpressionFactory::makeRational(num, den, isExact);
+            expr = ExpressionFactory::makeRational(num, den, joint.exact);
         }
-        else if ( isReal ) {
-            const double rv = asDouble(xA) + asDouble(xB);
-            expr = ExpressionFactory::makeReal(rv, isExact);
+        else if ( joint.real ) {
+            const double rv = asDouble(dA) + asDouble(dB);
+            expr = ExpressionFactory::makeReal(rv, joint.exact);
         }
         else {
-            ExtendedNumeric rA(xA->realPart());
-            ExtendedNumeric rB(xB->realPart());
-            ExtendedNumeric iA(xA->imagPart());
-            ExtendedNumeric iB(xB->imagPart());
+            ExtendedNumeric rA(dA->realPart());
+            ExtendedNumeric rB(dB->realPart());
+            ExtendedNumeric iA(dA->imagPart());
+            ExtendedNumeric iB(dB->imagPart());
 
             ExtendedNumeric rC = rA + rB;
             ExtendedNumeric iC = iA + iB;
@@ -201,14 +196,14 @@ scam::operator+(const ExtendedNumeric & a, const ExtendedNumeric & b)
             expr = ExpressionFactory::makeComplex(rC.get(), iC.get());
         }
     }
-    else if ( a.isNaN() || b.isNaN() ) {
+    else if ( isNaN(dA) || isNaN(dB) ) {
         expr = ExpressionFactory::makeNaN();
     }
     else {
-        const bool aNegInf = a.isNegInf();
-        const bool aPosInf = a.isPosInf();
-        const bool bNegInf = b.isNegInf();
-        const bool bPosInf = b.isPosInf();
+        const bool aNegInf = isNegInf(dA);
+        const bool aPosInf = isPosInf(dA);
+        const bool bNegInf = isNegInf(dB);
+        const bool bPosInf = isPosInf(dB);
 
         const int code = (((aNegInf ? 1 : 0) << 3) |
                           ((aPosInf ? 1 : 0) << 2) |
@@ -252,21 +247,23 @@ ExtendedNumeric scam::operator-(const ExtendedNumeric & a)
 ExtendedNumeric
 scam::operator-(const ExtendedNumeric & a, const ExtendedNumeric & b)
 {
+    ScamValue dA = a.get();
+    ScamValue dB = b.get();
     ScamValue expr { nullptr };
 
-    if ( ! a.isSpecialNumeric() && ! b.isSpecialNumeric() ) {
+    if ( ! isSpecialNumeric(dA) && ! isSpecialNumeric(dB) ) {
         ExtendedNumeric minusOne(ExpressionFactory::makeInteger(-1, true));
         ExtendedNumeric minusB = minusOne * b;
         return a + minusB;
     }
-    else if ( a.isNaN() || b.isNaN() ) {
+    else if ( isNaN(dA) || isNaN(dB) ) {
         expr = ExpressionFactory::makeNaN();
     }
     else {
-        const bool aNegInf = a.isNegInf();
-        const bool aPosInf = a.isPosInf();
-        const bool bNegInf = b.isNegInf();
-        const bool bPosInf = b.isPosInf();
+        const bool aNegInf = isNegInf(dA);
+        const bool aPosInf = isPosInf(dA);
+        const bool bNegInf = isNegInf(dB);
+        const bool bPosInf = isPosInf(dB);
 
         const int code = (((aNegInf ? 1 : 0) << 3) |
                           ((aPosInf ? 1 : 0) << 2) |
@@ -292,7 +289,8 @@ scam::operator-(const ExtendedNumeric & a, const ExtendedNumeric & b)
             break;
 
         default:
-            throw ScamException("internal error in ExtendedNumeric subtraction");
+            throw
+                ScamException("internal error in ExtendedNumeric subtraction");
             break;
         }
     }
@@ -304,40 +302,32 @@ scam::operator-(const ExtendedNumeric & a, const ExtendedNumeric & b)
 ExtendedNumeric
 scam::operator*(const ExtendedNumeric & a, const ExtendedNumeric & b)
 {
-    ScamValue xA = a.get();
-    ScamValue xB = b.get();
+    ScamValue dA = a.get();
+    ScamValue dB = b.get();
     ScamValue expr { nullptr };
 
-    if ( ! a.isSpecialNumeric() && ! b.isSpecialNumeric() ) {
-        const bool isInt =
-            TypePredicates::isInteger(xA) && TypePredicates::isInteger(xB);
-        const bool isRational =
-            TypePredicates::isRational(xA) && TypePredicates::isRational(xB);
-        const bool isReal =
-            TypePredicates::isReal(xA) && TypePredicates::isReal(xB);
-        const bool isExact =
-            TypePredicates::isExact(xA) && TypePredicates::isExact(xB);
-
-        if ( isInt ) {
-            const int rv = asInteger(xA) * asInteger(xB);
-            expr = ExpressionFactory::makeInteger(rv, isExact);
+    const auto joint = computeJoint(dA, dB);
+    if ( ! joint.special ) {
+        if ( joint.integer ) {
+            const int rv = asInteger(dA) * asInteger(dB);
+            expr = ExpressionFactory::makeInteger(rv, joint.exact);
         }
-        else if ( isRational ) {
-            const RationalPair ratA = asRational(xA);
-            const RationalPair ratB = asRational(xB);
+        else if ( joint.rational ) {
+            const RationalPair ratA = asRational(dA);
+            const RationalPair ratB = asRational(dB);
             const int num = ratA.num * ratB.num;
             const int den = ratA.den * ratB.den;
-            expr = ExpressionFactory::makeRational(num, den, isExact);
+            expr = ExpressionFactory::makeRational(num, den, joint.exact);
         }
-        else if ( isReal ) {
-            const double rv = asDouble(xA) * asDouble(xB);
-            expr = ExpressionFactory::makeReal(rv, isExact);
+        else if ( joint.real ) {
+            const double rv = asDouble(dA) * asDouble(dB);
+            expr = ExpressionFactory::makeReal(rv, joint.exact);
         }
         else {
-            ExtendedNumeric rA(xA->realPart());
-            ExtendedNumeric rB(xB->realPart());
-            ExtendedNumeric iA(xA->imagPart());
-            ExtendedNumeric iB(xB->imagPart());
+            ExtendedNumeric rA(dA->realPart());
+            ExtendedNumeric rB(dB->realPart());
+            ExtendedNumeric iA(dA->imagPart());
+            ExtendedNumeric iB(dB->imagPart());
 
             ExtendedNumeric rC = rA * rB - iA * iB;
             ExtendedNumeric iC = rA * iB + iA * rB;
@@ -345,14 +335,14 @@ scam::operator*(const ExtendedNumeric & a, const ExtendedNumeric & b)
             expr = ExpressionFactory::makeComplex(rC.get(), iC.get());
         }
     }
-    else if ( a.isNaN() || b.isNaN() ) {
+    else if ( isNaN(dA) || isNaN(dB) ) {
         expr = ExpressionFactory::makeNaN();
     }
     else {
-        const bool aNegInf = a.isNegInf();
-        const bool aPosInf = a.isPosInf();
-        const bool bNegInf = b.isNegInf();
-        const bool bPosInf = b.isPosInf();
+        const bool aNegInf = isNegInf(dA);
+        const bool aPosInf = isPosInf(dA);
+        const bool bNegInf = isNegInf(dB);
+        const bool bPosInf = isPosInf(dB);
 
         const int code = (((aNegInf ? 1 : 0) << 3) |
                           ((aPosInf ? 1 : 0) << 2) |
@@ -362,12 +352,12 @@ scam::operator*(const ExtendedNumeric & a, const ExtendedNumeric & b)
         switch ( code ) {
         case 1: /* N * +inf.0 */
         case 2: /* N * -inf.0 */
-            expr = signCheckRI(xA, xB);
+            expr = signCheckRI(dA, dB);
             break;
 
         case 4: /* +inf.0 * N */
         case 8: /* -inf.0 * N */
-            expr = signCheckRI(xB, xA);
+            expr = signCheckRI(dB, dA);
             break;
 
         case 6: /* +inf.0 * -inf.0 */
@@ -393,52 +383,44 @@ scam::operator*(const ExtendedNumeric & a, const ExtendedNumeric & b)
 ExtendedNumeric
 scam::operator/(const ExtendedNumeric & a, const ExtendedNumeric & b)
 {
-    const ScamValue xA = a.get();
-    const ScamValue xB = b.get();
+    ScamValue dA = a.get();
+    ScamValue dB = b.get();
     ScamValue expr { nullptr };
 
-    if ( ! a.isSpecialNumeric() && ! b.isSpecialNumeric() ) {
-        const bool isInt =
-            TypePredicates::isInteger(xA) && TypePredicates::isInteger(xB);
-        const bool isRational =
-            TypePredicates::isRational(xA) && TypePredicates::isRational(xB);
-        const bool isReal =
-            TypePredicates::isReal(xA) && TypePredicates::isReal(xB);
-        const bool isExact =
-            TypePredicates::isExact(xA) && TypePredicates::isExact(xB);
-
-        if ( isInt ) {
-            const int iA = asInteger(xA);
-            const int iB = asInteger(xB);
+    const auto joint = computeJoint(dA, dB);
+    if ( ! joint.special ) {
+        if ( joint.integer ) {
+            const int iA = asInteger(dA);
+            const int iB = asInteger(dB);
             if ( 0 == (iA % iB) ) {
                 const int rv =  iA / iB;
-                expr = ExpressionFactory::makeInteger(rv, isExact);
+                expr = ExpressionFactory::makeInteger(rv, joint.exact);
             }
             else if ( ::abs(iA) <= 1e9 && ::abs(iB) <= 1e9 ) {
-                expr = ExpressionFactory::makeRational(iA, iB, isExact);
+                expr = ExpressionFactory::makeRational(iA, iB, joint.exact);
             }
             else {
                 const double rv = (double) iA / (double) iB;
-                expr = ExpressionFactory::makeReal(rv, isExact);
+                expr = ExpressionFactory::makeReal(rv, joint.exact);
             }
         }
-        else if ( isRational ) {
-            const RationalPair ratB = asRational(xB);
+        else if ( joint.rational ) {
+            const RationalPair ratB = asRational(dB);
             int s = ratB.num < 0 ? -1 : 1;
             ScamValue recipricolB =
                 ExpressionFactory::makeRational(s * ratB.den,
                                                 ::abs(ratB.num),
-                                                isExact);
+                                                joint.rational);
             ExtendedNumeric newB(recipricolB);
             expr = (a * newB).get();
         }
-        else if ( isReal ) {
-            const double rv = asDouble(xA) / asDouble(xB);
-            expr = ExpressionFactory::makeReal(rv, isExact);
+        else if ( joint.real ) {
+            const double rv = asDouble(dA) / asDouble(dB);
+            expr = ExpressionFactory::makeReal(rv, joint.exact);
         }
         else {
-            ExtendedNumeric rB(xB->realPart());
-            ExtendedNumeric iB(xB->imagPart());
+            ExtendedNumeric rB(dB->realPart());
+            ExtendedNumeric iB(dB->imagPart());
             ExtendedNumeric iBNeg = -iB;
             ExtendedNumeric bConj(ExpressionFactory::makeComplex(rB.get(),
                                                                  iBNeg.get()));
@@ -446,7 +428,7 @@ scam::operator/(const ExtendedNumeric & a, const ExtendedNumeric & b)
             ExtendedNumeric num = a * bConj;
             ExtendedNumeric den = b * bConj;
 
-            if ( den.isNaN() ) {
+            if ( isNaN(den.get() ) ) {
                 expr = den.get();
             }
             else {
@@ -459,26 +441,26 @@ scam::operator/(const ExtendedNumeric & a, const ExtendedNumeric & b)
             }
         }
     }
-    else if ( a.isNaN() || b.isNaN() ) {
+    else if ( isNaN(dA) || isNaN(dB) ) {
         expr = ExpressionFactory::makeNaN();
     }
     else {
-        const bool aNegInf = a.isNegInf();
-        const bool aPosInf = a.isPosInf();
-        const bool bNegInf = b.isNegInf();
-        const bool bPosInf = b.isPosInf();
+        const bool aNegInf = isNegInf(dA);
+        const bool aPosInf = isPosInf(dA);
+        const bool bNegInf = isNegInf(dB);
+        const bool bPosInf = isPosInf(dB);
 
         if ( bNegInf || bPosInf ) {
-            if ( aNegInf || aPosInf || (0 != asDouble(xA)) ) {
+            if ( aNegInf || aPosInf || (0 != asDouble(dA)) ) {
                 expr = ExpressionFactory::makeNaN();
             }
             else {
-                const bool ex = TypePredicates::isExact(xA);
+                const bool ex = isExact(dA);
                 expr = ExpressionFactory::makeInteger(0, ex);
             }
         }
         else {
-            expr = signCheckRI(xB, xA);
+            expr = signCheckRI(dB, dA);
         }
     }
 
@@ -489,37 +471,32 @@ scam::operator/(const ExtendedNumeric & a, const ExtendedNumeric & b)
 ExtendedNumeric
 scam::operator%(const ExtendedNumeric & a, const ExtendedNumeric & b)
 {
-    const ScamValue xA = a.get();
-    const ScamValue xB = b.get();
+    ScamValue dA  = a.get();
+    ScamValue dB  = b.get();
     ScamValue expr { nullptr };
 
-    if ( ! a.isSpecialNumeric() && ! b.isSpecialNumeric() ) {
-        const bool isInt =
-            TypePredicates::isInteger(xA) && TypePredicates::isInteger(xB);
-        const bool isRational =
-            TypePredicates::isRational(xA) && TypePredicates::isRational(xB);
-        const bool isExact =
-            TypePredicates::isExact(xA) && TypePredicates::isExact(xB);
+    const auto joint = computeJoint(dA, dB);
+    if ( ! joint.special ) {
 
-        if ( isInt ) {
-            const int rv = asInteger(xA) % asInteger(xB);
-            expr = ExpressionFactory::makeInteger(rv, isExact);
+        if ( joint.integer ) {
+            const int rv = asInteger(dA) % asInteger(dB);
+            expr = ExpressionFactory::makeInteger(rv, joint.exact);
         }
-        else if ( isRational ) {
+        else if ( joint.rational ) {
             ExtendedNumeric quotient = a / b;
             int q = (int) (0.0000001 + asDouble(quotient.get()));
-            ExtendedNumeric x(ExpressionFactory::makeInteger(q, isExact));
+            ExtendedNumeric x(ExpressionFactory::makeInteger(q, joint.exact));
             ExtendedNumeric wp = x * b;
             return a - wp;
         }
         else {
-            const double rv = fmod(asDouble(xA), asDouble(xB));
-            expr = ExpressionFactory::makeReal(rv, isExact);
+            const double rv = fmod(asDouble(dA), asDouble(dB));
+            expr = ExpressionFactory::makeReal(rv, joint.exact);
         }
     }
     else {
-        if ( ! a.isSpecialNumeric() && 0 == asDouble(xA) ) {
-            const bool ex = TypePredicates::isExact(xA);
+        if ( ! isSpecialNumeric(dA) && 0 == asDouble(dA) ) {
+            const bool ex = isExact(dA);
             expr = ExpressionFactory::makeInteger(0, ex);
         }
         else {
@@ -539,7 +516,7 @@ namespace
     {
         const double rVal = asDouble(r);
         if ( 0.0 == rVal ) {
-            const bool ex = TypePredicates::isExact(r);
+            const bool ex = isExact(r);
             return ExpressionFactory::makeInteger(0, ex);
         }
 
@@ -547,10 +524,22 @@ namespace
             return i;
         }
 
-        if ( TypePredicates::isPosInf(i) ) {
+        if ( isPosInf(i) ) {
             return ExpressionFactory::makeNegInf();
         }
 
         return ExpressionFactory::makePosInf();
+    }
+
+    JointValues computeJoint(ScamValue lhs, ScamValue rhs)
+    {
+        return JointValues {
+            isSpecialNumeric(lhs) || isSpecialNumeric(rhs),
+            isComplex(lhs) && isComplex(rhs),
+            isReal(lhs) && isReal(rhs),
+            isRational(lhs) && isRational(rhs),
+            isInteger(lhs) && isInteger(rhs),
+            isExact(lhs) && isExact(rhs)
+        };
     }
 }

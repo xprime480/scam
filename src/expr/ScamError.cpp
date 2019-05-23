@@ -18,7 +18,7 @@ ScamError * ScamError::makeInstance(char const * msg, bool managed)
 
 bool ScamError::equals(ConstScamValue expr) const
 {
-    if ( ! TypePredicates::error(expr) ) {
+    if ( ! error(expr) ) {
         return false;
     }
 

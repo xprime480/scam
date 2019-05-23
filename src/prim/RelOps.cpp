@@ -2,6 +2,7 @@
 
 #include "Continuation.hpp"
 #include "expr/ExtendedNumeric.hpp"
+#include "expr/TypePredicates.hpp"
 #include "input/RelopsListParser.hpp"
 #include "util/ArgListHelper.hpp"
 #include "util/MemoryManager.hpp"
@@ -50,7 +51,8 @@ namespace
     {
         static bool isNaN(ExtendedNumeric value)
         {
-            return value.isNaN();
+            ScamValue v = value.get();
+            return scam::isNaN(v);
         }
     };
 

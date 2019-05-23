@@ -46,10 +46,10 @@ bool ScamRepl::load_prelude()
     ScamValue expr = parser.parseExpr();
     tokenizer.flush();
 
-    if ( TypePredicates::isNull(expr) || TypePredicates::error(expr) ) {
+    if ( isNull(expr) || error(expr) ) {
         cerr << "Unable to read the prelude\n";
 
-        if ( TypePredicates::isNull(expr) ) {
+        if ( isNull(expr) ) {
             return false;
         }
 
@@ -58,14 +58,14 @@ bool ScamRepl::load_prelude()
     }
 
     ScamValue rv = eval(expr);
-    return TypePredicates::isInteger(rv) && 1 == asInteger(rv);
+    return isInteger(rv) && 1 == asInteger(rv);
 }
 
 int ScamRepl::repl()
 {
     for ( ;; ) {
         ScamValue form = read();
-        if ( TypePredicates::isNull(form) ) {
+        if ( isNull(form) ) {
             break;
         }
         ScamValue value = eval(form);
@@ -84,12 +84,11 @@ ScamValue ScamRepl::read()
         else {
             ScamValue form = parser.parseExpr();
 
-            if ( ! TypePredicates::isNull(form) &&
-                 ! TypePredicates::error(form) ) {
+            if ( ! isNull(form) && ! error(form) ) {
                 tokenizer.flush();
                 return form;
             }
-            if ( TypePredicates::error(form) && ! form->hasMeta("partial") ) {
+            if ( error(form) && ! form->hasMeta("partial") ) {
                 tokenizer.flush();
                 return form;
             }

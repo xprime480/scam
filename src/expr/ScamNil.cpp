@@ -23,5 +23,5 @@ size_t ScamNil::length() const
 
 bool ScamNil::equals(ConstScamValue expr) const
 {
-    return ( expr && TypePredicates::isNil(expr) );
+    return ( expr && isNil(expr) );
 }

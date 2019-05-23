@@ -37,8 +37,7 @@ namespace
 
         void run(ScamValue expr) override
         {
-            if ( TypePredicates::isList(expr) &&
-                 ! TypePredicates::isNil(expr) ) {
+            if ( isList(expr) && ! isNil(expr) ) {
                 unsigned len = expr->length();
                 ScamValue last = expr->nthcar(len - 1);
                 cont->run(last);

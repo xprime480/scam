@@ -18,7 +18,7 @@ namespace scam
 
     private:
         ScamCons const * lst;
-        bool isNil;
+        bool iAmNil;
 
         size_t len;
         ScamValue car;

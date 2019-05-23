@@ -42,7 +42,7 @@ void ClassCont::run(ScamValue expr)
 {
     Continuation::run(expr);
 
-    if ( TypePredicates::error(expr) ) {
+    if ( error(expr) ) {
         cont->run(expr);
     }
     else {
@@ -50,7 +50,7 @@ void ClassCont::run(ScamValue expr)
         ScamValue  result;
 
         result = build(cls, instances);
-        if ( TypePredicates::error(result) ) {
+        if ( error(result) ) {
             cont->run(result);
         }
         else {
@@ -69,14 +69,14 @@ ScamValue ClassCont::build(ClassHandle cls, InstanceVec & instances) const
         instances.push_back(instance);
 
         temp = get_parent(cls);
-        if ( ! TypePredicates::isClass(temp) ) {
+        if ( ! isClass(temp) ) {
             break;
         }
 
         cls = dynamic_cast<const ScamClass *>(temp);
     }
 
-    if ( TypePredicates::error(temp) ) {
+    if ( error(temp) ) {
         return temp;
     }
 
@@ -112,7 +112,7 @@ ScamValue ClassCont::get_parent(ScamClassAdapter const & adapter) const
     }
 
     ScamValue b = env->get(base);
-    if ( ! TypePredicates::isClass(b) ) {
+    if ( ! isClass(b) ) {
         return base_class_not_class(base, b);
     }
 

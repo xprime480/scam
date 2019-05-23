@@ -38,10 +38,10 @@ void IfCont::run(ScamValue expr)
 {
     Continuation::run(expr);
 
-    if ( TypePredicates::error(expr) ) {
+    if ( error(expr) ) {
         cont->run(expr);
     }
-    else if ( TypePredicates::truth(expr) ) {
+    else if ( truth(expr) ) {
         ScamValue thenExpr = parser->get(1u);
         thenExpr->eval(cont, env);
     }

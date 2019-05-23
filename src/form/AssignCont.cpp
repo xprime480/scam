@@ -29,7 +29,7 @@ AssignCont * AssignCont::makeInstance(ScamEnvKeyType sym,
 
 void AssignCont::finish(ScamValue expr) const
 {
-    if ( TypePredicates::error(expr) && expr->hasMeta("amb-error") ) {
+    if ( error(expr) && expr->hasMeta("amb-error") ) {
         return;
     }
 

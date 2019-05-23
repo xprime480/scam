@@ -22,7 +22,7 @@ Begin * Begin::makeInstance()
 
 void Begin::applyArgs(ScamValue args, Continuation * cont)
 {
-    if ( ! TypePredicates::isList(args) ) {
+    if ( ! isList(args) ) {
         failedArgParseMessage(myName, "(expr*)", args, cont);
         return;
     }

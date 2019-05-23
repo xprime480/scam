@@ -70,7 +70,7 @@ void ScamInstance::apply(ScamValue args, Continuation * cont, Env * env)
 
     Continuation * newCont =
         standardMemoryManager.make<InstanceCont>(this, name, cont);
-    if ( TypePredicates::isNil(funargs) ) {
+    if ( isNil(funargs) ) {
         newCont->run(funargs);
     }
     else {

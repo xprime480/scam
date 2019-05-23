@@ -18,7 +18,7 @@ ScamCharacter * ScamCharacter::makeInstance(const string & value)
 
 bool ScamCharacter::equals(ConstScamValue expr) const
 {
-    if ( ! TypePredicates::isChar(expr) ) {
+    if ( ! isChar(expr) ) {
         return false;
     }
 

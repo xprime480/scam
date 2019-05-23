@@ -5,43 +5,40 @@ namespace scam
 {
     class ScamData;
 
-    class TypePredicates
-    {
-    public:
-        static bool isNull(const ScamData * data);
-        static bool error(const ScamData * data);
-        static bool truth(const ScamData * data);
+    extern bool isNull(const ScamData * data);
+    extern bool error(const ScamData * data);
+    extern bool truth(const ScamData * data);
 
-        static bool isBoolean(const ScamData * data);
-        static bool isChar(const ScamData * data);
-        static bool isString(const ScamData * data);
-        static bool isSymbol(const ScamData * data);
-        static bool isKeyword(const ScamData * data);
+    extern bool isBoolean(const ScamData * data);
+    extern bool isChar(const ScamData * data);
+    extern bool isString(const ScamData * data);
+    extern bool isSymbol(const ScamData * data);
+    extern bool isKeyword(const ScamData * data);
 
-        static bool isNumeric(const ScamData * data);
-        static bool isExact(const ScamData * data);
-        static bool isComplex(const ScamData * data);
-        static bool isPureComplex(const ScamData * data);
-        static bool isReal(const ScamData * data);
-        static bool isRational(const ScamData * data);
-        static bool isInteger(const ScamData * data);
+    extern bool isNumeric(const ScamData * data);
+    extern bool isExact(const ScamData * data);
+    extern bool isComplex(const ScamData * data);
+    extern bool isPureComplex(const ScamData * data);
+    extern bool isReal(const ScamData * data);
+    extern bool isRational(const ScamData * data);
+    extern bool isInteger(const ScamData * data);
 
-        static bool isNaN(const ScamData * data);
-        static bool isNegInf(const ScamData * data);
-        static bool isPosInf(const ScamData * data);
+    extern bool isNaN(const ScamData * data);
+    extern bool isNegInf(const ScamData * data);
+    extern bool isPosInf(const ScamData * data);
+    extern bool isSpecialNumeric(const ScamData * data);
 
-        static bool isNil(const ScamData * data);
-        static bool isCons(const ScamData * data);
-        static bool isList(const ScamData * data);
+    extern bool isNil(const ScamData * data);
+    extern bool isCons(const ScamData * data);
+    extern bool isList(const ScamData * data);
 
-        static bool isVector(const ScamData * data);
-        static bool isByteVector(const ScamData * data);
-        static bool isDict(const ScamData * data);
+    extern bool isVector(const ScamData * data);
+    extern bool isByteVector(const ScamData * data);
+    extern bool isDict(const ScamData * data);
 
-        static bool isProcedure(const ScamData * data);
-        static bool isClass(const ScamData * data);
-        static bool isInstance(const ScamData * data);
-    };
+    extern bool isProcedure(const ScamData * data);
+    extern bool isClass(const ScamData * data);
+    extern bool isInstance(const ScamData * data);
 }
 
 #endif

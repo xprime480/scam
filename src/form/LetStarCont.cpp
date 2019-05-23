@@ -49,7 +49,7 @@ void LetStarCont::mark() const
 
 void LetStarCont::do_let(ScamValue expr)
 {
-    if ( TypePredicates::isNil(formals) ) {
+    if ( isNil(formals) ) {
         final_eval(env);
     }
     else {

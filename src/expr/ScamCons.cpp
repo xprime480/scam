@@ -35,7 +35,7 @@ void ScamCons::mapEval(Continuation * cont, Env * env) const
 
 bool ScamCons::equals(ConstScamValue expr) const
 {
-    if ( ! TypePredicates::isCons(expr) ) {
+    if ( ! isCons(expr) ) {
         return false;
     }
 
@@ -56,10 +56,10 @@ size_t ScamCons::length() const
 {
     ScamValue cdr = CDR(this);
     size_t len = 1;
-    if ( TypePredicates::isCons(cdr) ) {
+    if ( isCons(cdr) ) {
         len += cdr->length();
     }
-    else if ( ! TypePredicates::isNil(cdr) ) {
+    else if ( ! isNil(cdr) ) {
         len += 1;
     }
 
@@ -81,13 +81,13 @@ ScamValue ScamCons::nthcar(size_t n) const
     if ( 0 == n ) {
         rv = CAR(this);
     }
-    else if ( TypePredicates::isCons(cdr) ) {
+    else if ( isCons(cdr) ) {
         rv = cdr->nthcar(n-1);
-        if ( TypePredicates::error(rv) ) {
+        if ( error(rv) ) {
             rv = f();
         }
     }
-    else if ( TypePredicates::isNil(cdr) || n > 1 ) {
+    else if ( isNil(cdr) || n > 1 ) {
         rv = f();
     }
     else {
@@ -112,9 +112,9 @@ ScamValue ScamCons::nthcdr(size_t n) const
     if ( 0 == n ) {
         rv = cdr;
     }
-    else if ( TypePredicates::isCons(cdr) ) {
+    else if ( isCons(cdr) ) {
         rv = cdr->nthcdr(n-1);
-        if ( TypePredicates::error(rv) ) {
+        if ( error(rv) ) {
             rv = f();
         }
     }

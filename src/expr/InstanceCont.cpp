@@ -41,13 +41,13 @@ void InstanceCont::run(ScamValue expr)
 {
     Continuation::run(expr);
 
-    if ( TypePredicates::error(expr) ) {
+    if ( error(expr) ) {
         cont->run(expr);
         return;
     }
 
     ScamValue func = find_func(obj);
-    if ( TypePredicates::isNil(func) ) {
+    if ( isNil(func) ) {
         return;
     }
 
@@ -58,7 +58,7 @@ void InstanceCont::run(ScamValue expr)
 
 ScamValue InstanceCont::find_func(ScamValue o) const
 {
-    while ( TypePredicates::isInstance(o) ) {
+    while ( isInstance(o) ) {
         ScamInstanceAdapter adapter(o);
         Env * env = adapter.getFunctionMap();
         if ( env->check(name) ) {

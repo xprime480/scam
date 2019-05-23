@@ -38,7 +38,7 @@ bool VrefParser::accept(ScamValue expr)
     }
 
     auto val = intVal->getValue();
-    if ( ! TypePredicates::isInteger(val) || asInteger(val) < 0 ) {
+    if ( ! isInteger(val) || asInteger(val) < 0 ) {
         return false;
     }
 

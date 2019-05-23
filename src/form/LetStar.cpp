@@ -27,7 +27,7 @@ LetStar * LetStar::makeInstance(ScamEngine * engine)
 
 ScamValue LetStar::safeCons(ScamValue expr)
 {
-    if ( TypePredicates::isCons(expr) ) {
+    if ( isCons(expr) ) {
         return expr;
     }
     return ExpressionFactory::makeList(expr);

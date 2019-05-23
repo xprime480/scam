@@ -137,7 +137,7 @@ ScamValue ScamEngine::parseCurrentInput()
 
     while ( true ) {
         ScamValue expr = read();
-        if ( TypePredicates::isNull(expr) ) {
+        if ( isNull(expr) ) {
             break;
         }
         (void) eval(expr);

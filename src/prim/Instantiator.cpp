@@ -29,16 +29,16 @@ ScamValue Instantiator::map_value(ScamValue val)
 
 ScamValue Instantiator::inst_value(ScamValue expr)
 {
-    if ( TypePredicates::isKeyword(expr) ) {
+    if ( isKeyword(expr) ) {
         return inst_keyword(expr);
     }
-    else if ( TypePredicates::isCons(expr) ) {
+    else if ( isCons(expr) ) {
         return inst_cons(expr);
     }
-    else if ( TypePredicates::isVector(expr) ) {
+    else if ( isVector(expr) ) {
         return inst_vector(expr);
     }
-    else if ( TypePredicates::isDict(expr) ) {
+    else if ( isDict(expr) ) {
         return inst_dict(expr);
     }
     else {

@@ -41,7 +41,7 @@ bool LetParser::accept(ScamValue expr)
     }
 
     ScamValue bList = parser->get(0);
-    if ( ! TypePredicates::isList(bList) ) {
+    if ( ! isList(bList) ) {
         return false;
     }
 

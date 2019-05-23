@@ -30,7 +30,7 @@ DefineCont * DefineCont::makeInstance(ScamEnvKeyType sym,
 
 void DefineCont::finish(ScamValue expr) const
 {
-    if ( TypePredicates::error(expr) && expr->hasMeta("amb-error") ) {
+    if ( error(expr) && expr->hasMeta("amb-error") ) {
         return;
     }
 

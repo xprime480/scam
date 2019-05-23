@@ -24,7 +24,7 @@ Cons * Cons::makeInstance()
 
 void Cons::applyArgs(ScamValue args, Continuation * cont)
 {
-    if ( TypePredicates::error(args) ) {
+    if ( error(args) ) {
         cont->run(args);
     }
 

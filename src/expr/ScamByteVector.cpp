@@ -38,7 +38,7 @@ ScamValue ScamByteVector::nthcar(size_t n) const
 
 bool ScamByteVector::equals(ConstScamValue expr) const
 {
-    if ( ! TypePredicates::isByteVector(expr) ) {
+    if ( ! isByteVector(expr) ) {
         return false;
     }
 

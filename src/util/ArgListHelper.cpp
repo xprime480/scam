@@ -27,12 +27,12 @@ namespace
     {
         static bool isType(ScamValue arg)
         {
-            return TypePredicates::isNumeric(arg);
+            return isNumeric(arg);
         }
 
         static bool isSubType(ScamValue arg)
         {
-            return TypePredicates::isInteger(arg);
+            return isInteger(arg);
         }
 
         static double convert(ScamValue arg)
@@ -50,12 +50,12 @@ namespace
     {
         static bool isType(ScamValue arg)
         {
-            return TypePredicates::isString(arg);
+            return isString(arg);
         }
 
         static bool isSubType(ScamValue arg)
         {
-            return TypePredicates::isString(arg);
+            return isString(arg);
         }
 
         static string convert(ScamValue arg)
@@ -73,7 +73,7 @@ namespace
     {
         static bool isType(ScamValue arg)
         {
-            return TypePredicates::isNumeric(arg);
+            return isNumeric(arg);
         }
 
         static bool isSubType(ScamValue arg)
@@ -109,7 +109,7 @@ namespace
             return false;
         }
 
-        if ( TypePredicates::truth(rv) && ! Checker::isSubType(arg) ) {
+        if ( truth(rv) && ! Checker::isSubType(arg) ) {
             rv = ExpressionFactory::makeBoolean(false);
         }
 
@@ -144,7 +144,7 @@ namespace
 
         vector<T> ns;
         rv = argsToType(parser, ns, context);
-        if ( TypePredicates::isBoolean(rv) ) {
+        if ( isBoolean(rv) ) {
             bool answer = impl->apply(ns);
             rv = ExpressionFactory::makeBoolean(answer);
         }
@@ -160,12 +160,12 @@ ScamValue scam::numericAlgorithm(NumericListParser * parser,
     vector<ExtendedNumeric> ns;
 
     ScamValue state = argsToType(parser, ns, context);
-    if ( TypePredicates::error(state) ) {
+    if ( error(state) ) {
         return state;
     }
 
     ExtendedNumeric total = algo(ns, state);
-    if ( TypePredicates::error(state) ) {
+    if ( error(state) ) {
         return state;
     }
 

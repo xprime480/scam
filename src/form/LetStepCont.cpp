@@ -54,7 +54,7 @@ void LetStepCont::mark() const
 
 void LetStepCont::run(ScamValue expr)
 {
-    if ( TypePredicates::error(expr) ) {
+    if ( error(expr) ) {
         cont->run(expr);
     }
     else {
