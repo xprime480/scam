@@ -37,12 +37,12 @@ void Error::applyArgs(ExprHandle args, Continuation * cont)
         s << "Error detected";
     }
     else if ( 1 == len ) {
-        s << args->nthcar(0)->toString();
+        s << ExprWriter::write(args->nthcar(0));
     }
     else {
         for ( unsigned i = 0 ; i < len ; ++i ) {
             s << "[" << (i+1) << "] "
-              << args->nthcar(i)->toString() << "\n";
+              << ExprWriter::write(args->nthcar(i)) << "\n";
         }
     }
 

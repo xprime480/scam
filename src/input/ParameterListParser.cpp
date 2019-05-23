@@ -1,5 +1,6 @@
 #include "input/ParameterListParser.hpp"
 
+#include "expr/ExprWriter.hpp"
 #include "expr/ScamSymbol.hpp"
 #include "input/AlternativeParser.hpp"
 #include "input/ListParser.hpp"
@@ -116,7 +117,7 @@ bool ParameterListParser::uniquifyParameters()
             return false;
         }
 
-        const string name = sym->toString();
+        const string name = ExprWriter::write(sym);
         if ( seen.end() != seen.find(name) ) {
             return false;
         }

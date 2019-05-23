@@ -51,7 +51,7 @@ bool ScamRepl::load_prelude()
             return false;
         }
 
-        cerr << expr->toString() << "\n";
+        cerr << ExprWriter::write(expr) << "\n";
         return false;
     }
 
@@ -122,7 +122,7 @@ ExprHandle ScamRepl::eval(ExprHandle form)
 
 void ScamRepl::print(ExprHandle value)
 {
-    cerr << value->toString() << "\n";
+    cerr << ExprWriter::write(value) << "\n";
 }
 
 bool ScamRepl::checkInternal(string & line)

@@ -38,7 +38,7 @@ void Load::applyArgs(ExprHandle args, Continuation * cont)
         return;
     }
 
-    string filename = parser->get()->toString();
+    string filename = ExprWriter::write(parser->get());
     if ( engine->isLoaded(filename) ) {
         ExprHandle err =
             ExpressionFactory::makeError("file \"",
@@ -76,7 +76,8 @@ bool Load::open_file(ifstream & source,
 
         size_t n = path->length();
         for ( size_t i = 0 ; i < n ; ++i ) {
-            string fullpath = make_path(path->nthcar(i)->toString(), filename);
+            string fullpath = make_path(ExprWriter::write(path->nthcar(i)),
+                                        filename);
             if ( file_exists(fullpath) ) {
                 source.open(fullpath);
                 return true;

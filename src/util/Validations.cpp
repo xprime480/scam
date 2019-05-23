@@ -1,5 +1,6 @@
 #include "util/Validations.hpp"
 
+#include "expr/ExprWriter.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamExpr.hpp"
 
@@ -15,7 +16,7 @@ ExprHandle scam::validateClosureArgs(ExprHandle args, const char * name)
         ExprHandle extended = ExpressionFactory::makeCons(nameSymbol, args);
         return ExpressionFactory::makeError("Expected (", name, " args body*)",
                                             "; got: ",
-                                            extended->toString());
+                                            ExprWriter::write(extended));
     }
 
     ExprHandle formals = args->getCar();
@@ -34,7 +35,7 @@ ExprHandle scam::validateFormals(ExprHandle formals)
     if ( ! formals->isCons() ) {
         return ExpressionFactory::makeError("Formals should be list or symbol",
                                             "; got: ",
-                                            formals->toString());
+                                            ExprWriter::write(formals));
     }
 
     set<string> parms;
@@ -43,10 +44,10 @@ ExprHandle scam::validateFormals(ExprHandle formals)
         if ( ! arg->isSymbol() ) {
             return ExpressionFactory::makeError("Formal parameter should ",
                                                 "be a symbol; got: ",
-                                                arg->toString());
+                                                ExprWriter::write(arg));
         }
 
-        string name = arg->toString();
+        string name = ExprWriter::write(arg);
         if ( parms.end() != parms.find(name) ) {
             return ExpressionFactory::makeError("Symbol cannot appear twice ",
                                                 "in formals list: ",
@@ -61,7 +62,7 @@ ExprHandle scam::validateFormals(ExprHandle formals)
         }
 
         if ( formals->isSymbol() ) {
-            name = formals->toString();
+            name = ExprWriter::write(formals);
             if ( parms.end() == parms.find(name) ) {
                 break;
             }
@@ -75,7 +76,7 @@ ExprHandle scam::validateFormals(ExprHandle formals)
         if ( ! formals->isCons() ) {
             return ExpressionFactory::makeError("Formal parameter should ",
                                                 "be a symbol; got: ",
-                                                formals->toString());
+                                                ExprWriter::write(formals));
         }
     }
 

@@ -2,6 +2,7 @@
 
 #include "Continuation.hpp"
 #include "WorkQueue.hpp"
+#include "expr/ExprWriter.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ConsWorker.hpp"
 #include "expr/MapWorker.hpp"
@@ -72,7 +73,7 @@ ExprHandle ScamCons::nthcar(size_t n) const
         return ExpressionFactory::makeError("Index ",
                                             n,
                                             " requested for ",
-                                            toString());
+                                            ExprWriter::write(this));
     };
 
     ExprHandle cdr = CDR(this);
@@ -103,7 +104,7 @@ ExprHandle ScamCons::nthcdr(size_t n) const
         return ExpressionFactory::makeError("Index ",
                                             n,
                                             " requested for ",
-                                            toString());
+                                            ExprWriter::write(this));
     };
 
     ExprHandle cdr = CDR(this);

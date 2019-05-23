@@ -1,6 +1,7 @@
 #include "form/QQConsListCdrCont.hpp"
 
 #include "Env.hpp"
+#include "expr/ExprWriter.hpp"
 #include "expr/ScamExpr.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "form/QuasiQuote.hpp"
@@ -58,7 +59,8 @@ bool QQConsListCdrCont::check_splice(ExprHandle expr)
     if ( car->isCons() ) {
         ExprHandle first = car->nthcar(0);
         if ( first->isSymbol() ) {
-            if ( first->toString() == QuasiQuote::spliceTag->toString() ) {
+            if ( ExprWriter::write(first) ==
+                 ExprWriter::write(QuasiQuote::spliceTag) ) {
                 do_splice(expr);
                 return true;
             }

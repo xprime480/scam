@@ -88,7 +88,7 @@ void QuasiQuoteWorker::build_qq_list(ExprHandle input, Continuation * cont)
     ExprHandle rest  = input->nthcdr(0);
 
     const bool isSym = first->isSymbol();
-    string const sym = first->toString();
+    string const sym = ExprWriter::write(first);
     if ( isSym && sym == "unquote" ) {
         unquote_form(rest, cont);
     }

@@ -1,6 +1,7 @@
 #include "prim/Substitutor.hpp"
 
 #include "expr/ScamExpr.hpp"
+#include "expr/ExprWriter.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "prim/CommonError.hpp"
 
@@ -70,7 +71,7 @@ ExprHandle Substitutor::resolve_keyword(ExprHandle expr)
 {
     if ( have_seen(expr) ) {
         stringstream s;
-        s << "Infinite Loop resolving keyword " << expr->toString();
+        s << "Infinite Loop resolving keyword " << ExprWriter::write(expr);
         return make_common_error(s.str().c_str());
     }
 

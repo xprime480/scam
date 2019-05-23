@@ -2,6 +2,7 @@
 
 #include "Continuation.hpp"
 #include "Env.hpp"
+#include "expr/ExprWriter.hpp"
 #include "expr/ScamExpr.hpp"
 #include "expr/ExpressionFactory.hpp"
 
@@ -39,7 +40,7 @@ void CallCont::run(ExprHandle expr)
     if ( ! expr->hasApply() ) {
         ExprHandle err =
             ExpressionFactory::makeError("call/cc: form ",
-                                         expr->toString(),
+                                         ExprWriter::write(expr),
                                          "cannot be applied");
         cont->run(err);
         return;

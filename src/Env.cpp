@@ -1,6 +1,7 @@
 #include "Env.hpp"
 
 #include "ScamException.hpp"
+#include "expr/ExprWriter.hpp"
 #include "expr/ScamExpr.hpp"
 #include "expr/ScamSymbol.hpp"
 #include "util/MemoryManager.hpp"
@@ -21,7 +22,7 @@ namespace
             s << "Null Environment key not allowed";
             throw ScamException(s.str());
         }
-        return  key->toString();
+        return  ExprWriter::write(key);
     }
 }
 
@@ -162,7 +163,7 @@ void Env::dump(size_t max, bool full) const
     if ( full ) {
         for ( const auto kv : table ) {
             cerr << "\t" << kv.first << "\t"
-                 << kv.second->toString() << "\n";
+                 << ExprWriter::write(kv.second) << "\n";
         }
     }
 

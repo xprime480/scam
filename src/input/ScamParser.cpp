@@ -331,7 +331,7 @@ ExprHandle ScamParser::expand_reader_macro(std::string const & text) const
                                             name,
                                             " macro",
                                             "\t",
-                                            expr->toString());
+                                            ExprWriter::write(expr));
     }
 
     ExprHandle sym    = ExpressionFactory::makeSymbol(name);

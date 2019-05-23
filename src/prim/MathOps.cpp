@@ -19,7 +19,7 @@ MathOp::MathOp(MathOpDef const & def)
 
 void MathOp::applyArgs(ExprHandle args, Continuation * cont)
 {
-    string const context = toString();
+    string const context = ExprWriter::write(this);
     NumericListParser * parser =
         standardMemoryManager.make<NumericListParser>();
 
@@ -34,7 +34,7 @@ void MathOp::applyArgs(ExprHandle args, Continuation * cont)
 
 bool MathOp::equals(ConstExprHandle expr) const
 {
-    return ( expr && this->toString() == expr->toString() );
+    return ( expr && ExprWriter::write(this) == ExprWriter::write(expr) );
 }
 
 namespace

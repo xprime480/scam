@@ -2,6 +2,7 @@
 
 #include "Continuation.hpp"
 #include "Env.hpp"
+#include "expr/ExprWriter.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamExpr.hpp"
 
@@ -73,7 +74,7 @@ ExprHandle InstanceCont::function_not_found() const
 {
     ExprHandle err =
         ExpressionFactory::makeError("Instance method ",
-                                     name->toString(),
+                                     ExprWriter::write(name),
                                      " not found");
     cont->run(err);
     return ExpressionFactory::makeNil();

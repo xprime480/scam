@@ -58,7 +58,7 @@ namespace
 
         static string convert(ExprHandle arg)
         {
-            return arg->toString();
+            return ExprWriter::write(arg);
         }
 
         static string id() {
@@ -103,7 +103,7 @@ namespace
                                               " expects ",
                                               Checker::id(),
                                               ", got ",
-                                              arg->toString());
+                                              ExprWriter::write(arg));
             return false;
         }
 
@@ -189,7 +189,7 @@ void scam::failedArgParseMessage(const char * who,
                                                   " expected \"",
                                                   exp,
                                                   "\"; got \"",
-                                                  act->toString(),
+                                                  ExprWriter::write(act),
                                                   "\"");
     cont->run(err);
 }

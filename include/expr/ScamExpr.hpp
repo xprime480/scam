@@ -15,7 +15,6 @@ namespace scam
         ScamExpr(unsigned long type, bool managed = true);
 
     public:
-        std::string toString() const;
         virtual void eval(Continuation * cont, Env * env) const;
 
         bool hasApply() const;

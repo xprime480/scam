@@ -1,6 +1,7 @@
 #include "expr/ScamListAdapter.hpp"
 
 #include "ScamException.hpp"
+#include "expr/ExprWriter.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamCons.hpp"
 
@@ -16,7 +17,8 @@ ScamListAdapter::ScamListAdapter(ConstExprHandle expr)
 {
     if ( ! expr->isList() ) {
         stringstream s;
-        s << "ScamListAdapter expected a list, got: " << expr->toString();
+        s << "ScamListAdapter expected a list, got: "
+          << ExprWriter::write(expr);
         throw ScamException(s.str());
     }
 

@@ -1,6 +1,7 @@
 #include "expr/ScamInstanceAdapter.hpp"
 
 #include "ScamException.hpp"
+#include "expr/ExprWriter.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamInstance.hpp"
 
@@ -15,7 +16,7 @@ ScamInstanceAdapter::ScamInstanceAdapter(ExprHandle expr)
     if ( ! expr->isInstance() ) {
         stringstream s;
         s << "ScamInstanceAdapter expected an instance, got: "
-          << expr->toString();
+          << ExprWriter::write(expr);
         throw ScamException(s.str());
     }
 }

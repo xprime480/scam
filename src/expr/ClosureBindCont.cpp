@@ -5,6 +5,7 @@
 #include "Env.hpp"
 #include "EvalWorker.hpp"
 #include "WorkQueue.hpp"
+#include "expr/ExprWriter.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/MacroEvalCont.hpp"
 #include "expr/ScamExpr.hpp"
@@ -67,7 +68,7 @@ bool ClosureBindCont::malformedActuals(ExprHandle expr) const
 
     ExprHandle err =
         ExpressionFactory::makeError( "Expected a paramter list, got: ",
-                                      expr->toString());
+                                      ExprWriter::write(expr));
     cont->run(err);
 
     return true;

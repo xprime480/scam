@@ -39,7 +39,7 @@ namespace scam
         {
 #if 0
             std::cerr << "Extractor " << id()
-                      << " getting " << expr->toString() << "\n";
+                      << " getting " << ExprWriter::write(expr) << "\n";
 #endif
             Continuation::run(expr);
             e = expr;

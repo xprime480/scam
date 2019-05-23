@@ -3,6 +3,7 @@
 #include "Env.hpp"
 #include "WorkQueue.hpp"
 #include "expr/ClassInitWorker.hpp"
+#include "expr/ExprWriter.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamClass.hpp"
 #include "expr/ScamExpr.hpp"
@@ -101,7 +102,7 @@ ScamInstance * ClassCont::connect(InstanceVec & instances) const
 ExprHandle ClassCont::get_parent(ScamClassAdapter const & adapter) const
 {
     ScamEnvKeyType base = adapter.getBase();
-    if ( base->toString() == "Root" ) {
+    if ( ExprWriter::write(base) == "Root" ) {
         return ExpressionFactory::makeNil();
     }
 
@@ -120,7 +121,7 @@ ExprHandle ClassCont::get_parent(ScamClassAdapter const & adapter) const
 ExprHandle ClassCont::base_class_not_found(ScamEnvKeyType name) const
 {
     stringstream s;
-    s << "Class definition: " << name->toString() << " not found";
+    s << "Class definition: " << ExprWriter::write(name) << " not found";
     return ExpressionFactory::makeError(s.str());
 }
 
@@ -128,8 +129,8 @@ ExprHandle ClassCont::base_class_not_class(ScamEnvKeyType name,
                                            ExprHandle value) const
 {
     stringstream s;
-    s << "Name: " << name->toString()
-      << " is not a class; got: " << value->toString();
+    s << "Name: " << ExprWriter::write(name)
+      << " is not a class; got: " << ExprWriter::write(value);
     return ExpressionFactory::makeError(s.str());
 }
 

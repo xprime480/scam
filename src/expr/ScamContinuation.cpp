@@ -28,6 +28,8 @@ void ScamContinuation::apply(ExprHandle args, Continuation * cont,  Env * env)
         CONTINUATION(this)->run(arg);
     }
     else {
-        failedArgParseMessage(toString().c_str(), "(form)", args, cont);
+        failedArgParseMessage(ExprWriter::write(this).c_str(), "(form)",
+                              args,
+                              cont);
     }
 }

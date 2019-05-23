@@ -3,6 +3,7 @@
 
 #include "Continuation.hpp"
 
+#include "expr/ExprWriter.hpp"
 #include "expr/ScamExpr.hpp"
 
 #include <iostream>
@@ -28,7 +29,7 @@ namespace scam
         void run(ExprHandle expr) override
         {
             Continuation::run(expr);
-            s << expr->toString() << "\n";
+            s << ExprWriter::write(expr) << "\n";
         }
 
         std::string getResult() const

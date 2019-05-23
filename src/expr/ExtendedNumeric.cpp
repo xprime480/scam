@@ -21,7 +21,8 @@ ExtendedNumeric::ExtendedNumeric(ConstExprHandle expr)
 {
     if ( ! expr->isNumeric() ) {
         stringstream s;
-        s << "Attempting to make ExtendedNumeric from " << expr->toString();
+        s << "Attempting to make ExtendedNumeric from "
+          << ExprWriter::write(expr);
         throw ScamException(s.str());
     }
 }

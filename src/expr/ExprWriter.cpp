@@ -115,7 +115,7 @@ void ExprWriter::writeClosure(stringstream & s, const ScamData * data)
     else {
         s << "lambda ";
     }
-    s << CLOSUREDEF(data)->getArgs()->getValue()->toString();
+    s << write(CLOSUREDEF(data)->getArgs()->getValue());
     s << " ";
 
     const size_t count = CLOSUREDEF(data)->getFormCount();
@@ -123,7 +123,7 @@ void ExprWriter::writeClosure(stringstream & s, const ScamData * data)
         if ( idx > 0 ) {
             s << " ";
         }
-        s << CLOSUREDEF(data)->getForm(idx)->toString();
+        s << write(CLOSUREDEF(data)->getForm(idx));
     }
 
     s << ")";
@@ -132,15 +132,15 @@ void ExprWriter::writeClosure(stringstream & s, const ScamData * data)
 void ExprWriter::writeCons(stringstream & s, const ScamData * data)
 {
     s << "(";
-    s << CAR(data)->toString();
+    s << write(CAR(data));
     ExprHandle next = CDR(data);
     while ( ! next->isNil() ) {
         if ( next->isCons() ) {
-            s << " " << next->getCar()->toString();
+            s << " " << write(next->getCar());
             next = next->getCdr();
         }
         else {
-            s << " . " << next->toString();
+            s << " . " << write(next);
             break;
         }
     }
@@ -152,8 +152,8 @@ void ExprWriter::writeDict(stringstream & s, const ScamData * data)
     s << "{";
 
     for ( size_t idx = 0 ; idx < DICTKEYS(data).size() ; ++idx ) {
-        s << " " << DICTKEYS(data)[idx]->toString()
-          << " " << DICTVALS(data)[idx]->toString();
+        s << " " << write(DICTKEYS(data)[idx])
+          << " " << write(DICTVALS(data)[idx]);
     }
 
     if ( DICTKEYS(data).size() ) {
@@ -195,10 +195,10 @@ void ExprWriter::writeNumeric(stringstream & s, const ScamData * data)
         ExprHandle i { IMAGPART(data) };
 
         if ( ! r->isInteger() || 0 != r->asInteger() ) {
-            s << r->toString();
+            s << write(r);
         }
 
-        const string irepr = i->toString();
+        const string irepr = write(i);
         if ( irepr == "0" ) {
             // nothing
         }
@@ -228,7 +228,7 @@ void ExprWriter::writeVector(stringstream & s, const ScamData * data)
 
     s << "#(";
     for ( auto const & e : VECTOR(data) ) {
-        s << sep << e->toString();
+        s << sep << write(e);
         sep = " ";
     }
     s << ")";

@@ -40,7 +40,7 @@ void EqualP::applyArgs(ExprHandle args, Continuation * cont)
 bool EqualP::equals(ConstExprHandle expr) const
 {
     EqualP const * that = dynamic_cast<EqualP const *>(expr);
-    return ( that && this->toString() == that->toString() );
+    return ( that && (ExprWriter::write(this) == ExprWriter::write(that)) );
 }
 
 namespace

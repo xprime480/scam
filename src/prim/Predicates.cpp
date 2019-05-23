@@ -35,7 +35,7 @@ namespace
     }                                                           \
     bool cls::equals(ConstExprHandle expr) const                \
     {                                                           \
-        return ( expr && expr->toString() == label );           \
+        return ( expr && ExprWriter::write(expr) == label );           \
     }
 
 

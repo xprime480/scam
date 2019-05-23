@@ -1,6 +1,7 @@
 #include "prim/MatchUnifyCommon.hpp"
 
 #include "Continuation.hpp"
+#include "expr/ExprWriter.hpp"
 #include "expr/ScamExpr.hpp"
 #include "expr/ScamDict.hpp"
 #include "expr/ExpressionFactory.hpp"
@@ -71,10 +72,10 @@ ExprHandle MatchUnifyCommon::check_keyword(ScamDict * dict,
         }
         else if ( ! old->equals(rhs) ) {
             stringstream s;
-            s << "Previous data for pattern " << lhs->toString()
-              << " was '" << old->toString()
+            s << "Previous data for pattern " << ExprWriter::write(lhs)
+              << " was '" << ExprWriter::write(old)
               << "'; does not match new data '"
-              << rhs->toString() << "'";
+              << ExprWriter::write(rhs) << "'";
             return make_common_error(s.str().c_str());
         }
 
@@ -124,7 +125,7 @@ ExprHandle MatchUnifyCommon::check_vector(ScamDict * dict,
         if ( lhs->length() != rhs->length() ) {
             stringstream s;
             s << "matching vectors of unequal length: "
-              << lhs->toString() << " and " << rhs->toString();
+              << ExprWriter::write(lhs) << " and " << ExprWriter::write(rhs);
             return make_common_error(s.str().c_str());
         }
 
@@ -151,8 +152,8 @@ ExprHandle MatchUnifyCommon::check_dict(ScamDict * dict,
     if ( lhs->isDict() && rhs->isDict() ) {
         if ( lhs->length() != rhs->length() ) {
             stringstream s;
-            s << "dictionaries do not match " << lhs->toString()
-              << "; " << rhs->toString();
+            s << "dictionaries do not match " << ExprWriter::write(lhs)
+              << "; " << ExprWriter::write(rhs);
             return make_common_error(s.str().c_str());
         }
 
@@ -163,7 +164,7 @@ ExprHandle MatchUnifyCommon::check_dict(ScamDict * dict,
         for ( auto key : keys ) {
             ExprHandle d = rhsAsDict->get(key);
             if ( d->error() ) {
-                return make_common_error(d->toString().c_str());
+                return make_common_error(ExprWriter::write(d).c_str());
             }
             ExprHandle p = lhsAsDict->get(key);
             ExprHandle result = exec(dict, p, d);
@@ -205,8 +206,8 @@ ExprHandle MatchUnifyCommon::exec(ScamDict * dict,
     }
 
     stringstream s;
-    s << "Pattern: " << lhs->toString()
-      << " does not conform to data: " << rhs->toString();
+    s << "Pattern: " << ExprWriter::write(lhs)
+      << " does not conform to data: " << ExprWriter::write(rhs);
     return make_common_error(s.str().c_str());
 }
 
