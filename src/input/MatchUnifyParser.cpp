@@ -2,6 +2,7 @@
 
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamDict.hpp"
+#include "expr/TypePredicates.hpp"
 #include "input/CountedListParser.hpp"
 
 using namespace scam;
@@ -35,7 +36,9 @@ bool MatchUnifyParser::accept(ExprHandle expr)
         return false;
     }
 
-    if ( ! match && 3 == parser->size() && ! parser->get(2)->isDict() ) {
+    if ( ! match &&
+         3 == parser->size() &&
+         ! TypePredicates::isDict(parser->get(2)) ) {
         return false;
     }
 

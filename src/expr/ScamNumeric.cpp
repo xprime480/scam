@@ -3,6 +3,7 @@
 #include "ScamException.hpp"
 #include "expr/ExprWriter.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "expr/TypePredicates.hpp"
 #include "util/NumericUtils.hpp"
 
 #include <cctype>
@@ -277,8 +278,8 @@ bool ScamNumeric::equals(ConstExprHandle expr) const
     ConstExprHandle thisH = realPart(this);
     ConstExprHandle thatH = realPart(expr);
 
-    const double thisR = asDouble(thisH->isNull() ? this : thisH);
-    const double thatR = asDouble(thatH->isNull() ? expr : thatH);
+    const double thisR = asDouble(TypePredicates::isNull(thisH) ? this : thisH);
+    const double thatR = asDouble(TypePredicates::isNull(thatH) ? expr : thatH);
 
     if ( ::fabs(thisR- thatR) > 1e-9 ) {
         return false;

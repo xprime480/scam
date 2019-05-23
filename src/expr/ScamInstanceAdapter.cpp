@@ -4,6 +4,7 @@
 #include "expr/ExprWriter.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamInstance.hpp"
+#include "expr/TypePredicates.hpp"
 
 #include <sstream>
 
@@ -13,7 +14,7 @@ using namespace std;
 ScamInstanceAdapter::ScamInstanceAdapter(ExprHandle expr)
     : instance(dynamic_cast<ScamInstance const *>(expr))
 {
-    if ( ! expr->isInstance() ) {
+    if ( ! TypePredicates::isInstance(expr) ) {
         stringstream s;
         s << "ScamInstanceAdapter expected an instance, got: "
           << ExprWriter::write(expr);

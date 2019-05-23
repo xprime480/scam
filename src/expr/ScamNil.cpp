@@ -1,5 +1,7 @@
 #include "expr/ScamNil.hpp"
 
+#include "expr/TypePredicates.hpp"
+
 using namespace scam;
 using namespace std;
 
@@ -21,5 +23,5 @@ size_t ScamNil::length() const
 
 bool ScamNil::equals(ConstExprHandle expr) const
 {
-    return ( expr && expr->isNil() );
+    return ( expr && TypePredicates::isNil(expr) );
 }

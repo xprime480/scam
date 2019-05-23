@@ -1,6 +1,7 @@
 #include "expr/ScamBoolean.hpp"
 
 #include "expr/ExpressionFactory.hpp"
+#include "expr/TypePredicates.hpp"
 
 using namespace scam;
 using namespace std;
@@ -21,7 +22,7 @@ ScamBoolean * ScamBoolean::makeInstance(bool value)
 
 bool ScamBoolean::equals(ConstExprHandle expr) const
 {
-    if ( ! expr->isBoolean() ) {
+    if ( ! TypePredicates::isBoolean(expr) ) {
         return false;
     }
 

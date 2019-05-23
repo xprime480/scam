@@ -2,6 +2,7 @@
 
 #include "ScamException.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "expr/TypePredicates.hpp"
 
 #include <iostream>
 
@@ -44,10 +45,10 @@ bool ScamRepl::load_prelude()
     ExprHandle expr = parser.parseExpr();
     tokenizer.flush();
 
-    if ( expr->isNull() || expr->error() ) {
+    if ( TypePredicates::isNull(expr) || TypePredicates::error(expr) ) {
         cerr << "Unable to read the prelude\n";
 
-        if ( expr->isNull() ) {
+        if ( TypePredicates::isNull(expr) ) {
             return false;
         }
 
@@ -56,14 +57,14 @@ bool ScamRepl::load_prelude()
     }
 
     ExprHandle rv = eval(expr);
-    return rv->isInteger() && 1 == rv->asInteger();
+    return TypePredicates::isInteger(rv) && 1 == rv->asInteger();
 }
 
 int ScamRepl::repl()
 {
     for ( ;; ) {
         ExprHandle form = read();
-        if ( form->isNull() ) {
+        if ( TypePredicates::isNull(form) ) {
             break;
         }
         ExprHandle value = eval(form);
@@ -82,11 +83,12 @@ ExprHandle ScamRepl::read()
         else {
             ExprHandle form = parser.parseExpr();
 
-            if ( ! form->isNull() && ! form->error() ) {
+            if ( ! TypePredicates::isNull(form) &&
+                 ! TypePredicates::error(form) ) {
                 tokenizer.flush();
                 return form;
             }
-            if ( form->error() && ! form->hasMeta("partial") ) {
+            if ( TypePredicates::error(form) && ! form->hasMeta("partial") ) {
                 tokenizer.flush();
                 return form;
             }

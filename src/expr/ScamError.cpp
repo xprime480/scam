@@ -1,6 +1,6 @@
 #include "expr/ScamError.hpp"
 
-#include "expr/ExpressionFactory.hpp"
+#include "expr/TypePredicates.hpp"
 
 using namespace scam;
 using namespace std;
@@ -18,7 +18,7 @@ ScamError * ScamError::makeInstance(char const * msg, bool managed)
 
 bool ScamError::equals(ConstExprHandle expr) const
 {
-    if ( ! expr->error() ) {
+    if ( ! TypePredicates::error(expr) ) {
         return false;
     }
 

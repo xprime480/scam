@@ -4,6 +4,7 @@
 #include "Continuation.hpp"
 #include "ScamEngine.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "expr/TypePredicates.hpp"
 #include "util/ArgListHelper.hpp"
 
 using namespace scam;
@@ -24,7 +25,7 @@ Backtrack * Backtrack::makeInstance(ScamEngine * engine)
 
 void Backtrack::applyArgs(ExprHandle args, Continuation * cont)
 {
-    if ( ! args->isNil() ) {
+    if ( ! TypePredicates::isNil(args) ) {
         failedArgParseMessage(myName, "()", args, cont);
         return;
     }

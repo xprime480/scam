@@ -3,6 +3,7 @@
 #include "expr/ExprWriter.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamExpr.hpp"
+#include "expr/TypePredicates.hpp"
 
 #include <set>
 
@@ -11,7 +12,7 @@ using namespace std;
 
 ExprHandle scam::validateClosureArgs(ExprHandle args, const char * name)
 {
-    if ( ! args->isCons() ) {
+    if ( ! TypePredicates::isCons(args) ) {
         ExprHandle nameSymbol = ExpressionFactory::makeSymbol(name);
         ExprHandle extended = ExpressionFactory::makeCons(nameSymbol, args);
         return ExpressionFactory::makeError("Expected (", name, " args body*)",
@@ -28,11 +29,11 @@ ExprHandle scam::validateFormals(ExprHandle formals)
 {
     ExprHandle ok = ExpressionFactory::makeNil();
 
-    if ( formals->isSymbol() || formals->isNil() ) {
+    if ( TypePredicates::isSymbol(formals) || TypePredicates::isNil(formals) ) {
         return ok;
     }
 
-    if ( ! formals->isCons() ) {
+    if ( ! TypePredicates::isCons(formals) ) {
         return ExpressionFactory::makeError("Formals should be list or symbol",
                                             "; got: ",
                                             ExprWriter::write(formals));
@@ -41,7 +42,7 @@ ExprHandle scam::validateFormals(ExprHandle formals)
     set<string> parms;
     while ( true ) {
         ExprHandle arg = formals->getCar();
-        if ( ! arg->isSymbol() ) {
+        if ( ! TypePredicates::isSymbol(arg) ) {
             return ExpressionFactory::makeError("Formal parameter should ",
                                                 "be a symbol; got: ",
                                                 ExprWriter::write(arg));
@@ -57,11 +58,11 @@ ExprHandle scam::validateFormals(ExprHandle formals)
         parms.insert(name);
 
         formals = formals->getCdr();
-        if ( formals->isNil() ) {
+        if ( TypePredicates::isNil(formals) ) {
             break;
         }
 
-        if ( formals->isSymbol() ) {
+        if ( TypePredicates::isSymbol(formals) ) {
             name = ExprWriter::write(formals);
             if ( parms.end() == parms.find(name) ) {
                 break;
@@ -73,7 +74,7 @@ ExprHandle scam::validateFormals(ExprHandle formals)
             }
         }
 
-        if ( ! formals->isCons() ) {
+        if ( ! TypePredicates::isCons(formals) ) {
             return ExpressionFactory::makeError("Formal parameter should ",
                                                 "be a symbol; got: ",
                                                 ExprWriter::write(formals));

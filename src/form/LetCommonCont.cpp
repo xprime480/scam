@@ -1,9 +1,10 @@
 #include "form/LetCommonCont.hpp"
 
 #include "Continuation.hpp"
+#include "EvalWorker.hpp"
 #include "WorkQueue.hpp"
 #include "expr/ScamExpr.hpp"
-#include "EvalWorker.hpp"
+#include "expr/TypePredicates.hpp"
 
 using namespace scam;
 using namespace std;
@@ -30,7 +31,7 @@ void LetCommonCont::run(ExprHandle expr)
 {
     Continuation::run(expr);
 
-    if ( expr->error() ) {
+    if ( TypePredicates::error(expr) ) {
         cont->run(expr);
     }
     else {

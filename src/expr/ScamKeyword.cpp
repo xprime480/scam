@@ -1,5 +1,7 @@
 #include "expr/ScamKeyword.hpp"
 
+#include "expr/TypePredicates.hpp"
+
 using namespace scam;
 using namespace std;
 
@@ -16,7 +18,7 @@ ScamKeyword * ScamKeyword::makeInstance(std::string const & value, bool managed)
 
 bool ScamKeyword::equals(ConstExprHandle expr) const
 {
-    if ( ! expr->isKeyword() ) {
+    if ( ! TypePredicates::isKeyword(expr) ) {
         return false;
     }
 

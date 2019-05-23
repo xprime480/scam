@@ -3,6 +3,7 @@
 #include "Env.hpp"
 #include "WorkQueue.hpp"
 #include "expr/ScamExpr.hpp"
+#include "expr/TypePredicates.hpp"
 #include "form/ApplyArgsWorker.hpp"
 
 using namespace scam;
@@ -36,7 +37,7 @@ void ApplyOpCont::run(ExprHandle expr)
 {
     Continuation::run(expr);
 
-    if ( expr->error() ) {
+    if ( TypePredicates::error(expr) ) {
         cont->run(expr);
     }
     else {

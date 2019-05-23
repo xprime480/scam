@@ -1,5 +1,7 @@
 #include "expr/ScamString.hpp"
 
+#include "expr/TypePredicates.hpp"
+
 using namespace scam;
 using namespace std;
 
@@ -16,7 +18,7 @@ ScamString * ScamString::makeInstance(std::string const & value)
 
 bool ScamString::equals(ConstExprHandle expr) const
 {
-    if ( ! expr->isString() ) {
+    if ( ! TypePredicates::isString(expr) ) {
         return false;
     }
 

@@ -2,6 +2,7 @@
 
 #include "Continuation.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "expr/TypePredicates.hpp"
 
 #include <sstream>
 
@@ -39,7 +40,7 @@ void ScamSymbol::eval(Continuation * cont, Env * env) const
 
 bool ScamSymbol::equals(ConstExprHandle expr) const
 {
-    if ( ! expr->isSymbol() ) {
+    if ( ! TypePredicates::isSymbol(expr) ) {
         return false;
     }
 

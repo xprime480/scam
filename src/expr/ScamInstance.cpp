@@ -3,6 +3,7 @@
 #include "Env.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/InstanceCont.hpp"
+#include "expr/TypePredicates.hpp"
 #include "input/FunctionDefParser.hpp"
 #include "input/SymbolPlusManyParser.hpp"
 #include "util/ArgListHelper.hpp"
@@ -69,7 +70,7 @@ void ScamInstance::apply(ExprHandle args, Continuation * cont, Env * env)
 
     Continuation * newCont =
         standardMemoryManager.make<InstanceCont>(this, name, cont);
-    if ( funargs->isNil() ) {
+    if ( TypePredicates::isNil(funargs) ) {
         newCont->run(funargs);
     }
     else {

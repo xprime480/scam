@@ -24,28 +24,7 @@ namespace scam
 
         virtual void mapEval(Continuation * cont, Env * env) const;
 
-        bool isNull() const;
-        bool error() const;
-        bool truth() const;
-
-        bool isBoolean() const;
-        bool isChar() const;
         virtual char toChar() const;
-        bool isString() const;
-        bool isSymbol() const;
-        bool isKeyword() const;
-
-        bool isNumeric() const;
-        bool isExact() const;
-        bool isComplex() const;
-        bool isReal() const;
-        bool isRational() const;
-        bool isInteger() const;
-
-        bool isNaN() const;
-        bool isNegInf() const;
-        bool isPosInf() const;
-
         double asDouble() const;
         std::pair<int, int> asRational() const;
         int asInteger() const;
@@ -53,20 +32,9 @@ namespace scam
         ConstExprHandle realPart() const;
         ConstExprHandle imagPart() const;
 
-        bool isNil() const;
-        bool isCons() const;
-        bool isList() const;
         virtual ExprHandle getCar() const;
         virtual ExprHandle getCdr() const;
 
-        bool isVector() const;
-        bool isByteVector() const;
-
-        bool isProcedure() const;
-        bool isClass() const;
-        bool isInstance() const;
-
-        bool isDict() const;
 
         virtual size_t length() const;
         virtual ExprHandle nthcar(size_t n) const;

@@ -4,6 +4,7 @@
 #include "Env.hpp"
 #include "expr/ScamExpr.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "expr/TypePredicates.hpp"
 #include "form/QQSpliceCont.hpp"
 #include "form/QQConsListCarCont.hpp"
 #include "util/ArgListHelper.hpp"
@@ -47,7 +48,7 @@ void QuasiQuoteWorker::run()
 
 bool QuasiQuoteWorker::verify_single_form(ExprHandle input, Continuation * cont)
 {
-    if ( ! input->isList() || 1 != input->length() ) {
+    if ( ! TypePredicates::isList(input) || 1 != input->length() ) {
         failedArgParseMessage(myName, "form", input, cont);
         return false;
     }
@@ -87,7 +88,7 @@ void QuasiQuoteWorker::build_qq_list(ExprHandle input, Continuation * cont)
     ExprHandle first = input->nthcar(0);
     ExprHandle rest  = input->nthcdr(0);
 
-    const bool isSym = first->isSymbol();
+    const bool isSym = TypePredicates::isSymbol(first);
     string const sym = ExprWriter::write(first);
     if ( isSym && sym == "unquote" ) {
         unquote_form(rest, cont);
@@ -102,7 +103,7 @@ void QuasiQuoteWorker::build_qq_list(ExprHandle input, Continuation * cont)
 
 void QuasiQuoteWorker::build_qq_form(ExprHandle input, Continuation * cont)
 {
-    if ( ! input->isList() || input->isNil() ) {
+    if ( ! TypePredicates::isList(input) || TypePredicates::isNil(input) ) {
         cont->run(input);
     }
     else {

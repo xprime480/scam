@@ -3,6 +3,7 @@
 #include "Continuation.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamExpr.hpp"
+#include "expr/TypePredicates.hpp"
 #include "input/SingletonParser.hpp"
 #include "input/TypeParsers.hpp"
 #include "util/ArgListHelper.hpp"
@@ -17,7 +18,7 @@ CarCdr::CarCdr(char const * name)
 
 void CarCdr::applyArgs(ExprHandle args, Continuation * cont)
 {
-    if ( args->error() ) {
+    if ( TypePredicates::error(args) ) {
         cont->run(args);
         return;
     }

@@ -7,6 +7,7 @@
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamClass.hpp"
 #include "expr/ScamExpr.hpp"
+#include "expr/TypePredicates.hpp"
 
 #include <sstream>
 
@@ -41,7 +42,7 @@ void ClassCont::run(ExprHandle expr)
 {
     Continuation::run(expr);
 
-    if ( expr->error() ) {
+    if ( TypePredicates::error(expr) ) {
         cont->run(expr);
     }
     else {
@@ -49,7 +50,7 @@ void ClassCont::run(ExprHandle expr)
         ExprHandle  result;
 
         result = build(cls, instances);
-        if ( result->error() ) {
+        if ( TypePredicates::error(result) ) {
             cont->run(result);
         }
         else {
@@ -68,14 +69,14 @@ ExprHandle ClassCont::build(ClassHandle cls, InstanceVec & instances) const
         instances.push_back(instance);
 
         temp = get_parent(cls);
-        if ( ! temp->isClass() ) {
+        if ( ! TypePredicates::isClass(temp) ) {
             break;
         }
 
         cls = dynamic_cast<const ScamClass *>(temp);
     }
 
-    if ( temp->error() ) {
+    if ( TypePredicates::error(temp) ) {
         return temp;
     }
 
@@ -111,7 +112,7 @@ ExprHandle ClassCont::get_parent(ScamClassAdapter const & adapter) const
     }
 
     ExprHandle b = env->get(base);
-    if ( ! b->isClass() ) {
+    if ( ! TypePredicates::isClass(b) ) {
         return base_class_not_class(base, b);
     }
 

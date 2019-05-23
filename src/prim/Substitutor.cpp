@@ -3,6 +3,7 @@
 #include "expr/ScamExpr.hpp"
 #include "expr/ExprWriter.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "expr/TypePredicates.hpp"
 #include "prim/CommonError.hpp"
 
 #include <sstream>
@@ -20,16 +21,16 @@ ExprHandle Substitutor::resolve_value(ExprHandle expr)
 {
     ExprHandle rv;
 
-    if ( expr->isCons() ) {
+    if ( TypePredicates::isCons(expr) ) {
         rv = resolve_cons(expr);
     }
-    else if ( expr->isVector() ) {
+    else if ( TypePredicates::isVector(expr) ) {
         rv = resolve_vector(expr);
     }
-    else if ( expr->isDict() ) {
+    else if ( TypePredicates::isDict(expr) ) {
         rv = resolve_dict(expr);
     }
-    else if ( expr->isKeyword() ) {
+    else if ( TypePredicates::isKeyword(expr) ) {
         rv = resolve_keyword(expr);
     }
     else {
@@ -57,7 +58,7 @@ ExprHandle Substitutor::resolve_vector(ExprHandle expr)
 bool Substitutor::have_seen(ExprHandle expr)
 {
     ExprHandle t = helper;
-    while ( ! t->isNil() ) {
+    while ( ! TypePredicates::isNil(t) ) {
         if ( t->nthcar(0)->equals(expr) ) {
             return true;
         }

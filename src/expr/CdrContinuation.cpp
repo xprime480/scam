@@ -2,6 +2,7 @@
 
 #include "expr/ScamExpr.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "expr/TypePredicates.hpp"
 
 using namespace scam;
 using namespace std;
@@ -29,7 +30,7 @@ void CdrContinuation::run(ExprHandle expr)
 {
     Continuation::run(expr);
 
-    if ( expr->error() ) {
+    if ( TypePredicates::error(expr) ) {
         data.original->run(expr);
     }
     else {

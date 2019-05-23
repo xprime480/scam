@@ -3,6 +3,7 @@
 #include "Continuation.hpp"
 #include "WorkQueue.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "expr/TypePredicates.hpp"
 #include "form/LetStarWorker.hpp"
 #include "input/LetParser.hpp"
 #include "util/ArgListHelper.hpp"
@@ -26,7 +27,7 @@ LetStar * LetStar::makeInstance(ScamEngine * engine)
 
 ExprHandle LetStar::safeCons(ExprHandle expr)
 {
-    if ( expr->isCons() ) {
+    if ( TypePredicates::isCons(expr) ) {
         return expr;
     }
     return ExpressionFactory::makeList(expr);

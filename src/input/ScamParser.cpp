@@ -1,6 +1,7 @@
 #include "input/ScamParser.hpp"
 
 #include "expr/ExpressionFactory.hpp"
+#include "expr/TypePredicates.hpp"
 
 #include <vector>
 
@@ -146,11 +147,11 @@ ExprHandle ScamParser::parseList() const
     }
 
     ExprHandle car = tokenToExpr(token);
-    if ( car->error() ) {
+    if ( TypePredicates::error(car) ) {
         return car;
     }
     ExprHandle cdr = parseList();
-    if ( cdr->error() ) {
+    if ( TypePredicates::error(cdr) ) {
         return cdr;
     }
     return ExpressionFactory::makeCons(car, cdr);
@@ -221,7 +222,7 @@ ExprHandle ScamParser::parseVector() const
         }
 
         ExprHandle expr = tokenToExpr(token);
-        if ( expr->error() ) {
+        if ( TypePredicates::error(expr) ) {
             return expr;
         }
 
@@ -253,18 +254,18 @@ ExprHandle ScamParser::parseByteVector() const
         }
 
         ExprHandle expr = tokenToExpr(token);
-        if ( expr->error() ) {
+        if ( TypePredicates::error(expr) ) {
             return expr;
         }
 
-        if ( ! expr->isInteger() ) {
+        if ( ! TypePredicates::isInteger(expr) ) {
             ExprHandle err =
                 ExpressionFactory::makeError("Non-integer in Byte Vector");
             return err;
         }
 
         int i = expr->asInteger();
-        if ( i < 0 || i > 255 || ! expr->isExact() ) {
+        if ( i < 0 || i > 255 || ! TypePredicates::isExact(expr) ) {
         }
 
         vec.push_back((unsigned char)i);
@@ -295,7 +296,7 @@ ExprHandle ScamParser::parseDict() const
         }
 
         ExprHandle expr = tokenToExpr(token);
-        if ( expr->error() ) {
+        if ( TypePredicates::error(expr) ) {
             return expr;
         }
 
@@ -323,10 +324,10 @@ ExprHandle ScamParser::expand_reader_macro(std::string const & text) const
     }
 
     ExprHandle expr = parseSubExpr();
-    if ( expr->isNull() ) {
+    if ( TypePredicates::isNull(expr) ) {
         return ExpressionFactory::makeError("Unterminated macro: ", name);
     }
-    if ( expr->error() ) {
+    if ( TypePredicates::error(expr) ) {
         return ExpressionFactory::makeError("Error getting form for ",
                                             name,
                                             " macro",

@@ -4,6 +4,7 @@
 #include "Env.hpp"
 #include "expr/ScamExpr.hpp"
 #include "expr/ScamSymbol.hpp"
+#include "expr/TypePredicates.hpp"
 
 using namespace scam;
 using namespace std;
@@ -58,7 +59,7 @@ void LetCont::rebind_procs(Env * extended)
     for ( size_t n = 0 ; n < len ; ++n ) {
         ScamEnvKeyType k = dynamic_cast<ScamSymbol *>(formals->nthcar(n));
         ExprHandle v = extended->get(k);
-        if ( v->isProcedure() ) {
+        if ( TypePredicates::isProcedure(v) ) {
             ExprHandle newV = v->withEnvUpdate(extended);
             extended->assign(k, newV);
         }

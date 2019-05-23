@@ -2,6 +2,7 @@
 
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamExpr.hpp"
+#include "expr/TypePredicates.hpp"
 
 using namespace scam;
 using namespace std;
@@ -34,7 +35,7 @@ bool ArgParser::accept(ExprHandle expr)
 {
     clearValue();
 
-    if ( nullptr != expr && ! expr->isNull() ) {
+    if ( nullptr != expr && ! TypePredicates::isNull(expr) ) {
         value = expr;
         return true;
     }

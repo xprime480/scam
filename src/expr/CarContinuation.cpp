@@ -1,8 +1,9 @@
 #include "expr/CarContinuation.hpp"
 
+#include "WorkQueue.hpp"
 #include "expr/MapCdr.hpp"
 #include "expr/ScamExpr.hpp"
-#include "WorkQueue.hpp"
+#include "expr/TypePredicates.hpp"
 
 using namespace scam;
 using namespace std;
@@ -30,7 +31,7 @@ void CarContinuation::run(ExprHandle expr)
 {
     Continuation::run(expr);
 
-    if ( expr->error() ) {
+    if ( TypePredicates::error(expr) ) {
         data.original->run(expr);
     }
     else {

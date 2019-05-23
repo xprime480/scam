@@ -2,6 +2,7 @@
 
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamExpr.hpp"
+#include "expr/TypePredicates.hpp"
 #include "input/BindFormParser.hpp"
 #include "input/CountedListParser.hpp"
 
@@ -40,7 +41,7 @@ bool LetParser::accept(ExprHandle expr)
     }
 
     ExprHandle bList = parser->get(0);
-    if ( ! bList->isList() ) {
+    if ( ! TypePredicates::isList(bList) ) {
         return false;
     }
 

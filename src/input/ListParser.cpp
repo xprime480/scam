@@ -2,6 +2,7 @@
 
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamExpr.hpp"
+#include "expr/TypePredicates.hpp"
 #include "util/MemoryManager.hpp"
 
 using namespace scam;
@@ -36,17 +37,17 @@ bool ListParser::accept(ExprHandle expr)
 
     clearValue();
 
-    if ( ! expr->isCons() && ! expr->isNil() ) {
+    if ( ! TypePredicates::isCons(expr) && ! TypePredicates::isNil(expr) ) {
         return false;
     }
 
-    if ( expr->isNil() ) {
+    if ( TypePredicates::isNil(expr) ) {
         callback(expr);
         return true;
     }
 
     ExprHandle current = expr;
-    while ( current->isCons() ) {
+    while ( TypePredicates::isCons(current) ) {
         ExprHandle item = current->getCar();
         current = current->getCdr();
         if ( ! itemParser->accept(item) ) {
@@ -56,7 +57,7 @@ bool ListParser::accept(ExprHandle expr)
         items.push_back(item);
     }
 
-    if ( ! current->isNil() ) {
+    if ( ! TypePredicates::isNil(current) ) {
         if ( ! itemParser->accept(current) )  {
             clearValue();
             return false;

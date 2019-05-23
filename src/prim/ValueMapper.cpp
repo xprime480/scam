@@ -3,8 +3,7 @@
 #include "expr/ScamExpr.hpp"
 #include "expr/ScamDict.hpp"
 #include "expr/ExpressionFactory.hpp"
-
-#include <sstream>
+#include "expr/TypePredicates.hpp"
 
 using namespace std;
 using namespace scam;
@@ -22,7 +21,7 @@ ExprHandle ValueMapper::map_dict(ExprHandle expr)
     for ( auto key : keys ) {
         ExprHandle val = dict->get(key);
         ExprHandle newVal = map_value(val);
-        if ( newVal->error() ) {
+        if ( TypePredicates::error(newVal) ) {
             return newVal;
         }
         rv->put(key, newVal);

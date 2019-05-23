@@ -3,6 +3,7 @@
 #include "Continuation.hpp"
 #include "ScamException.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "expr/TypePredicates.hpp"
 #include "input/ListParser.hpp"
 #include "util/ArgListHelper.hpp"
 
@@ -86,7 +87,7 @@ namespace
     {
         const size_t len = args->length();
         for ( size_t idx = 0 ; idx < len ; ++idx ) {
-            if ( args->nthcar(idx)->truth() ) {
+            if ( TypePredicates::truth(args->nthcar(idx)) ) {
                 return yes;
             }
         }
@@ -96,10 +97,10 @@ namespace
     bool has_nulls(ListParser * parser, Continuation * cont)
     {
         auto fn = [](ExprHandle arg) -> ExprHandle {
-            return ExpressionFactory::makeBoolean(arg->isNull());
+            return ExpressionFactory::makeBoolean(TypePredicates::isNull(arg));
         };
         ExprHandle answer = map_reduce(parser, fn, any);
-        return answer->truth();
+        return TypePredicates::truth(answer);
     }
 
     bool one_arg(ListParser * parser, Continuation * cont)

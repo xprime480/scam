@@ -3,8 +3,9 @@
 #include "Env.hpp"
 #include "WorkQueue.hpp"
 #include "expr/ScamExpr.hpp"
-#include "input/ListParser.hpp"
+#include "expr/TypePredicates.hpp"
 #include "form/AndWorker.hpp"
+#include "input/ListParser.hpp"
 
 using namespace scam;
 using namespace std;
@@ -40,10 +41,10 @@ void AndCont::run(ExprHandle expr)
 {
     Continuation::run(expr);
 
-    if ( expr->error() ) {
+    if ( TypePredicates::error(expr) ) {
         cont->run(expr);
     }
-    else if ( ! expr->truth() ) {
+    else if ( ! TypePredicates::truth(expr) ) {
         cont->run(expr);
     }
     else {

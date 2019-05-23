@@ -2,8 +2,9 @@
 
 #include "Env.hpp"
 #include "expr/ExprWriter.hpp"
-#include "expr/ScamExpr.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "expr/ScamExpr.hpp"
+#include "expr/TypePredicates.hpp"
 #include "form/QuasiQuote.hpp"
 
 using namespace scam;
@@ -38,7 +39,7 @@ void QQConsListCdrCont::mark() const
 void QQConsListCdrCont::run(ExprHandle expr)
 {
     Continuation::run(expr);
-    if ( expr->error() ) {
+    if ( TypePredicates::error(expr) ) {
         cont->run(expr);
     }
     else {
@@ -56,9 +57,9 @@ void QQConsListCdrCont::handle(ExprHandle expr)
 
 bool QQConsListCdrCont::check_splice(ExprHandle expr)
 {
-    if ( car->isCons() ) {
+    if ( TypePredicates::isCons(car) ) {
         ExprHandle first = car->nthcar(0);
-        if ( first->isSymbol() ) {
+        if ( TypePredicates::isSymbol(first) ) {
             if ( ExprWriter::write(first) ==
                  ExprWriter::write(QuasiQuote::spliceTag) ) {
                 do_splice(expr);

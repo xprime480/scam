@@ -27,7 +27,13 @@ namespace
         engine.pushFrame();
         ReadEvalString helper(&engine, testforms);
         ExprHandle status = helper.run();
-        return ! ( status->isNull() || status->error() );
+        if ( TypePredicates::isNull(status) ||
+             TypePredicates::error(status) ) {
+            return false;
+        }
+        else {
+            return true;
+        }
     }
 }
 

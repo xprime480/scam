@@ -3,6 +3,7 @@
 #include "Continuation.hpp"
 #include "Env.hpp"
 #include "expr/ScamExpr.hpp"
+#include "expr/TypePredicates.hpp"
 #include "prim/Primitive.hpp"
 
 using namespace scam;
@@ -35,7 +36,7 @@ void PrimWorkerData::mapEval() const
 
 void PrimWorkerData::handleResult(ExprHandle expr)
 {
-    if ( expr->error() ) {
+    if ( TypePredicates::error(expr) ) {
         original->run(expr);
     }
     else {

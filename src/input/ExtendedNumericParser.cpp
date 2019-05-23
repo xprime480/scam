@@ -1,6 +1,7 @@
 #include "input/ExtendedNumericParser.hpp"
 
 #include "expr/ScamExpr.hpp"
+#include "expr/TypePredicates.hpp"
 #include "util/MemoryManager.hpp"
 
 using namespace scam;
@@ -19,7 +20,7 @@ bool ExtendedNumericParser::accept(ExprHandle expr)
 {
     clearValue();
 
-    if ( ! expr->isNumeric() ) {
+    if ( ! TypePredicates::isNumeric(expr) ) {
         return false;
     }
 

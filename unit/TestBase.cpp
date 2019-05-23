@@ -4,6 +4,7 @@
 #include "ScamException.hpp"
 #include "WorkQueue.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "expr/TypePredicates.hpp"
 #include "input/ScamParser.hpp"
 #include "input/StringTokenizer.hpp"
 #include "util/ReadEvalString.hpp"
@@ -190,35 +191,35 @@ void TestBase::checkPredicates(ConstExprHandle expr, unsigned exp)
     ASSERT_NE(nullptr, expr);
     unsigned act { 0 };
 
-    act |= (expr->isNull() ? SELECT_NULL : 0);
-    act |= (expr->error() ? SELECT_ERROR : 0);
-    act |= (expr->truth() ? SELECT_TRUTH : 0);
+    act |= (TypePredicates::isNull(expr) ? SELECT_NULL : 0);
+    act |= (TypePredicates::error(expr) ? SELECT_ERROR : 0);
+    act |= (TypePredicates::truth(expr) ? SELECT_TRUTH : 0);
 
-    act |= (expr->isBoolean() ? SELECT_BOOLEAN : 0);
-    act |= (expr->isChar() ? SELECT_CHAR : 0);
-    act |= (expr->isString() ? SELECT_STRING : 0);
-    act |= (expr->isSymbol() ? SELECT_SYMBOL : 0);
-    act |= (expr->isKeyword() ? SELECT_KEYWORD : 0);
+    act |= (TypePredicates::isBoolean(expr) ? SELECT_BOOLEAN : 0);
+    act |= (TypePredicates::isChar(expr) ? SELECT_CHAR : 0);
+    act |= (TypePredicates::isString(expr) ? SELECT_STRING : 0);
+    act |= (TypePredicates::isSymbol(expr) ? SELECT_SYMBOL : 0);
+    act |= (TypePredicates::isKeyword(expr) ? SELECT_KEYWORD : 0);
 
-    act |= (expr->isNumeric() ? SELECT_NUMERIC : 0);
-    act |= (expr->isComplex() ? SELECT_COMPLEX : 0);
-    act |= (expr->isReal() ? SELECT_REAL : 0);
-    act |= (expr->isRational() ? SELECT_RATIONAL : 0);
-    act |= (expr->isInteger() ? SELECT_INTEGER : 0);
+    act |= (TypePredicates::isNumeric(expr) ? SELECT_NUMERIC : 0);
+    act |= (TypePredicates::isComplex(expr) ? SELECT_COMPLEX : 0);
+    act |= (TypePredicates::isReal(expr) ? SELECT_REAL : 0);
+    act |= (TypePredicates::isRational(expr) ? SELECT_RATIONAL : 0);
+    act |= (TypePredicates::isInteger(expr) ? SELECT_INTEGER : 0);
 
-    act |= (expr->isNil() ? SELECT_NIL : 0);
-    act |= (expr->isCons() ? SELECT_CONS : 0);
-    act |= (expr->isList() ? SELECT_LIST : 0);
-    act |= (expr->isVector() ? SELECT_VECTOR : 0);
-    act |= (expr->isByteVector() ? SELECT_BYTEVECTOR : 0);
+    act |= (TypePredicates::isNil(expr) ? SELECT_NIL : 0);
+    act |= (TypePredicates::isCons(expr) ? SELECT_CONS : 0);
+    act |= (TypePredicates::isList(expr) ? SELECT_LIST : 0);
+    act |= (TypePredicates::isVector(expr) ? SELECT_VECTOR : 0);
+    act |= (TypePredicates::isByteVector(expr) ? SELECT_BYTEVECTOR : 0);
 
     act |= (expr->hasApply() ? SELECT_APPLY : 0);
-    act |= (expr->isProcedure() ? SELECT_PROC : 0);
+    act |= (TypePredicates::isProcedure(expr) ? SELECT_PROC : 0);
 
-    act |= (expr->isClass() ? SELECT_CLASS : 0);
-    act |= (expr->isInstance() ? SELECT_INSTANCE : 0);
+    act |= (TypePredicates::isClass(expr) ? SELECT_CLASS : 0);
+    act |= (TypePredicates::isInstance(expr) ? SELECT_INSTANCE : 0);
 
-    act |= (expr->isDict() ? SELECT_DICT : 0);
+    act |= (TypePredicates::isDict(expr) ? SELECT_DICT : 0);
 
     act |= (expr->isManaged() ? SELECT_MANAGED : 0);
 
@@ -228,12 +229,13 @@ void TestBase::checkPredicates(ConstExprHandle expr, unsigned exp)
 
 void expectNonNumeric(ConstExprHandle expr)
 {
-    EXPECT_FALSE(expr->isNumeric());
+    EXPECT_FALSE(TypePredicates::isNumeric(expr));
 }
 
 void TestBase::expectNull(ConstExprHandle expr)
 {
-    ASSERT_TRUE(expr->isNull()) << "Actual Value: " << ExprWriter::write(expr);
+    ASSERT_TRUE(TypePredicates::isNull(expr))
+        << "Actual Value: " << ExprWriter::write(expr);
 
     checkPredicates(expr, SELECT_NULL);
     EXPECT_EQ("null", ExprWriter::write(expr));
@@ -245,7 +247,8 @@ void TestBase::expectError(ConstExprHandle expr,
                            string const msg,
                            bool managed)
 {
-    ASSERT_TRUE(expr->error()) << "Actual Value: " << ExprWriter::write(expr);
+    ASSERT_TRUE(TypePredicates::error(expr))
+        << "Actual Value: " << ExprWriter::write(expr);
 
     auto pred = SELECT_TRUTH | SELECT_ERROR;
     pred |= (managed ? SELECT_MANAGED : 0x0);
@@ -262,8 +265,8 @@ void TestBase::expectBoolean(ConstExprHandle expr,
                              bool value,
                              string const & repr)
 {
-    ASSERT_TRUE(expr->isBoolean()) << "Actual Value: "
-                                   << ExprWriter::write(expr);
+    ASSERT_TRUE(TypePredicates::isBoolean(expr))
+        << "Actual Value: " << ExprWriter::write(expr);
 
     checkPredicates(expr, SELECT_BOOLEAN | (value ? SELECT_TRUTH : 0));
     EXPECT_EQ(repr, ExprWriter::write(expr));
@@ -295,12 +298,14 @@ void TestBase::booleanTest(ConstExprHandle expr,
 void TestBase::expectSpecialNumeric(ConstExprHandle expr,
                                     std::string const & repr)
 {
-    ASSERT_TRUE(expr->isNaN() || expr->isNegInf() || expr->isPosInf())
+    ASSERT_TRUE(TypePredicates::isNaN(expr) ||
+                TypePredicates::isNegInf(expr) ||
+                TypePredicates::isPosInf(expr))
         << "Actual Value: " << ExprWriter::write(expr);
 
     EXPECT_EQ(repr, ExprWriter::write(expr));
-    EXPECT_TRUE(expr->isReal());
-    EXPECT_FALSE(expr->isRational());
+    EXPECT_TRUE(TypePredicates::isReal(expr));
+    EXPECT_FALSE(TypePredicates::isRational(expr));
 }
 
 void TestBase::expectComplex(ConstExprHandle expr,
@@ -309,16 +314,16 @@ void TestBase::expectComplex(ConstExprHandle expr,
                              std::string const & repr,
                              bool exact)
 {
-    ASSERT_TRUE(expr->isComplex())
+    ASSERT_TRUE(TypePredicates::isComplex(expr))
         << "Actual Value: " << ExprWriter::write(expr);
 
     checkPredicates(expr, SELECT_TRUTH | ALL_COMPLEX);
     EXPECT_EQ(repr, ExprWriter::write(expr));
 
-    EXPECT_FALSE(expr->isReal());
-    EXPECT_FALSE(expr->isRational());
-    EXPECT_FALSE(expr->isInteger());
-    EXPECT_EQ(exact, expr->isExact());
+    EXPECT_FALSE(TypePredicates::isReal(expr));
+    EXPECT_FALSE(TypePredicates::isRational(expr));
+    EXPECT_FALSE(TypePredicates::isInteger(expr));
+    EXPECT_EQ(exact, TypePredicates::isExact(expr));
 }
 
 void TestBase::expectReal(ConstExprHandle expr,
@@ -326,7 +331,8 @@ void TestBase::expectReal(ConstExprHandle expr,
                           string const & repr,
                           bool exact)
 {
-    ASSERT_TRUE(expr->isReal()) << "Actual Value: " << ExprWriter::write(expr);
+    ASSERT_TRUE(TypePredicates::isReal(expr))
+        << "Actual Value: " << ExprWriter::write(expr);
 
     checkPredicates(expr, SELECT_TRUTH | ALL_REAL);
     EXPECT_EQ(repr, ExprWriter::write(expr));
@@ -338,9 +344,9 @@ void TestBase::expectReal(ConstExprHandle expr,
         FAIL() << e.getMessage() << "\n";
     }
 
-    EXPECT_FALSE(expr->isRational());
-    EXPECT_FALSE(expr->isInteger());
-    EXPECT_EQ(exact, expr->isExact());
+    EXPECT_FALSE(TypePredicates::isRational(expr));
+    EXPECT_FALSE(TypePredicates::isInteger(expr));
+    EXPECT_EQ(exact, TypePredicates::isExact(expr));
 }
 
 void TestBase::expectRational(ConstExprHandle expr,
@@ -348,7 +354,7 @@ void TestBase::expectRational(ConstExprHandle expr,
                               std::string const & repr,
                               bool exact)
 {
-    ASSERT_TRUE(expr->isRational())
+    ASSERT_TRUE(TypePredicates::isRational(expr))
         << "Actual Value: " << ExprWriter::write(expr);
 
     checkPredicates(expr, SELECT_TRUTH | ALL_RATIONAL);
@@ -360,8 +366,8 @@ void TestBase::expectRational(ConstExprHandle expr,
         FAIL() << e.getMessage() << "\n";
     }
 
-    EXPECT_FALSE(expr->isInteger());
-    EXPECT_EQ(exact, expr->isExact());
+    EXPECT_FALSE(TypePredicates::isInteger(expr));
+    EXPECT_EQ(exact, TypePredicates::isExact(expr));
 
 }
 
@@ -370,7 +376,7 @@ void TestBase::expectInteger(ConstExprHandle expr,
                              string const & repr,
                              bool exact)
 {
-    ASSERT_TRUE(expr->isInteger())
+    ASSERT_TRUE(TypePredicates::isInteger(expr))
         << "Actual Value: " << ExprWriter::write(expr);
 
     checkPredicates(expr, SELECT_TRUTH | ALL_INTEGER);
@@ -382,14 +388,15 @@ void TestBase::expectInteger(ConstExprHandle expr,
         FAIL() << e.getMessage() << "\n";
     }
 
-    EXPECT_EQ(exact, expr->isExact());
+    EXPECT_EQ(exact, TypePredicates::isExact(expr));
 }
 
 void TestBase::expectChar(ConstExprHandle expr,
                           char value,
                           string const & repr)
 {
-    ASSERT_TRUE(expr->isChar()) << "Actual Value: " << ExprWriter::write(expr);
+    ASSERT_TRUE(TypePredicates::isChar(expr))
+        << "Actual Value: " << ExprWriter::write(expr);
 
     checkPredicates(expr, SELECT_TRUTH | SELECT_CHAR | SELECT_MANAGED);
     EXPECT_EQ(repr, ExprWriter::write(expr));
@@ -398,7 +405,7 @@ void TestBase::expectChar(ConstExprHandle expr,
 
 void TestBase::expectString(ConstExprHandle expr, string const & value)
 {
-    ASSERT_TRUE(expr->isString())
+    ASSERT_TRUE(TypePredicates::isString(expr))
         << "Actual Value: " << ExprWriter::write(expr);
 
     const auto flags = SELECT_TRUTH | SELECT_STRING | SELECT_MANAGED;
@@ -408,7 +415,7 @@ void TestBase::expectString(ConstExprHandle expr, string const & value)
 
 void TestBase::expectSymbol(ConstExprHandle expr, string const & name)
 {
-    ASSERT_TRUE(expr->isSymbol())
+    ASSERT_TRUE(TypePredicates::isSymbol(expr))
         << "Actual Value: " << ExprWriter::write(expr);
 
     const auto flags = SELECT_TRUTH | SELECT_SYMBOL | SELECT_MANAGED;
@@ -418,7 +425,7 @@ void TestBase::expectSymbol(ConstExprHandle expr, string const & name)
 
 void TestBase::expectKeyword(ConstExprHandle expr, string const & name)
 {
-    ASSERT_TRUE(expr->isKeyword())
+    ASSERT_TRUE(TypePredicates::isKeyword(expr))
         << "Actual Value: " << ExprWriter::write(expr);
 
     const auto flags = SELECT_TRUTH | SELECT_KEYWORD | SELECT_MANAGED;
@@ -428,7 +435,8 @@ void TestBase::expectKeyword(ConstExprHandle expr, string const & name)
 
 void TestBase::expectNil(ConstExprHandle expr)
 {
-    ASSERT_TRUE(expr->isNil()) << "Actual Value: " << ExprWriter::write(expr);
+    ASSERT_TRUE(TypePredicates::isNil(expr))
+        << "Actual Value: " << ExprWriter::write(expr);
 
     static const string repr { "()" };
     checkPredicates(expr, SELECT_TRUTH | ALL_NIL);
@@ -439,7 +447,8 @@ void TestBase::expectList(ConstExprHandle expr,
                           string const & repr,
                           size_t len)
 {
-    ASSERT_TRUE(expr->isList()) << "Actual Value: " << ExprWriter::write(expr);
+    ASSERT_TRUE(TypePredicates::isList(expr))
+        << "Actual Value: " << ExprWriter::write(expr);
 
     const auto flags =
         SELECT_TRUTH | SELECT_CONS | SELECT_LIST | SELECT_MANAGED;
@@ -456,7 +465,8 @@ void TestBase::expectList(ConstExprHandle expr,
 
 void TestBase::expectCons(ConstExprHandle expr, string const & repr)
 {
-    ASSERT_TRUE(expr->isCons()) << "Actual Value: " << ExprWriter::write(expr);
+    ASSERT_TRUE(TypePredicates::isCons(expr))
+        << "Actual Value: " << ExprWriter::write(expr);
 
     checkPredicates(expr, SELECT_TRUTH | SELECT_CONS | SELECT_MANAGED);
     EXPECT_EQ(repr, ExprWriter::write(expr));
@@ -477,7 +487,7 @@ void TestBase::expectVector(ConstExprHandle expr,
                             string const & repr,
                             size_t len)
 {
-    ASSERT_TRUE(expr->isVector())
+    ASSERT_TRUE(TypePredicates::isVector(expr))
         << "Actual Value: " << ExprWriter::write(expr);
 
     const auto flags = SELECT_TRUTH | SELECT_VECTOR | SELECT_MANAGED;
@@ -490,7 +500,7 @@ void TestBase::expectByteVector(ConstExprHandle expr,
                                 string const & repr,
                                 size_t len)
 {
-    ASSERT_TRUE(expr->isByteVector())
+    ASSERT_TRUE(TypePredicates::isByteVector(expr))
         << "Actual Value: " << ExprWriter::write(expr);
 
     const auto flags = SELECT_TRUTH | SELECT_BYTEVECTOR | SELECT_MANAGED;
@@ -502,7 +512,7 @@ void TestBase::expectByteVector(ConstExprHandle expr,
 void TestBase::expectProcedure(ConstExprHandle expr,
                                string const & repr)
 {
-    ASSERT_TRUE(expr->isProcedure())
+    ASSERT_TRUE(TypePredicates::isProcedure(expr))
         << "Actual Value: " << ExprWriter::write(expr);
 
     checkPredicates(expr, SELECT_TRUTH | ALL_PROC);
@@ -511,7 +521,8 @@ void TestBase::expectProcedure(ConstExprHandle expr,
 
 void TestBase::expectClass(ConstExprHandle expr)
 {
-    ASSERT_TRUE(expr->isClass()) << "Actual Value: " << ExprWriter::write(expr);
+    ASSERT_TRUE(TypePredicates::isClass(expr))
+        << "Actual Value: " << ExprWriter::write(expr);
 
     checkPredicates(expr, SELECT_TRUTH | ALL_CLASS);
     EXPECT_EQ("class", ExprWriter::write(expr));
@@ -519,7 +530,7 @@ void TestBase::expectClass(ConstExprHandle expr)
 
 void TestBase::expectInstance(ConstExprHandle expr)
 {
-    ASSERT_TRUE(expr->isInstance())
+    ASSERT_TRUE(TypePredicates::isInstance(expr))
         << "Actual Value: " << ExprWriter::write(expr);
 
     checkPredicates(expr, SELECT_TRUTH | ALL_INSTANCE);
@@ -530,7 +541,8 @@ void TestBase::expectDict(ConstExprHandle expr,
                           int count,
                           string const & repr)
 {
-    ASSERT_TRUE(expr->isDict()) << "Actual Value: " << ExprWriter::write(expr);
+    ASSERT_TRUE(TypePredicates::isDict(expr))
+        << "Actual Value: " << ExprWriter::write(expr);
 
     checkPredicates(expr, SELECT_TRUTH | ALL_DICT);
     EXPECT_EQ(repr, ExprWriter::write(expr));

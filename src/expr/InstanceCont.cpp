@@ -5,6 +5,7 @@
 #include "expr/ExprWriter.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamExpr.hpp"
+#include "expr/TypePredicates.hpp"
 
 using namespace scam;
 using namespace std;
@@ -40,13 +41,13 @@ void InstanceCont::run(ExprHandle expr)
 {
     Continuation::run(expr);
 
-    if ( expr->error() ) {
+    if ( TypePredicates::error(expr) ) {
         cont->run(expr);
         return;
     }
 
     ExprHandle func = find_func(obj);
-    if ( func->isNil() ) {
+    if ( TypePredicates::isNil(func) ) {
         return;
     }
 
@@ -57,7 +58,7 @@ void InstanceCont::run(ExprHandle expr)
 
 ExprHandle InstanceCont::find_func(ExprHandle o) const
 {
-    while ( o->isInstance() ) {
+    while ( TypePredicates::isInstance(o) ) {
         ScamInstanceAdapter adapter(o);
         Env * env = adapter.getFunctionMap();
         if ( env->check(name) ) {

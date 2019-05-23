@@ -3,15 +3,18 @@
 #include "Continuation.hpp"
 #include "ScamFwd.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "expr/TypePredicates.hpp"
 #include "input/SingletonParser.hpp"
 #include "util/ArgListHelper.hpp"
+
+#include <functional>
 
 using namespace scam;
 using namespace std;
 
 namespace
 {
-    using ExprPredicate = bool (ScamExpr::*)() const;
+    using ExprPredicate = function<bool(const ScamData *)>;
 
     extern void apply_predicate(const char * name,
                                 ExprPredicate pred,
@@ -39,26 +42,26 @@ namespace
     }
 
 
-DEFINE_PREDICATE(NilP, "nil?", &ScamExpr::isNil)
-DEFINE_PREDICATE(ErrorP, "error?", &ScamExpr::error)
-DEFINE_PREDICATE(ConsP, "cons?", &ScamExpr::isCons)
-DEFINE_PREDICATE(ListP, "list?", &ScamExpr::isList)
-DEFINE_PREDICATE(VectorP, "vector?", &ScamExpr::isVector)
-DEFINE_PREDICATE(BoolP, "bool?", &ScamExpr::isBoolean)
-DEFINE_PREDICATE(CharP, "char?", &ScamExpr::isChar)
-DEFINE_PREDICATE(StringP, "string?", &ScamExpr::isString)
-DEFINE_PREDICATE(SymbolP, "symbol?", &ScamExpr::isSymbol)
-DEFINE_PREDICATE(KeywordP, "keyword?", &ScamExpr::isKeyword)
-DEFINE_PREDICATE(NumericP, "numeric?", &ScamExpr::isNumeric)
-DEFINE_PREDICATE(ComplexP, "complex?", &ScamExpr::isComplex)
-DEFINE_PREDICATE(RealP, "real?", &ScamExpr::isReal)
-DEFINE_PREDICATE(RationalP, "rational?", &ScamExpr::isRational)
-DEFINE_PREDICATE(IntegerP, "integer?", &ScamExpr::isInteger)
-DEFINE_PREDICATE(ExactP, "exact?", &ScamExpr::isExact)
-DEFINE_PREDICATE(ProcP, "proc?", &ScamExpr::isProcedure)
-DEFINE_PREDICATE(ClassP, "class?", &ScamExpr::isClass)
-DEFINE_PREDICATE(InstanceP, "instance?", &ScamExpr::isInstance)
-DEFINE_PREDICATE(DictP, "dict?", &ScamExpr::isDict)
+DEFINE_PREDICATE(NilP, "nil?", &TypePredicates::isNil)
+DEFINE_PREDICATE(ErrorP, "error?", &TypePredicates::error)
+DEFINE_PREDICATE(ConsP, "cons?", &TypePredicates::isCons)
+DEFINE_PREDICATE(ListP, "list?", &TypePredicates::isList)
+DEFINE_PREDICATE(VectorP, "vector?", &TypePredicates::isVector)
+DEFINE_PREDICATE(BoolP, "bool?", &TypePredicates::isBoolean)
+DEFINE_PREDICATE(CharP, "char?", &TypePredicates::isChar)
+DEFINE_PREDICATE(StringP, "string?", &TypePredicates::isString)
+DEFINE_PREDICATE(SymbolP, "symbol?", &TypePredicates::isSymbol)
+DEFINE_PREDICATE(KeywordP, "keyword?", &TypePredicates::isKeyword)
+DEFINE_PREDICATE(NumericP, "numeric?", &TypePredicates::isNumeric)
+DEFINE_PREDICATE(ComplexP, "complex?", &TypePredicates::isComplex)
+DEFINE_PREDICATE(RealP, "real?", &TypePredicates::isReal)
+DEFINE_PREDICATE(RationalP, "rational?", &TypePredicates::isRational)
+DEFINE_PREDICATE(IntegerP, "integer?", &TypePredicates::isInteger)
+DEFINE_PREDICATE(ExactP, "exact?", &TypePredicates::isExact)
+DEFINE_PREDICATE(ProcP, "proc?", &TypePredicates::isProcedure)
+DEFINE_PREDICATE(ClassP, "class?", &TypePredicates::isClass)
+DEFINE_PREDICATE(InstanceP, "instance?", &TypePredicates::isInstance)
+DEFINE_PREDICATE(DictP, "dict?", &TypePredicates::isDict)
 
 #endif
 
@@ -75,7 +78,7 @@ namespace
         }
         else {
             ExprHandle arg = parser->get();
-            bool answer = (arg->*pred)();
+            bool answer = pred(arg);
             ExprHandle rv = ExpressionFactory::makeBoolean(answer);
             cont->run(rv);
         }

@@ -1,6 +1,7 @@
 #include "input/StringTokenizer.hpp"
 
 #include "expr/ScamExpr.hpp"
+#include "expr/TypePredicates.hpp"
 #include "input/Token.hpp"
 #include "util/NumericConverter.hpp"
 
@@ -368,7 +369,7 @@ Token StringTokenizer::scanNumeric()
 {
     NumericConverter nc(pos);
     ExprHandle expr = nc.getValue();
-    if( ! expr->isNumeric() ) {
+    if( ! TypePredicates::isNumeric(expr) ) {
         return none;
     }
 

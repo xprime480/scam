@@ -1,7 +1,8 @@
 #include "form/QQSpliceCont.hpp"
 
-#include "expr/ScamExpr.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "expr/ScamExpr.hpp"
+#include "expr/TypePredicates.hpp"
 #include "form/QuasiQuote.hpp"
 
 using namespace scam;
@@ -29,7 +30,7 @@ void QQSpliceCont::mark() const
 void QQSpliceCont::run(ExprHandle expr)
 {
     Continuation::run(expr);
-    if ( expr->error() ) {
+    if ( TypePredicates::error(expr) ) {
         cont->run(expr);
     }
     else {

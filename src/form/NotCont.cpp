@@ -1,7 +1,8 @@
 #include "form/NotCont.hpp"
 
-#include "expr/ScamExpr.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "expr/ScamExpr.hpp"
+#include "expr/TypePredicates.hpp"
 
 using namespace scam;
 using namespace std;
@@ -29,11 +30,12 @@ void NotCont::run(ExprHandle expr)
 {
     Continuation::run(expr);
 
-    if ( expr->error() ) {
+    if ( TypePredicates::error(expr) ) {
         cont->run(expr);
     }
     else {
-        ExprHandle rv = ExpressionFactory::makeBoolean(! expr->truth());
+        ExprHandle rv =
+            ExpressionFactory::makeBoolean(! TypePredicates::truth(expr));
         cont->run(rv);
     }
 }

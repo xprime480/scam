@@ -2,6 +2,7 @@
 
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamExpr.hpp"
+#include "expr/TypePredicates.hpp"
 #include "input/SingletonParser.hpp"
 
 #include <sstream>
@@ -28,16 +29,16 @@ ExprHandle Instantiator::map_value(ExprHandle val)
 
 ExprHandle Instantiator::inst_value(ExprHandle expr)
 {
-    if ( expr->isKeyword() ) {
+    if ( TypePredicates::isKeyword(expr) ) {
         return inst_keyword(expr);
     }
-    else if ( expr->isCons() ) {
+    else if ( TypePredicates::isCons(expr) ) {
         return inst_cons(expr);
     }
-    else if ( expr->isVector() ) {
+    else if ( TypePredicates::isVector(expr) ) {
         return inst_vector(expr);
     }
-    else if ( expr->isDict() ) {
+    else if ( TypePredicates::isDict(expr) ) {
         return inst_dict(expr);
     }
     else {

@@ -2,6 +2,7 @@
 
 #include "WorkQueue.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "expr/TypePredicates.hpp"
 
 using namespace scam;
 using namespace std;
@@ -37,7 +38,7 @@ ExprHandle ScamVector::nthcar(size_t n) const
 
 bool ScamVector::equals(ConstExprHandle expr) const
 {
-    if ( ! expr->isVector() ) {
+    if ( ! TypePredicates::isVector(expr) ) {
         return false;
     }
 

@@ -2,6 +2,7 @@
 
 #include "Continuation.hpp"
 #include "ScamException.hpp"
+#include "expr/TypePredicates.hpp"
 #include "util/ArgListHelper.hpp"
 
 using namespace scam;
@@ -21,7 +22,7 @@ Begin * Begin::makeInstance()
 
 void Begin::applyArgs(ExprHandle args, Continuation * cont)
 {
-    if ( ! args->isList() ) {
+    if ( ! TypePredicates::isList(args) ) {
         failedArgParseMessage(myName, "(expr*)", args, cont);
         return;
     }

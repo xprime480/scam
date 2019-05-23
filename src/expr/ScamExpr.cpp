@@ -4,6 +4,7 @@
 #include "ScamException.hpp"
 #include "expr/ExprWriter.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "expr/TypePredicates.hpp"
 
 #include <sstream>
 #include <utility>
@@ -45,38 +46,6 @@ void ScamExpr::mapEval(Continuation * cont, Env * env) const
     cont->run(argggh);
 }
 
-bool ScamExpr::isNull() const
-{
-    return type == ScamData::Null;
-}
-
-bool ScamExpr::error() const
-{
-    return type == ScamData::Error;
-}
-
-bool ScamExpr::truth() const
-{
-    if ( isNull() ) {
-        return false;
-    }
-    if ( ! isBoolean() ) {
-        return true;
-    }
-
-    return BOOLVAL(this);
-}
-
-bool ScamExpr::isBoolean() const
-{
-    return type == ScamData::Boolean;
-}
-
-bool ScamExpr::isChar() const
-{
-    return type == ScamData::Character;
-}
-
 char ScamExpr::toChar() const
 {
     stringstream s;
@@ -84,66 +53,6 @@ char ScamExpr::toChar() const
     throw ScamException(s.str());
 
     return '\0';
-}
-
-bool ScamExpr::isString() const
-{
-    return type == ScamData::String;
-}
-
-bool ScamExpr::isSymbol() const
-{
-    return type == ScamData::Symbol;
-}
-
-bool ScamExpr::isKeyword() const
-{
-    return type == ScamData::Keyword;
-}
-
-bool ScamExpr::isNumeric() const
-{
-    return ScamNumeric::isNumeric(this);
-}
-
-bool ScamExpr::isExact() const
-{
-    return ScamNumeric::isExact(this);
-}
-
-bool ScamExpr::isComplex() const
-{
-    return ScamNumeric::isComplex(this);
-}
-
-bool ScamExpr::isReal() const
-{
-    return ScamNumeric::isReal(this);
-}
-
-bool ScamExpr::isRational() const
-{
-    return ScamNumeric::isRational(this);
-}
-
-bool ScamExpr::isInteger() const
-{
-    return ScamNumeric::isInteger(this);
-}
-
-bool ScamExpr::isNaN() const
-{
-    return ScamNumeric::isNaN(this);
-}
-
-bool ScamExpr::isNegInf() const
-{
-    return ScamNumeric::isNegInf(this);
-}
-
-bool ScamExpr::isPosInf() const
-{
-    return ScamNumeric::isPosInf(this);
 }
 
 double ScamExpr::asDouble() const
@@ -165,7 +74,7 @@ ConstExprHandle ScamExpr::realPart() const
 {
     // temporary hack!!!
     ConstExprHandle rv = ScamNumeric::realPart(this);
-    if ( rv->isNull() ) {
+    if ( TypePredicates::isNull(rv) ) {
         rv = this;
     }
     return rv;
@@ -174,28 +83,6 @@ ConstExprHandle ScamExpr::realPart() const
 ConstExprHandle ScamExpr::imagPart() const
 {
     return ScamNumeric::imagPart(this);
-}
-
-bool ScamExpr::isNil() const
-{
-    return type == ScamData::Nil;
-}
-
-bool ScamExpr::isCons() const
-{
-    return type == ScamData::Cons;
-}
-
-bool ScamExpr::isList() const
-{
-    if ( isNil() ) {
-        return true;
-    }
-    if ( isCons() ) {
-        return getCdr()->isList();
-    }
-
-    return false;
 }
 
 ExprHandle ScamExpr::getCar() const
@@ -214,36 +101,6 @@ ExprHandle ScamExpr::getCdr() const
     throw ScamException(s.str());
 
     return ExpressionFactory::makeNull();
-}
-
-bool ScamExpr::isVector() const
-{
-    return type == ScamData::Vector;
-}
-
-bool ScamExpr::isByteVector() const
-{
-    return type == ScamData::ByteVector;
-}
-
-bool ScamExpr::isProcedure() const
-{
-    return 0 != (type & ScamData::Procedure);
-}
-
-bool ScamExpr::isClass() const
-{
-    return type == ScamData::Class;
-}
-
-bool ScamExpr::isInstance() const
-{
-    return type == ScamData::Instance;
-}
-
-bool ScamExpr::isDict() const
-{
-    return type == ScamData::Dict;
 }
 
 size_t ScamExpr::length() const

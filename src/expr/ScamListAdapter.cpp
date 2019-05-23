@@ -4,6 +4,7 @@
 #include "expr/ExprWriter.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamCons.hpp"
+#include "expr/TypePredicates.hpp"
 
 #include <sstream>
 
@@ -12,10 +13,10 @@ using namespace std;
 
 ScamListAdapter::ScamListAdapter(ConstExprHandle expr)
     : lst(dynamic_cast<ScamCons const *>(expr))
-    , isNil(expr->isNil())
+    , isNil(TypePredicates::isNil(expr))
     , len(0u)
 {
-    if ( ! expr->isList() ) {
+    if ( ! TypePredicates::isList(expr) ) {
         stringstream s;
         s << "ScamListAdapter expected a list, got: "
           << ExprWriter::write(expr);

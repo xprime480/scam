@@ -4,6 +4,7 @@
 #include "ScamEngine.hpp"
 #include "expr/ScamExpr.hpp"
 #include "expr/ScamSymbol.hpp"
+#include "expr/TypePredicates.hpp"
 #include "form/LetStar.hpp"
 #include "form/LetStarBacktracker.hpp"
 #include "form/LetStarCont.hpp"
@@ -48,7 +49,7 @@ void LetStarCont::mark() const
 
 void LetStarCont::do_let(ExprHandle expr)
 {
-    if ( formals->isNil() ) {
+    if ( TypePredicates::isNil(formals) ) {
         final_eval(env);
     }
     else {

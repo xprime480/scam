@@ -3,8 +3,9 @@
 #include "Continuation.hpp"
 #include "Env.hpp"
 #include "expr/ExprWriter.hpp"
-#include "expr/ScamExpr.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "expr/ScamExpr.hpp"
+#include "expr/TypePredicates.hpp"
 
 using namespace scam;
 using namespace std;
@@ -32,7 +33,7 @@ void CallCont::mark() const
 
 void CallCont::run(ExprHandle expr)
 {
-    if ( expr->error() ) {
+    if ( TypePredicates::error(expr) ) {
         cont->run(expr);
         return;
     }

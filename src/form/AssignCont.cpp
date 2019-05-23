@@ -3,6 +3,7 @@
 #include "Env.hpp"
 #include "ScamEngine.hpp"
 #include "expr/ScamExpr.hpp"
+#include "expr/TypePredicates.hpp"
 #include "form/AssignBacktracker.hpp"
 #include "util/MemoryManager.hpp"
 
@@ -28,7 +29,7 @@ AssignCont * AssignCont::makeInstance(ScamEnvKeyType sym,
 
 void AssignCont::finish(ExprHandle expr) const
 {
-    if ( expr->error() && expr->hasMeta("amb-error") ) {
+    if ( TypePredicates::error(expr) && expr->hasMeta("amb-error") ) {
         return;
     }
 

@@ -7,6 +7,7 @@
 #include "Worker.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamExpr.hpp"
+#include "expr/TypePredicates.hpp"
 #include "input/ScamParser.hpp"
 #include "util/MemoryManager.hpp"
 
@@ -136,7 +137,7 @@ ExprHandle ScamEngine::parseCurrentInput()
 
     while ( true ) {
         ExprHandle expr = read();
-        if ( expr->isNull() ) {
+        if ( TypePredicates::isNull(expr) ) {
             break;
         }
         (void) eval(expr);

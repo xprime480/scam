@@ -4,6 +4,7 @@
 #include "WorkQueue.hpp"
 #include "expr/ScamExpr.hpp"
 #include "expr/ScamListAdapter.hpp"
+#include "expr/TypePredicates.hpp"
 #include "form/LetEvalWorker.hpp"
 
 using namespace scam;
@@ -53,7 +54,7 @@ void LetStepCont::mark() const
 
 void LetStepCont::run(ExprHandle expr)
 {
-    if ( expr->error() ) {
+    if ( TypePredicates::error(expr) ) {
         cont->run(expr);
     }
     else {

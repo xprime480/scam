@@ -4,6 +4,7 @@
 #include "Env.hpp"
 #include "WorkQueue.hpp"
 #include "expr/ScamExpr.hpp"
+#include "expr/TypePredicates.hpp"
 #include "form/QQConsListCdrCont.hpp"
 #include "form/QuasiQuote.hpp"
 #include "form/QuasiQuoteWorker.hpp"
@@ -41,7 +42,7 @@ void QQConsListCarCont::mark() const
 void QQConsListCarCont::run(ExprHandle expr)
 {
     Continuation::run(expr);
-    if ( expr->error() ) {
+    if ( TypePredicates::error(expr) ) {
         cont->run(expr);
     }
     else {

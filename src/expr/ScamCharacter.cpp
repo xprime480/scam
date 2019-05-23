@@ -1,5 +1,7 @@
 #include "expr/ScamCharacter.hpp"
 
+#include "expr/TypePredicates.hpp"
+
 using namespace scam;
 using namespace std;
 
@@ -21,7 +23,7 @@ char ScamCharacter::toChar() const
 
 bool ScamCharacter::equals(ConstExprHandle expr) const
 {
-    if ( ! expr->isChar() ) {
+    if ( ! TypePredicates::isChar(expr) ) {
         return false;
     }
 

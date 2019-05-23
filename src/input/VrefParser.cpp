@@ -2,6 +2,7 @@
 
 #include "expr/ScamNumeric.hpp"
 #include "expr/ScamVector.hpp"
+#include "expr/TypePredicates.hpp"
 #include "input/SequenceParser.hpp"
 
 using namespace scam;
@@ -36,7 +37,7 @@ bool VrefParser::accept(ExprHandle expr)
     }
 
     auto val = intVal->getValue();
-    if ( ! val->isInteger() || val->asInteger() < 0 ) {
+    if ( ! TypePredicates::isInteger(val) || val->asInteger() < 0 ) {
         return false;
     }
 

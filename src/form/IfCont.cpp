@@ -1,8 +1,9 @@
 #include "form/IfCont.hpp"
 
 #include "Env.hpp"
-#include "expr/ScamExpr.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "expr/ScamExpr.hpp"
+#include "expr/TypePredicates.hpp"
 #include "input/CountedListParser.hpp"
 
 using namespace scam;
@@ -37,10 +38,10 @@ void IfCont::run(ExprHandle expr)
 {
     Continuation::run(expr);
 
-    if ( expr->error() ) {
+    if ( TypePredicates::error(expr) ) {
         cont->run(expr);
     }
-    else if ( expr->truth() ) {
+    else if ( TypePredicates::truth(expr) ) {
         ExprHandle thenExpr = parser->get(1u);
         thenExpr->eval(cont, env);
     }

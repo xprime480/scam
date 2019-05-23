@@ -2,6 +2,7 @@
 #include "prim/Spawn.hpp"
 
 #include "WorkQueue.hpp"
+#include "expr/TypePredicates.hpp"
 #include "prim/SpawnWorker.hpp"
 #include "util/ArgListHelper.hpp"
 
@@ -22,7 +23,7 @@ Spawn * Spawn::makeInstance()
 
 void Spawn::applyArgs(ExprHandle args, Continuation * cont)
 {
-    if ( ! args->isNil() ) {
+    if ( ! TypePredicates::isNil(args) ) {
         failedArgParseMessage(myName, "()", args, cont);
     }
     else {

@@ -3,6 +3,7 @@
 #include "Continuation.hpp"
 #include "Env.hpp"
 #include "expr/ScamExpr.hpp"
+#include "expr/TypePredicates.hpp"
 #include "util/MemoryManager.hpp"
 
 using namespace scam;
@@ -36,7 +37,8 @@ namespace
 
         void run(ExprHandle expr) override
         {
-            if ( expr->isList() && ! expr->isNil() ) {
+            if ( TypePredicates::isList(expr) &&
+                 ! TypePredicates::isNil(expr) ) {
                 unsigned len = expr->length();
                 ExprHandle last = expr->nthcar(len - 1);
                 cont->run(last);

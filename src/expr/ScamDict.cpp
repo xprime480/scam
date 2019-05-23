@@ -2,6 +2,7 @@
 
 #include "Continuation.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "expr/TypePredicates.hpp"
 #include "input/DictOpsParser.hpp"
 #include "util/ArgListHelper.hpp"
 
@@ -85,7 +86,7 @@ size_t ScamDict::length() const
 
 bool ScamDict::equals(ConstExprHandle expr) const
 {
-    if ( ! expr->isDict() ) {
+    if ( ! TypePredicates::isDict(expr) ) {
         return false;
     }
 

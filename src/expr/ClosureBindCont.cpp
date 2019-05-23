@@ -9,6 +9,7 @@
 #include "expr/ExpressionFactory.hpp"
 #include "expr/MacroEvalCont.hpp"
 #include "expr/ScamExpr.hpp"
+#include "expr/TypePredicates.hpp"
 #include "input/ParameterListParser.hpp"
 #include "util/MemoryManager.hpp"
 
@@ -49,7 +50,7 @@ void ClosureBindCont::run(ExprHandle expr)
 {
     Continuation::run(expr);
 
-    if ( expr->error() ) {
+    if ( TypePredicates::error(expr) ) {
         cont->run(expr);
     }
     else if ( malformedActuals(expr) ) {
@@ -62,7 +63,9 @@ void ClosureBindCont::run(ExprHandle expr)
 
 bool ClosureBindCont::malformedActuals(ExprHandle expr) const
 {
-    if ( expr->isCons() || expr->isNil() || expr->isSymbol() ) {
+    if ( TypePredicates::isCons(expr) ||
+         TypePredicates::isNil(expr) ||
+         TypePredicates::isSymbol(expr) ) {
         return false;
     }
 

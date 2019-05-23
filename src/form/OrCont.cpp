@@ -3,6 +3,7 @@
 #include "Env.hpp"
 #include "WorkQueue.hpp"
 #include "expr/ScamExpr.hpp"
+#include "expr/TypePredicates.hpp"
 #include "form/OrWorker.hpp"
 #include "input/ListParser.hpp"
 
@@ -40,10 +41,10 @@ void OrCont::run(ExprHandle expr)
 {
     Continuation::run(expr);
 
-    if ( expr->error() ) {
+    if ( TypePredicates::error(expr) ) {
         cont->run(expr);
     }
-    else if ( expr->truth() ) {
+    else if ( TypePredicates::truth(expr) ) {
         cont->run(expr);
     }
     else {

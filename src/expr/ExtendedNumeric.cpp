@@ -3,6 +3,7 @@
 #include "ScamException.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamExpr.hpp"
+#include "expr/TypePredicates.hpp"
 #include "util/NumericConverter.hpp"
 
 #include <cmath>
@@ -19,7 +20,7 @@ namespace
 ExtendedNumeric::ExtendedNumeric(ConstExprHandle expr)
     : expr(expr)
 {
-    if ( ! expr->isNumeric() ) {
+    if ( ! TypePredicates::isNumeric(expr) ) {
         stringstream s;
         s << "Attempting to make ExtendedNumeric from "
           << ExprWriter::write(expr);
@@ -34,17 +35,17 @@ ExprHandle ExtendedNumeric::get() const
 
 bool ExtendedNumeric::isNaN() const
 {
-    return expr->isNaN();
+    return TypePredicates::isNaN(expr);
 }
 
 bool ExtendedNumeric::isNegInf() const
 {
-    return expr->isNegInf();
+    return TypePredicates::isNegInf(expr);
 }
 
 bool ExtendedNumeric::isPosInf() const
 {
-    return expr->isPosInf();
+    return TypePredicates::isPosInf(expr);
 }
 
 bool ExtendedNumeric::isSpecialNumeric() const
@@ -111,8 +112,8 @@ bool scam::operator>(const ExtendedNumeric & a, const ExtendedNumeric & b)
 
     ExprHandle hA = a.get();
     ExprHandle hB = b.get();
-    if ( (hA->isComplex() && ! hA->isReal()) ||
-         (hB->isComplex() && ! hB->isReal()) ) {
+    if ( (TypePredicates::isComplex(hA) && ! TypePredicates::isReal(hA)) ||
+         (TypePredicates::isComplex(hB) && ! TypePredicates::isReal(hB)) ) {
         return false;
     }
 
@@ -137,8 +138,8 @@ bool scam::operator<(const ExtendedNumeric & a, const ExtendedNumeric & b)
 
     ExprHandle hA = a.get();
     ExprHandle hB = b.get();
-    if ( (hA->isComplex() && ! hA->isReal()) ||
-         (hB->isComplex() && ! hB->isReal()) ) {
+    if ( (TypePredicates::isComplex(hA) && ! TypePredicates::isReal(hA)) ||
+         (TypePredicates::isComplex(hB) && ! TypePredicates::isReal(hB)) ) {
         return false;
     }
 
@@ -164,10 +165,14 @@ scam::operator+(const ExtendedNumeric & a, const ExtendedNumeric & b)
     if ( ! a.isSpecialNumeric() && ! b.isSpecialNumeric() ) {
         const ExprHandle xA = a.get();
         const ExprHandle xB = b.get();
-        const bool isInt = xA->isInteger() && xB->isInteger();
-        const bool isRational = xA->isRational() && xB->isRational();
-        const bool isReal = xA->isReal() && xB->isReal();
-        const bool isExact = xA->isExact() && xB->isExact();
+        const bool isInt =
+            TypePredicates::isInteger(xA) && TypePredicates::isInteger(xB);
+        const bool isRational =
+            TypePredicates::isRational(xA) && TypePredicates::isRational(xB);
+        const bool isReal =
+            TypePredicates::isReal(xA) && TypePredicates::isReal(xB);
+        const bool isExact =
+            TypePredicates::isExact(xA) && TypePredicates::isExact(xB);
 
         if ( isInt ) {
             const int rv = xA->asInteger() + xB->asInteger();
@@ -305,10 +310,14 @@ scam::operator*(const ExtendedNumeric & a, const ExtendedNumeric & b)
     ExprHandle expr { nullptr };
 
     if ( ! a.isSpecialNumeric() && ! b.isSpecialNumeric() ) {
-        const bool isInt = xA->isInteger() && xB->isInteger();
-        const bool isRational = xA->isRational() && xB->isRational();
-        const bool isReal = xA->isReal() && xB->isReal();
-        const bool isExact = xA->isExact() && xB->isExact();
+        const bool isInt =
+            TypePredicates::isInteger(xA) && TypePredicates::isInteger(xB);
+        const bool isRational =
+            TypePredicates::isRational(xA) && TypePredicates::isRational(xB);
+        const bool isReal =
+            TypePredicates::isReal(xA) && TypePredicates::isReal(xB);
+        const bool isExact =
+            TypePredicates::isExact(xA) && TypePredicates::isExact(xB);
 
         if ( isInt ) {
             const int rv = xA->asInteger() * xB->asInteger();
@@ -390,10 +399,14 @@ scam::operator/(const ExtendedNumeric & a, const ExtendedNumeric & b)
     ExprHandle expr { nullptr };
 
     if ( ! a.isSpecialNumeric() && ! b.isSpecialNumeric() ) {
-        const bool isInt = xA->isInteger() && xB->isInteger();
-        const bool isRational = xA->isRational() && xB->isRational();
-        const bool isReal = xA->isReal() && xB->isReal();
-        const bool isExact = xA->isExact() && xB->isExact();
+        const bool isInt =
+            TypePredicates::isInteger(xA) && TypePredicates::isInteger(xB);
+        const bool isRational =
+            TypePredicates::isRational(xA) && TypePredicates::isRational(xB);
+        const bool isReal =
+            TypePredicates::isReal(xA) && TypePredicates::isReal(xB);
+        const bool isExact =
+            TypePredicates::isExact(xA) && TypePredicates::isExact(xB);
 
         if ( isInt ) {
             const int iA = xA->asInteger();
@@ -461,7 +474,8 @@ scam::operator/(const ExtendedNumeric & a, const ExtendedNumeric & b)
                 expr = ExpressionFactory::makeNaN();
             }
             else {
-                expr = ExpressionFactory::makeInteger(0, xA->isExact());
+                const bool ex = TypePredicates::isExact(xA);
+                expr = ExpressionFactory::makeInteger(0, ex);
             }
         }
         else {
@@ -481,9 +495,12 @@ scam::operator%(const ExtendedNumeric & a, const ExtendedNumeric & b)
     ExprHandle expr { nullptr };
 
     if ( ! a.isSpecialNumeric() && ! b.isSpecialNumeric() ) {
-        const bool isInt = xA->isInteger() && xB->isInteger();
-        const bool isRational = xA->isRational() && xB->isRational();
-        const bool isExact = xA->isExact() && xB->isExact();
+        const bool isInt =
+            TypePredicates::isInteger(xA) && TypePredicates::isInteger(xB);
+        const bool isRational =
+            TypePredicates::isRational(xA) && TypePredicates::isRational(xB);
+        const bool isExact =
+            TypePredicates::isExact(xA) && TypePredicates::isExact(xB);
 
         if ( isInt ) {
             const int rv = xA->asInteger() % xB->asInteger();
@@ -503,7 +520,8 @@ scam::operator%(const ExtendedNumeric & a, const ExtendedNumeric & b)
     }
     else {
         if ( ! a.isSpecialNumeric() && 0 == xA->asDouble() ) {
-            expr = ExpressionFactory::makeInteger(0, xA->isExact());
+            const bool ex = TypePredicates::isExact(xA);
+            expr = ExpressionFactory::makeInteger(0, ex);
         }
         else {
             expr = ExpressionFactory::makeNaN();
@@ -522,14 +540,15 @@ namespace
     {
         const double rVal = r->asDouble();
         if ( 0.0 == rVal ) {
-            return ExpressionFactory::makeInteger(0, r->isExact());
+            const bool ex = TypePredicates::isExact(r);
+            return ExpressionFactory::makeInteger(0, ex);
         }
 
         if ( rVal > 0 ) {
             return i;
         }
 
-        if ( i->isPosInf() ) {
+        if ( TypePredicates::isPosInf(i) ) {
             return ExpressionFactory::makeNegInf();
         }
 

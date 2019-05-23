@@ -3,6 +3,7 @@
 #include "Continuation.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ExtendedNumeric.hpp"
+#include "expr/TypePredicates.hpp"
 #include "input/NumericListParser.hpp"
 #include "input/RelopsListParser.hpp"
 
@@ -25,12 +26,12 @@ namespace
     {
         static bool isType(ExprHandle arg)
         {
-            return arg->isNumeric();
+            return TypePredicates::isNumeric(arg);
         }
 
         static bool isSubType(ExprHandle arg)
         {
-            return arg->isInteger();
+            return TypePredicates::isInteger(arg);
         }
 
         static double convert(ExprHandle arg)
@@ -48,12 +49,12 @@ namespace
     {
         static bool isType(ExprHandle arg)
         {
-            return arg->isString();
+            return TypePredicates::isString(arg);
         }
 
         static bool isSubType(ExprHandle arg)
         {
-            return arg->isString();
+            return TypePredicates::isString(arg);
         }
 
         static string convert(ExprHandle arg)
@@ -71,7 +72,7 @@ namespace
     {
         static bool isType(ExprHandle arg)
         {
-            return arg->isNumeric();
+            return TypePredicates::isNumeric(arg);
         }
 
         static bool isSubType(ExprHandle arg)
@@ -107,7 +108,7 @@ namespace
             return false;
         }
 
-        if ( rv->truth() && ! Checker::isSubType(arg) ) {
+        if ( TypePredicates::truth(rv) && ! Checker::isSubType(arg) ) {
             rv = ExpressionFactory::makeBoolean(false);
         }
 
@@ -142,7 +143,7 @@ namespace
 
         vector<T> ns;
         rv = argsToType(parser, ns, context);
-        if ( rv->isBoolean() ) {
+        if ( TypePredicates::isBoolean(rv) ) {
             bool answer = impl->apply(ns);
             rv = ExpressionFactory::makeBoolean(answer);
         }
@@ -158,12 +159,12 @@ ExprHandle scam::numericAlgorithm(NumericListParser * parser,
     vector<ExtendedNumeric> ns;
 
     ExprHandle state = argsToType(parser, ns, context);
-    if ( state->error() ) {
+    if ( TypePredicates::error(state) ) {
         return state;
     }
 
     ExtendedNumeric total = algo(ns, state);
-    if ( state->error() ) {
+    if ( TypePredicates::error(state) ) {
         return state;
     }
 

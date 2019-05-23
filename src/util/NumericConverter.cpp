@@ -2,6 +2,7 @@
 
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ExtendedNumeric.hpp"
+#include "expr/TypePredicates.hpp"
 #include "input/StringTokenizer.hpp"
 
 #include <cmath>
@@ -32,38 +33,44 @@ ExprHandle includeSign(int sign, ExprHandle expr)
 
 ExprHandle NumericConverter::simplify(ExprHandle value)
 {
-    if ( ! value->isNumeric() ) {
+    if ( ! TypePredicates::isNumeric(value) ) {
         return value;
     }
 
-    if ( value->isNaN() || value->isNegInf() || value->isPosInf() ) {
+    if ( TypePredicates::isNaN(value) ||
+         TypePredicates::isNegInf(value) ||
+         TypePredicates::isPosInf(value) ) {
         return value;
     }
 
-    if ( value->isComplex() && ! value->isReal() ) {
+    if ( TypePredicates::isComplex(value) &&
+         ! TypePredicates::isReal(value) ) {
         ExprHandle imag = simplify(const_cast<ExprHandle>(value->imagPart()));
-        if ( imag && imag->isInteger() && 0 == imag->asInteger() ) {
+        if ( imag && TypePredicates::isInteger(imag) &&
+             0 == imag->asInteger() ) {
             value = const_cast<ExprHandle>(value->realPart());
         }
     }
 
-    if ( value->isReal() && ! value->isRational() ) {
+    if ( TypePredicates::isReal(value) &&
+         ! TypePredicates::isRational(value) ) {
         double v = value->asDouble();
         double frac = ::fmod(v, 1.0);
         if ( 0.0 == frac ) {
-            value = ExpressionFactory::makeRational((int)v,
-                                                    1,
-                                                    value->isExact());
+            const bool ex = TypePredicates::isExact(value);
+            value = ExpressionFactory::makeRational((int)v, 1, ex);
         }
         else {
             return value;
         }
     }
 
-    if ( value->isRational() && ! value->isInteger() ) {
+    if ( TypePredicates::isRational(value) &&
+         ! TypePredicates::isInteger(value) ) {
         const pair<int, int> v = value->asRational();
         if ( 1 == v.second ) {
-            value = ExpressionFactory::makeInteger(v.first, value->isExact());
+            const bool ex = TypePredicates::isExact(value);
+            value = ExpressionFactory::makeInteger(v.first, ex);
         }
     }
 
@@ -98,7 +105,7 @@ void NumericConverter::scanComplex()
     ExprHandle real = scanInfNan();
     ExprHandle imag = ExpressionFactory::makeNull();
 
-    if ( real->isNull() ) {  // not infnan
+    if ( TypePredicates::isNull(real) ) { // not infnan
         int sign = scanSign(false);
         if ( 0 == sign ) {
             rv = imag;
@@ -106,7 +113,7 @@ void NumericConverter::scanComplex()
         else {
             real = makeIntegerWithExactness(0);
             imag = scanUReal();
-            if ( imag->isNull() ) {
+            if ( TypePredicates::isNull(imag) ) {
                 imag = makeIntegerWithExactness(1);
             }
             if ( 'i' == tolower(*pos) ) {
@@ -116,11 +123,11 @@ void NumericConverter::scanComplex()
             }
         }
     }
-    else { // infnan
+    else {                      // infnan
         imag = scanReal();
         if ( 'i' == tolower(*pos) ) {
             ++pos;
-            if ( imag->isNull() ) {
+            if ( TypePredicates::isNull(imag) ) {
                 imag = real;
                 real = makeIntegerWithExactness(0);
             }
@@ -131,25 +138,25 @@ void NumericConverter::scanComplex()
         }
     }
 
-    if ( rv->isNull() ) {       // not infnan and not pure imaginary
+    if ( TypePredicates::isNull(rv) ) { // not infnan and not pure imaginary
         // try again from the start for real [+/- imag]
         pos = original;
         real = scanReal();
-        if ( real->isNull() ) {
+        if ( TypePredicates::isNull(real) ) {
             rv = real;          // not any kind of number
         }
         else {
             original = pos;     // save in case rest does not compute
             int sign = 1;
             imag = scanInfNan();
-            if ( imag->isNull() ) {
+            if ( TypePredicates::isNull(imag) ) {
                 sign = scanSign();
                 if ( 0 == sign ) {
                     imag = makeIntegerWithExactness(0);
                 }
                 else {
                     imag = scanUReal();
-                    if ( imag->isNull() ) {
+                    if ( TypePredicates::isNull(imag) ) {
                         imag = makeIntegerWithExactness(1);
                     }
                 }
@@ -164,17 +171,17 @@ void NumericConverter::scanComplex()
                 rv = real;
             }
 
-            if ( rv->isNull() ) {
+            if ( TypePredicates::isNull(rv) ) {
                 rv = ExpressionFactory::makeComplex(real, imag);
             }
         }
     }
 
-    if ( rv->isReal() ) {
+    if ( TypePredicates::isReal(rv) ) {
         if ( '@' == *pos ) {
             ++pos;
             imag = scanReal();
-            if ( imag->isNull() ) {
+            if ( TypePredicates::isNull(imag) ) {
                 --pos;
             }
             else {
@@ -189,7 +196,7 @@ void NumericConverter::scanComplex()
 ExprHandle NumericConverter::scanReal()
 {
     ExprHandle rv = scanInfNan();
-    if ( ! rv->isNull() ) {
+    if ( ! TypePredicates::isNull(rv) ) {
         return rv;
     }
 
@@ -198,7 +205,7 @@ ExprHandle NumericConverter::scanReal()
     const int sign = scanSign();
     rv = scanUReal();
 
-    if ( rv->isNull() ) {
+    if ( TypePredicates::isNull(rv) ) {
         pos = original;
         return rv;
     }
@@ -215,7 +222,7 @@ ExprHandle NumericConverter::scanUReal()
     const char * pos10 = pos;
     if ( 10 == base ) {
         rv10 = scanDecimal();
-        if ( ! rv10->isNull() ) {
+        if ( ! TypePredicates::isNull(rv10) ) {
             pos10 = pos;
         }
     }
@@ -223,7 +230,7 @@ ExprHandle NumericConverter::scanUReal()
     pos = original;
 
     ExprHandle rvN = scanUInteger();
-    if ( rvN->isNull() ) {
+    if ( TypePredicates::isNull(rvN) ) {
         pos = pos10;
         return rv10;
     }
@@ -244,7 +251,7 @@ ExprHandle NumericConverter::scanUReal()
     ++pos;
 
     ExprHandle rvD = scanUInteger();
-    if ( rvD->isNull() ) {
+    if ( TypePredicates::isNull(rvD) ) {
         pos = original;
         return ( posN > pos10 ) ? rvN : rv10;
     }
@@ -261,21 +268,21 @@ ExprHandle NumericConverter::scanDecimal()
 
     if ( scanRadixPoint() ) {
         rv = makeFraction(1);
-        if ( rv->isNull() ) {
+        if ( TypePredicates::isNull(rv) ) {
             pos = original;
             return rv;
         }
     }
     else {
         rv = scanUInteger();
-        if ( rv->isNull() ) {
+        if ( TypePredicates::isNull(rv) ) {
             pos = original;
             return rv;
         }
 
         if ( scanRadixPoint() ) {
             ExprHandle fp = makeFraction(0);
-            if ( ! rv->isNull() ) {
+            if ( ! TypePredicates::isNull(rv) ) {
                 ExtendedNumeric lhs(rv);
                 ExtendedNumeric rhs(fp);
                 ExtendedNumeric result = lhs + rhs;
@@ -285,7 +292,7 @@ ExprHandle NumericConverter::scanDecimal()
     }
 
     ExprHandle suffix = scanSuffix();
-    if ( suffix->isReal() ) {
+    if ( TypePredicates::isReal(suffix) ) {
         ExtendedNumeric lhs(rv);
         ExtendedNumeric rhs(suffix);
         ExtendedNumeric result = lhs * rhs;
@@ -376,13 +383,13 @@ ExprHandle NumericConverter::scanSuffix()
         ++pos;
         int sign = scanSign();
         ExprHandle value = scanUInteger();
-        if ( value->isInteger() ) {
+        if ( TypePredicates::isInteger(value) ) {
             double suffix = makeMultiplier(sign * value->asInteger());
             rv = makeRealWithExactness(suffix);
         }
     }
 
-    if ( rv->isNull() ) {
+    if ( TypePredicates::isNull(rv) ) {
         pos = original;
     }
 
@@ -452,7 +459,7 @@ ExprHandle NumericConverter::makeFraction(unsigned minCount)
 
     bool makeExact = exactness == ExactnessType::ET_EXACT;
 
-    if ( rv->isNull() ) {
+    if ( TypePredicates::isNull(rv) ) {
         return ExpressionFactory::makeInteger(0, makeExact);
     }
 
@@ -548,13 +555,17 @@ NumericConverter::makeComplexPolar(ExprHandle r, ExprHandle theta) const
     ExprHandle real;
     ExprHandle imag;
 
-    if ( r->isNaN() || r->isNegInf() || r->isPosInf() ) {
+    if ( TypePredicates::isNaN(r) ||
+         TypePredicates::isNegInf(r) ||
+         TypePredicates::isPosInf(r) ) {
         real = imag = nan;
     }
     else if ( 0.0 == r->asDouble() ) {
         real = imag = r;
     }
-    else if ( theta->isNaN() || theta->isNegInf() || theta->isPosInf() ) {
+    else if ( TypePredicates::isNaN(theta) ||
+              TypePredicates::isNegInf(theta) ||
+              TypePredicates::isPosInf(theta) ) {
         real = imag = nan;
     }
     else {

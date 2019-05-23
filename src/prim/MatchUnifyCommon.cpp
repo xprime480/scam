@@ -5,6 +5,7 @@
 #include "expr/ScamExpr.hpp"
 #include "expr/ScamDict.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "expr/TypePredicates.hpp"
 #include "input/MatchUnifyParser.hpp"
 #include "prim/Substitutor.hpp"
 #include "prim/CommonError.hpp"
@@ -29,7 +30,7 @@ void MatchUnifyCommon::solve()
     ScamDict * dict = parser->getDict();
 
     ExprHandle result = exec(dict, lhs, rhs);
-    if ( ! parser->isMatch() && result->isDict() ) {
+    if ( ! parser->isMatch() && TypePredicates::isDict(result) ) {
         result = resolve(result);
     }
 
@@ -65,9 +66,9 @@ ExprHandle MatchUnifyCommon::check_keyword(ScamDict * dict,
                                            ExprHandle lhs,
                                            ExprHandle rhs)
 {
-    if ( lhs->isKeyword() && ! rhs->isNil() ) {
+    if ( TypePredicates::isKeyword(lhs) && ! TypePredicates::isNil(rhs) ) {
         ExprHandle old = dict->get(lhs);
-        if ( old->error() ) {
+        if ( TypePredicates::error(old) ) {
             dict->put(lhs, rhs);
         }
         else if ( ! old->equals(rhs) ) {
@@ -101,11 +102,11 @@ ExprHandle MatchUnifyCommon::check_cons(ScamDict * dict,
                                         ExprHandle lhs,
                                         ExprHandle rhs)
 {
-    if ( lhs->isCons() && rhs->isCons() ) {
+    if ( TypePredicates::isCons(lhs) && TypePredicates::isCons(rhs) ) {
         ExprHandle lhsCar  = lhs->getCar();
         ExprHandle rhsCar  = rhs->getCar();
         ExprHandle carMatch = exec(dict, lhsCar, rhsCar);
-        if ( ! carMatch->isDict() ) {
+        if ( ! TypePredicates::isDict(carMatch) ) {
             return carMatch;
         }
 
@@ -121,7 +122,7 @@ ExprHandle MatchUnifyCommon::check_vector(ScamDict * dict,
                                           ExprHandle lhs,
                                           ExprHandle rhs)
 {
-    if ( lhs->isVector() && rhs->isVector() ) {
+    if ( TypePredicates::isVector(lhs) && TypePredicates::isVector(rhs) ) {
         if ( lhs->length() != rhs->length() ) {
             stringstream s;
             s << "matching vectors of unequal length: "
@@ -134,7 +135,7 @@ ExprHandle MatchUnifyCommon::check_vector(ScamDict * dict,
             ExprHandle lhsN = lhs->nthcar(idx);
             ExprHandle rhsN = rhs->nthcar(idx);
             ExprHandle matchN = exec(dict, lhsN, rhsN);
-            if ( ! matchN->isDict() ) {
+            if ( ! TypePredicates::isDict(matchN) ) {
                 return matchN;
             }
         }
@@ -149,7 +150,7 @@ ExprHandle MatchUnifyCommon::check_dict(ScamDict * dict,
                                         ExprHandle lhs,
                                         ExprHandle rhs)
 {
-    if ( lhs->isDict() && rhs->isDict() ) {
+    if ( TypePredicates::isDict(lhs) && TypePredicates::isDict(rhs) ) {
         if ( lhs->length() != rhs->length() ) {
             stringstream s;
             s << "dictionaries do not match " << ExprWriter::write(lhs)
@@ -163,12 +164,12 @@ ExprHandle MatchUnifyCommon::check_dict(ScamDict * dict,
 
         for ( auto key : keys ) {
             ExprHandle d = rhsAsDict->get(key);
-            if ( d->error() ) {
+            if ( TypePredicates::error(d) ) {
                 return make_common_error(ExprWriter::write(d).c_str());
             }
             ExprHandle p = lhsAsDict->get(key);
             ExprHandle result = exec(dict, p, d);
-            if ( ! result->isDict() ) {
+            if ( ! TypePredicates::isDict(result) ) {
                 return result;
             }
         }
@@ -200,7 +201,7 @@ ExprHandle MatchUnifyCommon::exec(ScamDict * dict,
 
     for ( auto checker : checkers ) {
         ExprHandle rv = (this->*checker)(dict, lhs, rhs);
-        if ( ! rv->isNil() ) {
+        if ( ! TypePredicates::isNil(rv) ) {
           return rv;
         }
     }

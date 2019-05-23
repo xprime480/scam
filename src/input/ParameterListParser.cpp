@@ -2,6 +2,7 @@
 
 #include "expr/ExprWriter.hpp"
 #include "expr/ScamSymbol.hpp"
+#include "expr/TypePredicates.hpp"
 #include "input/AlternativeParser.hpp"
 #include "input/ListParser.hpp"
 
@@ -60,7 +61,7 @@ bool ParameterListParser::accept(ExprHandle expr)
         return false;
     }
 
-    if ( ! expr->isList() ) {
+    if ( ! TypePredicates::isList(expr) ) {
         restParameter = parameters.back();
     }
 

@@ -3,6 +3,7 @@
 #include "expr/ScamData.hpp"
 #include "expr/ScamExpr.hpp"
 #include "expr/ScamNumeric.hpp"
+#include "expr/TypePredicates.hpp"
 #include "input/LambdaParser.hpp"
 #include "input/ParameterListParser.hpp"
 
@@ -134,8 +135,8 @@ void ExprWriter::writeCons(stringstream & s, const ScamData * data)
     s << "(";
     s << write(CAR(data));
     ExprHandle next = CDR(data);
-    while ( ! next->isNil() ) {
-        if ( next->isCons() ) {
+    while ( ! TypePredicates::isNil(next) ) {
+        if ( TypePredicates::isCons(next) ) {
             s << " " << write(next->getCar());
             next = next->getCdr();
         }
@@ -194,7 +195,7 @@ void ExprWriter::writeNumeric(stringstream & s, const ScamData * data)
         ExprHandle r { REALPART(data) };
         ExprHandle i { IMAGPART(data) };
 
-        if ( ! r->isInteger() || 0 != r->asInteger() ) {
+        if ( ! TypePredicates::isInteger(r) || 0 != r->asInteger() ) {
             s << write(r);
         }
 

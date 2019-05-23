@@ -3,6 +3,7 @@
 #include "Continuation.hpp"
 #include "expr/ScamExpr.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "expr/TypePredicates.hpp"
 #include "input/CountedListParser.hpp"
 #include "util/ArgListHelper.hpp"
 
@@ -23,7 +24,7 @@ Cons * Cons::makeInstance()
 
 void Cons::applyArgs(ExprHandle args, Continuation * cont)
 {
-    if ( args->error() ) {
+    if ( TypePredicates::error(args) ) {
         cont->run(args);
     }
 

@@ -2,6 +2,7 @@
 
 #include "WorkQueue.hpp"
 #include "expr/ScamExpr.hpp"
+#include "expr/TypePredicates.hpp"
 #include "input/IncludeParser.hpp"
 #include "prim/IncludeWorker.hpp"
 
@@ -38,7 +39,7 @@ void IncludeCont::mark() const
 
 void IncludeCont::run(ExprHandle expr)
 {
-    if ( expr->error() ) {
+    if ( TypePredicates::error(expr) ) {
         cont->run(expr);
         return;
     }
