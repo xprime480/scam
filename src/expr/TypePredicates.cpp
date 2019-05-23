@@ -1,9 +1,13 @@
 #include "expr/TypePredicates.hpp"
 
+#include "ScamException.hpp"
+#include "expr/ExprWriter.hpp"
 #include "expr/ScamData.hpp"
-#include "expr/ScamNumeric.hpp"
+
+#include <sstream>
 
 using namespace scam;
+using namespace std;
 
 bool TypePredicates::isNull(const ScamData * data)
 {
@@ -54,47 +58,58 @@ bool TypePredicates::isKeyword(const ScamData * data)
 
 bool TypePredicates::isNumeric(const ScamData * data)
 {
-    return ScamNumeric::isNumeric(data);
+    return 0 != (data->type & ScamData::Numeric);
 }
 
 bool TypePredicates::isExact(const ScamData * data)
 {
-    return ScamNumeric::isExact(data);
+    if ( ! isNumeric(data) ) {
+        stringstream s;
+        s << "Exactness has no meaning for <" << ExprWriter::write(data) << ">";
+        throw ScamException(s.str());
+    }
+
+    return EXACT(data);
 }
 
 bool TypePredicates::isComplex(const ScamData * data)
 {
-    return ScamNumeric::isComplex(data);
+    return ScamData::ComplexBit == (data->type & ScamData::ComplexBit);
+}
+
+bool TypePredicates::isPureComplex(const ScamData * data)
+{
+    return isComplex(data) && ! isReal(data);
 }
 
 bool TypePredicates::isReal(const ScamData * data)
 {
-    return ScamNumeric::isReal(data);
+    return ScamData::RealBit == (data->type & ScamData::RealBit);
 }
 
 bool TypePredicates::isRational(const ScamData * data)
 {
-    return ScamNumeric::isRational(data);
+    return ScamData::RationalBit == (data->type & ScamData::RationalBit);
 }
 
 bool TypePredicates::isInteger(const ScamData * data)
 {
-    return ScamNumeric::isInteger(data);
+    return ScamData::IntegerBit == (data->type & ScamData::IntegerBit);
 }
 
 bool TypePredicates::isNaN(const ScamData * data)
 {
-    return ScamNumeric::isNaN(data);
+    return ScamData::NaNBit == (data->type & ScamData::NaNBit);
 }
 
 bool TypePredicates::isNegInf(const ScamData * data)
 {
-    return ScamNumeric::isNegInf(data);
+    return ScamData::NegInfBit == (data->type & ScamData::NegInfBit);
 }
 
 bool TypePredicates::isPosInf(const ScamData * data)
 {
-    return ScamNumeric::isPosInf(data);
+    return ScamData::PosInfBit == (data->type & ScamData::PosInfBit);
 }
 
 bool TypePredicates::isNil(const ScamData * data)
@@ -113,7 +128,8 @@ bool TypePredicates::isList(const ScamData * data)
         return true;
     }
     if ( isCons(data) ) {
-        return isList(CDR(data));
+        const ScamData * cdr = (ScamData *) CDR(data);
+        return isList(cdr);
     }
 
     return false;
@@ -148,4 +164,3 @@ bool TypePredicates::isDict(const ScamData * data)
 {
     return data->type == ScamData::Dict;
 }
-

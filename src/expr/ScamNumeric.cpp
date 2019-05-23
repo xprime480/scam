@@ -13,80 +13,26 @@
 using namespace scam;
 using namespace std;
 
-bool ScamNumeric::isNumeric(const ScamData * data)
-{
-    return 0 != (data->type & ScamData::Numeric);
-}
-
-bool ScamNumeric::isExact(const ScamData * data)
-{
-    if ( ! isNumeric(data) ) {
-        stringstream s;
-        s << "Exactness has no meaning for <" << ExprWriter::write(data) << ">";
-        throw ScamException(s.str());
-    }
-
-    return EXACT(data);
-}
-
-bool ScamNumeric::isComplex(const ScamData * data)
-{
-    return ScamData::ComplexBit == (data->type & ScamData::ComplexBit);
-}
-
-bool ScamNumeric::isPureComplex(const ScamData * data)
-{
-    return isComplex(data) && ! isReal(data);
-}
-
-bool ScamNumeric::isReal(const ScamData * data)
-{
-    return ScamData::RealBit == (data->type & ScamData::RealBit);
-}
-
-bool ScamNumeric::isRational(const ScamData * data)
-{
-    return ScamData::RationalBit == (data->type & ScamData::RationalBit);
-}
-
-bool ScamNumeric::isInteger(const ScamData * data)
-{
-    return ScamData::IntegerBit == (data->type & ScamData::IntegerBit);
-}
-
-bool ScamNumeric::isNaN(const ScamData * data)
-{
-    return ScamData::NaNBit == (data->type & ScamData::NaNBit);
-}
-
-bool ScamNumeric::isNegInf(const ScamData * data)
-{
-    return ScamData::NegInfBit == (data->type & ScamData::NegInfBit);
-}
-
-bool ScamNumeric::isPosInf(const ScamData * data)
-{
-    return ScamData::PosInfBit == (data->type & ScamData::PosInfBit);
-}
-
 double ScamNumeric::asDouble(const ScamData * data)
 {
-    if ( ! isReal(data) ) {
+    if ( ! TypePredicates::isReal(data) ) {
         stringstream s;
         s << "Cannot convert <" << ExprWriter::write(data) << "> to double";
         throw ScamException(s.str());
     }
 
-    if ( isInteger(data) ) {
+    if ( TypePredicates::isInteger(data) ) {
         return (double) INTVAL(data);
     }
-    else if ( isRational(data) ) {
+    else if ( TypePredicates::isRational(data) ) {
         return ((double) NUMPART(data) / (double) DENPART(data) );
     }
-    else if ( isNaN(data) || isNegInf(data) || isPosInf(data) ) {
+    else if ( TypePredicates::isNaN(data) ||
+              TypePredicates::isNegInf(data) ||
+              TypePredicates::isPosInf(data) ) {
         // drop through to error case;
     }
-    else if ( isReal(data) ) {
+    else if ( TypePredicates::isReal(data) ) {
         return REALVAL(data);
     }
 
@@ -95,7 +41,7 @@ double ScamNumeric::asDouble(const ScamData * data)
 
 std::pair<int, int> ScamNumeric::asRational(const ScamData * data)
 {
-    if ( ! isRational(data) ) {
+    if ( ! TypePredicates::isRational(data) ) {
         stringstream s;
         s << "Cannot convert <" << ExprWriter::write(data) << "> to rational";
         throw ScamException(s.str());
@@ -104,7 +50,7 @@ std::pair<int, int> ScamNumeric::asRational(const ScamData * data)
     int num { 0 };
     int den { 1 };
 
-    if ( isInteger(data) ) {
+    if ( TypePredicates::isInteger(data) ) {
         num = INTVAL(data);
     }
     else {
@@ -117,7 +63,7 @@ std::pair<int, int> ScamNumeric::asRational(const ScamData * data)
 
 int ScamNumeric::asInteger(const ScamData * data)
 {
-    if ( ! isInteger(data) ) {
+    if ( ! TypePredicates::isInteger(data) ) {
         stringstream s;
         s << "Cannot convert <" << ExprWriter::write(data) << "> to integer";
         throw ScamException(s.str());
@@ -128,14 +74,14 @@ int ScamNumeric::asInteger(const ScamData * data)
 
 ConstScamValue ScamNumeric::realPart(const ScamData * data)
 {
-    if ( ! isNumeric(data) ) {
+    if ( ! TypePredicates::isNumeric(data) ) {
         stringstream s;
         s << "<" << ExprWriter::write(data)
           << "> is not numeric; has no real part";
         throw ScamException(s.str());
     }
 
-    if ( isPureComplex(data) ) {
+    if ( TypePredicates::isPureComplex(data) ) {
         return REALPART(data);
     }
 
@@ -144,20 +90,19 @@ ConstScamValue ScamNumeric::realPart(const ScamData * data)
 
 ConstScamValue ScamNumeric::imagPart(const ScamData * data)
 {
-    if ( ! isNumeric(data) ) {
+    if ( ! TypePredicates::isNumeric(data) ) {
         stringstream s;
         s << "<" << ExprWriter::write(data)
           << "> is not numeric; has no imaginary part";
         throw ScamException(s.str());
     }
 
-    if ( isPureComplex(data) ) {
+    if ( TypePredicates::isPureComplex(data) ) {
         return IMAGPART(data);
     }
 
     return ExpressionFactory::makeInteger(0, true);
 }
-
 
 ScamNumeric::ScamNumeric(ScamData::NaNType tag)
     : ScamExpr(ScamData::NaN, false)
@@ -182,7 +127,8 @@ ScamNumeric::ScamNumeric(ScamValue real, ScamValue imag, bool managed)
 {
     EXACT(this) = EXACT(real) && EXACT(imag);
 
-    if ( isPureComplex(real) || isPureComplex(imag) ) {
+    if ( TypePredicates::isPureComplex(real) ||
+         TypePredicates::isPureComplex(imag) ) {
         static string msg =
             "Cannot set either part a complex number to another complex number";
         throw ScamException(msg);
@@ -260,18 +206,18 @@ ScamNumeric::makeInstance(int value, bool exact, bool managed)
 
 bool ScamNumeric::equals(ConstScamValue expr) const
 {
-    if ( ! isNumeric(expr) ) {
+    if ( ! TypePredicates::isNumeric(expr) ) {
         return false;
     }
 
-    if ( isNaN(this) || isNaN(expr) ) {
-        return isNaN(this) && isNaN(expr);
+    if ( TypePredicates::isNaN(this) || TypePredicates::isNaN(expr) ) {
+        return TypePredicates::isNaN(this) && TypePredicates::isNaN(expr);
     }
-    if ( isNegInf(this) || isNegInf(expr) ) {
-        return isNegInf(this) && isNegInf(expr);
+    if ( TypePredicates::isNegInf(this) || TypePredicates::isNegInf(expr) ) {
+        return TypePredicates::isNegInf(this) && TypePredicates::isNegInf(expr);
     }
-    if ( isPosInf(this) || isPosInf(expr) ) {
-        return isPosInf(this) && isPosInf(expr);
+    if ( TypePredicates::isPosInf(this) || TypePredicates::isPosInf(expr) ) {
+        return TypePredicates::isPosInf(this) && TypePredicates::isPosInf(expr);
     }
 
     /* temporary hack!!! */
@@ -285,7 +231,8 @@ bool ScamNumeric::equals(ConstScamValue expr) const
         return false;
     }
 
-    if ( isPureComplex(this) || isPureComplex(expr) ) {
+    if ( TypePredicates::isPureComplex(this) ||
+         TypePredicates::isPureComplex(expr) ) {
         const double thisI = imagPart(this)->asDouble();
         const double thatI = imagPart(expr)->asDouble();
         if ( ::fabs(thisI- thatI) > 1e-9 ) {

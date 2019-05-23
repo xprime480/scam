@@ -2,7 +2,6 @@
 
 #include "expr/ScamData.hpp"
 #include "expr/ScamExpr.hpp"
-#include "expr/ScamNumeric.hpp"
 #include "expr/TypePredicates.hpp"
 #include "input/LambdaParser.hpp"
 #include "input/ParameterListParser.hpp"
@@ -16,7 +15,7 @@ string ExprWriter::write(const ScamData * data)
 {
     stringstream s;
 
-    if ( ScamNumeric::isNumeric(data) ) {
+    if ( TypePredicates::isNumeric(data) ) {
         writeNumeric(s, data);
     }
     else {
@@ -166,25 +165,25 @@ void ExprWriter::writeDict(stringstream & s, const ScamData * data)
 
 void ExprWriter::writeNumeric(stringstream & s, const ScamData * data)
 {
-    if ( ScamNumeric::isNaN(data) ) {
+    if ( TypePredicates::isNaN(data) ) {
         s << "+nan.0";
     }
-    else if ( ScamNumeric::isNegInf(data) ) {
+    else if ( TypePredicates::isNegInf(data) ) {
         s << "-inf.0";
     }
-    else if ( ScamNumeric::isPosInf(data) ) {
+    else if ( TypePredicates::isPosInf(data) ) {
         s << "+inf.0";
     }
-    else if ( ScamNumeric::isInteger(data) ) {
+    else if ( TypePredicates::isInteger(data) ) {
         s << INTVAL(data);
     }
-    else if ( ScamNumeric::isRational(data) ) {
+    else if ( TypePredicates::isRational(data) ) {
         s << NUMPART(data) << "/" << DENPART(data);
     }
-    else if ( ScamNumeric::isReal(data) ) {
+    else if ( TypePredicates::isReal(data) ) {
         s << REALVAL(data);
     }
-    else if ( ScamNumeric::isComplex(data) ) {
+    else if ( TypePredicates::isComplex(data) ) {
         //
         // The complexity is so that the output is in the simplest
         // form that will be read by the scanner as the same value.

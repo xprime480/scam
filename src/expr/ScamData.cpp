@@ -4,6 +4,7 @@
 #include "Env.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamNumeric.hpp"
+#include "expr/TypePredicates.hpp"
 #include "input/ClassDefParser.hpp"
 #include "input/LambdaParser.hpp"
 
@@ -86,8 +87,8 @@ void ScamData::mark() const
         metadata->mark();
     }
 
-    if ( ScamNumeric::isNumeric(this) ) {
-        if ( ScamNumeric::isPureComplex(this) ) {
+    if ( TypePredicates::isNumeric(this) ) {
+        if ( TypePredicates::isPureComplex(this) ) {
             REALPART(this)->mark();
             IMAGPART(this)->mark();
         }
