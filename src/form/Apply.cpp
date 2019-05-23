@@ -22,7 +22,7 @@ Apply * Apply::makeInstance()
     return &instance;
 }
 
-void Apply::apply(ExprHandle args, Continuation * cont, Env * env)
+void Apply::apply(ScamValue args, Continuation * cont, Env * env)
 {
     ApplyParser * parser = standardMemoryManager.make<ApplyParser>();
     if ( ! parser->accept(args) ) {
@@ -30,8 +30,8 @@ void Apply::apply(ExprHandle args, Continuation * cont, Env * env)
         return;
     }
 
-    ExprHandle sym     = parser->getParsedOp();
-    ExprHandle arglist = const_cast<ExprHandle>(parser->getArgs());
+    ScamValue sym     = parser->getParsedOp();
+    ScamValue arglist = const_cast<ScamValue>(parser->getArgs());
     Continuation * newCont =
         standardMemoryManager.make<ApplyOpCont>(arglist, cont, env);
 

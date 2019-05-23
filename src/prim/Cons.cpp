@@ -22,7 +22,7 @@ Cons * Cons::makeInstance()
     return new Cons();
 }
 
-void Cons::applyArgs(ExprHandle args, Continuation * cont)
+void Cons::applyArgs(ScamValue args, Continuation * cont)
 {
     if ( TypePredicates::error(args) ) {
         cont->run(args);
@@ -33,9 +33,9 @@ void Cons::applyArgs(ExprHandle args, Continuation * cont)
         failedArgParseMessage(myName, "(form form)", args, cont);
     }
     else {
-        ExprHandle car = parser->get(0);
-        ExprHandle cdr = parser->get(1);
-        ExprHandle cons = ExpressionFactory::makeCons(car, cdr);
+        ScamValue car = parser->get(0);
+        ScamValue cdr = parser->get(1);
+        ScamValue cons = ExpressionFactory::makeCons(car, cdr);
         cont->run(cons);
     }
 }

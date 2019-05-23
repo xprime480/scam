@@ -16,7 +16,7 @@ namespace scam
         static SingletonParser * makeInstance(ArgParser * itemParser);
 
     public:
-        ExprHandle get() const;
+        ScamValue get() const;
     };
 
     SingletonParser * getSingletonOfAnythingParser();

@@ -27,7 +27,7 @@ namespace scam
 
     public:
         void mark() const override;
-        void run(ExprHandle expr) override;
+        void run(ScamValue expr) override;
 
     private:
         const LambdaParser * lambda;
@@ -35,14 +35,14 @@ namespace scam
         Continuation * cont;
         bool       macrolike;
 
-        bool malformedActuals(ExprHandle expr) const;
+        bool malformedActuals(ScamValue expr) const;
         bool describeFormals(unsigned & len) const;
 
         void wrongNumberOfParameters(unsigned formalsLen,
                                      unsigned actualsLen) const;
 
-        bool checkArgLength(ExprHandle expr) const;
-        void finalize(ExprHandle actuals)  const;
+        bool checkArgLength(ScamValue expr) const;
+        void finalize(ScamValue actuals)  const;
     };
 }
 

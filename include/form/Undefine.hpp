@@ -15,7 +15,7 @@ namespace scam
         static Undefine * makeInstance();
 
     public:
-        void apply(ExprHandle args, Continuation * cont, Env * env) override;
+        void apply(ScamValue args, Continuation * cont, Env * env) override;
     };
 }
 

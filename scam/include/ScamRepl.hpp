@@ -21,9 +21,9 @@ namespace scam
         bool load_prelude();
         int repl();
 
-        ExprHandle read();
-        ExprHandle eval(ExprHandle form);
-        void print(ExprHandle value);
+        ScamValue read();
+        ScamValue eval(ScamValue form);
+        void print(ScamValue value);
 
         bool checkInternal(std::string & line);
     };

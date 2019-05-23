@@ -13,9 +13,9 @@
 using namespace scam;
 using namespace std;
 
-LetStarCont::LetStarCont(ExprHandle formals,
-                         ExprHandle rest,
-                         ExprHandle forms,
+LetStarCont::LetStarCont(ScamValue formals,
+                         ScamValue rest,
+                         ScamValue forms,
                          Continuation * cont,
                          Env * env,
                          ScamEngine * engine)
@@ -27,9 +27,9 @@ LetStarCont::LetStarCont(ExprHandle formals,
 {
 }
 
-LetStarCont * LetStarCont::makeInstance(ExprHandle formals,
-                                        ExprHandle rest,
-                                        ExprHandle forms,
+LetStarCont * LetStarCont::makeInstance(ScamValue formals,
+                                        ScamValue rest,
+                                        ScamValue forms,
                                         Continuation * cont,
                                         Env * env,
                                         ScamEngine * engine)
@@ -47,7 +47,7 @@ void LetStarCont::mark() const
     }
 }
 
-void LetStarCont::do_let(ExprHandle expr)
+void LetStarCont::do_let(ScamValue expr)
 {
     if ( TypePredicates::isNil(formals) ) {
         final_eval(env);
@@ -58,7 +58,7 @@ void LetStarCont::do_let(ExprHandle expr)
 
         makeBacktracker(sym);
 
-        ExprHandle safe = LetStar::safeCons(rest);
+        ScamValue safe = LetStar::safeCons(rest);
         Continuation * ch =
             standardMemoryManager.make<LetStarCont>(formals->getCdr(),
                                                     safe->getCdr(),

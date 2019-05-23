@@ -23,9 +23,9 @@ namespace scam
 
     public:
         void
-        apply(ExprHandle args, Continuation * cont, Env * env) override;
+        apply(ScamValue args, Continuation * cont, Env * env) override;
 
-        ExprHandle withEnvUpdate(Env * updated) const override;
+        ScamValue withEnvUpdate(Env * updated) const override;
     };
 }
 

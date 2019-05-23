@@ -13,7 +13,7 @@ namespace
     void addForm(Env * env, char const * name, Args... args)
     {
         ScamEnvKeyType key = ExpressionFactory::makeSymbol(name);
-        ExprHandle form = ExpressionFactory::makeForm<T>(args...);
+        ScamValue form = ExpressionFactory::makeForm<T>(args...);
         env->put(key, form);
     }
 }

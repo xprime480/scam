@@ -22,7 +22,7 @@ ScamSymbol * ScamSymbol::makeInstance(std::string const & value, bool managed)
 
 void ScamSymbol::eval(Continuation * cont, Env * env) const
 {
-    ExprHandle evaluated;
+    ScamValue evaluated;
 
     if ( env->check(this) ) {
         evaluated = env->get(this);
@@ -38,7 +38,7 @@ void ScamSymbol::eval(Continuation * cont, Env * env) const
     cont->run(evaluated);
 }
 
-bool ScamSymbol::equals(ConstExprHandle expr) const
+bool ScamSymbol::equals(ConstScamValue expr) const
 {
     if ( ! TypePredicates::isSymbol(expr) ) {
         return false;

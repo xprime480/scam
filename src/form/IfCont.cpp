@@ -34,7 +34,7 @@ void IfCont::mark() const
     }
 }
 
-void IfCont::run(ExprHandle expr)
+void IfCont::run(ScamValue expr)
 {
     Continuation::run(expr);
 
@@ -42,11 +42,11 @@ void IfCont::run(ExprHandle expr)
         cont->run(expr);
     }
     else if ( TypePredicates::truth(expr) ) {
-        ExprHandle thenExpr = parser->get(1u);
+        ScamValue thenExpr = parser->get(1u);
         thenExpr->eval(cont, env);
     }
     else if ( parser->size() > 2 ) {
-        ExprHandle elseExpr = parser->get(2u);
+        ScamValue elseExpr = parser->get(2u);
         elseExpr->eval(cont, env);
     }
     else {

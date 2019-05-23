@@ -24,7 +24,7 @@ ScamClosure * ScamClosure::makeInstance(const LambdaParser * parser,
     return new ScamClosure(parser, env, macrolike);
 }
 
-void ScamClosure::apply(ExprHandle args, Continuation * cont, Env * env)
+void ScamClosure::apply(ScamValue args, Continuation * cont, Env * env)
 {
     workQueueHelper<ClosureWorker>(CLOSUREDEF(this),
                                    CLOSUREENV(this),
@@ -34,7 +34,7 @@ void ScamClosure::apply(ExprHandle args, Continuation * cont, Env * env)
                                    MACROLIKE(this));
 }
 
-ExprHandle ScamClosure::withEnvUpdate(Env * updated) const
+ScamValue ScamClosure::withEnvUpdate(Env * updated) const
 {
     return ExpressionFactory::makeClosure(CLOSUREDEF(this), updated);
 }

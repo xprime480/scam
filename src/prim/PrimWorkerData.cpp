@@ -9,7 +9,7 @@
 using namespace scam;
 using namespace std;
 
-PrimWorkerData::PrimWorkerData(ExprHandle args,
+PrimWorkerData::PrimWorkerData(ScamValue args,
                                Continuation * original,
                                Env * env,
                                Primitive * caller)
@@ -34,7 +34,7 @@ void PrimWorkerData::mapEval() const
     args->mapEval(cont, env);
 }
 
-void PrimWorkerData::handleResult(ExprHandle expr)
+void PrimWorkerData::handleResult(ScamValue expr)
 {
     if ( TypePredicates::error(expr) ) {
         original->run(expr);

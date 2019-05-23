@@ -23,7 +23,7 @@ LetRec * LetRec::makeInstance()
     return &instance;
 }
 
-void LetRec::apply(ExprHandle args, Continuation * cont, Env * env)
+void LetRec::apply(ScamValue args, Continuation * cont, Env * env)
 {
     LetParser * parser = standardMemoryManager.make<LetParser>();
     if ( ! parser->accept(args) ) {

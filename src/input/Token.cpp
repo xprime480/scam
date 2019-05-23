@@ -19,7 +19,7 @@ Token::Token(TokenType type, string const & text)
 {
 }
 
-Token::Token(TokenType type, std::string const & text, ExprHandle expr)
+Token::Token(TokenType type, std::string const & text, ScamValue expr)
     : type(type)
     , text(text)
     , expr(expr)
@@ -36,7 +36,7 @@ string const & Token::getText() const
     return text;
 }
 
-ExprHandle Token::getExpr() const
+ScamValue Token::getExpr() const
 {
     return expr;
 }

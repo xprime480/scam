@@ -19,7 +19,7 @@ UndefineCont * UndefineCont::makeInstance(ScamEnvKeyType sym,
     return new UndefineCont(sym, cont, env);
 }
 
-void UndefineCont::finish(ExprHandle expr) const
+void UndefineCont::finish(ScamValue expr) const
 {
     env->remove(sym);
 }

@@ -23,7 +23,7 @@ namespace scam
                                          ScamEngine * engine);
 
     protected:
-        void finish(ExprHandle expr) const override;
+        void finish(ScamValue expr) const override;
 
     private:
         ScamEngine * engine;

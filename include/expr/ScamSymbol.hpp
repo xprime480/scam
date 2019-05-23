@@ -16,7 +16,7 @@ namespace scam
     public:
         void eval(Continuation * cont, Env * env) const override;
 
-        bool equals(ConstExprHandle expr) const override;
+        bool equals(ConstScamValue expr) const override;
     };
 }
 

@@ -15,9 +15,9 @@ namespace scam
     public:
         CompareOp(char const * name, std::shared_ptr<OpImpl> impl);
 
-        void applyArgs(ExprHandle args, Continuation * cont) override;
+        void applyArgs(ScamValue args, Continuation * cont) override;
 
-        bool equals(ConstExprHandle expr) const override;
+        bool equals(ConstScamValue expr) const override;
 
     private:
         std::shared_ptr<OpImpl> impl;

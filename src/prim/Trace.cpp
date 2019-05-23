@@ -18,7 +18,7 @@ Trace * Trace::makeInstance()
     return new Trace();
 }
 
-void Trace::applyArgs(ExprHandle args, Continuation * cont)
+void Trace::applyArgs(ScamValue args, Continuation * cont)
 {
     cerr << ExprWriter::write(args) << "\n";
     cont->run(args);

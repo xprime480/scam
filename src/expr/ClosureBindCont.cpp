@@ -46,7 +46,7 @@ void ClosureBindCont::mark() const
     }
 }
 
-void ClosureBindCont::run(ExprHandle expr)
+void ClosureBindCont::run(ScamValue expr)
 {
     Continuation::run(expr);
 
@@ -61,7 +61,7 @@ void ClosureBindCont::run(ExprHandle expr)
     }
 }
 
-bool ClosureBindCont::malformedActuals(ExprHandle expr) const
+bool ClosureBindCont::malformedActuals(ScamValue expr) const
 {
     if ( TypePredicates::isCons(expr) ||
          TypePredicates::isNil(expr) ||
@@ -69,7 +69,7 @@ bool ClosureBindCont::malformedActuals(ExprHandle expr) const
         return false;
     }
 
-    ExprHandle err =
+    ScamValue err =
         ExpressionFactory::makeError( "Expected a paramter list, got: ",
                                       ExprWriter::write(expr));
     cont->run(err);
@@ -94,7 +94,7 @@ bool ClosureBindCont::describeFormals(unsigned & len) const
 void ClosureBindCont::wrongNumberOfParameters(unsigned formalsLen,
                                               unsigned actualsLen) const
 {
-    ExprHandle err =
+    ScamValue err =
         ExpressionFactory::makeError("Expected ",
                                      formalsLen,
                                      " parameters; ",
@@ -103,7 +103,7 @@ void ClosureBindCont::wrongNumberOfParameters(unsigned formalsLen,
     cont->run(err);
 }
 
-bool ClosureBindCont::checkArgLength(ExprHandle expr) const
+bool ClosureBindCont::checkArgLength(ScamValue expr) const
 {
     unsigned exp { 0 };
     bool optFinal = describeFormals(exp);
@@ -117,9 +117,9 @@ bool ClosureBindCont::checkArgLength(ExprHandle expr) const
     return true;
 }
 
-void ClosureBindCont::finalize(ExprHandle actuals)  const
+void ClosureBindCont::finalize(ScamValue actuals)  const
 {
-    ExprHandle formals = lambda->getArgs()->getValue();
+    ScamValue formals = lambda->getArgs()->getValue();
     Binder binder(capture);
     Env * extended = binder.bind(formals, actuals);
 
@@ -128,6 +128,6 @@ void ClosureBindCont::finalize(ExprHandle actuals)  const
           ? standardMemoryManager.make<MacroEvalCont>(cont, capture)
           : cont );
 
-    ExprHandle forms = lambda->getFormList();
+    ScamValue forms = lambda->getFormList();
     workQueueHelper<EvalWorker>(forms, extended, c);
 }

@@ -23,7 +23,7 @@ Amb * Amb::makeInstance(ScamEngine * engine)
     return new Amb(engine);
 }
 
-void Amb::apply(ExprHandle args, Continuation * cont, Env * env)
+void Amb::apply(ScamValue args, Continuation * cont, Env * env)
 {
     ListParser * parser = getListOfAnythingParser();
     if ( ! parser->accept(args) ) {

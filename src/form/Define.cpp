@@ -22,7 +22,7 @@ Define * Define::makeInstance(ScamEngine * engine)
     return new Define(engine);
 }
 
-void Define::apply(ExprHandle args, Continuation * cont, Env * env)
+void Define::apply(ScamValue args, Continuation * cont, Env * env)
 {
     DefineParser * parser = standardMemoryManager.make<DefineParser>();
 

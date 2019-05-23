@@ -42,7 +42,7 @@ void IfWorker::run()
 
     Continuation * newCont =
         standardMemoryManager.make<IfCont>(parser, cont, env);
-    ExprHandle test = const_cast<ExprHandle>(parser->get(0u));
+    ScamValue test = const_cast<ScamValue>(parser->get(0u));
 
     test->eval(newCont, env);
 }

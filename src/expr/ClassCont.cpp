@@ -38,7 +38,7 @@ void ClassCont::mark() const
     }
 }
 
-void ClassCont::run(ExprHandle expr)
+void ClassCont::run(ScamValue expr)
 {
     Continuation::run(expr);
 
@@ -47,7 +47,7 @@ void ClassCont::run(ExprHandle expr)
     }
     else {
         InstanceVec instances;
-        ExprHandle  result;
+        ScamValue  result;
 
         result = build(cls, instances);
         if ( TypePredicates::error(result) ) {
@@ -60,9 +60,9 @@ void ClassCont::run(ExprHandle expr)
     }
 }
 
-ExprHandle ClassCont::build(ClassHandle cls, InstanceVec & instances) const
+ScamValue ClassCont::build(ClassHandle cls, InstanceVec & instances) const
 {
-    ExprHandle temp;
+    ScamValue temp;
 
     for ( ;; ) {
         ScamInstance * instance = ExpressionFactory::makeInstance(cls, env);
@@ -100,7 +100,7 @@ ScamInstance * ClassCont::connect(InstanceVec & instances) const
     return self;
 }
 
-ExprHandle ClassCont::get_parent(ScamClassAdapter const & adapter) const
+ScamValue ClassCont::get_parent(ScamClassAdapter const & adapter) const
 {
     ScamEnvKeyType base = adapter.getBase();
     if ( ExprWriter::write(base) == "Root" ) {
@@ -111,7 +111,7 @@ ExprHandle ClassCont::get_parent(ScamClassAdapter const & adapter) const
         return base_class_not_found(base);
     }
 
-    ExprHandle b = env->get(base);
+    ScamValue b = env->get(base);
     if ( ! TypePredicates::isClass(b) ) {
         return base_class_not_class(base, b);
     }
@@ -119,15 +119,15 @@ ExprHandle ClassCont::get_parent(ScamClassAdapter const & adapter) const
     return b;
 }
 
-ExprHandle ClassCont::base_class_not_found(ScamEnvKeyType name) const
+ScamValue ClassCont::base_class_not_found(ScamEnvKeyType name) const
 {
     stringstream s;
     s << "Class definition: " << ExprWriter::write(name) << " not found";
     return ExpressionFactory::makeError(s.str());
 }
 
-ExprHandle ClassCont::base_class_not_class(ScamEnvKeyType name,
-                                           ExprHandle value) const
+ScamValue ClassCont::base_class_not_class(ScamEnvKeyType name,
+                                           ScamValue value) const
 {
     stringstream s;
     s << "Name: " << ExprWriter::write(name)
@@ -135,7 +135,7 @@ ExprHandle ClassCont::base_class_not_class(ScamEnvKeyType name,
     return ExpressionFactory::makeError(s.str());
 }
 
-void ClassCont::init(ScamInstance * instance, ExprHandle expr) const
+void ClassCont::init(ScamInstance * instance, ScamValue expr) const
 {
     workQueueHelper<ClassInitWorker>(instance, expr, cont, env);
 }

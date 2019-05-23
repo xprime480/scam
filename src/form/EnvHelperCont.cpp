@@ -30,7 +30,7 @@ void EnvHelperCont::mark() const
     }
 }
 
-void EnvHelperCont::run(ExprHandle expr)
+void EnvHelperCont::run(ScamValue expr)
 {
     finish(expr);
     cont->run(ExpressionFactory::makeNull());

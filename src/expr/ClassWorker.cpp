@@ -11,7 +11,7 @@ using namespace scam;
 using namespace std;
 
 ClassWorker::ClassWorker(const ScamClass * cls,
-                         ExprHandle args,
+                         ScamValue args,
                          Continuation * cont,
                          Env * env)
     : Worker("ClassWorker")
@@ -23,7 +23,7 @@ ClassWorker::ClassWorker(const ScamClass * cls,
 }
 
 ClassWorker * ClassWorker::makeInstance(const ScamClass * cls,
-                                        ExprHandle args,
+                                        ScamValue args,
                                         Continuation * cont,
                                         Env * env)
 {

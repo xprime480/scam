@@ -16,18 +16,18 @@ Instantiator::Instantiator(size_t & counter)
 {
 }
 
-ExprHandle Instantiator::exec(SingletonParser * parser)
+ScamValue Instantiator::exec(SingletonParser * parser)
 {
-    ExprHandle expr = parser->get();
+    ScamValue expr = parser->get();
     return inst_value(expr);
 }
 
-ExprHandle Instantiator::map_value(ExprHandle val)
+ScamValue Instantiator::map_value(ScamValue val)
 {
     return inst_value(val);
 }
 
-ExprHandle Instantiator::inst_value(ExprHandle expr)
+ScamValue Instantiator::inst_value(ScamValue expr)
 {
     if ( TypePredicates::isKeyword(expr) ) {
         return inst_keyword(expr);
@@ -46,16 +46,16 @@ ExprHandle Instantiator::inst_value(ExprHandle expr)
     }
 }
 
-ExprHandle Instantiator::new_mapping(ExprHandle expr)
+ScamValue Instantiator::new_mapping(ScamValue expr)
 {
     stringstream s;
     s << ":kw" << ++counter;
-    ExprHandle value = ExpressionFactory::makeKeyword(s.str());
+    ScamValue value = ExpressionFactory::makeKeyword(s.str());
     dict->put(expr, value);
     return value;
 }
 
-ExprHandle Instantiator::inst_keyword(ExprHandle expr)
+ScamValue Instantiator::inst_keyword(ScamValue expr)
 {
     if ( dict->has(expr) ) {
         return dict->get(expr);
@@ -64,17 +64,17 @@ ExprHandle Instantiator::inst_keyword(ExprHandle expr)
     return new_mapping(expr);
 }
 
-ExprHandle Instantiator::inst_cons(ExprHandle expr)
+ScamValue Instantiator::inst_cons(ScamValue expr)
 {
     return map_cons(expr);
 }
 
-ExprHandle Instantiator::inst_vector(ExprHandle expr)
+ScamValue Instantiator::inst_vector(ScamValue expr)
 {
     return map_vector(expr);
 }
 
-ExprHandle Instantiator::inst_dict(ExprHandle expr)
+ScamValue Instantiator::inst_dict(ScamValue expr)
 {
     return map_dict(expr);
 }

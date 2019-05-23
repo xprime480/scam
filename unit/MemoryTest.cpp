@@ -57,8 +57,8 @@ protected:
         expectNonManaged(cut1, cut2);
     }
 
-    void expectManaged(ExprHandle cut1,
-                       ExprHandle cut2,
+    void expectManaged(ScamValue cut1,
+                       ScamValue cut2,
                        size_t count = 2)
     {
         EXPECT_NE(cut1, cut2);
@@ -66,7 +66,7 @@ protected:
         EXPECT_EQ(count, mm.getCurrentCount());
     }
 
-    void expectNonManaged(ExprHandle cut1, ExprHandle cut2)
+    void expectNonManaged(ScamValue cut1, ScamValue cut2)
     {
         EXPECT_EQ(cut1, cut2);
         EXPECT_EQ(0, mm.getCreateCount());
@@ -188,7 +188,7 @@ TEST_F(MemoryTest, GCTestWithProxy)
 
 /*****************************************************************
  * The second set of tests test the basic functionality with
- *  the ExprHandleobjects.
+ *  the ScamValueobjects.
  *
  * First test the primitive types.
  *
@@ -329,8 +329,8 @@ TEST_F(MemoryTest, TestScamError)
 
 TEST_F(MemoryTest, TestScamCons)
 {
-    ExprHandle car = mm.make<ScamNumeric>(1, true);
-    ExprHandle cdr = mm.make<ScamNumeric>(2, true);
+    ScamValue car = mm.make<ScamNumeric>(1, true);
+    ScamValue cdr = mm.make<ScamNumeric>(2, true);
     ScamCons * cons1 = mm.make<ScamCons>(car, cdr);
 
     cons1->mark();
@@ -343,11 +343,11 @@ TEST_F(MemoryTest, TestScamCons)
 TEST_F(MemoryTest, TestScamDict)
 {
     ScamDict * dict1 = mm.make<ScamDict>();
-    ExprHandle key1 = mm.make<ScamKeyword>(":key1");
-    ExprHandle key2 = mm.make<ScamKeyword>(":key2");
-    ExprHandle val1 = mm.make<ScamNumeric>(1, true);
-    ExprHandle val2 = mm.make<ScamNumeric>(2, true);
-    ExprHandle val3 = mm.make<ScamNumeric>(3, true);
+    ScamValue key1 = mm.make<ScamKeyword>(":key1");
+    ScamValue key2 = mm.make<ScamKeyword>(":key2");
+    ScamValue val1 = mm.make<ScamNumeric>(1, true);
+    ScamValue val2 = mm.make<ScamNumeric>(2, true);
+    ScamValue val3 = mm.make<ScamNumeric>(3, true);
 
     dict1->put(key1, val1);
     dict1->put(key2, val2);
@@ -360,9 +360,9 @@ TEST_F(MemoryTest, TestScamDict)
 
 TEST_F(MemoryTest, TestScamVector)
 {
-    ExprHandle val1 = mm.make<ScamNumeric>(1, true);
-    ExprHandle val2 = mm.make<ScamNumeric>(2, true);
-    ExprHandle val3 = mm.make<ScamNumeric>(3, true);
+    ScamValue val1 = mm.make<ScamNumeric>(1, true);
+    ScamValue val2 = mm.make<ScamNumeric>(2, true);
+    ScamValue val3 = mm.make<ScamNumeric>(3, true);
 
     ExprVec elts;
     elts.push_back(val1);
@@ -390,9 +390,9 @@ TEST_F(MemoryTest, TestScamClosure)
     ScamSymbol * symPlus = ExpressionFactory::makeSymbol("+");
     ScamSymbol * symA    = ExpressionFactory::makeSymbol("a");
     ScamSymbol * symB    = ExpressionFactory::makeSymbol("b");
-    ExprHandle formals   = ExpressionFactory::makeList(symA, symB);
-    ExprHandle aForm     = ExpressionFactory::makeList(symPlus, symA, symB);
-    ExprHandle forms     = ExpressionFactory::makeList(formals, aForm);
+    ScamValue formals   = ExpressionFactory::makeList(symA, symB);
+    ScamValue aForm     = ExpressionFactory::makeList(symPlus, symA, symB);
+    ScamValue forms     = ExpressionFactory::makeList(formals, aForm);
     Env * env = standardMemoryManager.make<Env>();
 
     LambdaParser * lambda = mm.make<LambdaParser>();
@@ -415,7 +415,7 @@ TEST_F(MemoryTest, TestScamClass)
 {
     ScamSymbol * base    = ExpressionFactory::makeSymbol("Root");
 
-    ExprHandle vars    = ExpressionFactory::makeNil();
+    ScamValue vars    = ExpressionFactory::makeNil();
 
     ScamSymbol * symPlus = ExpressionFactory::makeSymbol("+");
     ScamSymbol * symA    = ExpressionFactory::makeSymbol("a");
@@ -423,11 +423,11 @@ TEST_F(MemoryTest, TestScamClass)
 
     ScamSymbol * meth    = ExpressionFactory::makeSymbol("method");
 
-    ExprHandle formals = ExpressionFactory::makeList(symA, symB);
+    ScamValue formals = ExpressionFactory::makeList(symA, symB);
 
-    ExprHandle aForm   = ExpressionFactory::makeList(symPlus, symA, symB);
-    ExprHandle func    = ExpressionFactory::makeList(meth, formals, aForm);
-    ExprHandle def     = ExpressionFactory::makeList(base, vars, func);
+    ScamValue aForm   = ExpressionFactory::makeList(symPlus, symA, symB);
+    ScamValue func    = ExpressionFactory::makeList(meth, formals, aForm);
+    ScamValue def     = ExpressionFactory::makeList(base, vars, func);
 
     Env * env = mm.make<Env>();
 
@@ -448,15 +448,15 @@ TEST_F(MemoryTest, TestScamInstance)
     ScamSymbol * symA    = ExpressionFactory::makeSymbol("a");
     ScamSymbol * symB    = ExpressionFactory::makeSymbol("b");
 
-    ExprHandle name    = ExpressionFactory::makeSymbol("f");
-    ExprHandle symQ    = ExpressionFactory::makeSymbol("q");
-    ExprHandle args    = ExpressionFactory::makeList(symQ);
-    ExprHandle aForm   = ExpressionFactory::makeList(symPlus, symA, symB, symQ);
+    ScamValue name    = ExpressionFactory::makeSymbol("f");
+    ScamValue symQ    = ExpressionFactory::makeSymbol("q");
+    ScamValue args    = ExpressionFactory::makeList(symQ);
+    ScamValue aForm   = ExpressionFactory::makeList(symPlus, symA, symB, symQ);
     ScamSymbol * nom     = ExpressionFactory::makeSymbol("Notre Dame");
-    ExprHandle vars    = ExpressionFactory::makeList(symA, symB);
-    ExprHandle fun1    = ExpressionFactory::makeList(name, args, aForm);
+    ScamValue vars    = ExpressionFactory::makeList(symA, symB);
+    ScamValue fun1    = ExpressionFactory::makeList(name, args, aForm);
 
-    ExprHandle classDef = ExpressionFactory::makeList(nom, vars, fun1);
+    ScamValue classDef = ExpressionFactory::makeList(nom, vars, fun1);
 
     ClassDefParser * def = mm.make<ClassDefParser>();
     ASSERT_TRUE(def->accept(classDef));
@@ -482,7 +482,7 @@ TEST_F(MemoryTest, TestScamContinuation)
 TEST_F(MemoryTest, TestExtractor)
 {
     Continuation * cont = mm.make<Extractor>();
-    ExprHandle expr = mm.make<ScamKeyword>(":best");
+    ScamValue expr = mm.make<ScamKeyword>(":best");
 
     cont->run(expr);
     cont->mark();
@@ -494,7 +494,7 @@ TEST_F(MemoryTest, TestEnv)
     Env * top = standardMemoryManager.make<Env>();
     Env * env = top->extend();
     ScamSymbol * key = ExpressionFactory::makeSymbol("f");
-    ExprHandle val = ExpressionFactory::makeInteger(333, true);
+    ScamValue val = ExpressionFactory::makeInteger(333, true);
 
     top->put(key, val);
     env->mark();

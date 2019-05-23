@@ -15,7 +15,7 @@ namespace scam
         static Define * makeInstance(ScamEngine * engine);
 
     public:
-        void apply(ExprHandle args, Continuation * cont, Env * env) override;
+        void apply(ScamValue args, Continuation * cont, Env * env) override;
 
     private:
         ScamEngine * engine;

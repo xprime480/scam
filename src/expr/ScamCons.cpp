@@ -11,14 +11,14 @@
 using namespace scam;
 using namespace std;
 
-ScamCons::ScamCons(ExprHandle car, ExprHandle cdr)
+ScamCons::ScamCons(ScamValue car, ScamValue cdr)
     : ScamExpr(ScamData::Cons)
 {
     CAR(this) = car;
     CDR(this) = cdr;
 }
 
-ScamCons * ScamCons::makeInstance(ExprHandle car, ExprHandle cdr)
+ScamCons * ScamCons::makeInstance(ScamValue car, ScamValue cdr)
 {
     return new ScamCons(car, cdr);
 }
@@ -33,7 +33,7 @@ void ScamCons::mapEval(Continuation * cont, Env * env) const
     workQueueHelper<MapWorker>(cont, env, CAR(this), CDR(this));
 }
 
-bool ScamCons::equals(ConstExprHandle expr) const
+bool ScamCons::equals(ConstScamValue expr) const
 {
     if ( ! TypePredicates::isCons(expr) ) {
         return false;
@@ -42,19 +42,19 @@ bool ScamCons::equals(ConstExprHandle expr) const
     return (CAR(this)->equals(CAR(expr)) && CDR(this)->equals(CDR(expr)));
 }
 
-ExprHandle ScamCons::getCar() const
+ScamValue ScamCons::getCar() const
 {
     return CAR(this);
 }
 
-ExprHandle ScamCons::getCdr() const
+ScamValue ScamCons::getCdr() const
 {
     return CDR(this);
 }
 
 size_t ScamCons::length() const
 {
-    ExprHandle cdr = CDR(this);
+    ScamValue cdr = CDR(this);
     size_t len = 1;
     if ( TypePredicates::isCons(cdr) ) {
         len += cdr->length();
@@ -66,17 +66,17 @@ size_t ScamCons::length() const
     return len;
 }
 
-ExprHandle ScamCons::nthcar(size_t n) const
+ScamValue ScamCons::nthcar(size_t n) const
 {
-    auto f = [=] () -> ExprHandle {
+    auto f = [=] () -> ScamValue {
         return ExpressionFactory::makeError("Index ",
                                             n,
                                             " requested for ",
                                             ExprWriter::write(this));
     };
 
-    ExprHandle cdr = CDR(this);
-    ExprHandle rv;
+    ScamValue cdr = CDR(this);
+    ScamValue rv;
 
     if ( 0 == n ) {
         rv = CAR(this);
@@ -97,17 +97,17 @@ ExprHandle ScamCons::nthcar(size_t n) const
     return rv;
 }
 
-ExprHandle ScamCons::nthcdr(size_t n) const
+ScamValue ScamCons::nthcdr(size_t n) const
 {
-    auto f = [=] () -> ExprHandle {
+    auto f = [=] () -> ScamValue {
         return ExpressionFactory::makeError("Index ",
                                             n,
                                             " requested for ",
                                             ExprWriter::write(this));
     };
 
-    ExprHandle cdr = CDR(this);
-    ExprHandle rv;
+    ScamValue cdr = CDR(this);
+    ScamValue rv;
 
     if ( 0 == n ) {
         rv = cdr;

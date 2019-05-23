@@ -26,19 +26,19 @@ namespace scam
 
     using NumericalAlgorithm =
         std::function<ExtendedNumeric(std::vector<ExtendedNumeric> const &,
-                                      ExprHandle & state)>;
+                                      ScamValue & state)>;
 
-    extern ExprHandle numericAlgorithm(NumericListParser * parser,
+    extern ScamValue numericAlgorithm(NumericListParser * parser,
                                        std::string const & context,
                                        NumericalAlgorithm algo);
 
-    extern ExprHandle compareAlgorithm(RelopsListParser * parser,
+    extern ScamValue compareAlgorithm(RelopsListParser * parser,
                                        std::string const & context,
                                        std::shared_ptr<OpImpl> impl);
 
     extern void failedArgParseMessage(const char * who,
                                       const char * exp,
-                                      ExprHandle act,
+                                      ScamValue act,
                                       Continuation * cont);
 
 }

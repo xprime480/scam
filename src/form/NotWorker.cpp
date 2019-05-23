@@ -41,7 +41,7 @@ void NotWorker::run()
     Worker::run();
 
     Continuation * newCont = standardMemoryManager.make<NotCont>(cont);
-    ExprHandle form = parser->get();
+    ScamValue form = parser->get();
     form->eval(newCont, env);
 }
 

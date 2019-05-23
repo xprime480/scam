@@ -17,9 +17,9 @@ Car * Car::makeInstance()
     return new Car();
 }
 
-void Car::finish(ExprHandle cons, Continuation * cont)
+void Car::finish(ScamValue cons, Continuation * cont)
 {
-    ExprHandle car = cons->getCar();
+    ScamValue car = cons->getCar();
     cont->run(car);
 }
 

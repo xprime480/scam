@@ -24,9 +24,9 @@ namespace scam
                                             ScamEngine * engine);
 
     protected:
-        void do_next(ExprHandle formals,
-                     ExprHandle values,
-                     ExprHandle forms) override;
+        void do_next(ScamValue formals,
+                     ScamValue values,
+                     ScamValue forms) override;
 
     private:
         ScamEngine * engine;

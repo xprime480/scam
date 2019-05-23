@@ -11,7 +11,7 @@
 using namespace scam;
 using namespace std;
 
-ExprHandle const QuasiQuote::spliceTag =
+ScamValue const QuasiQuote::spliceTag =
     ExpressionFactory::makeSymbol("**splicing**", false);
 
 static const char * myName = "quasiquote";
@@ -27,7 +27,7 @@ QuasiQuote * QuasiQuote::makeInstance()
     return &instance;
 }
 
-void QuasiQuote::apply(ExprHandle args, Continuation * cont, Env * env)
+void QuasiQuote::apply(ScamValue args, Continuation * cont, Env * env)
 {
     SingletonParser * parser = getSingletonOfAnythingParser();
     if ( ! parser->accept(args) ) {

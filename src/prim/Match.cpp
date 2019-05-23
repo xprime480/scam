@@ -19,7 +19,7 @@ Match * Match::makeInstance()
     return new Match();
 }
 
-void Match::applyArgs(ExprHandle args, Continuation * cont)
+void Match::applyArgs(ScamValue args, Continuation * cont)
 {
     MatchUnifyParser * parser =
         standardMemoryManager.make<MatchUnifyParser>(true);

@@ -13,7 +13,7 @@ namespace scam
     public:
         static Eval * makeInstance();
 
-        void apply(ExprHandle args, Continuation * cont, Env * env) override;
+        void apply(ScamValue args, Continuation * cont, Env * env) override;
     };
 }
 

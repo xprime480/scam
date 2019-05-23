@@ -20,7 +20,7 @@ NumericConverter::NumericConverter(const char * pos)
     scanNum();
 }
 
-ExprHandle includeSign(int sign, ExprHandle expr)
+ScamValue includeSign(int sign, ScamValue expr)
 {
     if ( sign < 0 ) {
         ExtendedNumeric lhs(ExpressionFactory::makeInteger(sign, true));
@@ -31,7 +31,7 @@ ExprHandle includeSign(int sign, ExprHandle expr)
     return expr;
 }
 
-ExprHandle NumericConverter::simplify(ExprHandle value)
+ScamValue NumericConverter::simplify(ScamValue value)
 {
     if ( ! TypePredicates::isNumeric(value) ) {
         return value;
@@ -45,10 +45,10 @@ ExprHandle NumericConverter::simplify(ExprHandle value)
 
     if ( TypePredicates::isComplex(value) &&
          ! TypePredicates::isReal(value) ) {
-        ExprHandle imag = simplify(const_cast<ExprHandle>(value->imagPart()));
+        ScamValue imag = simplify(const_cast<ScamValue>(value->imagPart()));
         if ( imag && TypePredicates::isInteger(imag) &&
              0 == imag->asInteger() ) {
-            value = const_cast<ExprHandle>(value->realPart());
+            value = const_cast<ScamValue>(value->realPart());
         }
     }
 
@@ -77,7 +77,7 @@ ExprHandle NumericConverter::simplify(ExprHandle value)
     return value;
 }
 
-ExprHandle NumericConverter::getValue() const
+ScamValue NumericConverter::getValue() const
 {
     return value;
 }
@@ -99,11 +99,11 @@ void NumericConverter::scanNum()
 
 void NumericConverter::scanComplex()
 {
-    ExprHandle rv = ExpressionFactory::makeNull();
+    ScamValue rv = ExpressionFactory::makeNull();
     const char * original = pos;
 
-    ExprHandle real = scanInfNan();
-    ExprHandle imag = ExpressionFactory::makeNull();
+    ScamValue real = scanInfNan();
+    ScamValue imag = ExpressionFactory::makeNull();
 
     if ( TypePredicates::isNull(real) ) { // not infnan
         int sign = scanSign(false);
@@ -193,9 +193,9 @@ void NumericConverter::scanComplex()
     value = simplify(rv);
 }
 
-ExprHandle NumericConverter::scanReal()
+ScamValue NumericConverter::scanReal()
 {
-    ExprHandle rv = scanInfNan();
+    ScamValue rv = scanInfNan();
     if ( ! TypePredicates::isNull(rv) ) {
         return rv;
     }
@@ -214,11 +214,11 @@ ExprHandle NumericConverter::scanReal()
     return rv;
 }
 
-ExprHandle NumericConverter::scanUReal()
+ScamValue NumericConverter::scanUReal()
 {
     const char * original = pos;
 
-    ExprHandle rv10 { ExpressionFactory::makeNull() };
+    ScamValue rv10 { ExpressionFactory::makeNull() };
     const char * pos10 = pos;
     if ( 10 == base ) {
         rv10 = scanDecimal();
@@ -229,7 +229,7 @@ ExprHandle NumericConverter::scanUReal()
 
     pos = original;
 
-    ExprHandle rvN = scanUInteger();
+    ScamValue rvN = scanUInteger();
     if ( TypePredicates::isNull(rvN) ) {
         pos = pos10;
         return rv10;
@@ -250,21 +250,21 @@ ExprHandle NumericConverter::scanUReal()
 
     ++pos;
 
-    ExprHandle rvD = scanUInteger();
+    ScamValue rvD = scanUInteger();
     if ( TypePredicates::isNull(rvD) ) {
         pos = original;
         return ( posN > pos10 ) ? rvN : rv10;
     }
 
-    ExprHandle rv = makeRationalWithExactness(rvN->asInteger(),
+    ScamValue rv = makeRationalWithExactness(rvN->asInteger(),
                                               rvD->asInteger());
     return rv;
 }
 
-ExprHandle NumericConverter::scanDecimal()
+ScamValue NumericConverter::scanDecimal()
 {
     const char * original = pos;
-    ExprHandle rv { ExpressionFactory::makeNull() };
+    ScamValue rv { ExpressionFactory::makeNull() };
 
     if ( scanRadixPoint() ) {
         rv = makeFraction(1);
@@ -281,7 +281,7 @@ ExprHandle NumericConverter::scanDecimal()
         }
 
         if ( scanRadixPoint() ) {
-            ExprHandle fp = makeFraction(0);
+            ScamValue fp = makeFraction(0);
             if ( ! TypePredicates::isNull(rv) ) {
                 ExtendedNumeric lhs(rv);
                 ExtendedNumeric rhs(fp);
@@ -291,7 +291,7 @@ ExprHandle NumericConverter::scanDecimal()
         }
     }
 
-    ExprHandle suffix = scanSuffix();
+    ScamValue suffix = scanSuffix();
     if ( TypePredicates::isReal(suffix) ) {
         ExtendedNumeric lhs(rv);
         ExtendedNumeric rhs(suffix);
@@ -302,7 +302,7 @@ ExprHandle NumericConverter::scanDecimal()
     return rv;
 }
 
-ExprHandle NumericConverter::scanUInteger()
+ScamValue NumericConverter::scanUInteger()
 {
     const char * original = pos;
 
@@ -353,9 +353,9 @@ void NumericConverter::scanPrefix()
     }
 }
 
-ExprHandle NumericConverter::scanInfNan()
+ScamValue NumericConverter::scanInfNan()
 {
-    ExprHandle rv { ExpressionFactory::makeNull() };
+    ScamValue rv { ExpressionFactory::makeNull() };
 
     if ( 0 == strncmp(pos, "+nan.0", 6) || 0 == strncmp(pos, "-nan.0", 6) ) {
         rv = ExpressionFactory::makeNaN();
@@ -374,15 +374,15 @@ ExprHandle NumericConverter::scanInfNan()
     return rv;
 }
 
-ExprHandle NumericConverter::scanSuffix()
+ScamValue NumericConverter::scanSuffix()
 {
     const char * original = pos;
-    ExprHandle rv { ExpressionFactory::makeNull() };
+    ScamValue rv { ExpressionFactory::makeNull() };
 
     if ( 'e' == tolower(*pos) ) {
         ++pos;
         int sign = scanSign();
-        ExprHandle value = scanUInteger();
+        ScamValue value = scanUInteger();
         if ( TypePredicates::isInteger(value) ) {
             double suffix = makeMultiplier(sign * value->asInteger());
             rv = makeRealWithExactness(suffix);
@@ -446,10 +446,10 @@ void NumericConverter::baseSeen(char x)
     }
 }
 
-ExprHandle NumericConverter::makeFraction(unsigned minCount)
+ScamValue NumericConverter::makeFraction(unsigned minCount)
 {
     const char * original = pos;
-    ExprHandle rv = scanUInteger();
+    ScamValue rv = scanUInteger();
 
     unsigned count = pos - original;
     if ( count < minCount ) {
@@ -548,12 +548,12 @@ int NumericConverter::convertDigit(char digit) const
     return -1;
 }
 
-ExprHandle
-NumericConverter::makeComplexPolar(ExprHandle r, ExprHandle theta) const
+ScamValue
+NumericConverter::makeComplexPolar(ScamValue r, ScamValue theta) const
 {
-    ExprHandle nan = ExpressionFactory::makeNaN();
-    ExprHandle real;
-    ExprHandle imag;
+    ScamValue nan = ExpressionFactory::makeNaN();
+    ScamValue real;
+    ScamValue imag;
 
     if ( TypePredicates::isNaN(r) ||
          TypePredicates::isNegInf(r) ||
@@ -579,23 +579,23 @@ NumericConverter::makeComplexPolar(ExprHandle r, ExprHandle theta) const
         imag = ExpressionFactory::makeReal(y, false);
     }
 
-    ExprHandle rv = ExpressionFactory::makeComplex(real, imag);
+    ScamValue rv = ExpressionFactory::makeComplex(real, imag);
     return rv;
 }
 
-ExprHandle NumericConverter::makeRealWithExactness(double value) const
+ScamValue NumericConverter::makeRealWithExactness(double value) const
 {
     bool makeExact = exactness == ExactnessType::ET_EXACT;
     return simplify(ExpressionFactory::makeReal(value, makeExact));
 }
 
-ExprHandle NumericConverter::makeRationalWithExactness(int num, int den) const
+ScamValue NumericConverter::makeRationalWithExactness(int num, int den) const
 {
     bool makeExact = ! (exactness == ExactnessType::ET_INEXACT);
     return ExpressionFactory::makeRational(num, den, makeExact);
 }
 
-ExprHandle NumericConverter::makeIntegerWithExactness(int value) const
+ScamValue NumericConverter::makeIntegerWithExactness(int value) const
 {
     bool makeExact = ! (exactness == ExactnessType::ET_INEXACT);
     return ExpressionFactory::makeInteger(value, makeExact);

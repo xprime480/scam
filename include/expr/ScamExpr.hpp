@@ -20,7 +20,7 @@ namespace scam
         bool hasApply() const;
 
         virtual void
-        apply(ExprHandle args, Continuation * cont, Env * env);
+        apply(ScamValue args, Continuation * cont, Env * env);
 
         virtual void mapEval(Continuation * cont, Env * env) const;
 
@@ -29,23 +29,23 @@ namespace scam
         std::pair<int, int> asRational() const;
         int asInteger() const;
 
-        ConstExprHandle realPart() const;
-        ConstExprHandle imagPart() const;
+        ConstScamValue realPart() const;
+        ConstScamValue imagPart() const;
 
-        virtual ExprHandle getCar() const;
-        virtual ExprHandle getCdr() const;
+        virtual ScamValue getCar() const;
+        virtual ScamValue getCdr() const;
 
 
         virtual size_t length() const;
-        virtual ExprHandle nthcar(size_t n) const;
-        virtual ExprHandle nthcdr(size_t n) const;
+        virtual ScamValue nthcar(size_t n) const;
+        virtual ScamValue nthcdr(size_t n) const;
 
-        virtual ExprHandle withEnvUpdate(Env * updated) const;
+        virtual ScamValue withEnvUpdate(Env * updated) const;
 
-        virtual void setSelf(ExprHandle expr) const;
-        virtual void setParent(ExprHandle expr) const;
+        virtual void setSelf(ScamValue expr) const;
+        virtual void setParent(ScamValue expr) const;
 
-        virtual bool equals(ConstExprHandle expr) const;
+        virtual bool equals(ConstScamValue expr) const;
     };
 }
 

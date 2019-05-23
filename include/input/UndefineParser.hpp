@@ -18,7 +18,7 @@ namespace scam
 
     public:
         void mark() const override;
-        bool accept(ExprHandle expr) override;
+        bool accept(ScamValue expr) override;
 
         ScamEnvKeyType getSymbol() const;
 

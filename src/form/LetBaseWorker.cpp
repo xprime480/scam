@@ -35,19 +35,19 @@ void LetBaseWorker::run()
 {
     Worker::run();
 
-    ExprHandle parsed  = parse_args();
-    ExprHandle formals = parsed->getCar()->getCar();
-    ExprHandle values  = parsed->getCar()->getCdr();
-    ExprHandle forms   = parsed->getCdr();
+    ScamValue parsed  = parse_args();
+    ScamValue formals = parsed->getCar()->getCar();
+    ScamValue values  = parsed->getCar()->getCdr();
+    ScamValue forms   = parsed->getCdr();
 
     do_next(formals, values, forms);
 }
 
-ExprHandle LetBaseWorker::parse_bindings()
+ScamValue LetBaseWorker::parse_bindings()
 {
-    ExprHandle nil = ExpressionFactory::makeNil();
-    std::vector<ExprHandle> syms;
-    std::vector<ExprHandle> vals;
+    ScamValue nil = ExpressionFactory::makeNil();
+    std::vector<ScamValue> syms;
+    std::vector<ScamValue> vals;
 
     const size_t count = parser->getBindingCount();
 
@@ -57,7 +57,7 @@ ExprHandle LetBaseWorker::parse_bindings()
 	ScamSymbol * sym = const_cast<ScamSymbol *>(bf->getSymbol());
         syms.push_back(sym);
 
-        ExprHandle valForm = bf->getForm();
+        ScamValue valForm = bf->getForm();
         if ( nullptr == valForm ) {
             vals.push_back(nil);
         }
@@ -66,16 +66,16 @@ ExprHandle LetBaseWorker::parse_bindings()
         }
     }
 
-    ExprHandle symList = ExpressionFactory::makeList(syms);
-    ExprHandle valList = ExpressionFactory::makeList(vals);
+    ScamValue symList = ExpressionFactory::makeList(syms);
+    ScamValue valList = ExpressionFactory::makeList(vals);
 
     return ExpressionFactory::makeCons(symList, valList);
 }
 
-ExprHandle LetBaseWorker::parse_args()
+ScamValue LetBaseWorker::parse_args()
 {
-    ExprHandle forms     = parser->getForms();
-    ExprHandle separated = parse_bindings();
+    ScamValue forms     = parser->getForms();
+    ScamValue separated = parse_bindings();
 
     return ExpressionFactory::makeCons(separated, forms);
 }

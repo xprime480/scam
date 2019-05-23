@@ -24,18 +24,18 @@ namespace scam
 
     public:
         void mark() const override;
-        bool accept(ExprHandle expr) override;
+        bool accept(ScamValue expr) override;
         void clearValue() override;
 
         const ParameterListParser * getArgs() const;
         size_t getFormCount() const;
-        ExprHandle getForm(size_t idx) const;
-        ExprHandle getFormList() const;
+        ScamValue getForm(size_t idx) const;
+        ScamValue getFormList() const;
 
     private:
         ParameterListParser * formals;
-        std::vector<ExprHandle> forms;
-        ExprHandle formList;
+        std::vector<ScamValue> forms;
+        ScamValue formList;
     };
 }
 

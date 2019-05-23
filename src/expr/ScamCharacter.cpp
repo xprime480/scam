@@ -21,7 +21,7 @@ char ScamCharacter::toChar() const
     return CHARVAL(this);
 }
 
-bool ScamCharacter::equals(ConstExprHandle expr) const
+bool ScamCharacter::equals(ConstScamValue expr) const
 {
     if ( ! TypePredicates::isChar(expr) ) {
         return false;

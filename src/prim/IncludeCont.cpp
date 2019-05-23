@@ -37,7 +37,7 @@ void IncludeCont::mark() const
     }
 }
 
-void IncludeCont::run(ExprHandle expr)
+void IncludeCont::run(ScamValue expr)
 {
     if ( TypePredicates::error(expr) ) {
         cont->run(expr);

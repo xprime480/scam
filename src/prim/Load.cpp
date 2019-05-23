@@ -29,7 +29,7 @@ Load * Load::makeInstance(ScamEngine * engine)
     return new Load(engine);
 }
 
-void Load::applyArgs(ExprHandle args, Continuation * cont)
+void Load::applyArgs(ScamValue args, Continuation * cont)
 {
     StringParser * str = standardMemoryManager.make<StringParser>();
     SingletonParser * parser = standardMemoryManager.make<SingletonParser>(str);
@@ -40,7 +40,7 @@ void Load::applyArgs(ExprHandle args, Continuation * cont)
 
     string filename = ExprWriter::write(parser->get());
     if ( engine->isLoaded(filename) ) {
-        ExprHandle err =
+        ScamValue err =
             ExpressionFactory::makeError("file \"",
                                          filename,
                                          "\" already loaded");
@@ -55,7 +55,7 @@ void Load::applyArgs(ExprHandle args, Continuation * cont)
 
     string data = get_data(source);
     ReadEvalString helper(engine, data);
-    ExprHandle last = helper.run();
+    ScamValue last = helper.run();
 
     engine->setLoaded(filename);
     cont->run(last);
@@ -72,7 +72,7 @@ bool Load::open_file(ifstream & source,
         }
     }
     else {
-        ExprHandle path = get_path();
+        ScamValue path = get_path();
 
         size_t n = path->length();
         for ( size_t i = 0 ; i < n ; ++i ) {
@@ -117,14 +117,14 @@ bool Load::file_exists(string fullpath)
 
 void Load::file_not_found(string const & filename, Continuation * cont)
 {
-    ExprHandle err = ExpressionFactory::makeError("Unable to open file ",
+    ScamValue err = ExpressionFactory::makeError("Unable to open file ",
                                                   filename);
     cont->run(err);
 }
 
-ExprHandle Load::get_path()
+ScamValue Load::get_path()
 {
-    ExprHandle rv = ExpressionFactory::makeNull();
+    ScamValue rv = ExpressionFactory::makeNull();
 
     char const * path = getenv("SCAM_PATH");
     if ( ! path || ! *path ) {
@@ -136,12 +136,12 @@ ExprHandle Load::get_path()
     return rv;
 }
 
-ExprHandle Load::default_path()
+ScamValue Load::default_path()
 {
     return convert_path(".:..");
 }
 
-ExprHandle Load::convert_path(char const * path)
+ScamValue Load::convert_path(char const * path)
 {
     ExprVec dp;
 

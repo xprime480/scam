@@ -33,21 +33,21 @@ class ArgParserTest : public TestBase
 protected:
     void acceptParse(ArgParser * parser, const char * text)
     {
-        ExprHandle value = readString(text);
+        ScamValue value = readString(text);
         bool accept = parser->accept(value);
 
         ASSERT_TRUE(accept);
-        ExprHandle saved = parser->getValue();
+        ScamValue saved = parser->getValue();
         EXPECT_TRUE(value->equals(saved));
     }
 
     void rejectParse(ArgParser * parser, const char * text)
     {
-        ExprHandle value = readString(text);
+        ScamValue value = readString(text);
 
         bool accept = parser->accept(value);
         EXPECT_FALSE(accept);
-        ConstExprHandle v = parser->getValue();
+        ConstScamValue v = parser->getValue();
         expectNull(v);
     }
 };

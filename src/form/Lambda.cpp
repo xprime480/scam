@@ -20,11 +20,11 @@ Lambda * Lambda::makeInstance()
     return &instance;
 }
 
-void Lambda::apply(ExprHandle args, Continuation * cont, Env * env)
+void Lambda::apply(ScamValue args, Continuation * cont, Env * env)
 {
     LambdaParser * lambda = standardMemoryManager.make<LambdaParser>();
 
-    ExprHandle expr = nullptr;
+    ScamValue expr = nullptr;
     if ( ! lambda->accept(args) ) {
         expr = validateClosureArgs(args, "lambda");
     }

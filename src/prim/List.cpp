@@ -15,7 +15,7 @@ List * List::makeInstance()
     return new List();
 }
 
-void List::applyArgs(ExprHandle args, Continuation * cont)
+void List::applyArgs(ScamValue args, Continuation * cont)
 {
     /** literally anything goes **/
     

@@ -10,7 +10,7 @@
 using namespace scam;
 using namespace std;
 
-InstanceCont::InstanceCont(ExprHandle obj,
+InstanceCont::InstanceCont(ScamValue obj,
                            ScamEnvKeyType name,
                            Continuation * cont)
     : Continuation("InstanceCont")
@@ -20,7 +20,7 @@ InstanceCont::InstanceCont(ExprHandle obj,
 {
 }
 
-InstanceCont * InstanceCont::makeInstance(ExprHandle obj,
+InstanceCont * InstanceCont::makeInstance(ScamValue obj,
                                           ScamEnvKeyType name,
                                           Continuation * cont)
 {
@@ -37,7 +37,7 @@ void InstanceCont::mark() const
     }
 }
 
-void InstanceCont::run(ExprHandle expr)
+void InstanceCont::run(ScamValue expr)
 {
     Continuation::run(expr);
 
@@ -46,7 +46,7 @@ void InstanceCont::run(ExprHandle expr)
         return;
     }
 
-    ExprHandle func = find_func(obj);
+    ScamValue func = find_func(obj);
     if ( TypePredicates::isNil(func) ) {
         return;
     }
@@ -56,7 +56,7 @@ void InstanceCont::run(ExprHandle expr)
     func->apply(expr, cont, env);
 }
 
-ExprHandle InstanceCont::find_func(ExprHandle o) const
+ScamValue InstanceCont::find_func(ScamValue o) const
 {
     while ( TypePredicates::isInstance(o) ) {
         ScamInstanceAdapter adapter(o);
@@ -71,9 +71,9 @@ ExprHandle InstanceCont::find_func(ExprHandle o) const
     return function_not_found();
 }
 
-ExprHandle InstanceCont::function_not_found() const
+ScamValue InstanceCont::function_not_found() const
 {
-    ExprHandle err =
+    ScamValue err =
         ExpressionFactory::makeError("Instance method ",
                                      ExprWriter::write(name),
                                      " not found");

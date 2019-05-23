@@ -12,25 +12,25 @@ namespace scam
     private:
         friend class scam::MemoryManager;
 
-        InstanceCont(ExprHandle obj,
+        InstanceCont(ScamValue obj,
                      ScamEnvKeyType name,
                      Continuation * cont);
 
-        static InstanceCont * makeInstance(ExprHandle obj,
+        static InstanceCont * makeInstance(ScamValue obj,
                                            ScamEnvKeyType name,
                                            Continuation * cont);
 
     public:
         void mark() const override;
-        void run(ExprHandle expr) override;
+        void run(ScamValue expr) override;
 
     private:
-        ExprHandle obj;
+        ScamValue obj;
         ScamEnvKeyType name;
         Continuation * cont;
 
-        ExprHandle find_func(ExprHandle o) const;
-        ExprHandle function_not_found() const;
+        ScamValue find_func(ScamValue o) const;
+        ScamValue function_not_found() const;
     };
 }
 

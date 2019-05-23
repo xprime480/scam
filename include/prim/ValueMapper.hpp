@@ -8,10 +8,10 @@ namespace scam
     class ValueMapper
     {
     protected:
-        ExprHandle map_dict(ExprHandle expr);
-        ExprHandle map_vector(ExprHandle expr);
-        ExprHandle map_cons(ExprHandle expr);
-        virtual ExprHandle map_value(ExprHandle expr) = 0;
+        ScamValue map_dict(ScamValue expr);
+        ScamValue map_vector(ScamValue expr);
+        ScamValue map_cons(ScamValue expr);
+        virtual ScamValue map_value(ScamValue expr) = 0;
     };
 }
 

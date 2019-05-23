@@ -20,7 +20,7 @@ namespace scam
 
     public:
         void mark() const override;
-        void run(ExprHandle expr) override;
+        void run(ScamValue expr) override;
 
     private:
         PrimWorkerData data;

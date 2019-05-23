@@ -35,12 +35,12 @@ namespace
             }
         }
 
-        void run(ExprHandle expr) override
+        void run(ScamValue expr) override
         {
             if ( TypePredicates::isList(expr) &&
                  ! TypePredicates::isNil(expr) ) {
                 unsigned len = expr->length();
-                ExprHandle last = expr->nthcar(len - 1);
+                ScamValue last = expr->nthcar(len - 1);
                 cont->run(last);
             }
             else {
@@ -53,7 +53,7 @@ namespace
     };
 }
 
-EvalWorker::EvalWorker(ExprHandle forms,
+EvalWorker::EvalWorker(ScamValue forms,
                        Env * extended,
                        Continuation * cont)
     : Worker("eval")
@@ -64,7 +64,7 @@ EvalWorker::EvalWorker(ExprHandle forms,
 }
 
 EvalWorker *
-EvalWorker::makeInstance(ExprHandle forms, Env * env, Continuation * cont)
+EvalWorker::makeInstance(ScamValue forms, Env * env, Continuation * cont)
 {
     return new EvalWorker(forms, env, cont);
 }

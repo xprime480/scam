@@ -8,7 +8,7 @@ namespace scam
     class QuasiQuote : public SpecialForm
     {
     public:
-        static ExprHandle const spliceTag;
+        static ScamValue const spliceTag;
 
     private:
         QuasiQuote();
@@ -17,7 +17,7 @@ namespace scam
         /* I think this should be private, check later */
         static QuasiQuote * makeInstance();
 
-        void apply(ExprHandle args, Continuation * cont, Env * env) override;
+        void apply(ScamValue args, Continuation * cont, Env * env) override;
     };
 }
 

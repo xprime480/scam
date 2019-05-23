@@ -32,7 +32,7 @@ void RelopsListParser::mark() const
     }
 }
 
-bool RelopsListParser::accept(ExprHandle expr)
+bool RelopsListParser::accept(ScamValue expr)
 {
     if ( ! parser->accept(expr) ) {
         return false;
@@ -55,7 +55,7 @@ size_t RelopsListParser::size() const
     return strList->size();
 }
 
-ExprHandle RelopsListParser::get(size_t idx) const
+ScamValue RelopsListParser::get(size_t idx) const
 {
     if ( isNumeric() ) {
         return numList->get(idx);

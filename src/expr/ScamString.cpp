@@ -16,7 +16,7 @@ ScamString * ScamString::makeInstance(std::string const & value)
     return new ScamString(value);
 }
 
-bool ScamString::equals(ConstExprHandle expr) const
+bool ScamString::equals(ConstScamValue expr) const
 {
     if ( ! TypePredicates::isString(expr) ) {
         return false;

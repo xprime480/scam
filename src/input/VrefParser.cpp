@@ -30,7 +30,7 @@ void VrefParser::mark() const
     }
 }
 
-bool VrefParser::accept(ExprHandle expr)
+bool VrefParser::accept(ScamValue expr)
 {
     if ( ! parser->accept(expr) ) {
         return false;

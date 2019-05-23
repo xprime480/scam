@@ -26,7 +26,7 @@ Not * Not::makeInstance()
     return &instance;
 }
 
-void Not::apply(ExprHandle args, Continuation * cont, Env * env)
+void Not::apply(ScamValue args, Continuation * cont, Env * env)
 {
     SingletonParser * parser = getSingletonOfAnythingParser();
     if ( ! parser->accept(args) ) {

@@ -30,7 +30,7 @@ void FunctionDefParser::mark() const
     }
 }
 
-bool FunctionDefParser::accept(ExprHandle expr)
+bool FunctionDefParser::accept(ScamValue expr)
 {
     if ( ! ArgParser::accept(expr) ) {
         return false;

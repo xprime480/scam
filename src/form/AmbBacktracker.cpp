@@ -9,7 +9,7 @@
 using namespace scam;
 using namespace std;
 
-AmbBacktracker::AmbBacktracker(ExprHandle args,
+AmbBacktracker::AmbBacktracker(ScamValue args,
                                Continuation * cont,
                                Env * env,
                                ScamEngine * engine,
@@ -22,7 +22,7 @@ AmbBacktracker::AmbBacktracker(ExprHandle args,
 {
 }
 
-AmbBacktracker * AmbBacktracker::makeInstance(ExprHandle args,
+AmbBacktracker * AmbBacktracker::makeInstance(ScamValue args,
                                               Continuation * cont,
                                               Env * env,
                                               ScamEngine * engine,
@@ -49,8 +49,8 @@ void AmbBacktracker::run()
         runParent(cont);
     }
     else {
-        ExprHandle head = args->nthcar(0);
-        ExprHandle tail = args->nthcdr(0);
+        ScamValue head = args->nthcar(0);
+        ScamValue tail = args->nthcdr(0);
 
         (void) engine->getBacktracker();
         Backtracker * newBt =

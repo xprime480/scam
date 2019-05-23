@@ -11,7 +11,7 @@
 using namespace scam;
 using namespace std;
 
-ScamInstanceAdapter::ScamInstanceAdapter(ExprHandle expr)
+ScamInstanceAdapter::ScamInstanceAdapter(ScamValue expr)
     : instance(dynamic_cast<ScamInstance const *>(expr))
 {
     if ( ! TypePredicates::isInstance(expr) ) {
@@ -32,7 +32,7 @@ Env * ScamInstanceAdapter::getEnv() const
     return INSTANCELOCALENV(instance);
 }
 
-ExprHandle ScamInstanceAdapter::getParent() const
+ScamValue ScamInstanceAdapter::getParent() const
 {
     static ScamEnvKeyType parent = ScamInstance::parent;
 

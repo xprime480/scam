@@ -12,16 +12,16 @@ namespace scam
     private:
         friend class scam::MemoryManager;
 
-        LetStarCont(ExprHandle formals,
-                    ExprHandle rest,
-                    ExprHandle forms,
+        LetStarCont(ScamValue formals,
+                    ScamValue rest,
+                    ScamValue forms,
                     Continuation * cont,
                     Env * env,
                     ScamEngine * engine);
 
-        static LetStarCont * makeInstance(ExprHandle formals,
-                                          ExprHandle rest,
-                                          ExprHandle forms,
+        static LetStarCont * makeInstance(ScamValue formals,
+                                          ScamValue rest,
+                                          ScamValue forms,
                                           Continuation * cont,
                                           Env * env,
                                           ScamEngine * engine);
@@ -30,11 +30,11 @@ namespace scam
         void mark() const override;
 
     protected:
-        void do_let(ExprHandle expr) override;
+        void do_let(ScamValue expr) override;
 
     private:
-        ExprHandle formals;
-        ExprHandle rest;
+        ScamValue formals;
+        ScamValue rest;
         Env *        env;
         ScamEngine * engine;
 

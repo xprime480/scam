@@ -16,7 +16,7 @@ ScamError * ScamError::makeInstance(char const * msg, bool managed)
     return new ScamError(msg, managed);
 }
 
-bool ScamError::equals(ConstExprHandle expr) const
+bool ScamError::equals(ConstScamValue expr) const
 {
     if ( ! TypePredicates::error(expr) ) {
         return false;

@@ -15,12 +15,12 @@ namespace scam
         friend class scam::MemoryManager;
 
         ClassInitWorker(ScamInstance * instance,
-                        ExprHandle args,
+                        ScamValue args,
                         Continuation * cont,
                         Env * env);
 
         static ClassInitWorker * makeInstance(ScamInstance * instance,
-                                              ExprHandle args,
+                                              ScamValue args,
                                               Continuation * cont,
                                               Env * env);
 
@@ -30,7 +30,7 @@ namespace scam
 
     private:
         ScamInstance * instance;
-        ExprHandle     args;
+        ScamValue     args;
         Continuation * cont;
         Env          * env;
     };

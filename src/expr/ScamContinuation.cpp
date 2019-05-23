@@ -18,13 +18,13 @@ ScamContinuation * ScamContinuation::makeInstance(Continuation * cont)
     return new ScamContinuation(cont);
 }
 
-void ScamContinuation::apply(ExprHandle args, Continuation * cont,  Env * env)
+void ScamContinuation::apply(ScamValue args, Continuation * cont,  Env * env)
 {
     SingletonParser * parser = getSingletonOfAnythingParser();
     const bool accepted = parser->accept(args);
 
     if ( accepted ) {
-        ExprHandle arg = const_cast<ExprHandle >(parser->get());
+        ScamValue arg = const_cast<ScamValue >(parser->get());
         CONTINUATION(this)->run(arg);
     }
     else {

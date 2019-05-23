@@ -23,7 +23,7 @@ Backtrack * Backtrack::makeInstance(ScamEngine * engine)
     return new Backtrack(engine);
 }
 
-void Backtrack::applyArgs(ExprHandle args, Continuation * cont)
+void Backtrack::applyArgs(ScamValue args, Continuation * cont)
 {
     if ( ! TypePredicates::isNil(args) ) {
         failedArgParseMessage(myName, "()", args, cont);
@@ -33,7 +33,7 @@ void Backtrack::applyArgs(ExprHandle args, Continuation * cont)
     Backtracker * backtracker = engine->getBacktracker();
     if ( ! backtracker ) {
         static const string msg = "No current backtrack context";
-        static ExprHandle rv = ExpressionFactory::makeError(msg, false);
+        static ScamValue rv = ExpressionFactory::makeError(msg, false);
         cont->run(rv);
     }
     else {

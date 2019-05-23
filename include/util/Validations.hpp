@@ -2,6 +2,6 @@
 
 namespace scam
 {
-    extern ExprHandle validateClosureArgs(ExprHandle args, const char * name);
-    extern ExprHandle validateFormals(ExprHandle formals);
+    extern ScamValue validateClosureArgs(ScamValue args, const char * name);
+    extern ScamValue validateFormals(ScamValue formals);
 }

@@ -31,7 +31,7 @@ void LetParser::mark() const
     }
 }
 
-bool LetParser::accept(ExprHandle expr)
+bool LetParser::accept(ScamValue expr)
 {
     clearValue();
 
@@ -40,7 +40,7 @@ bool LetParser::accept(ExprHandle expr)
         return false;
     }
 
-    ExprHandle bList = parser->get(0);
+    ScamValue bList = parser->get(0);
     if ( ! TypePredicates::isList(bList) ) {
         return false;
     }
@@ -82,7 +82,7 @@ BindFormParser * LetParser::getBinding(size_t idx) const
     return nullptr;
 }
 
-ExprHandle LetParser::getForms() const
+ScamValue LetParser::getForms() const
 {
     return forms;
 }

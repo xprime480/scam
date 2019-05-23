@@ -24,7 +24,7 @@ Include * Include::makeInstance(ScamEngine * engine)
     return new Include(engine);
 }
 
-void Include::applyArgs(ExprHandle args, Continuation * cont)
+void Include::applyArgs(ScamValue args, Continuation * cont)
 {
     IncludeParser * parser = standardMemoryManager.make<IncludeParser>();
     if ( ! parser->accept(args) ) {

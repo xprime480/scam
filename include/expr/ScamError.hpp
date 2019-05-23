@@ -15,7 +15,7 @@ namespace scam
         static ScamError * makeInstance(char const * msg, bool managed = true);
 
     public:
-        bool equals(ConstExprHandle expr) const override;
+        bool equals(ConstScamValue expr) const override;
     };
 }
 

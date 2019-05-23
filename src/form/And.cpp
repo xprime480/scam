@@ -22,7 +22,7 @@ And * And::makeInstance()
     return &instance;
 }
 
-void And::apply(ExprHandle args, Continuation * cont, Env * env)
+void And::apply(ScamValue args, Continuation * cont, Env * env)
 {
     ListParser * parser = getListOfAnythingParser();
     if ( ! parser->accept(args) ) {

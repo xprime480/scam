@@ -13,7 +13,7 @@ using namespace std;
 ClosureWorker::ClosureWorker(const LambdaParser * parser,
                              Env * capture,
                              Continuation * cont,
-                             ExprHandle args,
+                             ScamValue args,
                              Env * argEnv,
                              bool macrolike)
     : Worker("proc")
@@ -29,7 +29,7 @@ ClosureWorker::ClosureWorker(const LambdaParser * parser,
 ClosureWorker * ClosureWorker::makeInstance(const LambdaParser * parser,
                                             Env * capture,
                                             Continuation * cont,
-                                            ExprHandle args,
+                                            ScamValue args,
                                             Env * argEnv,
                                             bool macrolike)
 {

@@ -25,7 +25,7 @@ LetStar * LetStar::makeInstance(ScamEngine * engine)
     return new LetStar(engine);
 }
 
-ExprHandle LetStar::safeCons(ExprHandle expr)
+ScamValue LetStar::safeCons(ScamValue expr)
 {
     if ( TypePredicates::isCons(expr) ) {
         return expr;
@@ -33,7 +33,7 @@ ExprHandle LetStar::safeCons(ExprHandle expr)
     return ExpressionFactory::makeList(expr);
 }
 
-void LetStar::apply(ExprHandle args, Continuation * cont, Env * env)
+void LetStar::apply(ScamValue args, Continuation * cont, Env * env)
 {
     LetParser * parser = standardMemoryManager.make<LetParser>();
     if ( ! parser->accept(args) ) {

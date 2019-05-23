@@ -16,12 +16,12 @@ namespace scam
         friend class scam::MemoryManager;
         PrimWorker(Continuation * cont,
                    Env * env,
-                   ExprHandle args,
+                   ScamValue args,
                    Primitive * caller);
 
         static PrimWorker * makeInstance(Continuation * cont,
                                          Env * env,
-                                         ExprHandle args,
+                                         ScamValue args,
                                          Primitive * caller);
 
     public:

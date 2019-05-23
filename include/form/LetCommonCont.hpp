@@ -10,18 +10,18 @@ namespace scam
     class LetCommonCont : public Continuation
     {
     protected:
-        LetCommonCont(char const * name, ExprHandle forms, Continuation * cont);
+        LetCommonCont(char const * name, ScamValue forms, Continuation * cont);
 
     public:
         void mark() const override;
 
-        void run(ExprHandle expr) override;
+        void run(ScamValue expr) override;
 
     protected:
-        ExprHandle forms;
+        ScamValue forms;
         Continuation * cont;
 
-        virtual void do_let(ExprHandle expr) = 0;
+        virtual void do_let(ScamValue expr) = 0;
         void final_eval(Env * env);
     };
 }

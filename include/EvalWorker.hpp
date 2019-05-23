@@ -11,17 +11,17 @@ namespace scam
     {
     private:
         friend class scam::MemoryManager;
-        EvalWorker(ExprHandle forms, Env * env, Continuation * cont);
+        EvalWorker(ScamValue forms, Env * env, Continuation * cont);
 
         static EvalWorker *
-        makeInstance(ExprHandle forms, Env * env, Continuation * cont);
+        makeInstance(ScamValue forms, Env * env, Continuation * cont);
 
     public:
        void mark() const override;
        void run() override;
 
     private:
-        ExprHandle forms;
+        ScamValue forms;
         Env * extended;
         Continuation * cont;
     };

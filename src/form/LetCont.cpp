@@ -9,8 +9,8 @@
 using namespace scam;
 using namespace std;
 
-LetCont::LetCont(ExprHandle formals,
-                 ExprHandle forms,
+LetCont::LetCont(ScamValue formals,
+                 ScamValue forms,
                  Continuation * cont,
                  Env * env,
                  bool rebind)
@@ -21,8 +21,8 @@ LetCont::LetCont(ExprHandle formals,
 {
 }
 
-LetCont * LetCont::makeInstance(ExprHandle formals,
-                                ExprHandle forms,
+LetCont * LetCont::makeInstance(ScamValue formals,
+                                ScamValue forms,
                                 Continuation * cont,
                                 Env * env,
                                 bool rebind)
@@ -39,10 +39,10 @@ void LetCont::mark() const
     }
 }
 
-void LetCont::do_let(ExprHandle expr)
+void LetCont::do_let(ScamValue expr)
 {
     Binder binder(env);
-    ExprHandle ff = formals;
+    ScamValue ff = formals;
     Env * extended = binder.bind(ff, expr);
 
     rebind_procs(extended);
@@ -58,9 +58,9 @@ void LetCont::rebind_procs(Env * extended)
     const size_t len = formals->length();
     for ( size_t n = 0 ; n < len ; ++n ) {
         ScamEnvKeyType k = dynamic_cast<ScamSymbol *>(formals->nthcar(n));
-        ExprHandle v = extended->get(k);
+        ScamValue v = extended->get(k);
         if ( TypePredicates::isProcedure(v) ) {
-            ExprHandle newV = v->withEnvUpdate(extended);
+            ScamValue newV = v->withEnvUpdate(extended);
             extended->assign(k, newV);
         }
     }

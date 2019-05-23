@@ -20,7 +20,7 @@ VLen * VLen::makeInstance()
     return new VLen();
 }
 
-void VLen::applyArgs(ExprHandle args, Continuation * cont)
+void VLen::applyArgs(ScamValue args, Continuation * cont)
 {
     VectorParser * vec =  standardMemoryManager.make<VectorParser>();
     SingletonParser * parser = standardMemoryManager.make<SingletonParser>(vec);

@@ -28,7 +28,7 @@ void SubstituteParser::mark() const
     }
 }
 
-bool SubstituteParser::accept(ExprHandle expr)
+bool SubstituteParser::accept(ScamValue expr)
 {
     if ( ! parser->accept(expr) ) {
         return false;
@@ -38,7 +38,7 @@ bool SubstituteParser::accept(ExprHandle expr)
     return true;
 }
 
-ExprHandle SubstituteParser::getForm() const
+ScamValue SubstituteParser::getForm() const
 {
     return any->getValue();
 }

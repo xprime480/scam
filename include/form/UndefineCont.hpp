@@ -18,7 +18,7 @@ namespace scam
         makeInstance(ScamEnvKeyType sym, Continuation * cont, Env * env);
 
     protected:
-        void finish(ExprHandle expr) const override;
+        void finish(ScamValue expr) const override;
     };
 }
 

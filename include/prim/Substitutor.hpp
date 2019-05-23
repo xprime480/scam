@@ -12,20 +12,20 @@ namespace scam
     public:
         Substitutor(ScamDict * answers);
 
-        ExprHandle resolve_value(ExprHandle expr);
+        ScamValue resolve_value(ScamValue expr);
 
     protected:
-        ExprHandle map_value(ExprHandle val) override;
+        ScamValue map_value(ScamValue val) override;
 
     private:
         ScamDict * answers;
-        ExprHandle helper;
+        ScamValue helper;
 
-        ExprHandle resolve_cons(ExprHandle expr);
-        ExprHandle resolve_vector(ExprHandle expr);
-        bool have_seen(ExprHandle expr);
-        ExprHandle resolve_keyword(ExprHandle expr);
-        ExprHandle resolve_dict(ExprHandle expr);
+        ScamValue resolve_cons(ScamValue expr);
+        ScamValue resolve_vector(ScamValue expr);
+        bool have_seen(ScamValue expr);
+        ScamValue resolve_keyword(ScamValue expr);
+        ScamValue resolve_dict(ScamValue expr);
     };
 }
 

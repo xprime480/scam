@@ -27,7 +27,7 @@ void CarContinuation::mark() const
   }
 }
 
-void CarContinuation::run(ExprHandle expr)
+void CarContinuation::run(ScamValue expr)
 {
     Continuation::run(expr);
 
@@ -35,7 +35,7 @@ void CarContinuation::run(ExprHandle expr)
         data.original->run(expr);
     }
     else {
-        ExprHandle e = data.cdr;
+        ScamValue e = data.cdr;
         workQueueHelper<MapCdr>(expr, e, data.original, data.env);
     }
 }

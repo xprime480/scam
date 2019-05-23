@@ -12,12 +12,12 @@ using namespace std;
 
 namespace
 {
-    static ExprHandle const initSym =
+    static ScamValue const initSym =
         ExpressionFactory::makeSymbol("init", false);
 }
 
 ClassInitWorker::ClassInitWorker(ScamInstance * instance,
-                                 ExprHandle args,
+                                 ScamValue args,
                                  Continuation * cont,
                                  Env * env)
     : Worker("ClassInit")
@@ -29,7 +29,7 @@ ClassInitWorker::ClassInitWorker(ScamInstance * instance,
 }
 
 ClassInitWorker * ClassInitWorker::makeInstance(ScamInstance * instance,
-                                                ExprHandle args,
+                                                ScamValue args,
                                                 Continuation * cont,
                                                 Env * env)
 {
@@ -52,7 +52,7 @@ void ClassInitWorker::run()
 
     Continuation * newCont
         = standardMemoryManager.make<ClassInitCont>(instance, cont);
-    ExprHandle newArgs
+    ScamValue newArgs
         = ExpressionFactory::makeCons(initSym, args);
 
     instance->apply(newArgs, newCont, env);

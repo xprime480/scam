@@ -7,8 +7,8 @@ namespace scam
 {
     struct WorkerData
     {
-        WorkerData(ExprHandle car,
-                   ExprHandle cdr,
+        WorkerData(ScamValue car,
+                   ScamValue cdr,
                    Continuation * original,
                    Env * env);
 
@@ -17,8 +17,8 @@ namespace scam
 
         void mark() const;
 
-        ExprHandle car;
-        ExprHandle cdr;
+        ScamValue car;
+        ScamValue cdr;
         Continuation * original;
         Continuation * cont;
         Env * env;

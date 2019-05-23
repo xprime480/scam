@@ -47,7 +47,7 @@ void DefineWorker::run()
     Continuation * c =
         standardMemoryManager.make<DefineCont>(sym, cont, env, engine);
 
-    ExprHandle expr = parser->getForm();
+    ScamValue expr = parser->getForm();
     expr->eval(c, env);
 }
 

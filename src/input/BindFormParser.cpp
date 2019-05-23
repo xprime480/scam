@@ -31,7 +31,7 @@ void BindFormParser::mark() const
     }
 }
 
-bool BindFormParser::accept(ExprHandle expr)
+bool BindFormParser::accept(ScamValue expr)
 {
     ArgParser::clearValue();
 
@@ -55,7 +55,7 @@ ScamEnvKeyType BindFormParser::getSymbol() const
     return nullptr;
 }
 
-ExprHandle BindFormParser::getForm() const
+ScamValue BindFormParser::getForm() const
 {
     if ( parser->size() ) {
         return parser->get(1u);

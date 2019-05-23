@@ -44,7 +44,7 @@ void UndefineWorker::run()
 
     ScamEnvKeyType sym = parser->getSymbol();
     Continuation * c = standardMemoryManager.make<UndefineCont>(sym, cont, env);
-    ExprHandle expr = ExpressionFactory::makeNil();
+    ScamValue expr = ExpressionFactory::makeNil();
 
     c->run(expr);
 }

@@ -25,15 +25,15 @@ namespace scam
 
     public:
         void mark() const override;
-        bool accept(ExprHandle expr) override;
+        bool accept(ScamValue expr) override;
         void clearValue() override;
 
         size_t size() const;
-        ExprHandle get(size_t idx) const;
+        ScamValue get(size_t idx) const;
 
     private:
         ArgParser * itemParser;
-        std::vector<ExprHandle> items;
+        std::vector<ScamValue> items;
     };
 
     ListParser * getListOfAnythingParser();

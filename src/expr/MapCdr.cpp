@@ -7,8 +7,8 @@
 using namespace scam;
 using namespace std;
 
-MapCdr::MapCdr(ExprHandle car,
-               ExprHandle cdr,
+MapCdr::MapCdr(ScamValue car,
+               ScamValue cdr,
                Continuation * cont,
                Env * env)
     : Worker("Cons Map Cdr")
@@ -17,8 +17,8 @@ MapCdr::MapCdr(ExprHandle car,
     data.cont = standardMemoryManager.make<CdrContinuation>(data);
 }
 
-MapCdr * MapCdr::makeInstance(ExprHandle car,
-                              ExprHandle cdr,
+MapCdr * MapCdr::makeInstance(ScamValue car,
+                              ScamValue cdr,
                               Continuation * cont,
                               Env * env)
 {

@@ -51,6 +51,6 @@ void AssignWorker::run()
                                                               env,
                                                               engine);
 
-    ExprHandle expr = parser->getForm();
+    ScamValue expr = parser->getForm();
     expr->eval(c, env);
 }

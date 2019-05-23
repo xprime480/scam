@@ -20,10 +20,10 @@ namespace scam
 
     public:
         void mark() const override;
-        bool accept(ExprHandle expr) override;
+        bool accept(ScamValue expr) override;
 
         size_t size() const;
-        ExprHandle get(size_t idx) const;
+        ScamValue get(size_t idx) const;
 
     private:
         ExtendedNumericParser * num;

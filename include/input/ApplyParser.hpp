@@ -19,10 +19,10 @@ namespace scam
 
     public:
         void mark() const override;
-        bool accept(ExprHandle expr) override;
+        bool accept(ScamValue expr) override;
 
-        ExprHandle getParsedOp() const;
-        ExprHandle getArgs() const;
+        ScamValue getParsedOp() const;
+        ScamValue getArgs() const;
 
     private:
         CountedListParser * parser;

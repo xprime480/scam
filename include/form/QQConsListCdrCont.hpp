@@ -12,23 +12,23 @@ namespace scam
     private:
         friend class scam::MemoryManager;
 
-        QQConsListCdrCont(ExprHandle car, Continuation * cont, Env * env);
+        QQConsListCdrCont(ScamValue car, Continuation * cont, Env * env);
 
         static QQConsListCdrCont *
-        makeInstance(ExprHandle car, Continuation * cont, Env * env);
+        makeInstance(ScamValue car, Continuation * cont, Env * env);
 
     public:
         void mark() const override;
-        void run(ExprHandle expr) override;
+        void run(ScamValue expr) override;
 
     private:
-        ExprHandle car;
+        ScamValue car;
         Continuation * cont;
         Env  *      env;
 
-        void handle(ExprHandle expr);
-        bool check_splice(ExprHandle expr);
-        void do_splice(ExprHandle expr);
+        void handle(ScamValue expr);
+        bool check_splice(ScamValue expr);
+        void do_splice(ScamValue expr);
     };
 }
 

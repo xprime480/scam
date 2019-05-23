@@ -20,7 +20,7 @@ Quote * Quote::makeInstance()
     return &quote;
 }
 
-void Quote::apply(ExprHandle args, Continuation * cont, Env * env)
+void Quote::apply(ScamValue args, Continuation * cont, Env * env)
 {
     SingletonParser * parser = getSingletonOfAnythingParser();
     if ( ! parser->accept(args) ) {

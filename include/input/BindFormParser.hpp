@@ -16,10 +16,10 @@ namespace scam
 
     public:
         void mark() const override;
-        bool accept(ExprHandle expr) override;
+        bool accept(ScamValue expr) override;
 
         ScamEnvKeyType getSymbol() const;
-        ExprHandle getForm() const;
+        ScamValue getForm() const;
 
     private:
         SymbolParser      * sym;

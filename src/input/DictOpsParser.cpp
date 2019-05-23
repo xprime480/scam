@@ -75,7 +75,7 @@ void DictOpsParser::mark() const
     }
 }
 
-bool DictOpsParser::accept(ExprHandle expr)
+bool DictOpsParser::accept(ScamValue expr)
 {
     if ( ! ArgParser::accept(expr) ) {
         return false;
@@ -91,7 +91,7 @@ bool DictOpsParser::accept(ExprHandle expr)
     return true;
 }
 
-void DictOpsParser::callback(ExprHandle expr)
+void DictOpsParser::callback(ScamValue expr)
 {
     ArgParser::callback(expr);
     matched = dynamic_cast<SequenceParser *>(parser->getMatch());
@@ -107,15 +107,15 @@ const ScamKeyword * DictOpsParser::getParsedOp() const
 {
     if ( matched ) {
         ArgParser * ap = matched->get(0);
-        ExprHandle expr = ap ? ap->getValue() : nullptr;
+        ScamValue expr = ap ? ap->getValue() : nullptr;
         return dynamic_cast<const ScamKeyword *>(expr);
     }
     return nullptr;
 }
 
-ExprHandle DictOpsParser::getOpKey() const
+ScamValue DictOpsParser::getOpKey() const
 {
-    ExprHandle rv { ExpressionFactory::makeNull() };
+    ScamValue rv { ExpressionFactory::makeNull() };
     if ( matched ) {
         ArgParser * ap = matched->get(1);
         if ( ap ) {
@@ -125,9 +125,9 @@ ExprHandle DictOpsParser::getOpKey() const
     return rv;
 }
 
-ExprHandle DictOpsParser::getOpVal() const
+ScamValue DictOpsParser::getOpVal() const
 {
-    ExprHandle rv { ExpressionFactory::makeNull() };
+    ScamValue rv { ExpressionFactory::makeNull() };
     if ( matched ) {
         ArgParser * ap = matched->get(2);
         if ( ap ) {

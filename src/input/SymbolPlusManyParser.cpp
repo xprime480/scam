@@ -29,7 +29,7 @@ void SymbolPlusManyParser::mark() const
     }
 }
 
-bool SymbolPlusManyParser::accept(ExprHandle expr)
+bool SymbolPlusManyParser::accept(ScamValue expr)
 {
     if ( ! ArgParser::accept(expr) ) {
         return false;
@@ -43,7 +43,7 @@ bool SymbolPlusManyParser::accept(ExprHandle expr)
         return false;
     }
 
-    ExprHandle first = top->get(0u);
+    ScamValue first = top->get(0u);
     if ( ! sym->accept(first) ) {
         return false;
     }
@@ -66,7 +66,7 @@ ScamEnvKeyType SymbolPlusManyParser::getSymbol() const
     return dynamic_cast<ScamEnvKeyType>(sym->getValue());
 }
 
-ExprHandle SymbolPlusManyParser::getForms() const
+ScamValue SymbolPlusManyParser::getForms() const
 {
     return forms;
 }

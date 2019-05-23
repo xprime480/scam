@@ -19,29 +19,29 @@ namespace scam
         MatchUnifyParser * parser;
         Continuation * cont;
 
-        ExprHandle
-        check_ignore(ScamDict * dict, ExprHandle lhs, ExprHandle rhs);
+        ScamValue
+        check_ignore(ScamDict * dict, ScamValue lhs, ScamValue rhs);
 
-        ExprHandle
-        check_literals(ScamDict * dict, ExprHandle lhs, ExprHandle rhs);
+        ScamValue
+        check_literals(ScamDict * dict, ScamValue lhs, ScamValue rhs);
 
-        ExprHandle
-        check_keyword(ScamDict * dict, ExprHandle lhs, ExprHandle rhs);
+        ScamValue
+        check_keyword(ScamDict * dict, ScamValue lhs, ScamValue rhs);
 
-        ExprHandle
-        check_keyword_reversed(ScamDict * dict, ExprHandle lhs, ExprHandle rhs);
+        ScamValue
+        check_keyword_reversed(ScamDict * dict, ScamValue lhs, ScamValue rhs);
 
-        ExprHandle
-        check_cons(ScamDict * dict, ExprHandle lhs, ExprHandle rhs);
+        ScamValue
+        check_cons(ScamDict * dict, ScamValue lhs, ScamValue rhs);
 
-        ExprHandle
-        check_vector(ScamDict * dict, ExprHandle lhs, ExprHandle rhs);
+        ScamValue
+        check_vector(ScamDict * dict, ScamValue lhs, ScamValue rhs);
 
-        ExprHandle
-        check_dict(ScamDict * dict, ExprHandle lhs, ExprHandle rhs);
+        ScamValue
+        check_dict(ScamDict * dict, ScamValue lhs, ScamValue rhs);
 
-        ExprHandle exec(ScamDict * dict, ExprHandle lhs, ExprHandle rhs);
-        ExprHandle resolve(ExprHandle expr);
+        ScamValue exec(ScamDict * dict, ScamValue lhs, ScamValue rhs);
+        ScamValue resolve(ScamValue expr);
     };
 }
 

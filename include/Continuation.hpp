@@ -23,7 +23,7 @@ namespace scam
     public:
         virtual ~Continuation();
 
-        virtual void run(ExprHandle expr);
+        virtual void run(ScamValue expr);
         std::string id() const;
 
     private:

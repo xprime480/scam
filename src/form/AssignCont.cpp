@@ -27,13 +27,13 @@ AssignCont * AssignCont::makeInstance(ScamEnvKeyType sym,
     return new AssignCont(sym, cont, env, engine);
 }
 
-void AssignCont::finish(ExprHandle expr) const
+void AssignCont::finish(ScamValue expr) const
 {
     if ( TypePredicates::error(expr) && expr->hasMeta("amb-error") ) {
         return;
     }
 
-    ExprHandle old = env->get(sym);
+    ScamValue old = env->get(sym);
     env->assign(sym, expr);
 
     Backtracker * backtracker = engine->getBacktracker();

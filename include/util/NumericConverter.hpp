@@ -18,44 +18,44 @@ namespace scam
     public:
         explicit NumericConverter(const char * pos);
 
-        static ExprHandle simplify(ExprHandle value);
+        static ScamValue simplify(ScamValue value);
 
-        ExprHandle getValue() const;
+        ScamValue getValue() const;
         const char * getPos() const;
 
     private:
         const char * pos;
 
-        ExprHandle value;
+        ScamValue value;
 
         int base;
         ExactnessType exactness;
 
         void scanNum();
         void scanComplex();
-        ExprHandle scanReal();
-        ExprHandle scanUReal();
-        ExprHandle scanDecimal();
-        ExprHandle scanUInteger();
+        ScamValue scanReal();
+        ScamValue scanUReal();
+        ScamValue scanDecimal();
+        ScamValue scanUInteger();
         void scanPrefix();
-        ExprHandle scanInfNan();
-        ExprHandle scanSuffix();
+        ScamValue scanInfNan();
+        ScamValue scanSuffix();
 
         int scanSign(bool optional = true);
 
         void exactnessSeen(char x);
         void baseSeen(char x);
-        ExprHandle makeFraction(unsigned minCount);
+        ScamValue makeFraction(unsigned minCount);
 
         bool scanRadixPoint();
 
         double makeMultiplier(int exponent) const;
         int convertDigit(char digit) const;
 
-        ExprHandle makeComplexPolar(ExprHandle r, ExprHandle theta) const;
-        ExprHandle makeRealWithExactness(double value) const;
-        ExprHandle makeRationalWithExactness(int num, int den) const;
-        ExprHandle makeIntegerWithExactness(int value) const;
+        ScamValue makeComplexPolar(ScamValue r, ScamValue theta) const;
+        ScamValue makeRealWithExactness(double value) const;
+        ScamValue makeRationalWithExactness(int num, int den) const;
+        ScamValue makeIntegerWithExactness(int value) const;
     };
 }
 

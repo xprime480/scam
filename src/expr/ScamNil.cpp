@@ -21,7 +21,7 @@ size_t ScamNil::length() const
     return 0u;
 }
 
-bool ScamNil::equals(ConstExprHandle expr) const
+bool ScamNil::equals(ConstScamValue expr) const
 {
     return ( expr && TypePredicates::isNil(expr) );
 }

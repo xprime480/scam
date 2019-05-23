@@ -27,7 +27,7 @@ void NumericListParser::mark() const
     }
 }
 
-bool NumericListParser::accept(ExprHandle expr)
+bool NumericListParser::accept(ScamValue expr)
 {
     if ( ! parser->accept(expr) ) {
         return false;
@@ -42,7 +42,7 @@ size_t NumericListParser::size() const
     return parser->size();
 }
 
-ExprHandle NumericListParser::get(size_t idx) const
+ScamValue NumericListParser::get(size_t idx) const
 {
     return parser->get(idx);
 }

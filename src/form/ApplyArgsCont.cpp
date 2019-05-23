@@ -7,7 +7,7 @@
 using namespace scam;
 using namespace std;
 
-ApplyArgsCont::ApplyArgsCont(ExprHandle op, Continuation * cont, Env * env)
+ApplyArgsCont::ApplyArgsCont(ScamValue op, Continuation * cont, Env * env)
     : Continuation("apply args")
     , op(op)
     , cont(cont)
@@ -16,7 +16,7 @@ ApplyArgsCont::ApplyArgsCont(ExprHandle op, Continuation * cont, Env * env)
 }
 
 ApplyArgsCont *
-ApplyArgsCont::makeInstance(ExprHandle op, Continuation * cont, Env * env)
+ApplyArgsCont::makeInstance(ScamValue op, Continuation * cont, Env * env)
 {
     return new ApplyArgsCont(op, cont, env);
 }
@@ -31,7 +31,7 @@ void ApplyArgsCont::mark() const
     }
 }
 
-void ApplyArgsCont::run(ExprHandle expr)
+void ApplyArgsCont::run(ScamValue expr)
 {
     Continuation::run(expr);
 

@@ -11,26 +11,26 @@ namespace scam
     {
     private:
         friend class scam::MemoryManager;
-        QuasiQuoteWorker(ExprHandle form, Continuation * cont, Env * env);
+        QuasiQuoteWorker(ScamValue form, Continuation * cont, Env * env);
 
         static QuasiQuoteWorker *
-        makeInstance(ExprHandle form, Continuation * cont, Env * env);
+        makeInstance(ScamValue form, Continuation * cont, Env * env);
 
     public:
         void mark() const override;
         void run() override;
 
     private:
-        ExprHandle form;
+        ScamValue form;
         Continuation * cont;
         Env *       env;
 
-        bool verify_single_form(ExprHandle input, Continuation * cont);
-        void unquote_form(ExprHandle input, Continuation * cont);
-        void splice_form(ExprHandle input, Continuation * cont);
-        void cons_qq_list(ExprHandle car, ExprHandle cdr, Continuation * cont);
-        void build_qq_list(ExprHandle input, Continuation * cont);
-        void build_qq_form(ExprHandle input, Continuation * cont);
+        bool verify_single_form(ScamValue input, Continuation * cont);
+        void unquote_form(ScamValue input, Continuation * cont);
+        void splice_form(ScamValue input, Continuation * cont);
+        void cons_qq_list(ScamValue car, ScamValue cdr, Continuation * cont);
+        void build_qq_list(ScamValue input, Continuation * cont);
+        void build_qq_form(ScamValue input, Continuation * cont);
     };
 }
 

@@ -12,18 +12,18 @@ namespace scam
     private:
         friend class scam::MemoryManager;
 
-        LetStepCont(ExprHandle formals,
-                    ExprHandle forms,
-                    ExprHandle evaled,
-                    ExprHandle args,
+        LetStepCont(ScamValue formals,
+                    ScamValue forms,
+                    ScamValue evaled,
+                    ScamValue args,
                     Continuation * cont,
                     Env * env,
                     bool rebind);
 
-        static LetStepCont * makeInstance(ExprHandle formals,
-                                          ExprHandle forms,
-                                          ExprHandle evaled,
-                                          ExprHandle args,
+        static LetStepCont * makeInstance(ScamValue formals,
+                                          ScamValue forms,
+                                          ScamValue evaled,
+                                          ScamValue args,
                                           Continuation * cont,
                                           Env * env,
                                           bool rebind);
@@ -31,13 +31,13 @@ namespace scam
     public:
         void mark() const override;
 
-        void run(ExprHandle expr) override;
+        void run(ScamValue expr) override;
 
     private:
-        ExprHandle formals;
-        ExprHandle forms;
-        ExprHandle evaled;
-        ExprHandle args;
+        ScamValue formals;
+        ScamValue forms;
+        ScamValue evaled;
+        ScamValue args;
         Continuation * cont;
         Env * env;
         bool rebind;

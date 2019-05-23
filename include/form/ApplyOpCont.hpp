@@ -12,17 +12,17 @@ namespace scam
     private:
         friend class scam::MemoryManager;
 
-        ApplyOpCont(ExprHandle args, Continuation * cont, Env * env);
+        ApplyOpCont(ScamValue args, Continuation * cont, Env * env);
 
         static ApplyOpCont *
-        makeInstance(ExprHandle args, Continuation * cont, Env * env);
+        makeInstance(ScamValue args, Continuation * cont, Env * env);
 
     public:
         void mark() const override;
-        void run(ExprHandle expr) override;
+        void run(ScamValue expr) override;
 
     private:
-        ExprHandle args;
+        ScamValue args;
         Continuation * cont;
         Env * env;
     };

@@ -16,7 +16,7 @@ CarCdr::CarCdr(char const * name)
 {
 }
 
-void CarCdr::applyArgs(ExprHandle args, Continuation * cont)
+void CarCdr::applyArgs(ScamValue args, Continuation * cont)
 {
     if ( TypePredicates::error(args) ) {
         cont->run(args);

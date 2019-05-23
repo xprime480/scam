@@ -17,14 +17,14 @@ namespace scam
         ClosureWorker(const LambdaParser * parser,
                       Env * capture,
                       Continuation * cont,
-                      ExprHandle args,
+                      ScamValue args,
                       Env * argEnv,
                       bool macrolike);
 
         static ClosureWorker * makeInstance(const LambdaParser * parser,
                                             Env * capture,
                                             Continuation * cont,
-                                            ExprHandle args,
+                                            ScamValue args,
                                             Env * argEnv,
                                             bool macrolike);
 
@@ -36,7 +36,7 @@ namespace scam
         const LambdaParser * parser;
         Env * capture;
         Continuation * cont;
-        ExprHandle args;
+        ScamValue args;
         Env * argEnv;
         bool macrolike;
     };

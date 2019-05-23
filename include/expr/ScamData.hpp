@@ -28,9 +28,9 @@ namespace scam
 
         void mark() const override final;
 
-        void setMeta(std::string const & key, ExprHandle value) const;
+        void setMeta(std::string const & key, ScamValue value) const;
         bool hasMeta(std::string const & key) const;
-        ExprHandle getMeta(std::string const & key) const;
+        ScamValue getMeta(std::string const & key) const;
 
         /*
          * tags and types for numeric types
@@ -100,18 +100,18 @@ namespace scam
 
             struct
             {
-                ExprHandle car;
-                ExprHandle cdr;
+                ScamValue car;
+                ScamValue cdr;
             }  consValue;
 
-            std::vector<ExprHandle> * vectorData;
+            std::vector<ScamValue> * vectorData;
 
             std::vector<unsigned char> * byteVectorData;
 
             struct
             {
-                std::vector<ExprHandle> * keys;
-                std::vector<ExprHandle> * vals;
+                std::vector<ScamValue> * keys;
+                std::vector<ScamValue> * vals;
             } dictData;
 
             struct
@@ -121,8 +121,8 @@ namespace scam
                 {
                     struct
                     {
-                        ExprHandle real;
-                        ExprHandle imag;
+                        ScamValue real;
+                        ScamValue imag;
                     }  complexValue;
 
                     double realValue;

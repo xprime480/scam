@@ -18,11 +18,11 @@ Macro * Macro::makeInstance()
     return &instance;
 }
 
-void Macro::apply(ExprHandle args, Continuation * cont, Env * env)
+void Macro::apply(ScamValue args, Continuation * cont, Env * env)
 {
     LambdaParser * lambda = standardMemoryManager.make<LambdaParser>();
 
-    ExprHandle expr = nullptr;
+    ScamValue expr = nullptr;
     if ( ! lambda->accept(args) ) {
         expr = validateClosureArgs(args, "macro");
     }

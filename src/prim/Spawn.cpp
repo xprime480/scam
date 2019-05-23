@@ -21,7 +21,7 @@ Spawn * Spawn::makeInstance()
     return new Spawn();
 }
 
-void Spawn::applyArgs(ExprHandle args, Continuation * cont)
+void Spawn::applyArgs(ScamValue args, Continuation * cont)
 {
     if ( ! TypePredicates::isNil(args) ) {
         failedArgParseMessage(myName, "()", args, cont);

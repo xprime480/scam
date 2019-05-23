@@ -27,10 +27,10 @@ namespace scam
         Env * getFrame();
         void popFrame();
 
-        void addBinding(ScamEnvKeyType key, ExprHandle val);
+        void addBinding(ScamEnvKeyType key, ScamValue val);
         bool hasBinding(ScamEnvKeyType key, bool checkParent = true);
-        ExprHandle getBinding(ScamEnvKeyType key, bool top = false);
-        void rebind(ScamEnvKeyType key, ExprHandle val);
+        ScamValue getBinding(ScamEnvKeyType key, bool top = false);
+        void rebind(ScamEnvKeyType key, ScamValue val);
 
         /*** functions to manage the input buffer ***/
 
@@ -43,10 +43,10 @@ namespace scam
 
         /*** functions to read, eval, and apply ***/
 
-        ExprHandle parseCurrentInput();
-        ExprHandle read();
-        ExprHandle eval(ExprHandle expr);
-        ExprHandle apply(ExprHandle expr, ExprHandle args);
+        ScamValue parseCurrentInput();
+        ScamValue read();
+        ScamValue eval(ScamValue expr);
+        ScamValue apply(ScamValue expr, ScamValue args);
 
         /*** functions to manage backtracking */
 

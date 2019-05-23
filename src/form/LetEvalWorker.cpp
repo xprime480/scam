@@ -10,10 +10,10 @@
 using namespace scam;
 using namespace std;
 
-LetEvalWorker::LetEvalWorker(ExprHandle formals,
-                             ExprHandle evaled,
-                             ExprHandle args,
-                             ExprHandle forms,
+LetEvalWorker::LetEvalWorker(ScamValue formals,
+                             ScamValue evaled,
+                             ScamValue args,
+                             ScamValue forms,
                              Continuation * cont,
                              Env * env,
                              bool rebind)
@@ -28,10 +28,10 @@ LetEvalWorker::LetEvalWorker(ExprHandle formals,
 {
 }
 
-LetEvalWorker * LetEvalWorker::makeInstance(ExprHandle formals,
-                                            ExprHandle evaled,
-                                            ExprHandle args,
-                                            ExprHandle forms,
+LetEvalWorker * LetEvalWorker::makeInstance(ScamValue formals,
+                                            ScamValue evaled,
+                                            ScamValue args,
+                                            ScamValue forms,
                                             Continuation * cont,
                                             Env * env,
                                             bool rebind)
@@ -63,8 +63,8 @@ void LetEvalWorker::run()
     Worker::run();
 
     if ( args->length() > 0 ) {
-        ExprHandle car = args->nthcar(0);
-        ExprHandle cdr = args->nthcdr(0);
+        ScamValue car = args->nthcar(0);
+        ScamValue cdr = args->nthcdr(0);
 
         Continuation * ch
             = standardMemoryManager.make<LetStepCont>(formals,

@@ -16,20 +16,20 @@ namespace scam
     public:
         ScamParser(Tokenizer & tokenizer);
 
-        ExprHandle parseExpr() const;
+        ScamValue parseExpr() const;
 
     private:
         Tokenizer & tokenizer;
 
-        ExprHandle tokenToExpr(Token const & token) const;
+        ScamValue tokenToExpr(Token const & token) const;
 
-        ExprHandle parseSubExpr() const;
-        ExprHandle parseList() const;
-        ExprHandle parseDotContext() const;
-        ExprHandle parseVector() const;
-        ExprHandle parseByteVector() const;
-        ExprHandle parseDict() const;
-        ExprHandle expand_reader_macro(std::string const & text) const;
+        ScamValue parseSubExpr() const;
+        ScamValue parseList() const;
+        ScamValue parseDotContext() const;
+        ScamValue parseVector() const;
+        ScamValue parseByteVector() const;
+        ScamValue parseDict() const;
+        ScamValue expand_reader_macro(std::string const & text) const;
     };
 }
 

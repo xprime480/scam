@@ -49,7 +49,7 @@ void Env::mark() const
     }
 }
 
-void Env::put(ScamEnvKeyType key, ExprHandle val)
+void Env::put(ScamEnvKeyType key, ScamValue val)
 {
     const string keyStr = checkKey(key);
     auto const iter = table.find(keyStr);
@@ -76,7 +76,7 @@ bool Env::check(ScamEnvKeyType key, bool checkParent) const
     return false;
 }
 
-ExprHandle Env::get(ScamEnvKeyType key) const
+ScamValue Env::get(ScamEnvKeyType key) const
 {
     const string keyStr = checkKey(key);
     auto const iter = table.find(keyStr);
@@ -94,7 +94,7 @@ ExprHandle Env::get(ScamEnvKeyType key) const
 
 void Env::reset()
 {
-    map<string, ExprHandle> temp;
+    map<string, ScamValue> temp;
     table.swap(temp);
 
     if ( parent ) {
@@ -123,7 +123,7 @@ Env * Env::getTop() const
     return parent->getTop();
 }
 
-void Env::assign(ScamEnvKeyType key, ExprHandle val)
+void Env::assign(ScamEnvKeyType key, ScamValue val)
 {
     const string keyStr = checkKey(key);
     auto const iter = table.find(keyStr);

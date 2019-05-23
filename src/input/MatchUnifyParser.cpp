@@ -28,7 +28,7 @@ void MatchUnifyParser::mark() const
     }
 }
 
-bool MatchUnifyParser::accept(ExprHandle expr)
+bool MatchUnifyParser::accept(ScamValue expr)
 {
     ArgParser::clearValue();
 
@@ -51,12 +51,12 @@ bool MatchUnifyParser::isMatch() const
     return match;
 }
 
-ExprHandle MatchUnifyParser::getLhs() const
+ScamValue MatchUnifyParser::getLhs() const
 {
     return parser->get(0);
 }
 
-ExprHandle MatchUnifyParser::getRhs() const
+ScamValue MatchUnifyParser::getRhs() const
 {
     return parser->get(1);
 }

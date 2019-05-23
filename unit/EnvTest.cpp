@@ -14,7 +14,7 @@ class EnvTest : public TestBase
 {
 protected:
     ScamSymbol * key;
-    ExprHandle   exp;
+    ScamValue   exp;
 
     EnvTest()
         : key(nullptr)
@@ -41,7 +41,7 @@ protected:
 
 TEST_F(EnvTest, Fetch)
 {
-    ExprHandle act = engine.getBinding(key);
+    ScamValue act = engine.getBinding(key);
     EXPECT_EQ(exp->asInteger(), act->asInteger());
 }
 
@@ -52,56 +52,56 @@ TEST_F(EnvTest, FetchTraversesFrames)
         engine.pushFrame();
     }
 
-    ExprHandle act = engine.getBinding(key);
+    ScamValue act = engine.getBinding(key);
     EXPECT_EQ(exp->asInteger(), act->asInteger());
 }
 
 TEST_F(EnvTest, DuplicateKeys)
 {
-    ExprHandle val2 = ExpressionFactory::makeInteger(2, true);
+    ScamValue val2 = ExpressionFactory::makeInteger(2, true);
     EXPECT_THROW(engine.addBinding(key, val2), ScamException);
 
-    ExprHandle act = engine.getBinding(key);
+    ScamValue act = engine.getBinding(key);
     EXPECT_EQ(exp->asInteger(), act->asInteger());
 }
 
 TEST_F(EnvTest, ExtensionTest)
 {
     engine.pushFrame();
-    ExprHandle exp2 = ExpressionFactory::makeInteger(2, true);
+    ScamValue exp2 = ExpressionFactory::makeInteger(2, true);
     engine.addBinding(key, exp2);
 
-    ExprHandle act2 = engine.getBinding(key);
+    ScamValue act2 = engine.getBinding(key);
     EXPECT_EQ(exp2->asInteger(), act2->asInteger());
 
     // original environment is unchanged
     //
     engine.popFrame();
-    ExprHandle act = engine.getBinding(key);
+    ScamValue act = engine.getBinding(key);
     EXPECT_EQ(exp->asInteger(), act->asInteger());
 }
 
 TEST_F(EnvTest, Assign)
 {
-    ExprHandle newExp = ExpressionFactory::makeInteger(33, true);
+    ScamValue newExp = ExpressionFactory::makeInteger(33, true);
     engine.rebind(key, newExp);
-    ExprHandle act = engine.getBinding(key);
+    ScamValue act = engine.getBinding(key);
     EXPECT_EQ(newExp->asInteger(), act->asInteger());
 }
 
 TEST_F(EnvTest, AssignToNonexistentKey)
 {
     ScamSymbol * newKey = ExpressionFactory::makeSymbol("*bad*");
-    ExprHandle   newExp = ExpressionFactory::makeInteger(33, true);
+    ScamValue   newExp = ExpressionFactory::makeInteger(33, true);
     EXPECT_THROW(engine.rebind(newKey, newExp), ScamException);
 }
 
 TEST_F(EnvTest, AssignTraversesFrames)
 {
     engine.pushFrame();
-    ExprHandle newExp = ExpressionFactory::makeInteger(33, true);
+    ScamValue newExp = ExpressionFactory::makeInteger(33, true);
     engine.rebind(key, newExp);
-    ExprHandle act = engine.getBinding(key);
+    ScamValue act = engine.getBinding(key);
     EXPECT_EQ(newExp->asInteger(), act->asInteger());
 
     // it's in the original env
@@ -137,22 +137,22 @@ TEST_F(EnvTest, NullKey)
 TEST_F(EnvTest, DefineConstant)
 {
     reset(true);
-    ExprHandle expr = parseAndEvaluate("(define x 1)");
+    ScamValue expr = parseAndEvaluate("(define x 1)");
     expectNull(expr);
 
     ScamSymbol * sym = ExpressionFactory::makeSymbol("x");
-    ExprHandle val = engine.getBinding(sym);
+    ScamValue val = engine.getBinding(sym);
     expectInteger(val, 1, "1", true);
 }
 
 TEST_F(EnvTest, DefineEvaluated)
 {
     reset(true);
-    ExprHandle expr = parseAndEvaluate("(define x (- 3 2))");
+    ScamValue expr = parseAndEvaluate("(define x (- 3 2))");
     expectNull(expr);
 
     ScamSymbol * sym = ExpressionFactory::makeSymbol("x");
-    ExprHandle val = engine.getBinding(sym);
+    ScamValue val = engine.getBinding(sym);
     expectInteger(val, 1, "1", true);
 }
 
@@ -168,21 +168,21 @@ TEST_F(EnvTest, DefineScope)
 
 TEST_F(EnvTest, DefineTwice)
 {
-    ExprHandle expr = parseAndEvaluateFile("scripts/env/definetwice.scm");
+    ScamValue expr = parseAndEvaluateFile("scripts/env/definetwice.scm");
     expectError(expr);
 }
 
 TEST_F(EnvTest, AssignKeyword)
 {
     reset(true);
-    ExprHandle expr = parseAndEvaluateFile("scripts/env/assign.scm");
+    ScamValue expr = parseAndEvaluateFile("scripts/env/assign.scm");
     expectInteger(expr, 77, "77", true);
 }
 
 TEST_F(EnvTest, AssignScope)
 {
     reset(true);
-    ExprHandle expr = parseAndEvaluateFile("scripts/env/assignscope.scm");
+    ScamValue expr = parseAndEvaluateFile("scripts/env/assignscope.scm");
     expectInteger(expr, 77, "77", true);
 }
 
@@ -194,7 +194,7 @@ TEST_F(EnvTest, GetTopLevel)
     parseAndEvaluate("(define x 2)");
 
     ScamSymbol * sym = ExpressionFactory::makeSymbol("x");
-    ExprHandle val = engine.getBinding(sym, true);
+    ScamValue val = engine.getBinding(sym, true);
     expectInteger(val, 1, "1", true);
 }
 
@@ -202,7 +202,7 @@ TEST_F(EnvTest, Undefine)
 {
     reset(true);
 
-    ExprHandle val = parseAndEvaluate("(define test 1) test");
+    ScamValue val = parseAndEvaluate("(define test 1) test");
     expectInteger(val, 1, "1", true);
 
     val = parseAndEvaluate("(undefine test)  test");
@@ -213,7 +213,7 @@ TEST_F(EnvTest, UndefineOnlyAffectsCurrentFrame)
 {
     reset(true);
 
-    ExprHandle val = parseAndEvaluate("(define test 1) test");
+    ScamValue val = parseAndEvaluate("(define test 1) test");
     expectInteger(val, 1, "1", true);
 
     engine.pushFrame();

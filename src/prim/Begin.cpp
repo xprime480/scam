@@ -20,7 +20,7 @@ Begin * Begin::makeInstance()
     return new Begin();
 }
 
-void Begin::applyArgs(ExprHandle args, Continuation * cont)
+void Begin::applyArgs(ScamValue args, Continuation * cont)
 {
     if ( ! TypePredicates::isList(args) ) {
         failedArgParseMessage(myName, "(expr*)", args, cont);
@@ -32,7 +32,7 @@ void Begin::applyArgs(ExprHandle args, Continuation * cont)
         cont->run(args);
     }
     else {
-        ExprHandle last = args->nthcar(count - 1);
+        ScamValue last = args->nthcar(count - 1);
         cont->run(last);
     }
 }

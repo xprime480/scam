@@ -10,7 +10,7 @@ using namespace std;
 
 namespace
 {
-    extern void tagPartial(ExprHandle expr);
+    extern void tagPartial(ScamValue expr);
 }
 
 ScamParser::ScamParser(Tokenizer & tokenizer)
@@ -18,21 +18,21 @@ ScamParser::ScamParser(Tokenizer & tokenizer)
 {
 }
 
-ExprHandle ScamParser::parseExpr() const
+ScamValue ScamParser::parseExpr() const
 {
-    ExprHandle expr = parseSubExpr();
+    ScamValue expr = parseSubExpr();
     return expr;
 }
 
-ExprHandle ScamParser::parseSubExpr() const
+ScamValue ScamParser::parseSubExpr() const
 {
     Token t = tokenizer.next();
     return tokenToExpr(t);
 }
 
-ExprHandle ScamParser::tokenToExpr(Token const & token) const
+ScamValue ScamParser::tokenToExpr(Token const & token) const
 {
-    ExprHandle rv = ExpressionFactory::makeNull();
+    ScamValue rv = ExpressionFactory::makeNull();
 
     switch ( token.getType() ) {
     case TokenType::TT_NONE:
@@ -123,13 +123,13 @@ ExprHandle ScamParser::tokenToExpr(Token const & token) const
     return rv;
 }
 
-ExprHandle ScamParser::parseList() const
+ScamValue ScamParser::parseList() const
 {
     Token token = tokenizer.next();
     TokenType type = token.getType();
 
     if ( TokenType::TT_END_OF_INPUT == type ) {
-        ExprHandle err = ExpressionFactory::makeError("Unterminated List");
+        ScamValue err = ExpressionFactory::makeError("Unterminated List");
         tagPartial(err);
         return err;
     }
@@ -146,24 +146,24 @@ ExprHandle ScamParser::parseList() const
         return parseDotContext();
     }
 
-    ExprHandle car = tokenToExpr(token);
+    ScamValue car = tokenToExpr(token);
     if ( TypePredicates::error(car) ) {
         return car;
     }
-    ExprHandle cdr = parseList();
+    ScamValue cdr = parseList();
     if ( TypePredicates::error(cdr) ) {
         return cdr;
     }
     return ExpressionFactory::makeCons(car, cdr);
 }
 
-ExprHandle ScamParser::parseDotContext() const
+ScamValue ScamParser::parseDotContext() const
 {
     Token token = tokenizer.next();
     TokenType type = token.getType();
 
     if ( TokenType::TT_END_OF_INPUT == type ) {
-        ExprHandle err = ExpressionFactory::makeError("Unterminated List");
+        ScamValue err = ExpressionFactory::makeError("Unterminated List");
         tagPartial(err);
         return err;
     }
@@ -176,13 +176,13 @@ ExprHandle ScamParser::parseDotContext() const
         return ExpressionFactory::makeError("No form after '.'");
     }
 
-    ExprHandle final = tokenToExpr(token);
+    ScamValue final = tokenToExpr(token);
 
     Token check = tokenizer.next();
     TokenType checkType = check.getType();
 
     if ( TokenType::TT_END_OF_INPUT == checkType ) {
-        ExprHandle err = ExpressionFactory::makeError("Unterminated List");
+        ScamValue err = ExpressionFactory::makeError("Unterminated List");
         tagPartial(err);
         return err;
     }
@@ -198,7 +198,7 @@ ExprHandle ScamParser::parseDotContext() const
     return final;
 }
 
-ExprHandle ScamParser::parseVector() const
+ScamValue ScamParser::parseVector() const
 {
     ExprVec vec;
 
@@ -207,7 +207,7 @@ ExprHandle ScamParser::parseVector() const
         TokenType type = token.getType();
 
         if ( TokenType::TT_END_OF_INPUT == type ) {
-            ExprHandle err =
+            ScamValue err =
                 ExpressionFactory::makeError("Unterminated Vector");
             tagPartial(err);
             return err;
@@ -221,7 +221,7 @@ ExprHandle ScamParser::parseVector() const
             return ExpressionFactory::makeVector(vec);
         }
 
-        ExprHandle expr = tokenToExpr(token);
+        ScamValue expr = tokenToExpr(token);
         if ( TypePredicates::error(expr) ) {
             return expr;
         }
@@ -230,7 +230,7 @@ ExprHandle ScamParser::parseVector() const
     }
 }
 
-ExprHandle ScamParser::parseByteVector() const
+ScamValue ScamParser::parseByteVector() const
 {
     ByteVec vec;
 
@@ -239,7 +239,7 @@ ExprHandle ScamParser::parseByteVector() const
         TokenType type = token.getType();
 
         if ( TokenType::TT_END_OF_INPUT == type ) {
-            ExprHandle err =
+            ScamValue err =
                 ExpressionFactory::makeError("Unterminated Byte Vector");
             tagPartial(err);
             return err;
@@ -253,13 +253,13 @@ ExprHandle ScamParser::parseByteVector() const
             return ExpressionFactory::makeByteVector(vec);
         }
 
-        ExprHandle expr = tokenToExpr(token);
+        ScamValue expr = tokenToExpr(token);
         if ( TypePredicates::error(expr) ) {
             return expr;
         }
 
         if ( ! TypePredicates::isInteger(expr) ) {
-            ExprHandle err =
+            ScamValue err =
                 ExpressionFactory::makeError("Non-integer in Byte Vector");
             return err;
         }
@@ -272,7 +272,7 @@ ExprHandle ScamParser::parseByteVector() const
     }
 }
 
-ExprHandle ScamParser::parseDict() const
+ScamValue ScamParser::parseDict() const
 {
     ExprVec vec;
 
@@ -281,7 +281,7 @@ ExprHandle ScamParser::parseDict() const
         TokenType type = token.getType();
 
         if ( TokenType::TT_END_OF_INPUT == type ) {
-            ExprHandle err =
+            ScamValue err =
                 ExpressionFactory::makeError("Unterminated Dictionary");
             tagPartial(err);
             return err;
@@ -295,7 +295,7 @@ ExprHandle ScamParser::parseDict() const
             return ExpressionFactory::makeDict(vec);
         }
 
-        ExprHandle expr = tokenToExpr(token);
+        ScamValue expr = tokenToExpr(token);
         if ( TypePredicates::error(expr) ) {
             return expr;
         }
@@ -304,7 +304,7 @@ ExprHandle ScamParser::parseDict() const
     }
 }
 
-ExprHandle ScamParser::expand_reader_macro(std::string const & text) const
+ScamValue ScamParser::expand_reader_macro(std::string const & text) const
 {
     string name;
     if ( text == "'" ) {
@@ -323,7 +323,7 @@ ExprHandle ScamParser::expand_reader_macro(std::string const & text) const
         return ExpressionFactory::makeError("Unknown reader macro: ", text);
     }
 
-    ExprHandle expr = parseSubExpr();
+    ScamValue expr = parseSubExpr();
     if ( TypePredicates::isNull(expr) ) {
         return ExpressionFactory::makeError("Unterminated macro: ", name);
     }
@@ -335,17 +335,17 @@ ExprHandle ScamParser::expand_reader_macro(std::string const & text) const
                                             ExprWriter::write(expr));
     }
 
-    ExprHandle sym    = ExpressionFactory::makeSymbol(name);
-    ExprHandle listed = ExpressionFactory::makeList(expr);
+    ScamValue sym    = ExpressionFactory::makeSymbol(name);
+    ScamValue listed = ExpressionFactory::makeList(expr);
     return ExpressionFactory::makeCons(sym, listed);
 }
 
 namespace
 {
-    void tagPartial(ExprHandle expr)
+    void tagPartial(ScamValue expr)
     {
         static string tag = "partial";
-        static ExprHandle const nil = ExpressionFactory::makeNil();
+        static ScamValue const nil = ExpressionFactory::makeNil();
 
         if ( expr ) {
             expr->setMeta(tag, nil);

@@ -22,15 +22,15 @@ namespace scam
         virtual ~ArgParser();
         void mark() const override;
 
-        virtual bool accept(ExprHandle expr);
-        virtual void callback(ExprHandle expr);
-        ExprHandle getValue() const;
+        virtual bool accept(ScamValue expr);
+        virtual void callback(ScamValue expr);
+        ScamValue getValue() const;
 
     protected:
         virtual void clearValue();
 
     private:
-        ExprHandle value;
+        ScamValue value;
     };
 }
 

@@ -26,7 +26,7 @@ void NotCont::mark() const
   }
 }
 
-void NotCont::run(ExprHandle expr)
+void NotCont::run(ScamValue expr)
 {
     Continuation::run(expr);
 
@@ -34,7 +34,7 @@ void NotCont::run(ExprHandle expr)
         cont->run(expr);
     }
     else {
-        ExprHandle rv =
+        ScamValue rv =
             ExpressionFactory::makeBoolean(! TypePredicates::truth(expr));
         cont->run(rv);
     }

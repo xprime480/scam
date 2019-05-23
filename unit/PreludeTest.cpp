@@ -9,98 +9,98 @@ class PreludeTest : public TestBase
 
 TEST_F(PreludeTest, MaxIntegerTest)
 {
-    ExprHandle expr = parseAndEvaluate("(max 123 -123)");
+    ScamValue expr = parseAndEvaluate("(max 123 -123)");
     expectInteger(expr, 123, "123", true);
 }
 
 TEST_F(PreludeTest, MaxRealTest)
 {
-    ExprHandle expr = parseAndEvaluate("(max 42.01 17.5)");
+    ScamValue expr = parseAndEvaluate("(max 42.01 17.5)");
     expectRational(expr, pair<int, int>(4201, 100), "4201/100", false);
 }
 
 TEST_F(PreludeTest, MaxMixedNumericTest)
 {
-    ExprHandle expr = parseAndEvaluate("(max -5 -9.999)");
+    ScamValue expr = parseAndEvaluate("(max -5 -9.999)");
     expectInteger(expr, -5, "-5", true);
 }
 
 TEST_F(PreludeTest, MinIntegerTest)
 {
-    ExprHandle expr = parseAndEvaluate("(min 123 -123)");
+    ScamValue expr = parseAndEvaluate("(min 123 -123)");
     expectInteger(expr, -123, "-123", true);
 }
 
 TEST_F(PreludeTest, MinRealTest)
 {
-    ExprHandle expr = parseAndEvaluate("(min 42.01 17.5)");
+    ScamValue expr = parseAndEvaluate("(min 42.01 17.5)");
     expectRational(expr, pair<int,int>(35,2), "35/2", false);
 }
 
 TEST_F(PreludeTest, MinMixedNumericTest)
 {
-    ExprHandle expr = parseAndEvaluate("(min -5 -9.999)");
+    ScamValue expr = parseAndEvaluate("(min -5 -9.999)");
     expectRational(expr, pair<int,int>(-9999,1000), "-9999/1000", false);
 }
 
 TEST_F(PreludeTest, MapTest)
 {
-    ExprHandle expr =
+    ScamValue expr =
         parseAndEvaluate("(map integer? (list 1 0.123 \"xx\"))");
     expectList(expr, "(#t #f #f)", 3);
 }
 
 TEST_F(PreludeTest, ReduceEmptyList)
 {
-    ExprHandle expr =
+    ScamValue expr =
         parseAndEvaluate("(reduce (lambda (a b) (+ a b)) 0 '())");
     expectInteger(expr, 0, "0", true);
 }
 
 TEST_F(PreludeTest, ReduceSingleton)
 {
-    ExprHandle expr
+    ScamValue expr
         = parseAndEvaluate("(reduce (lambda (a b) (+ a b)) 0 '(5))");
     expectInteger(expr, 5, "5", true);
 }
 
 TEST_F(PreludeTest, ReduceMany)
 {
-    ExprHandle expr
+    ScamValue expr
         = parseAndEvaluate("(reduce (lambda (a b) (+ a b)) 0 '(1 2 3 4 5))");
     expectInteger(expr, 15, "15", true);
 }
 
 TEST_F(PreludeTest, ReduceRespectsInit)
 {
-    ExprHandle expr
+    ScamValue expr
         = parseAndEvaluate("(reduce (lambda (a b) (+ a b)) -10 '(1 2 3 4 5))");
     expectInteger(expr, 5, "5", true);
 }
 
 TEST_F(PreludeTest, ReduceListOps)
 {
-    ExprHandle expr =
+    ScamValue expr =
         parseAndEvaluateFile("scripts/prelude/reducelist1.scm");
     expectList(expr, "(#f 1 3 2)", 4);
 }
 
 TEST_F(PreludeTest, ReduceListOps2)
 {
-    ExprHandle expr =
+    ScamValue expr =
         parseAndEvaluateFile("scripts/prelude/reducelist2.scm");
     expectList(expr, "((#t) (1 3) (2))", 3);
 }
 
 TEST_F(PreludeTest, FilterNil)
 {
-    ExprHandle expr = parseAndEvaluate("(filter even? '())");
+    ScamValue expr = parseAndEvaluate("(filter even? '())");
     expectNil(expr);
 }
 
 TEST_F(PreludeTest, FilterList)
 {
-    ExprHandle expr = parseAndEvaluate("(filter even? '(1 2 3 4 5))");
+    ScamValue expr = parseAndEvaluate("(filter even? '(1 2 3 4 5))");
     expectList(expr, "(2 4)", 2);
 }
 
@@ -139,7 +139,7 @@ TEST_F(PreludeTest, OddTest)
 TEST_F(PreludeTest, RequireTest)
 {
     expectTrue("(require #t)");
-    ExprHandle expr = parseAndEvaluate("(require #f)");
+    ScamValue expr = parseAndEvaluate("(require #f)");
     expectError(expr, "No more choices", false);
 }
 
@@ -180,210 +180,210 @@ TEST_F(PreludeTest, DistinctWithDuplicates)
 
 TEST_F(PreludeTest, OneofNone)
 {
-    ExprHandle expr = parseAndEvaluate("(one-of (list))");
+    ScamValue expr = parseAndEvaluate("(one-of (list))");
     expectError(expr, "No more choices", false);
 }
 
 TEST_F(PreludeTest, OneofOne)
 {
-    ExprHandle expr = parseAndEvaluate("(one-of (list 2))");
+    ScamValue expr = parseAndEvaluate("(one-of (list 2))");
     expectInteger(expr, 2, "2", true);
 }
 
 TEST_F(PreludeTest, OneofSecondofThree)
 {
-    ExprHandle expr = parseAndEvaluate("(one-of (list 2 8 22)) ?");
+    ScamValue expr = parseAndEvaluate("(one-of (list 2 8 22)) ?");
     expectInteger(expr, 8, "8", true);
 }
 
 TEST_F(PreludeTest, ExcludeNilFromNil)
 {
-    ExprHandle expr = parseAndEvaluate("(exclude () ())");
+    ScamValue expr = parseAndEvaluate("(exclude () ())");
     expectNil(expr);
 }
 
 TEST_F(PreludeTest, ExcludeNilFromList)
 {
-    ExprHandle expr = parseAndEvaluate("(exclude () (list 1 2 3))");
+    ScamValue expr = parseAndEvaluate("(exclude () (list 1 2 3))");
     expectList(expr, "(1 2 3)", 3);
 }
 
 TEST_F(PreludeTest, ExcludeListFromNil)
 {
-    ExprHandle expr = parseAndEvaluate("(exclude  (list 1 2 3) ())");
+    ScamValue expr = parseAndEvaluate("(exclude  (list 1 2 3) ())");
     expectNil(expr);
 }
 
 TEST_F(PreludeTest, ExcludeAllFromList)
 {
-    ExprHandle expr =
+    ScamValue expr =
         parseAndEvaluate("(define x (list 1 2 3)) (exclude x x)");
     expectNil(expr);
 }
 
 TEST_F(PreludeTest, ExcludePartial)
 {
-    ExprHandle expr =
+    ScamValue expr =
         parseAndEvaluate("(define x (list 1 2 3)) (exclude (cdr x) x)");
     expectList(expr, "(1)", 1);
 }
 
 TEST_F(PreludeTest, ExcludeNonOverlapping)
 {
-    ExprHandle expr = parseAndEvaluate("(exclude (list 1 2) (list 3 4))");
+    ScamValue expr = parseAndEvaluate("(exclude (list 1 2) (list 3 4))");
     expectList(expr, "(3 4)", 2);
 }
 
 TEST_F(PreludeTest, LengthOfNil)
 {
-    ExprHandle expr = parseAndEvaluate("(length '())");
+    ScamValue expr = parseAndEvaluate("(length '())");
     expectInteger(expr, 0, "0", true);
 }
 
 TEST_F(PreludeTest, LengthOfSingleton)
 {
-    ExprHandle expr = parseAndEvaluate("(length '(1))");
+    ScamValue expr = parseAndEvaluate("(length '(1))");
     expectInteger(expr, 1, "1", true);
 }
 
 TEST_F(PreludeTest, LengthOfLongerList)
 {
-    ExprHandle expr = parseAndEvaluate("(length '(1 2 3 4))");
+    ScamValue expr = parseAndEvaluate("(length '(1 2 3 4))");
     expectInteger(expr, 4, "4", true);
 }
 
 TEST_F(PreludeTest, LengthWithNested)
 {
-    ExprHandle expr = parseAndEvaluate("(length '(1 2 (hi there) 3 4))");
+    ScamValue expr = parseAndEvaluate("(length '(1 2 (hi there) 3 4))");
     expectInteger(expr, 5, "5", true);
 }
 
 TEST_F(PreludeTest, LengthVector)
 {
-    ExprHandle expr = parseAndEvaluate("(length #(1 2 3))");
+    ScamValue expr = parseAndEvaluate("(length #(1 2 3))");
     expectInteger(expr, 3, "3", true);
 }
 
 TEST_F(PreludeTest, LengthDict)
 {
-    ExprHandle expr = parseAndEvaluate("(length { :a 44 :b \"cat\" })");
+    ScamValue expr = parseAndEvaluate("(length { :a 44 :b \"cat\" })");
     expectInteger(expr, 2, "2", true);
 }
 
 TEST_F(PreludeTest, LengthBadType)
 {
-    ExprHandle expr = parseAndEvaluate("(length :abc)");
+    ScamValue expr = parseAndEvaluate("(length :abc)");
     expectError(expr);
 }
 
 TEST_F(PreludeTest, NthList)
 {
-    ExprHandle expr = parseAndEvaluate("(nth 0 '(a b c))");
+    ScamValue expr = parseAndEvaluate("(nth 0 '(a b c))");
     expectSymbol(expr, "a");
 }
 
 TEST_F(PreludeTest, NthListOutOfBounds)
 {
-    ExprHandle expr = parseAndEvaluate("(nth 4 '(a b c))");
+    ScamValue expr = parseAndEvaluate("(nth 4 '(a b c))");
     expectError(expr);
 }
 
 TEST_F(PreludeTest, NthVector)
 {
-    ExprHandle expr = parseAndEvaluate("(nth 0 #(1 2 3))");
+    ScamValue expr = parseAndEvaluate("(nth 0 #(1 2 3))");
     expectInteger(expr, 1, "1", true);
 }
 
 TEST_F(PreludeTest, NthVectorOutOfBounds)
 {
-    ExprHandle expr = parseAndEvaluate("(nth -50 #(1 2 3))");
+    ScamValue expr = parseAndEvaluate("(nth -50 #(1 2 3))");
     expectError(expr);
 }
 
 TEST_F(PreludeTest, NthNotIndexible)
 {
-    ExprHandle expr = parseAndEvaluate("(nth 0 { :a 333.333 })");
+    ScamValue expr = parseAndEvaluate("(nth 0 { :a 333.333 })");
     expectError(expr);
 }
 
 TEST_F(PreludeTest, AppendNilToNil)
 {
-    ExprHandle expr = parseAndEvaluate("(append '() '())");
+    ScamValue expr = parseAndEvaluate("(append '() '())");
     expectNil(expr);
 }
 
 TEST_F(PreludeTest, AppendNilToList)
 {
-    ExprHandle expr = parseAndEvaluate("(append '() '(1))");
+    ScamValue expr = parseAndEvaluate("(append '() '(1))");
     expectList(expr, "(1)", 1);
 }
 
 TEST_F(PreludeTest, AppendListToNil)
 {
-    ExprHandle expr = parseAndEvaluate("(append '(1 3) '())");
+    ScamValue expr = parseAndEvaluate("(append '(1 3) '())");
     expectList(expr, "(1 3)", 2);
 }
 
 TEST_F(PreludeTest, AppendListToList)
 {
-    ExprHandle expr = parseAndEvaluate("(append '(1 3) '(#t #f))");
+    ScamValue expr = parseAndEvaluate("(append '(1 3) '(#t #f))");
     expectList(expr, "(1 3 #t #f)", 4);
 }
 
 TEST_F(PreludeTest, CrossNilWithNil)
 {
-    ExprHandle expr = parseAndEvaluate("(cross cons '() '())");
+    ScamValue expr = parseAndEvaluate("(cross cons '() '())");
     expectNil(expr);
 }
 
 TEST_F(PreludeTest, CrossNilWithList)
 {
-    ExprHandle expr = parseAndEvaluate("(cross cons '() '((1) (2)))");
+    ScamValue expr = parseAndEvaluate("(cross cons '() '((1) (2)))");
     expectNil(expr);
 }
 
 TEST_F(PreludeTest, CrossListWithNil)
 {
-    ExprHandle expr =
+    ScamValue expr =
         parseAndEvaluate("(cross (lambda (a b) (+ a b)) '(1 2 3) '())");
     expectNil(expr);
 }
 
 TEST_F(PreludeTest, CrossListWithList)
 {
-    ExprHandle expr =
+    ScamValue expr =
         parseAndEvaluateFile("scripts/prelude/crosstest1.scm");
     expectList(expr, "(2 3 4 3 4 5 4 5 6)", 9);
 }
 
 TEST_F(PreludeTest, PowerSetNil)
 {
-    ExprHandle expr = parseAndEvaluate("(power-set '())");
+    ScamValue expr = parseAndEvaluate("(power-set '())");
     expectList(expr, "(())", 1);
 }
 
 TEST_F(PreludeTest, PowerSetSingleton)
 {
-    ExprHandle expr = parseAndEvaluate("(power-set '(1))");
+    ScamValue expr = parseAndEvaluate("(power-set '(1))");
     expectList(expr, "(() (1))", 2);
 }
 
 TEST_F(PreludeTest, PowerSetList)
 {
-    ExprHandle expr = parseAndEvaluateFile("scripts/prelude/powerset.scm");
+    ScamValue expr = parseAndEvaluateFile("scripts/prelude/powerset.scm");
     expectList(expr, "(#t #t #t #t)", 4);
 }
 
 
 TEST_F(PreludeTest, SomeOfNone)
 {
-    ExprHandle expr = parseAndEvaluate("(some-of '())");
+    ScamValue expr = parseAndEvaluate("(some-of '())");
     expectError(expr, "No more choices", false);
 }
 
 TEST_F(PreludeTest, SomeOfOne)
 {
-    ExprHandle expr = parseAndEvaluate("(some-of '(1))");
+    ScamValue expr = parseAndEvaluate("(some-of '(1))");
     expectList(expr, "(1)", 1);
 
     expr = parseAndEvaluate("?");
@@ -392,49 +392,49 @@ TEST_F(PreludeTest, SomeOfOne)
 
 TEST_F(PreludeTest, CondNoClauses)
 {
-    ExprHandle expr = parseAndEvaluate("(cond ())");
+    ScamValue expr = parseAndEvaluate("(cond ())");
     expectNil(expr);
 }
 
 TEST_F(PreludeTest, CondOneTrueClause)
 {
-    ExprHandle expr = parseAndEvaluateFile("scripts/cond/onetrue.scm");
+    ScamValue expr = parseAndEvaluateFile("scripts/cond/onetrue.scm");
     expectString(expr, "One");
 }
 
 TEST_F(PreludeTest, CondOneFalseClause)
 {
-    ExprHandle expr = parseAndEvaluateFile("scripts/cond/onefalse.scm");
+    ScamValue expr = parseAndEvaluateFile("scripts/cond/onefalse.scm");
     expectNil(expr);
 }
 
 TEST_F(PreludeTest, CondManyClauses)
 {
-    ExprHandle expr = parseAndEvaluateFile("scripts/cond/many.scm");
+    ScamValue expr = parseAndEvaluateFile("scripts/cond/many.scm");
     expectString(expr, "Last");
 }
 
 TEST_F(PreludeTest, CondElse)
 {
-    ExprHandle expr = parseAndEvaluateFile("scripts/cond/else.scm");
+    ScamValue expr = parseAndEvaluateFile("scripts/cond/else.scm");
     expectString(expr, "Else Evaluated");
 }
 
 TEST_F(PreludeTest, CondManyForms)
 {
-    ExprHandle expr = parseAndEvaluate("(cond ((#t 1 2 3)))");
+    ScamValue expr = parseAndEvaluate("(cond ((#t 1 2 3)))");
     expectInteger(expr, 3, "3", true);
 }
 
 TEST_F(PreludeTest, CondNoForms)
 {
-    ExprHandle expr = parseAndEvaluate("(cond ((3)))");
+    ScamValue expr = parseAndEvaluate("(cond ((3)))");
     expectInteger(expr, 3, "3", true);
 }
 
 TEST_F(PreludeTest, CondArrowForm)
 {
     (void) parseAndEvaluate("(define inc (lambda (x) (+ x 1)))");
-    ExprHandle expr = parseAndEvaluate("(cond ((1 => inc)))");
+    ScamValue expr = parseAndEvaluate("(cond ((1 => inc)))");
     expectInteger(expr, 2, "2", true);
 }

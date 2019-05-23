@@ -30,9 +30,9 @@ bool ScamExpr::hasApply() const
     return 0 != (type & ScamData::Applicable);
 }
 
-void ScamExpr::apply(ExprHandle args, Continuation * cont, Env * env)
+void ScamExpr::apply(ScamValue args, Continuation * cont, Env * env)
 {
-    ExprHandle err =
+    ScamValue err =
         ExpressionFactory::makeError("Not possible to apply <",
                                      ExprWriter::write(this),
                                      "> to args ",
@@ -70,22 +70,22 @@ int ScamExpr::asInteger() const
     return ScamNumeric::asInteger(this);
 }
 
-ConstExprHandle ScamExpr::realPart() const
+ConstScamValue ScamExpr::realPart() const
 {
     // temporary hack!!!
-    ConstExprHandle rv = ScamNumeric::realPart(this);
+    ConstScamValue rv = ScamNumeric::realPart(this);
     if ( TypePredicates::isNull(rv) ) {
         rv = this;
     }
     return rv;
 }
 
-ConstExprHandle ScamExpr::imagPart() const
+ConstScamValue ScamExpr::imagPart() const
 {
     return ScamNumeric::imagPart(this);
 }
 
-ExprHandle ScamExpr::getCar() const
+ScamValue ScamExpr::getCar() const
 {
     stringstream s;
     s << "Cannot take car of <" << ExprWriter::write(this) << ">";
@@ -94,7 +94,7 @@ ExprHandle ScamExpr::getCar() const
     return ExpressionFactory::makeNull();
 }
 
-ExprHandle ScamExpr::getCdr() const
+ScamValue ScamExpr::getCdr() const
 {
     stringstream s;
     s << "Cannot take cdr of <" << ExprWriter::write(this) << ">";
@@ -112,7 +112,7 @@ size_t ScamExpr::length() const
     return 0u;
 }
 
-ExprHandle ScamExpr::nthcar(size_t n) const
+ScamValue ScamExpr::nthcar(size_t n) const
 {
     stringstream s;
     s << "Cannot index <" << ExprWriter::write(this) << ">";
@@ -121,7 +121,7 @@ ExprHandle ScamExpr::nthcar(size_t n) const
     return ExpressionFactory::makeNull();
 }
 
-ExprHandle ScamExpr::nthcdr(size_t n) const
+ScamValue ScamExpr::nthcdr(size_t n) const
 {
     stringstream s;
     s << "Cannot index <" << ExprWriter::write(this) << ">";
@@ -130,7 +130,7 @@ ExprHandle ScamExpr::nthcdr(size_t n) const
     return ExpressionFactory::makeNull();
 }
 
-ExprHandle ScamExpr::withEnvUpdate(Env * updated) const
+ScamValue ScamExpr::withEnvUpdate(Env * updated) const
 {
     stringstream s;
     s << "Cannot update env of <" << ExprWriter::write(this) << ">";
@@ -139,21 +139,21 @@ ExprHandle ScamExpr::withEnvUpdate(Env * updated) const
     return ExpressionFactory::makeNull();
 }
 
-void ScamExpr::setSelf(ExprHandle expr) const
+void ScamExpr::setSelf(ScamValue expr) const
 {
     stringstream s;
     s << "Cannot set self of <" << ExprWriter::write(this) << ">";
     throw ScamException(s.str());
 }
 
-void ScamExpr::setParent(ExprHandle expr) const
+void ScamExpr::setParent(ScamValue expr) const
 {
     stringstream s;
     s << "Cannot set parent of <" << ExprWriter::write(this) << ">";
     throw ScamException(s.str());
 }
 
-bool ScamExpr::equals(ConstExprHandle expr) const
+bool ScamExpr::equals(ConstScamValue expr) const
 {
     return this == expr;
 }

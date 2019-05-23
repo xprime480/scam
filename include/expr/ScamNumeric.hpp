@@ -25,8 +25,8 @@ namespace scam
         static std::pair<int, int> asRational(const ScamData * data);
         static int asInteger(const ScamData * data);
 
-        static ConstExprHandle realPart(const ScamData * data);
-        static ConstExprHandle imagPart(const ScamData * data);
+        static ConstScamValue realPart(const ScamData * data);
+        static ConstScamValue imagPart(const ScamData * data);
 
     private:
         friend class MemoryManager;
@@ -35,7 +35,7 @@ namespace scam
         explicit ScamNumeric(ScamData::NegInfType tag);
         explicit ScamNumeric(ScamData::PosInfType tag);
 
-        ScamNumeric(ExprHandle real, ExprHandle imag, bool managed = true);
+        ScamNumeric(ScamValue real, ScamValue imag, bool managed = true);
         ScamNumeric(double value, bool exact, bool managed = true);
         ScamNumeric(int num, int den, bool exact, bool managed = true);
         ScamNumeric(int value, bool exact, bool managed = true);
@@ -49,7 +49,7 @@ namespace scam
         static ScamNumeric * makeInstance(ScamData::PosInfType tag);
 
         static ScamNumeric *
-        makeInstance(ExprHandle real, ExprHandle imag, bool managed = true);
+        makeInstance(ScamValue real, ScamValue imag, bool managed = true);
 
         static ScamNumeric *
         makeInstance(double value, bool exact, bool managed = true);
@@ -61,7 +61,7 @@ namespace scam
         makeInstance(int value, bool exact, bool managed = true);
 
     public:
-        bool equals(ConstExprHandle expr) const override;
+        bool equals(ConstScamValue expr) const override;
     };
 }
 

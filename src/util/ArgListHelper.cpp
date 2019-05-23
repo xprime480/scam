@@ -15,26 +15,26 @@ namespace
     template <typename T>
     struct TypeChecks
     {
-        static bool isType(ExprHandle arg) { return false; }
-        static bool isSubType(ExprHandle arg) { return false; }
-        static T convert(ExprHandle arg) { return T(); }
+        static bool isType(ScamValue arg) { return false; }
+        static bool isSubType(ScamValue arg) { return false; }
+        static T convert(ScamValue arg) { return T(); }
         static string id() { return ""; }
     };
 
     template <>
     struct TypeChecks<double>
     {
-        static bool isType(ExprHandle arg)
+        static bool isType(ScamValue arg)
         {
             return TypePredicates::isNumeric(arg);
         }
 
-        static bool isSubType(ExprHandle arg)
+        static bool isSubType(ScamValue arg)
         {
             return TypePredicates::isInteger(arg);
         }
 
-        static double convert(ExprHandle arg)
+        static double convert(ScamValue arg)
         {
             return arg->asDouble();
         }
@@ -47,17 +47,17 @@ namespace
     template <>
     struct TypeChecks<string>
     {
-        static bool isType(ExprHandle arg)
+        static bool isType(ScamValue arg)
         {
             return TypePredicates::isString(arg);
         }
 
-        static bool isSubType(ExprHandle arg)
+        static bool isSubType(ScamValue arg)
         {
             return TypePredicates::isString(arg);
         }
 
-        static string convert(ExprHandle arg)
+        static string convert(ScamValue arg)
         {
             return ExprWriter::write(arg);
         }
@@ -70,17 +70,17 @@ namespace
     template <>
     struct TypeChecks<ExtendedNumeric>
     {
-        static bool isType(ExprHandle arg)
+        static bool isType(ScamValue arg)
         {
             return TypePredicates::isNumeric(arg);
         }
 
-        static bool isSubType(ExprHandle arg)
+        static bool isSubType(ScamValue arg)
         {
             return false;
         }
 
-        static ExtendedNumeric convert(ExprHandle arg)
+        static ExtendedNumeric convert(ScamValue arg)
         {
             ExtendedNumeric tmp(arg);
             return tmp;
@@ -92,10 +92,10 @@ namespace
     };
 
     template <typename T>
-    bool argToType(ExprHandle arg,
+    bool argToType(ScamValue arg,
                    vector<T> & ns,
                    string const & context,
-                   ExprHandle & rv)
+                   ScamValue & rv)
     {
         typedef TypeChecks<T> Checker;
 
@@ -117,15 +117,15 @@ namespace
     }
 
     template <typename T, typename ParserType>
-    ExprHandle argsToType(ParserType * parser,
+    ScamValue argsToType(ParserType * parser,
                           vector<T> & ns,
                           string const & context)
     {
-        ExprHandle rv = ExpressionFactory::makeBoolean(true);
+        ScamValue rv = ExpressionFactory::makeBoolean(true);
 
         const size_t len = parser->size();
         for ( size_t idx = 0u ; idx < len ; ++idx ) {
-            ExprHandle arg = parser->get(idx);
+            ScamValue arg = parser->get(idx);
             if ( ! argToType(arg, ns, context, rv) ) {
                 break;
             }
@@ -135,11 +135,11 @@ namespace
     }
 
     template <typename T>
-    ExprHandle compareType(RelopsListParser * parser,
+    ScamValue compareType(RelopsListParser * parser,
                            string const & context,
                            shared_ptr<OpImpl> impl)
     {
-        ExprHandle rv;
+        ScamValue rv;
 
         vector<T> ns;
         rv = argsToType(parser, ns, context);
@@ -152,13 +152,13 @@ namespace
     }
 }
 
-ExprHandle scam::numericAlgorithm(NumericListParser * parser,
+ScamValue scam::numericAlgorithm(NumericListParser * parser,
                                   string const & context,
                                   NumericalAlgorithm algo)
 {
     vector<ExtendedNumeric> ns;
 
-    ExprHandle state = argsToType(parser, ns, context);
+    ScamValue state = argsToType(parser, ns, context);
     if ( TypePredicates::error(state) ) {
         return state;
     }
@@ -171,7 +171,7 @@ ExprHandle scam::numericAlgorithm(NumericListParser * parser,
     return total.get();
 }
 
-ExprHandle scam::compareAlgorithm(RelopsListParser * parser,
+ScamValue scam::compareAlgorithm(RelopsListParser * parser,
                                   string const & context,
                                   shared_ptr<OpImpl> impl)
 {
@@ -183,10 +183,10 @@ ExprHandle scam::compareAlgorithm(RelopsListParser * parser,
 
 void scam::failedArgParseMessage(const char * who,
                                  const char * exp,
-                                 ExprHandle act,
+                                 ScamValue act,
                                  Continuation * cont)
 {
-    ExprHandle err = ExpressionFactory::makeError(who,
+    ScamValue err = ExpressionFactory::makeError(who,
                                                   " expected \"",
                                                   exp,
                                                   "\"; got \"",

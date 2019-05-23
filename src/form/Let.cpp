@@ -24,7 +24,7 @@ Let * Let::makeInstance()
     return &instance;
 }
 
-void Let::apply(ExprHandle args, Continuation * cont, Env * env)
+void Let::apply(ScamValue args, Continuation * cont, Env * env)
 {
     LetParser * parser = standardMemoryManager.make<LetParser>();
     if ( ! parser->accept(args) ) {

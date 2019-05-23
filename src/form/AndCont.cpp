@@ -37,7 +37,7 @@ void AndCont::mark() const
     }
 }
 
-void AndCont::run(ExprHandle expr)
+void AndCont::run(ScamValue expr)
 {
     Continuation::run(expr);
 

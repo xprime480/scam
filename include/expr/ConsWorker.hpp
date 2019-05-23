@@ -15,15 +15,15 @@ namespace scam
 
         ConsWorker(Continuation * cont,
                    Env * env,
-                   ExprHandle car,
-                   ExprHandle cdr);
+                   ScamValue car,
+                   ScamValue cdr);
 
         ConsWorker(WorkerData const & data);
 
         static ConsWorker * makeInstance(Continuation * cont,
                                          Env * env,
-                                         ExprHandle car,
-                                         ExprHandle cdr);
+                                         ScamValue car,
+                                         ScamValue cdr);
 
         static ConsWorker * makeInstance(WorkerData const & data);
 

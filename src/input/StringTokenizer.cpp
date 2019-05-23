@@ -368,7 +368,7 @@ Token StringTokenizer::scanString()
 Token StringTokenizer::scanNumeric()
 {
     NumericConverter nc(pos);
-    ExprHandle expr = nc.getValue();
+    ScamValue expr = nc.getValue();
     if( ! TypePredicates::isNumeric(expr) ) {
         return none;
     }

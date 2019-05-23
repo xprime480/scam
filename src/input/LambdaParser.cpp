@@ -35,7 +35,7 @@ void LambdaParser::mark() const
     }
 }
 
-bool LambdaParser::accept(ExprHandle expr)
+bool LambdaParser::accept(ScamValue expr)
 {
     if ( ! ArgParser::accept(expr) ) {
         return false;
@@ -80,7 +80,7 @@ size_t LambdaParser::getFormCount() const
     return forms.size();
 }
 
-ExprHandle LambdaParser::getForm(size_t idx) const
+ScamValue LambdaParser::getForm(size_t idx) const
 {
     if ( idx < forms.size() ) {
         return forms[idx];
@@ -88,7 +88,7 @@ ExprHandle LambdaParser::getForm(size_t idx) const
     return ExpressionFactory::makeNull();
 }
 
-ExprHandle LambdaParser::getFormList() const
+ScamValue LambdaParser::getFormList() const
 {
     return formList;
 }

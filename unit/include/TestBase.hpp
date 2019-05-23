@@ -27,98 +27,98 @@ namespace scam
         ScamEngine engine;
         MemoryManager & mm;
 
-        ExprHandle evaluate(ExprHandle input);
-        ExprHandle apply(ExprHandle expr, ExprHandle args);
-        ExprHandle parseAndEvaluate(std::string const & input);
-        ExprHandle parseAndEvaluateFile(char const * filename);
-        ExprHandle readString(char const * input);
+        ScamValue evaluate(ScamValue input);
+        ScamValue apply(ScamValue expr, ScamValue args);
+        ScamValue parseAndEvaluate(std::string const & input);
+        ScamValue parseAndEvaluateFile(char const * filename);
+        ScamValue readString(char const * input);
 
         void doCheck(bool act, unsigned selector, unsigned which);
 
-        void checkPredicates(ConstExprHandle expr, unsigned selector);
+        void checkPredicates(ConstScamValue expr, unsigned selector);
 
-        void expectNull(ConstExprHandle expr);
+        void expectNull(ConstScamValue expr);
 
-        void expectError(ConstExprHandle expr,
+        void expectError(ConstScamValue expr,
                          std::string const msg = "",
                          bool managed = true);
 
-        void expectBoolean(ConstExprHandle expr,
+        void expectBoolean(ConstScamValue expr,
                            bool value,
                            std::string const & repr);
 
         void expectTrue(std::string const & input);
         void expectFalse(std::string const & input);
 
-        void booleanTest(ConstExprHandle expr,
+        void booleanTest(ConstScamValue expr,
                          bool value,
                          std::string const & repr);
 
-        void expectSpecialNumeric(ConstExprHandle expr,
+        void expectSpecialNumeric(ConstScamValue expr,
                                   std::string const & repr);
 
-        void expectComplex(ConstExprHandle expr,
-                           ConstExprHandle real,
-                           ConstExprHandle imag,
+        void expectComplex(ConstScamValue expr,
+                           ConstScamValue real,
+                           ConstScamValue imag,
                            std::string const & repr,
                            bool exact);
 
-        void expectReal(ConstExprHandle expr,
+        void expectReal(ConstScamValue expr,
                         double value,
                         std::string const & repr,
                         bool exact);
 
-        void expectRational(ConstExprHandle expr,
+        void expectRational(ConstScamValue expr,
                             const std::pair<int, int> & value,
                             std::string const & repr,
                             bool exact);
 
-        void expectInteger(ConstExprHandle expr,
+        void expectInteger(ConstScamValue expr,
                            int value,
                            std::string const & repr,
                            bool exact);
 
-        void expectChar(ConstExprHandle expr,
+        void expectChar(ConstScamValue expr,
                         char value,
                         std::string const & repr);
 
-        void expectString(ConstExprHandle expr,
+        void expectString(ConstScamValue expr,
                           std::string const & value);
 
-        void expectSymbol(ConstExprHandle expr,
+        void expectSymbol(ConstScamValue expr,
                           std::string const & name);
 
-        void expectKeyword(ConstExprHandle expr,
+        void expectKeyword(ConstScamValue expr,
                            std::string const & name);
 
-        void expectNil(ConstExprHandle expr);
+        void expectNil(ConstScamValue expr);
 
-        void expectList(ConstExprHandle expr,
+        void expectList(ConstScamValue expr,
                         std::string const & repr,
                         size_t len);
 
-        void expectCons(ConstExprHandle expr,
+        void expectCons(ConstScamValue expr,
                         std::string const & repr);
 
-        void expectApplicable(ConstExprHandle expr,
+        void expectApplicable(ConstScamValue expr,
                               std::string const & repr);
 
-        void expectVector(ConstExprHandle expr,
+        void expectVector(ConstScamValue expr,
                           std::string const & repr,
                           size_t len);
 
-        void expectByteVector(ConstExprHandle expr,
+        void expectByteVector(ConstScamValue expr,
                               std::string const & repr,
                               size_t len);
 
-        void expectProcedure(ConstExprHandle expr,
+        void expectProcedure(ConstScamValue expr,
                              std::string const & repr);
 
-        void expectClass(ConstExprHandle expr);
+        void expectClass(ConstScamValue expr);
 
-        void expectInstance(ConstExprHandle expr);
+        void expectInstance(ConstScamValue expr);
 
-        void expectDict(ConstExprHandle expr,
+        void expectDict(ConstScamValue expr,
                         int count,
                         std::string const & repr);
     };

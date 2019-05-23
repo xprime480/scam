@@ -26,13 +26,13 @@ namespace scam
 
     public:
         void mark() const override;
-        bool accept(ExprHandle expr) override;
-        void callback(ExprHandle expr) override;
+        bool accept(ScamValue expr) override;
+        void callback(ScamValue expr) override;
         void clearValue() override;
 
         const ScamKeyword * getParsedOp() const;
-        ExprHandle getOpKey() const;
-        ExprHandle getOpVal() const;
+        ScamValue getOpKey() const;
+        ScamValue getOpVal() const;
 
     private:
         ArgParser * key;

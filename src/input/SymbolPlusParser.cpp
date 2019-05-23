@@ -32,7 +32,7 @@ void SymbolPlusParser::mark() const
     }
 }
 
-bool SymbolPlusParser::accept(ExprHandle expr)
+bool SymbolPlusParser::accept(ScamValue expr)
 {
     ArgParser::clearValue();
 
@@ -49,7 +49,7 @@ ScamEnvKeyType SymbolPlusParser::getSymbol() const
     return dynamic_cast<ScamEnvKeyType>(sym->getValue());
 }
 
-ExprHandle SymbolPlusParser::getForm() const
+ScamValue SymbolPlusParser::getForm() const
 {
     return form->getValue();
 }

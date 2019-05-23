@@ -17,7 +17,7 @@ CompareOp::CompareOp(char const * name, shared_ptr<OpImpl> impl)
 {
 }
 
-void CompareOp::applyArgs(ExprHandle args, Continuation * cont)
+void CompareOp::applyArgs(ScamValue args, Continuation * cont)
 {
     string const context = ExprWriter::write(this);
     RelopsListParser * parser = standardMemoryManager.make<RelopsListParser>();
@@ -26,13 +26,13 @@ void CompareOp::applyArgs(ExprHandle args, Continuation * cont)
         failedArgParseMessage(context.c_str(), "(num*)", args, cont);
     }
     else {
-        ExprHandle rv = compareAlgorithm(parser, context, impl);
+        ScamValue rv = compareAlgorithm(parser, context, impl);
         cont->run(rv);
     }
 }
 
 
-bool CompareOp::equals(ConstExprHandle expr) const
+bool CompareOp::equals(ConstScamValue expr) const
 {
     return ( expr && ExprWriter::write(this) == ExprWriter::write(expr) );
 }

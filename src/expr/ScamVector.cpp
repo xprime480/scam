@@ -23,7 +23,7 @@ size_t ScamVector::length() const
     return VECTOR(this).size();
 }
 
-ExprHandle ScamVector::nthcar(size_t n) const
+ScamValue ScamVector::nthcar(size_t n) const
 {
     if ( n >= length() ) {
         return ExpressionFactory::makeError("Requested index ",
@@ -36,7 +36,7 @@ ExprHandle ScamVector::nthcar(size_t n) const
     return VECTOR(this)[n];
 }
 
-bool ScamVector::equals(ConstExprHandle expr) const
+bool ScamVector::equals(ConstScamValue expr) const
 {
     if ( ! TypePredicates::isVector(expr) ) {
         return false;

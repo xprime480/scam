@@ -23,22 +23,22 @@ namespace scam
     public:
         void mark() const override;
 
-        void put(ScamEnvKeyType key, ExprHandle val);
+        void put(ScamEnvKeyType key, ScamValue val);
         bool check(ScamEnvKeyType key, bool checkParent = true) const;
-        ExprHandle get(ScamEnvKeyType key) const;
+        ScamValue get(ScamEnvKeyType key) const;
 
         void reset();
         Env * extend() const;
         Env * getParent() const;
         Env * getTop() const;
 
-        void assign(ScamEnvKeyType key, ExprHandle val);
+        void assign(ScamEnvKeyType key, ScamValue val);
         void remove(ScamEnvKeyType key);
 
         void dump(size_t max, bool full = false) const;
 
     private:
-        std::map<std::string, ExprHandle> table;
+        std::map<std::string, ScamValue> table;
         Env * parent;
     };
 }

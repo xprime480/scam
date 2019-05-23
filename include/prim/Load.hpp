@@ -19,7 +19,7 @@ namespace scam
 
     public:
         static Load * makeInstance(ScamEngine * engine);
-        void applyArgs(ExprHandle args, Continuation * cont) override;
+        void applyArgs(ScamValue args, Continuation * cont) override;
 
     private:
         ScamEngine * engine;
@@ -34,9 +34,9 @@ namespace scam
         void file_not_found(std::string const & filename,
                             Continuation * cont);
 
-        ExprHandle get_path();
-        ExprHandle default_path();
-        ExprHandle convert_path(char const * path);
+        ScamValue get_path();
+        ScamValue default_path();
+        ScamValue convert_path(char const * path);
         std::string next_element(char const *& path);
 
         std::string make_path(std::string dirname,

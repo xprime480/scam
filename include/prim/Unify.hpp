@@ -12,7 +12,7 @@ namespace scam
 
     public:
         static Unify * makeInstance();
-        void applyArgs(ExprHandle args, Continuation * cont) override;
+        void applyArgs(ScamValue args, Continuation * cont) override;
     };
 }
 

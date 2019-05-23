@@ -15,7 +15,7 @@ namespace scam
     public:
         size_t length() const override;
 
-        bool equals(ConstExprHandle expr) const override;
+        bool equals(ConstScamValue expr) const override;
     };
 }
 

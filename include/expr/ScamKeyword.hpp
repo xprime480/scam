@@ -14,7 +14,7 @@ namespace scam
                                           bool managed = true);
 
     public:
-        bool equals(ConstExprHandle expr) const override;
+        bool equals(ConstScamValue expr) const override;
     };
 }
 

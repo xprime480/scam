@@ -19,21 +19,21 @@ Substitute * Substitute::makeInstance()
     return new Substitute();
 }
 
-void Substitute::applyArgs(ExprHandle args, Continuation * cont)
+void Substitute::applyArgs(ScamValue args, Continuation * cont)
 {
     if ( args->length() < 2 ) {
-        ExprHandle err =
+        ScamValue err =
             ExpressionFactory::makeError("expected 2 args; got ",
                                          args->length());
         cont->run(err);
         return;
     }
 
-    ExprHandle form = args->nthcar(0);
-    ExprHandle dict = args->nthcar(1);
+    ScamValue form = args->nthcar(0);
+    ScamValue dict = args->nthcar(1);
     ScamDict * answers = dynamic_cast<ScamDict *>(dict);
     if ( ! answers ) {
-        ExprHandle err =
+        ScamValue err =
             ExpressionFactory::makeError("expected 'form dict'; got ",
                                          ExprWriter::write(args));
         cont->run(err);
@@ -41,6 +41,6 @@ void Substitute::applyArgs(ExprHandle args, Continuation * cont)
     }
 
     Substitutor resolver(answers);
-    ExprHandle rv = resolver.resolve_value(form);
+    ScamValue rv = resolver.resolve_value(form);
     cont->run(rv);
 }

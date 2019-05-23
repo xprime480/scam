@@ -19,8 +19,8 @@ Cdr * Cdr::makeInstance()
     return new Cdr();
 }
 
-void Cdr::finish(ExprHandle cons, Continuation * cont)
+void Cdr::finish(ScamValue cons, Continuation * cont)
 {
-    ExprHandle cdr = cons->getCdr();
+    ScamValue cdr = cons->getCdr();
     cont->run(cdr);
 }

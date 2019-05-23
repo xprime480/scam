@@ -35,7 +35,7 @@ void ClassDefParser::mark() const
     }
 }
 
-bool ClassDefParser::accept(ExprHandle expr)
+bool ClassDefParser::accept(ScamValue expr)
 {
     if ( ! ArgParser::accept(expr) ) {
         return false;

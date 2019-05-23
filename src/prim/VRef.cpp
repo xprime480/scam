@@ -20,7 +20,7 @@ VRef * VRef::makeInstance()
     return new VRef();
 }
 
-void VRef::applyArgs(ExprHandle args, Continuation * cont)
+void VRef::applyArgs(ScamValue args, Continuation * cont)
 {
     VrefParser * parser = standardMemoryManager.make<VrefParser>();
     if ( ! parser->accept(args) ) {

@@ -7,8 +7,8 @@
 using namespace scam;
 using namespace std;
 
-WorkerData::WorkerData(ExprHandle car,
-                       ExprHandle cdr,
+WorkerData::WorkerData(ScamValue car,
+                       ScamValue cdr,
                        Continuation * original,
                        Env * env)
     : car(car)

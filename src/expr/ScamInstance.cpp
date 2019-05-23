@@ -19,7 +19,7 @@ namespace
     static ScamEnvKeyType self   =
         ExpressionFactory::makeSymbol("self", false);
 
-    static ExprHandle nil = ExpressionFactory::makeNil();
+    static ScamValue nil = ExpressionFactory::makeNil();
 }
 
 scam::ScamEnvKeyType ScamInstance::parent =
@@ -45,7 +45,7 @@ ScamInstance::ScamInstance(const ScamClass * cls, Env * env)
 
         const ScamSymbol * name = fun->getName();
         const LambdaParser * lambda = fun->getLambda();
-        ExprHandle impl = ExpressionFactory::makeClosure(lambda, INSTANCELOCALENV(this), false);
+        ScamValue impl = ExpressionFactory::makeClosure(lambda, INSTANCELOCALENV(this), false);
 
         INSTANCEPRIVENV(this)->put(name, impl);
     }
@@ -56,7 +56,7 @@ ScamInstance * ScamInstance::makeInstance(const ScamClass * cls, Env * env)
     return new ScamInstance(cls, env);
 }
 
-void ScamInstance::apply(ExprHandle args, Continuation * cont, Env * env)
+void ScamInstance::apply(ScamValue args, Continuation * cont, Env * env)
 {
     InstanceParser * parser = standardMemoryManager.make<InstanceParser>();
 
@@ -66,7 +66,7 @@ void ScamInstance::apply(ExprHandle args, Continuation * cont, Env * env)
     }
 
     ScamEnvKeyType name = parser->getSymbol();
-    ExprHandle funargs = parser->getForms();
+    ScamValue funargs = parser->getForms();
 
     Continuation * newCont =
         standardMemoryManager.make<InstanceCont>(this, name, cont);
@@ -78,12 +78,12 @@ void ScamInstance::apply(ExprHandle args, Continuation * cont, Env * env)
     }
 }
 
-void ScamInstance::setSelf(ExprHandle expr) const
+void ScamInstance::setSelf(ScamValue expr) const
 {
     INSTANCELOCALENV(this)->put(self, expr);
 }
 
-void ScamInstance::setParent(ExprHandle expr) const
+void ScamInstance::setParent(ScamValue expr) const
 {
     INSTANCELOCALENV(this)->put(parent, expr);
 }

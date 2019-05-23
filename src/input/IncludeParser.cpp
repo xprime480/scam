@@ -27,7 +27,7 @@ void IncludeParser::mark() const
     }
 }
 
-bool IncludeParser::accept(ExprHandle expr)
+bool IncludeParser::accept(ScamValue expr)
 {
     clearValue();
 
@@ -44,7 +44,7 @@ size_t IncludeParser::size() const
     return parser->size();
 }
 
-ExprHandle IncludeParser::get(size_t idx) const
+ScamValue IncludeParser::get(size_t idx) const
 {
     return parser->get(idx);
 }

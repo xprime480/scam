@@ -25,7 +25,7 @@ void ApplyParser::mark() const
     }
 }
 
-bool ApplyParser::accept(ExprHandle expr)
+bool ApplyParser::accept(ScamValue expr)
 {
     ArgParser::clearValue();
 
@@ -37,7 +37,7 @@ bool ApplyParser::accept(ExprHandle expr)
     return true;
 }
 
-ExprHandle ApplyParser::getParsedOp() const
+ScamValue ApplyParser::getParsedOp() const
 {
     if ( 2u == parser->size() ) {
         return parser->get(0);
@@ -45,7 +45,7 @@ ExprHandle ApplyParser::getParsedOp() const
     return ExpressionFactory::makeNull();
 }
 
-ExprHandle ApplyParser::getArgs() const
+ScamValue ApplyParser::getArgs() const
 {
     if ( 2u == parser->size() ) {
         return parser->get(1);

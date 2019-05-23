@@ -27,7 +27,7 @@ EqualP * EqualP::makeInstance()
     return new EqualP();
 }
 
-void EqualP::applyArgs(ExprHandle args, Continuation * cont)
+void EqualP::applyArgs(ScamValue args, Continuation * cont)
 {
     ListParser * parser = getListOfAnythingParser();
     if ( ! parser->accept(args) ) {
@@ -38,7 +38,7 @@ void EqualP::applyArgs(ExprHandle args, Continuation * cont)
     }
 }
 
-bool EqualP::equals(ConstExprHandle expr) const
+bool EqualP::equals(ConstScamValue expr) const
 {
     EqualP const * that = dynamic_cast<EqualP const *>(expr);
     return ( that && (ExprWriter::write(this) == ExprWriter::write(that)) );
@@ -46,20 +46,20 @@ bool EqualP::equals(ConstExprHandle expr) const
 
 namespace
 {
-    static ExprHandle const yes = ExpressionFactory::makeBoolean(true);
-    static ExprHandle const no  = ExpressionFactory::makeBoolean(false);
+    static ScamValue const yes = ExpressionFactory::makeBoolean(true);
+    static ScamValue const no  = ExpressionFactory::makeBoolean(false);
 
     extern bool compare_all(ListParser * parser);
 
     template <typename MapFn>
-    ExprHandle apply_map(ListParser * parser, MapFn mapper)
+    ScamValue apply_map(ListParser * parser, MapFn mapper)
     {
         const size_t count = parser->size();
-        vector<ExprHandle> mapped;
+        vector<ScamValue> mapped;
 
         for ( size_t idx = 0 ; idx < count ; ++idx ) {
-            ExprHandle item = parser->get(idx);
-            ExprHandle tmp  = mapper(item);
+            ScamValue item = parser->get(idx);
+            ScamValue tmp  = mapper(item);
             mapped.push_back(tmp);
         }
 
@@ -67,10 +67,10 @@ namespace
     }
 
     template <typename MapFn, typename ReduceFn>
-    ExprHandle map_reduce(ListParser * parser, MapFn mapper, ReduceFn reducer)
+    ScamValue map_reduce(ListParser * parser, MapFn mapper, ReduceFn reducer)
     {
-        ExprHandle mapped = apply_map(parser, mapper);
-        ExprHandle reduced = reducer(mapped);
+        ScamValue mapped = apply_map(parser, mapper);
+        ScamValue reduced = reducer(mapped);
         return reduced;
     }
 
@@ -83,7 +83,7 @@ namespace
         return false;
     }
 
-    ExprHandle any(ExprHandle args)
+    ScamValue any(ScamValue args)
     {
         const size_t len = args->length();
         for ( size_t idx = 0 ; idx < len ; ++idx ) {
@@ -96,10 +96,10 @@ namespace
 
     bool has_nulls(ListParser * parser, Continuation * cont)
     {
-        auto fn = [](ExprHandle arg) -> ExprHandle {
+        auto fn = [](ScamValue arg) -> ScamValue {
             return ExpressionFactory::makeBoolean(TypePredicates::isNull(arg));
         };
-        ExprHandle answer = map_reduce(parser, fn, any);
+        ScamValue answer = map_reduce(parser, fn, any);
         return TypePredicates::truth(answer);
     }
 
@@ -115,10 +115,10 @@ namespace
     bool compare_all(ListParser * parser)
     {
         const size_t len = parser->size();
-        ExprHandle first = parser->get(0);
+        ScamValue first = parser->get(0);
 
         for ( size_t idx = 1 ; idx < len ; ++idx ) {
-            ExprHandle op = parser->get(idx);
+            ScamValue op = parser->get(idx);
             if ( ! first->equals(op) ) {
                 return false;
             }

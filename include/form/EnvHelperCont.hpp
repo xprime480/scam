@@ -17,13 +17,13 @@ namespace scam
 
         void mark() const override;
 
-        void run(ExprHandle expr) override;
+        void run(ScamValue expr) override;
 
     protected:
         ScamEnvKeyType sym;
         mutable Env * env;
 
-        virtual void finish(ExprHandle expr) const = 0;
+        virtual void finish(ScamValue expr) const = 0;
 
     private:
         Continuation * cont;

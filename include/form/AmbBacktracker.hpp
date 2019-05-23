@@ -12,13 +12,13 @@ namespace scam
     private:
         friend class scam::MemoryManager;
 
-        AmbBacktracker(ExprHandle args,
+        AmbBacktracker(ScamValue args,
                        Continuation * cont,
                        Env * env,
                        ScamEngine * engine,
                        Backtracker * parent);
 
-        static AmbBacktracker * makeInstance(ExprHandle args,
+        static AmbBacktracker * makeInstance(ScamValue args,
                                              Continuation * cont,
                                              Env * env,
                                              ScamEngine * engine,
@@ -29,7 +29,7 @@ namespace scam
         void run() override;
 
     private:
-        ExprHandle      args;
+        ScamValue      args;
         Continuation  * cont;
         Env           * env;
         ScamEngine    * engine;

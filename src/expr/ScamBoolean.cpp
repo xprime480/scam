@@ -20,7 +20,7 @@ ScamBoolean * ScamBoolean::makeInstance(bool value)
     return value ? &yes : &no;
 }
 
-bool ScamBoolean::equals(ConstExprHandle expr) const
+bool ScamBoolean::equals(ConstScamValue expr) const
 {
     if ( ! TypePredicates::isBoolean(expr) ) {
         return false;

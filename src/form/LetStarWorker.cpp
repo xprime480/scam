@@ -26,12 +26,12 @@ LetStarWorker * LetStarWorker::makeInstance(LetParser * parser,
     return new LetStarWorker(parser, cont, env, engine);
 }
 
-void LetStarWorker::do_next(ExprHandle formals,
-                            ExprHandle values,
-                            ExprHandle forms)
+void LetStarWorker::do_next(ScamValue formals,
+                            ScamValue values,
+                            ScamValue forms)
 {
     Env * extended = env->extend();
-    ExprHandle safe = LetStar::safeCons(values);
+    ScamValue safe = LetStar::safeCons(values);
 
     Continuation * ch =
         standardMemoryManager.make<LetStarCont>(formals,

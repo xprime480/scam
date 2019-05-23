@@ -53,7 +53,7 @@ void AndWorker::run()
         parser->get(len-1)->eval(cont, env);
     }
     else {
-        ExprHandle test = parser->get(n);
+        ScamValue test = parser->get(n);
         Continuation * newCont =
             standardMemoryManager.make<AndCont>(parser, cont, env, n+1);
         test->eval(newCont, env);

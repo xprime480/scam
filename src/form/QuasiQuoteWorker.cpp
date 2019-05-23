@@ -15,7 +15,7 @@ using namespace std;
 
 static const char * myName = "quasiquote";
 
-QuasiQuoteWorker::QuasiQuoteWorker(ExprHandle form,
+QuasiQuoteWorker::QuasiQuoteWorker(ScamValue form,
                                    Continuation * cont,
                                    Env * env)
     : Worker(myName)
@@ -26,7 +26,7 @@ QuasiQuoteWorker::QuasiQuoteWorker(ExprHandle form,
 }
 
 QuasiQuoteWorker *
-QuasiQuoteWorker::makeInstance(ExprHandle form, Continuation * cont, Env * env)
+QuasiQuoteWorker::makeInstance(ScamValue form, Continuation * cont, Env * env)
 {
     return new QuasiQuoteWorker(form, cont, env);
 }
@@ -46,7 +46,7 @@ void QuasiQuoteWorker::run()
     build_qq_form(form, cont);
 }
 
-bool QuasiQuoteWorker::verify_single_form(ExprHandle input, Continuation * cont)
+bool QuasiQuoteWorker::verify_single_form(ScamValue input, Continuation * cont)
 {
     if ( ! TypePredicates::isList(input) || 1 != input->length() ) {
         failedArgParseMessage(myName, "form", input, cont);
@@ -55,27 +55,27 @@ bool QuasiQuoteWorker::verify_single_form(ExprHandle input, Continuation * cont)
     return true;
 }
 
-void QuasiQuoteWorker::unquote_form(ExprHandle input, Continuation * cont)
+void QuasiQuoteWorker::unquote_form(ScamValue input, Continuation * cont)
 {
     if ( verify_single_form(input, cont) ) {
-        ExprHandle form = input->nthcar(0);
+        ScamValue form = input->nthcar(0);
         form->eval(cont, env);
     }
 }
 
-void QuasiQuoteWorker::splice_form(ExprHandle input, Continuation * cont)
+void QuasiQuoteWorker::splice_form(ScamValue input, Continuation * cont)
 {
     if ( verify_single_form(input, cont) ) {
         Continuation * h =
             standardMemoryManager.make<QQSpliceCont>(cont);
 
-        ExprHandle form = input->nthcar(0);
+        ScamValue form = input->nthcar(0);
         form->eval(h, env);
     }
 }
 
-void QuasiQuoteWorker::cons_qq_list(ExprHandle car,
-                                    ExprHandle cdr,
+void QuasiQuoteWorker::cons_qq_list(ScamValue car,
+                                    ScamValue cdr,
                                     Continuation * cont)
 {
     Continuation * h =
@@ -83,10 +83,10 @@ void QuasiQuoteWorker::cons_qq_list(ExprHandle car,
     build_qq_form(car, h);
 }
 
-void QuasiQuoteWorker::build_qq_list(ExprHandle input, Continuation * cont)
+void QuasiQuoteWorker::build_qq_list(ScamValue input, Continuation * cont)
 {
-    ExprHandle first = input->nthcar(0);
-    ExprHandle rest  = input->nthcdr(0);
+    ScamValue first = input->nthcar(0);
+    ScamValue rest  = input->nthcdr(0);
 
     const bool isSym = TypePredicates::isSymbol(first);
     string const sym = ExprWriter::write(first);
@@ -101,7 +101,7 @@ void QuasiQuoteWorker::build_qq_list(ExprHandle input, Continuation * cont)
     }
 }
 
-void QuasiQuoteWorker::build_qq_form(ExprHandle input, Continuation * cont)
+void QuasiQuoteWorker::build_qq_form(ScamValue input, Continuation * cont)
 {
     if ( ! TypePredicates::isList(input) || TypePredicates::isNil(input) ) {
         cont->run(input);

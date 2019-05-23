@@ -16,49 +16,49 @@ class LogicTest : public TestBase
 
 TEST_F(LogicTest, IfTrue)
 {
-    ExprHandle expr = parseAndEvaluate("(if #t +1 -1)");
+    ScamValue expr = parseAndEvaluate("(if #t +1 -1)");
     expectInteger(expr, 1, "1", true);
 }
 
 TEST_F(LogicTest, IfFalse)
 {
-    ExprHandle expr = parseAndEvaluate("(if #f +1 -1)");
+    ScamValue expr = parseAndEvaluate("(if #f +1 -1)");
     expectInteger(expr, -1, "-1", true);
 }
 
 TEST_F(LogicTest, IfFalseNoElse)
 {
-    ExprHandle expr = parseAndEvaluate("(if #f +1)");
+    ScamValue expr = parseAndEvaluate("(if #f +1)");
     expectNil(expr);
 }
 
 TEST_F(LogicTest, IfDoesntEvaluateUnusedClause)
 {
-    ExprHandle expr = parseAndEvaluate("(if #t (* 2 3) (/ 1 0))");
+    ScamValue expr = parseAndEvaluate("(if #t (* 2 3) (/ 1 0))");
     expectInteger(expr, 6, "6", true);
 }
 
 TEST_F(LogicTest, IfTestError)
 {
-    ExprHandle expr = parseAndEvaluate("(if (/ 1 0) (* 2 3) (/ 1 0))");
+    ScamValue expr = parseAndEvaluate("(if (/ 1 0) (* 2 3) (/ 1 0))");
     expectError(expr);
 }
 
 TEST_F(LogicTest, IfThenError)
 {
-    ExprHandle expr = parseAndEvaluate("(if \"strings are true\" (/ 1 0))");
+    ScamValue expr = parseAndEvaluate("(if \"strings are true\" (/ 1 0))");
     expectError(expr);
 }
 
 TEST_F(LogicTest, IfTooFewClauses)
 {
-    ExprHandle expr = parseAndEvaluate("(if #t)");
+    ScamValue expr = parseAndEvaluate("(if #t)");
     expectError(expr);
 }
 
 TEST_F(LogicTest, IfTooManyClauses)
 {
-    ExprHandle expr = parseAndEvaluate("(if #t 1 2 3 4 5 ())");
+    ScamValue expr = parseAndEvaluate("(if #t 1 2 3 4 5 ())");
     expectError(expr);
 }
 
@@ -69,7 +69,7 @@ TEST_F(LogicTest, AndZeroForms)
 
 TEST_F(LogicTest, AndOneTrue)
 {
-    ExprHandle expr = parseAndEvaluate("(and 3)");
+    ScamValue expr = parseAndEvaluate("(and 3)");
     expectInteger(expr, 3, "3", true);
 }
 
@@ -80,7 +80,7 @@ TEST_F(LogicTest, AndOneFalse)
 
 TEST_F(LogicTest, AndManyTrue)
 {
-    ExprHandle expr = parseAndEvaluate("(and #t #t 3)");
+    ScamValue expr = parseAndEvaluate("(and #t #t 3)");
     expectInteger(expr, 3, "3", true);
 }
 
@@ -91,13 +91,13 @@ TEST_F(LogicTest, AndShortCircuits)
 
 TEST_F(LogicTest, AndComplex1)
 {
-    ExprHandle expr = parseAndEvaluate("(and 2 (and 3 4))");
+    ScamValue expr = parseAndEvaluate("(and 2 (and 3 4))");
     expectInteger(expr, 4, "4", true);
 }
 
 TEST_F(LogicTest, AndComplex2)
 {
-    ExprHandle expr = parseAndEvaluate("(and (and 3 4) 2)");
+    ScamValue expr = parseAndEvaluate("(and (and 3 4) 2)");
     expectInteger(expr, 2, "2", true);
 }
 
@@ -108,7 +108,7 @@ TEST_F(LogicTest, OrZeroForms)
 
 TEST_F(LogicTest, OrOneTrue)
 {
-    ExprHandle expr = parseAndEvaluate("(or 3)");
+    ScamValue expr = parseAndEvaluate("(or 3)");
     expectInteger(expr, 3, "3", true);
 }
 
@@ -129,19 +129,19 @@ TEST_F(LogicTest, OrShortCircuits)
 
 TEST_F(LogicTest, OrComplex1)
 {
-    ExprHandle expr = parseAndEvaluate("(or #f (or 3 4))");
+    ScamValue expr = parseAndEvaluate("(or #f (or 3 4))");
     expectInteger(expr, 3, "3", true);
 }
 
 TEST_F(LogicTest, OrComplex2)
 {
-    ExprHandle expr = parseAndEvaluate("(or (or #f #f) 2)");
+    ScamValue expr = parseAndEvaluate("(or (or #f #f) 2)");
     expectInteger(expr, 2, "2", true);
 }
 
 TEST_F(LogicTest, NotZeroForms)
 {
-    ExprHandle expr = parseAndEvaluate("(not)");
+    ScamValue expr = parseAndEvaluate("(not)");
     expectError(expr);
 }
 
@@ -157,7 +157,7 @@ TEST_F(LogicTest, NotOneFalse)
 
 TEST_F(LogicTest, NotManyTrue)
 {
-    ExprHandle expr = parseAndEvaluate("(not #t #t 3)");
+    ScamValue expr = parseAndEvaluate("(not #t #t 3)");
     expectError(expr);
 }
 
@@ -191,60 +191,60 @@ TEST_F(LogicTest, SubstituteMultiple)
 
 TEST_F(LogicTest, SubstituteMissing)
 {
-    ExprHandle expr = parseAndEvaluate("(substitute :X {})");
+    ScamValue expr = parseAndEvaluate("(substitute :X {})");
     expectError(expr);
 }
 
 TEST_F(LogicTest, InstantiateNothing)
 {
-    ExprHandle expr = parseAndEvaluate("(instantiate '())");
+    ScamValue expr = parseAndEvaluate("(instantiate '())");
     expectNil(expr);
 }
 
 TEST_F(LogicTest, InstantiateNoKeywords)
 {
-    ExprHandle expr = parseAndEvaluate("(instantiate \"test\")");
+    ScamValue expr = parseAndEvaluate("(instantiate \"test\")");
     expectString(expr, "test");
 }
 
 TEST_F(LogicTest, InstantiateKeyword)
 {
-    ExprHandle expr = parseAndEvaluateFile("scripts/logic/simplekeyword.scm");
+    ScamValue expr = parseAndEvaluateFile("scripts/logic/simplekeyword.scm");
     expectBoolean(expr, true, "#t");
 }
 
 TEST_F(LogicTest, InstantiateConsSingleKeyword)
 {
-    ExprHandle expr = parseAndEvaluateFile("scripts/logic/consonekeyword.scm");
+    ScamValue expr = parseAndEvaluateFile("scripts/logic/consonekeyword.scm");
     expectBoolean(expr, true, "#t");
 }
 
 TEST_F(LogicTest, InstantiateConsWithDups)
 {
-    ExprHandle expr = parseAndEvaluateFile("scripts/logic/conswithdups.scm");
+    ScamValue expr = parseAndEvaluateFile("scripts/logic/conswithdups.scm");
     expectBoolean(expr, true, "#t");
 }
 
 TEST_F(LogicTest, InstantiateConsTwoKeywords)
 {
-    ExprHandle expr = parseAndEvaluateFile("scripts/logic/constwokeywords.scm");
+    ScamValue expr = parseAndEvaluateFile("scripts/logic/constwokeywords.scm");
     expectBoolean(expr, true, "#t");
 }
 
 TEST_F(LogicTest, InstantiateVector)
 {
-    ExprHandle expr = parseAndEvaluateFile("scripts/logic/vector.scm");
+    ScamValue expr = parseAndEvaluateFile("scripts/logic/vector.scm");
     expectBoolean(expr, true, "#t");
 }
 
 TEST_F(LogicTest, InstantiateDict)
 {
-    ExprHandle expr = parseAndEvaluateFile("scripts/logic/dict.scm");
+    ScamValue expr = parseAndEvaluateFile("scripts/logic/dict.scm");
     expectBoolean(expr, true, "#t");
 }
 
 TEST_F(LogicTest, InstantiateSameExprTwice)
 {
-    ExprHandle expr = parseAndEvaluateFile("scripts/logic/sametwice.scm");
+    ScamValue expr = parseAndEvaluateFile("scripts/logic/sametwice.scm");
     expectBoolean(expr, true, "#t");
 }

@@ -23,7 +23,7 @@ ClassMaker * ClassMaker::makeInstance()
     return &instance;
 }
 
-void ClassMaker::apply(ExprHandle args, Continuation * cont, Env * env)
+void ClassMaker::apply(ScamValue args, Continuation * cont, Env * env)
 {
     ClassDefParser * parser = standardMemoryManager.make<ClassDefParser>();
 
@@ -31,7 +31,7 @@ void ClassMaker::apply(ExprHandle args, Continuation * cont, Env * env)
         failedArgParseMessage(myName, "(Base (vars*) methods*)", args, cont);
     }
     else {
-        ExprHandle cls = ExpressionFactory::makeClass(parser, env);
+        ScamValue cls = ExpressionFactory::makeClass(parser, env);
         cont->run(cls);
     }
 }

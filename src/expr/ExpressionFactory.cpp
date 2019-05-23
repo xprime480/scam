@@ -47,7 +47,7 @@ ExpressionFactory::makeKeyword(string const & value, bool managed)
     return standardMemoryManager.make<ScamKeyword>(value, managed);
 }
 
-ExprHandle ExpressionFactory::makeNumeric(string const & value)
+ScamValue ExpressionFactory::makeNumeric(string const & value)
 {
     NumericConverter nc(value.c_str());
     return nc.getValue();
@@ -71,7 +71,7 @@ ScamNumeric * ExpressionFactory::makePosInf()
     return standardMemoryManager.make<ScamNumeric>(tag);
 }
 
-ScamNumeric * ExpressionFactory::makeComplex(ExprHandle real, ExprHandle imag)
+ScamNumeric * ExpressionFactory::makeComplex(ScamValue real, ScamValue imag)
 {
     return standardMemoryManager.make<ScamNumeric>(real, imag);
 }
@@ -96,24 +96,24 @@ ScamNil * ExpressionFactory::makeNil()
     return standardMemoryManager.make<ScamNil>();
 }
 
-ScamCons * ExpressionFactory::makeCons(ExprHandle car, ExprHandle cdr)
+ScamCons * ExpressionFactory::makeCons(ScamValue car, ScamValue cdr)
 {
     return standardMemoryManager.make<ScamCons>(car, cdr);
 }
 
-ExprHandle ExpressionFactory::makeList()
+ScamValue ExpressionFactory::makeList()
 {
     return makeNil();
 }
 
-ExprHandle ExpressionFactory::makeList(ExprHandle item)
+ScamValue ExpressionFactory::makeList(ScamValue item)
 {
     return makeCons(item, makeNil());
 }
 
-ExprHandle ExpressionFactory::makeList(std::vector<ExprHandle> & items)
+ScamValue ExpressionFactory::makeList(std::vector<ScamValue> & items)
 {
-    ExprHandle rv = makeNil();
+    ScamValue rv = makeNil();
 
     for ( auto iter = items.rbegin() ; iter != items.rend() ; ++iter ) {
         rv = makeCons(*iter, rv);

@@ -24,12 +24,12 @@ LetWorker * LetWorker::makeInstance(LetParser * parser,
     return new LetWorker(parser, cont, env, rebind);
 }
 
-void LetWorker::do_next(ExprHandle formals,
-                        ExprHandle values,
-                        ExprHandle forms)
+void LetWorker::do_next(ScamValue formals,
+                        ScamValue values,
+                        ScamValue forms)
 {
-    ExprHandle evaled = ExpressionFactory::makeNil();
-    ExprHandle e = evaled;
+    ScamValue evaled = ExpressionFactory::makeNil();
+    ScamValue e = evaled;
     workQueueHelper<LetEvalWorker>(formals,
                                    e,
                                    values,

@@ -16,7 +16,7 @@ void SequenceParser::mark() const
     }
 }
 
-bool SequenceParser::accept(ExprHandle expr)
+bool SequenceParser::accept(ScamValue expr)
 {
     if ( ! ArgParser::accept(expr) ) {
         return false;
@@ -34,7 +34,7 @@ bool SequenceParser::accept(ExprHandle expr)
 
     for ( size_t idx = 0 ; idx < parsers.size() ; ++idx ) {
         ArgParser * p = parsers[idx];
-        ExprHandle  e = temp->get(idx);
+        ScamValue  e = temp->get(idx);
         if ( ! p->accept(e) ) {
             return false;
         }

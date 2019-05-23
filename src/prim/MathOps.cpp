@@ -17,7 +17,7 @@ MathOp::MathOp(MathOpDef const & def)
 {
 }
 
-void MathOp::applyArgs(ExprHandle args, Continuation * cont)
+void MathOp::applyArgs(ScamValue args, Continuation * cont)
 {
     string const context = ExprWriter::write(this);
     NumericListParser * parser =
@@ -27,12 +27,12 @@ void MathOp::applyArgs(ExprHandle args, Continuation * cont)
         failedArgParseMessage(context.c_str(), "(num*)", args, cont);
     }
     else {
-        ExprHandle rv = numericAlgorithm(parser, context, algo);
+        ScamValue rv = numericAlgorithm(parser, context, algo);
         cont->run(rv);
     }
 }
 
-bool MathOp::equals(ConstExprHandle expr) const
+bool MathOp::equals(ConstScamValue expr) const
 {
     return ( expr && ExprWriter::write(this) == ExprWriter::write(expr) );
 }
@@ -40,14 +40,14 @@ bool MathOp::equals(ConstExprHandle expr) const
 namespace
 {
     ExtendedNumeric
-    do_add(vector<ExtendedNumeric> const & ns, ExprHandle & state)
+    do_add(vector<ExtendedNumeric> const & ns, ScamValue & state)
     {
         ExtendedNumeric zero(ExpressionFactory::makeInteger(0, true));
         return accumulate(ns.begin(), ns.end(), zero);
     }
 
     ExtendedNumeric
-    do_sub(vector<ExtendedNumeric> const & ns, ExprHandle & state)
+    do_sub(vector<ExtendedNumeric> const & ns, ScamValue & state)
     {
         ExtendedNumeric zero(ExpressionFactory::makeInteger(0, true));
         ExtendedNumeric total = zero;
@@ -68,7 +68,7 @@ namespace
     }
 
     ExtendedNumeric
-    do_mul(vector<ExtendedNumeric> const & ns, ExprHandle & state)
+    do_mul(vector<ExtendedNumeric> const & ns, ScamValue & state)
     {
         ExtendedNumeric one(ExpressionFactory::makeInteger(1, true));
         return accumulate(ns.begin(), ns.end(),
@@ -77,7 +77,7 @@ namespace
     }
 
     ExtendedNumeric
-    do_div(vector<ExtendedNumeric> const & ns, ExprHandle & state)
+    do_div(vector<ExtendedNumeric> const & ns, ScamValue & state)
     {
         ExtendedNumeric zero(ExpressionFactory::makeInteger(0, true));
         ExtendedNumeric one(ExpressionFactory::makeInteger(1, true));
@@ -117,7 +117,7 @@ namespace
     }
 
     ExtendedNumeric
-    do_mod(vector<ExtendedNumeric> const & ns, ExprHandle & state)
+    do_mod(vector<ExtendedNumeric> const & ns, ScamValue & state)
     {
         ExtendedNumeric zero(ExpressionFactory::makeInteger(0, true));
 

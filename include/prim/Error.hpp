@@ -14,7 +14,7 @@ namespace scam
 
     public:
         static Error * makeInstance();
-        void applyArgs(ExprHandle args, Continuation * cont) override;
+        void applyArgs(ScamValue args, Continuation * cont) override;
     };
 }
 

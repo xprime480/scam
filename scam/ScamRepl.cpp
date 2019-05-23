@@ -42,7 +42,7 @@ void ScamRepl::banner() const
 bool ScamRepl::load_prelude()
 {
     tokenizer.bufferInput("(load \"lib/prelude.scm\")");
-    ExprHandle expr = parser.parseExpr();
+    ScamValue expr = parser.parseExpr();
     tokenizer.flush();
 
     if ( TypePredicates::isNull(expr) || TypePredicates::error(expr) ) {
@@ -56,32 +56,32 @@ bool ScamRepl::load_prelude()
         return false;
     }
 
-    ExprHandle rv = eval(expr);
+    ScamValue rv = eval(expr);
     return TypePredicates::isInteger(rv) && 1 == rv->asInteger();
 }
 
 int ScamRepl::repl()
 {
     for ( ;; ) {
-        ExprHandle form = read();
+        ScamValue form = read();
         if ( TypePredicates::isNull(form) ) {
             break;
         }
-        ExprHandle value = eval(form);
+        ScamValue value = eval(form);
         print(value);
     }
 
     return 0;
 }
 
-ExprHandle ScamRepl::read()
+ScamValue ScamRepl::read()
 {
     while ( true ) {
         if ( tokenizer.empty() ) {
             cout << "scam> ";
         }
         else {
-            ExprHandle form = parser.parseExpr();
+            ScamValue form = parser.parseExpr();
 
             if ( ! TypePredicates::isNull(form) &&
                  ! TypePredicates::error(form) ) {
@@ -111,7 +111,7 @@ ExprHandle ScamRepl::read()
     }
 }
 
-ExprHandle ScamRepl::eval(ExprHandle form)
+ScamValue ScamRepl::eval(ScamValue form)
 {
     try {
         return engine.eval(form);
@@ -122,7 +122,7 @@ ExprHandle ScamRepl::eval(ExprHandle form)
     }
 }
 
-void ScamRepl::print(ExprHandle value)
+void ScamRepl::print(ScamValue value)
 {
     cerr << ExprWriter::write(value) << "\n";
 }

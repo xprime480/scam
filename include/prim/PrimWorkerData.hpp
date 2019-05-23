@@ -9,12 +9,12 @@ namespace scam
 
     struct PrimWorkerData
     {
-        PrimWorkerData(ExprHandle args,
+        PrimWorkerData(ScamValue args,
                        Continuation * original,
                        Env * env,
                        Primitive * caller);
 
-        ExprHandle args;
+        ScamValue args;
         Continuation * original;
         Continuation * cont;
         Env * env;
@@ -23,7 +23,7 @@ namespace scam
         void mark() const;
 
         void mapEval() const;
-        void handleResult(ExprHandle expr);
+        void handleResult(ScamValue expr);
     };
 }
 

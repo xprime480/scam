@@ -26,7 +26,7 @@ namespace
         engine.reset(true);
         engine.pushFrame();
         ReadEvalString helper(&engine, testforms);
-        ExprHandle status = helper.run();
+        ScamValue status = helper.run();
         if ( TypePredicates::isNull(status) ||
              TypePredicates::error(status) ) {
             return false;

@@ -10,11 +10,11 @@ namespace scam
     class ScamInstanceAdapter
     {
     public:
-        ScamInstanceAdapter(ExprHandle expr);
+        ScamInstanceAdapter(ScamValue expr);
 
         Env * getFunctionMap() const;
         Env * getEnv() const;
-        ExprHandle getParent() const;
+        ScamValue getParent() const;
 
     private:
         const ScamInstance * instance;

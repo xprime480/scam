@@ -10,24 +10,24 @@
 using namespace scam;
 using namespace std;
 
-ExprHandle scam::validateClosureArgs(ExprHandle args, const char * name)
+ScamValue scam::validateClosureArgs(ScamValue args, const char * name)
 {
     if ( ! TypePredicates::isCons(args) ) {
-        ExprHandle nameSymbol = ExpressionFactory::makeSymbol(name);
-        ExprHandle extended = ExpressionFactory::makeCons(nameSymbol, args);
+        ScamValue nameSymbol = ExpressionFactory::makeSymbol(name);
+        ScamValue extended = ExpressionFactory::makeCons(nameSymbol, args);
         return ExpressionFactory::makeError("Expected (", name, " args body*)",
                                             "; got: ",
                                             ExprWriter::write(extended));
     }
 
-    ExprHandle formals = args->getCar();
+    ScamValue formals = args->getCar();
     return validateFormals(formals);
 }
 
 
-ExprHandle scam::validateFormals(ExprHandle formals)
+ScamValue scam::validateFormals(ScamValue formals)
 {
-    ExprHandle ok = ExpressionFactory::makeNil();
+    ScamValue ok = ExpressionFactory::makeNil();
 
     if ( TypePredicates::isSymbol(formals) || TypePredicates::isNil(formals) ) {
         return ok;
@@ -41,7 +41,7 @@ ExprHandle scam::validateFormals(ExprHandle formals)
 
     set<string> parms;
     while ( true ) {
-        ExprHandle arg = formals->getCar();
+        ScamValue arg = formals->getCar();
         if ( ! TypePredicates::isSymbol(arg) ) {
             return ExpressionFactory::makeError("Formal parameter should ",
                                                 "be a symbol; got: ",

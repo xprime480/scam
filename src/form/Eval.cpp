@@ -23,7 +23,7 @@ Eval * Eval::makeInstance()
     return &instance;
 }
 
-void Eval::apply(ExprHandle args, Continuation * cont, Env * env)
+void Eval::apply(ScamValue args, Continuation * cont, Env * env)
 {
     SingletonParser * parser = getSingletonOfAnythingParser();
 
@@ -33,7 +33,7 @@ void Eval::apply(ExprHandle args, Continuation * cont, Env * env)
     else {
         Continuation * finisher =
             standardMemoryManager.make<EvalCont>(cont, env);
-        ExprHandle expr = const_cast<ExprHandle>(parser->get());
+        ScamValue expr = const_cast<ScamValue>(parser->get());
         expr->eval(finisher, env);
     }
 }

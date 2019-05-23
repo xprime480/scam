@@ -10,12 +10,12 @@ namespace scam
     public:
         Binder(Env * capture);
 
-        Env * bind(ExprHandle formals, ExprHandle actuals) const;
+        Env * bind(ScamValue formals, ScamValue actuals) const;
 
     private:
         Env * capture;
 
-        void bindOne(Env * env, ExprHandle syms, ExprHandle vals) const;
+        void bindOne(Env * env, ScamValue syms, ScamValue vals) const;
     };
 }
 

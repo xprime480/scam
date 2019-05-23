@@ -26,7 +26,7 @@ Or * Or::makeInstance()
     return &instance;
 }
 
-void Or::apply(ExprHandle args, Continuation * cont, Env * env)
+void Or::apply(ScamValue args, Continuation * cont, Env * env)
 {
     ListParser * parser = getListOfAnythingParser();
     if ( ! parser->accept(args) ) {

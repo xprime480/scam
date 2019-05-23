@@ -15,7 +15,7 @@ namespace scam
         static ExtendedNumericParser * makeInstance();
 
     public:
-        bool accept(ExprHandle expr) override;
+        bool accept(ScamValue expr) override;
     };
 }
 

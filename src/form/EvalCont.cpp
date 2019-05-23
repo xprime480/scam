@@ -29,7 +29,7 @@ void EvalCont::mark() const
     }
 }
 
-void EvalCont::run(ExprHandle expr)
+void EvalCont::run(ScamValue expr)
 {
     Continuation::run(expr);
 

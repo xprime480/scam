@@ -25,8 +25,8 @@ ScamDict::ScamDict(ValVec const & args)
     }
 
     for ( size_t idx = 0 ; idx < input.size() ; idx += 2 ) {
-        ExprHandle key = input[idx];
-        ExprHandle val = input[idx+1];
+        ScamValue key = input[idx];
+        ScamValue val = input[idx+1];
         put(key, val);
     }
 }
@@ -41,7 +41,7 @@ ScamDict * ScamDict::makeInstance(ValVec const & args)
     return new ScamDict(args);
 }
 
-void ScamDict::apply(ExprHandle args, Continuation * cont, Env * env)
+void ScamDict::apply(ScamValue args, Continuation * cont, Env * env)
 {
     DictOpsParser * parser = standardMemoryManager.make<DictOpsParser>();
 
@@ -51,14 +51,14 @@ void ScamDict::apply(ExprHandle args, Continuation * cont, Env * env)
     }
 
     const ScamKeyword * op = parser->getParsedOp();
-    ExprHandle rv = nullptr;
+    ScamValue rv = nullptr;
 
     if ( op->equals(DictOpsParser::getOp) ) {
         rv = get(parser->getOpKey());
     }
     else if ( op->equals(DictOpsParser::putOp) ) {
         /* this is potentially UB so revisit this soon!! */
-        ExprHandle val = parser->getOpVal();
+        ScamValue val = parser->getOpVal();
         rv = put(parser->getOpKey(), val);
     }
     else if ( op->equals(DictOpsParser::lenOp) ) {
@@ -84,7 +84,7 @@ size_t ScamDict::length() const
     return DICTKEYS(this).size();
 }
 
-bool ScamDict::equals(ConstExprHandle expr) const
+bool ScamDict::equals(ConstScamValue expr) const
 {
     if ( ! TypePredicates::isDict(expr) ) {
         return false;
@@ -98,10 +98,10 @@ bool ScamDict::equals(ConstExprHandle expr) const
     size_t otherIdx = len+1;
 
     for ( size_t thisIdx = 0 ; thisIdx < len ; ++thisIdx ) {
-        ExprHandle myKey = DICTKEYS(this)[thisIdx];
+        ScamValue myKey = DICTKEYS(this)[thisIdx];
         for ( otherIdx = 0 ; otherIdx < len ; ++otherIdx ) {
             if ( DICTKEYS(expr)[otherIdx]->equals(myKey) ) {
-                ExprHandle myVal = DICTVALS(this)[thisIdx];
+                ScamValue myVal = DICTVALS(this)[thisIdx];
                 if ( ! DICTVALS(expr)[otherIdx]->equals(myVal) ) {
                     return false;
                 }
@@ -117,7 +117,7 @@ bool ScamDict::equals(ConstExprHandle expr) const
 
 }
 
-bool ScamDict::has(ExprHandle key) const
+bool ScamDict::has(ScamValue key) const
 {
     for ( size_t jdx = 0 ; jdx < DICTKEYS(this).size() ; ++jdx ) {
         if ( DICTKEYS(this)[jdx]->equals(key) ) {
@@ -128,7 +128,7 @@ bool ScamDict::has(ExprHandle key) const
     return false;
 }
 
-ExprHandle ScamDict::get(ExprHandle key) const
+ScamValue ScamDict::get(ScamValue key) const
 {
     for ( size_t jdx = 0 ; jdx < DICTKEYS(this).size() ; ++jdx ) {
         if ( DICTKEYS(this)[jdx]->equals(key) ) {
@@ -141,7 +141,7 @@ ExprHandle ScamDict::get(ExprHandle key) const
                                         "' does not exist");
 }
 
-ExprHandle ScamDict::put(ExprHandle key, ExprHandle val)
+ScamValue ScamDict::put(ScamValue key, ScamValue val)
 {
     size_t prev = DICTKEYS(this).size();
 
@@ -163,9 +163,9 @@ ExprHandle ScamDict::put(ExprHandle key, ExprHandle val)
     return val;
 }
 
-ExprHandle ScamDict::remove(ExprHandle key)
+ScamValue ScamDict::remove(ScamValue key)
 {
-    ExprHandle rv = ExpressionFactory::makeNil();
+    ScamValue rv = ExpressionFactory::makeNil();
 
     for ( size_t jdx = 0 ; jdx < DICTKEYS(this).size() ; ++jdx ) {
         if ( DICTKEYS(this)[jdx]->equals(key) ) {

@@ -14,7 +14,7 @@ namespace scam
         /* This should probably be private */
         static Apply * makeInstance();
 
-        void apply(ExprHandle args, Continuation * cont, Env * env) override;
+        void apply(ScamValue args, Continuation * cont, Env * env) override;
     };
 }
 

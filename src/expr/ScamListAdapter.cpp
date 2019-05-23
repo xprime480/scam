@@ -11,7 +11,7 @@
 using namespace scam;
 using namespace std;
 
-ScamListAdapter::ScamListAdapter(ConstExprHandle expr)
+ScamListAdapter::ScamListAdapter(ConstScamValue expr)
     : lst(dynamic_cast<ScamCons const *>(expr))
     , isNil(TypePredicates::isNil(expr))
     , len(0u)
@@ -37,13 +37,13 @@ size_t ScamListAdapter::getLength() const
     return len;
 }
 
-ExprHandle ScamListAdapter::append(ExprHandle tail) const
+ScamValue ScamListAdapter::append(ScamValue tail) const
 {
     if ( isNil ) {
         return ExpressionFactory::makeList(tail);
     }
 
     ScamListAdapter a(cdr);
-    ExprHandle newCdr = a.append(tail);
+    ScamValue newCdr = a.append(tail);
     return ExpressionFactory::makeCons(car, newCdr);
 }

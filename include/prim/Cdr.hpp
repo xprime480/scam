@@ -14,7 +14,7 @@ namespace scam
         static Cdr * makeInstance();
 
     protected:
-        void finish(ExprHandle cons, Continuation * cont) override;
+        void finish(ScamValue cons, Continuation * cont) override;
     };
 }
 

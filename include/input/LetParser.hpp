@@ -18,7 +18,7 @@ namespace scam
 
     public:
         void mark() const override;
-        bool accept(ExprHandle expr) override;
+        bool accept(ScamValue expr) override;
 
     protected:
         void clearValue() override;
@@ -26,11 +26,11 @@ namespace scam
     public:
         size_t getBindingCount() const;
         BindFormParser * getBinding(size_t idx) const;
-        ExprHandle getForms() const;
+        ScamValue getForms() const;
 
     private:
         std::vector<BindFormParser *> bindings;
-        ExprHandle forms;
+        ScamValue forms;
     };
 }
 

@@ -30,7 +30,7 @@ void ClassInitCont::mark() const
     }
 }
 
-void ClassInitCont::run(ExprHandle expr)
+void ClassInitCont::run(ScamValue expr)
 {
     Continuation::run(expr);
     cont->run(instance);

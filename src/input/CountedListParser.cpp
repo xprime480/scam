@@ -20,7 +20,7 @@ CountedListParser::makeInstance(ArgParser * itemParser, size_t min, size_t max)
     return new CountedListParser(itemParser, min, max);
 }
 
-bool CountedListParser::accept(ExprHandle expr)
+bool CountedListParser::accept(ScamValue expr)
 {
     if ( ! ListParser::accept(expr) ) {
         return false;

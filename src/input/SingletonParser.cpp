@@ -15,7 +15,7 @@ SingletonParser * SingletonParser::makeInstance(ArgParser * itemParser)
     return new SingletonParser(itemParser);
 }
 
-ExprHandle SingletonParser::get() const
+ScamValue SingletonParser::get() const
 {
     return CountedListParser::get(0);
 }

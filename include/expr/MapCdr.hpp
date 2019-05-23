@@ -13,13 +13,13 @@ namespace scam
     private:
         friend class scam::MemoryManager;
 
-        MapCdr(ExprHandle car,
-               ExprHandle cdr,
+        MapCdr(ScamValue car,
+               ScamValue cdr,
                Continuation * cont,
                Env * env);
 
-        static MapCdr * makeInstance(ExprHandle car,
-                                     ExprHandle cdr,
+        static MapCdr * makeInstance(ScamValue car,
+                                     ScamValue cdr,
                                      Continuation * cont,
                                      Env * env);
 

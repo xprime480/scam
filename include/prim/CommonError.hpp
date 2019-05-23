@@ -5,7 +5,7 @@
 
 namespace scam
 {
-    extern ExprHandle make_common_error(const char * text);
+    extern ScamValue make_common_error(const char * text);
 }
 
 #endif

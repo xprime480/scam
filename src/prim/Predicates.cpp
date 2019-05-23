@@ -18,7 +18,7 @@ namespace
 
     extern void apply_predicate(const char * name,
                                 ExprPredicate pred,
-                                ExprHandle args,
+                                ScamValue args,
                                 Continuation * cont);
 }
 
@@ -32,11 +32,11 @@ namespace
     {                                                           \
         return new cls();                                       \
     }                                                           \
-    void cls::applyArgs(ExprHandle args, Continuation * cont)   \
+    void cls::applyArgs(ScamValue args, Continuation * cont)   \
     {                                                           \
         apply_predicate(label, pred, args, cont);               \
     }                                                           \
-    bool cls::equals(ConstExprHandle expr) const                \
+    bool cls::equals(ConstScamValue expr) const                \
     {                                                           \
         return ( expr && ExprWriter::write(expr) == label );           \
     }
@@ -69,7 +69,7 @@ namespace
 {
     void apply_predicate(const char * name,
                          ExprPredicate pred,
-                         ExprHandle args,
+                         ScamValue args,
                          Continuation * cont)
     {
         SingletonParser * parser = getSingletonOfAnythingParser();
@@ -77,9 +77,9 @@ namespace
             failedArgParseMessage(name, "(form)", args, cont);
         }
         else {
-            ExprHandle arg = parser->get();
+            ScamValue arg = parser->get();
             bool answer = pred(arg);
-            ExprHandle rv = ExpressionFactory::makeBoolean(answer);
+            ScamValue rv = ExpressionFactory::makeBoolean(answer);
             cont->run(rv);
         }
     }

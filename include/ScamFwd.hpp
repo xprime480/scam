@@ -11,11 +11,11 @@ namespace scam
 
     /* at some point in the future we will deal with constness */
 
-    using ExprHandle = /*const*/ ScamExpr *;
+    using ScamValue = /*const*/ ScamExpr *;
 
     /* for those cases we know it must be const */
 
-    using ConstExprHandle = const ScamExpr *;
+    using ConstScamValue = const ScamExpr *;
 
     /* for Env related functions */
 

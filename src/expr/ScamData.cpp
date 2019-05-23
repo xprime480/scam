@@ -31,12 +31,12 @@ ScamData::ScamData(unsigned long type, bool managed)
         break;
 
     case ScamData::Dict:
-        DICTKEYSP(this) = new vector<ExprHandle>;
-        DICTVALSP(this) = new vector<ExprHandle>;
+        DICTKEYSP(this) = new vector<ScamValue>;
+        DICTVALSP(this) = new vector<ScamValue>;
         break;
 
     case ScamData::Vector:
-        VECTORP(this) = new vector<ExprHandle>;
+        VECTORP(this) = new vector<ScamValue>;
         break;
 
     default:
@@ -139,7 +139,7 @@ void ScamData::mark() const
     }
 }
 
-void ScamData::setMeta(string const & key, ExprHandle value) const
+void ScamData::setMeta(string const & key, ScamValue value) const
 {
     if ( ! metadata ) {
         metadata = standardMemoryManager.make<Env>();
@@ -165,9 +165,9 @@ bool ScamData::hasMeta(string const & key) const
     return metadata->check(k);
 }
 
-ExprHandle ScamData::getMeta(string const & key) const
+ScamValue ScamData::getMeta(string const & key) const
 {
-    ExprHandle rv = ExpressionFactory::makeNil();
+    ScamValue rv = ExpressionFactory::makeNil();
     if ( ! metadata ) {
         return rv;
     }

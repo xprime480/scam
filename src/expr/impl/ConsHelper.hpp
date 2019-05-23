@@ -10,20 +10,20 @@ namespace scam
 {
     namespace cons_impl
     {
-        void scamConsEvalHelper(ExprHandle car,
-                                ExprHandle cdr,
+        void scamConsEvalHelper(ScamValue car,
+                                ScamValue cdr,
                                 Continuation * cont,
                                 Env * env);
 
-        void scamConsMapHelper(ExprHandle car,
-                               ExprHandle cdr,
+        void scamConsMapHelper(ScamValue car,
+                               ScamValue cdr,
                                Continuation * cont,
                                Env * env);
 
         struct WorkerData
         {
-            WorkerData(ExprHandle car,
-                       ExprHandle cdr,
+            WorkerData(ScamValue car,
+                       ScamValue cdr,
                        Continuation * original,
                        Env * env)
                 : car(car)
@@ -45,8 +45,8 @@ namespace scam
                env->mark();
             }
 
-            ExprHandle car;
-            ExprHandle cdr;
+            ScamValue car;
+            ScamValue cdr;
             Continuation * original;
             Continuation * cont;
             Env * env;

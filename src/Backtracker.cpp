@@ -15,7 +15,7 @@ using namespace std;
 namespace
 {
     static unsigned counter { 0 };
-    static ExprHandle nomore =
+    static ScamValue nomore =
         ExpressionFactory::makeError("No more choices", false);
     static bool init =
         (nomore->setMeta("amb-error", ExpressionFactory::makeNil()),

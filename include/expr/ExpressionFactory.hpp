@@ -15,7 +15,7 @@ namespace scam
     class ClassDefParser;
     class ScamClass;
 
-    using ExprVec = std::vector<ExprHandle>;
+    using ExprVec = std::vector<ScamValue>;
     using ByteVec = std::vector<unsigned char>;
 
     class ExpressionFactory
@@ -53,26 +53,26 @@ namespace scam
         static ScamKeyword * makeKeyword(std::string const & value,
                                          bool managed = true);
 
-        static ExprHandle makeNumeric(std::string const & value);
+        static ScamValue makeNumeric(std::string const & value);
 
         static ScamNumeric * makeNaN();
         static ScamNumeric * makePosInf();
         static ScamNumeric * makeNegInf();
 
-        static ScamNumeric * makeComplex(ExprHandle real, ExprHandle imag);
+        static ScamNumeric * makeComplex(ScamValue real, ScamValue imag);
         static ScamNumeric * makeReal(double value, bool exact);
         static ScamNumeric * makeRational(int num, int den, bool exact);
         static ScamNumeric * makeInteger(int value, bool exact);
 
         static ScamNil * makeNil();
-        static ScamCons * makeCons(ExprHandle car, ExprHandle cdr);
+        static ScamCons * makeCons(ScamValue car, ScamValue cdr);
 
-        static ExprHandle makeList();
-        static ExprHandle makeList(ExprHandle item);
-        static ExprHandle makeList(std::vector<ExprHandle> & items);
+        static ScamValue makeList();
+        static ScamValue makeList(ScamValue item);
+        static ScamValue makeList(std::vector<ScamValue> & items);
 
         template <typename... Args>
-        static ExprHandle makeList(ExprHandle car, Args... args)
+        static ScamValue makeList(ScamValue car, Args... args)
         {
             return makeCons(car, makeList(args...));
         }

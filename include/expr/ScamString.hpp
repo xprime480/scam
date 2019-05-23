@@ -13,7 +13,7 @@ namespace scam
         static ScamString * makeInstance(std::string const & value);
 
     public:
-        bool equals(ConstExprHandle expr) const override;
+        bool equals(ConstScamValue expr) const override;
     };
 }
 

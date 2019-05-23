@@ -12,10 +12,10 @@ namespace scam
     public:
         Primitive(std::string const & name);
 
-        void apply(ExprHandle args, Continuation * cont, Env * env) override;
+        void apply(ScamValue args, Continuation * cont, Env * env) override;
 
         virtual void
-        applyArgs(ExprHandle args, Continuation * cont) = 0;
+        applyArgs(ScamValue args, Continuation * cont) = 0;
     };
 }
 

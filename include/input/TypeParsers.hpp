@@ -37,7 +37,7 @@ namespace scam
             }
         }
 
-        bool accept(ExprHandle expr) override
+        bool accept(ScamValue expr) override
         {
             if ( ! ArgParser::accept(expr) ) {
                 return false;

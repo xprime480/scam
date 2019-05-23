@@ -22,7 +22,7 @@ If * If::makeInstance()
     return &instance;
 }
 
-void If::apply(ExprHandle args, Continuation * cont, Env * env)
+void If::apply(ScamValue args, Continuation * cont, Env * env)
 {
     CountedListParser * parser = getCountedListOfAnythingParser(2, 3);
 

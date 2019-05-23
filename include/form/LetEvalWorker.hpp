@@ -11,18 +11,18 @@ namespace scam
     {
     private:
         friend class scam::MemoryManager;
-        LetEvalWorker(ExprHandle formals,
-                      ExprHandle evaled,
-                      ExprHandle args,
-                      ExprHandle forms,
+        LetEvalWorker(ScamValue formals,
+                      ScamValue evaled,
+                      ScamValue args,
+                      ScamValue forms,
                       Continuation * cont,
                       Env * env,
                       bool rebind);
 
-        static LetEvalWorker * makeInstance(ExprHandle formals,
-                                            ExprHandle evaled,
-                                            ExprHandle args,
-                                            ExprHandle forms,
+        static LetEvalWorker * makeInstance(ScamValue formals,
+                                            ScamValue evaled,
+                                            ScamValue args,
+                                            ScamValue forms,
                                             Continuation * cont,
                                             Env * env,
                                             bool rebind);
@@ -32,10 +32,10 @@ namespace scam
         void run() override;
 
     private:
-        ExprHandle formals;
-        ExprHandle evaled;
-        ExprHandle args;
-        ExprHandle forms;
+        ScamValue formals;
+        ScamValue evaled;
+        ScamValue args;
+        ScamValue forms;
         Continuation * cont;
         Env * env;
         bool rebind;

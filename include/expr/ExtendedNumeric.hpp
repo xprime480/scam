@@ -10,9 +10,9 @@ namespace scam
     class ExtendedNumeric
     {
     public:
-        explicit ExtendedNumeric(ConstExprHandle expr);
+        explicit ExtendedNumeric(ConstScamValue expr);
 
-        ExprHandle get() const;
+        ScamValue get() const;
 
         bool isNaN() const;
         bool isNegInf() const;
@@ -21,7 +21,7 @@ namespace scam
         bool isSpecialNumeric() const;
 
     private:
-        ConstExprHandle expr;
+        ConstScamValue expr;
     };
 
     /* relational operators on extended numerics */

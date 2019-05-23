@@ -37,7 +37,7 @@ void OrCont::mark() const
     }
 }
 
-void OrCont::run(ExprHandle expr)
+void OrCont::run(ScamValue expr)
 {
     Continuation::run(expr);
 

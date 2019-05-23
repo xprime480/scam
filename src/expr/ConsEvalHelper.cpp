@@ -9,8 +9,8 @@ using namespace std;
 
 ConsWorker::ConsWorker(Continuation * cont,
                        Env * env,
-                       ExprHandle car,
-                       ExprHandle cdr)
+                       ScamValue car,
+                       ScamValue cdr)
 
     : Worker("Cons Eval")
     , data(car, cdr, cont, env)
@@ -26,8 +26,8 @@ ConsWorker::ConsWorker(WorkerData const & data)
 
 ConsWorker * ConsWorker::makeInstance(Continuation * cont,
                                       Env * env,
-                                      ExprHandle car,
-                                      ExprHandle cdr)
+                                      ScamValue car,
+                                      ScamValue cdr)
 
 {
     return new ConsWorker(cont, env, car, cdr);

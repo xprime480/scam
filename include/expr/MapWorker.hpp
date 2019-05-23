@@ -14,13 +14,13 @@ namespace scam
         friend class scam::MemoryManager;
         MapWorker(Continuation * cont,
                   Env * env,
-                  ExprHandle car,
-                  ExprHandle cdr);
+                  ScamValue car,
+                  ScamValue cdr);
 
         static MapWorker * makeInstance(Continuation * cont,
                                         Env * env,
-                                        ExprHandle car,
-                                        ExprHandle cdr);
+                                        ScamValue car,
+                                        ScamValue cdr);
 
     public:
         void mark() const override;

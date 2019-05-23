@@ -18,9 +18,9 @@ namespace scam
 
     public:
         size_t length() const override;
-        ExprHandle nthcar(size_t n) const override;
+        ScamValue nthcar(size_t n) const override;
 
-        bool equals(ConstExprHandle expr) const override;
+        bool equals(ConstScamValue expr) const override;
     };
 }
 

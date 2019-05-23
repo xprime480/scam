@@ -16,11 +16,11 @@ namespace scam
 
     public:
         void mark() const override;
-        bool accept(ExprHandle expr) override;
+        bool accept(ScamValue expr) override;
 
         bool isMatch() const;
-        ExprHandle getLhs() const;
-        ExprHandle getRhs() const;
+        ScamValue getLhs() const;
+        ScamValue getRhs() const;
         ScamDict * getDict() const;
 
     private:

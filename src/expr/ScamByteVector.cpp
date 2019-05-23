@@ -23,7 +23,7 @@ size_t ScamByteVector::length() const
     return BYTEVECTOR(this).size();
 }
 
-ExprHandle ScamByteVector::nthcar(size_t n) const
+ScamValue ScamByteVector::nthcar(size_t n) const
 {
     if ( n >= length() ) {
         return ExpressionFactory::makeError("Requested index ",
@@ -36,7 +36,7 @@ ExprHandle ScamByteVector::nthcar(size_t n) const
     return ExpressionFactory::makeInteger(BYTEVECTOR(this)[n], true);
 }
 
-bool ScamByteVector::equals(ConstExprHandle expr) const
+bool ScamByteVector::equals(ConstScamValue expr) const
 {
     if ( ! TypePredicates::isByteVector(expr) ) {
         return false;

@@ -22,7 +22,7 @@ Assign * Assign::makeInstance(ScamEngine * engine)
     return new Assign(engine);
 }
 
-void Assign::apply(ExprHandle args, Continuation * cont, Env * env)
+void Assign::apply(ScamValue args, Continuation * cont, Env * env)
 {
     AssignParser * parser = standardMemoryManager.make<AssignParser>();
 

@@ -134,7 +134,7 @@ void ExprWriter::writeCons(stringstream & s, const ScamData * data)
 {
     s << "(";
     s << write(CAR(data));
-    ExprHandle next = CDR(data);
+    ScamValue next = CDR(data);
     while ( ! TypePredicates::isNil(next) ) {
         if ( TypePredicates::isCons(next) ) {
             s << " " << write(next->getCar());
@@ -192,8 +192,8 @@ void ExprWriter::writeNumeric(stringstream & s, const ScamData * data)
         // "-i", so the latter is used for the representation.  The
         // real pa
         //
-        ExprHandle r { REALPART(data) };
-        ExprHandle i { IMAGPART(data) };
+        ScamValue r { REALPART(data) };
+        ScamValue i { IMAGPART(data) };
 
         if ( ! TypePredicates::isInteger(r) || 0 != r->asInteger() ) {
             s << write(r);

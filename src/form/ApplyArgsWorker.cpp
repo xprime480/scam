@@ -9,8 +9,8 @@
 using namespace scam;
 using namespace std;
 
-ApplyArgsWorker::ApplyArgsWorker(ExprHandle op,
-                                 ExprHandle args,
+ApplyArgsWorker::ApplyArgsWorker(ScamValue op,
+                                 ScamValue args,
                                  Continuation * cont,
                                  Env * env)
     : Worker("Apply Args")
@@ -21,8 +21,8 @@ ApplyArgsWorker::ApplyArgsWorker(ExprHandle op,
 {
 }
 
-ApplyArgsWorker * ApplyArgsWorker::makeInstance(ExprHandle op,
-                                                ExprHandle args,
+ApplyArgsWorker * ApplyArgsWorker::makeInstance(ScamValue op,
+                                                ScamValue args,
                                                 Continuation * cont,
                                                 Env * env)
 {

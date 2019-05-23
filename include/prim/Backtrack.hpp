@@ -18,7 +18,7 @@ namespace scam
         /* I think this should be private, check later */
         static Backtrack * makeInstance(ScamEngine * engine);
 
-        void applyArgs(ExprHandle args, Continuation * cont) override;
+        void applyArgs(ScamValue args, Continuation * cont) override;
 
     private:
         ScamEngine * engine;

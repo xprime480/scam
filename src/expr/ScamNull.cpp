@@ -20,11 +20,11 @@ ScamNull * ScamNull::makeInstance()
 void ScamNull::eval(Continuation * cont, Env * env) const
 {
     static const string msg{ "The null type cannot be evaluated." };
-    static ExprHandle expr = ExpressionFactory::makeError(msg, false);
+    static ScamValue expr = ExpressionFactory::makeError(msg, false);
     cont->run(expr);
 }
 
-bool ScamNull::equals(ConstExprHandle expr) const
+bool ScamNull::equals(ConstScamValue expr) const
 {
     return false;
 }

@@ -126,7 +126,7 @@ int ScamNumeric::asInteger(const ScamData * data)
     return INTVAL(data);
 }
 
-ConstExprHandle ScamNumeric::realPart(const ScamData * data)
+ConstScamValue ScamNumeric::realPart(const ScamData * data)
 {
     if ( ! isNumeric(data) ) {
         stringstream s;
@@ -142,7 +142,7 @@ ConstExprHandle ScamNumeric::realPart(const ScamData * data)
     return ExpressionFactory::makeNull(); // temporary hack!!
 }
 
-ConstExprHandle ScamNumeric::imagPart(const ScamData * data)
+ConstScamValue ScamNumeric::imagPart(const ScamData * data)
 {
     if ( ! isNumeric(data) ) {
         stringstream s;
@@ -177,7 +177,7 @@ ScamNumeric::ScamNumeric(ScamData::PosInfType tag)
     EXACT(this) = false;
 }
 
-ScamNumeric::ScamNumeric(ExprHandle real, ExprHandle imag, bool managed)
+ScamNumeric::ScamNumeric(ScamValue real, ScamValue imag, bool managed)
     : ScamExpr(ScamData::Complex, managed)
 {
     EXACT(this) = EXACT(real) && EXACT(imag);
@@ -235,7 +235,7 @@ ScamNumeric * ScamNumeric::makeInstance(ScamData::PosInfType tag)
 }
 
 ScamNumeric *
-ScamNumeric::makeInstance(ExprHandle real, ExprHandle imag, bool managed)
+ScamNumeric::makeInstance(ScamValue real, ScamValue imag, bool managed)
 {
     return new ScamNumeric(real, imag, managed);
 }
@@ -258,7 +258,7 @@ ScamNumeric::makeInstance(int value, bool exact, bool managed)
     return new ScamNumeric(value, exact, managed);
 }
 
-bool ScamNumeric::equals(ConstExprHandle expr) const
+bool ScamNumeric::equals(ConstScamValue expr) const
 {
     if ( ! isNumeric(expr) ) {
         return false;
@@ -275,8 +275,8 @@ bool ScamNumeric::equals(ConstExprHandle expr) const
     }
 
     /* temporary hack!!! */
-    ConstExprHandle thisH = realPart(this);
-    ConstExprHandle thatH = realPart(expr);
+    ConstScamValue thisH = realPart(this);
+    ConstScamValue thatH = realPart(expr);
 
     const double thisR = asDouble(TypePredicates::isNull(thisH) ? this : thisH);
     const double thatR = asDouble(TypePredicates::isNull(thatH) ? expr : thatH);

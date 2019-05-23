@@ -13,14 +13,14 @@ Binder::Binder(Env * capture)
 {
 }
 
-Env * Binder::bind(ExprHandle formals, ExprHandle actuals) const
+Env * Binder::bind(ScamValue formals, ScamValue actuals) const
 {
     Env * extended = capture->extend();
     bindOne(extended, formals, actuals);
     return extended;
 }
 
-void Binder::bindOne(Env * env, ExprHandle syms, ExprHandle vals) const
+void Binder::bindOne(Env * env, ScamValue syms, ScamValue vals) const
 {
     if ( TypePredicates::isCons(syms) ) {
         ScamEnvKeyType key = dynamic_cast<ScamEnvKeyType>(syms->getCar());

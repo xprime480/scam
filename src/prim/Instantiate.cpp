@@ -22,7 +22,7 @@ Instantiate * Instantiate::makeInstance()
     return new Instantiate();
 }
 
-void Instantiate::applyArgs(ExprHandle args, Continuation * cont)
+void Instantiate::applyArgs(ScamValue args, Continuation * cont)
 {
     SingletonParser * parser = getSingletonOfAnythingParser();
     if ( ! parser->accept(args) ) {
@@ -30,7 +30,7 @@ void Instantiate::applyArgs(ExprHandle args, Continuation * cont)
     }
 
     Instantiator inst(counter);
-    ExprHandle rv = inst.exec(parser);
+    ScamValue rv = inst.exec(parser);
     cont->run(rv);
 }
 

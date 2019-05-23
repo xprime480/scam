@@ -14,10 +14,10 @@ using namespace std;
 
 namespace
 {
-    extern ExprHandle signCheckRI(ExprHandle r, ExprHandle b);
+    extern ScamValue signCheckRI(ScamValue r, ScamValue b);
 }
 
-ExtendedNumeric::ExtendedNumeric(ConstExprHandle expr)
+ExtendedNumeric::ExtendedNumeric(ConstScamValue expr)
     : expr(expr)
 {
     if ( ! TypePredicates::isNumeric(expr) ) {
@@ -28,9 +28,9 @@ ExtendedNumeric::ExtendedNumeric(ConstExprHandle expr)
     }
 }
 
-ExprHandle ExtendedNumeric::get() const
+ScamValue ExtendedNumeric::get() const
 {
-    return const_cast<ExprHandle>(expr);
+    return const_cast<ScamValue>(expr);
 }
 
 bool ExtendedNumeric::isNaN() const
@@ -110,8 +110,8 @@ bool scam::operator>(const ExtendedNumeric & a, const ExtendedNumeric & b)
         return false;
     }
 
-    ExprHandle hA = a.get();
-    ExprHandle hB = b.get();
+    ScamValue hA = a.get();
+    ScamValue hB = b.get();
     if ( (TypePredicates::isComplex(hA) && ! TypePredicates::isReal(hA)) ||
          (TypePredicates::isComplex(hB) && ! TypePredicates::isReal(hB)) ) {
         return false;
@@ -136,8 +136,8 @@ bool scam::operator<(const ExtendedNumeric & a, const ExtendedNumeric & b)
         return false;
     }
 
-    ExprHandle hA = a.get();
-    ExprHandle hB = b.get();
+    ScamValue hA = a.get();
+    ScamValue hB = b.get();
     if ( (TypePredicates::isComplex(hA) && ! TypePredicates::isReal(hA)) ||
          (TypePredicates::isComplex(hB) && ! TypePredicates::isReal(hB)) ) {
         return false;
@@ -160,11 +160,11 @@ bool scam::operator<=(const ExtendedNumeric & a, const ExtendedNumeric & b)
 ExtendedNumeric
 scam::operator+(const ExtendedNumeric & a, const ExtendedNumeric & b)
 {
-    ExprHandle expr { nullptr };
+    ScamValue expr { nullptr };
 
     if ( ! a.isSpecialNumeric() && ! b.isSpecialNumeric() ) {
-        const ExprHandle xA = a.get();
-        const ExprHandle xB = b.get();
+        const ScamValue xA = a.get();
+        const ScamValue xB = b.get();
         const bool isInt =
             TypePredicates::isInteger(xA) && TypePredicates::isInteger(xB);
         const bool isRational =
@@ -253,7 +253,7 @@ ExtendedNumeric scam::operator-(const ExtendedNumeric & a)
 ExtendedNumeric
 scam::operator-(const ExtendedNumeric & a, const ExtendedNumeric & b)
 {
-    ExprHandle expr { nullptr };
+    ScamValue expr { nullptr };
 
     if ( ! a.isSpecialNumeric() && ! b.isSpecialNumeric() ) {
         ExtendedNumeric minusOne(ExpressionFactory::makeInteger(-1, true));
@@ -305,9 +305,9 @@ scam::operator-(const ExtendedNumeric & a, const ExtendedNumeric & b)
 ExtendedNumeric
 scam::operator*(const ExtendedNumeric & a, const ExtendedNumeric & b)
 {
-    ExprHandle xA = a.get();
-    ExprHandle xB = b.get();
-    ExprHandle expr { nullptr };
+    ScamValue xA = a.get();
+    ScamValue xB = b.get();
+    ScamValue expr { nullptr };
 
     if ( ! a.isSpecialNumeric() && ! b.isSpecialNumeric() ) {
         const bool isInt =
@@ -394,9 +394,9 @@ scam::operator*(const ExtendedNumeric & a, const ExtendedNumeric & b)
 ExtendedNumeric
 scam::operator/(const ExtendedNumeric & a, const ExtendedNumeric & b)
 {
-    const ExprHandle xA = a.get();
-    const ExprHandle xB = b.get();
-    ExprHandle expr { nullptr };
+    const ScamValue xA = a.get();
+    const ScamValue xB = b.get();
+    ScamValue expr { nullptr };
 
     if ( ! a.isSpecialNumeric() && ! b.isSpecialNumeric() ) {
         const bool isInt =
@@ -426,7 +426,7 @@ scam::operator/(const ExtendedNumeric & a, const ExtendedNumeric & b)
         else if ( isRational ) {
             const pair<int, int> ratB = xB->asRational();
             int s = ratB.first < 0 ? -1 : 1;
-            ExprHandle recipricolB =
+            ScamValue recipricolB =
                 ExpressionFactory::makeRational(s * ratB.second,
                                                 ::abs(ratB.first),
                                                 isExact);
@@ -490,9 +490,9 @@ scam::operator/(const ExtendedNumeric & a, const ExtendedNumeric & b)
 ExtendedNumeric
 scam::operator%(const ExtendedNumeric & a, const ExtendedNumeric & b)
 {
-    const ExprHandle xA = a.get();
-    const ExprHandle xB = b.get();
-    ExprHandle expr { nullptr };
+    const ScamValue xA = a.get();
+    const ScamValue xB = b.get();
+    ScamValue expr { nullptr };
 
     if ( ! a.isSpecialNumeric() && ! b.isSpecialNumeric() ) {
         const bool isInt =
@@ -536,7 +536,7 @@ scam::operator%(const ExtendedNumeric & a, const ExtendedNumeric & b)
 
 namespace
 {
-    ExprHandle signCheckRI(ExprHandle r, ExprHandle i)
+    ScamValue signCheckRI(ScamValue r, ScamValue i)
     {
         const double rVal = r->asDouble();
         if ( 0.0 == rVal ) {

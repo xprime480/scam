@@ -45,7 +45,7 @@ void ParameterListParser::mark() const
     }
 }
 
-bool ParameterListParser::accept(ExprHandle expr)
+bool ParameterListParser::accept(ScamValue expr)
 {
     if ( ! ArgParser::accept(expr) ) {
         return false;

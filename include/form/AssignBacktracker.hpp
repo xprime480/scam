@@ -13,12 +13,12 @@ namespace scam
         friend class scam::MemoryManager;
 
         AssignBacktracker(ScamEnvKeyType sym,
-                          ExprHandle old,
+                          ScamValue old,
                           Env * env,
                           Backtracker * backtracker);
 
         static AssignBacktracker * makeInstance(ScamEnvKeyType sym,
-                                                ExprHandle old,
+                                                ScamValue old,
                                                 Env * env,
                                                 Backtracker * backtracker);
 
@@ -28,7 +28,7 @@ namespace scam
 
     private:
         ScamEnvKeyType sym;
-        ExprHandle     old;
+        ScamValue     old;
         Env          * env;
     };
 }

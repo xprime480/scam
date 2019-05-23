@@ -11,13 +11,13 @@ namespace scam
     {
     private:
         friend class scam::MemoryManager;
-        ApplyArgsWorker(ExprHandle op,
-                        ExprHandle args,
+        ApplyArgsWorker(ScamValue op,
+                        ScamValue args,
                         Continuation * cont,
                         Env * env);
 
-        static ApplyArgsWorker * makeInstance(ExprHandle op,
-                                              ExprHandle args,
+        static ApplyArgsWorker * makeInstance(ScamValue op,
+                                              ScamValue args,
                                               Continuation * cont,
                                               Env * env);
 
@@ -26,8 +26,8 @@ namespace scam
         void run() override;
 
     private:
-        ExprHandle op;
-        ExprHandle args;
+        ScamValue op;
+        ScamValue args;
         Continuation * cont;
         Env *        env;
     };

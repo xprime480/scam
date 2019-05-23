@@ -58,7 +58,7 @@ TestBase::TestBase(bool loadPrelude)
     extractor = mm.make<Extractor>();
     engine.setCont(extractor);
     if ( loadPrelude ) {
-        ExprHandle result = parseAndEvaluate("(load \"lib/prelude.scm\")");
+        ScamValue result = parseAndEvaluate("(load \"lib/prelude.scm\")");
         expectInteger(result, 1, "1", true);
     }
 }
@@ -76,25 +76,25 @@ void TestBase::TearDown()
     engine.reset(false);
 }
 
-ExprHandle TestBase::evaluate(ExprHandle input)
+ScamValue TestBase::evaluate(ScamValue input)
 {
     return engine.eval(input);
 }
 
-ExprHandle TestBase::apply(ExprHandle expr, ExprHandle args)
+ScamValue TestBase::apply(ScamValue expr, ScamValue args)
 {
     return engine.apply(expr, args);
 }
 
-ExprHandle TestBase::parseAndEvaluate(string const & input)
+ScamValue TestBase::parseAndEvaluate(string const & input)
 {
     try {
         ReadEvalString helper(&engine, input);
-        ExprHandle rv = helper.run();
+        ScamValue rv = helper.run();
         return rv;
     }
     catch ( ScamException e ) {
-        ExprHandle rv = ExpressionFactory::makeError(e.getMessage());
+        ScamValue rv = ExpressionFactory::makeError(e.getMessage());
         return rv;
     }
     catch ( ... ) {
@@ -102,22 +102,22 @@ ExprHandle TestBase::parseAndEvaluate(string const & input)
     }
 }
 
-ExprHandle TestBase::parseAndEvaluateFile(char const * filename)
+ScamValue TestBase::parseAndEvaluateFile(char const * filename)
 {
     stringstream s;
     s << "(load \"" << filename << "\")";
     return parseAndEvaluate(s.str());
 }
 
-ExprHandle TestBase::readString(char const * input)
+ScamValue TestBase::readString(char const * input)
 {
     try {
         ReadEvalString helper(&engine, input);
-        ExprHandle rv = helper.read();
+        ScamValue rv = helper.read();
         return rv;
     }
     catch ( ScamException e ) {
-        ExprHandle rv = ExpressionFactory::makeError(e.getMessage());
+        ScamValue rv = ExpressionFactory::makeError(e.getMessage());
         return rv;
     }
     catch ( ... ) {
@@ -186,7 +186,7 @@ string decodePredicate(unsigned exp, unsigned act)
     return s.str();
 }
 
-void TestBase::checkPredicates(ConstExprHandle expr, unsigned exp)
+void TestBase::checkPredicates(ConstScamValue expr, unsigned exp)
 {
     ASSERT_NE(nullptr, expr);
     unsigned act { 0 };
@@ -227,12 +227,12 @@ void TestBase::checkPredicates(ConstExprHandle expr, unsigned exp)
                         << "\n\tvalue: " << ExprWriter::write(expr);
 }
 
-void expectNonNumeric(ConstExprHandle expr)
+void expectNonNumeric(ConstScamValue expr)
 {
     EXPECT_FALSE(TypePredicates::isNumeric(expr));
 }
 
-void TestBase::expectNull(ConstExprHandle expr)
+void TestBase::expectNull(ConstScamValue expr)
 {
     ASSERT_TRUE(TypePredicates::isNull(expr))
         << "Actual Value: " << ExprWriter::write(expr);
@@ -243,7 +243,7 @@ void TestBase::expectNull(ConstExprHandle expr)
     expectNonNumeric(expr);
 }
 
-void TestBase::expectError(ConstExprHandle expr,
+void TestBase::expectError(ConstScamValue expr,
                            string const msg,
                            bool managed)
 {
@@ -261,7 +261,7 @@ void TestBase::expectError(ConstExprHandle expr,
     expectNonNumeric(expr);
 }
 
-void TestBase::expectBoolean(ConstExprHandle expr,
+void TestBase::expectBoolean(ConstScamValue expr,
                              bool value,
                              string const & repr)
 {
@@ -276,26 +276,26 @@ void TestBase::expectBoolean(ConstExprHandle expr,
 
 void TestBase::expectTrue(string const & input)
 {
-    ExprHandle expr = parseAndEvaluate(input);
+    ScamValue expr = parseAndEvaluate(input);
     expectBoolean(expr, true, "#t");
 }
 
 void TestBase::expectFalse(string const & input)
 {
-    ExprHandle expr = parseAndEvaluate(input);
+    ScamValue expr = parseAndEvaluate(input);
     expectBoolean(expr, false, "#f");
 }
 
-void TestBase::booleanTest(ConstExprHandle expr,
+void TestBase::booleanTest(ConstScamValue expr,
                            bool value,
                            string const & repr)
 {
     expectBoolean(expr, value, repr);
-    ExprHandle evaled = evaluate(const_cast<ExprHandle>(expr));
+    ScamValue evaled = evaluate(const_cast<ScamValue>(expr));
     expectBoolean(evaled, value, repr);
 }
 
-void TestBase::expectSpecialNumeric(ConstExprHandle expr,
+void TestBase::expectSpecialNumeric(ConstScamValue expr,
                                     std::string const & repr)
 {
     ASSERT_TRUE(TypePredicates::isNaN(expr) ||
@@ -308,9 +308,9 @@ void TestBase::expectSpecialNumeric(ConstExprHandle expr,
     EXPECT_FALSE(TypePredicates::isRational(expr));
 }
 
-void TestBase::expectComplex(ConstExprHandle expr,
-                             ConstExprHandle real,
-                             ConstExprHandle imag,
+void TestBase::expectComplex(ConstScamValue expr,
+                             ConstScamValue real,
+                             ConstScamValue imag,
                              std::string const & repr,
                              bool exact)
 {
@@ -326,7 +326,7 @@ void TestBase::expectComplex(ConstExprHandle expr,
     EXPECT_EQ(exact, TypePredicates::isExact(expr));
 }
 
-void TestBase::expectReal(ConstExprHandle expr,
+void TestBase::expectReal(ConstScamValue expr,
                           double value,
                           string const & repr,
                           bool exact)
@@ -349,7 +349,7 @@ void TestBase::expectReal(ConstExprHandle expr,
     EXPECT_EQ(exact, TypePredicates::isExact(expr));
 }
 
-void TestBase::expectRational(ConstExprHandle expr,
+void TestBase::expectRational(ConstScamValue expr,
                               const std::pair<int, int> & value,
                               std::string const & repr,
                               bool exact)
@@ -371,7 +371,7 @@ void TestBase::expectRational(ConstExprHandle expr,
 
 }
 
-void TestBase::expectInteger(ConstExprHandle expr,
+void TestBase::expectInteger(ConstScamValue expr,
                              int value,
                              string const & repr,
                              bool exact)
@@ -391,7 +391,7 @@ void TestBase::expectInteger(ConstExprHandle expr,
     EXPECT_EQ(exact, TypePredicates::isExact(expr));
 }
 
-void TestBase::expectChar(ConstExprHandle expr,
+void TestBase::expectChar(ConstScamValue expr,
                           char value,
                           string const & repr)
 {
@@ -403,7 +403,7 @@ void TestBase::expectChar(ConstExprHandle expr,
     EXPECT_EQ(value, expr->toChar());
 }
 
-void TestBase::expectString(ConstExprHandle expr, string const & value)
+void TestBase::expectString(ConstScamValue expr, string const & value)
 {
     ASSERT_TRUE(TypePredicates::isString(expr))
         << "Actual Value: " << ExprWriter::write(expr);
@@ -413,7 +413,7 @@ void TestBase::expectString(ConstExprHandle expr, string const & value)
     EXPECT_EQ(value, ExprWriter::write(expr));
 }
 
-void TestBase::expectSymbol(ConstExprHandle expr, string const & name)
+void TestBase::expectSymbol(ConstScamValue expr, string const & name)
 {
     ASSERT_TRUE(TypePredicates::isSymbol(expr))
         << "Actual Value: " << ExprWriter::write(expr);
@@ -423,7 +423,7 @@ void TestBase::expectSymbol(ConstExprHandle expr, string const & name)
     EXPECT_EQ(name, ExprWriter::write(expr));
 }
 
-void TestBase::expectKeyword(ConstExprHandle expr, string const & name)
+void TestBase::expectKeyword(ConstScamValue expr, string const & name)
 {
     ASSERT_TRUE(TypePredicates::isKeyword(expr))
         << "Actual Value: " << ExprWriter::write(expr);
@@ -433,7 +433,7 @@ void TestBase::expectKeyword(ConstExprHandle expr, string const & name)
     EXPECT_EQ(name, ExprWriter::write(expr));
 }
 
-void TestBase::expectNil(ConstExprHandle expr)
+void TestBase::expectNil(ConstScamValue expr)
 {
     ASSERT_TRUE(TypePredicates::isNil(expr))
         << "Actual Value: " << ExprWriter::write(expr);
@@ -443,7 +443,7 @@ void TestBase::expectNil(ConstExprHandle expr)
     EXPECT_EQ(repr, ExprWriter::write(expr));
 }
 
-void TestBase::expectList(ConstExprHandle expr,
+void TestBase::expectList(ConstScamValue expr,
                           string const & repr,
                           size_t len)
 {
@@ -463,7 +463,7 @@ void TestBase::expectList(ConstExprHandle expr,
     }
 }
 
-void TestBase::expectCons(ConstExprHandle expr, string const & repr)
+void TestBase::expectCons(ConstScamValue expr, string const & repr)
 {
     ASSERT_TRUE(TypePredicates::isCons(expr))
         << "Actual Value: " << ExprWriter::write(expr);
@@ -473,7 +473,7 @@ void TestBase::expectCons(ConstExprHandle expr, string const & repr)
 }
 
 void
-TestBase::expectApplicable(ConstExprHandle expr, string const & repr)
+TestBase::expectApplicable(ConstScamValue expr, string const & repr)
 {
     ASSERT_TRUE(expr->hasApply())
         << "Actual Value: " << ExprWriter::write(expr);
@@ -483,7 +483,7 @@ TestBase::expectApplicable(ConstExprHandle expr, string const & repr)
     EXPECT_EQ(repr, ExprWriter::write(expr));
 }
 
-void TestBase::expectVector(ConstExprHandle expr,
+void TestBase::expectVector(ConstScamValue expr,
                             string const & repr,
                             size_t len)
 {
@@ -496,7 +496,7 @@ void TestBase::expectVector(ConstExprHandle expr,
     EXPECT_EQ(len, expr->length());
 }
 
-void TestBase::expectByteVector(ConstExprHandle expr,
+void TestBase::expectByteVector(ConstScamValue expr,
                                 string const & repr,
                                 size_t len)
 {
@@ -509,7 +509,7 @@ void TestBase::expectByteVector(ConstExprHandle expr,
     EXPECT_EQ(len, expr->length());
 }
 
-void TestBase::expectProcedure(ConstExprHandle expr,
+void TestBase::expectProcedure(ConstScamValue expr,
                                string const & repr)
 {
     ASSERT_TRUE(TypePredicates::isProcedure(expr))
@@ -519,7 +519,7 @@ void TestBase::expectProcedure(ConstExprHandle expr,
     EXPECT_EQ(repr, ExprWriter::write(expr));
 }
 
-void TestBase::expectClass(ConstExprHandle expr)
+void TestBase::expectClass(ConstScamValue expr)
 {
     ASSERT_TRUE(TypePredicates::isClass(expr))
         << "Actual Value: " << ExprWriter::write(expr);
@@ -528,7 +528,7 @@ void TestBase::expectClass(ConstExprHandle expr)
     EXPECT_EQ("class", ExprWriter::write(expr));
 }
 
-void TestBase::expectInstance(ConstExprHandle expr)
+void TestBase::expectInstance(ConstScamValue expr)
 {
     ASSERT_TRUE(TypePredicates::isInstance(expr))
         << "Actual Value: " << ExprWriter::write(expr);
@@ -537,7 +537,7 @@ void TestBase::expectInstance(ConstExprHandle expr)
     EXPECT_EQ("instance", ExprWriter::write(expr));
 }
 
-void TestBase::expectDict(ConstExprHandle expr,
+void TestBase::expectDict(ConstScamValue expr,
                           int count,
                           string const & repr)
 {

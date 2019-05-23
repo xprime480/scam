@@ -13,7 +13,7 @@
 using namespace scam;
 using namespace std;
 
-QQConsListCarCont::QQConsListCarCont(ExprHandle cdr,
+QQConsListCarCont::QQConsListCarCont(ScamValue cdr,
                                      Continuation * cont,
                                      Env * env)
     : Continuation("QQConsListCarCont")
@@ -24,7 +24,7 @@ QQConsListCarCont::QQConsListCarCont(ExprHandle cdr,
 }
 
 QQConsListCarCont *
-QQConsListCarCont::makeInstance(ExprHandle cdr, Continuation * cont, Env * env)
+QQConsListCarCont::makeInstance(ScamValue cdr, Continuation * cont, Env * env)
 {
     return new QQConsListCarCont(cdr, cont, env);
 }
@@ -39,7 +39,7 @@ void QQConsListCarCont::mark() const
     }
 }
 
-void QQConsListCarCont::run(ExprHandle expr)
+void QQConsListCarCont::run(ScamValue expr)
 {
     Continuation::run(expr);
     if ( TypePredicates::error(expr) ) {

@@ -35,7 +35,7 @@ namespace scam
             }
         }
 
-        void run(ExprHandle expr) override
+        void run(ScamValue expr) override
         {
 #if 0
             std::cerr << "Extractor " << id()
@@ -45,13 +45,13 @@ namespace scam
             e = expr;
         }
 
-        ExprHandle getExpr() const
+        ScamValue getExpr() const
         {
             return e;
         }
 
     private:
-        ExprHandle e;
+        ScamValue e;
     };
 }
 

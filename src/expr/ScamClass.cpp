@@ -20,7 +20,7 @@ ScamClass * ScamClass::makeInstance(ClassDefParser * def, Env * capture)
     return new ScamClass(def, capture);
 }
 
-void ScamClass::apply(ExprHandle args, Continuation * cont, Env * env)
+void ScamClass::apply(ScamValue args, Continuation * cont, Env * env)
 {
     /** It is not meaningful to do argument validation here as the
      ** correct args are not apparant until the instance init method

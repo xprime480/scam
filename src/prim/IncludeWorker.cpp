@@ -43,8 +43,8 @@ void IncludeWorker::mark() const
 void IncludeWorker::run()
 {
     const size_t count = parser->size();
-    ExprHandle curr = parser->get(idx);
-    ExprHandle newArg = ExpressionFactory::makeList(curr);
+    ScamValue curr = parser->get(idx);
+    ScamValue newArg = ExpressionFactory::makeList(curr);
 
     size_t nextIdx = idx + 1;
     Continuation * nextCont = cont;

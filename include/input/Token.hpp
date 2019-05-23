@@ -46,14 +46,14 @@ namespace scam
     public:
         Token();
         Token(TokenType type, std::string const & text);
-        Token(TokenType type, std::string const & text, ExprHandle expr);
+        Token(TokenType type, std::string const & text, ScamValue expr);
 
         Token(Token const & rhs) = default;
         Token & operator=(Token const & rhs) = default;
 
         TokenType getType() const;
         std::string const & getText() const;
-        ExprHandle getExpr() const;
+        ScamValue getExpr() const;
 
         bool operator==(Token const & rhs) const;
         bool operator!=(Token const & rhs) const;
@@ -61,7 +61,7 @@ namespace scam
     private:
         TokenType type;
         std::string text;
-        ExprHandle expr;
+        ScamValue expr;
     };
 
     template <typename OS>
@@ -172,7 +172,7 @@ namespace scam
     OS & operator<<(OS & os, Token const & t)
     {
         os << "{Token: " << (t.getType()) << "; <" << (t.getText()) << ">";
-        ExprHandle expr = t.getExpr();
+        ScamValue expr = t.getExpr();
         if ( ! TypePredicates::isNull(expr) ) {
             os << " <" << ExprWriter::write(expr) << ">";
         }

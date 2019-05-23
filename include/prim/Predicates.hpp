@@ -16,8 +16,8 @@ namespace scam
         name();                                                         \
     public:                                                             \
         static name * makeInstance();                                   \
-        void applyArgs(ExprHandle args, Continuation * cont) override;  \
-        bool equals(ConstExprHandle expr) const override;               \
+        void applyArgs(ScamValue args, Continuation * cont) override;  \
+        bool equals(ConstScamValue expr) const override;               \
     }                                                                   \
 
     DECL_PREDICATE(NilP);

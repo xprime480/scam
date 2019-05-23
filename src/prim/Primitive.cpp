@@ -14,7 +14,7 @@ Primitive::Primitive(string const & name)
     STRVAL(this) = name;
 }
 
-void Primitive::apply(ExprHandle args, Continuation * cont, Env * env)
+void Primitive::apply(ScamValue args, Continuation * cont, Env * env)
 {
     /*
      * For primitives, the argument confirmation is delegated to the

@@ -10,10 +10,10 @@
 using namespace scam;
 using namespace std;
 
-LetStepCont::LetStepCont(ExprHandle formals,
-                         ExprHandle forms,
-                         ExprHandle evaled,
-                         ExprHandle args,
+LetStepCont::LetStepCont(ScamValue formals,
+                         ScamValue forms,
+                         ScamValue evaled,
+                         ScamValue args,
                          Continuation * cont,
                          Env * env,
                          bool rebind)
@@ -28,10 +28,10 @@ LetStepCont::LetStepCont(ExprHandle formals,
 {
 }
 
-LetStepCont * LetStepCont::makeInstance(ExprHandle formals,
-                                        ExprHandle forms,
-                                        ExprHandle evaled,
-                                        ExprHandle args,
+LetStepCont * LetStepCont::makeInstance(ScamValue formals,
+                                        ScamValue forms,
+                                        ScamValue evaled,
+                                        ScamValue args,
                                         Continuation * cont,
                                         Env * env,
                                         bool rebind)
@@ -52,14 +52,14 @@ void LetStepCont::mark() const
     }
 }
 
-void LetStepCont::run(ExprHandle expr)
+void LetStepCont::run(ScamValue expr)
 {
     if ( TypePredicates::error(expr) ) {
         cont->run(expr);
     }
     else {
         ScamListAdapter a(evaled);
-        ExprHandle extend = a.append(expr);
+        ScamValue extend = a.append(expr);
         workQueueHelper<LetEvalWorker>(formals,
                                        extend,
                                        args,

@@ -19,9 +19,9 @@ namespace scam
 
     public:
         void mark() const override;
-        bool accept(ExprHandle expr) override;
+        bool accept(ScamValue expr) override;
 
-        ExprHandle getForm() const;
+        ScamValue getForm() const;
         ScamDict * getDict() const;
 
     private:

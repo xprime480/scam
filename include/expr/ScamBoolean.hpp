@@ -13,7 +13,7 @@ namespace scam
         static ScamBoolean * makeInstance(bool value);
 
     public:
-        bool equals(ConstExprHandle expr) const override;
+        bool equals(ConstScamValue expr) const override;
     };
 }
 

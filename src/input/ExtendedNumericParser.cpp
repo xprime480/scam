@@ -16,7 +16,7 @@ ExtendedNumericParser * ExtendedNumericParser::makeInstance()
     return new ExtendedNumericParser;
 }
 
-bool ExtendedNumericParser::accept(ExprHandle expr)
+bool ExtendedNumericParser::accept(ScamValue expr)
 {
     clearValue();
 

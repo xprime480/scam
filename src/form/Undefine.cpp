@@ -22,7 +22,7 @@ Undefine * Undefine::makeInstance()
     return new Undefine();
 }
 
-void Undefine::apply(ExprHandle args, Continuation * cont, Env * env)
+void Undefine::apply(ScamValue args, Continuation * cont, Env * env)
 {
     UndefineParser * parser = standardMemoryManager.make<UndefineParser>();
     if ( ! parser->accept(args) ) {

@@ -24,24 +24,24 @@ namespace scam
 
     public:
         void mark() const override;
-        void run(ExprHandle expr) override;
+        void run(ScamValue expr) override;
 
     private:
         ClassHandle    cls;
         Continuation * cont;
         Env          * env;
 
-        ExprHandle build(ClassHandle cls, InstanceVec & instances) const;
+        ScamValue build(ClassHandle cls, InstanceVec & instances) const;
         ScamInstance * connect(InstanceVec & instances) const;
 
-        ExprHandle get_parent(ScamClassAdapter const & adapter) const;
+        ScamValue get_parent(ScamClassAdapter const & adapter) const;
 
-        ExprHandle base_class_not_found(ScamEnvKeyType name) const;
+        ScamValue base_class_not_found(ScamEnvKeyType name) const;
 
-        ExprHandle
-        base_class_not_class(ScamEnvKeyType name, ExprHandle value) const;
+        ScamValue
+        base_class_not_class(ScamEnvKeyType name, ScamValue value) const;
 
-        void init(ScamInstance * instance, ExprHandle expr) const;
+        void init(ScamInstance * instance, ScamValue expr) const;
     };
 }
 

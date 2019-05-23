@@ -9,8 +9,8 @@ using namespace std;
 
 MapWorker::MapWorker(Continuation * cont,
                      Env * env,
-                     ExprHandle car,
-                     ExprHandle cdr)
+                     ScamValue car,
+                     ScamValue cdr)
     : Worker("Cons Map")
     , data(car, cdr, cont, env)
 {
@@ -19,8 +19,8 @@ MapWorker::MapWorker(Continuation * cont,
 
 MapWorker * MapWorker::makeInstance(Continuation * cont,
                                     Env * env,
-                                    ExprHandle car,
-                                    ExprHandle cdr)
+                                    ScamValue car,
+                                    ScamValue cdr)
 {
     return new MapWorker(cont, env, car, cdr);
 }

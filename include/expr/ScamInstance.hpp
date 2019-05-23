@@ -22,10 +22,10 @@ namespace scam
 
     public:
         void
-        apply(ExprHandle args, Continuation * cont, Env * env) override;
+        apply(ScamValue args, Continuation * cont, Env * env) override;
 
-        void setSelf(ExprHandle expr) const override;
-        void setParent(ExprHandle expr) const override;
+        void setSelf(ScamValue expr) const override;
+        void setParent(ScamValue expr) const override;
 
         friend class ScamInstanceAdapter;
     };

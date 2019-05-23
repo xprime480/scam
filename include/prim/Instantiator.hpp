@@ -15,21 +15,21 @@ namespace scam
     public:
         Instantiator(size_t & counter);
 
-        ExprHandle exec(SingletonParser * parser);
+        ScamValue exec(SingletonParser * parser);
 
     protected:
-        ExprHandle map_value(ExprHandle val);
+        ScamValue map_value(ScamValue val);
 
     private:
         size_t   & counter;
         ScamDict * dict;
 
-        ExprHandle inst_value(ExprHandle expr);
-        ExprHandle new_mapping(ExprHandle expr);
-        ExprHandle inst_keyword(ExprHandle expr);
-        ExprHandle inst_cons(ExprHandle expr);
-        ExprHandle inst_vector(ExprHandle expr);
-        ExprHandle inst_dict(ExprHandle expr);
+        ScamValue inst_value(ScamValue expr);
+        ScamValue new_mapping(ScamValue expr);
+        ScamValue inst_keyword(ScamValue expr);
+        ScamValue inst_cons(ScamValue expr);
+        ScamValue inst_vector(ScamValue expr);
+        ScamValue inst_dict(ScamValue expr);
     };
 }
 

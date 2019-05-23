@@ -29,7 +29,7 @@ void ListParser::mark() const
     }
 }
 
-bool ListParser::accept(ExprHandle expr)
+bool ListParser::accept(ScamValue expr)
 {
     if ( ! ArgParser::accept(expr) ) {
         return false;
@@ -46,9 +46,9 @@ bool ListParser::accept(ExprHandle expr)
         return true;
     }
 
-    ExprHandle current = expr;
+    ScamValue current = expr;
     while ( TypePredicates::isCons(current) ) {
-        ExprHandle item = current->getCar();
+        ScamValue item = current->getCar();
         current = current->getCdr();
         if ( ! itemParser->accept(item) ) {
             clearValue();
@@ -80,7 +80,7 @@ size_t ListParser::size() const
     return items.size();
 }
 
-ExprHandle ListParser::get(size_t idx) const
+ScamValue ListParser::get(size_t idx) const
 {
     if ( idx >= size() ) {
         return ExpressionFactory::makeNull();

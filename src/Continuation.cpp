@@ -26,7 +26,7 @@ Continuation::~Continuation()
 {
 };
 
-void Continuation::run(ExprHandle expr)
+void Continuation::run(ScamValue expr)
 {
 }
 

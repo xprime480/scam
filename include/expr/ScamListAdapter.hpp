@@ -11,18 +11,18 @@ namespace scam
     class ScamListAdapter
     {
     public:
-        ScamListAdapter(ConstExprHandle expr);
+        ScamListAdapter(ConstScamValue expr);
 
         size_t getLength() const;
-        ExprHandle append(ExprHandle tail) const;
+        ScamValue append(ScamValue tail) const;
 
     private:
         ScamCons const * lst;
         bool isNil;
 
         size_t len;
-        ExprHandle car;
-        ExprHandle cdr;
+        ScamValue car;
+        ScamValue cdr;
     };
 }
 

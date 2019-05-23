@@ -13,7 +13,7 @@ void AlternativeParser::mark() const
     }
 }
 
-bool AlternativeParser::accept(ExprHandle expr)
+bool AlternativeParser::accept(ScamValue expr)
 {
     if ( ! ArgParser::accept(expr) ) {
         return false;

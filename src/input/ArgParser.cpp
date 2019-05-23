@@ -31,7 +31,7 @@ void ArgParser::mark() const
     }
 }
 
-bool ArgParser::accept(ExprHandle expr)
+bool ArgParser::accept(ScamValue expr)
 {
     clearValue();
 
@@ -42,12 +42,12 @@ bool ArgParser::accept(ExprHandle expr)
     return false;
 }
 
-void ArgParser::callback(ExprHandle expr)
+void ArgParser::callback(ScamValue expr)
 {
     value = expr;
 }
 
-ExprHandle ArgParser::getValue() const
+ScamValue ArgParser::getValue() const
 {
     return value;
 }

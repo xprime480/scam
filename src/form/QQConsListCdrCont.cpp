@@ -10,7 +10,7 @@
 using namespace scam;
 using namespace std;
 
-QQConsListCdrCont::QQConsListCdrCont(ExprHandle car,
+QQConsListCdrCont::QQConsListCdrCont(ScamValue car,
                                      Continuation * cont,
                                      Env * env)
     : Continuation("QQConsListCdrCont")
@@ -21,7 +21,7 @@ QQConsListCdrCont::QQConsListCdrCont(ExprHandle car,
 }
 
 QQConsListCdrCont *
-QQConsListCdrCont::makeInstance(ExprHandle car, Continuation * cont, Env * env)
+QQConsListCdrCont::makeInstance(ScamValue car, Continuation * cont, Env * env)
 {
     return new  QQConsListCdrCont(car, cont, env);
 }
@@ -36,7 +36,7 @@ void QQConsListCdrCont::mark() const
     }
 }
 
-void QQConsListCdrCont::run(ExprHandle expr)
+void QQConsListCdrCont::run(ScamValue expr)
 {
     Continuation::run(expr);
     if ( TypePredicates::error(expr) ) {
@@ -47,18 +47,18 @@ void QQConsListCdrCont::run(ExprHandle expr)
     }
 }
 
-void QQConsListCdrCont::handle(ExprHandle expr)
+void QQConsListCdrCont::handle(ScamValue expr)
 {
     if ( ! check_splice(expr) ) {
-        ExprHandle rv = ExpressionFactory::makeCons(car, expr);
+        ScamValue rv = ExpressionFactory::makeCons(car, expr);
         cont->run(rv);
     }
 }
 
-bool QQConsListCdrCont::check_splice(ExprHandle expr)
+bool QQConsListCdrCont::check_splice(ScamValue expr)
 {
     if ( TypePredicates::isCons(car) ) {
-        ExprHandle first = car->nthcar(0);
+        ScamValue first = car->nthcar(0);
         if ( TypePredicates::isSymbol(first) ) {
             if ( ExprWriter::write(first) ==
                  ExprWriter::write(QuasiQuote::spliceTag) ) {
@@ -71,13 +71,13 @@ bool QQConsListCdrCont::check_splice(ExprHandle expr)
     return false;
 }
 
-void QQConsListCdrCont::do_splice(ExprHandle expr)
+void QQConsListCdrCont::do_splice(ScamValue expr)
 {
-    ExprHandle f = expr;
+    ScamValue f = expr;
     size_t count = car->length();
 
     while ( --count > 0 ) {
-        ExprHandle form = car->nthcar(count);
+        ScamValue form = car->nthcar(count);
         f = ExpressionFactory::makeCons(form, f);
     }
 

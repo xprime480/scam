@@ -25,9 +25,9 @@ namespace scam
                                         bool rebind);
 
     protected:
-        void do_next(ExprHandle formals,
-                     ExprHandle values,
-                     ExprHandle forms) override;
+        void do_next(ScamValue formals,
+                     ScamValue values,
+                     ScamValue forms) override;
 
     private:
         const bool rebind;

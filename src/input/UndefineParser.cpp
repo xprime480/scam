@@ -30,7 +30,7 @@ void UndefineParser::mark() const
     }
 }
 
-bool UndefineParser::accept(ExprHandle expr)
+bool UndefineParser::accept(ScamValue expr)
 {
     ArgParser::clearValue();
 

@@ -23,7 +23,7 @@ Error * Error::makeInstance()
     return new Error();
 }
 
-void Error::applyArgs(ExprHandle args, Continuation * cont)
+void Error::applyArgs(ScamValue args, Continuation * cont)
 {
     ListParser * parser = getListOfAnythingParser();
     if ( ! parser->accept(args) ) {
@@ -46,6 +46,6 @@ void Error::applyArgs(ExprHandle args, Continuation * cont)
         }
     }
 
-    ExprHandle err = ExpressionFactory::makeError(s.str());
+    ScamValue err = ExpressionFactory::makeError(s.str());
     cont->run(err);
 }

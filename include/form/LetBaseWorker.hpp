@@ -26,13 +26,13 @@ namespace scam
         Env * env;
 
         virtual void
-        do_next(ExprHandle formals, ExprHandle values, ExprHandle forms) = 0;
+        do_next(ScamValue formals, ScamValue values, ScamValue forms) = 0;
 
     private:
         LetParser * parser;
 
-        ExprHandle parse_bindings();
-        ExprHandle parse_args();
+        ScamValue parse_bindings();
+        ScamValue parse_args();
     };
 }
 
