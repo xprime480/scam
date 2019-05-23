@@ -1,9 +1,9 @@
 #include "util/Validations.hpp"
 
-#include "expr/ExprWriter.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamExpr.hpp"
 #include "expr/TypePredicates.hpp"
+#include "expr/ValueWriter.hpp"
 
 #include <set>
 
@@ -17,7 +17,7 @@ ScamValue scam::validateClosureArgs(ScamValue args, const char * name)
         ScamValue extended = ExpressionFactory::makeCons(nameSymbol, args);
         return ExpressionFactory::makeError("Expected (", name, " args body*)",
                                             "; got: ",
-                                            ExprWriter::write(extended));
+                                            writeValue(extended));
     }
 
     ScamValue formals = args->getCar();
@@ -36,7 +36,7 @@ ScamValue scam::validateFormals(ScamValue formals)
     if ( ! TypePredicates::isCons(formals) ) {
         return ExpressionFactory::makeError("Formals should be list or symbol",
                                             "; got: ",
-                                            ExprWriter::write(formals));
+                                            writeValue(formals));
     }
 
     set<string> parms;
@@ -45,10 +45,10 @@ ScamValue scam::validateFormals(ScamValue formals)
         if ( ! TypePredicates::isSymbol(arg) ) {
             return ExpressionFactory::makeError("Formal parameter should ",
                                                 "be a symbol; got: ",
-                                                ExprWriter::write(arg));
+                                                writeValue(arg));
         }
 
-        string name = ExprWriter::write(arg);
+        string name = writeValue(arg);
         if ( parms.end() != parms.find(name) ) {
             return ExpressionFactory::makeError("Symbol cannot appear twice ",
                                                 "in formals list: ",
@@ -63,7 +63,7 @@ ScamValue scam::validateFormals(ScamValue formals)
         }
 
         if ( TypePredicates::isSymbol(formals) ) {
-            name = ExprWriter::write(formals);
+            name = writeValue(formals);
             if ( parms.end() == parms.find(name) ) {
                 break;
             }
@@ -77,7 +77,7 @@ ScamValue scam::validateFormals(ScamValue formals)
         if ( ! TypePredicates::isCons(formals) ) {
             return ExpressionFactory::makeError("Formal parameter should ",
                                                 "be a symbol; got: ",
-                                                ExprWriter::write(formals));
+                                                writeValue(formals));
         }
     }
 

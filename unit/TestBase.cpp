@@ -225,7 +225,7 @@ void TestBase::checkPredicates(ConstScamValue expr, unsigned exp)
     act |= (expr->isManaged() ? SELECT_MANAGED : 0);
 
     EXPECT_EQ(exp, act) << decodePredicate(act, exp)
-                        << "\n\tvalue: " << ExprWriter::write(expr);
+                        << "\n\tvalue: " << writeValue(expr);
 }
 
 void expectNonNumeric(ConstScamValue expr)
@@ -236,10 +236,10 @@ void expectNonNumeric(ConstScamValue expr)
 void TestBase::expectNull(ConstScamValue expr)
 {
     ASSERT_TRUE(TypePredicates::isNull(expr))
-        << "Actual Value: " << ExprWriter::write(expr);
+        << "Actual Value: " << writeValue(expr);
 
     checkPredicates(expr, SELECT_NULL);
-    EXPECT_EQ("null", ExprWriter::write(expr));
+    EXPECT_EQ("null", writeValue(expr));
 
     expectNonNumeric(expr);
 }
@@ -249,14 +249,14 @@ void TestBase::expectError(ConstScamValue expr,
                            bool managed)
 {
     ASSERT_TRUE(TypePredicates::error(expr))
-        << "Actual Value: " << ExprWriter::write(expr);
+        << "Actual Value: " << writeValue(expr);
 
     auto pred = SELECT_TRUTH | SELECT_ERROR;
     pred |= (managed ? SELECT_MANAGED : 0x0);
     checkPredicates(expr, pred);
 
     if ( ! msg.empty() ) {
-        EXPECT_EQ(msg, ExprWriter::write(expr));
+        EXPECT_EQ(msg, writeValue(expr));
     }
 
     expectNonNumeric(expr);
@@ -267,10 +267,10 @@ void TestBase::expectBoolean(ConstScamValue expr,
                              string const & repr)
 {
     ASSERT_TRUE(TypePredicates::isBoolean(expr))
-        << "Actual Value: " << ExprWriter::write(expr);
+        << "Actual Value: " << writeValue(expr);
 
     checkPredicates(expr, SELECT_BOOLEAN | (value ? SELECT_TRUTH : 0));
-    EXPECT_EQ(repr, ExprWriter::write(expr));
+    EXPECT_EQ(repr, writeValue(expr));
 
     expectNonNumeric(expr);
 }
@@ -302,9 +302,9 @@ void TestBase::expectSpecialNumeric(ConstScamValue expr,
     ASSERT_TRUE(TypePredicates::isNaN(expr) ||
                 TypePredicates::isNegInf(expr) ||
                 TypePredicates::isPosInf(expr))
-        << "Actual Value: " << ExprWriter::write(expr);
+        << "Actual Value: " << writeValue(expr);
 
-    EXPECT_EQ(repr, ExprWriter::write(expr));
+    EXPECT_EQ(repr, writeValue(expr));
     EXPECT_TRUE(TypePredicates::isReal(expr));
     EXPECT_FALSE(TypePredicates::isRational(expr));
 }
@@ -316,10 +316,10 @@ void TestBase::expectComplex(ConstScamValue expr,
                              bool exact)
 {
     ASSERT_TRUE(TypePredicates::isComplex(expr))
-        << "Actual Value: " << ExprWriter::write(expr);
+        << "Actual Value: " << writeValue(expr);
 
     checkPredicates(expr, SELECT_TRUTH | ALL_COMPLEX);
-    EXPECT_EQ(repr, ExprWriter::write(expr));
+    EXPECT_EQ(repr, writeValue(expr));
 
     EXPECT_FALSE(TypePredicates::isReal(expr));
     EXPECT_FALSE(TypePredicates::isRational(expr));
@@ -333,10 +333,10 @@ void TestBase::expectReal(ConstScamValue expr,
                           bool exact)
 {
     ASSERT_TRUE(TypePredicates::isReal(expr))
-        << "Actual Value: " << ExprWriter::write(expr);
+        << "Actual Value: " << writeValue(expr);
 
     checkPredicates(expr, SELECT_TRUTH | ALL_REAL);
-    EXPECT_EQ(repr, ExprWriter::write(expr));
+    EXPECT_EQ(repr, writeValue(expr));
 
     try {
         EXPECT_FLOAT_EQ(value, asDouble(expr));
@@ -356,10 +356,10 @@ void TestBase::expectRational(ConstScamValue expr,
                               bool exact)
 {
     ASSERT_TRUE(TypePredicates::isRational(expr))
-        << "Actual Value: " << ExprWriter::write(expr);
+        << "Actual Value: " << writeValue(expr);
 
     checkPredicates(expr, SELECT_TRUTH | ALL_RATIONAL);
-    EXPECT_EQ(repr, ExprWriter::write(expr));
+    EXPECT_EQ(repr, writeValue(expr));
     try {
         const auto act = asRational(expr);
         EXPECT_EQ(value.num, act.num);
@@ -380,10 +380,10 @@ void TestBase::expectInteger(ConstScamValue expr,
                              bool exact)
 {
     ASSERT_TRUE(TypePredicates::isInteger(expr))
-        << "Actual Value: " << ExprWriter::write(expr);
+        << "Actual Value: " << writeValue(expr);
 
     checkPredicates(expr, SELECT_TRUTH | ALL_INTEGER);
-    EXPECT_EQ(repr, ExprWriter::write(expr));
+    EXPECT_EQ(repr, writeValue(expr));
     try {
         EXPECT_EQ(value, asInteger(expr));
     }
@@ -399,51 +399,51 @@ void TestBase::expectChar(ConstScamValue expr,
                           string const & repr)
 {
     ASSERT_TRUE(TypePredicates::isChar(expr))
-        << "Actual Value: " << ExprWriter::write(expr);
+        << "Actual Value: " << writeValue(expr);
 
     checkPredicates(expr, SELECT_TRUTH | SELECT_CHAR | SELECT_MANAGED);
-    EXPECT_EQ(repr, ExprWriter::write(expr));
+    EXPECT_EQ(repr, writeValue(expr));
     EXPECT_EQ(value, asChar(expr));
 }
 
 void TestBase::expectString(ConstScamValue expr, string const & value)
 {
     ASSERT_TRUE(TypePredicates::isString(expr))
-        << "Actual Value: " << ExprWriter::write(expr);
+        << "Actual Value: " << writeValue(expr);
 
     const auto flags = SELECT_TRUTH | SELECT_STRING | SELECT_MANAGED;
     checkPredicates(expr, flags);
-    EXPECT_EQ(value, ExprWriter::write(expr));
+    EXPECT_EQ(value, writeValue(expr));
 }
 
 void TestBase::expectSymbol(ConstScamValue expr, string const & name)
 {
     ASSERT_TRUE(TypePredicates::isSymbol(expr))
-        << "Actual Value: " << ExprWriter::write(expr);
+        << "Actual Value: " << writeValue(expr);
 
     const auto flags = SELECT_TRUTH | SELECT_SYMBOL | SELECT_MANAGED;
     checkPredicates(expr, flags);
-    EXPECT_EQ(name, ExprWriter::write(expr));
+    EXPECT_EQ(name, writeValue(expr));
 }
 
 void TestBase::expectKeyword(ConstScamValue expr, string const & name)
 {
     ASSERT_TRUE(TypePredicates::isKeyword(expr))
-        << "Actual Value: " << ExprWriter::write(expr);
+        << "Actual Value: " << writeValue(expr);
 
     const auto flags = SELECT_TRUTH | SELECT_KEYWORD | SELECT_MANAGED;
     checkPredicates(expr, flags);
-    EXPECT_EQ(name, ExprWriter::write(expr));
+    EXPECT_EQ(name, writeValue(expr));
 }
 
 void TestBase::expectNil(ConstScamValue expr)
 {
     ASSERT_TRUE(TypePredicates::isNil(expr))
-        << "Actual Value: " << ExprWriter::write(expr);
+        << "Actual Value: " << writeValue(expr);
 
     static const string repr { "()" };
     checkPredicates(expr, SELECT_TRUTH | ALL_NIL);
-    EXPECT_EQ(repr, ExprWriter::write(expr));
+    EXPECT_EQ(repr, writeValue(expr));
 }
 
 void TestBase::expectList(ConstScamValue expr,
@@ -451,13 +451,13 @@ void TestBase::expectList(ConstScamValue expr,
                           size_t len)
 {
     ASSERT_TRUE(TypePredicates::isList(expr))
-        << "Actual Value: " << ExprWriter::write(expr);
+        << "Actual Value: " << writeValue(expr);
 
     const auto flags =
         SELECT_TRUTH | SELECT_CONS | SELECT_LIST | SELECT_MANAGED;
 
     checkPredicates(expr, flags);
-    EXPECT_EQ(repr, ExprWriter::write(expr));
+    EXPECT_EQ(repr, writeValue(expr));
     try {
         EXPECT_EQ(len, expr->length());
     }
@@ -469,21 +469,21 @@ void TestBase::expectList(ConstScamValue expr,
 void TestBase::expectCons(ConstScamValue expr, string const & repr)
 {
     ASSERT_TRUE(TypePredicates::isCons(expr))
-        << "Actual Value: " << ExprWriter::write(expr);
+        << "Actual Value: " << writeValue(expr);
 
     checkPredicates(expr, SELECT_TRUTH | SELECT_CONS | SELECT_MANAGED);
-    EXPECT_EQ(repr, ExprWriter::write(expr));
+    EXPECT_EQ(repr, writeValue(expr));
 }
 
 void
 TestBase::expectApplicable(ConstScamValue expr, string const & repr)
 {
     ASSERT_TRUE(expr->hasApply())
-        << "Actual Value: " << ExprWriter::write(expr);
+        << "Actual Value: " << writeValue(expr);
 
     const auto flags = SELECT_TRUTH | SELECT_APPLY;
     checkPredicates(expr, flags);
-    EXPECT_EQ(repr, ExprWriter::write(expr));
+    EXPECT_EQ(repr, writeValue(expr));
 }
 
 void TestBase::expectVector(ConstScamValue expr,
@@ -491,11 +491,11 @@ void TestBase::expectVector(ConstScamValue expr,
                             size_t len)
 {
     ASSERT_TRUE(TypePredicates::isVector(expr))
-        << "Actual Value: " << ExprWriter::write(expr);
+        << "Actual Value: " << writeValue(expr);
 
     const auto flags = SELECT_TRUTH | SELECT_VECTOR | SELECT_MANAGED;
     checkPredicates(expr, flags);
-    EXPECT_EQ(repr, ExprWriter::write(expr));
+    EXPECT_EQ(repr, writeValue(expr));
     EXPECT_EQ(len, expr->length());
 }
 
@@ -504,11 +504,11 @@ void TestBase::expectByteVector(ConstScamValue expr,
                                 size_t len)
 {
     ASSERT_TRUE(TypePredicates::isByteVector(expr))
-        << "Actual Value: " << ExprWriter::write(expr);
+        << "Actual Value: " << writeValue(expr);
 
     const auto flags = SELECT_TRUTH | SELECT_BYTEVECTOR | SELECT_MANAGED;
     checkPredicates(expr, flags);
-    EXPECT_EQ(repr, ExprWriter::write(expr));
+    EXPECT_EQ(repr, writeValue(expr));
     EXPECT_EQ(len, expr->length());
 }
 
@@ -516,28 +516,28 @@ void TestBase::expectProcedure(ConstScamValue expr,
                                string const & repr)
 {
     ASSERT_TRUE(TypePredicates::isProcedure(expr))
-        << "Actual Value: " << ExprWriter::write(expr);
+        << "Actual Value: " << writeValue(expr);
 
     checkPredicates(expr, SELECT_TRUTH | ALL_PROC);
-    EXPECT_EQ(repr, ExprWriter::write(expr));
+    EXPECT_EQ(repr, writeValue(expr));
 }
 
 void TestBase::expectClass(ConstScamValue expr)
 {
     ASSERT_TRUE(TypePredicates::isClass(expr))
-        << "Actual Value: " << ExprWriter::write(expr);
+        << "Actual Value: " << writeValue(expr);
 
     checkPredicates(expr, SELECT_TRUTH | ALL_CLASS);
-    EXPECT_EQ("class", ExprWriter::write(expr));
+    EXPECT_EQ("class", writeValue(expr));
 }
 
 void TestBase::expectInstance(ConstScamValue expr)
 {
     ASSERT_TRUE(TypePredicates::isInstance(expr))
-        << "Actual Value: " << ExprWriter::write(expr);
+        << "Actual Value: " << writeValue(expr);
 
     checkPredicates(expr, SELECT_TRUTH | ALL_INSTANCE);
-    EXPECT_EQ("instance", ExprWriter::write(expr));
+    EXPECT_EQ("instance", writeValue(expr));
 }
 
 void TestBase::expectDict(ConstScamValue expr,
@@ -545,10 +545,10 @@ void TestBase::expectDict(ConstScamValue expr,
                           string const & repr)
 {
     ASSERT_TRUE(TypePredicates::isDict(expr))
-        << "Actual Value: " << ExprWriter::write(expr);
+        << "Actual Value: " << writeValue(expr);
 
     checkPredicates(expr, SELECT_TRUTH | ALL_DICT);
-    EXPECT_EQ(repr, ExprWriter::write(expr));
+    EXPECT_EQ(repr, writeValue(expr));
 
     try {
         EXPECT_EQ(count, expr->length());

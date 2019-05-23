@@ -41,7 +41,7 @@ void EqualP::applyArgs(ScamValue args, Continuation * cont)
 bool EqualP::equals(ConstScamValue expr) const
 {
     EqualP const * that = dynamic_cast<EqualP const *>(expr);
-    return ( that && (ExprWriter::write(this) == ExprWriter::write(that)) );
+    return ( that && (writeValue(this) == writeValue(that)) );
 }
 
 namespace

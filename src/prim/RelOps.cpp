@@ -19,7 +19,7 @@ CompareOp::CompareOp(char const * name, shared_ptr<OpImpl> impl)
 
 void CompareOp::applyArgs(ScamValue args, Continuation * cont)
 {
-    string const context = ExprWriter::write(this);
+    string const context = writeValue(this);
     RelopsListParser * parser = standardMemoryManager.make<RelopsListParser>();
 
     if ( ! parser->accept(args) ) {
@@ -34,7 +34,7 @@ void CompareOp::applyArgs(ScamValue args, Continuation * cont)
 
 bool CompareOp::equals(ConstScamValue expr) const
 {
-    return ( expr && ExprWriter::write(this) == ExprWriter::write(expr) );
+    return ( expr && writeValue(this) == writeValue(expr) );
 }
 
 namespace

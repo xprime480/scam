@@ -1,7 +1,7 @@
 #include "prim/Trace.hpp"
 
 #include "Continuation.hpp"
-#include "expr/ExprWriter.hpp"
+#include "expr/ValueWriter.hpp"
 
 #include <iostream>
 
@@ -20,6 +20,6 @@ Trace * Trace::makeInstance()
 
 void Trace::applyArgs(ScamValue args, Continuation * cont)
 {
-    cerr << ExprWriter::write(args) << "\n";
+    cerr << writeValue(args) << "\n";
     cont->run(args);
 }

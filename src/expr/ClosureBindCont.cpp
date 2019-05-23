@@ -5,11 +5,11 @@
 #include "Env.hpp"
 #include "EvalWorker.hpp"
 #include "WorkQueue.hpp"
-#include "expr/ExprWriter.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/MacroEvalCont.hpp"
 #include "expr/ScamExpr.hpp"
 #include "expr/TypePredicates.hpp"
+#include "expr/ValueWriter.hpp"
 #include "input/ParameterListParser.hpp"
 #include "util/MemoryManager.hpp"
 
@@ -71,7 +71,7 @@ bool ClosureBindCont::malformedActuals(ScamValue expr) const
 
     ScamValue err =
         ExpressionFactory::makeError( "Expected a paramter list, got: ",
-                                      ExprWriter::write(expr));
+                                      writeValue(expr));
     cont->run(err);
 
     return true;

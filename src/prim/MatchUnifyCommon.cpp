@@ -1,14 +1,14 @@
 #include "prim/MatchUnifyCommon.hpp"
 
 #include "Continuation.hpp"
-#include "expr/ExprWriter.hpp"
-#include "expr/ScamExpr.hpp"
-#include "expr/ScamDict.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "expr/ScamDict.hpp"
+#include "expr/ScamExpr.hpp"
 #include "expr/TypePredicates.hpp"
+#include "expr/ValueWriter.hpp"
 #include "input/MatchUnifyParser.hpp"
-#include "prim/Substitutor.hpp"
 #include "prim/CommonError.hpp"
+#include "prim/Substitutor.hpp"
 
 #include <sstream>
 #include <string>
@@ -73,10 +73,10 @@ ScamValue MatchUnifyCommon::check_keyword(ScamDict * dict,
         }
         else if ( ! old->equals(rhs) ) {
             stringstream s;
-            s << "Previous data for pattern " << ExprWriter::write(lhs)
-              << " was '" << ExprWriter::write(old)
+            s << "Previous data for pattern " << writeValue(lhs)
+              << " was '" << writeValue(old)
               << "'; does not match new data '"
-              << ExprWriter::write(rhs) << "'";
+              << writeValue(rhs) << "'";
             return make_common_error(s.str().c_str());
         }
 
@@ -126,7 +126,7 @@ ScamValue MatchUnifyCommon::check_vector(ScamDict * dict,
         if ( lhs->length() != rhs->length() ) {
             stringstream s;
             s << "matching vectors of unequal length: "
-              << ExprWriter::write(lhs) << " and " << ExprWriter::write(rhs);
+              << writeValue(lhs) << " and " << writeValue(rhs);
             return make_common_error(s.str().c_str());
         }
 
@@ -153,8 +153,8 @@ ScamValue MatchUnifyCommon::check_dict(ScamDict * dict,
     if ( TypePredicates::isDict(lhs) && TypePredicates::isDict(rhs) ) {
         if ( lhs->length() != rhs->length() ) {
             stringstream s;
-            s << "dictionaries do not match " << ExprWriter::write(lhs)
-              << "; " << ExprWriter::write(rhs);
+            s << "dictionaries do not match " << writeValue(lhs)
+              << "; " << writeValue(rhs);
             return make_common_error(s.str().c_str());
         }
 
@@ -165,7 +165,7 @@ ScamValue MatchUnifyCommon::check_dict(ScamDict * dict,
         for ( auto key : keys ) {
             ScamValue d = rhsAsDict->get(key);
             if ( TypePredicates::error(d) ) {
-                return make_common_error(ExprWriter::write(d).c_str());
+                return make_common_error(writeValue(d).c_str());
             }
             ScamValue p = lhsAsDict->get(key);
             ScamValue result = exec(dict, p, d);
@@ -207,8 +207,8 @@ ScamValue MatchUnifyCommon::exec(ScamDict * dict,
     }
 
     stringstream s;
-    s << "Pattern: " << ExprWriter::write(lhs)
-      << " does not conform to data: " << ExprWriter::write(rhs);
+    s << "Pattern: " << writeValue(lhs)
+      << " does not conform to data: " << writeValue(rhs);
     return make_common_error(s.str().c_str());
 }
 

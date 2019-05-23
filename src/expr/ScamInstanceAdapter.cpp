@@ -1,10 +1,10 @@
 #include "expr/ScamInstanceAdapter.hpp"
 
 #include "ScamException.hpp"
-#include "expr/ExprWriter.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamInstance.hpp"
 #include "expr/TypePredicates.hpp"
+#include "expr/ValueWriter.hpp"
 
 #include <sstream>
 
@@ -17,7 +17,7 @@ ScamInstanceAdapter::ScamInstanceAdapter(ScamValue expr)
     if ( ! TypePredicates::isInstance(expr) ) {
         stringstream s;
         s << "ScamInstanceAdapter expected an instance, got: "
-          << ExprWriter::write(expr);
+          << writeValue(expr);
         throw ScamException(s.str());
     }
 }

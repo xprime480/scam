@@ -1,9 +1,9 @@
 #include "prim/Load.hpp"
 
-#include "ScamEngine.hpp"
 #include "Continuation.hpp"
-#include "expr/ScamExpr.hpp"
+#include "ScamEngine.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "expr/ScamExpr.hpp"
 #include "input/SingletonParser.hpp"
 #include "input/TypeParsers.hpp"
 #include "util/ArgListHelper.hpp"
@@ -38,7 +38,7 @@ void Load::applyArgs(ScamValue args, Continuation * cont)
         return;
     }
 
-    string filename = ExprWriter::write(parser->get());
+    string filename = writeValue(parser->get());
     if ( engine->isLoaded(filename) ) {
         ScamValue err =
             ExpressionFactory::makeError("file \"",
@@ -76,8 +76,7 @@ bool Load::open_file(ifstream & source,
 
         size_t n = path->length();
         for ( size_t i = 0 ; i < n ; ++i ) {
-            string fullpath = make_path(ExprWriter::write(path->nthcar(i)),
-                                        filename);
+            string fullpath = make_path(writeValue(path->nthcar(i)), filename);
             if ( file_exists(fullpath) ) {
                 source.open(fullpath);
                 return true;

@@ -19,7 +19,7 @@ MathOp::MathOp(MathOpDef const & def)
 
 void MathOp::applyArgs(ScamValue args, Continuation * cont)
 {
-    string const context = ExprWriter::write(this);
+    string const context = writeValue(this);
     NumericListParser * parser =
         standardMemoryManager.make<NumericListParser>();
 
@@ -34,7 +34,7 @@ void MathOp::applyArgs(ScamValue args, Continuation * cont)
 
 bool MathOp::equals(ConstScamValue expr) const
 {
-    return ( expr && ExprWriter::write(this) == ExprWriter::write(expr) );
+    return ( expr && writeValue(this) == writeValue(expr) );
 }
 
 namespace

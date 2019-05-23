@@ -2,10 +2,10 @@
 
 #include "Continuation.hpp"
 #include "Env.hpp"
-#include "expr/ExprWriter.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamExpr.hpp"
 #include "expr/TypePredicates.hpp"
+#include "expr/ValueWriter.hpp"
 
 using namespace scam;
 using namespace std;
@@ -41,7 +41,7 @@ void CallCont::run(ScamValue expr)
     if ( ! expr->hasApply() ) {
         ScamValue err =
             ExpressionFactory::makeError("call/cc: form ",
-                                         ExprWriter::write(expr),
+                                         writeValue(expr),
                                          "cannot be applied");
         cont->run(err);
         return;

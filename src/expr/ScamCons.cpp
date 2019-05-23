@@ -2,11 +2,11 @@
 
 #include "Continuation.hpp"
 #include "WorkQueue.hpp"
-#include "expr/ExprWriter.hpp"
-#include "expr/ExpressionFactory.hpp"
 #include "expr/ConsWorker.hpp"
+#include "expr/ExpressionFactory.hpp"
 #include "expr/MapWorker.hpp"
 #include "expr/TypePredicates.hpp"
+#include "expr/ValueWriter.hpp"
 
 using namespace scam;
 using namespace std;
@@ -72,7 +72,7 @@ ScamValue ScamCons::nthcar(size_t n) const
         return ExpressionFactory::makeError("Index ",
                                             n,
                                             " requested for ",
-                                            ExprWriter::write(this));
+                                            writeValue(this));
     };
 
     ScamValue cdr = CDR(this);
@@ -103,7 +103,7 @@ ScamValue ScamCons::nthcdr(size_t n) const
         return ExpressionFactory::makeError("Index ",
                                             n,
                                             " requested for ",
-                                            ExprWriter::write(this));
+                                            writeValue(this));
     };
 
     ScamValue cdr = CDR(this);

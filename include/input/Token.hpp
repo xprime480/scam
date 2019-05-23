@@ -1,9 +1,9 @@
 #if ! defined(TOKEN_H)
 #define TOKEN_H 1
 
-#include "expr/ExprWriter.hpp"
 #include "expr/ScamExpr.hpp"
 #include "expr/TypePredicates.hpp"
+#include "expr/ValueWriter.hpp"
 
 #include <string>
 
@@ -174,7 +174,7 @@ namespace scam
         os << "{Token: " << (t.getType()) << "; <" << (t.getText()) << ">";
         ScamValue expr = t.getExpr();
         if ( ! TypePredicates::isNull(expr) ) {
-            os << " <" << ExprWriter::write(expr) << ">";
+            os << " <" << writeValue(expr) << ">";
         }
         os << "}";
         return os;

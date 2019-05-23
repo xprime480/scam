@@ -1,10 +1,10 @@
 #include "expr/ScamListAdapter.hpp"
 
 #include "ScamException.hpp"
-#include "expr/ExprWriter.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamCons.hpp"
 #include "expr/TypePredicates.hpp"
+#include "expr/ValueWriter.hpp"
 
 #include <sstream>
 
@@ -18,8 +18,7 @@ ScamListAdapter::ScamListAdapter(ConstScamValue expr)
 {
     if ( ! TypePredicates::isList(expr) ) {
         stringstream s;
-        s << "ScamListAdapter expected a list, got: "
-          << ExprWriter::write(expr);
+        s << "ScamListAdapter expected a list, got: " << writeValue(expr);
         throw ScamException(s.str());
     }
 

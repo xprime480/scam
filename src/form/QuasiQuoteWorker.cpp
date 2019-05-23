@@ -89,7 +89,7 @@ void QuasiQuoteWorker::build_qq_list(ScamValue input, Continuation * cont)
     ScamValue rest  = input->nthcdr(0);
 
     const bool isSym = TypePredicates::isSymbol(first);
-    string const sym = ExprWriter::write(first);
+    string const sym = writeValue(first);
     if ( isSym && sym == "unquote" ) {
         unquote_form(rest, cont);
     }

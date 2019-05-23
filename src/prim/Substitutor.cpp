@@ -1,9 +1,9 @@
 #include "prim/Substitutor.hpp"
 
-#include "expr/ScamExpr.hpp"
-#include "expr/ExprWriter.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "expr/ScamExpr.hpp"
 #include "expr/TypePredicates.hpp"
+#include "expr/ValueWriter.hpp"
 #include "prim/CommonError.hpp"
 
 #include <sstream>
@@ -72,7 +72,7 @@ ScamValue Substitutor::resolve_keyword(ScamValue expr)
 {
     if ( have_seen(expr) ) {
         stringstream s;
-        s << "Infinite Loop resolving keyword " << ExprWriter::write(expr);
+        s << "Infinite Loop resolving keyword " << writeValue(expr);
         return make_common_error(s.str().c_str());
     }
 

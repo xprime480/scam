@@ -60,7 +60,7 @@ namespace
 
         static string convert(ScamValue arg)
         {
-            return ExprWriter::write(arg);
+            return writeValue(arg);
         }
 
         static string id() {
@@ -105,7 +105,7 @@ namespace
                                               " expects ",
                                               Checker::id(),
                                               ", got ",
-                                              ExprWriter::write(arg));
+                                              writeValue(arg));
             return false;
         }
 
@@ -191,7 +191,7 @@ void scam::failedArgParseMessage(const char * who,
                                                   " expected \"",
                                                   exp,
                                                   "\"; got \"",
-                                                  ExprWriter::write(act),
+                                                  writeValue(act),
                                                   "\"");
     cont->run(err);
 }

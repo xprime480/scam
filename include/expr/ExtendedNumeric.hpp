@@ -2,8 +2,8 @@
 #define EXTENDEDNUMERIC_HPP 1
 
 #include "ScamFwd.hpp"
-#include "expr/ExprWriter.hpp"
 #include "expr/ScamExpr.hpp"
+#include "expr/ValueWriter.hpp"
 
 namespace scam
 {
@@ -70,7 +70,7 @@ namespace scam
     OS & operator<<(OS & os, ExtendedNumeric num)
     {
         const ScamData * expr = num.get();
-        const char * value =  expr ? ExprWriter::write(expr).c_str() : "<null>";
+        const char * value =  expr ? writeValue(expr).c_str() : "<null>";
         os << expr << "\t" << value;
         return os;
     }

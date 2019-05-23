@@ -37,12 +37,12 @@ void Error::applyArgs(ScamValue args, Continuation * cont)
         s << "Error detected";
     }
     else if ( 1 == len ) {
-        s << ExprWriter::write(args->nthcar(0));
+        s << writeValue(args->nthcar(0));
     }
     else {
         for ( unsigned i = 0 ; i < len ; ++i ) {
             s << "[" << (i+1) << "] "
-              << ExprWriter::write(args->nthcar(i)) << "\n";
+              << writeValue(args->nthcar(i)) << "\n";
         }
     }
 

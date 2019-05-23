@@ -23,8 +23,7 @@ ExtendedNumeric::ExtendedNumeric(ConstScamValue expr)
 {
     if ( ! TypePredicates::isNumeric(expr) ) {
         stringstream s;
-        s << "Attempting to make ExtendedNumeric from "
-          << ExprWriter::write(expr);
+        s << "Attempting to make ExtendedNumeric from " << writeValue(expr);
         throw ScamException(s.str());
     }
 }

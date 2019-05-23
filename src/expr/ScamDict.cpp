@@ -73,7 +73,7 @@ void ScamDict::apply(ScamValue args, Continuation * cont, Env * env)
     }
     else {
         rv = ExpressionFactory::makeError("Unknown dictionary operator: ",
-                                          ExprWriter::write(op));
+                                          writeValue(op));
     }
 
     cont->run(rv);
@@ -137,7 +137,7 @@ ScamValue ScamDict::get(ScamValue key) const
     }
 
     return ExpressionFactory::makeError("Dict key '",
-                                        ExprWriter::write(key),
+                                        writeValue(key),
                                         "' does not exist");
 }
 

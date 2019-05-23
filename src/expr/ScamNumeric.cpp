@@ -1,10 +1,10 @@
 #include "expr/ScamNumeric.hpp"
 
 #include "ScamException.hpp"
-#include "expr/ExprWriter.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamToInternal.hpp"
 #include "expr/TypePredicates.hpp"
+#include "expr/ValueWriter.hpp"
 #include "util/NumericUtils.hpp"
 
 #include <cctype>
@@ -18,8 +18,7 @@ ConstScamValue ScamNumeric::realPart(const ScamData * data)
 {
     if ( ! TypePredicates::isNumeric(data) ) {
         stringstream s;
-        s << "<" << ExprWriter::write(data)
-          << "> is not numeric; has no real part";
+        s << "<" << writeValue(data) << "> is not numeric; has no real part";
         throw ScamException(s.str());
     }
 
@@ -34,7 +33,7 @@ ConstScamValue ScamNumeric::imagPart(const ScamData * data)
 {
     if ( ! TypePredicates::isNumeric(data) ) {
         stringstream s;
-        s << "<" << ExprWriter::write(data)
+        s << "<" << writeValue(data)
           << "> is not numeric; has no imaginary part";
         throw ScamException(s.str());
     }

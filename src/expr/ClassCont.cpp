@@ -3,11 +3,11 @@
 #include "Env.hpp"
 #include "WorkQueue.hpp"
 #include "expr/ClassInitWorker.hpp"
-#include "expr/ExprWriter.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamClass.hpp"
 #include "expr/ScamExpr.hpp"
 #include "expr/TypePredicates.hpp"
+#include "expr/ValueWriter.hpp"
 
 #include <sstream>
 
@@ -103,7 +103,7 @@ ScamInstance * ClassCont::connect(InstanceVec & instances) const
 ScamValue ClassCont::get_parent(ScamClassAdapter const & adapter) const
 {
     ScamEnvKeyType base = adapter.getBase();
-    if ( ExprWriter::write(base) == "Root" ) {
+    if ( writeValue(base) == "Root" ) {
         return ExpressionFactory::makeNil();
     }
 
@@ -122,7 +122,7 @@ ScamValue ClassCont::get_parent(ScamClassAdapter const & adapter) const
 ScamValue ClassCont::base_class_not_found(ScamEnvKeyType name) const
 {
     stringstream s;
-    s << "Class definition: " << ExprWriter::write(name) << " not found";
+    s << "Class definition: " << writeValue(name) << " not found";
     return ExpressionFactory::makeError(s.str());
 }
 
@@ -130,8 +130,8 @@ ScamValue ClassCont::base_class_not_class(ScamEnvKeyType name,
                                            ScamValue value) const
 {
     stringstream s;
-    s << "Name: " << ExprWriter::write(name)
-      << " is not a class; got: " << ExprWriter::write(value);
+    s << "Name: " << writeValue(name)
+      << " is not a class; got: " << writeValue(value);
     return ExpressionFactory::makeError(s.str());
 }
 

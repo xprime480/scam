@@ -2,10 +2,10 @@
 
 #include "Continuation.hpp"
 #include "Env.hpp"
-#include "expr/ExprWriter.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamExpr.hpp"
 #include "expr/TypePredicates.hpp"
+#include "expr/ValueWriter.hpp"
 
 using namespace scam;
 using namespace std;
@@ -75,7 +75,7 @@ ScamValue InstanceCont::function_not_found() const
 {
     ScamValue err =
         ExpressionFactory::makeError("Instance method ",
-                                     ExprWriter::write(name),
+                                     writeValue(name),
                                      " not found");
     cont->run(err);
     return ExpressionFactory::makeNil();

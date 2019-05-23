@@ -1,8 +1,8 @@
 #include "expr/ScamToInternal.hpp"
 
 #include "ScamException.hpp"
-#include "expr/ExprWriter.hpp"
 #include "expr/TypePredicates.hpp"
+#include "expr/ValueWriter.hpp"
 
 #include <sstream>
 
@@ -13,7 +13,7 @@ char scam::asChar(const ScamData * data)
 {
     if ( ! TypePredicates::isChar(data) ) {
         stringstream s;
-        s << "Cannot convert <" << ExprWriter::write(data) << "> to character";
+        s << "Cannot convert <" << writeValue(data) << "> to character";
         throw ScamException(s.str());
     }
 
@@ -24,7 +24,7 @@ double scam::asDouble(const ScamData * data)
 {
     if ( ! TypePredicates::isReal(data) ) {
         stringstream s;
-        s << "Cannot convert <" << ExprWriter::write(data) << "> to double";
+        s << "Cannot convert <" << writeValue(data) << "> to double";
         throw ScamException(s.str());
     }
 
@@ -50,7 +50,7 @@ RationalPair scam::asRational(const ScamData * data)
 {
     if ( ! TypePredicates::isRational(data) ) {
         stringstream s;
-        s << "Cannot convert <" << ExprWriter::write(data) << "> to rational";
+        s << "Cannot convert <" << writeValue(data) << "> to rational";
         throw ScamException(s.str());
     }
 
@@ -71,7 +71,7 @@ int scam::asInteger(const ScamData * data)
 {
     if ( ! TypePredicates::isInteger(data) ) {
         stringstream s;
-        s << "Cannot convert <" << ExprWriter::write(data) << "> to integer";
+        s << "Cannot convert <" << writeValue(data) << "> to integer";
         throw ScamException(s.str());
     }
 

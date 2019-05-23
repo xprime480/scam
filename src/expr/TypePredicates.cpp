@@ -1,8 +1,8 @@
 #include "expr/TypePredicates.hpp"
 
 #include "ScamException.hpp"
-#include "expr/ExprWriter.hpp"
 #include "expr/ScamData.hpp"
+#include "expr/ValueWriter.hpp"
 
 #include <sstream>
 
@@ -65,7 +65,7 @@ bool TypePredicates::isExact(const ScamData * data)
 {
     if ( ! isNumeric(data) ) {
         stringstream s;
-        s << "Exactness has no meaning for <" << ExprWriter::write(data) << ">";
+        s << "Exactness has no meaning for <" << writeValue(data) << ">";
         throw ScamException(s.str());
     }
 

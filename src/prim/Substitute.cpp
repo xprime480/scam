@@ -1,9 +1,9 @@
 #include "prim/Substitute.hpp"
 
 #include "Continuation.hpp"
-#include "expr/ExprWriter.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamExpr.hpp"
+#include "expr/ValueWriter.hpp"
 #include "prim/Substitutor.hpp"
 
 using namespace std;
@@ -35,7 +35,7 @@ void Substitute::applyArgs(ScamValue args, Continuation * cont)
     if ( ! answers ) {
         ScamValue err =
             ExpressionFactory::makeError("expected 'form dict'; got ",
-                                         ExprWriter::write(args));
+                                         writeValue(args));
         cont->run(err);
         return;
     }

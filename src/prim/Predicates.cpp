@@ -38,7 +38,7 @@ namespace
     }                                                           \
     bool cls::equals(ConstScamValue expr) const                \
     {                                                           \
-        return ( expr && ExprWriter::write(expr) == label );           \
+        return ( expr && writeValue(expr) == label );           \
     }
 
 

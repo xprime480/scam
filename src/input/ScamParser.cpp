@@ -333,7 +333,7 @@ ScamValue ScamParser::expand_reader_macro(std::string const & text) const
                                             name,
                                             " macro",
                                             "\t",
-                                            ExprWriter::write(expr));
+                                            writeValue(expr));
     }
 
     ScamValue sym    = ExpressionFactory::makeSymbol(name);
