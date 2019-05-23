@@ -24,7 +24,7 @@ namespace scam
 
         virtual void mapEval(Continuation * cont, Env * env) const;
 
-        virtual char toChar() const;
+        char asChar() const;
         double asDouble() const;
         std::pair<int, int> asRational() const;
         int asInteger() const;

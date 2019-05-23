@@ -13,8 +13,6 @@ namespace scam
         static ScamCharacter * makeInstance(const std::string & value);
 
     public:
-        char toChar() const override;
-
         bool equals(ConstScamValue expr) const override;
     };
 }

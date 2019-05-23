@@ -400,7 +400,7 @@ void TestBase::expectChar(ConstScamValue expr,
 
     checkPredicates(expr, SELECT_TRUTH | SELECT_CHAR | SELECT_MANAGED);
     EXPECT_EQ(repr, ExprWriter::write(expr));
-    EXPECT_EQ(value, expr->toChar());
+    EXPECT_EQ(value, expr->asChar());
 }
 
 void TestBase::expectString(ConstScamValue expr, string const & value)

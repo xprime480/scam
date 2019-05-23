@@ -46,14 +46,19 @@ void ScamExpr::mapEval(Continuation * cont, Env * env) const
     cont->run(argggh);
 }
 
-char ScamExpr::toChar() const
+char ScamExpr::asChar() const
 {
-    stringstream s;
-    s << "Cannot convert <" << ExprWriter::write(this) << "> to character";
-    throw ScamException(s.str());
+    if ( ! TypePredicates::isChar(this) ) {
+        stringstream s;
+        s << "Cannot convert <" << ExprWriter::write(this) << "> to character";
+        throw ScamException(s.str());
+    }
 
-    return '\0';
+    return CHARVAL(this);
 }
+
+
+
 
 double ScamExpr::asDouble() const
 {

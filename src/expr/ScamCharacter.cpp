@@ -16,11 +16,6 @@ ScamCharacter * ScamCharacter::makeInstance(const string & value)
     return new ScamCharacter(value);
 }
 
-char ScamCharacter::toChar() const
-{
-    return CHARVAL(this);
-}
-
 bool ScamCharacter::equals(ConstScamValue expr) const
 {
     if ( ! TypePredicates::isChar(expr) ) {
