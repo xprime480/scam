@@ -87,14 +87,14 @@ ScamInstance * ClassCont::connect(InstanceVec & instances) const
 {
     ScamInstance * self = instances[0];
     for ( auto instance : instances ) {
-        instance->setSelf(self);
+        setSelf(instance, self);
     }
 
     size_t len = instances.size();
     for ( size_t idx = 0 ; idx < (len - 1) ; ++idx ) {
         ScamInstance * child = instances[idx];
         ScamInstance * parent = instances[idx+1];
-        child->setParent(parent);
+        setParent(child, parent);
     }
 
     return self;

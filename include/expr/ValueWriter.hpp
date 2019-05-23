@@ -7,6 +7,7 @@ namespace scam
 {
     class ScamData;
 
+    extern std::string debugWriteValue(const ScamData * data);
     extern std::string writeValue(const ScamData * data);
 }
 

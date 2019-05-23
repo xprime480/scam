@@ -12,8 +12,10 @@ namespace scam
 
     class ScamInstance : public ScamExpr
     {
-    private:
+    public:
         static ScamEnvKeyType parent;
+	
+    private:
 
         friend class MemoryManager;
 
@@ -24,11 +26,11 @@ namespace scam
         void
         apply(ScamValue args, Continuation * cont, Env * env) override;
 
-        void setSelf(ScamValue expr) const override;
-        void setParent(ScamValue expr) const override;
-
         friend class ScamInstanceAdapter;
     };
+
+    extern void setSelf(ScamValue instance, ScamValue expr);
+    extern void setParent(ScamValue instance, ScamValue expr);
 }
 
 #endif

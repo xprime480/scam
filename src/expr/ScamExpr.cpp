@@ -44,21 +44,6 @@ void ScamExpr::mapEval(Continuation * cont, Env * env) const
     cont->run(argggh);
 }
 
-ConstScamValue ScamExpr::realPart() const
-{
-    // temporary hack!!!
-    ConstScamValue rv = ScamNumeric::realPart(this);
-    if ( isNull(rv) ) {
-        rv = this;
-    }
-    return rv;
-}
-
-ConstScamValue ScamExpr::imagPart() const
-{
-    return ScamNumeric::imagPart(this);
-}
-
 ScamValue ScamExpr::getCar() const
 {
     stringstream s;
@@ -111,20 +96,6 @@ ScamValue ScamExpr::withEnvUpdate(Env * updated) const
     throw ScamException(s.str());
 
     return ExpressionFactory::makeNull();
-}
-
-void ScamExpr::setSelf(ScamValue expr) const
-{
-    stringstream s;
-    s << "Cannot set self of <" << writeValue(this) << ">";
-    throw ScamException(s.str());
-}
-
-void ScamExpr::setParent(ScamValue expr) const
-{
-    stringstream s;
-    s << "Cannot set parent of <" << writeValue(this) << ">";
-    throw ScamException(s.str());
 }
 
 bool ScamExpr::equals(ConstScamValue expr) const

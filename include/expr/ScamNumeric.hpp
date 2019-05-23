@@ -10,10 +10,6 @@ namespace scam
 {
     class ScamNumeric : public ScamExpr
     {
-    public:
-        static ConstScamValue realPart(const ScamData * data);
-        static ConstScamValue imagPart(const ScamData * data);
-
     private:
         friend class MemoryManager;
 
@@ -46,6 +42,9 @@ namespace scam
     public:
         bool equals(ConstScamValue expr) const override;
     };
+
+    extern ScamValue realPart(ScamValue data);
+    extern ScamValue imagPart(ScamValue data);
 }
 
 #endif

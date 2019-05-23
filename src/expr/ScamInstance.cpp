@@ -1,6 +1,7 @@
 #include "expr/ScamInstance.hpp"
 
 #include "Env.hpp"
+#include "ScamException.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/InstanceCont.hpp"
 #include "expr/TypePredicates.hpp"
@@ -78,12 +79,25 @@ void ScamInstance::apply(ScamValue args, Continuation * cont, Env * env)
     }
 }
 
-void ScamInstance::setSelf(ScamValue expr) const
+void scam::setSelf(ScamValue instance, ScamValue expr)
 {
-    INSTANCELOCALENV(this)->put(self, expr);
+    if ( ! isInstance(instance) ) {
+        stringstream s;
+        s << "Cannot set self of non-instance <" << writeValue(instance) << ">";
+        throw ScamException(s.str());
+    }
+
+    INSTANCELOCALENV(instance)->put(self, expr);
 }
 
-void ScamInstance::setParent(ScamValue expr) const
+void scam::setParent(ScamValue instance, ScamValue expr)
 {
-    INSTANCELOCALENV(this)->put(parent, expr);
+    if ( ! isInstance(instance) ) {
+        stringstream s;
+        s << "Cannot set parent of non-instance <"
+          << writeValue(instance) << ">";
+        throw ScamException(s.str());
+    }
+
+    INSTANCELOCALENV(instance)->put(ScamInstance::parent, expr);
 }

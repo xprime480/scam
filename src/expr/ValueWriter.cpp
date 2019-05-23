@@ -20,6 +20,8 @@ namespace
     extern void writeDict(std::stringstream & s, const ScamData * data);
     extern void writeNumeric(std::stringstream & s, const ScamData * data);
     extern void writeVector(std::stringstream & s, const ScamData * data);
+
+    extern void writeType(std::stringstream & s, const ScamData * data);
 }
 
 string scam::writeValue(const ScamData * data)
@@ -100,6 +102,19 @@ string scam::writeValue(const ScamData * data)
             break;
         }
     }
+
+    return s.str() ;
+}
+
+string scam::debugWriteValue(const ScamData * data)
+{
+    stringstream s;
+
+    s << "type = <";
+    writeType(s, data);
+    s << ">; value = <"
+      << writeValue(data)
+      << ">";
 
     return s.str() ;
 }
@@ -246,4 +261,121 @@ namespace
         }
         s << ")";
     }
+
+    void writeType(std::stringstream & s, const ScamData * data)
+    {
+        if ( isNumeric(data) ) {
+            if ( isExact(data) ) {
+                s << "exact ";
+            }
+            else {
+                s << "inexact ";
+            }
+
+            if ( isNaN(data) ) {
+                s << "NaN";
+            }
+            else if ( isNegInf(data) ) {
+                s << "-inf";
+            }
+            else if ( isPosInf(data) ) {
+                s << "+inf";
+            }
+            else if ( isInteger(data) ) {
+                s << "integer";
+            }
+            else if ( isRational(data) ) {
+                s << "rational";
+            }
+            else if ( isReal(data) ) {
+                s << "real";
+            }
+            else if ( isComplex(data) ) {
+                s << "complex";
+            }
+            else {
+                s << "unknown numeric";
+            }
+        }
+        else {
+            switch ( data->type ) {
+            case ScamData::Boolean:
+                s << "boolean";
+                break;
+
+            case ScamData::ByteVector:
+                s << "byte vector";
+                break;
+
+            case ScamData::Character:
+                s << "character";
+                break;
+
+            case ScamData::Class:
+                s << "class";
+                break;
+
+            case ScamData::Closure:
+                s << "closure";
+                break;
+
+            case ScamData::Cons:
+                s << "cons";
+                break;
+
+            case ScamData::Dict:
+                s << "dict";
+                break;
+
+            case ScamData::Cont:
+                s << "continuation";
+                break;
+
+            case ScamData::Error:
+                s << "error";
+                break;
+
+            case ScamData::Keyword:
+                s << "keyword";
+                break;
+
+            case ScamData::String:
+                s << "string";
+                break;
+
+            case ScamData::Symbol:
+                s << "symbol";
+                break;
+
+            case ScamData::Instance:
+                s << "instance";
+                break;
+
+            case ScamData::Nil:
+                s << "nil";
+                break;
+
+            case ScamData::Null:
+                s << "null";
+                break;
+
+            case ScamData::Vector:
+                s << "vector";
+                break;
+
+            case ScamData::SpecialForm:
+                s << "special form ";
+                break;
+
+            case ScamData::Primitive:
+                s << "Primitive ";
+                break;
+
+            default:
+                s << "unknown with type" << data->type;
+                break;
+            }
+        }
+    }
 }
+

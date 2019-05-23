@@ -43,14 +43,13 @@ ScamValue NumericConverter::simplify(ScamValue value)
     }
 
     if ( isPureComplex(value) ) {
-        ScamValue imag = simplify(const_cast<ScamValue>(value->imagPart()));
+        ScamValue imag = simplify(imagPart(value));
         if ( isInteger(imag) && 0 == asInteger(imag) ) {
-            value = const_cast<ScamValue>(value->realPart());
+            value = realPart(value);
         }
     }
 
-    if ( isReal(value) &&
-         ! isRational(value) ) {
+    if ( isReal(value) && ! isRational(value) ) {
         double v = asDouble(value);
         double frac = ::fmod(v, 1.0);
         if ( 0.0 == frac ) {
@@ -62,8 +61,7 @@ ScamValue NumericConverter::simplify(ScamValue value)
         }
     }
 
-    if ( isRational(value) &&
-         ! isInteger(value) ) {
+    if ( isRational(value) && ! isInteger(value) ) {
         const RationalPair v = asRational(value);
         if ( 1 == v.den ) {
             const bool ex = isExact(value);

@@ -10,6 +10,8 @@
 #include "input/StringTokenizer.hpp"
 #include "util/ReadEvalString.hpp"
 
+#include "util/DebugTrace.hpp"
+
 using namespace scam;
 using namespace std;
 
@@ -234,7 +236,6 @@ void TestBase::assertType(ConstScamValue value,
 {
     ASSERT_TRUE(pred(value))
         << "Expected type " << name << "; got " << writeValue(value);
-
 }
 
 

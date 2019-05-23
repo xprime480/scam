@@ -24,9 +24,6 @@ namespace scam
 
         virtual void mapEval(Continuation * cont, Env * env) const;
 
-        ConstScamValue realPart() const;
-        ConstScamValue imagPart() const;
-
         virtual ScamValue getCar() const;
         virtual ScamValue getCdr() const;
 
@@ -35,9 +32,6 @@ namespace scam
         virtual ScamValue nthcdr(size_t n) const;
 
         virtual ScamValue withEnvUpdate(Env * updated) const;
-
-        virtual void setSelf(ScamValue expr) const;
-        virtual void setParent(ScamValue expr) const;
 
         virtual bool equals(ConstScamValue expr) const;
     };

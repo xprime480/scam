@@ -14,37 +14,6 @@
 using namespace scam;
 using namespace std;
 
-ConstScamValue ScamNumeric::realPart(const ScamData * data)
-{
-    if ( ! isNumeric(data) ) {
-        stringstream s;
-        s << "<" << writeValue(data) << "> is not numeric; has no real part";
-        throw ScamException(s.str());
-    }
-
-    if ( isPureComplex(data) ) {
-        return REALPART(data);
-    }
-
-    return ExpressionFactory::makeNull(); // temporary hack!!
-}
-
-ConstScamValue ScamNumeric::imagPart(const ScamData * data)
-{
-    if ( ! isNumeric(data) ) {
-        stringstream s;
-        s << "<" << writeValue(data)
-          << "> is not numeric; has no imaginary part";
-        throw ScamException(s.str());
-    }
-
-    if ( isPureComplex(data) ) {
-        return IMAGPART(data);
-    }
-
-    return ExpressionFactory::makeInteger(0, true);
-}
-
 ScamNumeric::ScamNumeric(ScamData::NaNType tag)
     : ScamExpr(ScamData::NaN, false)
 {
@@ -160,20 +129,21 @@ bool ScamNumeric::equals(ConstScamValue expr) const
         return isPosInf(this) && isPosInf(expr);
     }
 
-    /* temporary hack!!! */
-    ConstScamValue thisH = realPart(this);
-    ConstScamValue thatH = realPart(expr);
+    ScamValue thisV = const_cast<ScamValue>(dynamic_cast<ConstScamValue>(this));
+    ScamValue thatV = const_cast<ScamValue>(expr);
+    ScamValue thisH = realPart(thisV);
+    ScamValue thatH = realPart(thatV);
 
-    const double thisR = asDouble(isNull(thisH) ? this : thisH);
-    const double thatR = asDouble(isNull(thatH) ? expr : thatH);
+    const double thisR = asDouble(thisH);
+    const double thatR = asDouble(thatH);
 
     if ( ::fabs(thisR- thatR) > 1e-9 ) {
         return false;
     }
 
     if ( isPureComplex(this) || isPureComplex(expr) ) {
-        const double thisI = asDouble(imagPart(this));
-        const double thatI = asDouble(imagPart(expr));
+        const double thisI = asDouble(imagPart(thisV));
+        const double thatI = asDouble(imagPart(thatV));
         if ( ::fabs(thisI- thatI) > 1e-9 ) {
             return false;
         }
@@ -181,3 +151,35 @@ bool ScamNumeric::equals(ConstScamValue expr) const
 
     return true;
 }
+
+ScamValue scam::realPart(ScamValue data)
+{
+    if ( ! isNumeric(data) ) {
+        stringstream s;
+        s << "<" << writeValue(data) << "> is not numeric; has no real part";
+        throw ScamException(s.str());
+    }
+
+    if ( isPureComplex(data) ) {
+        return REALPART(data);
+    }
+
+    return data;
+}
+
+ScamValue scam::imagPart(ScamValue data)
+{
+    if ( ! isNumeric(data) ) {
+        stringstream s;
+        s << "<" << writeValue(data)
+          << "> is not numeric; has no imaginary part";
+        throw ScamException(s.str());
+    }
+
+    if ( isPureComplex(data) ) {
+        return IMAGPART(data);
+    }
+
+    return ExpressionFactory::makeInteger(0, true);
+}
+

@@ -185,10 +185,10 @@ scam::operator+(const ExtendedNumeric & a, const ExtendedNumeric & b)
             expr = ExpressionFactory::makeReal(rv, joint.exact);
         }
         else {
-            ExtendedNumeric rA(dA->realPart());
-            ExtendedNumeric rB(dB->realPart());
-            ExtendedNumeric iA(dA->imagPart());
-            ExtendedNumeric iB(dB->imagPart());
+            ExtendedNumeric rA(realPart(dA));
+            ExtendedNumeric rB(realPart(dB));
+            ExtendedNumeric iA(imagPart(dA));
+            ExtendedNumeric iB(imagPart(dB));
 
             ExtendedNumeric rC = rA + rB;
             ExtendedNumeric iC = iA + iB;
@@ -324,10 +324,10 @@ scam::operator*(const ExtendedNumeric & a, const ExtendedNumeric & b)
             expr = ExpressionFactory::makeReal(rv, joint.exact);
         }
         else {
-            ExtendedNumeric rA(dA->realPart());
-            ExtendedNumeric rB(dB->realPart());
-            ExtendedNumeric iA(dA->imagPart());
-            ExtendedNumeric iB(dB->imagPart());
+            ExtendedNumeric rA(realPart(dA));
+            ExtendedNumeric rB(realPart(dB));
+            ExtendedNumeric iA(imagPart(dA));
+            ExtendedNumeric iB(imagPart(dB));
 
             ExtendedNumeric rC = rA * rB - iA * iB;
             ExtendedNumeric iC = rA * iB + iA * rB;
@@ -419,8 +419,8 @@ scam::operator/(const ExtendedNumeric & a, const ExtendedNumeric & b)
             expr = ExpressionFactory::makeReal(rv, joint.exact);
         }
         else {
-            ExtendedNumeric rB(dB->realPart());
-            ExtendedNumeric iB(dB->imagPart());
+            ExtendedNumeric rB(realPart(dB));
+            ExtendedNumeric iB(imagPart(dB));
             ExtendedNumeric iBNeg = -iB;
             ExtendedNumeric bConj(ExpressionFactory::makeComplex(rB.get(),
                                                                  iBNeg.get()));
@@ -432,8 +432,8 @@ scam::operator/(const ExtendedNumeric & a, const ExtendedNumeric & b)
                 expr = den.get();
             }
             else {
-                ExtendedNumeric rNum(num.get()->realPart());
-                ExtendedNumeric iNum(num.get()->imagPart());
+                ExtendedNumeric rNum(realPart(num.get()));
+                ExtendedNumeric iNum(imagPart(num.get()));
                 ExtendedNumeric rC = rNum / den;
                 ExtendedNumeric iC = iNum / den;
 

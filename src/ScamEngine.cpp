@@ -11,8 +11,6 @@
 #include "input/ScamParser.hpp"
 #include "util/MemoryManager.hpp"
 
-#include "util/DebugTrace.hpp"
-
 using namespace std;
 using namespace scam;
 
