@@ -1,5 +1,6 @@
 #include "ScamEngine.hpp"
 
+#include "Env.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "form/AllSpecialForms.hpp"
 #include "prim/AllPrimitives.hpp"

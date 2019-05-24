@@ -1,5 +1,6 @@
 #include "expr/ScamInstanceAdapter.hpp"
 
+#include "Env.hpp"
 #include "ScamException.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamInstance.hpp"

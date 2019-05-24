@@ -3,6 +3,7 @@
 #include "SampleManagedObject.hpp"
 #include "TestHook.hpp"
 
+#include "Env.hpp"
 #include "Extractor.hpp"
 #include "WorkQueue.hpp"
 #include "Worker.hpp"
@@ -11,8 +12,6 @@
 #include "util/MemoryManager.hpp"
 
 #include <iostream>
-
-#include "util/DebugTrace.hpp"
 
 using namespace std;
 using namespace scam;

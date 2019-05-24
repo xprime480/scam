@@ -3,7 +3,7 @@
 #include "Env.hpp"
 #include "WorkQueue.hpp"
 #include "expr/ScamExpr.hpp"
-#include "expr/ScamListAdapter.hpp"
+#include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
 #include "form/LetEvalWorker.hpp"
 
@@ -58,8 +58,7 @@ void LetStepCont::run(ScamValue expr)
         cont->run(expr);
     }
     else {
-        ScamListAdapter a(evaled);
-        ScamValue extend = a.append(expr);
+        ScamValue extend = append(evaled, expr);
         workQueueHelper<LetEvalWorker>(formals,
                                        extend,
                                        args,

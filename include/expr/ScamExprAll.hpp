@@ -16,7 +16,6 @@
 #include "expr/ScamInstance.hpp"
 #include "expr/ScamInstanceAdapter.hpp"
 #include "expr/ScamKeyword.hpp"
-#include "expr/ScamListAdapter.hpp"
 #include "expr/ScamNil.hpp"
 #include "expr/ScamNull.hpp"
 #include "expr/ScamNumeric.hpp"
