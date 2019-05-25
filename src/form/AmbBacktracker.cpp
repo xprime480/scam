@@ -4,6 +4,7 @@
 #include "Env.hpp"
 #include "ScamEngine.hpp"
 #include "expr/ScamExpr.hpp"
+#include "expr/SequenceOps.hpp"
 #include "util/MemoryManager.hpp"
 
 using namespace scam;
@@ -45,12 +46,12 @@ void AmbBacktracker::run()
 {
     Backtracker::run();
 
-    if ( 0 == args->length() ) {
+    if ( 0 == length(args) ) {
         runParent(cont);
     }
     else {
-        ScamValue head = args->nthcar(0);
-        ScamValue tail = args->nthcdr(0);
+        ScamValue head = nthcar(args, 0);
+        ScamValue tail = nthcdr(args, 0);
 
         (void) engine->getBacktracker();
         Backtracker * newBt =

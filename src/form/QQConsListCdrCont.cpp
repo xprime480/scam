@@ -3,6 +3,7 @@
 #include "Env.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamExpr.hpp"
+#include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueWriter.hpp"
 #include "form/QuasiQuote.hpp"
@@ -58,7 +59,7 @@ void QQConsListCdrCont::handle(ScamValue expr)
 bool QQConsListCdrCont::check_splice(ScamValue expr)
 {
     if ( isCons(car) ) {
-        ScamValue first = car->nthcar(0);
+        ScamValue first = nthcar(car, 0);
         if ( isSymbol(first) ) {
             if ( writeValue(first) == writeValue(QuasiQuote::spliceTag) ) {
                 do_splice(expr);
@@ -73,10 +74,10 @@ bool QQConsListCdrCont::check_splice(ScamValue expr)
 void QQConsListCdrCont::do_splice(ScamValue expr)
 {
     ScamValue f = expr;
-    size_t count = car->length();
+    size_t count = length(car);
 
     while ( --count > 0 ) {
-        ScamValue form = car->nthcar(count);
+        ScamValue form = nthcar(car, count);
         f = ExpressionFactory::makeCons(form, f);
     }
 

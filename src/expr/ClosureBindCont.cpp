@@ -8,6 +8,7 @@
 #include "expr/ExpressionFactory.hpp"
 #include "expr/MacroEvalCont.hpp"
 #include "expr/ScamExpr.hpp"
+#include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueWriter.hpp"
 #include "input/ParameterListParser.hpp"
@@ -105,7 +106,7 @@ bool ClosureBindCont::checkArgLength(ScamValue expr) const
 {
     unsigned exp { 0 };
     bool optFinal = describeFormals(exp);
-    unsigned act = expr->length();
+    unsigned act = length(expr);
 
     if ( (act < exp) || ((! optFinal) && (act > exp)) ) {
         wrongNumberOfParameters(exp, act);

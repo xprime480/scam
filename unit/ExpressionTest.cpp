@@ -2,6 +2,7 @@
 
 #include "ScamException.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "expr/SequenceOps.hpp"
 #include "form/Quote.hpp"
 #include "form/QuasiQuote.hpp"
 
@@ -156,7 +157,7 @@ TEST_F(ExpressionTest, ConsSingletonTest)
 
     expectList(expr, value, 1);
 
-    ScamValue first = expr->nthcar(0);
+    ScamValue first = nthcar(expr, 0);
     expectSymbol(first, "works");
 }
 
@@ -172,22 +173,22 @@ TEST_F(ExpressionTest, ConsDoubletonTest)
 
     expectList(expr, value, 2);
 
-    ScamValue first = expr->nthcar(0);
+    ScamValue first = nthcar(expr, 0);
     expectSymbol(first, "works");
 
-    ScamValue second = expr->nthcar(1);
+    ScamValue second = nthcar(expr, 1);
     expectSymbol(second, "also");
 
-    ScamValue third = expr->nthcar(2);
+    ScamValue third = nthcar(expr, 2);
     expectError(third);
 
-    ScamValue car2 = expr->getCar();
+    ScamValue car2 = getCar(expr);
     expectSymbol(car2, "works");
 
-    ScamValue cdr2 = expr->getCdr();
+    ScamValue cdr2 = getCdr(expr);
     expectList(cdr2, "(also)", 1);
 
-    ScamValue cdr3 = expr->nthcdr(1);
+    ScamValue cdr3 = nthcdr(expr, 1);
     expectNil(cdr3);
 }
 
@@ -209,7 +210,7 @@ TEST_F(ExpressionTest, ListSingletonTest)
 
     expectList(expr, value, 1);
 
-    ScamValue first = expr->nthcar(0);
+    ScamValue first = nthcar(expr, 0);
     expectSymbol(first, "works");
 }
 
@@ -223,19 +224,19 @@ TEST_F(ExpressionTest, ListDoubletonTest)
 
     expectList(expr, value, 2);
 
-    ScamValue first = expr->nthcar(0);
+    ScamValue first = nthcar(expr, 0);
     expectSymbol(first, "works");
 
-    ScamValue second = expr->nthcar(1);
+    ScamValue second = nthcar(expr, 1);
     expectSymbol(second, "also");
 
-    ScamValue third = expr->nthcar(2);
+    ScamValue third = nthcar(expr, 2);
     expectError(third);
 
-    ScamValue car2 = expr->getCar();
+    ScamValue car2 = getCar(expr);
     expectSymbol(car2, "works");
 
-    ScamValue cdr2 = expr->getCdr();
+    ScamValue cdr2 = getCdr(expr);
     expectList(cdr2, "(also)", 1);
 }
 
@@ -249,8 +250,8 @@ TEST_F(ExpressionTest, ConsDottedPair)
 
     expectCons(expr, value);
 
-    expectInteger(expr->getCar(), 1, "1", true);
-    expectInteger(expr->getCdr(), 2, "2", true);
+    expectInteger(getCar(expr), 1, "1", true);
+    expectInteger(getCdr(expr), 2, "2", true);
 }
 
 TEST_F(ExpressionTest, ConsEvalTest)
@@ -264,7 +265,7 @@ TEST_F(ExpressionTest, ConsEvalTest)
     ScamValue expr = ExpressionFactory::makeCons(car, cdr);
 
     expectList(expr, value, 2);
-    expectSymbol(expr->getCar(), "quote");
+    expectSymbol(getCar(expr), "quote");
 
     ScamValue evaled = evaluate(expr);
     expectInteger(evaled, 2, "2", true);
@@ -280,16 +281,16 @@ TEST_F(ExpressionTest, ListCdrTest)
         ExpressionFactory::makeList(one, two, three, two, one);
     expectList(list, "(1 2 3 2 1)", 5);
 
-    ScamValue cdr0 = list->nthcdr(0);
+    ScamValue cdr0 = nthcdr(list, 0);
     expectList(cdr0, "(2 3 2 1)", 4);
 
-    ScamValue cdr3 = list->nthcdr(3);
+    ScamValue cdr3 = nthcdr(list, 3);
     expectList(cdr3, "(1)", 1);
 
-    ScamValue cdr4 = list->nthcdr(4);
+    ScamValue cdr4 = nthcdr(list, 4);
     expectNil(cdr4);
 
-    ScamValue cdr5 = list->nthcdr(5);
+    ScamValue cdr5 = nthcdr(list, 5);
     expectError(cdr5);
 }
 
@@ -304,13 +305,13 @@ TEST_F(ExpressionTest, PseudoListCdrTest)
 
     expectCons(plist, "(1 2 . 3)");
 
-    ScamValue cdr0 = plist->nthcdr(0);
+    ScamValue cdr0 = nthcdr(plist, 0);
     expectCons(cdr0, "(2 . 3)");
 
-    ScamValue cdr1 = plist->nthcdr(1);
+    ScamValue cdr1 = nthcdr(plist, 1);
     expectInteger(cdr1, 3, "3", true);
 
-    ScamValue cdr2 = plist->nthcdr(2);
+    ScamValue cdr2 = nthcdr(plist, 2);
     expectError(cdr2);
 }
 
@@ -357,10 +358,10 @@ TEST_F(ExpressionTest, VectorNonEmpty)
 
     auto f = [this, &value] (ScamValue expr) {
                  expectVector(expr, value, 3u);
-                 expectInteger(expr->nthcar(0), 1, "1", true);
-                 expectString(expr->nthcar(1), "2");
-                 expectInteger(expr->nthcar(2), 3, "3", true);
-                 expectError(expr->nthcar(3));
+                 expectInteger(nthcar(expr, 0), 1, "1", true);
+                 expectString(nthcar(expr, 1), "2");
+                 expectInteger(nthcar(expr, 2), 3, "3", true);
+                 expectError(nthcar(expr, 3));
              };
 
     ScamValue expr  = ExpressionFactory::makeVector(vec);
@@ -388,10 +389,10 @@ TEST_F(ExpressionTest, ByteVectorNonEmpty)
 
     auto f = [this, &value] (ScamValue expr) {
                  expectByteVector(expr, value, 3u);
-                 expectInteger(expr->nthcar(0), 1, "1", true);
-                 expectInteger(expr->nthcar(1), 2, "2", true);
-                 expectInteger(expr->nthcar(2), 3, "3", true);
-                 expectError(expr->nthcar(3));
+                 expectInteger(nthcar(expr, 0), 1, "1", true);
+                 expectInteger(nthcar(expr, 1), 2, "2", true);
+                 expectInteger(nthcar(expr, 2), 3, "3", true);
+                 expectError(nthcar(expr, 3));
              };
 
     ScamValue expr  = ExpressionFactory::makeByteVector(vec);

@@ -5,6 +5,7 @@
 #include "expr/ConsWorker.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/MapWorker.hpp"
+#include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueWriter.hpp"
 
@@ -41,90 +42,3 @@ bool ScamCons::equals(ConstScamValue expr) const
 
     return (CAR(this)->equals(CAR(expr)) && CDR(this)->equals(CDR(expr)));
 }
-
-ScamValue ScamCons::getCar() const
-{
-    return CAR(this);
-}
-
-ScamValue ScamCons::getCdr() const
-{
-    return CDR(this);
-}
-
-size_t ScamCons::length() const
-{
-    ScamValue cdr = CDR(this);
-    size_t len = 1;
-    if ( isCons(cdr) ) {
-        len += cdr->length();
-    }
-    else if ( ! isNil(cdr) ) {
-        len += 1;
-    }
-
-    return len;
-}
-
-ScamValue ScamCons::nthcar(size_t n) const
-{
-    auto f = [=] () -> ScamValue {
-        return ExpressionFactory::makeError("Index ",
-                                            n,
-                                            " requested for ",
-                                            writeValue(this));
-    };
-
-    ScamValue cdr = CDR(this);
-    ScamValue rv;
-
-    if ( 0 == n ) {
-        rv = CAR(this);
-    }
-    else if ( isCons(cdr) ) {
-        rv = cdr->nthcar(n-1);
-        if ( error(rv) ) {
-            rv = f();
-        }
-    }
-    else if ( isNil(cdr) || n > 1 ) {
-        rv = f();
-    }
-    else {
-        rv = cdr;
-    }
-
-    return rv;
-}
-
-ScamValue ScamCons::nthcdr(size_t n) const
-{
-    auto f = [=] () -> ScamValue {
-        return ExpressionFactory::makeError("Index ",
-                                            n,
-                                            " requested for ",
-                                            writeValue(this));
-    };
-
-    ScamValue cdr = CDR(this);
-    ScamValue rv;
-
-    if ( 0 == n ) {
-        rv = cdr;
-    }
-    else if ( isCons(cdr) ) {
-        rv = cdr->nthcdr(n-1);
-        if ( error(rv) ) {
-            rv = f();
-        }
-    }
-    else if ( n >= 1 ) {
-        rv = f();
-    }
-    else {
-        rv = cdr;
-    }
-
-    return rv;
-}
-

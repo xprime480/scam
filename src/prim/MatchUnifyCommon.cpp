@@ -4,6 +4,7 @@
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamDict.hpp"
 #include "expr/ScamExpr.hpp"
+#include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueWriter.hpp"
 #include "input/MatchUnifyParser.hpp"
@@ -103,15 +104,15 @@ ScamValue MatchUnifyCommon::check_cons(ScamDict * dict,
                                         ScamValue rhs)
 {
     if ( isCons(lhs) && isCons(rhs) ) {
-        ScamValue lhsCar  = lhs->getCar();
-        ScamValue rhsCar  = rhs->getCar();
+        ScamValue lhsCar  = getCar(lhs);
+        ScamValue rhsCar  = getCar(rhs);
         ScamValue carMatch = exec(dict, lhsCar, rhsCar);
         if ( ! isDict(carMatch) ) {
             return carMatch;
         }
 
-        ScamValue lhsCdr  = lhs->getCdr();
-        ScamValue rhsCdr  = rhs->getCdr();
+        ScamValue lhsCdr  = getCdr(lhs);
+        ScamValue rhsCdr  = getCdr(rhs);
         return exec(dict, lhsCdr, rhsCdr);
     }
 
@@ -123,17 +124,17 @@ ScamValue MatchUnifyCommon::check_vector(ScamDict * dict,
                                           ScamValue rhs)
 {
     if ( isVector(lhs) && isVector(rhs) ) {
-        if ( lhs->length() != rhs->length() ) {
+        if ( length(lhs) != length(rhs) ) {
             stringstream s;
             s << "matching vectors of unequal length: "
               << writeValue(lhs) << " and " << writeValue(rhs);
             return make_common_error(s.str().c_str());
         }
 
-        size_t len = lhs->length();
+        size_t len = length(lhs);
         for ( size_t idx = 0 ; idx < len ; ++ idx ) {
-            ScamValue lhsN = lhs->nthcar(idx);
-            ScamValue rhsN = rhs->nthcar(idx);
+            ScamValue lhsN = nthcar(lhs, idx);
+            ScamValue rhsN = nthcar(rhs, idx);
             ScamValue matchN = exec(dict, lhsN, rhsN);
             if ( ! isDict(matchN) ) {
                 return matchN;
@@ -151,7 +152,7 @@ ScamValue MatchUnifyCommon::check_dict(ScamDict * dict,
                                         ScamValue rhs)
 {
     if ( isDict(lhs) && isDict(rhs) ) {
-        if ( lhs->length() != rhs->length() ) {
+        if ( length(lhs) != length(rhs) ) {
             stringstream s;
             s << "dictionaries do not match " << writeValue(lhs)
               << "; " << writeValue(rhs);

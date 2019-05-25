@@ -2,6 +2,7 @@
 
 #include "Env.hpp"
 #include "expr/ScamExpr.hpp"
+#include "expr/SequenceOps.hpp"
 #include "form/LetStar.hpp"
 #include "form/LetStarCont.hpp"
 #include "util/MemoryManager.hpp"
@@ -35,11 +36,11 @@ void LetStarWorker::do_next(ScamValue formals,
 
     Continuation * ch =
         standardMemoryManager.make<LetStarCont>(formals,
-                                                safe->getCdr(),
+                                                getCdr(safe),
                                                 forms,
                                                 cont,
                                                 extended,
                                                 engine);
-    safe->getCar()->eval(ch, env);
+    getCar(safe)->eval(ch, env);
 }
 

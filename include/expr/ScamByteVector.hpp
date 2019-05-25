@@ -17,9 +17,6 @@ namespace scam
         static ScamByteVector * makeInstance(ByteVec const & elts);
 
     public:
-        size_t length() const override;
-        ScamValue nthcar(size_t n) const override;
-
         bool equals(ConstScamValue expr) const override;
     };
 }

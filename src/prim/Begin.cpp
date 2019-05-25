@@ -2,6 +2,7 @@
 
 #include "Continuation.hpp"
 #include "ScamException.hpp"
+#include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
 #include "util/ArgListHelper.hpp"
 
@@ -27,12 +28,12 @@ void Begin::applyArgs(ScamValue args, Continuation * cont)
         return;
     }
 
-    const size_t count = args->length();
+    const size_t count = length(args);
     if ( 0 == count ) {
         cont->run(args);
     }
     else {
-        ScamValue last = args->nthcar(count - 1);
+        ScamValue last = nthcar(args, count - 1);
         cont->run(last);
     }
 }

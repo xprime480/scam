@@ -2,6 +2,7 @@
 
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamExpr.hpp"
+#include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueWriter.hpp"
 #include "prim/CommonError.hpp"
@@ -59,10 +60,10 @@ bool Substitutor::have_seen(ScamValue expr)
 {
     ScamValue t = helper;
     while ( ! isNil(t) ) {
-        if ( t->nthcar(0)->equals(expr) ) {
+        if ( nthcar(t, 0)->equals(expr) ) {
             return true;
         }
-        t = t->nthcdr(0);
+        t = nthcdr(t, 0);
     }
 
     return false;
@@ -81,7 +82,7 @@ ScamValue Substitutor::resolve_keyword(ScamValue expr)
     ScamValue val = answers->get(expr);
     ScamValue rv  = resolve_value(val);
 
-    helper = helper->nthcdr(0);
+    helper = nthcdr(helper, 0);
     return rv;
 }
 

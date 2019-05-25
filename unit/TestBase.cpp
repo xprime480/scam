@@ -5,6 +5,7 @@
 #include "WorkQueue.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamToInternal.hpp"
+#include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
 #include "input/ScamParser.hpp"
 #include "input/StringTokenizer.hpp"
@@ -427,7 +428,8 @@ void TestBase::expectList(ConstScamValue expr, string const & repr, size_t len)
 
     checkPredicates(expr, flags);
     EXPECT_EQ(repr, writeValue(expr));
-    EXPECT_EQ(len, expr->length());
+    ScamValue hack = const_cast<ScamValue>(expr);
+    EXPECT_EQ(len, length(hack));
 }
 
 void TestBase::expectCons(ConstScamValue expr, string const & repr)
@@ -455,7 +457,8 @@ void TestBase::expectVector(ConstScamValue expr,
     const auto flags = SELECT_TRUTH | SELECT_VECTOR | SELECT_MANAGED;
     checkPredicates(expr, flags);
     EXPECT_EQ(repr, writeValue(expr));
-    EXPECT_EQ(len, expr->length());
+    ScamValue hack = const_cast<ScamValue>(expr);
+    EXPECT_EQ(len, length(hack));
 }
 
 void TestBase::expectByteVector(ConstScamValue expr,
@@ -466,7 +469,8 @@ void TestBase::expectByteVector(ConstScamValue expr,
     const auto flags = SELECT_TRUTH | SELECT_BYTEVECTOR | SELECT_MANAGED;
     checkPredicates(expr, flags);
     EXPECT_EQ(repr, writeValue(expr));
-    EXPECT_EQ(len, expr->length());
+    ScamValue hack = const_cast<ScamValue>(expr);
+    EXPECT_EQ(len, length(hack));
 }
 
 void TestBase::expectProcedure(ConstScamValue expr, string const & repr)
@@ -495,5 +499,6 @@ void TestBase::expectDict(ConstScamValue expr, int count, string const & repr)
     assertType(expr, "dictionary", isDict);
     checkPredicates(expr, SELECT_TRUTH | ALL_DICT);
     EXPECT_EQ(repr, writeValue(expr));
-    EXPECT_EQ(count, expr->length());
+    ScamValue hack = const_cast<ScamValue>(expr);
+    EXPECT_EQ(count, length(hack));
 }

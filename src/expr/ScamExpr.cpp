@@ -3,6 +3,7 @@
 #include "Continuation.hpp"
 #include "ScamException.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueWriter.hpp"
 
@@ -40,53 +41,8 @@ void ScamExpr::apply(ScamValue args, Continuation * cont, Env * env)
 
 void ScamExpr::mapEval(Continuation * cont, Env * env) const
 {
-    ScamExpr * argggh = const_cast<ScamExpr *>(this);
-    cont->run(argggh);
-}
-
-ScamValue ScamExpr::getCar() const
-{
-    stringstream s;
-    s << "Cannot take car of <" << writeValue(this) << ">";
-    throw ScamException(s.str());
-
-    return ExpressionFactory::makeNull();
-}
-
-ScamValue ScamExpr::getCdr() const
-{
-    stringstream s;
-    s << "Cannot take cdr of <" << writeValue(this) << ">";
-    throw ScamException(s.str());
-
-    return ExpressionFactory::makeNull();
-}
-
-size_t ScamExpr::length() const
-{
-    stringstream s;
-    s << "Cannot take the length of <" << writeValue(this) << ">";
-    throw ScamException(s.str());
-
-    return 0u;
-}
-
-ScamValue ScamExpr::nthcar(size_t n) const
-{
-    stringstream s;
-    s << "Cannot index <" << writeValue(this) << ">";
-    throw ScamException(s.str());
-
-    return ExpressionFactory::makeNull();
-}
-
-ScamValue ScamExpr::nthcdr(size_t n) const
-{
-    stringstream s;
-    s << "Cannot index <" << writeValue(this) << ">";
-    throw ScamException(s.str());
-
-    return ExpressionFactory::makeNull();
+    ScamExpr * hack = const_cast<ScamExpr *>(this);
+    cont->run(hack);
 }
 
 ScamValue ScamExpr::withEnvUpdate(Env * updated) const

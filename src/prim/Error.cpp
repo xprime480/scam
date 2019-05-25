@@ -3,6 +3,7 @@
 #include "Continuation.hpp"
 #include "expr/ScamExpr.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "expr/SequenceOps.hpp"
 #include "input/ListParser.hpp"
 #include "util/ArgListHelper.hpp"
 
@@ -32,17 +33,17 @@ void Error::applyArgs(ScamValue args, Continuation * cont)
     }
 
     stringstream s;
-    unsigned len = args->length();
+    unsigned len = length(args);
     if ( 0 == len ) {
         s << "Error detected";
     }
     else if ( 1 == len ) {
-        s << writeValue(args->nthcar(0));
+        s << writeValue(nthcar(args, 0));
     }
     else {
         for ( unsigned i = 0 ; i < len ; ++i ) {
             s << "[" << (i+1) << "] "
-              << writeValue(args->nthcar(i)) << "\n";
+              << writeValue(nthcar(args, i)) << "\n";
         }
     }
 

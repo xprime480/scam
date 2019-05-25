@@ -3,6 +3,7 @@
 #include "expr/ScamData.hpp"
 #include "expr/ScamExpr.hpp"
 #include "expr/ScamToInternal.hpp"
+#include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
 #include "input/LambdaParser.hpp"
 #include "input/ParameterListParser.hpp"
@@ -164,8 +165,8 @@ namespace
         ScamValue next = CDR(data);
         while ( ! isNil(next) ) {
             if ( isCons(next) ) {
-                s << " " << writeValue(next->getCar());
-                next = next->getCdr();
+                s << " " << writeValue(getCar(next));
+                next = getCdr(next);
             }
             else {
                 s << " . " << writeValue(next);

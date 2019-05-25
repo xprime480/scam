@@ -1,5 +1,6 @@
 #include "expr/ScamNil.hpp"
 
+#include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
 
 using namespace scam;
@@ -14,11 +15,6 @@ ScamNil * ScamNil::makeInstance()
 {
     static ScamNil nil;
     return &nil;
-}
-
-size_t ScamNil::length() const
-{
-    return 0u;
 }
 
 bool ScamNil::equals(ConstScamValue expr) const

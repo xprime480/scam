@@ -16,13 +16,6 @@ namespace scam
         void eval(Continuation * cont, Env * env) const override;
         void mapEval(Continuation * cont, Env * env) const override;
 
-        ScamValue getCar() const override;
-        ScamValue getCdr() const override;
-
-        size_t length() const override;
-        ScamValue nthcar(size_t n) const override;
-        ScamValue nthcdr(size_t n) const override;
-
         bool equals(ConstScamValue expr) const override;
     };
 }

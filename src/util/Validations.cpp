@@ -2,6 +2,7 @@
 
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamExpr.hpp"
+#include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueWriter.hpp"
 
@@ -20,7 +21,7 @@ ScamValue scam::validateClosureArgs(ScamValue args, const char * name)
                                             writeValue(extended));
     }
 
-    ScamValue formals = args->getCar();
+    ScamValue formals = getCar(args);
     return validateFormals(formals);
 }
 
@@ -41,7 +42,7 @@ ScamValue scam::validateFormals(ScamValue formals)
 
     set<string> parms;
     while ( true ) {
-        ScamValue arg = formals->getCar();
+        ScamValue arg = getCar(formals);
         if ( ! isSymbol(arg) ) {
             return ExpressionFactory::makeError("Formal parameter should ",
                                                 "be a symbol; got: ",
@@ -57,7 +58,7 @@ ScamValue scam::validateFormals(ScamValue formals)
 
         parms.insert(name);
 
-        formals = formals->getCdr();
+        formals = getCdr(formals);
         if ( isNil(formals) ) {
             break;
         }

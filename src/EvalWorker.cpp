@@ -3,6 +3,7 @@
 #include "Continuation.hpp"
 #include "Env.hpp"
 #include "expr/ScamExpr.hpp"
+#include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
 #include "util/MemoryManager.hpp"
 
@@ -38,8 +39,8 @@ namespace
         void run(ScamValue expr) override
         {
             if ( isList(expr) && ! isNil(expr) ) {
-                unsigned len = expr->length();
-                ScamValue last = expr->nthcar(len - 1);
+                unsigned len = length(expr);
+                ScamValue last = nthcar(expr, len - 1);
                 cont->run(last);
             }
             else {

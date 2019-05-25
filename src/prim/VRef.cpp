@@ -2,6 +2,7 @@
 
 #include "Continuation.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "expr/SequenceOps.hpp"
 #include "input/VrefParser.hpp"
 #include "util/ArgListHelper.hpp"
 
@@ -29,7 +30,7 @@ void VRef::applyArgs(ScamValue args, Continuation * cont)
     else {
         size_t idx = parser->getIndex();
         ScamVector * vec = parser->getVector();
-        cont->run(vec->nthcar(idx));
+        cont->run(nthcar(vec, idx));
     }
 }
 

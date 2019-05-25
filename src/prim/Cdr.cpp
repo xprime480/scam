@@ -3,8 +3,7 @@
 #include "Continuation.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamExpr.hpp"
-
-#include <sstream>
+#include "expr/SequenceOps.hpp"
 
 using namespace scam;
 using namespace std;
@@ -21,6 +20,6 @@ Cdr * Cdr::makeInstance()
 
 void Cdr::finish(ScamValue cons, Continuation * cont)
 {
-    ScamValue cdr = cons->getCdr();
+    ScamValue cdr = getCdr(cons);
     cont->run(cdr);
 }

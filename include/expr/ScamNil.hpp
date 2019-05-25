@@ -13,8 +13,6 @@ namespace scam
         static ScamNil * makeInstance();
 
     public:
-        size_t length() const override;
-
         bool equals(ConstScamValue expr) const override;
     };
 }

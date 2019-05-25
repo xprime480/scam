@@ -2,6 +2,7 @@
 
 #include "WorkQueue.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
 
 using namespace scam;
@@ -16,24 +17,6 @@ ScamByteVector::ScamByteVector(ByteVec const & elts)
 ScamByteVector * ScamByteVector::makeInstance(ByteVec const & elts)
 {
     return new ScamByteVector(elts);
-}
-
-size_t ScamByteVector::length() const
-{
-    return BYTEVECTOR(this).size();
-}
-
-ScamValue ScamByteVector::nthcar(size_t n) const
-{
-    if ( n >= length() ) {
-        return ExpressionFactory::makeError("Requested index ",
-                                            n,
-                                            " of a ",
-                                            length(),
-                                            "-element byteVector");
-    }
-
-    return ExpressionFactory::makeInteger(BYTEVECTOR(this)[n], true);
 }
 
 bool ScamByteVector::equals(ConstScamValue expr) const

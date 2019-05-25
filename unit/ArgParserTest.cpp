@@ -2,6 +2,7 @@
 
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamToInternal.hpp"
+#include "expr/SequenceOps.hpp"
 #include "input/AlternativeParser.hpp"
 #include "input/ApplyParser.hpp"
 #include "input/ArgParser.hpp"
@@ -143,7 +144,7 @@ TEST_F(ArgParserTest, AcceptSingletonAnything)
     rejectParse(parser, "()");
 
     acceptParse(parser, "(#(just 1 vector))");
-    EXPECT_EQ(1u, parser->getValue()->length());
+    EXPECT_EQ(1u, length(parser->getValue()));
 
     rejectParse(parser, "(two things)");
 }

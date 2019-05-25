@@ -3,6 +3,7 @@
 #include "Continuation.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamExpr.hpp"
+#include "expr/SequenceOps.hpp"
 #include "expr/ValueWriter.hpp"
 #include "prim/Substitutor.hpp"
 
@@ -21,16 +22,16 @@ Substitute * Substitute::makeInstance()
 
 void Substitute::applyArgs(ScamValue args, Continuation * cont)
 {
-    if ( args->length() < 2 ) {
+    if ( length(args) < 2 ) {
         ScamValue err =
             ExpressionFactory::makeError("expected 2 args; got ",
-                                         args->length());
+                                         length(args));
         cont->run(err);
         return;
     }
 
-    ScamValue form = args->nthcar(0);
-    ScamValue dict = args->nthcar(1);
+    ScamValue form = nthcar(args, 0);
+    ScamValue dict = nthcar(args, 1);
     ScamDict * answers = dynamic_cast<ScamDict *>(dict);
     if ( ! answers ) {
         ScamValue err =

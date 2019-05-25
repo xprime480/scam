@@ -2,6 +2,7 @@
 
 #include "Continuation.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "expr/SequenceOps.hpp"
 #include "input/SingletonParser.hpp"
 #include "util/ArgListHelper.hpp"
 
@@ -29,7 +30,7 @@ void VLen::applyArgs(ScamValue args, Continuation * cont)
         failedArgParseMessage(myName, "(vec)", args, cont);
     }
     else {
-        size_t len = parser->get()->length();
+        size_t len = length(parser->get());
         cont->run(ExpressionFactory::makeInteger(len, true));
     }
 }

@@ -3,6 +3,7 @@
 #include "Continuation.hpp"
 #include "Env.hpp"
 #include "expr/ScamExpr.hpp"
+#include "expr/SequenceOps.hpp"
 #include "form/LetStepCont.hpp"
 #include "form/LetCont.hpp"
 #include "util/MemoryManager.hpp"
@@ -62,9 +63,9 @@ void LetEvalWorker::run()
 {
     Worker::run();
 
-    if ( args->length() > 0 ) {
-        ScamValue car = args->nthcar(0);
-        ScamValue cdr = args->nthcdr(0);
+    if ( length(args) > 0 ) {
+        ScamValue car = nthcar(args, 0);
+        ScamValue cdr = nthcdr(args, 0);
 
         Continuation * ch
             = standardMemoryManager.make<LetStepCont>(formals,

@@ -2,6 +2,7 @@
 
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamExpr.hpp"
+#include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
 #include "util/MemoryManager.hpp"
 
@@ -48,8 +49,8 @@ bool ListParser::accept(ScamValue expr)
 
     ScamValue current = expr;
     while ( isCons(current) ) {
-        ScamValue item = current->getCar();
-        current = current->getCdr();
+        ScamValue item = getCar(current);
+        current = getCdr(current);
         if ( ! itemParser->accept(item) ) {
             clearValue();
             return false;

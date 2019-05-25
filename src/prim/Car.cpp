@@ -3,6 +3,7 @@
 #include "Continuation.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamExpr.hpp"
+#include "expr/SequenceOps.hpp"
 
 using namespace scam;
 using namespace std;
@@ -19,7 +20,7 @@ Car * Car::makeInstance()
 
 void Car::finish(ScamValue cons, Continuation * cont)
 {
-    ScamValue car = cons->getCar();
+    ScamValue car = getCar(cons);
     cont->run(car);
 }
 

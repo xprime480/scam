@@ -2,6 +2,7 @@
 
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamExpr.hpp"
+#include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
 #include "input/BindFormParser.hpp"
 #include "input/CountedListParser.hpp"
@@ -45,18 +46,18 @@ bool LetParser::accept(ScamValue expr)
         return false;
     }
 
-    const size_t count = bList->length();
+    const size_t count = length(bList);
     std::vector<BindFormParser *> tmp;
     for ( size_t idx = 0 ; idx < count ; ++idx ) {
         BindFormParser * b = standardMemoryManager.make<BindFormParser>();
-        if ( ! b->accept(bList->nthcar(idx)) ) {
+        if ( ! b->accept(nthcar(bList, idx)) ) {
             return false;
         }
         tmp.push_back(b);
     }
 
     bindings.swap(tmp);
-    forms = expr->getCdr();
+    forms = getCdr(expr);
 
     callback(expr);
     return true;

@@ -4,6 +4,7 @@
 #include "ScamEngine.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamExpr.hpp"
+#include "expr/SequenceOps.hpp"
 #include "input/SingletonParser.hpp"
 #include "input/TypeParsers.hpp"
 #include "util/ArgListHelper.hpp"
@@ -74,9 +75,9 @@ bool Load::open_file(ifstream & source,
     else {
         ScamValue path = get_path();
 
-        size_t n = path->length();
+        size_t n = length(path);
         for ( size_t i = 0 ; i < n ; ++i ) {
-            string fullpath = make_path(writeValue(path->nthcar(i)), filename);
+            string fullpath = make_path(writeValue(nthcar(path, i)), filename);
             if ( file_exists(fullpath) ) {
                 source.open(fullpath);
                 return true;

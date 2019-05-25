@@ -2,6 +2,7 @@
 
 #include "Continuation.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
 #include "input/DictOpsParser.hpp"
 #include "util/ArgListHelper.hpp"
@@ -62,7 +63,7 @@ void ScamDict::apply(ScamValue args, Continuation * cont, Env * env)
         rv = put(parser->getOpKey(), val);
     }
     else if ( op->equals(DictOpsParser::lenOp) ) {
-        rv = ExpressionFactory::makeInteger(length(), true);
+        rv = ExpressionFactory::makeInteger(length(this), true);
     }
     else if ( op->equals(DictOpsParser::hasOp) ) {
         const bool b = has(parser->getOpKey());
@@ -79,11 +80,6 @@ void ScamDict::apply(ScamValue args, Continuation * cont, Env * env)
     cont->run(rv);
 }
 
-size_t ScamDict::length() const
-{
-    return DICTKEYS(this).size();
-}
-
 bool ScamDict::equals(ConstScamValue expr) const
 {
     if ( ! isDict(expr) ) {
@@ -94,7 +90,8 @@ bool ScamDict::equals(ConstScamValue expr) const
         return false;
     }
 
-    size_t len = length();
+    ScamValue hack = const_cast<ScamValue>(dynamic_cast<ConstScamValue>(this));
+    size_t len = length(hack);
     size_t otherIdx = len+1;
 
     for ( size_t thisIdx = 0 ; thisIdx < len ; ++thisIdx ) {

@@ -4,6 +4,7 @@
 #include "ScamEngine.hpp"
 #include "expr/ScamExpr.hpp"
 #include "expr/ScamSymbol.hpp"
+#include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
 #include "form/LetStar.hpp"
 #include "form/LetStarBacktracker.hpp"
@@ -53,20 +54,20 @@ void LetStarCont::do_let(ScamValue expr)
         final_eval(env);
     }
     else {
-        ScamEnvKeyType sym = dynamic_cast<ScamSymbol *>(formals->getCar());
+        ScamEnvKeyType sym = dynamic_cast<ScamSymbol *>(getCar(formals));
         env->put(sym, expr);
 
         makeBacktracker(sym);
 
         ScamValue safe = LetStar::safeCons(rest);
         Continuation * ch =
-            standardMemoryManager.make<LetStarCont>(formals->getCdr(),
-                                                    safe->getCdr(),
+            standardMemoryManager.make<LetStarCont>(getCdr(formals),
+                                                    getCdr(safe),
                                                     forms,
                                                     cont,
                                                     env,
                                                     engine);
-        safe->getCar()->eval(ch, env);
+        getCar(safe)->eval(ch, env);
     }
 }
 

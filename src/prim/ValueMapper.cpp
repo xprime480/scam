@@ -3,6 +3,7 @@
 #include "expr/ScamExpr.hpp"
 #include "expr/ScamDict.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
 
 using namespace std;
@@ -10,7 +11,7 @@ using namespace scam;
 
 ScamValue ValueMapper::map_dict(ScamValue expr)
 {
-    if ( 0u == expr->length() ) {
+    if ( 0u == length(expr) ) {
         return expr;
     }
 
@@ -33,10 +34,10 @@ ScamValue ValueMapper::map_dict(ScamValue expr)
 ScamValue ValueMapper::map_vector(ScamValue expr)
 {
     ExprVec newExprs;
-    size_t const len = expr->length();
+    size_t const len = length(expr);
 
     for ( size_t idx = 0 ; idx < len ; ++idx ) {
-        ScamValue val = expr->nthcar(idx);
+        ScamValue val = nthcar(expr, idx);
         ScamValue newVal = map_value(val);
         newExprs.push_back(newVal);
     }
@@ -47,8 +48,8 @@ ScamValue ValueMapper::map_vector(ScamValue expr)
 
 ScamValue ValueMapper::map_cons(ScamValue expr)
 {
-    ScamValue head = expr->nthcar(0);
-    ScamValue tail = expr->nthcdr(0);
+    ScamValue head = nthcar(expr, 0);
+    ScamValue tail = nthcdr(expr, 0);
     ScamValue newHead = map_value(head);
     ScamValue newTail = map_value(tail);
     return ExpressionFactory::makeCons(newHead, newTail);

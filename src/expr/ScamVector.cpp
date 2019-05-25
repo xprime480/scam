@@ -2,6 +2,7 @@
 
 #include "WorkQueue.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
 
 using namespace scam;
@@ -16,24 +17,6 @@ ScamVector::ScamVector(ExprVec const & elts)
 ScamVector * ScamVector::makeInstance(ExprVec const & elts)
 {
     return new ScamVector(elts);
-}
-
-size_t ScamVector::length() const
-{
-    return VECTOR(this).size();
-}
-
-ScamValue ScamVector::nthcar(size_t n) const
-{
-    if ( n >= length() ) {
-        return ExpressionFactory::makeError("Requested index ",
-                                            n,
-                                            " of a ",
-                                            length(),
-                                            "-element vector");
-    }
-
-    return VECTOR(this)[n];
 }
 
 bool ScamVector::equals(ConstScamValue expr) const

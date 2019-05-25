@@ -1,5 +1,7 @@
 #include "TestBase.hpp"
 
+#include "expr/SequenceOps.hpp"
+
 using namespace std;
 using namespace scam;
 
@@ -36,7 +38,7 @@ TEST_F(EvalTest, QuoteIgnoresUnquote)
     ScamValue expr = parseAndEvaluate("',(+ 2 2)");
     expectList(expr, "(unquote (+ 2 2))", 2);
 
-    ScamValue inner = expr->nthcar(1);
+    ScamValue inner = nthcar(expr, 1);
     expectList(inner, "(+ 2 2)", 3);
 }
 

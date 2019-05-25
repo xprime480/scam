@@ -4,6 +4,7 @@
 #include "Env.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamExpr.hpp"
+#include "expr/SequenceOps.hpp"
 #include "input/BindFormParser.hpp"
 #include "input/LetParser.hpp"
 
@@ -36,9 +37,9 @@ void LetBaseWorker::run()
     Worker::run();
 
     ScamValue parsed  = parse_args();
-    ScamValue formals = parsed->getCar()->getCar();
-    ScamValue values  = parsed->getCar()->getCdr();
-    ScamValue forms   = parsed->getCdr();
+    ScamValue formals = getCar(getCar(parsed));
+    ScamValue values  = getCdr(getCar(parsed));
+    ScamValue forms   = getCdr(parsed);
 
     do_next(formals, values, forms);
 }

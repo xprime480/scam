@@ -1,6 +1,7 @@
 #include "input/FunctionDefParser.hpp"
 
 #include "expr/ScamSymbol.hpp"
+#include "expr/SequenceOps.hpp"
 #include "input/CountedListParser.hpp"
 #include "input/LambdaParser.hpp"
 
@@ -48,7 +49,7 @@ bool FunctionDefParser::accept(ScamValue expr)
         return false;
     }
 
-    if ( ! lambda->accept(expr->nthcdr(0)) ) {
+    if ( ! lambda->accept(nthcdr(expr, 0)) ) {
         return false;
     }
 

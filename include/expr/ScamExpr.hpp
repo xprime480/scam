@@ -24,13 +24,6 @@ namespace scam
 
         virtual void mapEval(Continuation * cont, Env * env) const;
 
-        virtual ScamValue getCar() const;
-        virtual ScamValue getCdr() const;
-
-        virtual size_t length() const;
-        virtual ScamValue nthcar(size_t n) const;
-        virtual ScamValue nthcdr(size_t n) const;
-
         virtual ScamValue withEnvUpdate(Env * updated) const;
 
         virtual bool equals(ConstScamValue expr) const;

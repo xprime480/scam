@@ -4,6 +4,7 @@
 #include "Env.hpp"
 #include "expr/ScamExpr.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
 #include "form/QQSpliceCont.hpp"
 #include "form/QQConsListCarCont.hpp"
@@ -48,7 +49,7 @@ void QuasiQuoteWorker::run()
 
 bool QuasiQuoteWorker::verify_single_form(ScamValue input, Continuation * cont)
 {
-    if ( ! isList(input) || 1 != input->length() ) {
+    if ( ! isList(input) || 1 != length(input) ) {
         failedArgParseMessage(myName, "form", input, cont);
         return false;
     }
@@ -58,7 +59,7 @@ bool QuasiQuoteWorker::verify_single_form(ScamValue input, Continuation * cont)
 void QuasiQuoteWorker::unquote_form(ScamValue input, Continuation * cont)
 {
     if ( verify_single_form(input, cont) ) {
-        ScamValue form = input->nthcar(0);
+        ScamValue form = nthcar(input, 0);
         form->eval(cont, env);
     }
 }
@@ -69,7 +70,7 @@ void QuasiQuoteWorker::splice_form(ScamValue input, Continuation * cont)
         Continuation * h =
             standardMemoryManager.make<QQSpliceCont>(cont);
 
-        ScamValue form = input->nthcar(0);
+        ScamValue form = nthcar(input, 0);
         form->eval(h, env);
     }
 }
@@ -85,8 +86,8 @@ void QuasiQuoteWorker::cons_qq_list(ScamValue car,
 
 void QuasiQuoteWorker::build_qq_list(ScamValue input, Continuation * cont)
 {
-    ScamValue first = input->nthcar(0);
-    ScamValue rest  = input->nthcdr(0);
+    ScamValue first = nthcar(input, 0);
+    ScamValue rest  = nthcdr(input, 0);
 
     const bool isSym = isSymbol(first);
     string const sym = writeValue(first);

@@ -2,6 +2,7 @@
 
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamSymbol.hpp"
+#include "expr/SequenceOps.hpp"
 #include "input/SequenceParser.hpp"
 #include "input/CountedListParser.hpp"
 
@@ -48,7 +49,7 @@ bool SymbolPlusManyParser::accept(ScamValue expr)
         return false;
     }
 
-    forms = expr->getCdr();
+    forms = getCdr(expr);
 
     callback(expr);
     return true;

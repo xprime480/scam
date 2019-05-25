@@ -3,6 +3,7 @@
 #include "Continuation.hpp"
 #include "ScamException.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
 #include "input/ListParser.hpp"
 #include "util/ArgListHelper.hpp"
@@ -85,9 +86,9 @@ namespace
 
     ScamValue any(ScamValue args)
     {
-        const size_t len = args->length();
+        const size_t len = length(args);
         for ( size_t idx = 0 ; idx < len ; ++idx ) {
-            if ( truth(args->nthcar(idx)) ) {
+            if ( truth(nthcar(args, idx)) ) {
                 return yes;
             }
         }

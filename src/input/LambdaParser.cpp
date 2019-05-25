@@ -2,6 +2,7 @@
 
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamExpr.hpp"
+#include "expr/SequenceOps.hpp"
 #include "input/CountedListParser.hpp"
 #include "input/ParameterListParser.hpp"
 
@@ -57,7 +58,7 @@ bool LambdaParser::accept(ScamValue expr)
     for ( size_t idx = 1u ; idx < count ; ++idx ) {
         forms.push_back(temp->get(idx));
     }
-    formList = expr->nthcdr(0);
+    formList = nthcdr(expr, 0);
 
     callback(expr);
     return true;
