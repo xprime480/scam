@@ -38,14 +38,3 @@ void ScamSymbol::eval(Continuation * cont, Env * env) const
 
     cont->run(evaluated);
 }
-
-bool ScamSymbol::equals(ConstScamValue expr) const
-{
-    if ( ! isSymbol(expr) ) {
-        return false;
-    }
-
-    return STRVAL(this) == STRVAL(expr);
-}
-
-

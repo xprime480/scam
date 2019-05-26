@@ -1,6 +1,7 @@
 #include "expr/ExtendedNumeric.hpp"
 
 #include "ScamException.hpp"
+#include "expr/EqualityOps.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamExpr.hpp"
 #include "expr/ScamToInternal.hpp"
@@ -67,7 +68,7 @@ bool scam::operator==(const ExtendedNumeric & a, const ExtendedNumeric & b)
         return false;
     }
 
-    const bool rv = dA->equals(dB);
+    const bool rv = equals(dA, dB);
     return rv;
 }
 

@@ -33,12 +33,3 @@ void ScamCons::mapEval(Continuation * cont, Env * env) const
 {
     workQueueHelper<MapWorker>(cont, env, CAR(this), CDR(this));
 }
-
-bool ScamCons::equals(ConstScamValue expr) const
-{
-    if ( ! isCons(expr) ) {
-        return false;
-    }
-
-    return (CAR(this)->equals(CAR(expr)) && CDR(this)->equals(CDR(expr)));
-}

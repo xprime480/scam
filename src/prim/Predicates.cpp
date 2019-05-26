@@ -32,15 +32,10 @@ namespace
     {                                                           \
         return new cls();                                       \
     }                                                           \
-    void cls::applyArgs(ScamValue args, Continuation * cont)   \
+    void cls::applyArgs(ScamValue args, Continuation * cont)    \
     {                                                           \
         apply_predicate(label, pred, args, cont);               \
-    }                                                           \
-    bool cls::equals(ConstScamValue expr) const                \
-    {                                                           \
-        return ( expr && writeValue(expr) == label );           \
     }
-
 
 DEFINE_PREDICATE(NilP, "nil?", &isNil)
 DEFINE_PREDICATE(ErrorP, "error?", &error)

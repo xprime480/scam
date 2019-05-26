@@ -23,8 +23,6 @@ namespace scam
         void
         apply(ScamValue args, Continuation * cont, Env * env) override;
 
-        bool equals(ConstScamValue expr) const override;
-
         bool has(ScamValue key) const;
         ScamValue get(ScamValue key) const;
         ScamValue put(ScamValue key, ScamValue val);

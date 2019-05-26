@@ -39,12 +39,6 @@ void EqualP::applyArgs(ScamValue args, Continuation * cont)
     }
 }
 
-bool EqualP::equals(ConstScamValue expr) const
-{
-    EqualP const * that = dynamic_cast<EqualP const *>(expr);
-    return ( that && (writeValue(this) == writeValue(that)) );
-}
-
 namespace
 {
     static ScamValue const yes = ExpressionFactory::makeBoolean(true);
@@ -120,7 +114,7 @@ namespace
 
         for ( size_t idx = 1 ; idx < len ; ++idx ) {
             ScamValue op = parser->get(idx);
-            if ( ! first->equals(op) ) {
+            if ( ! equals(first, op) ) {
                 return false;
             }
         }

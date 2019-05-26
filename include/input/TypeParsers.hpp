@@ -3,6 +3,7 @@
 
 #include "input/ArgParser.hpp"
 
+#include "expr/EqualityOps.hpp"
 #include "expr/ExprFwd.hpp"
 #include "util/MemoryManager.hpp"
 
@@ -50,7 +51,8 @@ namespace scam
             }
 
             if ( target ) {
-                const bool matches = invert ^ target->equals(expr);
+                auto hack = const_cast<ScamExpr *>(dynamic_cast<const ScamExpr *>(target));
+                const bool matches = invert ^ equals(hack, expr);
                 if ( ! matches  ) {
                     return false;
                 }

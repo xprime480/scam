@@ -113,45 +113,6 @@ ScamNumeric::makeInstance(int value, bool exact, bool managed)
     return new ScamNumeric(value, exact, managed);
 }
 
-bool ScamNumeric::equals(ConstScamValue expr) const
-{
-    if ( ! isNumeric(expr) ) {
-        return false;
-    }
-
-    if ( isNaN(this) || isNaN(expr) ) {
-        return isNaN(this) && isNaN(expr);
-    }
-    if ( isNegInf(this) || isNegInf(expr) ) {
-        return isNegInf(this) && isNegInf(expr);
-    }
-    if ( isPosInf(this) || isPosInf(expr) ) {
-        return isPosInf(this) && isPosInf(expr);
-    }
-
-    ScamValue thisV = const_cast<ScamValue>(dynamic_cast<ConstScamValue>(this));
-    ScamValue thatV = const_cast<ScamValue>(expr);
-    ScamValue thisH = realPart(thisV);
-    ScamValue thatH = realPart(thatV);
-
-    const double thisR = asDouble(thisH);
-    const double thatR = asDouble(thatH);
-
-    if ( ::fabs(thisR- thatR) > 1e-9 ) {
-        return false;
-    }
-
-    if ( isPureComplex(this) || isPureComplex(expr) ) {
-        const double thisI = asDouble(imagPart(thisV));
-        const double thatI = asDouble(imagPart(thatV));
-        if ( ::fabs(thisI- thatI) > 1e-9 ) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
 ScamValue scam::realPart(ScamValue data)
 {
     if ( ! isNumeric(data) ) {

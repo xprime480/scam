@@ -1,6 +1,7 @@
 #include "prim/MatchUnifyCommon.hpp"
 
 #include "Continuation.hpp"
+#include "expr/EqualityOps.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamDict.hpp"
 #include "expr/ScamExpr.hpp"
@@ -45,7 +46,7 @@ ScamValue MatchUnifyCommon::check_ignore(ScamDict * dict,
     static ScamValue ignore =
         ExpressionFactory::makeKeyword("::", false);
 
-    if ( ignore->equals(lhs) || ignore->equals(rhs) ) {
+    if ( equals(ignore, lhs) || equals(ignore, rhs) ) {
         return dict;
     }
 
@@ -56,7 +57,7 @@ ScamValue MatchUnifyCommon::check_literals(ScamDict * dict,
                                             ScamValue lhs,
                                             ScamValue rhs)
 {
-    if ( lhs->equals(rhs) ) {
+    if ( equals(lhs, rhs) ) {
         return dict;
     }
 
@@ -72,7 +73,7 @@ ScamValue MatchUnifyCommon::check_keyword(ScamDict * dict,
         if ( error(old) ) {
             dict->put(lhs, rhs);
         }
-        else if ( ! old->equals(rhs) ) {
+        else if ( ! equals(old, rhs) ) {
             stringstream s;
             s << "Previous data for pattern " << writeValue(lhs)
               << " was '" << writeValue(old)

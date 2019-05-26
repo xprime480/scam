@@ -21,8 +21,6 @@ namespace scam
         apply(ScamValue args, Continuation * cont, Env * env);
 
         virtual void mapEval(Continuation * cont, Env * env) const;
-
-        virtual bool equals(ConstScamValue expr) const;
     };
 }
 

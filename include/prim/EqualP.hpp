@@ -15,8 +15,6 @@ namespace scam
     public:
         static EqualP * makeInstance();
         void applyArgs(ScamValue args, Continuation * cont) override;
-
-        bool equals(ConstScamValue expr) const override;
     };
 }
 

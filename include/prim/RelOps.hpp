@@ -17,8 +17,6 @@ namespace scam
 
         void applyArgs(ScamValue args, Continuation * cont) override;
 
-        bool equals(ConstScamValue expr) const override;
-
     private:
         std::shared_ptr<OpImpl> impl;
     };

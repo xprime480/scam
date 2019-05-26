@@ -20,8 +20,6 @@ namespace scam
 
         void applyArgs(ScamValue args, Continuation * cont) override;
 
-        bool equals(ConstScamValue expr) const override;
-
     private:
         NumericalAlgorithm algo;
     };

@@ -32,11 +32,6 @@ void MathOp::applyArgs(ScamValue args, Continuation * cont)
     }
 }
 
-bool MathOp::equals(ConstScamValue expr) const
-{
-    return ( expr && writeValue(this) == writeValue(expr) );
-}
-
 namespace
 {
     ExtendedNumeric

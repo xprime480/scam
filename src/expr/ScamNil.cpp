@@ -16,8 +16,3 @@ ScamNil * ScamNil::makeInstance()
     static ScamNil nil;
     return &nil;
 }
-
-bool ScamNil::equals(ConstScamValue expr) const
-{
-    return ( expr && isNil(expr) );
-}

@@ -11,9 +11,6 @@ namespace scam
         friend class MemoryManager;
         ScamCharacter(const std::string & value);
         static ScamCharacter * makeInstance(const std::string & value);
-
-    public:
-        bool equals(ConstScamValue expr) const override;
     };
 }
 

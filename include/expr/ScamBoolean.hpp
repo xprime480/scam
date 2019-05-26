@@ -11,9 +11,6 @@ namespace scam
         friend class MemoryManager;
         ScamBoolean(bool value);
         static ScamBoolean * makeInstance(bool value);
-
-    public:
-        bool equals(ConstScamValue expr) const override;
     };
 }
 

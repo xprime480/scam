@@ -23,8 +23,3 @@ void ScamNull::eval(Continuation * cont, Env * env) const
     static ScamValue expr = ExpressionFactory::makeError(msg, false);
     cont->run(expr);
 }
-
-bool ScamNull::equals(ConstScamValue expr) const
-{
-    return false;
-}

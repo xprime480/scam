@@ -39,9 +39,3 @@ void ScamExpr::mapEval(Continuation * cont, Env * env) const
     ScamExpr * hack = const_cast<ScamExpr *>(this);
     cont->run(hack);
 }
-
-bool ScamExpr::equals(ConstScamValue expr) const
-{
-    return this == expr;
-}
-

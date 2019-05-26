@@ -40,7 +40,7 @@ protected:
 
         ASSERT_TRUE(accept);
         ScamValue saved = parser->getValue();
-        EXPECT_TRUE(value->equals(saved));
+        EXPECT_TRUE(equals(value, saved));
     }
 
     void rejectParse(ArgParser * parser, const char * text)

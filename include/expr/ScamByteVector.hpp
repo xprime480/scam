@@ -15,9 +15,6 @@ namespace scam
         friend class MemoryManager;
         ScamByteVector(ByteVec const & elts);
         static ScamByteVector * makeInstance(ByteVec const & elts);
-
-    public:
-        bool equals(ConstScamValue expr) const override;
     };
 }
 

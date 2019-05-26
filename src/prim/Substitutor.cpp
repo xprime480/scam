@@ -60,7 +60,7 @@ bool Substitutor::have_seen(ScamValue expr)
 {
     ScamValue t = helper;
     while ( ! isNil(t) ) {
-        if ( nthcar(t, 0)->equals(expr) ) {
+        if ( equals(nthcar(t, 0), expr) ) {
             return true;
         }
         t = nthcdr(t, 0);

@@ -15,12 +15,3 @@ ScamCharacter * ScamCharacter::makeInstance(const string & value)
 {
     return new ScamCharacter(value);
 }
-
-bool ScamCharacter::equals(ConstScamValue expr) const
-{
-    if ( ! isChar(expr) ) {
-        return false;
-    }
-
-    return CHARVAL(this) == CHARVAL(expr);
-}

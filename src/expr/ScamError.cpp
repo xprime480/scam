@@ -15,13 +15,3 @@ ScamError * ScamError::makeInstance(char const * msg, bool managed)
 {
     return new ScamError(msg, managed);
 }
-
-bool ScamError::equals(ConstScamValue expr) const
-{
-    if ( ! error(expr) ) {
-        return false;
-    }
-
-    return STRVAL(this) == STRVAL(expr);
-}
-

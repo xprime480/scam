@@ -15,13 +15,3 @@ ScamString * ScamString::makeInstance(std::string const & value)
 {
     return new ScamString(value);
 }
-
-bool ScamString::equals(ConstScamValue expr) const
-{
-    if ( ! isString(expr) ) {
-        return false;
-    }
-
-    return STRVAL(this) == STRVAL(expr);
-}
-

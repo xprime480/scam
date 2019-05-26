@@ -32,12 +32,6 @@ void CompareOp::applyArgs(ScamValue args, Continuation * cont)
     }
 }
 
-
-bool CompareOp::equals(ConstScamValue expr) const
-{
-    return ( expr && writeValue(this) == writeValue(expr) );
-}
-
 namespace
 {
     template <typename T>

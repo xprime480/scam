@@ -38,9 +38,6 @@ namespace scam
 
         static ScamNumeric *
         makeInstance(int value, bool exact, bool managed = true);
-
-    public:
-        bool equals(ConstScamValue expr) const override;
     };
 
     extern ScamValue realPart(ScamValue data);

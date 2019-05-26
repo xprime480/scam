@@ -1,6 +1,7 @@
 #include "expr/ScamDict.hpp"
 
 #include "Continuation.hpp"
+#include "expr/EqualityOps.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
@@ -54,22 +55,29 @@ void ScamDict::apply(ScamValue args, Continuation * cont, Env * env)
     const ScamKeyword * op = parser->getParsedOp();
     ScamValue rv = nullptr;
 
-    if ( op->equals(DictOpsParser::getOp) ) {
+    auto opHack =  const_cast<ScamExpr *>(dynamic_cast<const ScamExpr *>(op));
+    auto getHack = const_cast<ScamExpr *>(dynamic_cast<const ScamExpr *>(DictOpsParser::getOp));
+    auto putHack = const_cast<ScamExpr *>(dynamic_cast<const ScamExpr *>(DictOpsParser::putOp));
+    auto lenHack = const_cast<ScamExpr *>(dynamic_cast<const ScamExpr *>(DictOpsParser::lenOp));
+    auto hasHack = const_cast<ScamExpr *>(dynamic_cast<const ScamExpr *>(DictOpsParser::hasOp));
+    auto remHack = const_cast<ScamExpr *>(dynamic_cast<const ScamExpr *>(DictOpsParser::remOp));
+
+    if ( equals(opHack, getHack) ) {
         rv = get(parser->getOpKey());
     }
-    else if ( op->equals(DictOpsParser::putOp) ) {
+    else if ( equals(opHack, putHack) ) {
         /* this is potentially UB so revisit this soon!! */
         ScamValue val = parser->getOpVal();
         rv = put(parser->getOpKey(), val);
     }
-    else if ( op->equals(DictOpsParser::lenOp) ) {
+    else if ( equals(opHack, lenHack) ) {
         rv = ExpressionFactory::makeInteger(length(this), true);
     }
-    else if ( op->equals(DictOpsParser::hasOp) ) {
+    else if ( equals(opHack, hasHack) ) {
         const bool b = has(parser->getOpKey());
         rv = ExpressionFactory::makeBoolean(b);
     }
-    else if ( op->equals(DictOpsParser::remOp) ) {
+    else if ( equals(opHack, remHack) ) {
         rv = remove(parser->getOpKey());
     }
     else {
@@ -80,44 +88,10 @@ void ScamDict::apply(ScamValue args, Continuation * cont, Env * env)
     cont->run(rv);
 }
 
-bool ScamDict::equals(ConstScamValue expr) const
-{
-    if ( ! isDict(expr) ) {
-        return false;
-    }
-
-    if ( DICTKEYS(this).size() != DICTKEYS(expr).size() ) {
-        return false;
-    }
-
-    ScamValue hack = const_cast<ScamValue>(dynamic_cast<ConstScamValue>(this));
-    size_t len = length(hack);
-    size_t otherIdx = len+1;
-
-    for ( size_t thisIdx = 0 ; thisIdx < len ; ++thisIdx ) {
-        ScamValue myKey = DICTKEYS(this)[thisIdx];
-        for ( otherIdx = 0 ; otherIdx < len ; ++otherIdx ) {
-            if ( DICTKEYS(expr)[otherIdx]->equals(myKey) ) {
-                ScamValue myVal = DICTVALS(this)[thisIdx];
-                if ( ! DICTVALS(expr)[otherIdx]->equals(myVal) ) {
-                    return false;
-                }
-                break;
-            }
-        }
-        if ( otherIdx >= len ) {
-            return false;
-        }
-    }
-
-    return true;
-
-}
-
 bool ScamDict::has(ScamValue key) const
 {
     for ( size_t jdx = 0 ; jdx < DICTKEYS(this).size() ; ++jdx ) {
-        if ( DICTKEYS(this)[jdx]->equals(key) ) {
+        if ( equals(DICTKEYS(this)[jdx], key) ) {
             return true;
         }
     }
@@ -128,7 +102,7 @@ bool ScamDict::has(ScamValue key) const
 ScamValue ScamDict::get(ScamValue key) const
 {
     for ( size_t jdx = 0 ; jdx < DICTKEYS(this).size() ; ++jdx ) {
-        if ( DICTKEYS(this)[jdx]->equals(key) ) {
+        if ( equals(DICTKEYS(this)[jdx], key) ) {
             return DICTVALS(this)[jdx];
         }
     }
@@ -143,7 +117,7 @@ ScamValue ScamDict::put(ScamValue key, ScamValue val)
     size_t prev = DICTKEYS(this).size();
 
     for ( size_t jdx = 0 ; jdx < DICTKEYS(this).size() ; ++jdx ) {
-        if ( DICTKEYS(this)[jdx]->equals(key) ) {
+        if ( equals(DICTKEYS(this)[jdx], key) ) {
             prev = jdx;
             break;
         }
@@ -165,7 +139,7 @@ ScamValue ScamDict::remove(ScamValue key)
     ScamValue rv = ExpressionFactory::makeNil();
 
     for ( size_t jdx = 0 ; jdx < DICTKEYS(this).size() ; ++jdx ) {
-        if ( DICTKEYS(this)[jdx]->equals(key) ) {
+        if ( equals(DICTKEYS(this)[jdx], key) ) {
             DICTKEYS(this).erase(DICTKEYS(this).begin() + jdx);
             rv = DICTVALS(this)[jdx];
             DICTVALS(this).erase(DICTVALS(this).begin() + jdx);

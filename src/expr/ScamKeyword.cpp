@@ -15,13 +15,3 @@ ScamKeyword * ScamKeyword::makeInstance(std::string const & value, bool managed)
 {
     return new ScamKeyword(value, managed);
 }
-
-bool ScamKeyword::equals(ConstScamValue expr) const
-{
-    if ( ! isKeyword(expr) ) {
-        return false;
-    }
-
-    return STRVAL(this) == STRVAL(expr);
-}
-

@@ -12,9 +12,6 @@ namespace scam
         ScamKeyword(std::string const & value, bool managed = true);
         static ScamKeyword * makeInstance(std::string const & value,
                                           bool managed = true);
-
-    public:
-        bool equals(ConstScamValue expr) const override;
     };
 }
 

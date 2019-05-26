@@ -19,12 +19,3 @@ ScamBoolean * ScamBoolean::makeInstance(bool value)
 
     return value ? &yes : &no;
 }
-
-bool ScamBoolean::equals(ConstScamValue expr) const
-{
-    if ( ! isBoolean(expr) ) {
-        return false;
-    }
-
-    return BOOLVAL(this) == BOOLVAL(expr);
-}
