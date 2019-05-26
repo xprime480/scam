@@ -2,7 +2,7 @@
 
 #include "Continuation.hpp"
 #include "expr/EvalOps.hpp"
-#include "expr/ScamExpr.hpp"
+#include "expr/ScamData.hpp"
 #include "form/CallCont.hpp"
 #include "input/SingletonParser.hpp"
 #include "util/ArgListHelper.hpp"

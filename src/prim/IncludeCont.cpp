@@ -1,7 +1,7 @@
 #include "prim/IncludeCont.hpp"
 
 #include "WorkQueue.hpp"
-#include "expr/ScamExpr.hpp"
+#include "expr/ScamData.hpp"
 #include "expr/TypePredicates.hpp"
 #include "input/IncludeParser.hpp"
 #include "prim/IncludeWorker.hpp"

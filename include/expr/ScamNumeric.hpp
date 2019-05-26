@@ -1,14 +1,11 @@
 #if ! defined(SCAMNUMERIC_H)
 #define SCAMNUMERIC_H 1
 
-#include "expr/ScamExpr.hpp"
 #include "expr/ScamData.hpp"
-
-#include <string>
 
 namespace scam
 {
-    class ScamNumeric : public ScamExpr
+    class ScamNumeric : public ScamData
     {
     private:
         friend class MemoryManager;

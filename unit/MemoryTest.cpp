@@ -7,7 +7,7 @@
 #include "Extractor.hpp"
 #include "WorkQueue.hpp"
 #include "Worker.hpp"
-#include "expr/ScamExprAll.hpp"
+#include "expr/ScamValueAll.hpp"
 #include "input/ClassDefParser.hpp"
 #include "util/MemoryManager.hpp"
 

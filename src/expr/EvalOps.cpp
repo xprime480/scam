@@ -10,7 +10,7 @@
 #include "expr/ExpressionFactory.hpp"
 #include "expr/InstanceCont.hpp"
 #include "expr/MapWorker.hpp"
-#include "expr/ScamExpr.hpp"
+#include "expr/ScamData.hpp"
 #include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueWriter.hpp"
@@ -59,7 +59,7 @@ void scam::eval(ScamValue value, Continuation * cont, Env * env)
 
     else {
         // default case
-        ScamExpr * hack = const_cast<ScamExpr *>(value);
+        ScamData * hack = const_cast<ScamData *>(value);
         cont->run(hack);
     }
 }
@@ -114,12 +114,12 @@ void scam::apply(ScamValue value,
         const ScamKeyword * op = parser->getParsedOp();
         ScamValue rv = nullptr;
 
-        auto opHack =  const_cast<ScamExpr *>(dynamic_cast<const ScamExpr *>(op));
-        auto getHack = const_cast<ScamExpr *>(dynamic_cast<const ScamExpr *>(DictOpsParser::getOp));
-        auto putHack = const_cast<ScamExpr *>(dynamic_cast<const ScamExpr *>(DictOpsParser::putOp));
-        auto lenHack = const_cast<ScamExpr *>(dynamic_cast<const ScamExpr *>(DictOpsParser::lenOp));
-        auto hasHack = const_cast<ScamExpr *>(dynamic_cast<const ScamExpr *>(DictOpsParser::hasOp));
-        auto remHack = const_cast<ScamExpr *>(dynamic_cast<const ScamExpr *>(DictOpsParser::remOp));
+        auto opHack =  const_cast<ScamData *>(dynamic_cast<const ScamData *>(op));
+        auto getHack = const_cast<ScamData *>(dynamic_cast<const ScamData *>(DictOpsParser::getOp));
+        auto putHack = const_cast<ScamData *>(dynamic_cast<const ScamData *>(DictOpsParser::putOp));
+        auto lenHack = const_cast<ScamData *>(dynamic_cast<const ScamData *>(DictOpsParser::lenOp));
+        auto hasHack = const_cast<ScamData *>(dynamic_cast<const ScamData *>(DictOpsParser::hasOp));
+        auto remHack = const_cast<ScamData *>(dynamic_cast<const ScamData *>(DictOpsParser::remOp));
 
         auto dictHack = dynamic_cast<ScamDict *>(value);
 
@@ -202,7 +202,7 @@ void scam::mapEval(ScamValue value, Continuation * cont, Env * env)
 
     else {
         // default case
-        ScamExpr * hack = const_cast<ScamExpr *>(value);
+        ScamData * hack = const_cast<ScamData *>(value);
         cont->run(hack);
     }
 }

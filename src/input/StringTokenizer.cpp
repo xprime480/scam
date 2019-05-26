@@ -1,6 +1,6 @@
 #include "input/StringTokenizer.hpp"
 
-#include "expr/ScamExpr.hpp"
+#include "expr/ScamData.hpp"
 #include "expr/TypePredicates.hpp"
 #include "input/Token.hpp"
 #include "util/NumericConverter.hpp"

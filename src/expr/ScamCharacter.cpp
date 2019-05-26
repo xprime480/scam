@@ -6,7 +6,7 @@ using namespace scam;
 using namespace std;
 
 ScamCharacter::ScamCharacter(const string & value)
-    : ScamExpr(ScamData::Character)
+    : ScamData(ScamData::Character)
 {
     CHARVAL(this) = 0 == value.size() ? '\0' : value[value.size() - 1];
 }

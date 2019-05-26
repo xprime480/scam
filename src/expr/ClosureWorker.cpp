@@ -4,7 +4,7 @@
 #include "Env.hpp"
 #include "expr/ClosureBindCont.hpp"
 #include "expr/EvalOps.hpp"
-#include "expr/ScamExpr.hpp"
+#include "expr/ScamData.hpp"
 #include "input/LambdaParser.hpp"
 #include "util/MemoryManager.hpp"
 

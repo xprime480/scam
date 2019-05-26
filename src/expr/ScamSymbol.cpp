@@ -11,7 +11,7 @@ using namespace scam;
 using namespace std;
 
 ScamSymbol::ScamSymbol(string const & value, bool managed)
-    : ScamExpr(ScamData::Symbol, managed)
+    : ScamData(ScamData::Symbol, managed)
 {
     STRVAL(this) = value;
 }

@@ -5,7 +5,7 @@
 #include "expr/ClassCont.hpp"
 #include "expr/EvalOps.hpp"
 #include "expr/ScamClass.hpp"
-#include "expr/ScamExpr.hpp"
+#include "expr/ScamData.hpp"
 #include "util/MemoryManager.hpp"
 
 using namespace scam;

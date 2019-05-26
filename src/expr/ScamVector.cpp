@@ -9,7 +9,7 @@ using namespace scam;
 using namespace std;
 
 ScamVector::ScamVector(ExprVec const & elts)
-    : ScamExpr(ScamData::Vector)
+    : ScamData(ScamData::Vector)
 {
     VECTOR(this) = elts;
 }

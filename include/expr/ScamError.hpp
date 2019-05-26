@@ -1,13 +1,13 @@
 #if ! defined(SCAMERROR_H)
 #define SCAMERROR_H 1
 
-#include "expr/ScamExpr.hpp"
+#include "expr/ScamData.hpp"
 
 #include <string>
 
 namespace scam
 {
-    class ScamError : public ScamExpr
+    class ScamError : public ScamData
     {
     private:
         friend class MemoryManager;

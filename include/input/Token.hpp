@@ -1,7 +1,7 @@
 #if ! defined(TOKEN_H)
 #define TOKEN_H 1
 
-#include "expr/ScamExpr.hpp"
+#include "ScamFwd.hpp"
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueWriter.hpp"
 

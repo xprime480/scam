@@ -4,7 +4,7 @@
 #include "Env.hpp"
 #include "expr/EvalOps.hpp"
 #include "expr/ExpressionFactory.hpp"
-#include "expr/ScamExpr.hpp"
+#include "expr/ScamData.hpp"
 #include "form/IFCont.hpp"
 #include "input/CountedListParser.hpp"
 #include "util/MemoryManager.hpp"

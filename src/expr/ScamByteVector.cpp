@@ -9,7 +9,7 @@ using namespace scam;
 using namespace std;
 
 ScamByteVector::ScamByteVector(ByteVec const & elts)
-    : ScamExpr(ScamData::ByteVector)
+    : ScamData(ScamData::ByteVector)
 {
     BYTEVECTOR(this) = elts;
 }

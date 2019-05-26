@@ -6,7 +6,7 @@ using namespace scam;
 using namespace std;
 
 ScamClass::ScamClass(ClassDefParser * def, Env * capture)
-    : ScamExpr(ScamData::Class)
+    : ScamData(ScamData::Class)
 {
     CLASSDEF(this) = def;
     CLASSENV(this) = capture;

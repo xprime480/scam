@@ -2,7 +2,7 @@
 
 #include "Continuation.hpp"
 #include "WorkQueue.hpp"
-#include "expr/ScamExpr.hpp"
+#include "expr/ScamData.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "form/QuasiQuoteWorker.hpp"
 #include "input/SingletonParser.hpp"

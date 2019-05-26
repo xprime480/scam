@@ -3,7 +3,7 @@
 #include "Continuation.hpp"
 #include "Env.hpp"
 #include "expr/ExpressionFactory.hpp"
-#include "expr/ScamExpr.hpp"
+#include "expr/ScamData.hpp"
 #include "form/UndefineCont.hpp"
 #include "input/UndefineParser.hpp"
 #include "util/MemoryManager.hpp"

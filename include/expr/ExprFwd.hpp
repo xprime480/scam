@@ -12,8 +12,6 @@ namespace scam
     class ScamContinuation;
     class ScamDict;
     class ScamError;
-    class ScamExpr;
-    class ScamExprAll;
     class ScamInstance;
     class ScamKeyword;
     class ScamNil;

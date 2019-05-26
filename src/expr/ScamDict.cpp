@@ -13,7 +13,7 @@ using namespace scam;
 using namespace std;
 
 ScamDict::ScamDict()
-    : ScamExpr(ScamData::Dict)
+    : ScamData(ScamData::Dict)
 {
 }
 

@@ -24,7 +24,7 @@ namespace scam
 
         bool isNumeric() const;
         size_t size() const;
-        ScamExpr * get(size_t idx) const;
+        ScamData * get(size_t idx) const;
 
     private:
         ExtendedNumericParser * num;

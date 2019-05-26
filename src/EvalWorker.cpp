@@ -3,7 +3,7 @@
 #include "Continuation.hpp"
 #include "Env.hpp"
 #include "expr/EvalOps.hpp"
-#include "expr/ScamExpr.hpp"
+#include "expr/ScamData.hpp"
 #include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
 #include "util/MemoryManager.hpp"

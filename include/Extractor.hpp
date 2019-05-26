@@ -4,7 +4,7 @@
 #include "Continuation.hpp"
 
 #include "expr/ExpressionFactory.hpp"
-#include "expr/ScamExpr.hpp"
+#include "expr/ScamData.hpp"
 
 #include <iostream>
 #include <memory>

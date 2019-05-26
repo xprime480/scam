@@ -4,7 +4,7 @@
 #include "Env.hpp"
 #include "Continuation.hpp"
 
-#include "expr/ScamExpr.hpp"
+#include "expr/ScamData.hpp"
 
 namespace scam
 {

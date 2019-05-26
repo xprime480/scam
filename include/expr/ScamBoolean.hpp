@@ -1,11 +1,11 @@
 #if ! defined(SCAMBOOLEAN_H)
 #define SCAMBOOLEAN_H 1
 
-#include "expr/ScamExpr.hpp"
+#include "expr/ScamData.hpp"
 
 namespace scam
 {
-    class ScamBoolean : public ScamExpr
+    class ScamBoolean : public ScamData
     {
     private:
         friend class MemoryManager;

@@ -7,7 +7,7 @@ using namespace scam;
 using namespace std;
 
 ScamNull::ScamNull()
-    : ScamExpr(ScamData::Null, false)
+    : ScamData(ScamData::Null, false)
 {
 }
 

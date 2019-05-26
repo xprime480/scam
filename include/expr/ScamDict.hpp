@@ -1,7 +1,7 @@
 #if ! defined(SCAMDICT_H)
 #define SCAMDICT_H 1
 
-#include "expr/ScamExpr.hpp"
+#include "expr/ScamData.hpp"
 
 #include <vector>
 
@@ -10,7 +10,7 @@ namespace scam
     using KeyVec = std::vector<ScamValue>;
     using ValVec = std::vector<ScamValue>;
 
-    class ScamDict : public ScamExpr
+    class ScamDict : public ScamData
     {
     private:
         friend class MemoryManager;

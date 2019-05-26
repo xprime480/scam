@@ -224,7 +224,7 @@ namespace scam
 
 #define SFNAMEP(data) ((data)->value.specialFormData.name)
 #define SFNAME(data) (*SFNAMEP(data))
-#define SFFUNCP(data) ((data)->value.specialFormData.func) 
+#define SFFUNCP(data) ((data)->value.specialFormData.func)
 #define SFFUNC(data) (*SFFUNCP(data))
 #define SFENGINE(data) ((data)->value.specialFormData.engine)
 

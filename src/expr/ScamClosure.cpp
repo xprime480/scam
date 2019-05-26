@@ -4,7 +4,7 @@ using namespace scam;
 using namespace std;
 
 ScamClosure::ScamClosure(const LambdaParser * parser, Env * env, bool macrolike)
-    : ScamExpr(ScamData::Closure)
+    : ScamData(ScamData::Closure)
 {
     CLOSUREDEF(this) = parser;
     CLOSUREENV(this) = env;

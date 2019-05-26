@@ -1,7 +1,7 @@
 #include "input/ArgParser.hpp"
 
 #include "expr/ExpressionFactory.hpp"
-#include "expr/ScamExpr.hpp"
+#include "expr/ScamData.hpp"
 #include "expr/TypePredicates.hpp"
 
 using namespace scam;

@@ -2,7 +2,7 @@
 
 #include "Env.hpp"
 #include "ScamEngine.hpp"
-#include "expr/ScamExpr.hpp"
+#include "expr/ScamData.hpp"
 #include "expr/TypePredicates.hpp"
 #include "form/AssignBacktracker.hpp"
 #include "util/MemoryManager.hpp"

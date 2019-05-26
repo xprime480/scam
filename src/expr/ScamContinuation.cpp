@@ -4,7 +4,7 @@ using namespace scam;
 using namespace std;
 
 ScamContinuation::ScamContinuation(Continuation * cont)
-    : ScamExpr(ScamData::Cont)
+    : ScamData(ScamData::Cont)
 {
     CONTINUATION(this) = cont;
 }

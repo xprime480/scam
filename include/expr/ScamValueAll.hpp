@@ -1,7 +1,7 @@
-#if !defined(SCAMEXPRALL_H)
-#define SCAMEXPRALL_H 1
+#if !defined(SCAMVALUEALL_H)
+#define SCAMVALUEALL_H 1
 
-#include "expr/ScamExpr.hpp"
+#include "expr/ScamData.hpp"
 
 #include "expr/ScamBoolean.hpp"
 #include "expr/ScamByteVector.hpp"

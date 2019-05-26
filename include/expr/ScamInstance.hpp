@@ -1,7 +1,7 @@
 #if ! defined(SCAMINSTANCE_H)
 #define SCAMINSTANCE_H 1
 
-#include "expr/ScamExpr.hpp"
+#include "expr/ScamData.hpp"
 
 #include "ScamFwd.hpp"
 
@@ -10,7 +10,7 @@ namespace scam
     class ScamInstanceAdapter;
     class ScamClass;
 
-    class ScamInstance : public ScamExpr
+    class ScamInstance : public ScamData
     {
     public:
         static ScamEnvKeyType parent;

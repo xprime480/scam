@@ -1,6 +1,6 @@
 #include "input/ExtendedNumericParser.hpp"
 
-#include "expr/ScamExpr.hpp"
+#include "expr/ScamData.hpp"
 #include "expr/TypePredicates.hpp"
 #include "util/MemoryManager.hpp"
 

@@ -6,7 +6,7 @@ using namespace scam;
 using namespace std;
 
 ScamError::ScamError(char const * msg, bool managed)
-    : ScamExpr(ScamData::Error, managed)
+    : ScamData(ScamData::Error, managed)
 {
     STRVAL(this) = msg;
 }

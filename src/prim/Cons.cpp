@@ -1,7 +1,7 @@
 #include "prim/Cons.hpp"
 
 #include "Continuation.hpp"
-#include "expr/ScamExpr.hpp"
+#include "expr/ScamData.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/TypePredicates.hpp"
 #include "input/CountedListParser.hpp"

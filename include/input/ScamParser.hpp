@@ -1,8 +1,7 @@
 #if ! defined(SCAMPARSER_H)
 #define SCAMPARSER_H 1
 
-#include "expr/ScamExpr.hpp"
-
+#include "ScamFwd.hpp"
 #include "input/Tokenizer.hpp"
 
 #include <string>

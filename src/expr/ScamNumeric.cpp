@@ -15,25 +15,25 @@ using namespace scam;
 using namespace std;
 
 ScamNumeric::ScamNumeric(ScamData::NaNType tag)
-    : ScamExpr(ScamData::NaN, false)
+    : ScamData(ScamData::NaN, false)
 {
     EXACT(this) = false;
 }
 
 ScamNumeric::ScamNumeric(ScamData::NegInfType tag)
-    : ScamExpr(ScamData::NegInf, false)
+    : ScamData(ScamData::NegInf, false)
 {
     EXACT(this) = false;
 }
 
 ScamNumeric::ScamNumeric(ScamData::PosInfType tag)
-    : ScamExpr(ScamData::PosInf, false)
+    : ScamData(ScamData::PosInf, false)
 {
     EXACT(this) = false;
 }
 
 ScamNumeric::ScamNumeric(ScamValue real, ScamValue imag, bool managed)
-    : ScamExpr(ScamData::Complex, managed)
+    : ScamData(ScamData::Complex, managed)
 {
     EXACT(this) = EXACT(real) && EXACT(imag);
 
@@ -48,14 +48,14 @@ ScamNumeric::ScamNumeric(ScamValue real, ScamValue imag, bool managed)
 }
 
 ScamNumeric::ScamNumeric(double value, bool exact, bool managed)
-    : ScamExpr(ScamData::Real, managed)
+    : ScamData(ScamData::Real, managed)
 {
     EXACT(this) = exact;
     REALVAL(this) = value;
 }
 
 ScamNumeric::ScamNumeric(int num, int den, bool exact, bool managed)
-    : ScamExpr(ScamData::Rational, managed)
+    : ScamData(ScamData::Rational, managed)
 {
     EXACT(this) = exact;
 
@@ -65,7 +65,7 @@ ScamNumeric::ScamNumeric(int num, int den, bool exact, bool managed)
 }
 
 ScamNumeric::ScamNumeric(int value, bool exact, bool managed)
-    : ScamExpr(ScamData::Integer, managed)
+    : ScamData(ScamData::Integer, managed)
 {
     EXACT(this) = exact;
     INTVAL(this) = value;

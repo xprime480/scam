@@ -2,7 +2,7 @@
 
 #include "Env.hpp"
 #include "expr/EvalOps.hpp"
-#include "expr/ScamExpr.hpp"
+#include "expr/ScamData.hpp"
 #include "expr/TypePredicates.hpp"
 
 using namespace scam;

@@ -10,7 +10,7 @@ using namespace scam;
 using namespace std;
 
 ScamCons::ScamCons(ScamValue car, ScamValue cdr)
-    : ScamExpr(ScamData::Cons)
+    : ScamData(ScamData::Cons)
 {
     CAR(this) = car;
     CDR(this) = cdr;

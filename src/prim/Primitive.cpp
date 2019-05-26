@@ -9,7 +9,7 @@ using namespace scam;
 using namespace std;
 
 Primitive::Primitive(string const & name)
-    : ScamExpr(ScamData::Primitive)
+    : ScamData(ScamData::Primitive)
 {
     STRVAL(this) = name;
 }

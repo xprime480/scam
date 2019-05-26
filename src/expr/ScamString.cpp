@@ -6,7 +6,7 @@ using namespace scam;
 using namespace std;
 
 ScamString::ScamString(string const & value)
-    : ScamExpr(ScamData::String)
+    : ScamData(ScamData::String)
 {
     STRVAL(this) = value;
 }

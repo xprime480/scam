@@ -1,7 +1,7 @@
 #include "Env.hpp"
 
 #include "ScamException.hpp"
-#include "expr/ScamExpr.hpp"
+#include "expr/ScamData.hpp"
 #include "expr/ScamSymbol.hpp"
 #include "expr/ValueWriter.hpp"
 #include "util/MemoryManager.hpp"

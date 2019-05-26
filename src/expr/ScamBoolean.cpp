@@ -7,7 +7,7 @@ using namespace scam;
 using namespace std;
 
 ScamBoolean::ScamBoolean(bool value)
-    : ScamExpr(ScamData::Boolean, false)
+    : ScamData(ScamData::Boolean, false)
 {
     BOOLVAL(this) = value;
 }

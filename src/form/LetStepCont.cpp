@@ -2,7 +2,7 @@
 
 #include "Env.hpp"
 #include "WorkQueue.hpp"
-#include "expr/ScamExpr.hpp"
+#include "expr/ScamData.hpp"
 #include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
 #include "form/LetEvalWorker.hpp"

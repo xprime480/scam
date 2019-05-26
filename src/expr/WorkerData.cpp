@@ -2,7 +2,7 @@
 
 #include "Continuation.hpp"
 #include "Env.hpp"
-#include "expr/ScamExpr.hpp"
+#include "expr/ScamData.hpp"
 
 using namespace scam;
 using namespace std;

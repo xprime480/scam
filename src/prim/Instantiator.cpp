@@ -1,7 +1,7 @@
 #include "prim/Instantiator.hpp"
 
 #include "expr/ExpressionFactory.hpp"
-#include "expr/ScamExpr.hpp"
+#include "expr/ScamData.hpp"
 #include "expr/TypePredicates.hpp"
 #include "input/SingletonParser.hpp"
 

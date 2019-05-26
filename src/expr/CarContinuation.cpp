@@ -2,7 +2,7 @@
 
 #include "WorkQueue.hpp"
 #include "expr/MapCdr.hpp"
-#include "expr/ScamExpr.hpp"
+#include "expr/ScamData.hpp"
 #include "expr/TypePredicates.hpp"
 
 using namespace scam;

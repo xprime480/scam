@@ -3,7 +3,7 @@
 #include "Continuation.hpp"
 #include "EvalWorker.hpp"
 #include "WorkQueue.hpp"
-#include "expr/ScamExpr.hpp"
+#include "expr/ScamData.hpp"
 #include "expr/TypePredicates.hpp"
 
 using namespace scam;

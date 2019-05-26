@@ -1,6 +1,6 @@
 #include "expr/EqualityOps.hpp"
 
-#include "expr/ScamExpr.hpp"
+#include "expr/ScamData.hpp"
 #include "expr/ScamNumeric.hpp"
 #include "expr/ScamToInternal.hpp"
 #include "expr/SequenceOps.hpp"

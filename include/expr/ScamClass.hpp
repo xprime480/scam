@@ -1,7 +1,7 @@
 #if ! defined(SCAMCLASS_H)
 #define SCAMCLASS_H 1
 
-#include "expr/ScamExpr.hpp"
+#include "expr/ScamData.hpp"
 
 namespace scam
 {
@@ -9,7 +9,7 @@ namespace scam
     class Env;
     class ScamClassAdapter;
 
-    class ScamClass : public ScamExpr
+    class ScamClass : public ScamData
     {
     private:
         friend class MemoryManager;

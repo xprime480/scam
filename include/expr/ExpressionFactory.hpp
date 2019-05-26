@@ -1,7 +1,7 @@
 #if ! defined(EXPRESSIONFACTORY_H)
 #define EXPRESSIONFACTORY_H 1
 
-#include "expr/ScamExprAll.hpp"
+#include "expr/ScamValueAll.hpp"
 #include "input/LambdaParser.hpp"
 #include "util/MemoryManager.hpp"
 

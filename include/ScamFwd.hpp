@@ -7,15 +7,15 @@ namespace scam
     class Env;
     class MemoryManager;
     class ScamEngine;
-    class ScamExpr;
+    class ScamData;
 
     /* at some point in the future we will deal with constness */
 
-    using ScamValue = /*const*/ ScamExpr *;
+    using ScamValue = ScamData *;
 
     /* for those cases we know it must be const */
 
-    using ConstScamValue = const ScamExpr *;
+    using ConstScamValue = const ScamData *;
 
     /* for Env related functions */
 

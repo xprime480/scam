@@ -1,14 +1,14 @@
 #if ! defined(SCAMCLOSURE_H)
 #define SCAMCLOSURE_H 1
 
-#include "expr/ScamExpr.hpp"
+#include "expr/ScamData.hpp"
 
 namespace scam
 {
     class Env;
     class LambdaParser;
 
-    class ScamClosure : public ScamExpr
+    class ScamClosure : public ScamData
     {
     private:
         friend class MemoryManager;

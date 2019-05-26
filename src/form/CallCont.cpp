@@ -4,7 +4,7 @@
 #include "Env.hpp"
 #include "expr/EvalOps.hpp"
 #include "expr/ExpressionFactory.hpp"
-#include "expr/ScamExpr.hpp"
+#include "expr/ScamData.hpp"
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueWriter.hpp"
 

@@ -2,7 +2,7 @@
 
 #include "Env.hpp"
 #include "expr/EvalOps.hpp"
-#include "expr/ScamExpr.hpp"
+#include "expr/ScamData.hpp"
 #include "form/DefineCont.hpp"
 #include "input/SymbolPlusParser.hpp"
 #include "util/MemoryManager.hpp"

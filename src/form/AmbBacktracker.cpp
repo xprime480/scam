@@ -4,7 +4,7 @@
 #include "Env.hpp"
 #include "ScamEngine.hpp"
 #include "expr/EvalOps.hpp"
-#include "expr/ScamExpr.hpp"
+#include "expr/ScamData.hpp"
 #include "expr/SequenceOps.hpp"
 #include "util/MemoryManager.hpp"
 

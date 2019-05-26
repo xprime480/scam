@@ -1,7 +1,7 @@
 #include "form/Apply.hpp"
 
 #include "expr/EvalOps.hpp"
-#include "expr/ScamExpr.hpp"
+#include "expr/ScamData.hpp"
 #include "form/ApplyOpCont.hpp"
 #include "input/ApplyParser.hpp"
 #include "util/ArgListHelper.hpp"

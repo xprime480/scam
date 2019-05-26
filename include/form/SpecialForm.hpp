@@ -1,11 +1,11 @@
 #if ! defined(SPECIALFORM_H)
 #define SPECIALFORM_H 1
 
-#include "expr/ScamExpr.hpp"
+#include "expr/ScamData.hpp"
 
 namespace scam
 {
-    class SpecialForm : public ScamExpr
+    class SpecialForm : public ScamData
     {
     public:
         SpecialForm(std::string const & name,

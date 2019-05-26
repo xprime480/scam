@@ -3,10 +3,9 @@
 
 #include "Continuation.hpp"
 
-#include "expr/ScamExpr.hpp"
+#include "ScamFwd.hpp"
 #include "expr/ValueWriter.hpp"
 
-#include <iostream>
 #include <sstream>
 
 namespace scam

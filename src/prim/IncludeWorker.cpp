@@ -2,7 +2,7 @@
 
 #include "Continuation.hpp"
 #include "expr/ExpressionFactory.hpp"
-#include "expr/ScamExpr.hpp"
+#include "expr/ScamData.hpp"
 #include "input/IncludeParser.hpp"
 #include "prim/IncludeCont.hpp"
 #include "prim/Load.hpp"

@@ -2,7 +2,7 @@
 
 #include "Continuation.hpp"
 #include "expr/ExpressionFactory.hpp"
-#include "expr/ScamExpr.hpp"
+#include "expr/ScamData.hpp"
 #include "expr/SequenceOps.hpp"
 
 using namespace scam;

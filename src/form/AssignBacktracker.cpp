@@ -2,7 +2,7 @@
 
 #include "Continuation.hpp"
 #include "Env.hpp"
-#include "expr/ScamExpr.hpp"
+#include "expr/ScamData.hpp"
 #include "expr/ScamSymbol.hpp"
 #include "util/MemoryManager.hpp"
 

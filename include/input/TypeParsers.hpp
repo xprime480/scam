@@ -51,7 +51,7 @@ namespace scam
             }
 
             if ( target ) {
-                auto hack = const_cast<ScamExpr *>(dynamic_cast<const ScamExpr *>(target));
+                auto hack = const_cast<ScamData *>(dynamic_cast<const ScamData *>(target));
                 const bool matches = invert ^ equals(hack, expr);
                 if ( ! matches  ) {
                     return false;

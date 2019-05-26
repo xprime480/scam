@@ -2,7 +2,6 @@
 #define EXTENDEDNUMERIC_HPP 1
 
 #include "ScamFwd.hpp"
-#include "expr/ScamExpr.hpp"
 #include "expr/ValueWriter.hpp"
 
 namespace scam

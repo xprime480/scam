@@ -3,7 +3,7 @@
 #include "Continuation.hpp"
 #include "Env.hpp"
 #include "WorkQueue.hpp"
-#include "expr/ScamExpr.hpp"
+#include "expr/ScamData.hpp"
 #include "expr/TypePredicates.hpp"
 #include "form/QQConsListCdrCont.hpp"
 #include "form/QuasiQuote.hpp"

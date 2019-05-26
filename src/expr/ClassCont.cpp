@@ -5,7 +5,7 @@
 #include "expr/ClassInitWorker.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamClass.hpp"
-#include "expr/ScamExpr.hpp"
+#include "expr/ScamData.hpp"
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueWriter.hpp"
 
