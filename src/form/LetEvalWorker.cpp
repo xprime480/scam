@@ -2,6 +2,7 @@
 
 #include "Continuation.hpp"
 #include "Env.hpp"
+#include "expr/EvalOps.hpp"
 #include "expr/ScamExpr.hpp"
 #include "expr/SequenceOps.hpp"
 #include "form/LetStepCont.hpp"
@@ -75,7 +76,7 @@ void LetEvalWorker::run()
                                                       cont,
                                                       env,
                                                       rebind);
-        car->eval(ch, env);
+        eval(car, ch, env);
     }
     else {
         Continuation * ch

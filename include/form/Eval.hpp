@@ -12,9 +12,12 @@ namespace scam
 
     public:
         static Eval * makeInstance();
-
-        void apply(ScamValue args, Continuation * cont, Env * env) override;
     };
+
+    extern void applyEval(ScamValue args,
+                          Continuation * cont,
+                          Env * env,
+                          ScamEngine * engine);
 }
 
 #endif

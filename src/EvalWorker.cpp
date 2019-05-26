@@ -2,6 +2,7 @@
 
 #include "Continuation.hpp"
 #include "Env.hpp"
+#include "expr/EvalOps.hpp"
 #include "expr/ScamExpr.hpp"
 #include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
@@ -84,5 +85,5 @@ void EvalWorker::run()
     Worker::run();
 
     EvalCont * newCont = standardMemoryManager.make<EvalCont>(cont);
-    forms->mapEval(newCont, extended);
+    mapEval(forms, newCont, extended);
 }

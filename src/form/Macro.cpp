@@ -8,7 +8,7 @@ using namespace scam;
 using namespace std;
 
 Macro::Macro()
-    : SpecialForm("macro")
+    : SpecialForm("macro", applyMacro)
 {
 }
 
@@ -18,7 +18,10 @@ Macro * Macro::makeInstance()
     return &instance;
 }
 
-void Macro::apply(ScamValue args, Continuation * cont, Env * env)
+void scam::applyMacro(ScamValue args,
+                      Continuation * cont,
+                      Env * env,
+                      ScamEngine * engine)
 {
     LambdaParser * lambda = standardMemoryManager.make<LambdaParser>();
 

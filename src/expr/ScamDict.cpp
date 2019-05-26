@@ -5,8 +5,7 @@
 #include "expr/ExpressionFactory.hpp"
 #include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
-#include "input/DictOpsParser.hpp"
-#include "util/ArgListHelper.hpp"
+#include "expr/ValueWriter.hpp"
 
 #include <sstream>
 
@@ -41,51 +40,6 @@ ScamDict * ScamDict::makeInstance()
 ScamDict * ScamDict::makeInstance(ValVec const & args)
 {
     return new ScamDict(args);
-}
-
-void ScamDict::apply(ScamValue args, Continuation * cont, Env * env)
-{
-    DictOpsParser * parser = standardMemoryManager.make<DictOpsParser>();
-
-    if ( ! parser->accept(args) ) {
-        failedArgParseMessage("dict", "(:op args{0,2})", args, cont);
-        return;
-    }
-
-    const ScamKeyword * op = parser->getParsedOp();
-    ScamValue rv = nullptr;
-
-    auto opHack =  const_cast<ScamExpr *>(dynamic_cast<const ScamExpr *>(op));
-    auto getHack = const_cast<ScamExpr *>(dynamic_cast<const ScamExpr *>(DictOpsParser::getOp));
-    auto putHack = const_cast<ScamExpr *>(dynamic_cast<const ScamExpr *>(DictOpsParser::putOp));
-    auto lenHack = const_cast<ScamExpr *>(dynamic_cast<const ScamExpr *>(DictOpsParser::lenOp));
-    auto hasHack = const_cast<ScamExpr *>(dynamic_cast<const ScamExpr *>(DictOpsParser::hasOp));
-    auto remHack = const_cast<ScamExpr *>(dynamic_cast<const ScamExpr *>(DictOpsParser::remOp));
-
-    if ( equals(opHack, getHack) ) {
-        rv = get(parser->getOpKey());
-    }
-    else if ( equals(opHack, putHack) ) {
-        /* this is potentially UB so revisit this soon!! */
-        ScamValue val = parser->getOpVal();
-        rv = put(parser->getOpKey(), val);
-    }
-    else if ( equals(opHack, lenHack) ) {
-        rv = ExpressionFactory::makeInteger(length(this), true);
-    }
-    else if ( equals(opHack, hasHack) ) {
-        const bool b = has(parser->getOpKey());
-        rv = ExpressionFactory::makeBoolean(b);
-    }
-    else if ( equals(opHack, remHack) ) {
-        rv = remove(parser->getOpKey());
-    }
-    else {
-        rv = ExpressionFactory::makeError("Unknown dictionary operator: ",
-                                          writeValue(op));
-    }
-
-    cont->run(rv);
 }
 
 bool ScamDict::has(ScamValue key) const

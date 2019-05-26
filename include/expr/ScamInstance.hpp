@@ -14,7 +14,7 @@ namespace scam
     {
     public:
         static ScamEnvKeyType parent;
-	
+
     private:
 
         friend class MemoryManager;
@@ -23,9 +23,6 @@ namespace scam
         static ScamInstance* makeInstance(const ScamClass * cls, Env * env);
 
     public:
-        void
-        apply(ScamValue args, Continuation * cont, Env * env) override;
-
         friend class ScamInstanceAdapter;
     };
 

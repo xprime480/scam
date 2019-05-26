@@ -12,8 +12,7 @@ using namespace std;
 static const char * myName = "assign!";
 
 Assign::Assign(ScamEngine * engine)
-    : SpecialForm(myName, true)
-    , engine(engine)
+    : SpecialForm(myName, applyAssign, engine, true)
 {
 }
 
@@ -22,7 +21,10 @@ Assign * Assign::makeInstance(ScamEngine * engine)
     return new Assign(engine);
 }
 
-void Assign::apply(ScamValue args, Continuation * cont, Env * env)
+void scam::applyAssign(ScamValue args,
+                       Continuation * cont,
+                       Env * env,
+                       ScamEngine * engine)
 {
     AssignParser * parser = standardMemoryManager.make<AssignParser>();
 

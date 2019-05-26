@@ -8,7 +8,10 @@ namespace scam
     class SpecialForm : public ScamExpr
     {
     public:
-        SpecialForm(std::string const & name, bool managed = false);
+        SpecialForm(std::string const & name,
+                    SfFunction func,
+                    ScamEngine * engine = nullptr,
+                    bool managed = false);
     };
 }
 

@@ -16,7 +16,7 @@ namespace scam
 static const char * myName = "or";
 
 Or::Or()
-    : SpecialForm(myName)
+    : SpecialForm(myName, applyOr)
 {
 }
 
@@ -26,7 +26,10 @@ Or * Or::makeInstance()
     return &instance;
 }
 
-void Or::apply(ScamValue args, Continuation * cont, Env * env)
+void scam::applyOr(ScamValue args,
+                   Continuation * cont,
+                   Env * env,
+                   ScamEngine * engine)
 {
     ListParser * parser = getListOfAnythingParser();
     if ( ! parser->accept(args) ) {

@@ -2,8 +2,9 @@
 
 #include "Continuation.hpp"
 #include "Env.hpp"
-#include "expr/ScamExpr.hpp"
 #include "expr/ClosureBindCont.hpp"
+#include "expr/EvalOps.hpp"
+#include "expr/ScamExpr.hpp"
 #include "input/LambdaParser.hpp"
 #include "util/MemoryManager.hpp"
 
@@ -61,6 +62,6 @@ void ClosureWorker::run()
         newCont->run(args);
     }
     else {
-        args->mapEval(newCont, argEnv);
+        mapEval(args, newCont, argEnv);
     }
 }

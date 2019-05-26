@@ -1,6 +1,7 @@
 #include "form/LetStarWorker.hpp"
 
 #include "Env.hpp"
+#include "expr/EvalOps.hpp"
 #include "expr/ScamExpr.hpp"
 #include "expr/SequenceOps.hpp"
 #include "form/LetStar.hpp"
@@ -41,6 +42,6 @@ void LetStarWorker::do_next(ScamValue formals,
                                                 cont,
                                                 extended,
                                                 engine);
-    getCar(safe)->eval(ch, env);
+    eval(getCar(safe), ch, env);
 }
 

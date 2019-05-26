@@ -1,6 +1,7 @@
 #include "form/CallCC.hpp"
 
 #include "Continuation.hpp"
+#include "expr/EvalOps.hpp"
 #include "expr/ScamExpr.hpp"
 #include "form/CallCont.hpp"
 #include "input/SingletonParser.hpp"
@@ -13,7 +14,7 @@ using namespace std;
 static const char * myName = "call/cc";
 
 CallCC::CallCC()
-    : SpecialForm(myName)
+    : SpecialForm(myName, applyCallCC)
 {
 }
 
@@ -23,7 +24,10 @@ CallCC * CallCC::makeInstance()
     return &instance;
 }
 
-void CallCC::apply(ScamValue args, Continuation * cont, Env * env)
+void scam::applyCallCC(ScamValue args,
+                       Continuation * cont,
+                       Env * env,
+                       ScamEngine * engine)
 {
     SingletonParser * parser = getSingletonOfAnythingParser();
     if ( ! parser->accept(args) ) {
@@ -33,6 +37,6 @@ void CallCC::apply(ScamValue args, Continuation * cont, Env * env)
         ScamValue body = parser->get();
         Continuation * newCont =
             standardMemoryManager.make<CallCont>(cont, env);
-        body->eval(newCont, env);
+        eval(body, newCont, env);
     }
 }

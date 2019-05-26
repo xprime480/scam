@@ -13,9 +13,6 @@ namespace scam
         friend class MemoryManager;
         ScamContinuation(Continuation * cont);
         static ScamContinuation * makeInstance(Continuation * cont);
-
-    public:
-        void apply(ScamValue args, Continuation * cont, Env * env) override;
     };
 }
 

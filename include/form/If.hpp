@@ -14,9 +14,12 @@ namespace scam
         /* I think this should be private, check later */
 
         static If * makeInstance();
-
-        void apply(ScamValue args, Continuation * cont, Env * env) override;
     };
+
+    extern void applyIf(ScamValue args,
+                        Continuation * cont,
+                        Env * env,
+                        ScamEngine * engine);
 }
 
 #endif

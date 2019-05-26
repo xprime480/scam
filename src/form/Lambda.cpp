@@ -10,7 +10,7 @@ using namespace scam;
 using namespace std;
 
 Lambda::Lambda()
-    : SpecialForm("lambda")
+    : SpecialForm("lambda", applyLambda)
 {
 }
 
@@ -20,7 +20,10 @@ Lambda * Lambda::makeInstance()
     return &instance;
 }
 
-void Lambda::apply(ScamValue args, Continuation * cont, Env * env)
+void scam::applyLambda(ScamValue args,
+                       Continuation * cont,
+                       Env * env,
+                       ScamEngine * engine)
 {
     LambdaParser * lambda = standardMemoryManager.make<LambdaParser>();
 

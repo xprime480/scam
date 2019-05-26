@@ -20,21 +20,3 @@ ScamSymbol * ScamSymbol::makeInstance(std::string const & value, bool managed)
 {
     return new ScamSymbol(value, managed);
 }
-
-void ScamSymbol::eval(Continuation * cont, Env * env) const
-{
-    ScamValue evaluated;
-
-    if ( env->check(this) ) {
-        evaluated = env->get(this);
-    }
-    else {
-        evaluated =
-            ExpressionFactory::makeError("Symbol ",
-                                         STRVAL(this),
-                                         " does not exist",
-                                         " in the current environment");
-    }
-
-    cont->run(evaluated);
-}

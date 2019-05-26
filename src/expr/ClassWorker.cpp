@@ -3,6 +3,7 @@
 #include "Continuation.hpp"
 #include "Env.hpp"
 #include "expr/ClassCont.hpp"
+#include "expr/EvalOps.hpp"
 #include "expr/ScamClass.hpp"
 #include "expr/ScamExpr.hpp"
 #include "util/MemoryManager.hpp"
@@ -46,5 +47,5 @@ void ClassWorker::run()
     Worker::run();
     Continuation * newCont =
         standardMemoryManager.make<ClassCont>(cls, cont);
-    args->mapEval(newCont, env);
+    mapEval(args, newCont, env);
 }

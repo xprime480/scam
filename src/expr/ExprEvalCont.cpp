@@ -1,5 +1,6 @@
 #include "expr/ExprEvalCont.hpp"
 
+#include "expr/EvalOps.hpp"
 #include "expr/ScamExpr.hpp"
 #include "expr/TypePredicates.hpp"
 
@@ -33,6 +34,6 @@ void ExprEvalCont::run(ScamValue expr)
         data.original->run(expr);
     }
     else {
-        expr->apply(data.cdr, data.original, data.env);
+        apply(expr, data.cdr, data.original, data.env);
     }
 }

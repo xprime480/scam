@@ -3,6 +3,7 @@
 #include "Continuation.hpp"
 #include "Env.hpp"
 #include "ScamEngine.hpp"
+#include "expr/EvalOps.hpp"
 #include "expr/ScamExpr.hpp"
 #include "form/AssignCont.hpp"
 #include "input/SymbolPlusParser.hpp"
@@ -52,5 +53,5 @@ void AssignWorker::run()
                                                               engine);
 
     ScamValue expr = parser->getForm();
-    expr->eval(c, env);
+    eval(expr, c, env);
 }

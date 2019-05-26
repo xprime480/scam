@@ -14,10 +14,12 @@ namespace scam
 
         LetRec();
         static LetRec * makeInstance();
-
-    public:
-        void apply(ScamValue args, Continuation * cont, Env * env) override;
     };
+
+    extern void applyLetRec(ScamValue args,
+                            Continuation * cont,
+                            Env * env,
+                            ScamEngine * engine);
 }
 
 #endif

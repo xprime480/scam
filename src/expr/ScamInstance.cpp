@@ -3,14 +3,10 @@
 #include "Env.hpp"
 #include "ScamException.hpp"
 #include "expr/ExpressionFactory.hpp"
-#include "expr/InstanceCont.hpp"
 #include "expr/TypePredicates.hpp"
+#include "expr/ValueWriter.hpp"
 #include "input/FunctionDefParser.hpp"
-#include "input/SymbolPlusManyParser.hpp"
-#include "util/ArgListHelper.hpp"
 #include "util/MemoryManager.hpp"
-
-#include "util/DebugTrace.hpp"
 
 using namespace scam;
 using namespace std;
@@ -55,28 +51,6 @@ ScamInstance::ScamInstance(const ScamClass * cls, Env * env)
 ScamInstance * ScamInstance::makeInstance(const ScamClass * cls, Env * env)
 {
     return new ScamInstance(cls, env);
-}
-
-void ScamInstance::apply(ScamValue args, Continuation * cont, Env * env)
-{
-    InstanceParser * parser = standardMemoryManager.make<InstanceParser>();
-
-    if ( ! parser->accept(args) ) {
-        failedArgParseMessage("instance", "(sym forms*)", args, cont);
-        return;
-    }
-
-    ScamEnvKeyType name = parser->getSymbol();
-    ScamValue funargs = parser->getForms();
-
-    Continuation * newCont =
-        standardMemoryManager.make<InstanceCont>(this, name, cont);
-    if ( isNil(funargs) ) {
-        newCont->run(funargs);
-    }
-    else {
-        funargs->mapEval(newCont, env);
-    }
 }
 
 void scam::setSelf(ScamValue instance, ScamValue expr)

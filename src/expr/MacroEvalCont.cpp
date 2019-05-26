@@ -1,6 +1,7 @@
 #include "expr/MacroEvalCont.hpp"
 
 #include "Env.hpp"
+#include "expr/EvalOps.hpp"
 #include "expr/ScamExpr.hpp"
 
 using namespace scam;
@@ -31,5 +32,5 @@ void MacroEvalCont::mark() const
 void MacroEvalCont::run(ScamValue expr)
 {
     Continuation::run(expr);
-    expr->eval(cont, capture);
+    eval(expr, cont, capture);
 }

@@ -10,7 +10,7 @@ using namespace std;
 static const char * myName = "quote";
 
 Quote::Quote()
-    : SpecialForm(myName)
+    : SpecialForm(myName, applyQuote)
 {
 }
 
@@ -20,7 +20,10 @@ Quote * Quote::makeInstance()
     return &quote;
 }
 
-void Quote::apply(ScamValue args, Continuation * cont, Env * env)
+void scam::applyQuote(ScamValue args,
+                      Continuation * cont,
+                      Env * env,
+                      ScamEngine * engine)
 {
     SingletonParser * parser = getSingletonOfAnythingParser();
     if ( ! parser->accept(args) ) {

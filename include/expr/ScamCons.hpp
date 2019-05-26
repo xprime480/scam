@@ -11,10 +11,6 @@ namespace scam
         friend class MemoryManager;
         ScamCons(ScamValue car, ScamValue cdr);
         static ScamCons * makeInstance(ScamValue car, ScamValue cdr);
-
-    public:
-        void eval(Continuation * cont, Env * env) const override;
-        void mapEval(Continuation * cont, Env * env) const override;
     };
 }
 

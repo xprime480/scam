@@ -17,7 +17,7 @@ ScamValue const QuasiQuote::spliceTag =
 static const char * myName = "quasiquote";
 
 QuasiQuote::QuasiQuote()
-    : SpecialForm(myName)
+    : SpecialForm(myName, applyQuasiQuote)
 {
 }
 
@@ -27,7 +27,10 @@ QuasiQuote * QuasiQuote::makeInstance()
     return &instance;
 }
 
-void QuasiQuote::apply(ScamValue args, Continuation * cont, Env * env)
+void scam::applyQuasiQuote(ScamValue args,
+                           Continuation * cont,
+                           Env * env,
+                           ScamEngine * engine)
 {
     SingletonParser * parser = getSingletonOfAnythingParser();
     if ( ! parser->accept(args) ) {

@@ -13,7 +13,7 @@ using namespace std;
 static const char * myName = "class-maker";
 
 ClassMaker::ClassMaker()
-    : SpecialForm(myName)
+    : SpecialForm(myName, applyClassMaker)
 {
 }
 
@@ -23,7 +23,10 @@ ClassMaker * ClassMaker::makeInstance()
     return &instance;
 }
 
-void ClassMaker::apply(ScamValue args, Continuation * cont, Env * env)
+void scam::applyClassMaker(ScamValue args,
+                           Continuation * cont,
+                           Env * env,
+                           ScamEngine * engine)
 {
     ClassDefParser * parser = standardMemoryManager.make<ClassDefParser>();
 

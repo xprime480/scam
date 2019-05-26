@@ -16,7 +16,7 @@ namespace scam
 }
 
 Not::Not()
-    : SpecialForm(myName)
+    : SpecialForm(myName, applyNot)
 {
 }
 
@@ -26,7 +26,10 @@ Not * Not::makeInstance()
     return &instance;
 }
 
-void Not::apply(ScamValue args, Continuation * cont, Env * env)
+void scam::applyNot(ScamValue args,
+                    Continuation * cont,
+                    Env * env,
+                    ScamEngine * engine)
 {
     SingletonParser * parser = getSingletonOfAnythingParser();
     if ( ! parser->accept(args) ) {

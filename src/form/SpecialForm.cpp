@@ -5,8 +5,13 @@
 using namespace scam;
 using namespace std;
 
-SpecialForm::SpecialForm(string const & name, bool managed)
+SpecialForm::SpecialForm(std::string const & name,
+                         SfFunction func,
+                         ScamEngine * engine,
+                         bool managed)
     : ScamExpr(ScamData::SpecialForm, managed)
 {
-    STRVAL(this) = name;
+    SFNAME(this) = name;
+    SFFUNC(this) = func;
+    SFENGINE(this) = engine;
 }

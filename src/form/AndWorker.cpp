@@ -2,6 +2,7 @@
 
 #include "Continuation.hpp"
 #include "Env.hpp"
+#include "expr/EvalOps.hpp"
 #include "expr/ScamExpr.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "form/AndCont.hpp"
@@ -50,12 +51,12 @@ void AndWorker::run()
         cont->run(ExpressionFactory::makeBoolean(true));
     }
     else if ( n == (len - 1) ) {
-        parser->get(len-1)->eval(cont, env);
+        eval(parser->get(len-1), cont, env);
     }
     else {
         ScamValue test = parser->get(n);
         Continuation * newCont =
             standardMemoryManager.make<AndCont>(parser, cont, env, n+1);
-        test->eval(newCont, env);
+        eval(test, newCont, env);
     }
 }

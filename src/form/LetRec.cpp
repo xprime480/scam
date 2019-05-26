@@ -13,7 +13,7 @@ using namespace std;
 static const char * myName = "and";
 
 LetRec::LetRec()
-    : SpecialForm("letrec")
+    : SpecialForm("letrec", applyLetRec)
 {
 }
 
@@ -23,7 +23,10 @@ LetRec * LetRec::makeInstance()
     return &instance;
 }
 
-void LetRec::apply(ScamValue args, Continuation * cont, Env * env)
+void scam::applyLetRec(ScamValue args,
+                       Continuation * cont,
+                       Env * env,
+                       ScamEngine * engine)
 {
     LetParser * parser = standardMemoryManager.make<LetParser>();
     if ( ! parser->accept(args) ) {

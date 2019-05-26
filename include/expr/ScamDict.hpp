@@ -20,9 +20,6 @@ namespace scam
         static ScamDict * makeInstance(ValVec const & args);
 
     public:
-        void
-        apply(ScamValue args, Continuation * cont, Env * env) override;
-
         bool has(ScamValue key) const;
         ScamValue get(ScamValue key) const;
         ScamValue put(ScamValue key, ScamValue val);

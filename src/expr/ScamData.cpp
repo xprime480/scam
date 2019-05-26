@@ -21,7 +21,6 @@ ScamData::ScamData(unsigned long type, bool managed)
     case ScamData::Keyword:
     case ScamData::String:
     case ScamData::Symbol:
-    case ScamData::SpecialForm:
     case ScamData::Primitive:
         STRVALP(this) = new string;
         break;
@@ -40,6 +39,10 @@ ScamData::ScamData(unsigned long type, bool managed)
         VECTORP(this) = new vector<ScamValue>;
         break;
 
+    case ScamData::SpecialForm:
+        SFNAMEP(this) = new string;
+        SFFUNCP(this) = new SfFunction;
+
     default:
         break;
     }
@@ -52,7 +55,6 @@ ScamData::~ScamData()
     case ScamData::Keyword:
     case ScamData::String:
     case ScamData::Symbol:
-    case ScamData::SpecialForm:
     case ScamData::Primitive:
         delete STRVALP(this);
         break;
@@ -69,6 +71,11 @@ ScamData::~ScamData()
 
     case ScamData::Vector:
         delete VECTORP(this);
+        break;
+
+    case ScamData::SpecialForm:
+        delete SFNAMEP(this);
+        delete SFFUNCP(this);
         break;
 
     default:
@@ -133,8 +140,6 @@ void ScamData::mark() const
         }
         break;
 
-
-
     default:
         break;
     }
@@ -180,5 +185,4 @@ ScamValue ScamData::getMeta(string const & key) const
 
     return rv;
 }
-
 

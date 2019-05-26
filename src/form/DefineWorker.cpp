@@ -1,6 +1,7 @@
 #include "form/DefineWorker.hpp"
 
 #include "Env.hpp"
+#include "expr/EvalOps.hpp"
 #include "expr/ScamExpr.hpp"
 #include "form/DefineCont.hpp"
 #include "input/SymbolPlusParser.hpp"
@@ -48,7 +49,7 @@ void DefineWorker::run()
         standardMemoryManager.make<DefineCont>(sym, cont, env, engine);
 
     ScamValue expr = parser->getForm();
-    expr->eval(c, env);
+    eval(expr, c, env);
 }
 
 

@@ -20,9 +20,6 @@ namespace scam
         static ScamClosure * makeInstance(const LambdaParser * parser,
                                           Env * env,
                                           bool macrolike = false);
-
-    public:
-        void apply(ScamValue args, Continuation * cont, Env * env) override;
     };
 }
 

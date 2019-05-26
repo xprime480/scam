@@ -13,9 +13,12 @@ namespace scam
     public:
         /* I think this should be private, check later */
         static Quote * makeInstance();
-
-        void apply(ScamValue args, Continuation * cont, Env * env) override;
     };
+
+    extern void applyQuote(ScamValue args,
+                           Continuation * cont,
+                           Env * env,
+                           ScamEngine * engine);
 }
 
 #endif

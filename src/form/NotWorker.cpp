@@ -2,6 +2,7 @@
 
 #include "Continuation.hpp"
 #include "Env.hpp"
+#include "expr/EvalOps.hpp"
 #include "expr/ScamExpr.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "form/NotCont.hpp"
@@ -42,6 +43,6 @@ void NotWorker::run()
 
     Continuation * newCont = standardMemoryManager.make<NotCont>(cont);
     ScamValue form = parser->get();
-    form->eval(newCont, env);
+    eval(form, newCont, env);
 }
 

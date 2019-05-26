@@ -2,12 +2,13 @@
 
 #include "Continuation.hpp"
 #include "Env.hpp"
-#include "expr/ScamExpr.hpp"
+#include "expr/EvalOps.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "expr/ScamExpr.hpp"
 #include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
-#include "form/QQSpliceCont.hpp"
 #include "form/QQConsListCarCont.hpp"
+#include "form/QQSpliceCont.hpp"
 #include "util/ArgListHelper.hpp"
 #include "util/MemoryManager.hpp"
 
@@ -60,7 +61,7 @@ void QuasiQuoteWorker::unquote_form(ScamValue input, Continuation * cont)
 {
     if ( verify_single_form(input, cont) ) {
         ScamValue form = nthcar(input, 0);
-        form->eval(cont, env);
+        eval(form, cont, env);
     }
 }
 
@@ -71,7 +72,7 @@ void QuasiQuoteWorker::splice_form(ScamValue input, Continuation * cont)
             standardMemoryManager.make<QQSpliceCont>(cont);
 
         ScamValue form = nthcar(input, 0);
-        form->eval(h, env);
+        eval(form, h, env);
     }
 }
 

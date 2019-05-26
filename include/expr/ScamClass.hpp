@@ -17,9 +17,6 @@ namespace scam
         static ScamClass * makeInstance(ClassDefParser * def, Env * capture);
 
     public:
-        void
-        apply(ScamValue args, Continuation * cont, Env * env) override;
-
         friend class ScamClassAdapter;
     };
 }

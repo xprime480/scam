@@ -11,9 +11,7 @@ namespace scam
     {
     public:
         Primitive(std::string const & name);
-
-        void apply(ScamValue args, Continuation * cont, Env * env) override;
-
+	
         virtual void
         applyArgs(ScamValue args, Continuation * cont) = 0;
     };

@@ -13,9 +13,12 @@ namespace scam
     public:
         /* I think this should be private, check later */
         static Lambda * makeInstance();
-
-        void apply(ScamValue args, Continuation * cont, Env * env) override;
     };
+
+    extern void applyLambda(ScamValue args,
+                            Continuation * cont,
+                            Env * env,
+                            ScamEngine * engine);
 }
 
 #endif

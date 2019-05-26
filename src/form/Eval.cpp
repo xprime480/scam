@@ -1,6 +1,7 @@
 #include "form/Eval.hpp"
 
 #include "Continuation.hpp"
+#include "expr/EvalOps.hpp"
 #include "expr/ScamExpr.hpp"
 #include "form/EvalCont.hpp"
 #include "input/SingletonParser.hpp"
@@ -13,7 +14,7 @@ using namespace std;
 static const char * myName = "eval";
 
 Eval::Eval()
-    : SpecialForm(myName)
+    : SpecialForm(myName, applyEval)
 {
 }
 
@@ -23,7 +24,10 @@ Eval * Eval::makeInstance()
     return &instance;
 }
 
-void Eval::apply(ScamValue args, Continuation * cont, Env * env)
+void scam::applyEval(ScamValue args,
+                     Continuation * cont,
+                     Env * env,
+                     ScamEngine * engine)
 {
     SingletonParser * parser = getSingletonOfAnythingParser();
 
@@ -34,6 +38,6 @@ void Eval::apply(ScamValue args, Continuation * cont, Env * env)
         Continuation * finisher =
             standardMemoryManager.make<EvalCont>(cont, env);
         ScamValue expr = const_cast<ScamValue>(parser->get());
-        expr->eval(finisher, env);
+        eval(expr, finisher, env);
     }
 }

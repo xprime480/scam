@@ -2,9 +2,10 @@
 
 #include "Continuation.hpp"
 #include "Env.hpp"
-#include "expr/ScamExpr.hpp"
-#include "expr/ExpressionFactory.hpp"
 #include "expr/ClassInitCont.hpp"
+#include "expr/EvalOps.hpp"
+#include "expr/ExpressionFactory.hpp"
+#include "expr/ScamExpr.hpp"
 #include "util/MemoryManager.hpp"
 
 using namespace scam;
@@ -55,5 +56,5 @@ void ClassInitWorker::run()
     ScamValue newArgs
         = ExpressionFactory::makeCons(initSym, args);
 
-    instance->apply(newArgs, newCont, env);
+    apply(instance, newArgs, newCont, env);
 }

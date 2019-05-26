@@ -12,8 +12,13 @@ namespace scam
 
     public:
         static And * makeInstance();
-        void apply(ScamValue args, Continuation * cont, Env * env) override;
     };
+
+    extern void applyAnd(ScamValue args,
+                         Continuation * cont,
+                         Env * env,
+                         ScamEngine * engine);
+
 }
 
 #endif

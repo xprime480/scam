@@ -12,9 +12,6 @@ namespace scam
         ScamSymbol(std::string const & value, bool managed = true);
         static ScamSymbol * makeInstance(std::string const & value,
                                          bool managed = true);
-
-    public:
-        void eval(Continuation * cont, Env * env) const override;
     };
 }
 

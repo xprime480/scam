@@ -1,5 +1,6 @@
 #include "expr/ConsWorker.hpp"
 
+#include "expr/EvalOps.hpp"
 #include "expr/ExprEvalCont.hpp"
 #include "expr/ScamExpr.hpp"
 #include "util/MemoryManager.hpp"
@@ -49,5 +50,5 @@ void ConsWorker::mark() const
 void ConsWorker::run()
 {
     Worker::run();
-    data.car->eval(data.cont, data.env);
+    eval(data.car, data.cont, data.env);
 }

@@ -175,8 +175,23 @@ bool scam::isDict(const ScamData * data)
     return data->type == ScamData::Dict;
 }
 
+bool scam::isSpecialForm(const ScamData * data)
+{
+    return data->type == ScamData::SpecialForm;
+}
+
+bool scam::isPrimitive(const ScamData * data)
+{
+    return data->type == ScamData::Primitive;
+}
+
 bool scam::isApplicable(const ScamData * data)
 {
     return 0 != (data->type & ScamData::Applicable);
+}
+
+bool scam::isContinuation(const ScamData * data)
+{
+    return data->type == ScamData::Cont;
 }
 

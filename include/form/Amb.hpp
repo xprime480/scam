@@ -16,11 +16,13 @@ namespace scam
         /* this should probably be private */
         static Amb * makeInstance(ScamEngine * engine);
 
-        void apply(ScamValue args, Continuation * cont, Env * env) override;
-
-    private:
-        ScamEngine * engine;
     };
+
+    extern void applyAmb(ScamValue args,
+                         Continuation * cont,
+                         Env * env,
+                         ScamEngine * engine);
+
 }
 
 #endif

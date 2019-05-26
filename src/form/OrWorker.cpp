@@ -2,8 +2,9 @@
 
 #include "Continuation.hpp"
 #include "Env.hpp"
-#include "expr/ScamExpr.hpp"
+#include "expr/EvalOps.hpp"
 #include "expr/ExpressionFactory.hpp"
+#include "expr/ScamExpr.hpp"
 #include "form/OrCont.hpp"
 #include "input/ListParser.hpp"
 #include "util/MemoryManager.hpp"
@@ -51,12 +52,12 @@ void OrWorker::run()
         cont->run(rv);
     }
     else if ( n == (len - 1) ) {
-        parser->get(len-1)->eval(cont, env);
+        eval(parser->get(len-1), cont, env);
     }
     else {
         ScamValue test = parser->get(n);
         Continuation * newCont =
             standardMemoryManager.make<OrCont>(parser, cont, env, n+1);
-        test->eval(newCont, env);
+        eval(test, newCont, env);
     }
 }

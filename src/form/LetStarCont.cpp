@@ -2,6 +2,7 @@
 
 #include "Env.hpp"
 #include "ScamEngine.hpp"
+#include "expr/EvalOps.hpp"
 #include "expr/ScamExpr.hpp"
 #include "expr/ScamSymbol.hpp"
 #include "expr/SequenceOps.hpp"
@@ -67,7 +68,7 @@ void LetStarCont::do_let(ScamValue expr)
                                                     cont,
                                                     env,
                                                     engine);
-        getCar(safe)->eval(ch, env);
+        eval(getCar(safe), ch, env);
     }
 }
 

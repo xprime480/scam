@@ -16,9 +16,12 @@ namespace scam
     public:
         /* I think this should be private, check later */
         static QuasiQuote * makeInstance();
-
-        void apply(ScamValue args, Continuation * cont, Env * env) override;
     };
+
+    extern void applyQuasiQuote(ScamValue args,
+                                Continuation * cont,
+                                Env * env,
+                                ScamEngine * engine);
 }
 
 #endif

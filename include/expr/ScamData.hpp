@@ -5,6 +5,7 @@
 
 #include "ScamFwd.hpp"
 
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -14,6 +15,9 @@ namespace scam
     class Continuation;
     class Env;
     class LambdaParser;
+
+    using SfFunction =
+        std::function<void(ScamValue, Continuation *, Env *, ScamEngine *)>;
 
     struct ScamData : public ManagedObject
     {
@@ -159,6 +163,13 @@ namespace scam
 
             Continuation * contData;
 
+            struct
+            {
+                std::string * name;
+                SfFunction  * func;
+                ScamEngine  * engine;
+            } specialFormData;
+
         } value;
 
         mutable Env * metadata;
@@ -210,5 +221,11 @@ namespace scam
 #define INSTANCELOCALENV(data) ((data)->value.instanceData.local)
 
 #define CONTINUATION(data) ((data)->value.contData)
+
+#define SFNAMEP(data) ((data)->value.specialFormData.name)
+#define SFNAME(data) (*SFNAMEP(data))
+#define SFFUNCP(data) ((data)->value.specialFormData.func) 
+#define SFFUNC(data) (*SFFUNCP(data))
+#define SFENGINE(data) ((data)->value.specialFormData.engine)
 
 #endif

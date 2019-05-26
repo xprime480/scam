@@ -2,6 +2,7 @@
 
 #include "Continuation.hpp"
 #include "Env.hpp"
+#include "expr/EvalOps.hpp"
 #include "expr/ScamExpr.hpp"
 #include "form/ApplyArgsCont.hpp"
 #include "util/MemoryManager.hpp"
@@ -44,5 +45,5 @@ void ApplyArgsWorker::run()
 {
     Continuation * newCont =
         standardMemoryManager.make<ApplyArgsCont>(op, cont, env);
-    args->eval(newCont, env);
+    eval(args, newCont, env);
 }

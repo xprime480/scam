@@ -1,6 +1,7 @@
 #include "expr/MapCdr.hpp"
 
 #include "expr/CdrContinuation.hpp"
+#include "expr/EvalOps.hpp"
 #include "expr/ScamExpr.hpp"
 #include "util/MemoryManager.hpp"
 
@@ -36,6 +37,6 @@ void MapCdr::mark() const
 void MapCdr::run()
 {
     Worker::run();
-    data.cdr->mapEval(data.cont, data.env);
+    mapEval(data.cdr, data.cont, data.env);
 }
 

@@ -1,6 +1,7 @@
 #include "form/IfCont.hpp"
 
 #include "Env.hpp"
+#include "expr/EvalOps.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamExpr.hpp"
 #include "expr/TypePredicates.hpp"
@@ -43,11 +44,11 @@ void IfCont::run(ScamValue expr)
     }
     else if ( truth(expr) ) {
         ScamValue thenExpr = parser->get(1u);
-        thenExpr->eval(cont, env);
+        eval(thenExpr, cont, env);
     }
     else if ( parser->size() > 2 ) {
         ScamValue elseExpr = parser->get(2u);
-        elseExpr->eval(cont, env);
+        eval(elseExpr, cont, env);
     }
     else {
         cont->run(ExpressionFactory::makeNil());

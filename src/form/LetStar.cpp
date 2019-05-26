@@ -15,8 +15,7 @@ using namespace std;
 static const char * myName = "let*";
 
 LetStar::LetStar(ScamEngine * engine)
-    : SpecialForm(myName, true)
-    , engine(engine)
+    : SpecialForm(myName, applyLetStar, engine, true)
 {
 }
 
@@ -33,7 +32,10 @@ ScamValue LetStar::safeCons(ScamValue expr)
     return ExpressionFactory::makeList(expr);
 }
 
-void LetStar::apply(ScamValue args, Continuation * cont, Env * env)
+void scam::applyLetStar(ScamValue args,
+                        Continuation * cont,
+                        Env * env,
+                        ScamEngine * engine)
 {
     LetParser * parser = standardMemoryManager.make<LetParser>();
     if ( ! parser->accept(args) ) {

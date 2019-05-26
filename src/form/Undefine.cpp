@@ -13,16 +13,20 @@ using namespace std;
 static const char * myName = "undefine";
 
 Undefine::Undefine()
-    : SpecialForm(myName, true)
+    : SpecialForm(myName, applyUndefine)
 {
 }
 
 Undefine * Undefine::makeInstance()
 {
-    return new Undefine();
+    static Undefine instance;
+    return &instance;
 }
 
-void Undefine::apply(ScamValue args, Continuation * cont, Env * env)
+void scam::applyUndefine(ScamValue args,
+                         Continuation * cont,
+                         Env * env,
+                         ScamEngine * engine)
 {
     UndefineParser * parser = standardMemoryManager.make<UndefineParser>();
     if ( ! parser->accept(args) ) {

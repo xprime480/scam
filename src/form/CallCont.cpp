@@ -2,6 +2,7 @@
 
 #include "Continuation.hpp"
 #include "Env.hpp"
+#include "expr/EvalOps.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamExpr.hpp"
 #include "expr/TypePredicates.hpp"
@@ -49,5 +50,5 @@ void CallCont::run(ScamValue expr)
 
     ScamValue contExpr = ExpressionFactory::makeContinuation(cont);
     ScamValue args = ExpressionFactory::makeList(contExpr);
-    expr->apply(args, cont, env);
+    apply(expr, args, cont, env);
 }

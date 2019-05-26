@@ -13,13 +13,12 @@ namespace scam
         friend class scam::MemoryManager;
         Define(ScamEngine * engine);
         static Define * makeInstance(ScamEngine * engine);
-
-    public:
-        void apply(ScamValue args, Continuation * cont, Env * env) override;
-
-    private:
-        ScamEngine * engine;
     };
+
+    extern void applyDefine(ScamValue args,
+                            Continuation * cont,
+                            Env * env,
+                            ScamEngine * engine);
 }
 
 #endif

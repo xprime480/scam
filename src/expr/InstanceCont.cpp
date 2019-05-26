@@ -2,6 +2,7 @@
 
 #include "Continuation.hpp"
 #include "Env.hpp"
+#include "expr/EvalOps.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamExpr.hpp"
 #include "expr/TypePredicates.hpp"
@@ -53,7 +54,7 @@ void InstanceCont::run(ScamValue expr)
 
     ScamInstanceAdapter adapter(obj);
     Env * env = adapter.getEnv();
-    func->apply(expr, cont, env);
+    apply(func, expr, cont, env);
 }
 
 ScamValue InstanceCont::find_func(ScamValue o) const

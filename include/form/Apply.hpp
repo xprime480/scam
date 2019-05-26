@@ -7,15 +7,18 @@ namespace scam
 {
     class Apply : public SpecialForm
     {
-      private:
+    private:
         Apply();
 
     public:
         /* This should probably be private */
         static Apply * makeInstance();
-
-        void apply(ScamValue args, Continuation * cont, Env * env) override;
     };
+
+    extern void applyApply(ScamValue args,
+                           Continuation * cont,
+                           Env * env,
+                           ScamEngine * engine);
 }
 
 #endif

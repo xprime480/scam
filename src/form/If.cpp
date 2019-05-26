@@ -12,7 +12,7 @@ using namespace std;
 static const char * myName = "if";
 
 If::If()
-    : SpecialForm(myName)
+    : SpecialForm(myName, applyIf)
 {
 }
 
@@ -22,7 +22,10 @@ If * If::makeInstance()
     return &instance;
 }
 
-void If::apply(ScamValue args, Continuation * cont, Env * env)
+void scam::applyIf(ScamValue args,
+                   Continuation * cont,
+                   Env * env,
+                   ScamEngine * engine)
 {
     CountedListParser * parser = getCountedListOfAnythingParser(2, 3);
 

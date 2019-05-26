@@ -2,6 +2,7 @@
 
 #include "Continuation.hpp"
 #include "Env.hpp"
+#include "expr/EvalOps.hpp"
 #include "expr/ScamExpr.hpp"
 #include "expr/TypePredicates.hpp"
 
@@ -37,6 +38,6 @@ void EvalCont::run(ScamValue expr)
         cont->run(expr);
     }
     else {
-        expr->eval(cont, env->getTop());
+        eval(expr, cont, env->getTop());
     }
 }

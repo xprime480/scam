@@ -17,12 +17,12 @@ namespace scam
 
     public:
         static ScamValue safeCons(ScamValue expr);
-
-        void apply(ScamValue args, Continuation * cont, Env * env) override;
-
-    private:
-        ScamEngine * engine;
     };
+
+    extern void applyLetStar(ScamValue args,
+                             Continuation * cont,
+                             Env * env,
+                             ScamEngine * engine);
 }
 
 #endif

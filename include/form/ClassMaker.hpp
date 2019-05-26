@@ -14,10 +14,12 @@ namespace scam
 
         ClassMaker();
         static ClassMaker * makeInstance();
-
-    public:
-        void apply(ScamValue args, Continuation * cont, Env * env) override;
     };
+
+    extern void applyClassMaker(ScamValue args,
+                                Continuation * cont,
+                                Env * env,
+                                ScamEngine * engine);
 }
 
 #endif

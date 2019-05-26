@@ -1,6 +1,7 @@
 #include "expr/MapWorker.hpp"
 
 #include "expr/CarContinuation.hpp"
+#include "expr/EvalOps.hpp"
 #include "expr/ScamExpr.hpp"
 #include "util/MemoryManager.hpp"
 
@@ -36,5 +37,5 @@ void MapWorker::mark() const
 void MapWorker::run()
 {
     Worker::run();
-    data.car->eval(data.cont, data.env);
+    eval(data.car, data.cont, data.env);
 }

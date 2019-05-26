@@ -12,9 +12,12 @@ namespace scam
 
     public:
         static CallCC * makeInstance();
-
-        void apply(ScamValue args, Continuation * cont, Env * env) override;
     };
+
+    extern void applyCallCC(ScamValue args,
+                            Continuation * cont,
+                            Env * env,
+                            ScamEngine * engine);
 }
 
 #endif

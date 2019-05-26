@@ -5,6 +5,7 @@
 #include "Trampoline.hpp"
 #include "WorkQueue.hpp"
 #include "Worker.hpp"
+#include "expr/EvalOps.hpp"
 #include "expr/ExpressionFactory.hpp"
 #include "expr/ScamExpr.hpp"
 #include "expr/TypePredicates.hpp"
@@ -163,7 +164,7 @@ ScamValue ScamEngine::read()
 
 ScamValue ScamEngine::eval(ScamValue expr)
 {
-    expr->eval(cont, env);
+    scam::eval(expr, cont, env);
 
     Trampoline(GlobalWorkQueue);
 
@@ -174,7 +175,7 @@ ScamValue ScamEngine::eval(ScamValue expr)
 
 ScamValue ScamEngine::apply(ScamValue expr, ScamValue args)
 {
-    expr->apply(args, cont, env);
+    scam::apply(expr, args, cont, env);
     Trampoline(GlobalWorkQueue);
     HistoryCont const * hc = dynamic_cast<HistoryCont const *>(cont);
     return hc->get();

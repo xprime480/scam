@@ -12,9 +12,12 @@ namespace scam
 
     public:
         static Macro * makeInstance();
-
-        void apply(ScamValue args, Continuation * cont, Env * env) override;
     };
+
+    extern void applyMacro(ScamValue args,
+                           Continuation * cont,
+                           Env * env,
+                           ScamEngine * engine);
 }
 
 #endif

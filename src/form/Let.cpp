@@ -14,7 +14,7 @@ using namespace std;
 static const char * myName = "let";
 
 Let::Let()
-    : SpecialForm(myName)
+    : SpecialForm(myName, applyLet)
 {
 }
 
@@ -24,7 +24,10 @@ Let * Let::makeInstance()
     return &instance;
 }
 
-void Let::apply(ScamValue args, Continuation * cont, Env * env)
+void scam::applyLet(ScamValue args,
+                    Continuation * cont,
+                    Env * env,
+                    ScamEngine * engine)
 {
     LetParser * parser = standardMemoryManager.make<LetParser>();
     if ( ! parser->accept(args) ) {

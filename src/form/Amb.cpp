@@ -13,8 +13,7 @@ using namespace std;
 static const char * myName = "amb";
 
 Amb::Amb(ScamEngine * engine)
-    : SpecialForm(myName, true)
-    , engine(engine)
+    : SpecialForm(myName, applyAmb, engine, true)
 {
 }
 
@@ -23,7 +22,10 @@ Amb * Amb::makeInstance(ScamEngine * engine)
     return new Amb(engine);
 }
 
-void Amb::apply(ScamValue args, Continuation * cont, Env * env)
+void scam::applyAmb(ScamValue args,
+		    Continuation * cont,
+		    Env * env,
+		    ScamEngine * engine)
 {
     ListParser * parser = getListOfAnythingParser();
     if ( ! parser->accept(args) ) {

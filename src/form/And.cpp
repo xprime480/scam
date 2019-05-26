@@ -12,7 +12,7 @@ using namespace std;
 static const char * myName = "and";
 
 And::And()
-    : SpecialForm(myName)
+    : SpecialForm(myName, applyAnd)
 {
 }
 
@@ -22,7 +22,10 @@ And * And::makeInstance()
     return &instance;
 }
 
-void And::apply(ScamValue args, Continuation * cont, Env * env)
+void scam::applyAnd(ScamValue args,
+                    Continuation * cont,
+                    Env * env,
+                    ScamEngine * engine)
 {
     ListParser * parser = getListOfAnythingParser();
     if ( ! parser->accept(args) ) {

@@ -2,6 +2,7 @@
 
 #include "Continuation.hpp"
 #include "Env.hpp"
+#include "expr/EvalOps.hpp"
 #include "expr/ScamExpr.hpp"
 #include "expr/TypePredicates.hpp"
 #include "prim/Primitive.hpp"
@@ -31,7 +32,7 @@ void PrimWorkerData::mark() const
 
 void PrimWorkerData::mapEval() const
 {
-    args->mapEval(cont, env);
+    scam::mapEval(args, cont, env);
 }
 
 void PrimWorkerData::handleResult(ScamValue expr)

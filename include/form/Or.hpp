@@ -13,9 +13,12 @@ namespace scam
     public:
         /* I think this should be private.  Check later */
         static Or * makeInstance();
-
-        void apply(ScamValue args, Continuation * cont, Env * env) override;
     };
+
+    extern void applyOr(ScamValue args,
+                        Continuation * cont,
+                        Env * env,
+                        ScamEngine * engine);
 }
 
 #endif

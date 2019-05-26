@@ -1,11 +1,5 @@
 #include "expr/ScamClosure.hpp"
 
-#include "Env.hpp"
-#include "WorkQueue.hpp"
-#include "expr/ExpressionFactory.hpp"
-#include "expr/ClosureWorker.hpp"
-#include "input/ParameterListParser.hpp"
-
 using namespace scam;
 using namespace std;
 
@@ -23,14 +17,3 @@ ScamClosure * ScamClosure::makeInstance(const LambdaParser * parser,
 {
     return new ScamClosure(parser, env, macrolike);
 }
-
-void ScamClosure::apply(ScamValue args, Continuation * cont, Env * env)
-{
-    workQueueHelper<ClosureWorker>(CLOSUREDEF(this),
-                                   CLOSUREENV(this),
-                                   cont,
-                                   args,
-                                   env,
-                                   MACROLIKE(this));
-}
-

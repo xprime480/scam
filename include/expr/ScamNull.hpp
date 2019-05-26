@@ -14,9 +14,6 @@ namespace scam
         friend class MemoryManager;
         ScamNull();
         static ScamNull * makeInstance();
-
-    public:
-        void eval(Continuation * cont, Env * env) const override;
     };
 }
 

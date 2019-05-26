@@ -12,8 +12,7 @@ using namespace std;
 static const char * myName = "define";
 
 Define::Define(ScamEngine * engine)
-    : SpecialForm(myName, true)
-    , engine(engine)
+    : SpecialForm(myName, applyDefine, engine, true)
 {
 }
 
@@ -22,7 +21,10 @@ Define * Define::makeInstance(ScamEngine * engine)
     return new Define(engine);
 }
 
-void Define::apply(ScamValue args, Continuation * cont, Env * env)
+void scam::applyDefine(ScamValue args,
+                       Continuation * cont,
+                       Env * env,
+                       ScamEngine * engine)
 {
     DefineParser * parser = standardMemoryManager.make<DefineParser>();
 

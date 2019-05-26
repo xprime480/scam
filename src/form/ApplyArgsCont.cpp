@@ -1,6 +1,7 @@
 #include "form/ApplyArgsCont.hpp"
 
 #include "Env.hpp"
+#include "expr/EvalOps.hpp"
 #include "expr/ScamExpr.hpp"
 #include "expr/TypePredicates.hpp"
 
@@ -39,6 +40,6 @@ void ApplyArgsCont::run(ScamValue expr)
         cont->run(expr);
     }
     else {
-        op->apply(expr, cont, env);
+        apply(op, expr, cont, env);
     }
 }

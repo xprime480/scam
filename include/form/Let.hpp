@@ -14,10 +14,12 @@ namespace scam
 
         Let();
         static Let * makeInstance();
-
-    public:
-        void apply(ScamValue args, Continuation * cont, Env * env) override;
     };
+
+    extern void applyLet(ScamValue args,
+                         Continuation * cont,
+                         Env * env,
+                         ScamEngine * engine);
 }
 
 #endif
