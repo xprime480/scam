@@ -36,6 +36,7 @@ namespace scam
     extern bool isByteVector(const ScamData * data);
     extern bool isDict(const ScamData * data);
 
+    extern bool isClosure(const ScamData * data);
     extern bool isProcedure(const ScamData * data);
     extern bool isClass(const ScamData * data);
     extern bool isInstance(const ScamData * data);

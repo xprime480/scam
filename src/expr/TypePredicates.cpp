@@ -150,6 +150,11 @@ bool scam::isByteVector(const ScamData * data)
     return data->type == ScamData::ByteVector;
 }
 
+bool scam::isClosure(const ScamData * data)
+{
+    return 0 != (data->type & ScamData::Closure);
+}
+
 bool scam::isProcedure(const ScamData * data)
 {
     return 0 != (data->type & ScamData::Procedure);

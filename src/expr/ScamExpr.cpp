@@ -40,15 +40,6 @@ void ScamExpr::mapEval(Continuation * cont, Env * env) const
     cont->run(hack);
 }
 
-ScamValue ScamExpr::withEnvUpdate(Env * updated) const
-{
-    stringstream s;
-    s << "Cannot update env of <" << writeValue(this) << ">";
-    throw ScamException(s.str());
-
-    return ExpressionFactory::makeNull();
-}
-
 bool ScamExpr::equals(ConstScamValue expr) const
 {
     return this == expr;

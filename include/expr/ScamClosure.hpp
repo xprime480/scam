@@ -22,10 +22,7 @@ namespace scam
                                           bool macrolike = false);
 
     public:
-        void
-        apply(ScamValue args, Continuation * cont, Env * env) override;
-
-        ScamValue withEnvUpdate(Env * updated) const override;
+        void apply(ScamValue args, Continuation * cont, Env * env) override;
     };
 }
 

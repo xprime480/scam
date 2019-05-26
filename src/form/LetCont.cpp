@@ -2,6 +2,7 @@
 
 #include "Binder.hpp"
 #include "Env.hpp"
+#include "expr/EvalOps.hpp"
 #include "expr/ScamExpr.hpp"
 #include "expr/SequenceOps.hpp"
 #include "expr/ScamSymbol.hpp"
@@ -61,7 +62,7 @@ void LetCont::rebind_procs(Env * extended)
         ScamEnvKeyType k = dynamic_cast<ScamSymbol *>(nthcar(formals, n));
         ScamValue v = extended->get(k);
         if ( isProcedure(v) ) {
-            ScamValue newV = v->withEnvUpdate(extended);
+            ScamValue newV = withEnvUpdate(v, extended);
             extended->assign(k, newV);
         }
     }

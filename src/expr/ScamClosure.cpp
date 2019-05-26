@@ -34,7 +34,3 @@ void ScamClosure::apply(ScamValue args, Continuation * cont, Env * env)
                                    MACROLIKE(this));
 }
 
-ScamValue ScamClosure::withEnvUpdate(Env * updated) const
-{
-    return ExpressionFactory::makeClosure(CLOSUREDEF(this), updated);
-}
