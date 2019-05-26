@@ -169,3 +169,9 @@ bool scam::isDict(const ScamData * data)
 {
     return data->type == ScamData::Dict;
 }
+
+bool scam::isApplicable(const ScamData * data)
+{
+    return 0 != (data->type & ScamData::Applicable);
+}
+

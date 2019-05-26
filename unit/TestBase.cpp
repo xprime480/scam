@@ -217,7 +217,7 @@ void TestBase::checkPredicates(ConstScamValue expr, unsigned exp)
     act |= (isVector(expr) ? SELECT_VECTOR : 0);
     act |= (isByteVector(expr) ? SELECT_BYTEVECTOR : 0);
 
-    act |= (expr->hasApply() ? SELECT_APPLY : 0);
+    act |= (isApplicable(expr) ? SELECT_APPLY : 0);
     act |= (isProcedure(expr) ? SELECT_PROC : 0);
 
     act |= (isClass(expr) ? SELECT_CLASS : 0);
@@ -442,7 +442,7 @@ void TestBase::expectCons(ConstScamValue expr, string const & repr)
 void
 TestBase::expectApplicable(ConstScamValue expr, string const & repr)
 {
-    ASSERT_TRUE(expr->hasApply()) << "Actual Value: " << writeValue(expr);
+    ASSERT_TRUE(isApplicable(expr)) << "Actual Value: " << writeValue(expr);
 
     const auto flags = SELECT_TRUTH | SELECT_APPLY;
     checkPredicates(expr, flags);

@@ -24,11 +24,6 @@ void ScamExpr::eval(Continuation * cont, Env * env) const
     cont->run(argggh);
 }
 
-bool ScamExpr::hasApply() const
-{
-    return 0 != (type & ScamData::Applicable);
-}
-
 void ScamExpr::apply(ScamValue args, Continuation * cont, Env * env)
 {
     ScamValue err =

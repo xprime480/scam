@@ -17,8 +17,6 @@ namespace scam
     public:
         virtual void eval(Continuation * cont, Env * env) const;
 
-        bool hasApply() const;
-
         virtual void
         apply(ScamValue args, Continuation * cont, Env * env);
 

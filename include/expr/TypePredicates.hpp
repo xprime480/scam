@@ -39,6 +39,8 @@ namespace scam
     extern bool isProcedure(const ScamData * data);
     extern bool isClass(const ScamData * data);
     extern bool isInstance(const ScamData * data);
+    
+    extern bool isApplicable(const ScamData * data);
 }
 
 #endif

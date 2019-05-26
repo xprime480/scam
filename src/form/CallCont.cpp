@@ -38,7 +38,7 @@ void CallCont::run(ScamValue expr)
         return;
     }
 
-    if ( ! expr->hasApply() ) {
+    if ( ! isApplicable(expr) ) {
         ScamValue err =
             ExpressionFactory::makeError("call/cc: form ",
                                          writeValue(expr),
