@@ -2,10 +2,11 @@
 
 #include "ScamException.hpp"
 #include "expr/EqualityOps.hpp"
-#include "expr/ExpressionFactory.hpp"
 #include "expr/ScamData.hpp"
+#include "expr/ScamNumeric.hpp"
 #include "expr/ScamToInternal.hpp"
 #include "expr/TypePredicates.hpp"
+#include "expr/ValueFactory.hpp"
 #include "util/NumericConverter.hpp"
 
 #include <cmath>
@@ -30,7 +31,7 @@ namespace
     extern JointValues computeJoint(ScamValue lhs, ScamValue rhs);
 }
 
-ExtendedNumeric::ExtendedNumeric(ConstScamValue expr)
+ExtendedNumeric::ExtendedNumeric(ScamValue expr)
     : expr(expr)
 {
     if ( ! isNumeric(expr) ) {
@@ -42,7 +43,7 @@ ExtendedNumeric::ExtendedNumeric(ConstScamValue expr)
 
 ScamValue ExtendedNumeric::get() const
 {
-    return const_cast<ScamValue>(expr);
+    return expr;
 }
 
 //////////////////////////////////////////
@@ -172,18 +173,18 @@ scam::operator+(const ExtendedNumeric & a, const ExtendedNumeric & b)
     if ( ! joint.special ) {
         if ( joint.integer ) {
             const int rv = asInteger(dA) + asInteger(dB);
-            expr = ExpressionFactory::makeInteger(rv, joint.exact);
+            expr = makeInteger(rv, joint.exact);
         }
         else if ( joint.rational ) {
             const RationalPair ratA = asRational(dA);
             const RationalPair ratB = asRational(dB);
             const int num = ratA.num * ratB.den + ratB.num * ratA.den;
             const int den = ratA.den * ratB.den;
-            expr = ExpressionFactory::makeRational(num, den, joint.exact);
+            expr = makeRational(num, den, joint.exact);
         }
         else if ( joint.real ) {
             const double rv = asDouble(dA) + asDouble(dB);
-            expr = ExpressionFactory::makeReal(rv, joint.exact);
+            expr = makeReal(rv, joint.exact);
         }
         else {
             ExtendedNumeric rA(realPart(dA));
@@ -194,11 +195,11 @@ scam::operator+(const ExtendedNumeric & a, const ExtendedNumeric & b)
             ExtendedNumeric rC = rA + rB;
             ExtendedNumeric iC = iA + iB;
 
-            expr = ExpressionFactory::makeComplex(rC.get(), iC.get());
+            expr = makeComplex(rC.get(), iC.get());
         }
     }
     else if ( isNaN(dA) || isNaN(dB) ) {
-        expr = ExpressionFactory::makeNaN();
+        expr = makeNaN();
     }
     else {
         const bool aNegInf = isNegInf(dA);
@@ -214,19 +215,19 @@ scam::operator+(const ExtendedNumeric & a, const ExtendedNumeric & b)
         switch ( code ) {
         case 6: /* +inf.0 + -inf.0 */
         case 9: /* -inf.0 + +inf.0 */
-            expr = ExpressionFactory::makeNaN();
+            expr = makeNaN();
             break;
 
         case 2: /* N + -inf.0 */
         case 8: /* -inf.0 + N */
         case 10: /* -inf.0 + -inf.0 */
-            expr = ExpressionFactory::makeNegInf();
+            expr = makeNegInf();
             break;
 
         case 1: /* N + +inf.0 */
         case 4: /* +inf.0 + N */
         case 5: /* +inf.0 + +inf.0 */
-            expr = ExpressionFactory::makePosInf();
+            expr = makePosInf();
             break;
 
         default:
@@ -241,7 +242,7 @@ scam::operator+(const ExtendedNumeric & a, const ExtendedNumeric & b)
 
 ExtendedNumeric scam::operator-(const ExtendedNumeric & a)
 {
-    ExtendedNumeric zero(ExpressionFactory::makeInteger(0, true));
+    ExtendedNumeric zero(makeInteger(0, true));
     return zero - a;
 }
 
@@ -253,12 +254,12 @@ scam::operator-(const ExtendedNumeric & a, const ExtendedNumeric & b)
     ScamValue expr { nullptr };
 
     if ( ! isSpecialNumeric(dA) && ! isSpecialNumeric(dB) ) {
-        ExtendedNumeric minusOne(ExpressionFactory::makeInteger(-1, true));
+        ExtendedNumeric minusOne(makeInteger(-1, true));
         ExtendedNumeric minusB = minusOne * b;
         return a + minusB;
     }
     else if ( isNaN(dA) || isNaN(dB) ) {
-        expr = ExpressionFactory::makeNaN();
+        expr = makeNaN();
     }
     else {
         const bool aNegInf = isNegInf(dA);
@@ -274,19 +275,19 @@ scam::operator-(const ExtendedNumeric & a, const ExtendedNumeric & b)
         switch ( code ) {
         case 5: /* +inf.0 - +inf.0 */
         case 10: /* -inf.0 - -inf.0 */
-            expr = ExpressionFactory::makeNaN();
+            expr = makeNaN();
             break;
 
         case 1: /* N - +inf.0 */
         case 8: /* -inf.0 - N */
         case 9: /* -inf.0 - +inf.0 */
-            expr = ExpressionFactory::makeNegInf();
+            expr = makeNegInf();
             break;
 
         case 2: /* N - -inf.0 */
         case 4: /* +inf.0 - N */
         case 6: /* +inf.0 - -inf.0 */
-            expr = ExpressionFactory::makePosInf();
+            expr = makePosInf();
             break;
 
         default:
@@ -311,18 +312,18 @@ scam::operator*(const ExtendedNumeric & a, const ExtendedNumeric & b)
     if ( ! joint.special ) {
         if ( joint.integer ) {
             const int rv = asInteger(dA) * asInteger(dB);
-            expr = ExpressionFactory::makeInteger(rv, joint.exact);
+            expr = makeInteger(rv, joint.exact);
         }
         else if ( joint.rational ) {
             const RationalPair ratA = asRational(dA);
             const RationalPair ratB = asRational(dB);
             const int num = ratA.num * ratB.num;
             const int den = ratA.den * ratB.den;
-            expr = ExpressionFactory::makeRational(num, den, joint.exact);
+            expr = makeRational(num, den, joint.exact);
         }
         else if ( joint.real ) {
             const double rv = asDouble(dA) * asDouble(dB);
-            expr = ExpressionFactory::makeReal(rv, joint.exact);
+            expr = makeReal(rv, joint.exact);
         }
         else {
             ExtendedNumeric rA(realPart(dA));
@@ -333,11 +334,11 @@ scam::operator*(const ExtendedNumeric & a, const ExtendedNumeric & b)
             ExtendedNumeric rC = rA * rB - iA * iB;
             ExtendedNumeric iC = rA * iB + iA * rB;
 
-            expr = ExpressionFactory::makeComplex(rC.get(), iC.get());
+            expr = makeComplex(rC.get(), iC.get());
         }
     }
     else if ( isNaN(dA) || isNaN(dB) ) {
-        expr = ExpressionFactory::makeNaN();
+        expr = makeNaN();
     }
     else {
         const bool aNegInf = isNegInf(dA);
@@ -363,12 +364,12 @@ scam::operator*(const ExtendedNumeric & a, const ExtendedNumeric & b)
 
         case 6: /* +inf.0 * -inf.0 */
         case 9: /* -inf.0 * +inf.0 */
-            expr = ExpressionFactory::makeNegInf();
+            expr = makeNegInf();
             break;
 
         case 5: /* +inf.0 * +inf.0 */
         case 10: /* -inf.0 * -inf.0 */
-            expr = ExpressionFactory::makePosInf();
+            expr = makePosInf();
             break;
 
         default:
@@ -395,36 +396,33 @@ scam::operator/(const ExtendedNumeric & a, const ExtendedNumeric & b)
             const int iB = asInteger(dB);
             if ( 0 == (iA % iB) ) {
                 const int rv =  iA / iB;
-                expr = ExpressionFactory::makeInteger(rv, joint.exact);
+                expr = makeInteger(rv, joint.exact);
             }
             else if ( ::abs(iA) <= 1e9 && ::abs(iB) <= 1e9 ) {
-                expr = ExpressionFactory::makeRational(iA, iB, joint.exact);
+                expr = makeRational(iA, iB, joint.exact);
             }
             else {
                 const double rv = (double) iA / (double) iB;
-                expr = ExpressionFactory::makeReal(rv, joint.exact);
+                expr = makeReal(rv, joint.exact);
             }
         }
         else if ( joint.rational ) {
             const RationalPair ratB = asRational(dB);
             int s = ratB.num < 0 ? -1 : 1;
             ScamValue recipricolB =
-                ExpressionFactory::makeRational(s * ratB.den,
-                                                ::abs(ratB.num),
-                                                joint.rational);
+                makeRational(s * ratB.den, ::abs(ratB.num), joint.rational);
             ExtendedNumeric newB(recipricolB);
             expr = (a * newB).get();
         }
         else if ( joint.real ) {
             const double rv = asDouble(dA) / asDouble(dB);
-            expr = ExpressionFactory::makeReal(rv, joint.exact);
+            expr = makeReal(rv, joint.exact);
         }
         else {
             ExtendedNumeric rB(realPart(dB));
             ExtendedNumeric iB(imagPart(dB));
             ExtendedNumeric iBNeg = -iB;
-            ExtendedNumeric bConj(ExpressionFactory::makeComplex(rB.get(),
-                                                                 iBNeg.get()));
+            ExtendedNumeric bConj(makeComplex(rB.get(), iBNeg.get()));
 
             ExtendedNumeric num = a * bConj;
             ExtendedNumeric den = b * bConj;
@@ -438,12 +436,12 @@ scam::operator/(const ExtendedNumeric & a, const ExtendedNumeric & b)
                 ExtendedNumeric rC = rNum / den;
                 ExtendedNumeric iC = iNum / den;
 
-                expr = ExpressionFactory::makeComplex(rC.get(), iC.get());
+                expr = makeComplex(rC.get(), iC.get());
             }
         }
     }
     else if ( isNaN(dA) || isNaN(dB) ) {
-        expr = ExpressionFactory::makeNaN();
+        expr = makeNaN();
     }
     else {
         const bool aNegInf = isNegInf(dA);
@@ -453,11 +451,11 @@ scam::operator/(const ExtendedNumeric & a, const ExtendedNumeric & b)
 
         if ( bNegInf || bPosInf ) {
             if ( aNegInf || aPosInf || (0 != asDouble(dA)) ) {
-                expr = ExpressionFactory::makeNaN();
+                expr = makeNaN();
             }
             else {
                 const bool ex = isExact(dA);
-                expr = ExpressionFactory::makeInteger(0, ex);
+                expr = makeInteger(0, ex);
             }
         }
         else {
@@ -481,27 +479,27 @@ scam::operator%(const ExtendedNumeric & a, const ExtendedNumeric & b)
 
         if ( joint.integer ) {
             const int rv = asInteger(dA) % asInteger(dB);
-            expr = ExpressionFactory::makeInteger(rv, joint.exact);
+            expr = makeInteger(rv, joint.exact);
         }
         else if ( joint.rational ) {
             ExtendedNumeric quotient = a / b;
             int q = (int) (0.0000001 + asDouble(quotient.get()));
-            ExtendedNumeric x(ExpressionFactory::makeInteger(q, joint.exact));
+            ExtendedNumeric x(makeInteger(q, joint.exact));
             ExtendedNumeric wp = x * b;
             return a - wp;
         }
         else {
             const double rv = fmod(asDouble(dA), asDouble(dB));
-            expr = ExpressionFactory::makeReal(rv, joint.exact);
+            expr = makeReal(rv, joint.exact);
         }
     }
     else {
         if ( ! isSpecialNumeric(dA) && 0 == asDouble(dA) ) {
             const bool ex = isExact(dA);
-            expr = ExpressionFactory::makeInteger(0, ex);
+            expr = makeInteger(0, ex);
         }
         else {
-            expr = ExpressionFactory::makeNaN();
+            expr = makeNaN();
         }
     }
 
@@ -518,7 +516,7 @@ namespace
         const double rVal = asDouble(r);
         if ( 0.0 == rVal ) {
             const bool ex = isExact(r);
-            return ExpressionFactory::makeInteger(0, ex);
+            return makeInteger(0, ex);
         }
 
         if ( rVal > 0 ) {
@@ -526,10 +524,10 @@ namespace
         }
 
         if ( isPosInf(i) ) {
-            return ExpressionFactory::makeNegInf();
+            return makeNegInf();
         }
 
-        return ExpressionFactory::makePosInf();
+        return makePosInf();
     }
 
     JointValues computeJoint(ScamValue lhs, ScamValue rhs)

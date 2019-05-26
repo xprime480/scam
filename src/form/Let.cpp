@@ -2,7 +2,6 @@
 
 #include "Continuation.hpp"
 #include "WorkQueue.hpp"
-#include "expr/ExpressionFactory.hpp"
 #include "form/LetWorker.hpp"
 #include "input/LetParser.hpp"
 #include "util/ArgListHelper.hpp"

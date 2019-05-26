@@ -1,8 +1,8 @@
 #include "Backtracker.hpp"
 
 #include "Continuation.hpp"
-#include "expr/ExpressionFactory.hpp"
 #include "expr/ScamData.hpp"
+#include "expr/ValueFactory.hpp"
 
 #include <iostream>
 #include <sstream>
@@ -15,11 +15,8 @@ using namespace std;
 namespace
 {
     static unsigned counter { 0 };
-    static ScamValue nomore =
-        ExpressionFactory::makeError("No more choices", false);
-    static bool init =
-        (nomore->setMeta("amb-error", ExpressionFactory::makeNil()),
-         true);
+    static ScamValue nomore = makeError("No more choices", false);
+    static bool init = (nomore->setMeta("amb-error", makeNil()), true);
 }
 
 Backtracker::Backtracker(char const * id, Backtracker * parent)

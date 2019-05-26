@@ -2,8 +2,8 @@
 
 #include "Continuation.hpp"
 #include "ScamFwd.hpp"
-#include "expr/ExpressionFactory.hpp"
 #include "expr/TypePredicates.hpp"
+#include "expr/ValueFactory.hpp"
 #include "input/SingletonParser.hpp"
 #include "util/ArgListHelper.hpp"
 
@@ -74,7 +74,7 @@ namespace
         else {
             ScamValue arg = parser->get();
             bool answer = pred(arg);
-            ScamValue rv = ExpressionFactory::makeBoolean(answer);
+            ScamValue rv = makeBoolean(answer);
             cont->run(rv);
         }
     }

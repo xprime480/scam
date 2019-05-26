@@ -1,10 +1,10 @@
 #include "form/QQConsListCdrCont.hpp"
 
 #include "Env.hpp"
-#include "expr/ExpressionFactory.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
+#include "expr/ValueFactory.hpp"
 #include "expr/ValueWriter.hpp"
 #include "form/QuasiQuote.hpp"
 
@@ -51,7 +51,7 @@ void QQConsListCdrCont::run(ScamValue expr)
 void QQConsListCdrCont::handle(ScamValue expr)
 {
     if ( ! check_splice(expr) ) {
-        ScamValue rv = ExpressionFactory::makeCons(car, expr);
+        ScamValue rv = makeCons(car, expr);
         cont->run(rv);
     }
 }
@@ -78,7 +78,7 @@ void QQConsListCdrCont::do_splice(ScamValue expr)
 
     while ( --count > 0 ) {
         ScamValue form = nthcar(car, count);
-        f = ExpressionFactory::makeCons(form, f);
+        f = makeCons(form, f);
     }
 
     cont->run(f);

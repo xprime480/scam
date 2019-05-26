@@ -1,4 +1,3 @@
-
 #include "Trampoline.hpp"
 
 #include "WorkQueue.hpp"

@@ -1,11 +1,12 @@
 #include "form/ClassMaker.hpp"
 
 #include "Continuation.hpp"
-#include "expr/ExpressionFactory.hpp"
+#include "expr/ValueFactory.hpp"
 #include "input/ClassDefParser.hpp"
-#include "util/MemoryManager.hpp"
 #include "util/ArgListHelper.hpp"
+#include "util/MemoryManager.hpp"
 #include "util/Validations.hpp"
+
 
 using namespace scam;
 using namespace std;
@@ -34,7 +35,7 @@ void scam::applyClassMaker(ScamValue args,
         failedArgParseMessage(myName, "(Base (vars*) methods*)", args, cont);
     }
     else {
-        ScamValue cls = ExpressionFactory::makeClass(parser, env);
+        ScamValue cls = makeClass(parser, env);
         cont->run(cls);
     }
 }

@@ -2,14 +2,13 @@
 
 #include "Continuation.hpp"
 #include "Env.hpp"
-#include "expr/ExpressionFactory.hpp"
 #include "expr/ScamData.hpp"
-#include "expr/ScamSymbol.hpp"
+#include "expr/ValueFactory.hpp"
 
 using namespace scam;
 using namespace std;
 
-EnvHelperCont::EnvHelperCont(ScamEnvKeyType sym,
+EnvHelperCont::EnvHelperCont(ScamValue sym,
                              Continuation * cont,
                              Env * env,
                              char const * name)
@@ -33,5 +32,5 @@ void EnvHelperCont::mark() const
 void EnvHelperCont::run(ScamValue expr)
 {
     finish(expr);
-    cont->run(ExpressionFactory::makeNull());
+    cont->run(makeNull());
 }

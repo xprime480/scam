@@ -1,7 +1,6 @@
 #include "prim/Car.hpp"
 
 #include "Continuation.hpp"
-#include "expr/ExpressionFactory.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/SequenceOps.hpp"
 
@@ -23,4 +22,3 @@ void Car::finish(ScamValue cons, Continuation * cont)
     ScamValue car = getCar(cons);
     cont->run(car);
 }
-

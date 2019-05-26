@@ -32,9 +32,7 @@ void CountdownWorker::run()
         //            cout << n << "... ";
 
       Worker * next =
-          standardMemoryManager.make<CountdownWorker>(n-1,
-                                                      counter,
-                                                      queue);
+          standardMemoryManager.make<CountdownWorker>(n-1, counter, queue);
       queue.put(next);
     }
 }

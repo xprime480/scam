@@ -456,5 +456,4 @@ Token StringTokenizer::scanDelimitedSymbol()
     string text = string(original + 1, pos - original - 2);
     Token token(TokenType::TT_SYMBOL, text);
     return token;
-
 }

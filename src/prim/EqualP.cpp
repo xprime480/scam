@@ -2,9 +2,10 @@
 
 #include "Continuation.hpp"
 #include "ScamException.hpp"
-#include "expr/ExpressionFactory.hpp"
+#include "expr/EqualityOps.hpp"
 #include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
+#include "expr/ValueFactory.hpp"
 #include "input/ListParser.hpp"
 #include "util/ArgListHelper.hpp"
 
@@ -41,8 +42,8 @@ void EqualP::applyArgs(ScamValue args, Continuation * cont)
 
 namespace
 {
-    static ScamValue const yes = ExpressionFactory::makeBoolean(true);
-    static ScamValue const no  = ExpressionFactory::makeBoolean(false);
+    static ScamValue const yes = makeBoolean(true);
+    static ScamValue const no  = makeBoolean(false);
 
     extern bool compare_all(ListParser * parser);
 
@@ -58,7 +59,7 @@ namespace
             mapped.push_back(tmp);
         }
 
-        return ExpressionFactory::makeList(mapped);
+        return makeList(mapped);
     }
 
     template <typename MapFn, typename ReduceFn>
@@ -92,7 +93,7 @@ namespace
     bool has_nulls(ListParser * parser, Continuation * cont)
     {
         auto fn = [](ScamValue arg) -> ScamValue {
-            return ExpressionFactory::makeBoolean(isNull(arg));
+            return makeBoolean(isNull(arg));
         };
         ScamValue answer = map_reduce(parser, fn, any);
         return truth(answer);

@@ -14,12 +14,12 @@ namespace scam
     private:
         friend class scam::MemoryManager;
 
-        ClassInitWorker(ScamInstance * instance,
+        ClassInitWorker(ScamValue instance,
                         ScamValue args,
                         Continuation * cont,
                         Env * env);
 
-        static ClassInitWorker * makeInstance(ScamInstance * instance,
+        static ClassInitWorker * makeInstance(ScamValue instance,
                                               ScamValue args,
                                               Continuation * cont,
                                               Env * env);
@@ -29,8 +29,8 @@ namespace scam
         void run() override;
 
     private:
-        ScamInstance * instance;
-        ScamValue     args;
+        ScamValue      instance;
+        ScamValue      args;
         Continuation * cont;
         Env          * env;
     };

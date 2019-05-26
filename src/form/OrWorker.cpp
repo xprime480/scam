@@ -3,8 +3,8 @@
 #include "Continuation.hpp"
 #include "Env.hpp"
 #include "expr/EvalOps.hpp"
-#include "expr/ExpressionFactory.hpp"
 #include "expr/ScamData.hpp"
+#include "expr/ValueFactory.hpp"
 #include "form/OrCont.hpp"
 #include "input/ListParser.hpp"
 #include "util/MemoryManager.hpp"
@@ -48,7 +48,7 @@ void OrWorker::run()
 
     size_t const len = parser->size();
     if ( 0 == len ) {
-        ScamValue rv = ExpressionFactory::makeBoolean(false);
+        ScamValue rv = makeBoolean(false);
         cont->run(rv);
     }
     else if ( n == (len - 1) ) {

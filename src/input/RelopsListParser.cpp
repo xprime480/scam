@@ -1,6 +1,5 @@
 #include "input/RelopsListParser.hpp"
 
-#include "expr/ScamString.hpp"
 #include "input/AlternativeParser.hpp"
 #include "input/ExtendedNumericParser.hpp"
 #include "input/ListParser.hpp"

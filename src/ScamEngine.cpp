@@ -6,9 +6,9 @@
 #include "WorkQueue.hpp"
 #include "Worker.hpp"
 #include "expr/EvalOps.hpp"
-#include "expr/ExpressionFactory.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/TypePredicates.hpp"
+#include "expr/ValueFactory.hpp"
 #include "input/ScamParser.hpp"
 #include "util/MemoryManager.hpp"
 
@@ -88,23 +88,23 @@ void ScamEngine::popFrame()
     }
 }
 
-void ScamEngine::addBinding(ScamEnvKeyType key, ScamValue val)
+void ScamEngine::addBinding(ScamValue key, ScamValue val)
 {
     env->put(key, val);
 }
 
-bool ScamEngine::hasBinding(ScamEnvKeyType key, bool checkParent)
+bool ScamEngine::hasBinding(ScamValue key, bool checkParent)
 {
     return env->check(key, checkParent);
 }
 
-ScamValue ScamEngine::getBinding(ScamEnvKeyType key, bool top)
+ScamValue ScamEngine::getBinding(ScamValue key, bool top)
 {
     Env * temp = top ? env->getTop() : env;
     return temp->get(key);
 }
 
-void ScamEngine::rebind(ScamEnvKeyType key, ScamValue val)
+void ScamEngine::rebind(ScamValue key, ScamValue val)
 {
     env->assign(key, val);
 }
@@ -144,7 +144,7 @@ ScamValue ScamEngine::parseCurrentInput()
 
     ScamValue rv;
     if ( ! hc || hc->current() == mark ) {
-        rv = ExpressionFactory::makeNull();
+        rv = makeNull();
     }
     else {
         rv = hc->get();
@@ -155,7 +155,7 @@ ScamValue ScamEngine::parseCurrentInput()
 ScamValue ScamEngine::read()
 {
     if ( input.empty() ) {
-        return ExpressionFactory::makeNull();
+        return makeNull();
     }
 
     ScamParser & p = input.back();
@@ -262,7 +262,7 @@ namespace
     ScamValue HistoryCont::get(size_t which) const
     {
         if ( which == 0 || which > history.size() ) {
-            return ExpressionFactory::makeNull();
+            return makeNull();
         }
 
         auto p = history.rbegin();

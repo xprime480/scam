@@ -5,12 +5,13 @@
 #include "Env.hpp"
 #include "EvalWorker.hpp"
 #include "WorkQueue.hpp"
-#include "expr/ExpressionFactory.hpp"
 #include "expr/MacroEvalCont.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
+#include "expr/ValueFactory.hpp"
 #include "expr/ValueWriter.hpp"
+#include "input/LambdaParser.hpp"
 #include "input/ParameterListParser.hpp"
 #include "util/MemoryManager.hpp"
 
@@ -55,7 +56,7 @@ void ClosureBindCont::run(ScamValue expr)
         cont->run(expr);
     }
     else if ( malformedActuals(expr) ) {
-        /* do  nothing */
+        /* do nothing */
     }
     else if ( checkArgLength(expr) ) {
         finalize(expr);
@@ -69,8 +70,7 @@ bool ClosureBindCont::malformedActuals(ScamValue expr) const
     }
 
     ScamValue err =
-        ExpressionFactory::makeError( "Expected a paramter list, got: ",
-                                      writeValue(expr));
+        makeErrorExtended( "Expected a paramter list, got: ", writeValue(expr));
     cont->run(err);
 
     return true;
@@ -79,7 +79,7 @@ bool ClosureBindCont::malformedActuals(ScamValue expr) const
 bool ClosureBindCont::describeFormals(unsigned & len) const
 {
     const ParameterListParser * formals = lambda->getArgs();
-    const ScamSymbol * rest = formals->getRest();
+    ScamValue rest = formals->getRest();
 
     len = formals->size();
     if ( nullptr != rest ) {
@@ -93,12 +93,10 @@ bool ClosureBindCont::describeFormals(unsigned & len) const
 void ClosureBindCont::wrongNumberOfParameters(unsigned formalsLen,
                                               unsigned actualsLen) const
 {
-    ScamValue err =
-        ExpressionFactory::makeError("Expected ",
-                                     formalsLen,
-                                     " parameters; ",
-                                     "got ",
-                                     actualsLen);
+    ScamValue err = makeErrorExtended("Expected ",
+                                      formalsLen,
+                                      " parameters; got ",
+                                      actualsLen);
     cont->run(err);
 }
 

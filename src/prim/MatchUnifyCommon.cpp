@@ -2,11 +2,10 @@
 
 #include "Continuation.hpp"
 #include "expr/EqualityOps.hpp"
-#include "expr/ExpressionFactory.hpp"
-#include "expr/ScamDict.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
+#include "expr/ValueFactory.hpp"
 #include "expr/ValueWriter.hpp"
 #include "input/MatchUnifyParser.hpp"
 #include "prim/CommonError.hpp"
@@ -29,7 +28,7 @@ void MatchUnifyCommon::solve()
 {
     ScamValue lhs  = parser->getLhs();
     ScamValue rhs  = parser->getRhs();
-    ScamDict * dict = parser->getDict();
+    ScamValue dict = parser->getDict();
 
     ScamValue result = exec(dict, lhs, rhs);
     if ( ! parser->isMatch() && isDict(result) ) {
@@ -39,39 +38,35 @@ void MatchUnifyCommon::solve()
     cont->run(result);
 }
 
-ScamValue MatchUnifyCommon::check_ignore(ScamDict * dict,
-                                          ScamValue lhs,
-                                          ScamValue rhs)
+ScamValue
+MatchUnifyCommon::check_ignore(ScamValue dict, ScamValue lhs, ScamValue rhs)
 {
-    static ScamValue ignore =
-        ExpressionFactory::makeKeyword("::", false);
+    static ScamValue ignore = makeKeyword("::", false);
 
     if ( equals(ignore, lhs) || equals(ignore, rhs) ) {
         return dict;
     }
 
-    return ExpressionFactory::makeNil();
+    return makeNil();
 }
 
-ScamValue MatchUnifyCommon::check_literals(ScamDict * dict,
-                                            ScamValue lhs,
-                                            ScamValue rhs)
+ScamValue
+MatchUnifyCommon::check_literals(ScamValue dict, ScamValue lhs, ScamValue rhs)
 {
     if ( equals(lhs, rhs) ) {
         return dict;
     }
 
-    return ExpressionFactory::makeNil();
+    return makeNil();
 }
 
-ScamValue MatchUnifyCommon::check_keyword(ScamDict * dict,
-                                           ScamValue lhs,
-                                           ScamValue rhs)
+ScamValue
+MatchUnifyCommon::check_keyword(ScamValue dict, ScamValue lhs, ScamValue rhs)
 {
     if ( isKeyword(lhs) && ! isNil(rhs) ) {
-        ScamValue old = dict->get(lhs);
+        ScamValue old = dictGet(dict, lhs);
         if ( error(old) ) {
-            dict->put(lhs, rhs);
+            dictPut(dict, lhs, rhs);
         }
         else if ( ! equals(old, rhs) ) {
             stringstream s;
@@ -85,24 +80,23 @@ ScamValue MatchUnifyCommon::check_keyword(ScamDict * dict,
         return dict;
     }
 
-    return ExpressionFactory::makeNil();
+    return makeNil();
 }
 
-ScamValue MatchUnifyCommon::check_keyword_reversed(ScamDict * dict,
-                                                    ScamValue lhs,
-                                                    ScamValue rhs)
+ScamValue MatchUnifyCommon::check_keyword_reversed(ScamValue dict,
+                                                   ScamValue lhs,
+                                                   ScamValue rhs)
 {
     if ( parser->isMatch() ) {
-        return ExpressionFactory::makeNil();
+        return makeNil();
     }
     else {
         return check_keyword(dict, rhs, lhs);
     }
 }
 
-ScamValue MatchUnifyCommon::check_cons(ScamDict * dict,
-                                        ScamValue lhs,
-                                        ScamValue rhs)
+ScamValue
+MatchUnifyCommon::check_cons(ScamValue dict, ScamValue lhs, ScamValue rhs)
 {
     if ( isCons(lhs) && isCons(rhs) ) {
         ScamValue lhsCar  = getCar(lhs);
@@ -117,12 +111,11 @@ ScamValue MatchUnifyCommon::check_cons(ScamDict * dict,
         return exec(dict, lhsCdr, rhsCdr);
     }
 
-    return ExpressionFactory::makeNil();
+    return makeNil();
 }
 
-ScamValue MatchUnifyCommon::check_vector(ScamDict * dict,
-                                          ScamValue lhs,
-                                          ScamValue rhs)
+ScamValue
+MatchUnifyCommon::check_vector(ScamValue dict, ScamValue lhs, ScamValue rhs)
 {
     if ( isVector(lhs) && isVector(rhs) ) {
         if ( length(lhs) != length(rhs) ) {
@@ -145,12 +138,11 @@ ScamValue MatchUnifyCommon::check_vector(ScamDict * dict,
         return dict;
     }
 
-    return ExpressionFactory::makeNil();
+    return makeNil();
 }
 
-ScamValue MatchUnifyCommon::check_dict(ScamDict * dict,
-                                        ScamValue lhs,
-                                        ScamValue rhs)
+ScamValue
+MatchUnifyCommon::check_dict(ScamValue dict, ScamValue lhs, ScamValue rhs)
 {
     if ( isDict(lhs) && isDict(rhs) ) {
         if ( length(lhs) != length(rhs) ) {
@@ -160,16 +152,13 @@ ScamValue MatchUnifyCommon::check_dict(ScamDict * dict,
             return make_common_error(s.str().c_str());
         }
 
-        ScamDict * lhsAsDict = dynamic_cast<ScamDict *>(lhs);
-        ScamDict * rhsAsDict = dynamic_cast<ScamDict *>(rhs);
-        KeyVec const & keys = lhsAsDict->getKeys();
-
+        KeyVec const & keys = getDictKeys(lhs);
         for ( auto key : keys ) {
-            ScamValue d = rhsAsDict->get(key);
+            ScamValue d = dictGet(rhs, key);
             if ( error(d) ) {
                 return make_common_error(writeValue(d).c_str());
             }
-            ScamValue p = lhsAsDict->get(key);
+            ScamValue p = dictGet(lhs, key);
             ScamValue result = exec(dict, p, d);
             if ( ! isDict(result) ) {
                 return result;
@@ -179,17 +168,13 @@ ScamValue MatchUnifyCommon::check_dict(ScamDict * dict,
         return dict;
     }
 
-    return ExpressionFactory::makeNil();
+    return makeNil();
 }
 
-ScamValue MatchUnifyCommon::exec(ScamDict * dict,
-                                  ScamValue lhs,
-                                  ScamValue rhs)
+ScamValue MatchUnifyCommon::exec(ScamValue dict, ScamValue lhs, ScamValue rhs)
 {
     using CheckerType =
-        ScamValue (MatchUnifyCommon::*)(ScamDict*,
-                                         ScamValue,
-                                         ScamValue);
+        ScamValue (MatchUnifyCommon::*)(ScamValue, ScamValue, ScamValue);
 
     static CheckerType checkers[] = {
          &MatchUnifyCommon::check_ignore,
@@ -216,7 +201,6 @@ ScamValue MatchUnifyCommon::exec(ScamDict * dict,
 
 ScamValue MatchUnifyCommon::resolve(ScamValue expr)
 {
-    ScamDict * dict = dynamic_cast<ScamDict *>(expr);
-    Substitutor subst(dict);
+    Substitutor subst(expr);
     return subst.resolve_value(expr);
 }

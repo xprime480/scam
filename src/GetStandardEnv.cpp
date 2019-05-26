@@ -1,7 +1,7 @@
 #include "ScamEngine.hpp"
 
 #include "Env.hpp"
-#include "expr/ExpressionFactory.hpp"
+#include "expr/ValueFactory.hpp"
 #include "form/AllSpecialForms.hpp"
 #include "prim/AllPrimitives.hpp"
 
@@ -13,8 +13,8 @@ namespace
     template <typename T, typename... Args>
     void addForm(Env * env, char const * name, Args... args)
     {
-        ScamEnvKeyType key = ExpressionFactory::makeSymbol(name);
-        ScamValue form = ExpressionFactory::makeForm<T>(args...);
+        ScamValue key  = makeSymbol(name);
+        ScamValue form = makeForm<T>(args...);
         env->put(key, form);
     }
 }

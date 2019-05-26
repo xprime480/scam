@@ -7,8 +7,8 @@
 #include "Extractor.hpp"
 #include "WorkQueue.hpp"
 #include "Worker.hpp"
-#include "expr/ScamValueAll.hpp"
 #include "input/ClassDefParser.hpp"
+#include "input/LambdaParser.hpp"
 #include "util/MemoryManager.hpp"
 
 #include <iostream>
@@ -47,8 +47,8 @@ protected:
 
     void testBoolean(bool val, string const & rep)
     {
-        ScamBoolean * cut1 = mm.make<ScamBoolean>(val);
-        ScamBoolean * cut2 = mm.make<ScamBoolean>(val);
+        ScamValue cut1 = makeBoolean(val);
+        ScamValue cut2 = makeBoolean(val);
 
         expectBoolean(cut1, val, rep);
         expectBoolean(cut2, val, rep);
@@ -193,10 +193,10 @@ TEST_F(MemoryTest, GCTestWithProxy)
  *
  *****************************************************************
  */
-TEST_F(MemoryTest, TestScamNull)
+TEST_F(MemoryTest, TestNull)
 {
-    ScamNull * cut1 = mm.make<ScamNull>();
-    ScamNull * cut2 = mm.make<ScamNull>();
+    ScamValue cut1 = makeNull();
+    ScamValue cut2 = makeNull();
 
     expectNull(cut1);
     expectNull(cut2);
@@ -204,10 +204,10 @@ TEST_F(MemoryTest, TestScamNull)
     expectNonManaged(cut1, cut2);
 }
 
-TEST_F(MemoryTest, TestScamNil)
+TEST_F(MemoryTest, TestNil)
 {
-    ScamNil * cut1 = mm.make<ScamNil>();
-    ScamNil * cut2 = mm.make<ScamNil>();
+    ScamValue cut1 = makeNil();
+    ScamValue cut2 = makeNil();
 
     expectNil(cut1);
     expectNil(cut2);
@@ -215,19 +215,19 @@ TEST_F(MemoryTest, TestScamNil)
     expectNonManaged(cut1, cut2);
 }
 
-TEST_F(MemoryTest, TestScamBoolean)
+TEST_F(MemoryTest, TestBoolean)
 {
     testBoolean(true,  "#t");
     testBoolean(false, "#f");
 }
 
-TEST_F(MemoryTest, TestScamCharacter)
+TEST_F(MemoryTest, TestCharacter)
 {
     const char val { 'a' };
     const string repr { "#\\a" };
 
-    ScamCharacter * cut1 = mm.make<ScamCharacter>(repr);
-    ScamCharacter * cut2 = mm.make<ScamCharacter>(repr);
+    ScamValue cut1 = makeCharacter(repr);
+    ScamValue cut2 = makeCharacter(repr);
 
     expectChar(cut1, val, repr);
     expectChar(cut2, val, repr);
@@ -240,8 +240,8 @@ TEST_F(MemoryTest, TestScamInteger)
     const int value { 1 };
     const string repr { "1" };
 
-    ScamNumeric * cut1 = mm.make<ScamNumeric>(value, true);
-    ScamNumeric * cut2 = mm.make<ScamNumeric>(value, true);
+    ScamValue cut1 = makeInteger(value, true);
+    ScamValue cut2 = makeInteger(value, true);
 
     expectInteger(cut1, value, repr, true);
     expectInteger(cut2, value, repr, true);
@@ -254,8 +254,8 @@ TEST_F(MemoryTest, TestScamReal)
     const float value { 2.5 };
     const string repr { "2.5" };
 
-    ScamNumeric * cut1 = mm.make<ScamNumeric>(value, false);
-    ScamNumeric * cut2 = mm.make<ScamNumeric>(value, false);
+    ScamValue cut1 = makeReal(value, false);
+    ScamValue cut2 = makeReal(value, false);
 
     expectReal(cut1, value, repr, false);
     expectReal(cut2, value, repr, false);
@@ -264,12 +264,12 @@ TEST_F(MemoryTest, TestScamReal)
 }
 
 
-TEST_F(MemoryTest, TestScamString)
+TEST_F(MemoryTest, TestString)
 {
     const string value { "my test string" };
 
-    ScamString * cut1 = mm.make<ScamString>(value);
-    ScamString * cut2 = mm.make<ScamString>(value);
+    ScamValue cut1 = makeString(value);
+    ScamValue cut2 = makeString(value);
 
     expectString(cut1, value);
     expectString(cut2, value);
@@ -277,12 +277,12 @@ TEST_F(MemoryTest, TestScamString)
     expectManaged(cut1, cut2);
 }
 
-TEST_F(MemoryTest, TestScamSymbol)
+TEST_F(MemoryTest, TestSymbol)
 {
     const string value { "my test string" };
 
-    ScamSymbol * cut1 = mm.make<ScamSymbol>(value);
-    ScamSymbol * cut2 = mm.make<ScamSymbol>(value);
+    ScamValue cut1 = makeSymbol(value);
+    ScamValue cut2 = makeSymbol(value);
 
     expectSymbol(cut1, value);
     expectSymbol(cut2, value);
@@ -290,12 +290,12 @@ TEST_F(MemoryTest, TestScamSymbol)
     expectManaged(cut1, cut2);
 }
 
-TEST_F(MemoryTest, TestScamKeyword)
+TEST_F(MemoryTest, TestKeyword)
 {
     const string value { ":aKeyword" };
 
-    ScamKeyword * cut1 = mm.make<ScamKeyword>(value);
-    ScamKeyword * cut2 = mm.make<ScamKeyword>(value);
+    ScamValue cut1 = makeKeyword(value);
+    ScamValue cut2 = makeKeyword(value);
 
     expectKeyword(cut1, value);
     expectKeyword(cut2, value);
@@ -303,12 +303,12 @@ TEST_F(MemoryTest, TestScamKeyword)
     expectManaged(cut1, cut2);
 }
 
-TEST_F(MemoryTest, TestScamError)
+TEST_F(MemoryTest, TestError)
 {
     const char * value { "I don't know what went wrong" };
 
-    ScamError * cut1 = mm.make<ScamError>(value);
-    ScamError * cut2 = mm.make<ScamError>(value);
+    ScamValue cut1 = makeError(value);
+    ScamValue cut2 = makeError(value);
 
     expectError(cut1, value);
     expectError(cut2, value);
@@ -326,11 +326,11 @@ TEST_F(MemoryTest, TestScamError)
  *****************************************************************
  */
 
-TEST_F(MemoryTest, TestScamCons)
+TEST_F(MemoryTest, TestCons)
 {
-    ScamValue car = mm.make<ScamNumeric>(1, true);
-    ScamValue cdr = mm.make<ScamNumeric>(2, true);
-    ScamCons * cons1 = mm.make<ScamCons>(car, cdr);
+    ScamValue car = makeInteger(1, true);
+    ScamValue cdr = makeInteger(2, true);
+    ScamValue cons1 = makeCons(car, cdr);
 
     cons1->mark();
     expectMarked(true, cons1, car, cdr);
@@ -339,34 +339,34 @@ TEST_F(MemoryTest, TestScamCons)
     EXPECT_TRUE(cdr->isMarked());
 }
 
-TEST_F(MemoryTest, TestScamDict)
+TEST_F(MemoryTest, TestDict)
 {
-    ScamDict * dict1 = mm.make<ScamDict>();
-    ScamValue key1 = mm.make<ScamKeyword>(":key1");
-    ScamValue key2 = mm.make<ScamKeyword>(":key2");
-    ScamValue val1 = mm.make<ScamNumeric>(1, true);
-    ScamValue val2 = mm.make<ScamNumeric>(2, true);
-    ScamValue val3 = mm.make<ScamNumeric>(3, true);
+    ScamValue dict1 = makeDict();
+    ScamValue key1  = makeKeyword(":key1");
+    ScamValue key2  = makeKeyword(":key2");
+    ScamValue val1  = makeInteger(1, true);
+    ScamValue val2  = makeInteger(2, true);
+    ScamValue val3  = makeInteger(3, true);
 
-    dict1->put(key1, val1);
-    dict1->put(key2, val2);
-    dict1->put(key1, val3);
+    dictPut(dict1, key1, val1);
+    dictPut(dict1, key2, val2);
+    dictPut(dict1, key1, val3);
 
     dict1->mark();
     expectMarked(true, dict1, key1, key2, val2, val3);
     expectMarked(false, val1);
 }
 
-TEST_F(MemoryTest, TestScamVector)
+TEST_F(MemoryTest, TestVector)
 {
-    ScamValue val1 = mm.make<ScamNumeric>(1, true);
-    ScamValue val2 = mm.make<ScamNumeric>(2, true);
-    ScamValue val3 = mm.make<ScamNumeric>(3, true);
+    ScamValue val1 = makeInteger(1, true);
+    ScamValue val2 = makeInteger(2, true);
+    ScamValue val3 = makeInteger(3, true);
 
     ExprVec elts;
     elts.push_back(val1);
     elts.push_back(val2);
-    ScamVector * vec2 = mm.make<ScamVector>(elts);
+    ScamValue vec2 = makeVector(elts);
 
     vec2->mark();
     expectMarked(true, vec2, val1, val2);
@@ -383,21 +383,21 @@ TEST_F(MemoryTest, TestScamVector)
  *****************************************************************
  */
 
-TEST_F(MemoryTest, TestScamClosure)
+TEST_F(MemoryTest, TestClosure)
 {
     // (() (+ a b))
-    ScamSymbol * symPlus = ExpressionFactory::makeSymbol("+");
-    ScamSymbol * symA    = ExpressionFactory::makeSymbol("a");
-    ScamSymbol * symB    = ExpressionFactory::makeSymbol("b");
-    ScamValue formals   = ExpressionFactory::makeList(symA, symB);
-    ScamValue aForm     = ExpressionFactory::makeList(symPlus, symA, symB);
-    ScamValue forms     = ExpressionFactory::makeList(formals, aForm);
+    ScamValue symPlus = makeSymbol("+");
+    ScamValue symA    = makeSymbol("a");
+    ScamValue symB    = makeSymbol("b");
+    ScamValue formals = makeList(symA, symB);
+    ScamValue aForm   = makeList(symPlus, symA, symB);
+    ScamValue forms   = makeList(formals, aForm);
     Env * env = standardMemoryManager.make<Env>();
 
     LambdaParser * lambda = mm.make<LambdaParser>();
     ASSERT_TRUE(lambda->accept(forms));
 
-    ScamClosure * closure = mm.make<ScamClosure>(lambda, env);
+    ScamValue closure = makeClosure(lambda, env);
 
     closure->mark();
     expectMarked(true, closure);
@@ -410,30 +410,28 @@ TEST_F(MemoryTest, TestScamClosure)
     expectMarked(true, symPlus);
 }
 
-TEST_F(MemoryTest, TestScamClass)
+TEST_F(MemoryTest, TestClass)
 {
-    ScamSymbol * base    = ExpressionFactory::makeSymbol("Root");
+    ScamValue base = makeSymbol("Root");
+    ScamValue vars = makeNil();
 
-    ScamValue vars    = ExpressionFactory::makeNil();
+    ScamValue symPlus = makeSymbol("+");
+    ScamValue symA    = makeSymbol("a");
+    ScamValue symB    = makeSymbol("b");
+    ScamValue meth    = makeSymbol("method");
 
-    ScamSymbol * symPlus = ExpressionFactory::makeSymbol("+");
-    ScamSymbol * symA    = ExpressionFactory::makeSymbol("a");
-    ScamSymbol * symB    = ExpressionFactory::makeSymbol("b");
+    ScamValue formals = makeList(symA, symB);
 
-    ScamSymbol * meth    = ExpressionFactory::makeSymbol("method");
-
-    ScamValue formals = ExpressionFactory::makeList(symA, symB);
-
-    ScamValue aForm   = ExpressionFactory::makeList(symPlus, symA, symB);
-    ScamValue func    = ExpressionFactory::makeList(meth, formals, aForm);
-    ScamValue def     = ExpressionFactory::makeList(base, vars, func);
+    ScamValue aForm   = makeList(symPlus, symA, symB);
+    ScamValue func    = makeList(meth, formals, aForm);
+    ScamValue def     = makeList(base, vars, func);
 
     Env * env = mm.make<Env>();
 
     ClassDefParser * parser = mm.make<ClassDefParser>();
     ASSERT_TRUE(parser->accept(def));
 
-    ScamClass * cls = mm.make<ScamClass>(parser, env);
+    ScamValue cls = makeClass(parser, env);
 
     cls->mark();
     expectMarked(true,
@@ -441,38 +439,38 @@ TEST_F(MemoryTest, TestScamClass)
                  symB, symA, aForm, symPlus, def, func);
 }
 
-TEST_F(MemoryTest, TestScamInstance)
+TEST_F(MemoryTest, TestInstance)
 {
-    ScamSymbol * symPlus = ExpressionFactory::makeSymbol("+");
-    ScamSymbol * symA    = ExpressionFactory::makeSymbol("a");
-    ScamSymbol * symB    = ExpressionFactory::makeSymbol("b");
+    ScamValue symPlus = makeSymbol("+");
+    ScamValue symA    = makeSymbol("a");
+    ScamValue symB    = makeSymbol("b");
 
-    ScamValue name    = ExpressionFactory::makeSymbol("f");
-    ScamValue symQ    = ExpressionFactory::makeSymbol("q");
-    ScamValue args    = ExpressionFactory::makeList(symQ);
-    ScamValue aForm   = ExpressionFactory::makeList(symPlus, symA, symB, symQ);
-    ScamSymbol * nom     = ExpressionFactory::makeSymbol("Notre Dame");
-    ScamValue vars    = ExpressionFactory::makeList(symA, symB);
-    ScamValue fun1    = ExpressionFactory::makeList(name, args, aForm);
+    ScamValue name    = makeSymbol("f");
+    ScamValue symQ    = makeSymbol("q");
+    ScamValue args    = makeList(symQ);
+    ScamValue aForm   = makeList(symPlus, symA, symB, symQ);
+    ScamValue nom     = makeSymbol("Notre Dame");
+    ScamValue vars    = makeList(symA, symB);
+    ScamValue fun1    = makeList(name, args, aForm);
 
-    ScamValue classDef = ExpressionFactory::makeList(nom, vars, fun1);
+    ScamValue classDef = makeList(nom, vars, fun1);
 
     ClassDefParser * def = mm.make<ClassDefParser>();
     ASSERT_TRUE(def->accept(classDef));
 
     Env * env = standardMemoryManager.make<Env>();
-    ScamClass * cls = mm.make<ScamClass>(def, env);
-    ScamInstance * instance = mm.make<ScamInstance>(cls, env);
+    ScamValue cls = makeClass(def, env);
+    ScamValue instance = makeClassInstance(cls, env);
 
     instance->mark();
     expectMarked(false, fun1, vars, name, nom);
     expectMarked(true, instance, env, symPlus, symA, symB, symQ, aForm, args);
 }
 
-TEST_F(MemoryTest, TestScamContinuation)
+TEST_F(MemoryTest, TestContinuation)
 {
-    Continuation     * original = mm.make<Continuation>("Test");
-    ScamContinuation * wrapper  = mm.make<ScamContinuation>(original);
+    Continuation * original = mm.make<Continuation>("Test");
+    ScamValue      wrapper  = makeContinuation(original);
 
     wrapper->mark();
     expectMarked(true, wrapper, original);
@@ -481,7 +479,7 @@ TEST_F(MemoryTest, TestScamContinuation)
 TEST_F(MemoryTest, TestExtractor)
 {
     Continuation * cont = mm.make<Extractor>();
-    ScamValue expr = mm.make<ScamKeyword>(":best");
+    ScamValue expr = makeKeyword(":best");
 
     cont->run(expr);
     cont->mark();
@@ -492,8 +490,8 @@ TEST_F(MemoryTest, TestEnv)
 {
     Env * top = standardMemoryManager.make<Env>();
     Env * env = top->extend();
-    ScamSymbol * key = ExpressionFactory::makeSymbol("f");
-    ScamValue val = ExpressionFactory::makeInteger(333, true);
+    ScamValue key = makeSymbol("f");
+    ScamValue val = makeInteger(333, true);
 
     top->put(key, val);
     env->mark();

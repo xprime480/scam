@@ -1,11 +1,11 @@
 #include "expr/SequenceOps.hpp"
 
 #include "ScamException.hpp"
-#include "expr/ExpressionFactory.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueWriter.hpp"
+#include "expr/ValueFactory.hpp"
 
 #include <sstream>
 
@@ -81,16 +81,16 @@ size_t scam::length(ScamValue value)
 
 ScamValue checkLength(ScamValue value, size_t n)
 {
-    ScamValue rv = ExpressionFactory::makeNull();
+    ScamValue rv = makeNull();
 
     const size_t len = length(value);
     if ( n >= len ) {
-        rv = ExpressionFactory::makeError("Requested index ",
-                                          n,
-                                          " of a ",
-                                          len,
-                                          "-element seaquence",
-                                          writeValue(value));
+        rv = makeErrorExtended("Requested index ",
+                               n,
+                               " of a ",
+                               len,
+                               "-element seaquence",
+                               writeValue(value));
     }
 
     return rv;
@@ -98,12 +98,12 @@ ScamValue checkLength(ScamValue value, size_t n)
 
 ScamValue scam::nthcar(ScamValue value, size_t n)
 {
-    ScamValue rv = ExpressionFactory::makeNull();
+    ScamValue rv = makeNull();
 
     if ( isByteVector(value) ) {
         rv = checkLength(value, n);
         if ( ! error(rv) ) {
-            rv = ExpressionFactory::makeInteger(BYTEVECTOR(value)[n], true);
+            rv = makeInteger(BYTEVECTOR(value)[n], true);
         }
     }
     else if ( isCons(value) ) {
@@ -149,10 +149,8 @@ ScamValue scam::nthcdr(ScamValue value, size_t n)
         throw ScamException(msg);
     }
 
-    auto outOfRange = ExpressionFactory::makeError("Index ",
-						   n,
-						   " requested for ",
-						   writeValue(value));
+    auto outOfRange =
+        makeErrorExtended("Index ", n, " requested for ", writeValue(value));
     if ( n >= length(value) ) {
         return outOfRange;
     }
@@ -167,7 +165,7 @@ ScamValue scam::nthcdr(ScamValue value, size_t n)
         rv = nthcdr(cdr, n-1);
     }
     else if ( n >= 1 ) {
-	rv = outOfRange;
+        rv = outOfRange;
     }
     else {
         rv = cdr;
@@ -186,7 +184,7 @@ ScamValue scam::append(ScamValue expr, ScamValue tail)
     }
 
     if ( isNil(expr) ) {
-        return ExpressionFactory::makeList(tail);
+        return makeList(tail);
     }
 
     /* by assumption, isCons! */
@@ -194,5 +192,5 @@ ScamValue scam::append(ScamValue expr, ScamValue tail)
     ScamValue car = nthcar(expr, 0);
     ScamValue cdr = nthcdr(expr, 0);
     ScamValue newCdr = append(cdr, tail);
-    return ExpressionFactory::makeCons(car, newCdr);
+    return makeCons(car, newCdr);
 }

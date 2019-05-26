@@ -1,27 +1,17 @@
 #include "input/DictOpsParser.hpp"
 
-#include "expr/ExpressionFactory.hpp"
+#include "expr/ValueFactory.hpp"
 #include "input/AlternativeParser.hpp"
 #include "input/SequenceParser.hpp"
 
 using namespace scam;
 using namespace std;
 
-const ScamKeyword *
-DictOpsParser::getOp = ExpressionFactory::makeKeyword(":get", false);
-
-const ScamKeyword *
-DictOpsParser::putOp = ExpressionFactory::makeKeyword(":put", false);
-
-const ScamKeyword *
-DictOpsParser::lenOp = ExpressionFactory::makeKeyword(":length", false);
-
-const ScamKeyword *
-DictOpsParser::remOp = ExpressionFactory::makeKeyword(":remove", false);
-
-const ScamKeyword *
-DictOpsParser::hasOp = ExpressionFactory::makeKeyword(":has", false);
-
+ScamValue DictOpsParser::getOp = makeKeyword(":get", false);
+ScamValue DictOpsParser::putOp = makeKeyword(":put", false);
+ScamValue DictOpsParser::lenOp = makeKeyword(":length", false);
+ScamValue DictOpsParser::remOp = makeKeyword(":remove", false);
+ScamValue DictOpsParser::hasOp = makeKeyword(":has", false);
 
 DictOpsParser::DictOpsParser()
     : ArgParser()
@@ -103,19 +93,22 @@ void DictOpsParser::clearValue()
     matched = nullptr;
 }
 
-const ScamKeyword * DictOpsParser::getParsedOp() const
+ScamValue DictOpsParser::getParsedOp() const
 {
+    ScamValue rv = makeNull();
+
     if ( matched ) {
         ArgParser * ap = matched->get(0);
-        ScamValue expr = ap ? ap->getValue() : nullptr;
-        return dynamic_cast<const ScamKeyword *>(expr);
+        if ( ap ) {
+            rv = ap->getValue();
+        }
     }
-    return nullptr;
+    return rv;
 }
 
 ScamValue DictOpsParser::getOpKey() const
 {
-    ScamValue rv { ExpressionFactory::makeNull() };
+    ScamValue rv { makeNull() };
     if ( matched ) {
         ArgParser * ap = matched->get(1);
         if ( ap ) {
@@ -127,7 +120,7 @@ ScamValue DictOpsParser::getOpKey() const
 
 ScamValue DictOpsParser::getOpVal() const
 {
-    ScamValue rv { ExpressionFactory::makeNull() };
+    ScamValue rv { makeNull() };
     if ( matched ) {
         ArgParser * ap = matched->get(2);
         if ( ap ) {

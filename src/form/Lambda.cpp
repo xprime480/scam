@@ -1,7 +1,7 @@
 #include "form/Lambda.hpp"
 
 #include "Continuation.hpp"
-#include "expr/ExpressionFactory.hpp"
+#include "expr/ValueFactory.hpp"
 #include "input/LambdaParser.hpp"
 #include "util/MemoryManager.hpp"
 #include "util/Validations.hpp"
@@ -32,7 +32,7 @@ void scam::applyLambda(ScamValue args,
         expr = validateClosureArgs(args, "lambda");
     }
     else {
-        expr = ExpressionFactory::makeClosure(lambda, env);
+        expr = makeClosure(lambda, env);
     }
 
     cont->run(expr);

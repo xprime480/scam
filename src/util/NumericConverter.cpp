@@ -1,9 +1,10 @@
 #include "util/NumericConverter.hpp"
 
-#include "expr/ExpressionFactory.hpp"
 #include "expr/ExtendedNumeric.hpp"
+#include "expr/ScamNumeric.hpp"
 #include "expr/ScamToInternal.hpp"
 #include "expr/TypePredicates.hpp"
+#include "expr/ValueFactory.hpp"
 #include "input/StringTokenizer.hpp"
 
 #include <cmath>
@@ -14,7 +15,7 @@ using namespace std;
 
 NumericConverter::NumericConverter(const char * pos)
     : pos(pos)
-    , value(ExpressionFactory::makeNull())
+    , value(makeNull())
     , base(10)
     , exactness(ExactnessType::ET_CONTEXT)
 {
@@ -24,7 +25,7 @@ NumericConverter::NumericConverter(const char * pos)
 ScamValue includeSign(int sign, ScamValue expr)
 {
     if ( sign < 0 ) {
-        ExtendedNumeric lhs(ExpressionFactory::makeInteger(sign, true));
+        ExtendedNumeric lhs(makeInteger(sign, true));
         ExtendedNumeric rhs(expr);
         ExtendedNumeric result = lhs * rhs;
         expr = result.get();
@@ -54,7 +55,7 @@ ScamValue NumericConverter::simplify(ScamValue value)
         double frac = ::fmod(v, 1.0);
         if ( 0.0 == frac ) {
             const bool ex = isExact(value);
-            value = ExpressionFactory::makeRational((int)v, 1, ex);
+            value = makeRational((int)v, 1, ex);
         }
         else {
             return value;
@@ -65,7 +66,7 @@ ScamValue NumericConverter::simplify(ScamValue value)
         const RationalPair v = asRational(value);
         if ( 1 == v.den ) {
             const bool ex = isExact(value);
-            value = ExpressionFactory::makeInteger(v.num, ex);
+            value = makeInteger(v.num, ex);
         }
     }
 
@@ -88,17 +89,17 @@ void NumericConverter::scanNum()
     scanComplex();
 
     if ( ! StringTokenizer::isDelimiter(*pos) ) {
-        value = ExpressionFactory::makeNull();
+        value = makeNull();
     }
 }
 
 void NumericConverter::scanComplex()
 {
-    ScamValue rv = ExpressionFactory::makeNull();
+    ScamValue rv = makeNull();
     const char * original = pos;
 
     ScamValue real = scanInfNan();
-    ScamValue imag = ExpressionFactory::makeNull();
+    ScamValue imag = makeNull();
 
     if ( isNull(real) ) { // not infnan
         int sign = scanSign(false);
@@ -114,7 +115,7 @@ void NumericConverter::scanComplex()
             if ( 'i' == tolower(*pos) ) {
                 ++pos;
                 imag = includeSign(sign, imag);
-                rv = ExpressionFactory::makeComplex(real, imag);
+                rv = makeComplex(real, imag);
             }
         }
     }
@@ -126,7 +127,7 @@ void NumericConverter::scanComplex()
                 imag = real;
                 real = makeIntegerWithExactness(0);
             }
-            rv = ExpressionFactory::makeComplex(real, imag);
+            rv = makeComplex(real, imag);
         }
         else {
             rv = real;
@@ -167,7 +168,7 @@ void NumericConverter::scanComplex()
             }
 
             if ( isNull(rv) ) {
-                rv = ExpressionFactory::makeComplex(real, imag);
+                rv = makeComplex(real, imag);
             }
         }
     }
@@ -213,7 +214,7 @@ ScamValue NumericConverter::scanUReal()
 {
     const char * original = pos;
 
-    ScamValue rv10 { ExpressionFactory::makeNull() };
+    ScamValue rv10 { makeNull() };
     const char * pos10 = pos;
     if ( 10 == base ) {
         rv10 = scanDecimal();
@@ -258,7 +259,7 @@ ScamValue NumericConverter::scanUReal()
 ScamValue NumericConverter::scanDecimal()
 {
     const char * original = pos;
-    ScamValue rv { ExpressionFactory::makeNull() };
+    ScamValue rv { makeNull() };
 
     if ( scanRadixPoint() ) {
         rv = makeFraction(1);
@@ -316,7 +317,7 @@ ScamValue NumericConverter::scanUInteger()
 
     if ( 0 == count ) {
         pos = original;
-        return ExpressionFactory::makeNull();
+        return makeNull();
     }
 
     return makeIntegerWithExactness(value);
@@ -349,16 +350,16 @@ void NumericConverter::scanPrefix()
 
 ScamValue NumericConverter::scanInfNan()
 {
-    ScamValue rv { ExpressionFactory::makeNull() };
+    ScamValue rv { makeNull() };
 
     if ( 0 == strncmp(pos, "+nan.0", 6) || 0 == strncmp(pos, "-nan.0", 6) ) {
-        rv = ExpressionFactory::makeNaN();
+        rv = makeNaN();
     }
     else if ( 0 == strncmp(pos, "+inf.0", 6) ) {
-        rv = ExpressionFactory::makePosInf();
+        rv = makePosInf();
     }
     else if ( 0 == strncmp(pos, "-inf.0", 6) ) {
-        rv = ExpressionFactory::makeNegInf();
+        rv = makeNegInf();
     }
     else {
         return rv;
@@ -371,7 +372,7 @@ ScamValue NumericConverter::scanInfNan()
 ScamValue NumericConverter::scanSuffix()
 {
     const char * original = pos;
-    ScamValue rv { ExpressionFactory::makeNull() };
+    ScamValue rv { makeNull() };
 
     if ( 'e' == tolower(*pos) ) {
         ++pos;
@@ -448,20 +449,20 @@ ScamValue NumericConverter::makeFraction(unsigned minCount)
     unsigned count = pos - original;
     if ( count < minCount ) {
         pos = original;
-        return ExpressionFactory::makeNull();
+        return makeNull();
     }
 
     bool makeExact = exactness == ExactnessType::ET_EXACT;
 
     if ( isNull(rv) ) {
-        return ExpressionFactory::makeInteger(0, makeExact);
+        return makeInteger(0, makeExact);
     }
 
 
     if ( count <= 6 ) {
         int value = asInteger(rv);
         double multiplier = makeMultiplier(count);
-        return ExpressionFactory::makeRational(value, multiplier, makeExact);
+        return makeRational(value, multiplier, makeExact);
     }
     else {
 
@@ -545,7 +546,7 @@ int NumericConverter::convertDigit(char digit) const
 ScamValue
 NumericConverter::makeComplexPolar(ScamValue r, ScamValue theta) const
 {
-    ScamValue nan = ExpressionFactory::makeNaN();
+    ScamValue nan = makeNaN();
     ScamValue real;
     ScamValue imag;
 
@@ -565,28 +566,28 @@ NumericConverter::makeComplexPolar(ScamValue r, ScamValue theta) const
 
         const double x = radius * cosine;
         const double y = radius * sine;
-        real = ExpressionFactory::makeReal(x, false);
-        imag = ExpressionFactory::makeReal(y, false);
+        real = makeReal(x, false);
+        imag = makeReal(y, false);
     }
 
-    ScamValue rv = ExpressionFactory::makeComplex(real, imag);
+    ScamValue rv = makeComplex(real, imag);
     return rv;
 }
 
 ScamValue NumericConverter::makeRealWithExactness(double value) const
 {
     bool makeExact = exactness == ExactnessType::ET_EXACT;
-    return simplify(ExpressionFactory::makeReal(value, makeExact));
+    return simplify(makeReal(value, makeExact));
 }
 
 ScamValue NumericConverter::makeRationalWithExactness(int num, int den) const
 {
     bool makeExact = ! (exactness == ExactnessType::ET_INEXACT);
-    return ExpressionFactory::makeRational(num, den, makeExact);
+    return makeRational(num, den, makeExact);
 }
 
 ScamValue NumericConverter::makeIntegerWithExactness(int value) const
 {
     bool makeExact = ! (exactness == ExactnessType::ET_INEXACT);
-    return ExpressionFactory::makeInteger(value, makeExact);
+    return makeInteger(value, makeExact);
 }

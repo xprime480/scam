@@ -1,7 +1,8 @@
 #include "form/Macro.hpp"
 
 #include "Continuation.hpp"
-#include "expr/ExpressionFactory.hpp"
+#include "expr/ValueFactory.hpp"
+#include "input/LambdaParser.hpp"
 #include "util/Validations.hpp"
 
 using namespace scam;
@@ -30,7 +31,7 @@ void scam::applyMacro(ScamValue args,
         expr = validateClosureArgs(args, "macro");
     }
     else {
-        expr = ExpressionFactory::makeClosure(lambda, env, true);
+        expr = makeClosure(lambda, env, true);
     }
 
     cont->run(expr);

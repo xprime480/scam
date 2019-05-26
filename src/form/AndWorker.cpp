@@ -4,7 +4,7 @@
 #include "Env.hpp"
 #include "expr/EvalOps.hpp"
 #include "expr/ScamData.hpp"
-#include "expr/ExpressionFactory.hpp"
+#include "expr/ValueFactory.hpp"
 #include "form/AndCont.hpp"
 #include "input/ListParser.hpp"
 #include "util/MemoryManager.hpp"
@@ -48,7 +48,7 @@ void AndWorker::run()
 
     size_t const len = parser->size();
     if ( 0 == len ) {
-        cont->run(ExpressionFactory::makeBoolean(true));
+        cont->run(makeBoolean(true));
     }
     else if ( n == (len - 1) ) {
         eval(parser->get(len-1), cont, env);

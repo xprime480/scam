@@ -1,6 +1,5 @@
 #include "input/SubstituteParser.hpp"
 
-#include "expr/ScamDict.hpp"
 #include "input/SequenceParser.hpp"
 
 using namespace scam;
@@ -43,7 +42,7 @@ ScamValue SubstituteParser::getForm() const
     return any->getValue();
 }
 
-ScamDict * SubstituteParser::getDict() const
+ScamValue SubstituteParser::getDict() const
 {
-    return dynamic_cast<ScamDict *>(dict->getValue());
+    return dict->getValue();
 }

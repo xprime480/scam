@@ -1,6 +1,6 @@
 #include "input/ApplyParser.hpp"
 
-#include "expr/ExpressionFactory.hpp"
+#include "expr/ValueFactory.hpp"
 #include "input/CountedListParser.hpp"
 
 using namespace scam;
@@ -42,7 +42,7 @@ ScamValue ApplyParser::getParsedOp() const
     if ( 2u == parser->size() ) {
         return parser->get(0);
     }
-    return ExpressionFactory::makeNull();
+    return makeNull();
 }
 
 ScamValue ApplyParser::getArgs() const
@@ -50,5 +50,5 @@ ScamValue ApplyParser::getArgs() const
     if ( 2u == parser->size() ) {
         return parser->get(1);
     }
-    return ExpressionFactory::makeNull();
+    return makeNull();
 }

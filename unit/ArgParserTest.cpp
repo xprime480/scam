@@ -1,8 +1,8 @@
 #include "TestBase.hpp"
 
-#include "expr/ExpressionFactory.hpp"
 #include "expr/ScamToInternal.hpp"
 #include "expr/SequenceOps.hpp"
+#include "expr/ValueFactory.hpp"
 #include "input/AlternativeParser.hpp"
 #include "input/ApplyParser.hpp"
 #include "input/ArgParser.hpp"
@@ -13,6 +13,7 @@
 #include "input/ExtendedNumericParser.hpp"
 #include "input/FunctionDefParser.hpp"
 #include "input/IncludeParser.hpp"
+#include "input/LambdaParser.hpp"
 #include "input/LetParser.hpp"
 #include "input/ListParser.hpp"
 #include "input/MatchUnifyParser.hpp"
@@ -49,7 +50,7 @@ protected:
 
         bool accept = parser->accept(value);
         EXPECT_FALSE(accept);
-        ConstScamValue v = parser->getValue();
+        ScamValue v = parser->getValue();
         expectNull(v);
     }
 };
@@ -120,8 +121,7 @@ TEST_F(ArgParserTest, AcceptListOfBooleans)
 TEST_F(ArgParserTest, AcceptOneToThreeNumbers)
 {
     NumericParser     * ip = mm.make<NumericParser>();
-    CountedListParser * parser =
-        mm.make<CountedListParser>(ip, 1, 3);
+    CountedListParser * parser = mm.make<CountedListParser>(ip, 1, 3);
 
     rejectParse(parser, "()");
 
@@ -152,15 +152,13 @@ TEST_F(ArgParserTest, AcceptSingletonAnything)
 TEST_F(ArgParserTest, AcceptEmptySequence)
 {
     SequenceParser * parser = mm.make<SequenceParser>();
-
     acceptParse(parser, "()");
-
     rejectParse(parser, "(item)");
 }
 
 TEST_F(ArgParserTest, AcceptSingleKeyword)
 {
-    const ScamKeyword * kw = ExpressionFactory::makeKeyword(":sample");
+    ScamValue kw = makeKeyword(":sample");
     KeywordParser  * kp = mm.make<KeywordParser>(kw);
     SequenceParser * parser = mm.make<SequenceParser>(kp);
 
@@ -172,7 +170,7 @@ TEST_F(ArgParserTest, AcceptSingleKeyword)
 
 TEST_F(ArgParserTest, AcceptSeveral)
 {
-    const ScamKeyword * kw = ExpressionFactory::makeKeyword(":sample");
+    ScamValue kw = makeKeyword(":sample");
     KeywordParser  * kp     = mm.make<KeywordParser>(kw);
     NumericParser  * ip     = mm.make<NumericParser>();
     SequenceParser * parser = mm.make<SequenceParser>(kp, ip);
@@ -203,8 +201,8 @@ TEST_F(ArgParserTest, AcceptSingleAlternative)
 
 TEST_F(ArgParserTest, AcceptOneOfManyAlternatives)
 {
-    const ScamKeyword * kw1 = ExpressionFactory::makeKeyword(":kw1");
-    const ScamKeyword * kw2 = ExpressionFactory::makeKeyword(":kw2");
+    ScamValue kw1 = makeKeyword(":kw1");
+    ScamValue kw2 = makeKeyword(":kw2");
 
     NumericParser     * ip     = mm.make<NumericParser>();
     BooleanParser     * bp     = mm.make<BooleanParser>();

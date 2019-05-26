@@ -2,18 +2,17 @@
 
 #include "Continuation.hpp"
 #include "Env.hpp"
+#include "expr/ClassOps.hpp"
 #include "expr/EvalOps.hpp"
-#include "expr/ExpressionFactory.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/TypePredicates.hpp"
+#include "expr/ValueFactory.hpp"
 #include "expr/ValueWriter.hpp"
 
 using namespace scam;
 using namespace std;
 
-InstanceCont::InstanceCont(ScamValue obj,
-                           ScamEnvKeyType name,
-                           Continuation * cont)
+InstanceCont::InstanceCont(ScamValue obj, ScamValue name, Continuation * cont)
     : Continuation("InstanceCont")
     , obj(obj)
     , name(name)
@@ -21,9 +20,8 @@ InstanceCont::InstanceCont(ScamValue obj,
 {
 }
 
-InstanceCont * InstanceCont::makeInstance(ScamValue obj,
-                                          ScamEnvKeyType name,
-                                          Continuation * cont)
+InstanceCont *
+InstanceCont::makeInstance(ScamValue obj, ScamValue name, Continuation * cont)
 {
     return new InstanceCont(obj, name, cont);
 }
@@ -52,21 +50,19 @@ void InstanceCont::run(ScamValue expr)
         return;
     }
 
-    ScamInstanceAdapter adapter(obj);
-    Env * env = adapter.getEnv();
+    Env * env = getInstanceEnv(obj);
     apply(func, expr, cont, env);
 }
 
 ScamValue InstanceCont::find_func(ScamValue o) const
 {
     while ( isInstance(o) ) {
-        ScamInstanceAdapter adapter(o);
-        Env * env = adapter.getFunctionMap();
+        Env * env = getInstanceFunctionMap(o);
         if ( env->check(name) ) {
             return env->get(name);
         }
 
-        o = adapter.getParent();
+        o = getInstanceParent(o);
     }
 
     return function_not_found();
@@ -75,9 +71,7 @@ ScamValue InstanceCont::find_func(ScamValue o) const
 ScamValue InstanceCont::function_not_found() const
 {
     ScamValue err =
-        ExpressionFactory::makeError("Instance method ",
-                                     writeValue(name),
-                                     " not found");
+        makeErrorExtended("Instance method ", writeValue(name), " not found");
     cont->run(err);
-    return ExpressionFactory::makeNil();
+    return makeNil();
 }

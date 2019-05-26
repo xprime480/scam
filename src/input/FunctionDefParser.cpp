@@ -1,6 +1,5 @@
 #include "input/FunctionDefParser.hpp"
 
-#include "expr/ScamSymbol.hpp"
 #include "expr/SequenceOps.hpp"
 #include "input/CountedListParser.hpp"
 #include "input/LambdaParser.hpp"
@@ -57,9 +56,9 @@ bool FunctionDefParser::accept(ScamValue expr)
     return true;
 }
 
-const ScamSymbol * FunctionDefParser::getName() const
+ScamValue FunctionDefParser::getName() const
 {
-    return dynamic_cast<const ScamSymbol *>(name->getValue());
+    return name->getValue();
 }
 
 const LambdaParser * FunctionDefParser::getLambda() const

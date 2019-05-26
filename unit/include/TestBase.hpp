@@ -37,95 +37,81 @@ namespace scam
 
         void doCheck(bool act, unsigned selector, unsigned which);
 
-        void checkPredicates(ConstScamValue expr, unsigned selector);
-        void assertType(ConstScamValue value,
+        void checkPredicates(ScamValue expr, unsigned selector);
+
+        void assertType(ScamValue value,
                         const char * name,
-                        std::function<bool(ConstScamValue)> pred);
+                        std::function<bool(ScamValue)> pred);
 
-        void expectNull(ConstScamValue expr);
+        void expectNull(ScamValue expr);
 
-        void expectError(ConstScamValue expr,
+        void expectError(ScamValue expr,
                          std::string const msg = "",
                          bool managed = true);
 
-        void expectBoolean(ConstScamValue expr,
+        void expectBoolean(ScamValue expr,
                            bool value,
                            std::string const & repr);
 
         void expectTrue(std::string const & input);
         void expectFalse(std::string const & input);
 
-        void booleanTest(ConstScamValue expr,
+        void booleanTest(ScamValue expr,
                          bool value,
                          std::string const & repr);
 
-        void expectSpecialNumeric(ConstScamValue expr,
-                                  std::string const & repr);
+        void expectSpecialNumeric(ScamValue expr, std::string const & repr);
 
-        void expectComplex(ConstScamValue expr,
-                           ConstScamValue real,
-                           ConstScamValue imag,
+        void expectComplex(ScamValue expr,
+                           ScamValue real,
+                           ScamValue imag,
                            std::string const & repr,
                            bool exact);
 
-        void expectReal(ConstScamValue expr,
+        void expectReal(ScamValue expr,
                         double value,
                         std::string const & repr,
                         bool exact);
 
-        void expectRational(ConstScamValue expr,
+        void expectRational(ScamValue expr,
                             const RationalPair & value,
                             std::string const & repr,
                             bool exact);
 
-        void expectInteger(ConstScamValue expr,
+        void expectInteger(ScamValue expr,
                            int value,
                            std::string const & repr,
                            bool exact);
 
-        void expectChar(ConstScamValue expr,
-                        char value,
-                        std::string const & repr);
+        void expectChar(ScamValue expr, char value, std::string const & repr);
 
-        void expectString(ConstScamValue expr,
-                          std::string const & value);
+        void expectString(ScamValue expr, std::string const & value);
 
-        void expectSymbol(ConstScamValue expr,
-                          std::string const & name);
+        void expectSymbol(ScamValue expr, std::string const & name);
 
-        void expectKeyword(ConstScamValue expr,
-                           std::string const & name);
+        void expectKeyword(ScamValue expr, std::string const & name);
 
-        void expectNil(ConstScamValue expr);
+        void expectNil(ScamValue expr);
 
-        void expectList(ConstScamValue expr,
-                        std::string const & repr,
-                        size_t len);
+        void expectList(ScamValue expr, std::string const & repr, size_t len);
 
-        void expectCons(ConstScamValue expr,
-                        std::string const & repr);
+        void expectCons(ScamValue expr, std::string const & repr);
 
-        void expectApplicable(ConstScamValue expr,
-                              std::string const & repr);
+        void expectApplicable(ScamValue expr, std::string const & repr);
 
-        void expectVector(ConstScamValue expr,
-                          std::string const & repr,
-                          size_t len);
+        void expectVector(ScamValue expr, std::string const & repr, size_t len);
 
-        void expectByteVector(ConstScamValue expr,
+        void expectByteVector(ScamValue expr,
                               std::string const & repr,
                               size_t len);
 
-        void expectProcedure(ConstScamValue expr,
-                             std::string const & repr);
+        void expectProcedure(ScamValue expr, std::string const & repr);
 
-        void expectClass(ConstScamValue expr);
+        void expectClass(ScamValue expr);
 
-        void expectInstance(ConstScamValue expr);
+        void expectInstance(ScamValue expr);
 
-        void expectDict(ConstScamValue expr,
-                        int count,
-                        std::string const & repr);
+        void expectDict(ScamValue expr, int count, std::string const & repr);
     };
 }
 

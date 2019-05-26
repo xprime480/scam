@@ -4,7 +4,6 @@
 #include "Env.hpp"
 #include "expr/EvalOps.hpp"
 #include "expr/ScamData.hpp"
-#include "expr/ExpressionFactory.hpp"
 #include "form/NotCont.hpp"
 #include "input/SingletonParser.hpp"
 #include "util/MemoryManager.hpp"

@@ -1,8 +1,8 @@
 #include "form/NotCont.hpp"
 
-#include "expr/ExpressionFactory.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/TypePredicates.hpp"
+#include "expr/ValueFactory.hpp"
 
 using namespace scam;
 using namespace std;
@@ -34,8 +34,7 @@ void NotCont::run(ScamValue expr)
         cont->run(expr);
     }
     else {
-        ScamValue rv =
-            ExpressionFactory::makeBoolean(! truth(expr));
+        ScamValue rv = makeBoolean(! truth(expr));
         cont->run(rv);
     }
 }

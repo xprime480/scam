@@ -17,7 +17,7 @@ namespace scam
         void mark() const override;
         bool accept(ScamValue expr) override;
 
-        const ScamSymbol * getName() const;
+        ScamValue getName() const;
         const LambdaParser * getLambda() const;
 
     private:

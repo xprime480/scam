@@ -1,8 +1,6 @@
 #if ! defined(MANAGEDOBJECT_H)
 #define MANAGEDOBJECT_H 1
 
-#include <memory>
-
 namespace scam
 {
     class ManagedObject

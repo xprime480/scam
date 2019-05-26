@@ -1,6 +1,5 @@
 #include "input/UndefineParser.hpp"
 
-#include "expr/ScamSymbol.hpp"
 #include "input/SequenceParser.hpp"
 
 using namespace scam;
@@ -42,7 +41,7 @@ bool UndefineParser::accept(ScamValue expr)
     return true;
 }
 
-ScamEnvKeyType UndefineParser::getSymbol() const
+ScamValue UndefineParser::getSymbol() const
 {
-    return dynamic_cast<ScamEnvKeyType>(sym->getValue());
+    return sym->getValue();
 }

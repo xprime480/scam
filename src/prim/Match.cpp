@@ -31,4 +31,3 @@ void Match::applyArgs(ScamValue args, Continuation * cont)
         solver.solve();
     }
 }
-

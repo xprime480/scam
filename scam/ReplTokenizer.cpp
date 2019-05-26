@@ -1,4 +1,3 @@
-
 #include "ReplTokenizer.hpp"
 
 #include "input/StringTokenizer.hpp"
@@ -53,4 +52,3 @@ bool ReplTokenizer::empty() const
 {
     return buffer.empty();
 }
-

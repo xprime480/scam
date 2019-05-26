@@ -4,25 +4,25 @@
 #include "input/ArgParser.hpp"
 
 #include "expr/EqualityOps.hpp"
-#include "expr/ExprFwd.hpp"
+#include "expr/ScamData.hpp"
 #include "util/MemoryManager.hpp"
 
 namespace scam
 {
-    template <typename ScamType>
+    template <unsigned long MatchType>
     class TypeParser : public ArgParser
     {
     private:
         friend class scam::MemoryManager;
 
-        TypeParser(const ScamType * target = nullptr, bool invert = false)
+        TypeParser(ScamValue target = nullptr, bool invert = false)
             : target(target)
             , invert(invert)
         {
         }
 
         static TypeParser *
-        makeInstance(const ScamType * target = nullptr, bool invert = false)
+        makeInstance(ScamValue target = nullptr, bool invert = false)
         {
             return new TypeParser(target, invert);
         }
@@ -46,13 +46,12 @@ namespace scam
 
             clearValue();
 
-            if ( nullptr == dynamic_cast<const ScamType *>(expr) ) {
+            if ( 0 == (expr->type & MatchType ) ) {
                 return false;
             }
 
             if ( target ) {
-                auto hack = const_cast<ScamData *>(dynamic_cast<const ScamData *>(target));
-                const bool matches = invert ^ equals(hack, expr);
+                const bool matches = invert ^ equals(target, expr);
                 if ( ! matches  ) {
                     return false;
                 }
@@ -63,23 +62,23 @@ namespace scam
         }
 
     private:
-        const ScamType * target;
-        const bool       invert;
+        const ScamValue target;
+        const bool      invert;
     };
 
-    using NullParser    = TypeParser<ScamNull>;
-    using NilParser     = TypeParser<ScamNil>;
-    using CharParser    = TypeParser<ScamCharacter>;
-    using StringParser  = TypeParser<ScamString>;
-    using BooleanParser = TypeParser<ScamBoolean>;
-    using SymbolParser  = TypeParser<ScamSymbol>;
-    using KeywordParser = TypeParser<ScamKeyword>;
+    using NullParser    = TypeParser<ScamData::Null>;
+    using NilParser     = TypeParser<ScamData::Nil>;
+    using CharParser    = TypeParser<ScamData::Character>;
+    using StringParser  = TypeParser<ScamData::String>;
+    using BooleanParser = TypeParser<ScamData::Boolean>;
+    using SymbolParser  = TypeParser<ScamData::Symbol>;
+    using KeywordParser = TypeParser<ScamData::Keyword>;
 
-    using NumericParser = TypeParser<ScamNumeric>;
+    using NumericParser = TypeParser<ScamData::Numeric>;
 
-    using ConsParser    = TypeParser<ScamCons>;
-    using DictParser    = TypeParser<ScamDict>;
-    using VectorParser  = TypeParser<ScamVector>;
+    using ConsParser    = TypeParser<ScamData::Cons>;
+    using DictParser    = TypeParser<ScamData::Dict>;
+    using VectorParser  = TypeParser<ScamData::Vector>;
 }
 
 #endif

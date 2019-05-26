@@ -45,8 +45,7 @@ bool TestLoader::isOK() const
 
 void TestLoader::getComponents(std::string & name,
                                std::string & input,
-                               std::string & expected
-                               ) const
+                               std::string & expected) const
 {
     name = this->name.str();
     input = this->input.str();
@@ -116,4 +115,3 @@ void TestLoader::handleLine(std::string const & line)
         break;
     }
 }
-

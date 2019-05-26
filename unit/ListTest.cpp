@@ -91,4 +91,3 @@ TEST_F(ListTest, CdrNonCons)
     ScamValue expr = parseAndEvaluate("(cdr 2)");
     expectError(expr);
 }
-

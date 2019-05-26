@@ -8,16 +8,15 @@
 namespace scam
 {
     class MemoryManager;
-    class ScamKeyword;
 
     class DictOpsParser : public ArgParser
     {
     public:
-        static const ScamKeyword * getOp;
-        static const ScamKeyword * putOp;
-        static const ScamKeyword * lenOp;
-        static const ScamKeyword * remOp;
-        static const ScamKeyword * hasOp;
+        static ScamValue getOp;
+        static ScamValue putOp;
+        static ScamValue lenOp;
+        static ScamValue remOp;
+        static ScamValue hasOp;
 
     private:
         friend class scam::MemoryManager;
@@ -30,7 +29,7 @@ namespace scam
         void callback(ScamValue expr) override;
         void clearValue() override;
 
-        const ScamKeyword * getParsedOp() const;
+        ScamValue getParsedOp() const;
         ScamValue getOpKey() const;
         ScamValue getOpVal() const;
 

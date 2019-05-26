@@ -2,7 +2,6 @@
 
 #include "Continuation.hpp"
 #include "WorkQueue.hpp"
-#include "expr/ExpressionFactory.hpp"
 #include "form/UndefineWorker.hpp"
 #include "input/UndefineParser.hpp"
 #include "util/ArgListHelper.hpp"

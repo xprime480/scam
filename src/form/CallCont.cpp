@@ -3,9 +3,9 @@
 #include "Continuation.hpp"
 #include "Env.hpp"
 #include "expr/EvalOps.hpp"
-#include "expr/ExpressionFactory.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/TypePredicates.hpp"
+#include "expr/ValueFactory.hpp"
 #include "expr/ValueWriter.hpp"
 
 using namespace scam;
@@ -40,15 +40,14 @@ void CallCont::run(ScamValue expr)
     }
 
     if ( ! isApplicable(expr) ) {
-        ScamValue err =
-            ExpressionFactory::makeError("call/cc: form ",
-                                         writeValue(expr),
-                                         "cannot be applied");
+        ScamValue err = makeErrorExtended("call/cc: form ",
+                                          writeValue(expr),
+                                          "cannot be applied");
         cont->run(err);
         return;
     }
 
-    ScamValue contExpr = ExpressionFactory::makeContinuation(cont);
-    ScamValue args = ExpressionFactory::makeList(contExpr);
+    ScamValue contExpr = makeContinuation(cont);
+    ScamValue args = makeList(contExpr);
     apply(expr, args, cont, env);
 }

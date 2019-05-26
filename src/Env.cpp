@@ -2,7 +2,7 @@
 
 #include "ScamException.hpp"
 #include "expr/ScamData.hpp"
-#include "expr/ScamSymbol.hpp"
+#include "expr/TypePredicates.hpp"
 #include "expr/ValueWriter.hpp"
 #include "util/MemoryManager.hpp"
 
@@ -15,9 +15,9 @@ using namespace std;
 
 namespace
 {
-    string checkKey(ScamEnvKeyType key)
+    string checkKey(ScamValue key)
     {
-        if ( nullptr == key ) {
+        if ( nullptr == key || ! isSymbol(key) ) {
             stringstream s;
             s << "Null Environment key not allowed";
             throw ScamException(s.str());
@@ -49,7 +49,7 @@ void Env::mark() const
     }
 }
 
-void Env::put(ScamEnvKeyType key, ScamValue val)
+void Env::put(ScamValue key, ScamValue val)
 {
     const string keyStr = checkKey(key);
     auto const iter = table.find(keyStr);
@@ -62,7 +62,7 @@ void Env::put(ScamEnvKeyType key, ScamValue val)
     table[keyStr] = val;
 }
 
-bool Env::check(ScamEnvKeyType key, bool checkParent) const
+bool Env::check(ScamValue key, bool checkParent) const
 {
     const string keyStr = checkKey(key);
     auto const iter = table.find(keyStr);
@@ -76,7 +76,7 @@ bool Env::check(ScamEnvKeyType key, bool checkParent) const
     return false;
 }
 
-ScamValue Env::get(ScamEnvKeyType key) const
+ScamValue Env::get(ScamValue key) const
 {
     const string keyStr = checkKey(key);
     auto const iter = table.find(keyStr);
@@ -123,7 +123,7 @@ Env * Env::getTop() const
     return parent->getTop();
 }
 
-void Env::assign(ScamEnvKeyType key, ScamValue val)
+void Env::assign(ScamValue key, ScamValue val)
 {
     const string keyStr = checkKey(key);
     auto const iter = table.find(keyStr);
@@ -142,7 +142,7 @@ void Env::assign(ScamEnvKeyType key, ScamValue val)
     }
 }
 
-void Env::remove(ScamEnvKeyType key)
+void Env::remove(ScamValue key)
 {
     const string keyStr = checkKey(key);
     auto const iter = table.find(keyStr);

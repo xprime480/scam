@@ -1,7 +1,7 @@
 #include "form/LetWorker.hpp"
 
 #include "WorkQueue.hpp"
-#include "expr/ExpressionFactory.hpp"
+#include "expr/ValueFactory.hpp"
 #include "form/LetEvalWorker.hpp"
 
 using namespace scam;
@@ -28,10 +28,9 @@ void LetWorker::do_next(ScamValue formals,
                         ScamValue values,
                         ScamValue forms)
 {
-    ScamValue evaled = ExpressionFactory::makeNil();
-    ScamValue e = evaled;
+    ScamValue evaled = makeNil();
     workQueueHelper<LetEvalWorker>(formals,
-                                   e,
+                                   evaled,
                                    values,
                                    forms,
                                    cont,

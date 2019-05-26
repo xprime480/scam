@@ -2,9 +2,9 @@
 
 #include "Continuation.hpp"
 #include "ScamEngine.hpp"
-#include "expr/ExpressionFactory.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/SequenceOps.hpp"
+#include "expr/ValueFactory.hpp"
 #include "input/SingletonParser.hpp"
 #include "input/TypeParsers.hpp"
 #include "util/ArgListHelper.hpp"
@@ -42,9 +42,7 @@ void Load::applyArgs(ScamValue args, Continuation * cont)
     string filename = writeValue(parser->get());
     if ( engine->isLoaded(filename) ) {
         ScamValue err =
-            ExpressionFactory::makeError("file \"",
-                                         filename,
-                                         "\" already loaded");
+            makeErrorExtended("file \"", filename, "\" already loaded");
         cont->run(err);
         return;
     }
@@ -117,14 +115,13 @@ bool Load::file_exists(string fullpath)
 
 void Load::file_not_found(string const & filename, Continuation * cont)
 {
-    ScamValue err = ExpressionFactory::makeError("Unable to open file ",
-                                                  filename);
+    ScamValue err = makeErrorExtended("Unable to open file ", filename);
     cont->run(err);
 }
 
 ScamValue Load::get_path()
 {
-    ScamValue rv = ExpressionFactory::makeNull();
+    ScamValue rv = makeNull();
 
     char const * path = getenv("SCAM_PATH");
     if ( ! path || ! *path ) {
@@ -148,14 +145,14 @@ ScamValue Load::convert_path(char const * path)
     while ( *path ) {
         string element = next_element(path);
         if ( ! element.empty() ) {
-            dp.push_back(ExpressionFactory::makeString(element));
+            dp.push_back(makeString(element));
         }
     }
 
     if ( dp.empty() ) {
         return default_path();
     }
-    return ExpressionFactory::makeVector(dp);
+    return makeVector(dp);
 }
 
 string Load::next_element(char const *& path)

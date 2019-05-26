@@ -1,8 +1,6 @@
 #include "prim/Instantiate.hpp"
 
 #include "Continuation.hpp"
-#include "expr/ExpressionFactory.hpp"
-#include "expr/ScamDict.hpp"
 #include "input/SingletonParser.hpp"
 #include "prim/Instantiator.hpp"
 #include "util/ArgListHelper.hpp"

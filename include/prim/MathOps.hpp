@@ -40,7 +40,6 @@ namespace scam
     MATH_OP_DECL(Mod);
 
 #undef MATH_OP_DECL
-
 }
 
 #endif

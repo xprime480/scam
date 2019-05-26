@@ -3,14 +3,13 @@
 #include "Continuation.hpp"
 #include "Env.hpp"
 #include "expr/ScamData.hpp"
-#include "expr/ScamSymbol.hpp"
 #include "util/MemoryManager.hpp"
 
 using namespace scam;
 using namespace std;
 
 LetStarBacktracker::LetStarBacktracker(Env * env,
-                                       ScamEnvKeyType sym,
+                                       ScamValue sym,
                                        Backtracker * backtracker)
     : Backtracker("Let*", backtracker)
     , env(env)
@@ -20,7 +19,7 @@ LetStarBacktracker::LetStarBacktracker(Env * env,
 
 LetStarBacktracker *
 LetStarBacktracker::makeInstance(Env * env,
-                                 ScamEnvKeyType sym,
+                                 ScamValue sym,
                                  Backtracker * backtracker)
 {
     return new LetStarBacktracker(env, sym, backtracker);
@@ -43,4 +42,3 @@ void LetStarBacktracker::run()
         standardMemoryManager.make<Continuation>("Assign Backtrack");
     runParent(cont);
 }
-

@@ -1,9 +1,10 @@
 #include "prim/Substitutor.hpp"
 
-#include "expr/ExpressionFactory.hpp"
+#include "expr/EqualityOps.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
+#include "expr/ValueFactory.hpp"
 #include "expr/ValueWriter.hpp"
 #include "prim/CommonError.hpp"
 
@@ -12,9 +13,9 @@
 using namespace std;
 using namespace scam;
 
-Substitutor::Substitutor(ScamDict * answers)
+Substitutor::Substitutor(ScamValue answers)
     : answers(answers)
-    , helper(ExpressionFactory::makeNil())
+    , helper(makeNil())
 {
 }
 
@@ -77,11 +78,9 @@ ScamValue Substitutor::resolve_keyword(ScamValue expr)
         return make_common_error(s.str().c_str());
     }
 
-    helper = ExpressionFactory::makeCons(expr, helper);
-
-    ScamValue val = answers->get(expr);
+    helper = makeCons(expr, helper);
+    ScamValue val = dictGet(answers, expr);
     ScamValue rv  = resolve_value(val);
-
     helper = nthcdr(helper, 0);
     return rv;
 }

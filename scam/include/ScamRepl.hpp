@@ -4,6 +4,8 @@
 #include "ScamEngine.hpp"
 #include "ReplTokenizer.hpp"
 
+#include <string>
+
 namespace scam
 {
     class ScamRepl

@@ -20,7 +20,7 @@ namespace scam
         void mark() const override;
         bool accept(ScamValue expr) override;
 
-        ScamEnvKeyType getSymbol() const;
+        ScamValue getSymbol() const;
 
     private:
         SymbolParser   * sym;

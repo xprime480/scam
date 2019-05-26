@@ -1,6 +1,5 @@
 #include "input/ClassDefParser.hpp"
 
-#include "expr/ScamSymbol.hpp"
 #include "input/CountedListParser.hpp"
 #include "input/FunctionDefParser.hpp"
 #include "input/ListParser.hpp"
@@ -78,9 +77,9 @@ void ClassDefParser::clearValue()
     methods.clear();
 }
 
-const ScamSymbol * ClassDefParser::getBase() const
+ScamValue ClassDefParser::getBase() const
 {
-    return dynamic_cast<const ScamSymbol *>(base->getValue());
+    return base->getValue();
 }
 
 size_t ClassDefParser::getVarCount() const
@@ -88,9 +87,9 @@ size_t ClassDefParser::getVarCount() const
     return vars->size();
 }
 
-const ScamSymbol * ClassDefParser::getVar(size_t idx) const
+ScamValue ClassDefParser::getVar(size_t idx) const
 {
-    return dynamic_cast<const ScamSymbol *>(vars->get(idx));
+    return vars->get(idx);
 }
 
 size_t ClassDefParser::getMethodCount() const

@@ -2,8 +2,8 @@
 
 #include "Continuation.hpp"
 #include "expr/ScamData.hpp"
-#include "expr/ExpressionFactory.hpp"
 #include "expr/SequenceOps.hpp"
+#include "expr/ValueFactory.hpp"
 #include "input/ListParser.hpp"
 #include "util/ArgListHelper.hpp"
 
@@ -47,6 +47,6 @@ void Error::applyArgs(ScamValue args, Continuation * cont)
         }
     }
 
-    ScamValue err = ExpressionFactory::makeError(s.str());
+    ScamValue err = makeError(s.str());
     cont->run(err);
 }

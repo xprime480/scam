@@ -1,14 +1,14 @@
 #include "input/ArgParser.hpp"
 
-#include "expr/ExpressionFactory.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/TypePredicates.hpp"
+#include "expr/ValueFactory.hpp"
 
 using namespace scam;
 using namespace std;
 
 ArgParser::ArgParser()
-    : value(ExpressionFactory::makeNull())
+    : value(makeNull())
 {
 }
 
@@ -54,5 +54,5 @@ ScamValue ArgParser::getValue() const
 
 void ArgParser::clearValue()
 {
-    value = ExpressionFactory::makeNull();
+    value = makeNull();
 }

@@ -2,9 +2,9 @@
 
 #include "Continuation.hpp"
 #include "Env.hpp"
-#include "expr/ExpressionFactory.hpp"
 #include "expr/ScamNumeric.hpp"
 #include "expr/TypePredicates.hpp"
+#include "expr/ValueFactory.hpp"
 #include "input/ClassDefParser.hpp"
 #include "input/LambdaParser.hpp"
 
@@ -83,6 +83,11 @@ ScamData::~ScamData()
     }
 }
 
+ScamData * ScamData::makeInstance(unsigned long type, bool managed)
+{
+    return new ScamData(type, managed);
+}
+
 void ScamData::mark() const
 {
     if ( isMarked() ) {
@@ -151,7 +156,7 @@ void ScamData::setMeta(string const & key, ScamValue value) const
         metadata = standardMemoryManager.make<Env>();
     }
 
-    ScamEnvKeyType k = ExpressionFactory::makeSymbol(key);
+    ScamValue k = makeSymbol(key);
 
     if ( metadata->check(k) ) {
         metadata->assign(k, value);
@@ -167,22 +172,21 @@ bool ScamData::hasMeta(string const & key) const
         return false;
     }
 
-    ScamEnvKeyType k = ExpressionFactory::makeSymbol(key);
+    ScamValue k = makeSymbol(key);
     return metadata->check(k);
 }
 
 ScamValue ScamData::getMeta(string const & key) const
 {
-    ScamValue rv = ExpressionFactory::makeNil();
+    ScamValue rv = makeNil();
     if ( ! metadata ) {
         return rv;
     }
 
-    ScamEnvKeyType k  = ExpressionFactory::makeSymbol(key);
+    ScamValue k  = makeSymbol(key);
     if ( metadata->check(k) ) {
         rv = metadata->get(k);
     }
 
     return rv;
 }
-

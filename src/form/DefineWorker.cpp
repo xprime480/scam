@@ -44,15 +44,10 @@ void DefineWorker::run()
 {
     Worker::run();
 
-    ScamEnvKeyType sym = parser->getSymbol();
+    ScamValue sym = parser->getSymbol();
     Continuation * c =
         standardMemoryManager.make<DefineCont>(sym, cont, env, engine);
 
     ScamValue expr = parser->getForm();
     eval(expr, c, env);
 }
-
-
-
-
-

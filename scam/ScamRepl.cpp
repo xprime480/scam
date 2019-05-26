@@ -1,9 +1,9 @@
 #include "ScamRepl.hpp"
 
 #include "ScamException.hpp"
-#include "expr/ExpressionFactory.hpp"
 #include "expr/ScamToInternal.hpp"
 #include "expr/TypePredicates.hpp"
+#include "expr/ValueFactory.hpp"
 
 #include <iostream>
 
@@ -99,13 +99,13 @@ ScamValue ScamRepl::read()
 
         if ( ! cin.good() ) {
             cerr << "End of input detected\n";
-            return ExpressionFactory::makeNull();
+            return makeNull();
         }
 
         string line;
         getline(cin, line);
         if ( ! checkInternal(line) ) {
-            return ExpressionFactory::makeNull();
+            return makeNull();
         }
         tokenizer.bufferInput(line);
     }
@@ -117,8 +117,7 @@ ScamValue ScamRepl::eval(ScamValue form)
         return engine.eval(form);
     }
     catch ( ScamException e ) {
-        return ExpressionFactory::makeError("Caught exception: ",
-                                            e.getMessage());
+        return makeErrorExtended("Caught exception: ", e.getMessage());
     }
 }
 

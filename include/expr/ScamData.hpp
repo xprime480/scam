@@ -30,6 +30,7 @@ namespace scam
         ScamData(ScamData &&) = delete;
         ScamData operator=(ScamData &&) = delete;
 
+        static ScamData * makeInstance(unsigned long type, bool managed = true);
         void mark() const override final;
 
         void setMeta(std::string const & key, ScamValue value) const;

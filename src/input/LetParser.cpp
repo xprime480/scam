@@ -1,9 +1,9 @@
 #include "input/LetParser.hpp"
 
-#include "expr/ExpressionFactory.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
+#include "expr/ValueFactory.hpp"
 #include "input/BindFormParser.hpp"
 #include "input/CountedListParser.hpp"
 
@@ -11,7 +11,7 @@ using namespace scam;
 using namespace std;
 
 LetParser::LetParser()
-    : forms(ExpressionFactory::makeNull())
+    : forms(makeNull())
 {
     clearValue();
 }
@@ -67,7 +67,7 @@ void LetParser::clearValue()
 {
     ArgParser::clearValue();
     bindings.clear();
-    forms = ExpressionFactory::makeNull();
+    forms = makeNull();
 }
 
 size_t LetParser::getBindingCount() const

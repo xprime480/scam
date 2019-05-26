@@ -1,8 +1,8 @@
 #include "expr/CdrContinuation.hpp"
 
 #include "expr/ScamData.hpp"
-#include "expr/ExpressionFactory.hpp"
 #include "expr/TypePredicates.hpp"
+#include "expr/ValueFactory.hpp"
 
 using namespace scam;
 using namespace std;
@@ -34,7 +34,7 @@ void CdrContinuation::run(ScamValue expr)
         data.original->run(expr);
     }
     else {
-        ScamValue e = ExpressionFactory::makeCons(data.car, expr);
+        ScamValue e = makeCons(data.car, expr);
         data.original->run(e);
     }
 }

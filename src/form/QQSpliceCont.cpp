@@ -1,8 +1,8 @@
 #include "form/QQSpliceCont.hpp"
 
-#include "expr/ExpressionFactory.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/TypePredicates.hpp"
+#include "expr/ValueFactory.hpp"
 #include "form/QuasiQuote.hpp"
 
 using namespace scam;
@@ -34,8 +34,7 @@ void QQSpliceCont::run(ScamValue expr)
         cont->run(expr);
     }
     else {
-        ScamValue internal =
-            ExpressionFactory::makeCons(QuasiQuote::spliceTag, expr);
+        ScamValue internal = makeCons(QuasiQuote::spliceTag, expr);
         cont->run(internal);
     }
 }

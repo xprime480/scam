@@ -44,4 +44,3 @@ void PrimWorkerData::handleResult(ScamValue expr)
         caller->applyArgs(expr, original);
     }
 }
-

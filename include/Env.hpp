@@ -23,17 +23,17 @@ namespace scam
     public:
         void mark() const override;
 
-        void put(ScamEnvKeyType key, ScamValue val);
-        bool check(ScamEnvKeyType key, bool checkParent = true) const;
-        ScamValue get(ScamEnvKeyType key) const;
+        void put(ScamValue key, ScamValue val);
+        bool check(ScamValue key, bool checkParent = true) const;
+        ScamValue get(ScamValue key) const;
 
         void reset();
         Env * extend() const;
         Env * getParent() const;
         Env * getTop() const;
 
-        void assign(ScamEnvKeyType key, ScamValue val);
-        void remove(ScamEnvKeyType key);
+        void assign(ScamValue key, ScamValue val);
+        void remove(ScamValue key);
 
         void dump(size_t max, bool full = false) const;
 

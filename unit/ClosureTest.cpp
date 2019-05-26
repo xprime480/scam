@@ -2,6 +2,7 @@
 
 #include "ScamException.hpp"
 #include "expr/ScamToInternal.hpp"
+#include "expr/ValueFactory.hpp"
 #include "input/LambdaParser.hpp"
 
 using namespace std;
@@ -18,10 +19,10 @@ TEST_F(ClosureTest, ClosureBasic)
     bool accept = lambda->accept(form);
     ASSERT_TRUE(accept);
 
-    ScamValue expr = ExpressionFactory::makeClosure(lambda, engine.getFrame());
+    ScamValue expr = makeClosure(lambda, engine.getFrame());
     expectProcedure(expr, "(lambda () 2)");
 
-    ScamValue args = ExpressionFactory::makeNil();
+    ScamValue args = makeNil();
     ScamValue finalValue = apply(expr, args);
 
     expectInteger(finalValue, 2, "2", true);
@@ -34,10 +35,10 @@ TEST_F(ClosureTest, ClosureMultipleForms)
     bool accept = lambda->accept(form);
     ASSERT_TRUE(accept);
 
-    ScamValue expr = ExpressionFactory::makeClosure(lambda, engine.getFrame());
+    ScamValue expr = makeClosure(lambda, engine.getFrame());
     expectProcedure(expr, "(lambda () 2 #\\z)");
 
-    ScamValue args = ExpressionFactory::makeNil();
+    ScamValue args = makeNil();
     ScamValue finalValue = apply(expr, args);
 
     expectChar(finalValue, 'z', "#\\z");
@@ -50,7 +51,7 @@ TEST_F(ClosureTest, ClosureWithArg)
     bool accept = lambda->accept(form);
     ASSERT_TRUE(accept);
 
-    ScamValue expr = ExpressionFactory::makeClosure(lambda, engine.getFrame());
+    ScamValue expr = makeClosure(lambda, engine.getFrame());
     expectProcedure(expr, "(lambda (x) (+ x x))");
 
     ScamValue args = readString("(3)");

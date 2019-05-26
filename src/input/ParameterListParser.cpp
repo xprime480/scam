@@ -1,7 +1,7 @@
 #include "input/ParameterListParser.hpp"
 
-#include "expr/ScamSymbol.hpp"
 #include "expr/TypePredicates.hpp"
+#include "expr/ValueFactory.hpp"
 #include "expr/ValueWriter.hpp"
 #include "input/AlternativeParser.hpp"
 #include "input/ListParser.hpp"
@@ -81,15 +81,15 @@ size_t ParameterListParser::size() const
     return parameters.size();
 }
 
-const ScamSymbol * ParameterListParser::get(size_t idx) const
+ScamValue ParameterListParser::get(size_t idx) const
 {
     if ( idx < parameters.size() ) {
         return parameters[idx];
     }
-    return nullptr;
+    return makeNull();
 }
 
-const ScamSymbol * ParameterListParser::getRest() const
+ScamValue ParameterListParser::getRest() const
 {
     return restParameter;
 }
@@ -98,9 +98,8 @@ bool ParameterListParser::uniquifyParameters()
 {
     if ( bare == parser->getMatch() ) {
 
-        const ScamSymbol * rest =
-            dynamic_cast<const ScamSymbol *>(bare->getValue());
-        if ( ! rest ) {
+        ScamValue rest = bare->getValue();
+        if ( isNull(rest) ) {
             return false;
         }
         parameters.push_back(rest);
@@ -108,12 +107,11 @@ bool ParameterListParser::uniquifyParameters()
     }
 
     set<string> seen;
-    vector<ScamSymbol const *> ps;
+    vector<ScamValue> ps;
 
     const size_t count = symList->size();
     for ( size_t idx = 0 ; idx < count ; ++idx ) {
-        const ScamSymbol * sym =
-            dynamic_cast<const ScamSymbol *>(symList->get(idx));
+        ScamValue sym = symList->get(idx);
         if ( ! sym ) {
             return false;
         }

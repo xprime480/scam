@@ -9,12 +9,12 @@ namespace scam
     class ExtendedNumeric
     {
     public:
-        explicit ExtendedNumeric(ConstScamValue expr);
+        explicit ExtendedNumeric(ScamValue expr);
 
         ScamValue get() const;
-	
+
     private:
-        ConstScamValue expr;
+        ScamValue expr;
     };
 
     /* relational operators on extended numerics */

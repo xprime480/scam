@@ -2,8 +2,8 @@
 
 #include "Continuation.hpp"
 #include "WorkQueue.hpp"
-#include "expr/ExpressionFactory.hpp"
 #include "expr/TypePredicates.hpp"
+#include "expr/ValueFactory.hpp"
 #include "form/LetStarWorker.hpp"
 #include "input/LetParser.hpp"
 #include "util/ArgListHelper.hpp"
@@ -29,7 +29,7 @@ ScamValue LetStar::safeCons(ScamValue expr)
     if ( isCons(expr) ) {
         return expr;
     }
-    return ExpressionFactory::makeList(expr);
+    return makeList(expr);
 }
 
 void scam::applyLetStar(ScamValue args,

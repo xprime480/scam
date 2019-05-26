@@ -1,4 +1,3 @@
-
 #include "TestManager.hpp"
 
 #include "TestLoader.hpp"
@@ -59,5 +58,3 @@ void TestManager::runtest(char const * script)
         std::cout << script << " failed\n";
     }
 }
-
-

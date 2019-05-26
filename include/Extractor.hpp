@@ -3,8 +3,8 @@
 
 #include "Continuation.hpp"
 
-#include "expr/ExpressionFactory.hpp"
 #include "expr/ScamData.hpp"
+#include "expr/ValueFactory.hpp"
 
 #include <iostream>
 #include <memory>
@@ -17,7 +17,7 @@ namespace scam
         friend class MemoryManager;
         Extractor()
             : Continuation("Extractor")
-            , e(ExpressionFactory::makeNull())
+            , e(makeNull())
         {
         }
 

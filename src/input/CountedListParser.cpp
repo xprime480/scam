@@ -41,4 +41,3 @@ scam::getCountedListOfAnythingParser(size_t min, size_t max)
     ArgParser * any = standardMemoryManager.make<ArgParser>();
     return standardMemoryManager.make<CountedListParser>(any, min, max);
 }
-

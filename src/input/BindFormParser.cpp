@@ -1,7 +1,6 @@
 #include "input/BindFormParser.hpp"
 
-#include "expr/ExpressionFactory.hpp"
-#include "expr/ScamSymbol.hpp"
+#include "expr/ValueFactory.hpp"
 #include "input/CountedListParser.hpp"
 
 using namespace scam;
@@ -47,12 +46,9 @@ bool BindFormParser::accept(ScamValue expr)
     return true;
 }
 
-ScamEnvKeyType BindFormParser::getSymbol() const
+ScamValue BindFormParser::getSymbol() const
 {
-    if ( parser->size() ) {
-        return dynamic_cast<ScamEnvKeyType>(sym->getValue());
-    }
-    return nullptr;
+    return sym->getValue();
 }
 
 ScamValue BindFormParser::getForm() const
@@ -60,5 +56,5 @@ ScamValue BindFormParser::getForm() const
     if ( parser->size() ) {
         return parser->get(1u);
     }
-    return ExpressionFactory::makeNull();
+    return makeNull();
 }

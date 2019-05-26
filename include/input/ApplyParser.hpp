@@ -8,7 +8,6 @@
 namespace scam
 {
     class MemoryManager;
-    class ScamKeyword;
 
     class ApplyParser : public ArgParser
     {

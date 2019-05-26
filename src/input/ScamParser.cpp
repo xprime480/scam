@@ -1,8 +1,8 @@
 #include "input/ScamParser.hpp"
 
-#include "expr/ExpressionFactory.hpp"
 #include "expr/ScamToInternal.hpp"
 #include "expr/TypePredicates.hpp"
+#include "expr/ValueFactory.hpp"
 
 #include <vector>
 
@@ -33,15 +33,15 @@ ScamValue ScamParser::parseSubExpr() const
 
 ScamValue ScamParser::tokenToExpr(Token const & token) const
 {
-    ScamValue rv = ExpressionFactory::makeNull();
+    ScamValue rv = makeNull();
 
     switch ( token.getType() ) {
     case TokenType::TT_NONE:
-        rv = ExpressionFactory::makeError("**Internal Error: No Tokens");
+        rv = makeError("**Internal Error: No Tokens");
         break;
 
     case TokenType::TT_DOT:
-        rv = ExpressionFactory::makeError("Dot (.) outside list");
+        rv = makeError("Dot (.) outside list");
         break;
 
     case TokenType::TT_OPEN_PAREN:
@@ -49,7 +49,7 @@ ScamValue ScamParser::tokenToExpr(Token const & token) const
         break;
 
     case TokenType::TT_CLOSE_PAREN:
-        rv = ExpressionFactory::makeError("Extra ')' in input");
+        rv = makeError("Extra ')' in input");
         break;
 
     case TokenType::TT_OPEN_VECTOR:
@@ -61,7 +61,7 @@ ScamValue ScamParser::tokenToExpr(Token const & token) const
         break;
 
     case TokenType::TT_CLOSE_BRACKET:
-        rv = ExpressionFactory::makeError("Extra ']' in input");
+        rv = makeError("Extra ']' in input");
         break;
 
     case TokenType::TT_OPEN_CURLY:
@@ -69,19 +69,19 @@ ScamValue ScamParser::tokenToExpr(Token const & token) const
         break;
 
     case TokenType::TT_CLOSE_CURLY:
-        rv = ExpressionFactory::makeError("Extra '}' in input");
+        rv = makeError("Extra '}' in input");
         break;
 
     case TokenType::TT_BOOLEAN:
-        rv = ExpressionFactory::makeBoolean(token.getText() == "#t");
+        rv = makeBoolean(token.getText() == "#t");
         break;
 
     case TokenType::TT_CHARACTER:
-        rv = ExpressionFactory::makeCharacter(token.getText());
+        rv = makeCharacter(token.getText());
         break;
 
     case TokenType::TT_STRING:
-        rv = ExpressionFactory::makeString(token.getText());
+        rv = makeString(token.getText());
         break;
 
     case TokenType::TT_NUMERIC:
@@ -89,11 +89,11 @@ ScamValue ScamParser::tokenToExpr(Token const & token) const
         break;
 
     case TokenType::TT_SYMBOL:
-        rv = ExpressionFactory::makeSymbol(token.getText());
+        rv = makeSymbol(token.getText());
         break;
 
     case TokenType::TT_KEYWORD:
-        rv = ExpressionFactory::makeKeyword(token.getText());
+        rv = makeKeyword(token.getText());
         break;
 
     case TokenType::TT_QUOTE:
@@ -104,20 +104,20 @@ ScamValue ScamParser::tokenToExpr(Token const & token) const
         break;
 
     case TokenType::TT_QUESTION:
-        rv = ExpressionFactory::makeSymbol("backtrack");
-        rv = ExpressionFactory::makeList(rv);
+        rv = makeSymbol("backtrack");
+        rv = makeList(rv);
         break;
 
     case TokenType::TT_END_OF_INPUT:
-        rv = ExpressionFactory::makeNull();
+        rv = makeNull();
         break;
 
     case TokenType::TT_SCAN_ERROR:
-        rv = ExpressionFactory::makeError(token.getText());
+        rv = makeError(token.getText());
         break;
 
     default:
-        rv = ExpressionFactory::makeError("**Internal Error:  Unknown token type");
+        rv = makeError("**Internal Error:  Unknown token type");
         break;
     }
 
@@ -130,17 +130,17 @@ ScamValue ScamParser::parseList() const
     TokenType type = token.getType();
 
     if ( TokenType::TT_END_OF_INPUT == type ) {
-        ScamValue err = ExpressionFactory::makeError("Unterminated List");
+        ScamValue err = makeError("Unterminated List");
         tagPartial(err);
         return err;
     }
 
     if ( TokenType::TT_SCAN_ERROR == type ) {
-        return ExpressionFactory::makeError(token.getText());
+        return makeError(token.getText());
     }
 
     if ( TokenType::TT_CLOSE_PAREN == type ) {
-        return ExpressionFactory::makeNil();
+        return makeNil();
     }
 
     if ( TokenType::TT_DOT == type ) {
@@ -155,7 +155,7 @@ ScamValue ScamParser::parseList() const
     if ( error(cdr) ) {
         return cdr;
     }
-    return ExpressionFactory::makeCons(car, cdr);
+    return makeCons(car, cdr);
 }
 
 ScamValue ScamParser::parseDotContext() const
@@ -164,17 +164,17 @@ ScamValue ScamParser::parseDotContext() const
     TokenType type = token.getType();
 
     if ( TokenType::TT_END_OF_INPUT == type ) {
-        ScamValue err = ExpressionFactory::makeError("Unterminated List");
+        ScamValue err = makeError("Unterminated List");
         tagPartial(err);
         return err;
     }
 
     if ( TokenType::TT_SCAN_ERROR == type ) {
-        return ExpressionFactory::makeError(token.getText());
+        return makeError(token.getText());
     }
 
     if ( TokenType::TT_CLOSE_PAREN == type ) {
-        return ExpressionFactory::makeError("No form after '.'");
+        return makeError("No form after '.'");
     }
 
     ScamValue final = tokenToExpr(token);
@@ -183,17 +183,17 @@ ScamValue ScamParser::parseDotContext() const
     TokenType checkType = check.getType();
 
     if ( TokenType::TT_END_OF_INPUT == checkType ) {
-        ScamValue err = ExpressionFactory::makeError("Unterminated List");
+        ScamValue err = makeError("Unterminated List");
         tagPartial(err);
         return err;
     }
 
     if ( TokenType::TT_SCAN_ERROR == checkType ) {
-        return ExpressionFactory::makeError(token.getText());
+        return makeError(token.getText());
     }
 
     if ( TokenType::TT_CLOSE_PAREN != checkType ) {
-        return ExpressionFactory::makeError("Too many forms after '.'");
+        return makeError("Too many forms after '.'");
     }
 
     return final;
@@ -208,18 +208,17 @@ ScamValue ScamParser::parseVector() const
         TokenType type = token.getType();
 
         if ( TokenType::TT_END_OF_INPUT == type ) {
-            ScamValue err =
-                ExpressionFactory::makeError("Unterminated Vector");
+            ScamValue err = makeError("Unterminated Vector");
             tagPartial(err);
             return err;
         }
 
         if ( TokenType::TT_SCAN_ERROR == type ) {
-            return ExpressionFactory::makeError(token.getText());
+            return makeError(token.getText());
         }
 
         if ( TokenType::TT_CLOSE_PAREN == type ) {
-            return ExpressionFactory::makeVector(vec);
+            return makeVector(vec);
         }
 
         ScamValue expr = tokenToExpr(token);
@@ -240,18 +239,17 @@ ScamValue ScamParser::parseByteVector() const
         TokenType type = token.getType();
 
         if ( TokenType::TT_END_OF_INPUT == type ) {
-            ScamValue err =
-                ExpressionFactory::makeError("Unterminated Byte Vector");
+            ScamValue err = makeError("Unterminated Byte Vector");
             tagPartial(err);
             return err;
         }
 
         if ( TokenType::TT_SCAN_ERROR == type ) {
-            return ExpressionFactory::makeError(token.getText());
+            return makeError(token.getText());
         }
 
         if ( TokenType::TT_CLOSE_PAREN == type ) {
-            return ExpressionFactory::makeByteVector(vec);
+            return makeByteVector(vec);
         }
 
         ScamValue expr = tokenToExpr(token);
@@ -260,8 +258,7 @@ ScamValue ScamParser::parseByteVector() const
         }
 
         if ( ! isInteger(expr) ) {
-            ScamValue err =
-                ExpressionFactory::makeError("Non-integer in Byte Vector");
+            ScamValue err = makeError("Non-integer in Byte Vector");
             return err;
         }
 
@@ -282,18 +279,17 @@ ScamValue ScamParser::parseDict() const
         TokenType type = token.getType();
 
         if ( TokenType::TT_END_OF_INPUT == type ) {
-            ScamValue err =
-                ExpressionFactory::makeError("Unterminated Dictionary");
+            ScamValue err = makeError("Unterminated Dictionary");
             tagPartial(err);
             return err;
         }
 
         if ( TokenType::TT_SCAN_ERROR == type ) {
-            return ExpressionFactory::makeError(token.getText());
+            return makeError(token.getText());
         }
 
         if ( TokenType::TT_CLOSE_CURLY == type ) {
-            return ExpressionFactory::makeDict(vec);
+            return makeDict(vec);
         }
 
         ScamValue expr = tokenToExpr(token);
@@ -321,24 +317,24 @@ ScamValue ScamParser::expand_reader_macro(std::string const & text) const
         name = "splice";
     }
     else {
-        return ExpressionFactory::makeError("Unknown reader macro: ", text);
+        return makeErrorExtended("Unknown reader macro: ", text);
     }
 
     ScamValue expr = parseSubExpr();
     if ( isNull(expr) ) {
-        return ExpressionFactory::makeError("Unterminated macro: ", name);
+        return makeErrorExtended("Unterminated macro: ", name);
     }
     if ( error(expr) ) {
-        return ExpressionFactory::makeError("Error getting form for ",
-                                            name,
-                                            " macro",
-                                            "\t",
-                                            writeValue(expr));
+        return makeErrorExtended("Error getting form for ",
+				 name,
+				 " macro",
+				 "\t",
+				 writeValue(expr));
     }
 
-    ScamValue sym    = ExpressionFactory::makeSymbol(name);
-    ScamValue listed = ExpressionFactory::makeList(expr);
-    return ExpressionFactory::makeCons(sym, listed);
+    ScamValue sym    = makeSymbol(name);
+    ScamValue listed = makeList(expr);
+    return makeCons(sym, listed);
 }
 
 namespace
@@ -346,11 +342,8 @@ namespace
     void tagPartial(ScamValue expr)
     {
         static string tag = "partial";
-        static ScamValue const nil = ExpressionFactory::makeNil();
-
         if ( expr ) {
-            expr->setMeta(tag, nil);
+            expr->setMeta(tag, makeNil());
         }
     }
 }
-

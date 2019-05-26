@@ -1,8 +1,7 @@
 #include "input/SymbolPlusManyParser.hpp"
 
-#include "expr/ExpressionFactory.hpp"
-#include "expr/ScamSymbol.hpp"
 #include "expr/SequenceOps.hpp"
+#include "expr/ValueFactory.hpp"
 #include "input/SequenceParser.hpp"
 #include "input/CountedListParser.hpp"
 
@@ -39,7 +38,6 @@ bool SymbolPlusManyParser::accept(ScamValue expr)
     clearValue();
 
     CountedListParser * top = getCountedListOfAnythingParser(1, 99999);
-
     if ( ! top->accept(expr) ) {
         return false;
     }
@@ -58,13 +56,13 @@ bool SymbolPlusManyParser::accept(ScamValue expr)
 void SymbolPlusManyParser::clearValue()
 {
     ArgParser::clearValue();
-    forms = ExpressionFactory::makeNull();
+    forms = makeNull();
 }
 
 
-ScamEnvKeyType SymbolPlusManyParser::getSymbol() const
+ScamValue SymbolPlusManyParser::getSymbol() const
 {
-    return dynamic_cast<ScamEnvKeyType>(sym->getValue());
+    return sym->getValue();
 }
 
 ScamValue SymbolPlusManyParser::getForms() const

@@ -3,7 +3,7 @@
 #include "Continuation.hpp"
 #include "WorkQueue.hpp"
 #include "expr/ScamData.hpp"
-#include "expr/ExpressionFactory.hpp"
+#include "expr/ValueFactory.hpp"
 #include "form/QuasiQuoteWorker.hpp"
 #include "input/SingletonParser.hpp"
 #include "util/ArgListHelper.hpp"
@@ -11,8 +11,7 @@
 using namespace scam;
 using namespace std;
 
-ScamValue const QuasiQuote::spliceTag =
-    ExpressionFactory::makeSymbol("**splicing**", false);
+ScamValue const QuasiQuote::spliceTag = makeSymbol("**splicing**", false);
 
 static const char * myName = "quasiquote";
 

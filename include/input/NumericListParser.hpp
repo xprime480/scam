@@ -5,6 +5,8 @@
 
 #include "input/ExtendedNumericParser.hpp"
 
+#include <cstddef>
+
 namespace scam
 {
     class MemoryManager;

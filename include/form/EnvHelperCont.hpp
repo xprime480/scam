@@ -10,7 +10,7 @@ namespace scam
     class EnvHelperCont : public Continuation
     {
     protected:
-        EnvHelperCont(ScamEnvKeyType sym,
+        EnvHelperCont(ScamValue sym,
                       Continuation * cont,
                       Env * env,
                       char const * name);
@@ -20,7 +20,7 @@ namespace scam
         void run(ScamValue expr) override;
 
     protected:
-        ScamEnvKeyType sym;
+        ScamValue     sym;
         mutable Env * env;
 
         virtual void finish(ScamValue expr) const = 0;

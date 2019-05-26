@@ -4,8 +4,8 @@
 #include "Env.hpp"
 #include "expr/ClassInitCont.hpp"
 #include "expr/EvalOps.hpp"
-#include "expr/ExpressionFactory.hpp"
 #include "expr/ScamData.hpp"
+#include "expr/ValueFactory.hpp"
 #include "util/MemoryManager.hpp"
 
 using namespace scam;
@@ -13,11 +13,10 @@ using namespace std;
 
 namespace
 {
-    static ScamValue const initSym =
-        ExpressionFactory::makeSymbol("init", false);
+    static ScamValue const initSym = makeSymbol("init", false);
 }
 
-ClassInitWorker::ClassInitWorker(ScamInstance * instance,
+ClassInitWorker::ClassInitWorker(ScamValue instance,
                                  ScamValue args,
                                  Continuation * cont,
                                  Env * env)
@@ -29,7 +28,7 @@ ClassInitWorker::ClassInitWorker(ScamInstance * instance,
 {
 }
 
-ClassInitWorker * ClassInitWorker::makeInstance(ScamInstance * instance,
+ClassInitWorker * ClassInitWorker::makeInstance(ScamValue instance,
                                                 ScamValue args,
                                                 Continuation * cont,
                                                 Env * env)
@@ -53,8 +52,6 @@ void ClassInitWorker::run()
 
     Continuation * newCont
         = standardMemoryManager.make<ClassInitCont>(instance, cont);
-    ScamValue newArgs
-        = ExpressionFactory::makeCons(initSym, args);
-
+    ScamValue newArgs = makeCons(initSym, args);
     apply(instance, newArgs, newCont, env);
 }

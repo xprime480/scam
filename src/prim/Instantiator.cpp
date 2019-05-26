@@ -1,8 +1,8 @@
 #include "prim/Instantiator.hpp"
 
-#include "expr/ExpressionFactory.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/TypePredicates.hpp"
+#include "expr/ValueFactory.hpp"
 #include "input/SingletonParser.hpp"
 
 #include <sstream>
@@ -12,7 +12,7 @@ using namespace scam;
 
 Instantiator::Instantiator(size_t & counter)
     : counter(counter)
-    , dict(ExpressionFactory::makeDict())
+    , dict(makeDict())
 {
 }
 
@@ -50,15 +50,15 @@ ScamValue Instantiator::new_mapping(ScamValue expr)
 {
     stringstream s;
     s << ":kw" << ++counter;
-    ScamValue value = ExpressionFactory::makeKeyword(s.str());
-    dict->put(expr, value);
+    ScamValue value = makeKeyword(s.str());
+    dictPut(dict, expr, value);
     return value;
 }
 
 ScamValue Instantiator::inst_keyword(ScamValue expr)
 {
-    if ( dict->has(expr) ) {
-        return dict->get(expr);
+    if ( dictHas(dict, expr) ) {
+        return dictGet(dict, expr);
     }
 
     return new_mapping(expr);

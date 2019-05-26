@@ -7,7 +7,6 @@
 
 namespace scam
 {
-    class ScamDict;
     class SingletonParser;
 
     class Instantiator : public ValueMapper
@@ -22,7 +21,7 @@ namespace scam
 
     private:
         size_t   & counter;
-        ScamDict * dict;
+        ScamValue dict;
 
         ScamValue inst_value(ScamValue expr);
         ScamValue new_mapping(ScamValue expr);

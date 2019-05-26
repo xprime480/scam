@@ -21,7 +21,7 @@ namespace scam
         bool isMatch() const;
         ScamValue getLhs() const;
         ScamValue getRhs() const;
-        ScamDict * getDict() const;
+        ScamValue getDict() const;
 
     private:
         const bool          match;

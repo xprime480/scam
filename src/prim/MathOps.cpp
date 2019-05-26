@@ -1,7 +1,7 @@
 #include "prim/MathOps.hpp"
 
 #include "Continuation.hpp"
-#include "expr/ExpressionFactory.hpp"
+#include "expr/ValueFactory.hpp"
 #include "input/NumericListParser.hpp"
 
 #include <algorithm>
@@ -37,14 +37,14 @@ namespace
     ExtendedNumeric
     do_add(vector<ExtendedNumeric> const & ns, ScamValue & state)
     {
-        ExtendedNumeric zero(ExpressionFactory::makeInteger(0, true));
+        ExtendedNumeric zero(makeInteger(0, true));
         return accumulate(ns.begin(), ns.end(), zero);
     }
 
     ExtendedNumeric
     do_sub(vector<ExtendedNumeric> const & ns, ScamValue & state)
     {
-        ExtendedNumeric zero(ExpressionFactory::makeInteger(0, true));
+        ExtendedNumeric zero(makeInteger(0, true));
         ExtendedNumeric total = zero;
 
         switch ( ns.size() ) {
@@ -65,7 +65,7 @@ namespace
     ExtendedNumeric
     do_mul(vector<ExtendedNumeric> const & ns, ScamValue & state)
     {
-        ExtendedNumeric one(ExpressionFactory::makeInteger(1, true));
+        ExtendedNumeric one(makeInteger(1, true));
         return accumulate(ns.begin(), ns.end(),
                           one,
                           multiplies<ExtendedNumeric>());
@@ -74,10 +74,10 @@ namespace
     ExtendedNumeric
     do_div(vector<ExtendedNumeric> const & ns, ScamValue & state)
     {
-        ExtendedNumeric zero(ExpressionFactory::makeInteger(0, true));
-        ExtendedNumeric one(ExpressionFactory::makeInteger(1, true));
+        ExtendedNumeric zero(makeInteger(0, true));
+        ExtendedNumeric one(makeInteger(1, true));
 
-        state = ExpressionFactory::makeBoolean(false);
+        state = makeBoolean(false);
         if ( ns.empty() ) {
             return one;
         }
@@ -87,7 +87,7 @@ namespace
                 iter++;
             }
             if ( ns.end() != find(iter, ns.end(), zero) ) {
-                state = ExpressionFactory::makeError("Division By Zero");
+                state = makeError("Division By Zero");
                 return zero;
             }
         }
@@ -114,14 +114,14 @@ namespace
     ExtendedNumeric
     do_mod(vector<ExtendedNumeric> const & ns, ScamValue & state)
     {
-        ExtendedNumeric zero(ExpressionFactory::makeInteger(0, true));
+        ExtendedNumeric zero(makeInteger(0, true));
 
-        state = ExpressionFactory::makeBoolean(false);
+        state = makeBoolean(false);
         if ( ns.size() < 2 ) {
             return zero;
         }
         if ( zero == ns[1] ) {
-            state = ExpressionFactory::makeError("Modulus By Zero");
+            state = makeError("Modulus By Zero");
             return zero;
         }
 

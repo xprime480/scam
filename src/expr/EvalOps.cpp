@@ -7,12 +7,12 @@
 #include "expr/ClassWorker.hpp"
 #include "expr/ClosureWorker.hpp"
 #include "expr/ConsWorker.hpp"
-#include "expr/ExpressionFactory.hpp"
 #include "expr/InstanceCont.hpp"
 #include "expr/MapWorker.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
+#include "expr/ValueFactory.hpp"
 #include "expr/ValueWriter.hpp"
 #include "input/DictOpsParser.hpp"
 #include "input/FunctionDefParser.hpp"
@@ -35,17 +35,15 @@ void scam::eval(ScamValue value, Continuation * cont, Env * env)
 
     else if ( isSymbol(value) ) {
         ScamValue evaluated;
-        const ScamSymbol * hack = dynamic_cast<ScamSymbol *>(value);
 
-        if ( env->check(hack) ) {
-            evaluated = env->get(hack);
+        if ( env->check(value) ) {
+            evaluated = env->get(value);
         }
         else {
-            evaluated =
-                ExpressionFactory::makeError("Symbol ",
-                                             STRVAL(value),
-                                             " does not exist",
-                                             " in the current environment");
+            evaluated = makeErrorExtended("Symbol ",
+                                          STRVAL(value),
+                                          " does not exist",
+                                          " in the current environment");
         }
 
         cont->run(evaluated);
@@ -53,7 +51,7 @@ void scam::eval(ScamValue value, Continuation * cont, Env * env)
 
     else if ( isNull(value) ) {
         static const string msg{ "The null type cannot be evaluated." };
-        static ScamValue expr = ExpressionFactory::makeError(msg, false);
+        static ScamValue expr = makeError(msg, false);
         cont->run(expr);
     }
 
@@ -64,18 +62,11 @@ void scam::eval(ScamValue value, Continuation * cont, Env * env)
     }
 }
 
-void scam::apply(ScamValue value,
-                 ScamValue args,
-                 Continuation * cont,
-                 Env * env)
+void
+scam::apply(ScamValue value, ScamValue args, Continuation * cont, Env * env)
 {
     if ( isClass(value) ) {
-        /** It is not meaningful to do argument validation here as the
-         ** correct args are not apparant until the instance init method
-         ** is found.
-         **/
-        const ScamClass * hack = dynamic_cast<ScamClass *>(value);
-        workQueueHelper<ClassWorker>(hack, args, cont, env);
+        workQueueHelper<ClassWorker>(value, args, cont, env);
     }
 
     else if ( isClosure(value) ) {
@@ -92,7 +83,7 @@ void scam::apply(ScamValue value,
         const bool accepted = parser->accept(args);
 
         if ( accepted ) {
-            ScamValue arg = const_cast<ScamValue>(parser->get());
+            ScamValue arg = parser->get();
             CONTINUATION(value)->run(arg);
         }
         else {
@@ -111,39 +102,29 @@ void scam::apply(ScamValue value,
             return;
         }
 
-        const ScamKeyword * op = parser->getParsedOp();
+        ScamValue op = parser->getParsedOp();
         ScamValue rv = nullptr;
 
-        auto opHack =  const_cast<ScamData *>(dynamic_cast<const ScamData *>(op));
-        auto getHack = const_cast<ScamData *>(dynamic_cast<const ScamData *>(DictOpsParser::getOp));
-        auto putHack = const_cast<ScamData *>(dynamic_cast<const ScamData *>(DictOpsParser::putOp));
-        auto lenHack = const_cast<ScamData *>(dynamic_cast<const ScamData *>(DictOpsParser::lenOp));
-        auto hasHack = const_cast<ScamData *>(dynamic_cast<const ScamData *>(DictOpsParser::hasOp));
-        auto remHack = const_cast<ScamData *>(dynamic_cast<const ScamData *>(DictOpsParser::remOp));
-
-        auto dictHack = dynamic_cast<ScamDict *>(value);
-
-        if ( equals(opHack, getHack) ) {
-            rv = dictHack->get(parser->getOpKey());
+        if ( equals(op, DictOpsParser::getOp) ) {
+            rv = dictGet(value, parser->getOpKey());
         }
-        else if ( equals(opHack, putHack) ) {
-            /* value is potentially UB so revisit value soon!! */
+        else if ( equals(op, DictOpsParser::putOp) ) {
             ScamValue val = parser->getOpVal();
-            rv = dictHack->put(parser->getOpKey(), val);
+            rv = dictPut(value, parser->getOpKey(), val);
         }
-        else if ( equals(opHack, lenHack) ) {
-            rv = ExpressionFactory::makeInteger(length(value), true);
+        else if ( equals(op, DictOpsParser::lenOp) ) {
+            rv = makeInteger(length(value), true);
         }
-        else if ( equals(opHack, hasHack) ) {
-            const bool b = dictHack->has(parser->getOpKey());
-            rv = ExpressionFactory::makeBoolean(b);
+        else if ( equals(op, DictOpsParser::hasOp) ) {
+            const bool b = dictHas(value, parser->getOpKey());
+            rv = makeBoolean(b);
         }
-        else if ( equals(opHack, remHack) ) {
-            rv = dictHack->remove(parser->getOpKey());
+        else if ( equals(op, DictOpsParser::remOp) ) {
+            rv = dictRemove(value, parser->getOpKey());
         }
         else {
-            rv = ExpressionFactory::makeError("Unknown dictionary operator: ",
-                                              writeValue(op));
+            rv = makeErrorExtended("Unknown dictionary operator: ",
+                                   writeValue(op));
         }
 
         cont->run(rv);
@@ -157,7 +138,7 @@ void scam::apply(ScamValue value,
             return;
         }
 
-        ScamEnvKeyType name = parser->getSymbol();
+        ScamValue name = parser->getSymbol();
         ScamValue funargs = parser->getForms();
 
         Continuation * newCont =
@@ -185,11 +166,10 @@ void scam::apply(ScamValue value,
 
     else {
         // default case
-        ScamValue err =
-            ExpressionFactory::makeError("Not possible to apply <",
-                                         writeValue(value),
-                                         "> to args ",
-                                         writeValue(args));
+        ScamValue err = makeErrorExtended("Not possible to apply <",
+                                          writeValue(value),
+                                          "> to args ",
+                                          writeValue(args));
         cont->run(err);
     }
 }
@@ -202,8 +182,7 @@ void scam::mapEval(ScamValue value, Continuation * cont, Env * env)
 
     else {
         // default case
-        ScamData * hack = const_cast<ScamData *>(value);
-        cont->run(hack);
+        cont->run(value);
     }
 }
 
@@ -215,7 +194,5 @@ ScamValue scam::withEnvUpdate(ScamValue value, Env * updated)
         throw ScamException(s.str());
     }
 
-    return ExpressionFactory::makeClosure(CLOSUREDEF(value),
-                                          updated,
-                                          MACROLIKE(value));
+    return makeClosure(CLOSUREDEF(value), updated, MACROLIKE(value));
 }

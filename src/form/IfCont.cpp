@@ -2,9 +2,9 @@
 
 #include "Env.hpp"
 #include "expr/EvalOps.hpp"
-#include "expr/ExpressionFactory.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/TypePredicates.hpp"
+#include "expr/ValueFactory.hpp"
 #include "input/CountedListParser.hpp"
 
 using namespace scam;
@@ -51,6 +51,6 @@ void IfCont::run(ScamValue expr)
         eval(elseExpr, cont, env);
     }
     else {
-        cont->run(ExpressionFactory::makeNil());
+        cont->run(makeNil());
     }
 }

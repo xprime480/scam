@@ -1,6 +1,7 @@
 #include "TestBase.hpp"
 
 #include "expr/ScamToInternal.hpp"
+#include "expr/ValueFactory.hpp"
 
 using namespace std;
 using namespace scam;
@@ -61,7 +62,7 @@ TEST_F(MathTest, AddSimplificationRealToInt)
 TEST_F(MathTest, AddComplex)
 {
     ScamValue expr = parseAndEvaluate("(+ 1+I 1+I)");
-    ScamValue null = ExpressionFactory::makeNull();
+    ScamValue null = makeNull();
     expectComplex(expr, null, null, "2+2i", true);
 }
 
@@ -148,7 +149,7 @@ TEST_F(MathTest, SubSimplificationRealToInt)
 TEST_F(MathTest, SubComplex)
 {
     ScamValue expr = parseAndEvaluate("(- 1+i 2-3i)");
-    ScamValue null = ExpressionFactory::makeNull();
+    ScamValue null = makeNull();
     expectComplex(expr, null, null, "-1+4i", true);
 }
 
@@ -235,21 +236,21 @@ TEST_F(MathTest, MulSimplificationRealToInt)
 TEST_F(MathTest, MulComplex)
 {
     ScamValue expr = parseAndEvaluate("(* 1+i 2-3i)");
-    ScamValue null = ExpressionFactory::makeNull();
+    ScamValue null = makeNull();
     expectComplex(expr, null, null, "5-i", true);
 }
 
 TEST_F(MathTest, MulComplexNaN)
 {
     ScamValue expr = parseAndEvaluate("(* 1+i 2-nan.0i)");
-    ScamValue null = ExpressionFactory::makeNull();
+    ScamValue null = makeNull();
     expectComplex(expr, null, null, "+nan.0+nan.0i", false);
 }
 
 TEST_F(MathTest, MulComplexInf)
 {
     ScamValue expr = parseAndEvaluate("(* 1+inf.0i 1-inf.0i)");
-    ScamValue null = ExpressionFactory::makeNull();
+    ScamValue null = makeNull();
     expectComplex(expr, null, null, "+inf.0+nan.0i", false);
 }
 
@@ -339,7 +340,7 @@ TEST_F(MathTest, DivTypeUnification)
 TEST_F(MathTest, DivComplex)
 {
     ScamValue expr = parseAndEvaluate("(/ 1+i 1-i)");
-    ScamValue null = ExpressionFactory::makeNull();
+    ScamValue null = makeNull();
     expectComplex(expr, null, null, "+i", true);
 }
 

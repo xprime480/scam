@@ -100,11 +100,8 @@ namespace
             return isPosInf(lhs) && isPosInf(rhs);
         }
 
-        ScamValue lhsV = const_cast<ScamValue>(dynamic_cast<ConstScamValue>(lhs));
-        ScamValue thatV = const_cast<ScamValue>(rhs);
-        ScamValue lhsH = realPart(lhsV);
-        ScamValue thatH = realPart(thatV);
-
+        ScamValue lhsH = realPart(lhs);
+        ScamValue thatH = realPart(rhs);
         const double lhsR = asDouble(lhsH);
         const double thatR = asDouble(thatH);
 
@@ -113,8 +110,8 @@ namespace
         }
 
         if ( isPureComplex(lhs) || isPureComplex(rhs) ) {
-            const double lhsI = asDouble(imagPart(lhsV));
-            const double thatI = asDouble(imagPart(thatV));
+            const double lhsI = asDouble(imagPart(lhs));
+            const double thatI = asDouble(imagPart(rhs));
             if ( ::fabs(lhsI- thatI) > 1e-9 ) {
                 return false;
             }
@@ -144,8 +141,7 @@ namespace
             return false;
         }
 
-        ScamValue hack = const_cast<ScamValue>(dynamic_cast<ConstScamValue>(lhs));
-        size_t len = length(hack);
+        size_t len = length(lhs);
         size_t otherIdx = len+1;
 
         for ( size_t lhsIdx = 0 ; lhsIdx < len ; ++lhsIdx ) {
@@ -182,5 +178,3 @@ namespace
         return true;
     }
 }
-
-

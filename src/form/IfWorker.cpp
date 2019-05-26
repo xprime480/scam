@@ -3,7 +3,6 @@
 #include "Continuation.hpp"
 #include "Env.hpp"
 #include "expr/EvalOps.hpp"
-#include "expr/ExpressionFactory.hpp"
 #include "expr/ScamData.hpp"
 #include "form/IFCont.hpp"
 #include "input/CountedListParser.hpp"
@@ -43,7 +42,7 @@ void IfWorker::run()
 
     Continuation * newCont =
         standardMemoryManager.make<IfCont>(parser, cont, env);
-    ScamValue test = const_cast<ScamValue>(parser->get(0u));
+    ScamValue test = parser->get(0u);
 
     eval(test, newCont, env);
 }

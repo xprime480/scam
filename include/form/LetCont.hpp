@@ -9,7 +9,6 @@ namespace scam
     class Continuation;
     class Env;
     
-
     class LetCont : public LetCommonCont
     {
     private:

@@ -1,10 +1,10 @@
 #include "util/ArgListHelper.hpp"
 
 #include "Continuation.hpp"
-#include "expr/ExpressionFactory.hpp"
 #include "expr/ExtendedNumeric.hpp"
 #include "expr/ScamToInternal.hpp"
 #include "expr/TypePredicates.hpp"
+#include "expr/ValueFactory.hpp"
 #include "input/NumericListParser.hpp"
 #include "input/RelopsListParser.hpp"
 
@@ -101,16 +101,16 @@ namespace
         typedef TypeChecks<T> Checker;
 
         if ( ! Checker::isType(arg) ) {
-            rv = ExpressionFactory::makeError(context,
-                                              " expects ",
-                                              Checker::id(),
-                                              ", got ",
-                                              writeValue(arg));
+            rv = makeErrorExtended(context,
+				   " expects ",
+				   Checker::id(),
+				   ", got ",
+				   writeValue(arg));
             return false;
         }
 
         if ( truth(rv) && ! Checker::isSubType(arg) ) {
-            rv = ExpressionFactory::makeBoolean(false);
+            rv = makeBoolean(false);
         }
 
         ns.push_back(Checker::convert(arg));
@@ -122,7 +122,7 @@ namespace
                           vector<T> & ns,
                           string const & context)
     {
-        ScamValue rv = ExpressionFactory::makeBoolean(true);
+        ScamValue rv = makeBoolean(true);
 
         const size_t len = parser->size();
         for ( size_t idx = 0u ; idx < len ; ++idx ) {
@@ -146,7 +146,7 @@ namespace
         rv = argsToType(parser, ns, context);
         if ( isBoolean(rv) ) {
             bool answer = impl->apply(ns);
-            rv = ExpressionFactory::makeBoolean(answer);
+            rv = makeBoolean(answer);
         }
 
         return rv;
@@ -187,11 +187,11 @@ void scam::failedArgParseMessage(const char * who,
                                  ScamValue act,
                                  Continuation * cont)
 {
-    ScamValue err = ExpressionFactory::makeError(who,
-                                                  " expected \"",
-                                                  exp,
-                                                  "\"; got \"",
-                                                  writeValue(act),
-                                                  "\"");
+    ScamValue err = makeErrorExtended(who,
+                                      " expected \"",
+                                      exp,
+                                      "\"; got \"",
+                                      writeValue(act),
+                                      "\"");
     cont->run(err);
 }

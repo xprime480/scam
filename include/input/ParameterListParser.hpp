@@ -9,8 +9,6 @@
 
 namespace scam
 {
-    class ScamSymbol;
-
     class ParameterListParser : public ArgParser
     {
         friend class scam::MemoryManager;
@@ -23,8 +21,8 @@ namespace scam
         void clearValue() override;
 
         size_t size() const;
-        const ScamSymbol * get(size_t idx) const;
-        const ScamSymbol * getRest() const;
+        ScamValue get(size_t idx) const;
+        ScamValue getRest() const;
 
     private:
         SymbolParser      * bare;
@@ -32,8 +30,8 @@ namespace scam
         ListParser        * symList;
         AlternativeParser * parser;
 
-        std::vector<const ScamSymbol *> parameters;
-        const ScamSymbol * restParameter;
+        std::vector<ScamValue> parameters;
+        ScamValue restParameter;
 
         bool uniquifyParameters();
     };

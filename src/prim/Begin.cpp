@@ -37,4 +37,3 @@ void Begin::applyArgs(ScamValue args, Continuation * cont)
         cont->run(last);
     }
 }
-

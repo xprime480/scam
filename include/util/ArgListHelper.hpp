@@ -29,18 +29,17 @@ namespace scam
                                       ScamValue & state)>;
 
     extern ScamValue numericAlgorithm(NumericListParser * parser,
-                                       std::string const & context,
-                                       NumericalAlgorithm algo);
+                                      std::string const & context,
+                                      NumericalAlgorithm algo);
 
     extern ScamValue compareAlgorithm(RelopsListParser * parser,
-                                       std::string const & context,
-                                       std::shared_ptr<OpImpl> impl);
+                                      std::string const & context,
+                                      std::shared_ptr<OpImpl> impl);
 
     extern void failedArgParseMessage(const char * who,
                                       const char * exp,
                                       ScamValue act,
                                       Continuation * cont);
-
 }
 
 #endif

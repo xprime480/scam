@@ -10,7 +10,7 @@
 using namespace scam;
 using namespace std;
 
-DefineCont::DefineCont(ScamEnvKeyType sym,
+DefineCont::DefineCont(ScamValue sym,
                        Continuation * cont,
                        Env * env,
                        ScamEngine * engine)
@@ -19,7 +19,7 @@ DefineCont::DefineCont(ScamEnvKeyType sym,
 {
 }
 
-DefineCont * DefineCont::makeInstance(ScamEnvKeyType sym,
+DefineCont * DefineCont::makeInstance(ScamValue sym,
                                       Continuation * cont,
                                       Env * env,
                                       ScamEngine * engine)

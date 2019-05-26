@@ -37,4 +37,3 @@ void PrimWorker::run()
     Worker::run();
     data.mapEval();
 }
-

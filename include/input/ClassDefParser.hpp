@@ -10,7 +10,6 @@
 namespace scam
 {
     class MemoryManager;
-    class ScamSymbol;
 
     class ClassDefParser : public ArgParser
     {
@@ -24,9 +23,9 @@ namespace scam
         bool accept(ScamValue expr) override;
         void clearValue() override;
 
-        const ScamSymbol * getBase() const;
+        ScamValue getBase() const;
         size_t getVarCount() const;
-        const ScamSymbol * getVar(size_t idx) const;
+        ScamValue getVar(size_t idx) const;
         size_t getMethodCount() const;
         const FunctionDefParser * getMethod(size_t idx) const;
 

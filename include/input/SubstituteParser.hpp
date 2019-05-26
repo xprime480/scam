@@ -22,7 +22,7 @@ namespace scam
         bool accept(ScamValue expr) override;
 
         ScamValue getForm() const;
-        ScamDict * getDict() const;
+        ScamValue getDict() const;
 
     private:
         ArgParser * any;

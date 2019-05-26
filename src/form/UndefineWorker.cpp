@@ -2,8 +2,8 @@
 
 #include "Continuation.hpp"
 #include "Env.hpp"
-#include "expr/ExpressionFactory.hpp"
 #include "expr/ScamData.hpp"
+#include "expr/ValueFactory.hpp"
 #include "form/UndefineCont.hpp"
 #include "input/UndefineParser.hpp"
 #include "util/MemoryManager.hpp"
@@ -42,9 +42,9 @@ void UndefineWorker::run()
 {
     Worker::run();
 
-    ScamEnvKeyType sym = parser->getSymbol();
+    ScamValue sym = parser->getSymbol();
     Continuation * c = standardMemoryManager.make<UndefineCont>(sym, cont, env);
-    ScamValue expr = ExpressionFactory::makeNil();
+    ScamValue expr = makeNil();
 
     c->run(expr);
 }

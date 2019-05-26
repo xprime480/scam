@@ -12,13 +12,10 @@ namespace scam
     private:
         friend class scam::MemoryManager;
 
-        InstanceCont(ScamValue obj,
-                     ScamEnvKeyType name,
-                     Continuation * cont);
+        InstanceCont(ScamValue obj, ScamValue name, Continuation * cont);
 
-        static InstanceCont * makeInstance(ScamValue obj,
-                                           ScamEnvKeyType name,
-                                           Continuation * cont);
+        static InstanceCont *
+        makeInstance(ScamValue obj, ScamValue name, Continuation * cont);
 
     public:
         void mark() const override;
@@ -26,7 +23,7 @@ namespace scam
 
     private:
         ScamValue obj;
-        ScamEnvKeyType name;
+        ScamValue name;
         Continuation * cont;
 
         ScamValue find_func(ScamValue o) const;

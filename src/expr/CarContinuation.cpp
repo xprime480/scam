@@ -39,4 +39,3 @@ void CarContinuation::run(ScamValue expr)
         workQueueHelper<MapCdr>(expr, e, data.original, data.env);
     }
 }
-

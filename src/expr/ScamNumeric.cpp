@@ -1,9 +1,9 @@
 #include "expr/ScamNumeric.hpp"
 
 #include "ScamException.hpp"
-#include "expr/ExpressionFactory.hpp"
 #include "expr/ScamToInternal.hpp"
 #include "expr/TypePredicates.hpp"
+#include "expr/ValueFactory.hpp"
 #include "expr/ValueWriter.hpp"
 #include "util/NumericUtils.hpp"
 
@@ -13,105 +13,6 @@
 
 using namespace scam;
 using namespace std;
-
-ScamNumeric::ScamNumeric(ScamData::NaNType tag)
-    : ScamData(ScamData::NaN, false)
-{
-    EXACT(this) = false;
-}
-
-ScamNumeric::ScamNumeric(ScamData::NegInfType tag)
-    : ScamData(ScamData::NegInf, false)
-{
-    EXACT(this) = false;
-}
-
-ScamNumeric::ScamNumeric(ScamData::PosInfType tag)
-    : ScamData(ScamData::PosInf, false)
-{
-    EXACT(this) = false;
-}
-
-ScamNumeric::ScamNumeric(ScamValue real, ScamValue imag, bool managed)
-    : ScamData(ScamData::Complex, managed)
-{
-    EXACT(this) = EXACT(real) && EXACT(imag);
-
-    if ( isPureComplex(real) || isPureComplex(imag) ) {
-        static string msg =
-            "Cannot set either part a complex number to another complex number";
-        throw ScamException(msg);
-    }
-
-    REALPART(this) = real;
-    IMAGPART(this) = imag;
-}
-
-ScamNumeric::ScamNumeric(double value, bool exact, bool managed)
-    : ScamData(ScamData::Real, managed)
-{
-    EXACT(this) = exact;
-    REALVAL(this) = value;
-}
-
-ScamNumeric::ScamNumeric(int num, int den, bool exact, bool managed)
-    : ScamData(ScamData::Rational, managed)
-{
-    EXACT(this) = exact;
-
-    const int div = gcd(num, den);
-    NUMPART(this) = num / div;
-    DENPART(this) = den / div;
-}
-
-ScamNumeric::ScamNumeric(int value, bool exact, bool managed)
-    : ScamData(ScamData::Integer, managed)
-{
-    EXACT(this) = exact;
-    INTVAL(this) = value;
-}
-
-ScamNumeric * ScamNumeric::makeInstance(ScamData::NaNType tag)
-{
-    static ScamNumeric instance(tag);
-    return &instance;
-}
-
-ScamNumeric * ScamNumeric::makeInstance(ScamData::NegInfType tag)
-{
-    static ScamNumeric instance(tag);
-    return &instance;
-}
-
-ScamNumeric * ScamNumeric::makeInstance(ScamData::PosInfType tag)
-{
-    static ScamNumeric instance(tag);
-    return &instance;
-}
-
-ScamNumeric *
-ScamNumeric::makeInstance(ScamValue real, ScamValue imag, bool managed)
-{
-    return new ScamNumeric(real, imag, managed);
-}
-
-ScamNumeric *
-ScamNumeric::makeInstance(double value, bool exact, bool managed)
-{
-    return new ScamNumeric(value, exact, managed);
-}
-
-ScamNumeric *
-ScamNumeric::makeInstance(int num, int den, bool exact, bool managed)
-{
-    return new ScamNumeric(num, den, exact, managed);
-}
-
-ScamNumeric *
-ScamNumeric::makeInstance(int value, bool exact, bool managed)
-{
-    return new ScamNumeric(value, exact, managed);
-}
 
 ScamValue scam::realPart(ScamValue data)
 {
@@ -141,6 +42,6 @@ ScamValue scam::imagPart(ScamValue data)
         return IMAGPART(data);
     }
 
-    return ExpressionFactory::makeInteger(0, true);
+    return makeInteger(0, true);
 }
 

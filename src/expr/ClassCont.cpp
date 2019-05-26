@@ -3,10 +3,10 @@
 #include "Env.hpp"
 #include "WorkQueue.hpp"
 #include "expr/ClassInitWorker.hpp"
-#include "expr/ExpressionFactory.hpp"
-#include "expr/ScamClass.hpp"
+#include "expr/ClassOps.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/TypePredicates.hpp"
+#include "expr/ValueFactory.hpp"
 #include "expr/ValueWriter.hpp"
 
 #include <sstream>
@@ -14,16 +14,15 @@
 using namespace scam;
 using namespace std;
 
-ClassCont::ClassCont(ClassHandle cls, Continuation * cont)
+ClassCont::ClassCont(ScamValue cls, Continuation * cont)
     : Continuation("ClassCont")
     , cls(cls)
     , cont(cont)
 {
-    ScamClassAdapter adapter(cls);
-    env = adapter.getCapture();
+    env = getClassCapture(cls);
 }
 
-ClassCont * ClassCont::makeInstance(ClassHandle cls, Continuation * cont)
+ClassCont * ClassCont::makeInstance(ScamValue cls, Continuation * cont)
 {
     return new ClassCont(cls, cont);
 }
@@ -54,57 +53,56 @@ void ClassCont::run(ScamValue expr)
             cont->run(result);
         }
         else {
-            ScamInstance * instance = connect(instances);
+            ScamValue instance = connect(instances);
             init(instance, expr);
         }
     }
 }
 
-ScamValue ClassCont::build(ClassHandle cls, InstanceVec & instances) const
+ScamValue ClassCont::build(ScamValue cls, InstanceVec & instances) const
 {
     ScamValue temp;
 
     for ( ;; ) {
-        ScamInstance * instance = ExpressionFactory::makeInstance(cls, env);
+        ScamValue instance = makeClassInstance(cls, env);
         instances.push_back(instance);
 
         temp = get_parent(cls);
         if ( ! isClass(temp) ) {
             break;
         }
-
-        cls = dynamic_cast<const ScamClass *>(temp);
+        cls = temp;
     }
 
     if ( error(temp) ) {
         return temp;
     }
 
-    return ExpressionFactory::makeNil();
+    return makeNil();
 }
 
-ScamInstance * ClassCont::connect(InstanceVec & instances) const
+ScamValue ClassCont::connect(InstanceVec & instances) const
 {
-    ScamInstance * self = instances[0];
+    ScamValue self = instances[0];
     for ( auto instance : instances ) {
-        setSelf(instance, self);
+        setInstanceSelf(instance, self);
     }
 
     size_t len = instances.size();
     for ( size_t idx = 0 ; idx < (len - 1) ; ++idx ) {
-        ScamInstance * child = instances[idx];
-        ScamInstance * parent = instances[idx+1];
-        setParent(child, parent);
+        ScamValue child = instances[idx];
+        ScamValue parent = instances[idx+1];
+        setInstanceParent(child, parent);
     }
 
     return self;
 }
 
-ScamValue ClassCont::get_parent(ScamClassAdapter const & adapter) const
+ScamValue ClassCont::get_parent(ScamValue value) const
 {
-    ScamEnvKeyType base = adapter.getBase();
+    ScamValue base = getClassBase(value);
     if ( writeValue(base) == "Root" ) {
-        return ExpressionFactory::makeNil();
+        return makeNil();
     }
 
     if ( ! env->check(base) ) {
@@ -119,23 +117,22 @@ ScamValue ClassCont::get_parent(ScamClassAdapter const & adapter) const
     return b;
 }
 
-ScamValue ClassCont::base_class_not_found(ScamEnvKeyType name) const
+ScamValue ClassCont::base_class_not_found(ScamValue name) const
 {
     stringstream s;
     s << "Class definition: " << writeValue(name) << " not found";
-    return ExpressionFactory::makeError(s.str());
+    return makeError(s.str());
 }
 
-ScamValue ClassCont::base_class_not_class(ScamEnvKeyType name,
-                                           ScamValue value) const
+ScamValue ClassCont::base_class_not_class(ScamValue name, ScamValue value) const
 {
     stringstream s;
     s << "Name: " << writeValue(name)
       << " is not a class; got: " << writeValue(value);
-    return ExpressionFactory::makeError(s.str());
+    return makeError(s.str());
 }
 
-void ClassCont::init(ScamInstance * instance, ScamValue expr) const
+void ClassCont::init(ScamValue instance, ScamValue expr) const
 {
     workQueueHelper<ClassInitWorker>(instance, expr, cont, env);
 }

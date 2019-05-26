@@ -1,9 +1,10 @@
 #include "prim/VLen.hpp"
 
 #include "Continuation.hpp"
-#include "expr/ExpressionFactory.hpp"
 #include "expr/SequenceOps.hpp"
+#include "expr/ValueFactory.hpp"
 #include "input/SingletonParser.hpp"
+#include "input/TypeParsers.hpp"
 #include "util/ArgListHelper.hpp"
 
 using namespace scam;
@@ -31,6 +32,7 @@ void VLen::applyArgs(ScamValue args, Continuation * cont)
     }
     else {
         size_t len = length(parser->get());
-        cont->run(ExpressionFactory::makeInteger(len, true));
+        ScamValue val = makeInteger(len, true);
+        cont->run(val);
     }
 }

@@ -3,7 +3,6 @@
 #include "ScamException.hpp"
 #include "input/ScamParser.hpp"
 #include "input/StringTokenizer.hpp"
-#include "expr/ExpressionFactory.hpp"
 
 #include <sstream>
 

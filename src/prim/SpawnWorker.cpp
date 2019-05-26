@@ -1,7 +1,7 @@
 #include "prim/SpawnWorker.hpp"
 
 #include "Continuation.hpp"
-#include "expr/ExpressionFactory.hpp"
+#include "expr/ValueFactory.hpp"
 
 using namespace scam;
 using namespace std;
@@ -28,6 +28,6 @@ void SpawnWorker::mark() const
 
 void SpawnWorker::run()
 {
-    ScamValue flag = ExpressionFactory::makeBoolean(value);
+    ScamValue flag = makeBoolean(value);
     cont->run(flag);
 }

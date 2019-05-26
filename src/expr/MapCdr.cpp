@@ -39,4 +39,3 @@ void MapCdr::run()
     Worker::run();
     mapEval(data.cdr, data.cont, data.env);
 }
-

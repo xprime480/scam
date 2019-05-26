@@ -38,7 +38,6 @@ namespace scam
     }
 }
 
-
 #endif
 
 

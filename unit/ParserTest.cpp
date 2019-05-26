@@ -3,6 +3,7 @@
 
 #include "expr/ScamToInternal.hpp"
 #include "expr/SequenceOps.hpp"
+#include "expr/ValueFactory.hpp"
 #include "input/ScamParser.hpp"
 
 #include <vector>
@@ -115,9 +116,7 @@ TEST_F(ParserTest, RealTest)
 {
     static const string msg{ "-17.5" };
     vector<Token> tokens {
-        Token(TokenType::TT_NUMERIC,
-              msg,
-              ExpressionFactory::makeReal(-17.5, false))
+        Token(TokenType::TT_NUMERIC, msg, makeReal(-17.5, false))
     };
 
     ScamValue expr = runTest(tokens);
@@ -128,9 +127,7 @@ TEST_F(ParserTest, IntegerTest)
 {
     static const string msg{ "99" };
     vector<Token> tokens {
-        Token(TokenType::TT_NUMERIC,
-              msg,
-              ExpressionFactory::makeInteger(99, true))
+        Token(TokenType::TT_NUMERIC, msg, makeInteger(99, true))
     };
 
     ScamValue expr = runTest(tokens);
@@ -155,9 +152,7 @@ TEST_F(ParserTest, ListTest)
     vector<Token> tokens {
         Token(TokenType::TT_OPEN_PAREN, "("),
         Token(TokenType::TT_SYMBOL, "quote"),
-        Token(TokenType::TT_NUMERIC,
-              "2",
-              ExpressionFactory::makeInteger(2, true)),
+        Token(TokenType::TT_NUMERIC, "2", makeInteger(2, true)),
         Token(TokenType::TT_CLOSE_PAREN, ")")
     };
 
@@ -193,16 +188,10 @@ TEST_F(ParserTest, DottedPairTest)
     static const string msg{ "(5 17 . 2)" };
     vector<Token> tokens {
         Token(TokenType::TT_OPEN_PAREN, "("),
-        Token(TokenType::TT_NUMERIC,
-              "5",
-              ExpressionFactory::makeInteger(5, true)),
-        Token(TokenType::TT_NUMERIC,
-              "17",
-              ExpressionFactory::makeInteger(17, true)),
+        Token(TokenType::TT_NUMERIC, "5", makeInteger(5, true)),
+        Token(TokenType::TT_NUMERIC, "17", makeInteger(17, true)),
         Token(TokenType::TT_DOT, "."),
-        Token(TokenType::TT_NUMERIC,
-              "2",
-              ExpressionFactory::makeInteger(2, true)),
+        Token(TokenType::TT_NUMERIC, "2", makeInteger(2, true)),
         Token(TokenType::TT_CLOSE_PAREN, ")")
     };
 
@@ -214,12 +203,8 @@ TEST_F(ParserTest, DottedPairNoCdr)
 {
     vector<Token> tokens {
         Token(TokenType::TT_OPEN_PAREN, "("),
-        Token(TokenType::TT_NUMERIC,
-              "5",
-              ExpressionFactory::makeInteger(5, true)),
-        Token(TokenType::TT_NUMERIC,
-              "17",
-              ExpressionFactory::makeInteger(17, true)),
+        Token(TokenType::TT_NUMERIC, "5", makeInteger(5, true)),
+        Token(TokenType::TT_NUMERIC, "17", makeInteger(17, true)),
         Token(TokenType::TT_DOT, "."),
         Token(TokenType::TT_CLOSE_PAREN, ")")
     };
@@ -232,13 +217,9 @@ TEST_F(ParserTest, DottedPairNoClose)
 {
     vector<Token> tokens {
         Token(TokenType::TT_OPEN_PAREN, "("),
-        Token(TokenType::TT_NUMERIC,
-              "5",
-              ExpressionFactory::makeInteger(5, true)),
+        Token(TokenType::TT_NUMERIC, "5", makeInteger(5, true)),
         Token(TokenType::TT_DOT, "."),
-        Token(TokenType::TT_NUMERIC,
-              "17",
-              ExpressionFactory::makeInteger(17, true)),
+        Token(TokenType::TT_NUMERIC, "17", makeInteger(17, true)),
     };
 
     ScamValue expr = runTest(tokens);
@@ -249,16 +230,10 @@ TEST_F(ParserTest, DottedPairExcessForms)
 {
     vector<Token> tokens {
         Token(TokenType::TT_OPEN_PAREN, "("),
-        Token(TokenType::TT_NUMERIC,
-              "5",
-              ExpressionFactory::makeInteger(5, true)),
+        Token(TokenType::TT_NUMERIC, "5", makeInteger(5, true)),
         Token(TokenType::TT_DOT, "."),
-        Token(TokenType::TT_NUMERIC,
-              "17",
-              ExpressionFactory::makeInteger(17, true)),
-        Token(TokenType::TT_NUMERIC,
-              "42",
-              ExpressionFactory::makeInteger(42, true)),
+        Token(TokenType::TT_NUMERIC, "17", makeInteger(17, true)),
+        Token(TokenType::TT_NUMERIC, "42", makeInteger(42, true)),
         Token(TokenType::TT_CLOSE_PAREN, ")")
     };
 
@@ -354,12 +329,8 @@ TEST_F(ParserTest, ReaderMacroListForm)
     vector<Token> tokens {
         Token(TokenType::TT_QUOTE, "'"),
         Token(TokenType::TT_OPEN_PAREN, "("),
-        Token(TokenType::TT_NUMERIC,
-              "5",
-              ExpressionFactory::makeInteger(5, true)),
-        Token(TokenType::TT_NUMERIC,
-              "42",
-              ExpressionFactory::makeInteger(42, true)),
+        Token(TokenType::TT_NUMERIC, "5", makeInteger(5, true)),
+        Token(TokenType::TT_NUMERIC, "42", makeInteger(42, true)),
         Token(TokenType::TT_CLOSE_PAREN, ")")
     };
 
@@ -384,12 +355,8 @@ TEST_F(ParserTest, VectorNonEmpty)
     string const msg { "#(5 42)" };
     vector<Token> tokens {
         Token(TokenType::TT_OPEN_VECTOR, "#("),
-        Token(TokenType::TT_NUMERIC,
-              "5",
-              ExpressionFactory::makeInteger(5, true)),
-        Token(TokenType::TT_NUMERIC,
-              "42",
-              ExpressionFactory::makeInteger(42, true)),
+        Token(TokenType::TT_NUMERIC, "5", makeInteger(5, true)),
+        Token(TokenType::TT_NUMERIC, "42", makeInteger(42, true)),
         Token(TokenType::TT_CLOSE_PAREN, ")")
     };
 
@@ -415,15 +382,9 @@ TEST_F(ParserTest, ByteVectorNonEmpty)
     string const msg { "#u8(1 127 38)" };
     vector<Token> tokens {
         Token(TokenType::TT_OPEN_BYTE_VECTOR, "#u8("),
-        Token(TokenType::TT_NUMERIC,
-              "1",
-              ExpressionFactory::makeInteger(1, true)),
-        Token(TokenType::TT_NUMERIC,
-              "127",
-              ExpressionFactory::makeInteger(127, true)),
-        Token(TokenType::TT_NUMERIC,
-              "38",
-              ExpressionFactory::makeInteger(38, true)),
+        Token(TokenType::TT_NUMERIC, "1", makeInteger(1, true)),
+        Token(TokenType::TT_NUMERIC, "127", makeInteger(127, true)),
+        Token(TokenType::TT_NUMERIC, "38", makeInteger(38, true)),
         Token(TokenType::TT_CLOSE_PAREN, ")")
     };
 
@@ -469,9 +430,7 @@ TEST_F(ParserTest, DictNonEmpty)
     vector<Token> tokens {
         Token(TokenType::TT_OPEN_CURLY, "{"),
         Token(TokenType::TT_KEYWORD,    ":test"),
-        Token(TokenType::TT_NUMERIC,
-              "1",
-              ExpressionFactory::makeInteger(1, true)),
+        Token(TokenType::TT_NUMERIC, "1", makeInteger(1, true)),
         Token(TokenType::TT_CLOSE_CURLY, "}"),
     };
 

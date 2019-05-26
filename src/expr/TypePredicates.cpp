@@ -133,7 +133,7 @@ bool scam::isList(const ScamData * data)
         return true;
     }
     if ( isCons(data) ) {
-        const ScamData * cdr = (ScamData *) CDR(data);
+        ScamValue cdr = CDR(data);
         return isList(cdr);
     }
 
@@ -194,4 +194,3 @@ bool scam::isContinuation(const ScamData * data)
 {
     return data->type == ScamData::Cont;
 }
-

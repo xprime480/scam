@@ -1,8 +1,8 @@
 #include "prim/IncludeWorker.hpp"
 
 #include "Continuation.hpp"
-#include "expr/ExpressionFactory.hpp"
 #include "expr/ScamData.hpp"
+#include "expr/ValueFactory.hpp"
 #include "input/IncludeParser.hpp"
 #include "prim/IncludeCont.hpp"
 #include "prim/Load.hpp"
@@ -44,7 +44,7 @@ void IncludeWorker::run()
 {
     const size_t count = parser->size();
     ScamValue curr = parser->get(idx);
-    ScamValue newArg = ExpressionFactory::makeList(curr);
+    ScamValue newArg = makeList(curr);
 
     size_t nextIdx = idx + 1;
     Continuation * nextCont = cont;

@@ -22,7 +22,7 @@ namespace scam
         bool accept(ScamValue expr) override;
 
         size_t getIndex() const;
-        ScamVector * getVector() const;
+        ScamValue getVector() const;
 
     private:
         NumericParser  * intVal;

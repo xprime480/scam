@@ -1,8 +1,8 @@
 #include "input/ListParser.hpp"
 
-#include "expr/ExpressionFactory.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/SequenceOps.hpp"
+#include "expr/ValueFactory.hpp"
 #include "expr/TypePredicates.hpp"
 #include "util/MemoryManager.hpp"
 
@@ -84,7 +84,7 @@ size_t ListParser::size() const
 ScamValue ListParser::get(size_t idx) const
 {
     if ( idx >= size() ) {
-        return ExpressionFactory::makeNull();
+        return makeNull();
     }
     return items[idx];
 }

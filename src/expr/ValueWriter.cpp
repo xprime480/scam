@@ -104,7 +104,8 @@ string scam::writeValue(const ScamData * data)
         }
     }
 
-    return s.str() ;
+    auto rv = s.str();
+    return rv;
 }
 
 string scam::debugWriteValue(const ScamData * data)

@@ -2,8 +2,8 @@
 
 #include "Continuation.hpp"
 #include "expr/ScamData.hpp"
-#include "expr/ExpressionFactory.hpp"
 #include "expr/TypePredicates.hpp"
+#include "expr/ValueFactory.hpp"
 #include "input/CountedListParser.hpp"
 #include "util/ArgListHelper.hpp"
 
@@ -35,8 +35,7 @@ void Cons::applyArgs(ScamValue args, Continuation * cont)
     else {
         ScamValue car = parser->get(0);
         ScamValue cdr = parser->get(1);
-        ScamValue cons = ExpressionFactory::makeCons(car, cdr);
+        ScamValue cons = makeCons(car, cdr);
         cont->run(cons);
     }
 }
-

@@ -1,4 +1,4 @@
-#include "form/AssignCont.hpp"
+ #include "form/AssignCont.hpp"
 
 #include "Env.hpp"
 #include "ScamEngine.hpp"
@@ -10,7 +10,7 @@
 using namespace scam;
 using namespace std;
 
-AssignCont::AssignCont(ScamEnvKeyType sym,
+AssignCont::AssignCont(ScamValue sym,
                        Continuation * cont,
                        Env * env,
                        ScamEngine * engine)
@@ -19,7 +19,7 @@ AssignCont::AssignCont(ScamEnvKeyType sym,
 {
 }
 
-AssignCont * AssignCont::makeInstance(ScamEnvKeyType sym,
+AssignCont * AssignCont::makeInstance(ScamValue sym,
                                       Continuation * cont,
                                       Env * env,
                                       ScamEngine * engine)

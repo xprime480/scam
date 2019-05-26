@@ -38,7 +38,7 @@ namespace scam
         Env *        env;
         ScamEngine * engine;
 
-        void makeBacktracker(ScamEnvKeyType sym) const;
+        void makeBacktracker(ScamValue sym) const;
     };
 }
 

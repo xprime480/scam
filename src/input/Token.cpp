@@ -1,6 +1,6 @@
 #include "input/Token.hpp"
 
-#include "expr/ExpressionFactory.hpp"
+#include "expr/ValueFactory.hpp"
 
 using namespace scam;
 using namespace std;
@@ -8,14 +8,14 @@ using namespace std;
 Token::Token()
     : type(TokenType::TT_NONE)
     , text("")
-    , expr(ExpressionFactory::makeNull())
+    , expr(makeNull())
 {
 }
 
 Token::Token(TokenType type, string const & text)
     : type(type)
     , text(text)
-    , expr(ExpressionFactory::makeNull())
+    , expr(makeNull())
 {
 }
 
@@ -43,12 +43,11 @@ ScamValue Token::getExpr() const
 
 bool Token::operator==(Token const & rhs) const
 {
-    return ( ( getType() == rhs.getType() )
-             && ( getText() == rhs.getText() ) );
+    return ( ( getType() == rhs.getType() ) &&
+             ( getText() == rhs.getText() ) );
 }
 
 bool Token::operator!=(Token const & rhs) const
 {
     return ! (*this == rhs);
 }
-

@@ -2,7 +2,6 @@
 
 #include "expr/ScamNumeric.hpp"
 #include "expr/ScamToInternal.hpp"
-#include "expr/ScamVector.hpp"
 #include "expr/TypePredicates.hpp"
 #include "input/SequenceParser.hpp"
 
@@ -51,7 +50,7 @@ size_t VrefParser::getIndex() const
     return static_cast<size_t>(asInteger(intVal->getValue()));
 }
 
-ScamVector * VrefParser::getVector() const
+ScamValue VrefParser::getVector() const
 {
-    return dynamic_cast<ScamVector *>(vecVal->getValue());
+    return vecVal->getValue();
 }

@@ -5,14 +5,14 @@
 using namespace scam;
 using namespace std;
 
-UndefineCont::UndefineCont(ScamEnvKeyType sym,
+UndefineCont::UndefineCont(ScamValue sym,
                            Continuation * cont,
                            Env * env)
     : EnvHelperCont(sym, cont, env, "Undefine")
 {
 }
 
-UndefineCont * UndefineCont::makeInstance(ScamEnvKeyType sym,
+UndefineCont * UndefineCont::makeInstance(ScamValue sym,
                                           Continuation * cont,
                                           Env * env)
 {

@@ -2,7 +2,6 @@
 
 #include "Continuation.hpp"
 #include "WorkQueue.hpp"
-#include "expr/ExpressionFactory.hpp"
 #include "prim/IncludeWorker.hpp"
 #include "input/IncludeParser.hpp"
 #include "util/ArgListHelper.hpp"
@@ -34,4 +33,3 @@ void Include::applyArgs(ScamValue args, Continuation * cont)
         workQueueHelper<IncludeWorker>(parser, cont, engine, 0);
     }
 }
-

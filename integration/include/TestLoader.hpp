@@ -16,11 +16,9 @@ namespace scam
 
             bool isSkipSet() const;
             bool isOK() const;
-            void getComponents(
-                               std::string & name,
+            void getComponents(std::string & name,
                                std::string & input,
-                               std::string & expected
-                               ) const;
+                               std::string & expected) const;
 
             size_t getLinesToKeep() const;
 

@@ -4,14 +4,13 @@
 #include "Env.hpp"
 #include "expr/ClassCont.hpp"
 #include "expr/EvalOps.hpp"
-#include "expr/ScamClass.hpp"
 #include "expr/ScamData.hpp"
 #include "util/MemoryManager.hpp"
 
 using namespace scam;
 using namespace std;
 
-ClassWorker::ClassWorker(const ScamClass * cls,
+ClassWorker::ClassWorker(ScamValue cls,
                          ScamValue args,
                          Continuation * cont,
                          Env * env)
@@ -23,7 +22,7 @@ ClassWorker::ClassWorker(const ScamClass * cls,
 {
 }
 
-ClassWorker * ClassWorker::makeInstance(const ScamClass * cls,
+ClassWorker * ClassWorker::makeInstance(ScamValue cls,
                                         ScamValue args,
                                         Continuation * cont,
                                         Env * env)
@@ -45,7 +44,6 @@ void ClassWorker::mark() const
 void ClassWorker::run()
 {
     Worker::run();
-    Continuation * newCont =
-        standardMemoryManager.make<ClassCont>(cls, cont);
+    Continuation * newCont = standardMemoryManager.make<ClassCont>(cls, cont);
     mapEval(args, newCont, env);
 }

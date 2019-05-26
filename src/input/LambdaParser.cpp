@@ -1,8 +1,8 @@
 #include "input/LambdaParser.hpp"
 
-#include "expr/ExpressionFactory.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/SequenceOps.hpp"
+#include "expr/ValueFactory.hpp"
 #include "input/CountedListParser.hpp"
 #include "input/ParameterListParser.hpp"
 
@@ -10,7 +10,7 @@ using namespace scam;
 using namespace std;
 
 LambdaParser::LambdaParser()
-    : formList(ExpressionFactory::makeNull())
+    : formList(makeNull())
 {
     MemoryManager & mm = standardMemoryManager;
 
@@ -68,7 +68,7 @@ void LambdaParser::clearValue()
 {
     ArgParser::clearValue();
     forms.clear();
-    formList = ExpressionFactory::makeNull();
+    formList = makeNull();
 }
 
 const ParameterListParser * LambdaParser::getArgs() const
@@ -86,7 +86,7 @@ ScamValue LambdaParser::getForm(size_t idx) const
     if ( idx < forms.size() ) {
         return forms[idx];
     }
-    return ExpressionFactory::makeNull();
+    return makeNull();
 }
 
 ScamValue LambdaParser::getFormList() const

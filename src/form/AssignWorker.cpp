@@ -46,7 +46,7 @@ void AssignWorker::run()
 {
     Worker::run();
 
-    ScamEnvKeyType sym = parser->getSymbol();
+    ScamValue sym = parser->getSymbol();
     Continuation * c = standardMemoryManager.make<AssignCont>(sym,
                                                               cont,
                                                               env,

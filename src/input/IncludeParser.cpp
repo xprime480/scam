@@ -1,6 +1,5 @@
 #include "input/IncludeParser.hpp"
 
-#include "expr/ScamString.hpp"
 #include "input/CountedListParser.hpp"
 
 using namespace scam;

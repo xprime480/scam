@@ -1,6 +1,5 @@
 #include "input/SymbolPlusParser.hpp"
 
-#include "expr/ScamSymbol.hpp"
 #include "input/SequenceParser.hpp"
 
 using namespace scam;
@@ -44,9 +43,9 @@ bool SymbolPlusParser::accept(ScamValue expr)
     return true;
 }
 
-ScamEnvKeyType SymbolPlusParser::getSymbol() const
+ScamValue SymbolPlusParser::getSymbol() const
 {
-    return dynamic_cast<ScamEnvKeyType>(sym->getValue());
+    return sym->getValue();
 }
 
 ScamValue SymbolPlusParser::getForm() const

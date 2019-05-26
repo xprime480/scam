@@ -1,8 +1,8 @@
 #include "TestBase.hpp"
 
 #include "ScamException.hpp"
-#include "expr/ExpressionFactory.hpp"
 #include "expr/SequenceOps.hpp"
+#include "expr/ValueFactory.hpp"
 
 using namespace std;
 using namespace scam;
@@ -18,7 +18,7 @@ protected:
 
 TEST_F(SequenceOpsTest, CarEmpty)
 {
-    ScamValue value = ExpressionFactory::makeNil();
+    ScamValue value = makeNil();
     EXPECT_THROW(getCar(value), ScamException);
 }
 
@@ -37,7 +37,7 @@ TEST_F(SequenceOpsTest, CarNonEmpty)
 
 TEST_F(SequenceOpsTest, CdrEmpty)
 {
-    ScamValue value = ExpressionFactory::makeNil();
+    ScamValue value = makeNil();
     EXPECT_THROW(getCdr(value), ScamException);
 }
 
@@ -57,35 +57,35 @@ TEST_F(SequenceOpsTest, CdrNonEmpty)
 TEST_F(SequenceOpsTest, LengthNil)
 {
     ScamValue value = readString("()");
-    ScamValue expr = ExpressionFactory::makeInteger(length(value), true);
+    ScamValue expr = makeInteger(length(value), true);
     expectInteger(expr, 0, "0", true);
 }
 
 TEST_F(SequenceOpsTest, LengthList)
 {
     ScamValue value = readString("(a b c)");
-    ScamValue expr = ExpressionFactory::makeInteger(length(value), true);
+    ScamValue expr = makeInteger(length(value), true);
     expectInteger(expr, 3, "3", true);
 }
 
 TEST_F(SequenceOpsTest, LengthVector)
 {
     ScamValue value = readString("#(a b c)");
-    ScamValue expr = ExpressionFactory::makeInteger(length(value), true);
+    ScamValue expr = makeInteger(length(value), true);
     expectInteger(expr, 3, "3", true);
 }
 
 TEST_F(SequenceOpsTest, LengthByteVector)
 {
     ScamValue value = readString("#u8(23 42 17)");
-    ScamValue expr = ExpressionFactory::makeInteger(length(value), true);
+    ScamValue expr = makeInteger(length(value), true);
     expectInteger(expr, 3, "3", true);
 }
 
 TEST_F(SequenceOpsTest, LengthDictionary)
 {
     ScamValue value = readString("{ :key \"value\" }");
-    ScamValue expr = ExpressionFactory::makeInteger(length(value), true);
+    ScamValue expr = makeInteger(length(value), true);
     expectInteger(expr, 1, "1", true);
 }
 
@@ -178,5 +178,3 @@ TEST_F(SequenceOpsTest, AppendBaseNotList)
     ScamValue tail = readString("()");
     EXPECT_THROW(append(base, tail), ScamException);
 }
-
-

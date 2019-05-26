@@ -10,7 +10,7 @@ namespace scam
     class Substitutor : public ValueMapper
     {
     public:
-        Substitutor(ScamDict * answers);
+        Substitutor(ScamValue answers);
 
         ScamValue resolve_value(ScamValue expr);
 
@@ -18,7 +18,7 @@ namespace scam
         ScamValue map_value(ScamValue val) override;
 
     private:
-        ScamDict * answers;
+        ScamValue answers;
         ScamValue helper;
 
         ScamValue resolve_cons(ScamValue expr);

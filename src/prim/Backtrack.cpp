@@ -3,8 +3,8 @@
 #include "Backtracker.hpp"
 #include "Continuation.hpp"
 #include "ScamEngine.hpp"
-#include "expr/ExpressionFactory.hpp"
 #include "expr/TypePredicates.hpp"
+#include "expr/ValueFactory.hpp"
 #include "util/ArgListHelper.hpp"
 
 using namespace scam;
@@ -33,7 +33,7 @@ void Backtrack::applyArgs(ScamValue args, Continuation * cont)
     Backtracker * backtracker = engine->getBacktracker();
     if ( ! backtracker ) {
         static const string msg = "No current backtrack context";
-        static ScamValue rv = ExpressionFactory::makeError(msg, false);
+        static ScamValue rv = makeError(msg, false);
         cont->run(rv);
     }
     else {

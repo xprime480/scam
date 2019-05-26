@@ -1,4 +1,3 @@
-
 #include "ScamRepl.hpp"
 
 using namespace scam;

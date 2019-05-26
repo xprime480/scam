@@ -4,8 +4,6 @@
 #include "Continuation.hpp"
 
 #include "ScamFwd.hpp"
-#include "expr/ExprFwd.hpp"
-#include "expr/ScamClassAdapter.hpp"
 
 #include <vector>
 
@@ -15,33 +13,27 @@ namespace scam
     class ClassCont : public Continuation
     {
     private:
-        using InstanceVec = std::vector<ScamInstance *>;
-        using ClassHandle = const ScamClass *;
+        using InstanceVec = std::vector<ScamValue>;
 
         friend class scam::MemoryManager;
-        ClassCont(ClassHandle cls, Continuation * cont);
-        static ClassCont * makeInstance(ClassHandle cls, Continuation * cont);
+        ClassCont(ScamValue cls, Continuation * cont);
+        static ClassCont * makeInstance(ScamValue cls, Continuation * cont);
 
     public:
         void mark() const override;
         void run(ScamValue expr) override;
 
     private:
-        ClassHandle    cls;
+        ScamValue    cls;
         Continuation * cont;
         Env          * env;
 
-        ScamValue build(ClassHandle cls, InstanceVec & instances) const;
-        ScamInstance * connect(InstanceVec & instances) const;
-
-        ScamValue get_parent(ScamClassAdapter const & adapter) const;
-
-        ScamValue base_class_not_found(ScamEnvKeyType name) const;
-
-        ScamValue
-        base_class_not_class(ScamEnvKeyType name, ScamValue value) const;
-
-        void init(ScamInstance * instance, ScamValue expr) const;
+        ScamValue build(ScamValue cls, InstanceVec & instances) const;
+        ScamValue connect(InstanceVec & instances) const;
+        ScamValue get_parent(ScamValue value) const;
+        ScamValue base_class_not_found(ScamValue name) const;
+        ScamValue base_class_not_class(ScamValue name, ScamValue value) const;
+        void init(ScamValue instance, ScamValue expr) const;
     };
 }
 

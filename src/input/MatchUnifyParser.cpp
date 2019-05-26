@@ -1,8 +1,7 @@
 #include "input/MatchUnifyParser.hpp"
 
-#include "expr/ExpressionFactory.hpp"
-#include "expr/ScamDict.hpp"
 #include "expr/TypePredicates.hpp"
+#include "expr/ValueFactory.hpp"
 #include "input/CountedListParser.hpp"
 
 using namespace scam;
@@ -59,11 +58,10 @@ ScamValue MatchUnifyParser::getRhs() const
     return parser->get(1);
 }
 
-ScamDict * MatchUnifyParser::getDict() const
+ScamValue MatchUnifyParser::getDict() const
 {
     if ( ! match && 3 == parser->size() ) {
-        return dynamic_cast<ScamDict *>(parser->get(2));
+        return parser->get(2);
     }
-    return ExpressionFactory::makeDict();
+    return makeDict();
 }
-

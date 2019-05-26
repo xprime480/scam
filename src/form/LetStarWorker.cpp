@@ -28,9 +28,8 @@ LetStarWorker * LetStarWorker::makeInstance(LetParser * parser,
     return new LetStarWorker(parser, cont, env, engine);
 }
 
-void LetStarWorker::do_next(ScamValue formals,
-                            ScamValue values,
-                            ScamValue forms)
+void
+LetStarWorker::do_next(ScamValue formals, ScamValue values, ScamValue forms)
 {
     Env * extended = env->extend();
     ScamValue safe = LetStar::safeCons(values);

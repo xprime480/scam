@@ -3,13 +3,12 @@
 #include "Continuation.hpp"
 #include "Env.hpp"
 #include "expr/ScamData.hpp"
-#include "expr/ScamSymbol.hpp"
 #include "util/MemoryManager.hpp"
 
 using namespace scam;
 using namespace std;
 
-AssignBacktracker::AssignBacktracker(ScamEnvKeyType sym,
+AssignBacktracker::AssignBacktracker(ScamValue sym,
                                      ScamValue old,
                                      Env * env,
                                      Backtracker * backtracker)
@@ -20,7 +19,7 @@ AssignBacktracker::AssignBacktracker(ScamEnvKeyType sym,
 {
 }
 
-AssignBacktracker * AssignBacktracker::makeInstance(ScamEnvKeyType sym,
+AssignBacktracker * AssignBacktracker::makeInstance(ScamValue sym,
                                                     ScamValue old,
                                                     Env * env,
                                                     Backtracker * backtracker)

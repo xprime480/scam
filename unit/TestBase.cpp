@@ -3,7 +3,6 @@
 #include "ScamEngine.hpp"
 #include "ScamException.hpp"
 #include "WorkQueue.hpp"
-#include "expr/ExpressionFactory.hpp"
 #include "expr/ScamToInternal.hpp"
 #include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
@@ -98,11 +97,11 @@ ScamValue TestBase::parseAndEvaluate(string const & input)
         return rv;
     }
     catch ( ScamException e ) {
-        ScamValue rv = ExpressionFactory::makeError(e.getMessage());
+        ScamValue rv = makeError(e.getMessage());
         return rv;
     }
     catch ( ... ) {
-        return ExpressionFactory::makeError("Unknown exception");
+        return makeError("Unknown exception");
     }
 }
 
@@ -121,11 +120,11 @@ ScamValue TestBase::readString(char const * input)
         return rv;
     }
     catch ( ScamException e ) {
-        ScamValue rv = ExpressionFactory::makeError(e.getMessage());
+        ScamValue rv = makeError(e.getMessage());
         return rv;
     }
     catch ( ... ) {
-        return ExpressionFactory::makeError("Unknown exception");
+        return makeError("Unknown exception");
     }
 }
 
@@ -190,7 +189,7 @@ string decodePredicate(unsigned exp, unsigned act)
     return s.str();
 }
 
-void TestBase::checkPredicates(ConstScamValue expr, unsigned exp)
+void TestBase::checkPredicates(ScamValue expr, unsigned exp)
 {
     ASSERT_NE(nullptr, expr);
     unsigned act { 0 };
@@ -231,21 +230,21 @@ void TestBase::checkPredicates(ConstScamValue expr, unsigned exp)
                         << "\n\tvalue: " << writeValue(expr);
 }
 
-void TestBase::assertType(ConstScamValue value,
+void TestBase::assertType(ScamValue value,
                           const char * name,
-                          function<bool(ConstScamValue)> pred)
+                          function<bool(ScamValue)> pred)
 {
     ASSERT_TRUE(pred(value))
         << "Expected type " << name << "; got " << writeValue(value);
 }
 
 
-void expectNonNumeric(ConstScamValue expr)
+void expectNonNumeric(ScamValue expr)
 {
     EXPECT_FALSE(isNumeric(expr));
 }
 
-void TestBase::expectNull(ConstScamValue expr)
+void TestBase::expectNull(ScamValue expr)
 {
     assertType(expr, "null", isNull);
     checkPredicates(expr, SELECT_NULL);
@@ -254,7 +253,7 @@ void TestBase::expectNull(ConstScamValue expr)
     expectNonNumeric(expr);
 }
 
-void TestBase::expectError(ConstScamValue expr,
+void TestBase::expectError(ScamValue expr,
                            string const msg,
                            bool managed)
 {
@@ -270,7 +269,7 @@ void TestBase::expectError(ConstScamValue expr,
     expectNonNumeric(expr);
 }
 
-void TestBase::expectBoolean(ConstScamValue expr,
+void TestBase::expectBoolean(ScamValue expr,
                              bool value,
                              string const & repr)
 {
@@ -293,7 +292,7 @@ void TestBase::expectFalse(string const & input)
     expectBoolean(expr, false, "#f");
 }
 
-void TestBase::booleanTest(ConstScamValue expr,
+void TestBase::booleanTest(ScamValue expr,
                            bool value,
                            string const & repr)
 {
@@ -302,7 +301,7 @@ void TestBase::booleanTest(ConstScamValue expr,
     expectBoolean(evaled, value, repr);
 }
 
-void TestBase::expectSpecialNumeric(ConstScamValue expr,
+void TestBase::expectSpecialNumeric(ScamValue expr,
                                     std::string const & repr)
 {
     assertType(expr, "special numeric", isSpecialNumeric);
@@ -311,9 +310,9 @@ void TestBase::expectSpecialNumeric(ConstScamValue expr,
     EXPECT_FALSE(isRational(expr));
 }
 
-void TestBase::expectComplex(ConstScamValue expr,
-                             ConstScamValue real,
-                             ConstScamValue imag,
+void TestBase::expectComplex(ScamValue expr,
+                             ScamValue real,
+                             ScamValue imag,
                              std::string const & repr,
                              bool exact)
 {
@@ -327,7 +326,7 @@ void TestBase::expectComplex(ConstScamValue expr,
     EXPECT_EQ(exact, isExact(expr));
 }
 
-void TestBase::expectReal(ConstScamValue expr,
+void TestBase::expectReal(ScamValue expr,
                           double value,
                           string const & repr,
                           bool exact)
@@ -342,7 +341,7 @@ void TestBase::expectReal(ConstScamValue expr,
     EXPECT_EQ(exact, isExact(expr));
 }
 
-void TestBase::expectRational(ConstScamValue expr,
+void TestBase::expectRational(ScamValue expr,
                               const RationalPair & value,
                               std::string const & repr,
                               bool exact)
@@ -360,7 +359,7 @@ void TestBase::expectRational(ConstScamValue expr,
 
 }
 
-void TestBase::expectInteger(ConstScamValue expr,
+void TestBase::expectInteger(ScamValue expr,
                              int value,
                              string const & repr,
                              bool exact)
@@ -378,7 +377,7 @@ void TestBase::expectInteger(ConstScamValue expr,
     EXPECT_EQ(exact, isExact(expr));
 }
 
-void TestBase::expectChar(ConstScamValue expr,
+void TestBase::expectChar(ScamValue expr,
                           char value,
                           string const & repr)
 {
@@ -388,7 +387,7 @@ void TestBase::expectChar(ConstScamValue expr,
     EXPECT_EQ(value, asChar(expr));
 }
 
-void TestBase::expectString(ConstScamValue expr, string const & value)
+void TestBase::expectString(ScamValue expr, string const & value)
 {
     assertType(expr, "string", isString);
     const auto flags = SELECT_TRUTH | SELECT_STRING | SELECT_MANAGED;
@@ -396,7 +395,7 @@ void TestBase::expectString(ConstScamValue expr, string const & value)
     EXPECT_EQ(value, writeValue(expr));
 }
 
-void TestBase::expectSymbol(ConstScamValue expr, string const & name)
+void TestBase::expectSymbol(ScamValue expr, string const & name)
 {
     assertType(expr, "symbol", isSymbol);
     const auto flags = SELECT_TRUTH | SELECT_SYMBOL | SELECT_MANAGED;
@@ -404,7 +403,7 @@ void TestBase::expectSymbol(ConstScamValue expr, string const & name)
     EXPECT_EQ(name, writeValue(expr));
 }
 
-void TestBase::expectKeyword(ConstScamValue expr, string const & name)
+void TestBase::expectKeyword(ScamValue expr, string const & name)
 {
     assertType(expr, "keyword", isKeyword);
     const auto flags = SELECT_TRUTH | SELECT_KEYWORD | SELECT_MANAGED;
@@ -412,7 +411,7 @@ void TestBase::expectKeyword(ConstScamValue expr, string const & name)
     EXPECT_EQ(name, writeValue(expr));
 }
 
-void TestBase::expectNil(ConstScamValue expr)
+void TestBase::expectNil(ScamValue expr)
 {
     assertType(expr, "nil", isNil);
     static const string repr { "()" };
@@ -420,7 +419,7 @@ void TestBase::expectNil(ConstScamValue expr)
     EXPECT_EQ(repr, writeValue(expr));
 }
 
-void TestBase::expectList(ConstScamValue expr, string const & repr, size_t len)
+void TestBase::expectList(ScamValue expr, string const & repr, size_t len)
 {
     assertType(expr, "list", isList);
     const auto flags =
@@ -432,7 +431,7 @@ void TestBase::expectList(ConstScamValue expr, string const & repr, size_t len)
     EXPECT_EQ(len, length(hack));
 }
 
-void TestBase::expectCons(ConstScamValue expr, string const & repr)
+void TestBase::expectCons(ScamValue expr, string const & repr)
 {
     assertType(expr, "cons", isCons);
     checkPredicates(expr, SELECT_TRUTH | SELECT_CONS | SELECT_MANAGED);
@@ -440,7 +439,7 @@ void TestBase::expectCons(ConstScamValue expr, string const & repr)
 }
 
 void
-TestBase::expectApplicable(ConstScamValue expr, string const & repr)
+TestBase::expectApplicable(ScamValue expr, string const & repr)
 {
     ASSERT_TRUE(isApplicable(expr)) << "Actual Value: " << writeValue(expr);
 
@@ -449,7 +448,7 @@ TestBase::expectApplicable(ConstScamValue expr, string const & repr)
     EXPECT_EQ(repr, writeValue(expr));
 }
 
-void TestBase::expectVector(ConstScamValue expr,
+void TestBase::expectVector(ScamValue expr,
                             string const & repr,
                             size_t len)
 {
@@ -461,7 +460,7 @@ void TestBase::expectVector(ConstScamValue expr,
     EXPECT_EQ(len, length(hack));
 }
 
-void TestBase::expectByteVector(ConstScamValue expr,
+void TestBase::expectByteVector(ScamValue expr,
                                 string const & repr,
                                 size_t len)
 {
@@ -473,28 +472,28 @@ void TestBase::expectByteVector(ConstScamValue expr,
     EXPECT_EQ(len, length(hack));
 }
 
-void TestBase::expectProcedure(ConstScamValue expr, string const & repr)
+void TestBase::expectProcedure(ScamValue expr, string const & repr)
 {
     assertType(expr, "procedure", isProcedure);
     checkPredicates(expr, SELECT_TRUTH | ALL_PROC);
     EXPECT_EQ(repr, writeValue(expr));
 }
 
-void TestBase::expectClass(ConstScamValue expr)
+void TestBase::expectClass(ScamValue expr)
 {
     assertType(expr, "class", isClass);
     checkPredicates(expr, SELECT_TRUTH | ALL_CLASS);
     EXPECT_EQ("class", writeValue(expr));
 }
 
-void TestBase::expectInstance(ConstScamValue expr)
+void TestBase::expectInstance(ScamValue expr)
 {
     assertType(expr, "instance", isInstance);
     checkPredicates(expr, SELECT_TRUTH | ALL_INSTANCE);
     EXPECT_EQ("instance", writeValue(expr));
 }
 
-void TestBase::expectDict(ConstScamValue expr, int count, string const & repr)
+void TestBase::expectDict(ScamValue expr, int count, string const & repr)
 {
     assertType(expr, "dictionary", isDict);
     checkPredicates(expr, SELECT_TRUTH | ALL_DICT);

@@ -163,5 +163,3 @@ namespace
         return str;
     }
 }
-
-

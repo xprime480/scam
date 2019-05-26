@@ -1,10 +1,9 @@
 #include "prim/ValueMapper.hpp"
 
 #include "expr/ScamData.hpp"
-#include "expr/ScamDict.hpp"
-#include "expr/ExpressionFactory.hpp"
 #include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
+#include "expr/ValueFactory.hpp"
 
 using namespace std;
 using namespace scam;
@@ -15,17 +14,17 @@ ScamValue ValueMapper::map_dict(ScamValue expr)
         return expr;
     }
 
-    ScamDict * rv   = ExpressionFactory::makeDict();
-    ScamDict * dict = dynamic_cast<ScamDict *>(expr);
+    ScamValue rv   = makeDict();
+    ScamValue dict = expr;
 
-    KeyVec const & keys = dict->getKeys();
+    KeyVec const & keys = getDictKeys(dict);
     for ( auto key : keys ) {
-        ScamValue val = dict->get(key);
+        ScamValue val = dictGet(dict, key);
         ScamValue newVal = map_value(val);
         if ( error(newVal) ) {
             return newVal;
         }
-        rv->put(key, newVal);
+        dictPut(rv, key, newVal);
     }
 
     return rv;
@@ -42,7 +41,7 @@ ScamValue ValueMapper::map_vector(ScamValue expr)
         newExprs.push_back(newVal);
     }
 
-    ScamValue rv = ExpressionFactory::makeVector(newExprs);
+    ScamValue rv = makeVector(newExprs);
     return rv;
 }
 
@@ -52,5 +51,5 @@ ScamValue ValueMapper::map_cons(ScamValue expr)
     ScamValue tail = nthcdr(expr, 0);
     ScamValue newHead = map_value(head);
     ScamValue newTail = map_value(tail);
-    return ExpressionFactory::makeCons(newHead, newTail);
+    return makeCons(newHead, newTail);
 }

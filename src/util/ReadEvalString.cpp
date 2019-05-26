@@ -1,7 +1,5 @@
 #include "util/ReadEvalString.hpp"
 
-#include "expr/ExpressionFactory.hpp"
-
 using namespace scam;
 using namespace std;
 
