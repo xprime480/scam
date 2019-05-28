@@ -12,7 +12,7 @@ class ClassTest : public TestBase
 TEST_F(ClassTest, ClassMaker)
 {
     ScamValue expr = parseAndEvaluate("make-class");
-    expectApplicable(expr, "Special Form class-maker");
+    expectApplicable(expr, "Special Form make-class", true);
 }
 
 TEST_F(ClassTest, TrivialClass)

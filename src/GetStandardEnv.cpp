@@ -17,30 +17,40 @@ namespace
         ScamValue form = makeForm<T>(args...);
         env->put(key, form);
     }
+
+    void addSpecialForm(Env * env,
+                        const char * name,
+                        SfFunction func,
+                        ScamEngine * engine)
+    {
+        ScamValue key  = makeSymbol(name);
+        ScamValue form = makeSpecialForm(name, func, engine, true);
+        env->put(key, form);
+    }
 }
 
 void ScamEngine::getStandardEnv()
 {
-    addForm<Assign>(env, "assign!", this);
-    addForm<Define>(env, "define", this);
-    addForm<Undefine>(env, "undefine");
-    addForm<Lambda>(env, "lambda");
-    addForm<QuasiQuote>(env, "quasiquote");
-    addForm<Quote>(env, "quote");
-    addForm<Macro>(env, "macro");
-    addForm<Let>(env, "let");
-    addForm<LetStar>(env, "let*", this);
-    addForm<LetRec>(env, "letrec");
-    addForm<Eval>(env, "eval");
-    addForm<Apply>(env, "apply");
-    addForm<ClassMaker>(env, "make-class");
-    addForm<CallCC>(env, "call/cc");
-    addForm<Amb>(env, "amb", this);
+    addSpecialForm(env, "assign!", applyAssign, this);
+    addSpecialForm(env, "define", applyDefine, this);
+    addSpecialForm(env, "undefine", applyUndefine, this);
+    addSpecialForm(env, "lambda", applyLambda, this);
+    addSpecialForm(env, "quasiquote", applyQuasiQuote, this);
+    addSpecialForm(env, "quote", applyQuote, this);
+    addSpecialForm(env, "macro", applyMacro, this);
+    addSpecialForm(env, "let", applyLet, this);
+    addSpecialForm(env, "let*", applyLetStar, this);
+    addSpecialForm(env, "letrec", applyLetRec, this);
+    addSpecialForm(env, "eval", applyEval, this);
+    addSpecialForm(env, "apply", applyApply, this);
+    addSpecialForm(env, "make-class", applyClassMaker, this);
+    addSpecialForm(env, "call/cc", applyCallCC, this);
+    addSpecialForm(env, "amb", applyAmb, this);
 
-    addForm<If>(env, "if");
-    addForm<And>(env, "and");
-    addForm<Or>(env, "or");
-    addForm<Not>(env, "not");
+    addSpecialForm(env, "if", applyIf, this);
+    addSpecialForm(env, "and", applyAnd, this);
+    addSpecialForm(env, "or", applyOr, this);
+    addSpecialForm(env, "not", applyNot, this);
 
     addForm<Match>(env, "match");
     addForm<Unify>(env, "unify");

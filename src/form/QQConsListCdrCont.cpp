@@ -6,7 +6,7 @@
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueFactory.hpp"
 #include "expr/ValueWriter.hpp"
-#include "form/QuasiQuote.hpp"
+#include "form/AllSpecialForms.hpp"
 
 using namespace scam;
 using namespace std;
@@ -61,7 +61,7 @@ bool QQConsListCdrCont::check_splice(ScamValue expr)
     if ( isCons(car) ) {
         ScamValue first = nthcar(car, 0);
         if ( isSymbol(first) ) {
-            if ( writeValue(first) == writeValue(QuasiQuote::spliceTag) ) {
+            if ( writeValue(first) == writeValue(spliceTag) ) {
                 do_splice(expr);
                 return true;
             }

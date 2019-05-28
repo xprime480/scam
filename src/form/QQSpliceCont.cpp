@@ -3,7 +3,7 @@
 #include "expr/ScamData.hpp"
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueFactory.hpp"
-#include "form/QuasiQuote.hpp"
+#include "form/AllSpecialForms.hpp"
 
 using namespace scam;
 using namespace std;
@@ -34,7 +34,7 @@ void QQSpliceCont::run(ScamValue expr)
         cont->run(expr);
     }
     else {
-        ScamValue internal = makeCons(QuasiQuote::spliceTag, expr);
+        ScamValue internal = makeCons(spliceTag, expr);
         cont->run(internal);
     }
 }

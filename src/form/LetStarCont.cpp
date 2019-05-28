@@ -6,7 +6,7 @@
 #include "expr/ScamData.hpp"
 #include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
-#include "form/LetStar.hpp"
+#include "form/AllSpecialForms.hpp"
 #include "form/LetStarBacktracker.hpp"
 #include "form/LetStarCont.hpp"
 #include "util/MemoryManager.hpp"
@@ -59,7 +59,7 @@ void LetStarCont::do_let(ScamValue expr)
 
         makeBacktracker(sym);
 
-        ScamValue safe = LetStar::safeCons(rest);
+        ScamValue safe = safeCons(rest);
         Continuation * ch =
             standardMemoryManager.make<LetStarCont>(getCdr(formals),
                                                     getCdr(safe),

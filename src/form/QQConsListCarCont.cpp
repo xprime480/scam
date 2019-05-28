@@ -6,7 +6,6 @@
 #include "expr/ScamData.hpp"
 #include "expr/TypePredicates.hpp"
 #include "form/QQConsListCdrCont.hpp"
-#include "form/QuasiQuote.hpp"
 #include "form/QuasiQuoteWorker.hpp"
 #include "util/MemoryManager.hpp"
 

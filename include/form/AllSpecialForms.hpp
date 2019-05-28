@@ -1,22 +1,108 @@
+#if ! defined(ALLSPECIALFORMS_HPP)
+#define ALLSPECIALFORMS_HPP 1
 
-#include "form/Apply.hpp"
-#include "form/Assign.hpp"
-#include "form/CallCC.hpp"
-#include "form/Define.hpp"
-#include "form/Eval.hpp"
-#include "form/Lambda.hpp"
-#include "form/Let.hpp"
-#include "form/LetRec.hpp"
-#include "form/LetStar.hpp"
-#include "form/Macro.hpp"
-#include "form/QuasiQuote.hpp"
-#include "form/Quote.hpp"
-#include "form/Undefine.hpp"
+#include "ScamFwd.hpp"
 
-#include "form/And.hpp"
-#include "form/If.hpp"
-#include "form/Not.hpp"
-#include "form/Or.hpp"
+namespace scam
+{
+    extern const ScamValue spliceTag;
 
-#include "form/ClassMaker.hpp"
-#include "form/Amb.hpp"
+    extern void applyAmb(ScamValue args,
+                         Continuation * cont,
+                         Env * env,
+                         ScamEngine * engine);
+
+    extern void applyAnd(ScamValue args,
+                         Continuation * cont,
+                         Env * env,
+                         ScamEngine * engine);
+
+    extern void applyApply(ScamValue args,
+                           Continuation * cont,
+                           Env * env,
+                           ScamEngine * engine);
+
+    extern void applyAssign(ScamValue args,
+                            Continuation * cont,
+                            Env * env,
+                            ScamEngine * engine);
+
+    extern void applyCallCC(ScamValue args,
+                            Continuation * cont,
+                            Env * env,
+                            ScamEngine * engine);
+
+    extern void applyClassMaker(ScamValue args,
+                                Continuation * cont,
+                                Env * env,
+                                ScamEngine * engine);
+
+    extern void applyDefine(ScamValue args,
+                            Continuation * cont,
+                            Env * env,
+                            ScamEngine * engine);
+
+    extern void applyEval(ScamValue args,
+                          Continuation * cont,
+                          Env * env,
+                          ScamEngine * engine);
+
+    extern void applyIf(ScamValue args,
+                        Continuation * cont,
+                        Env * env,
+                        ScamEngine * engine);
+
+    extern void applyLambda(ScamValue args,
+                            Continuation * cont,
+                            Env * env,
+                            ScamEngine * engine);
+
+    extern void applyLet(ScamValue args,
+                         Continuation * cont,
+                         Env * env,
+                         ScamEngine * engine);
+
+    extern void applyLetRec(ScamValue args,
+                            Continuation * cont,
+                            Env * env,
+                            ScamEngine * engine);
+
+    extern void applyLetStar(ScamValue args,
+                             Continuation * cont,
+                             Env * env,
+                             ScamEngine * engine);
+
+    extern void applyMacro(ScamValue args,
+                           Continuation * cont,
+                           Env * env,
+                           ScamEngine * engine);
+
+    extern void applyNot(ScamValue args,
+                         Continuation * cont,
+                         Env * env,
+                         ScamEngine * engine);
+
+    extern void applyOr(ScamValue args,
+                        Continuation * cont,
+                        Env * env,
+                        ScamEngine * engine);
+
+    extern void applyQuasiQuote(ScamValue args,
+                                Continuation * cont,
+                                Env * env,
+                                ScamEngine * engine);
+
+    extern void applyQuote(ScamValue args,
+                           Continuation * cont,
+                           Env * env,
+                           ScamEngine * engine);
+
+    extern void applyUndefine(ScamValue args,
+                              Continuation * cont,
+                              Env * env,
+                              ScamEngine * engine);
+
+    extern ScamValue safeCons(ScamValue expr);
+}
+
+#endif

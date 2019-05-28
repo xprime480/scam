@@ -439,11 +439,11 @@ void TestBase::expectCons(ScamValue expr, string const & repr)
 }
 
 void
-TestBase::expectApplicable(ScamValue expr, string const & repr)
+TestBase::expectApplicable(ScamValue expr, string const & repr, bool managed)
 {
     ASSERT_TRUE(isApplicable(expr)) << "Actual Value: " << writeValue(expr);
 
-    const auto flags = SELECT_TRUTH | SELECT_APPLY;
+    const auto flags = SELECT_TRUTH | SELECT_APPLY | (managed ? SELECT_MANAGED : 0);
     checkPredicates(expr, flags);
     EXPECT_EQ(repr, writeValue(expr));
 }

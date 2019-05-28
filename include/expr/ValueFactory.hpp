@@ -3,6 +3,7 @@
 
 #include "ScamFwd.hpp"
 #include "expr/DictOps.hpp"
+#include "expr/ScamData.hpp"
 #include "util/MemoryManager.hpp"
 
 #include <sstream>
@@ -83,6 +84,11 @@ namespace scam
     extern ScamValue makeClassInstance(ScamValue value, Env * env);
 
     extern ScamValue makeContinuation(Continuation * cont);
+
+    extern ScamValue makeSpecialForm(std::string const & name,
+                                     SfFunction func,
+                                     ScamEngine * engine = nullptr,
+				     bool managed = true);
 
     template <typename T, typename... Args>
     T * makeForm(Args... args)

@@ -316,3 +316,18 @@ ScamValue scam::makeContinuation(Continuation * cont)
     CONTINUATION(v) = cont;
     return v;
 }
+
+ScamValue scam::makeSpecialForm(string const & name,
+                                SfFunction func,
+                                ScamEngine * engine,
+                                bool managed)
+{
+    static constexpr auto myType = ScamData::SpecialForm;
+    ScamValue v = standardMemoryManager.make<ScamData>(myType, managed);
+    SFNAME(v) = name;
+    SFFUNC(v) = func;
+    SFENGINE(v) = engine;
+
+    return v;
+}
+

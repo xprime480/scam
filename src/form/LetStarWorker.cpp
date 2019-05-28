@@ -4,7 +4,7 @@
 #include "expr/EvalOps.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/SequenceOps.hpp"
-#include "form/LetStar.hpp"
+#include "form/AllSpecialForms.hpp"
 #include "form/LetStarCont.hpp"
 #include "util/MemoryManager.hpp"
 
@@ -32,7 +32,7 @@ void
 LetStarWorker::do_next(ScamValue formals, ScamValue values, ScamValue forms)
 {
     Env * extended = env->extend();
-    ScamValue safe = LetStar::safeCons(values);
+    ScamValue safe = safeCons(values);
 
     Continuation * ch =
         standardMemoryManager.make<LetStarCont>(formals,

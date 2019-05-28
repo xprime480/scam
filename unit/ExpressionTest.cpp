@@ -3,8 +3,7 @@
 #include "ScamException.hpp"
 #include "expr/SequenceOps.hpp"
 #include "expr/ValueFactory.hpp"
-#include "form/Quote.hpp"
-#include "form/QuasiQuote.hpp"
+#include "form/AllSpecialForms.hpp"
 
 using namespace std;
 using namespace scam;
@@ -317,22 +316,22 @@ TEST_F(ExpressionTest, SpecialFormQuote)
 {
     string const value { "Special Form quote" };
 
-    ScamValue quote  = makeForm<Quote>();
-    expectApplicable(quote, value);
+    ScamValue quote  = makeSpecialForm("quote", applyQuote, nullptr, true);
+    expectApplicable(quote, value, true);
 
     ScamValue evaled = evaluate(quote);
-    expectApplicable(evaled, value);
+    expectApplicable(evaled, value, true);
 }
 
 TEST_F(ExpressionTest, SpecialFormQuasiQuote)
 {
     string const value { "Special Form quasiquote" };
 
-    ScamValue quote  = makeForm<QuasiQuote>();
-    expectApplicable(quote, value);
+    ScamValue quote  = makeSpecialForm("quasiquote", applyQuasiQuote, nullptr, true);
+    expectApplicable(quote, value, true);
 
     ScamValue evaled = evaluate(quote);
-    expectApplicable(evaled, value);
+    expectApplicable(evaled, value, true);
 }
 
 TEST_F(ExpressionTest, VectorEmpty)
