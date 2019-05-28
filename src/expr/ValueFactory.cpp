@@ -331,3 +331,17 @@ ScamValue scam::makeSpecialForm(string const & name,
     return v;
 }
 
+ScamValue scam::makePrimitive(string const & name,
+			      PrimFunction func,
+			      ScamEngine * engine,
+			      bool managed)
+{
+    static constexpr auto myType = ScamData::Primitive;
+    ScamValue v = standardMemoryManager.make<ScamData>(myType, managed);
+    PRIMNAME(v) = name;
+    PRIMFUNC(v) = func;
+    PRIMENGINE(v) = engine;
+
+    return v;
+}
+

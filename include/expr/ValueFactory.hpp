@@ -88,7 +88,12 @@ namespace scam
     extern ScamValue makeSpecialForm(std::string const & name,
                                      SfFunction func,
                                      ScamEngine * engine = nullptr,
-				     bool managed = true);
+                                     bool managed = true);
+
+    extern ScamValue makePrimitive(std::string const & name,
+                                   PrimFunction func,
+                                   ScamEngine * engine = nullptr,
+                                   bool managed = true);
 
     template <typename T, typename... Args>
     T * makeForm(Args... args)

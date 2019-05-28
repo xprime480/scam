@@ -21,7 +21,6 @@ ScamData::ScamData(unsigned long type, bool managed)
     case ScamData::Keyword:
     case ScamData::String:
     case ScamData::Symbol:
-    case ScamData::Primitive:
         STRVALP(this) = new string;
         break;
 
@@ -40,6 +39,7 @@ ScamData::ScamData(unsigned long type, bool managed)
         break;
 
     case ScamData::SpecialForm:
+    case ScamData::Primitive:
         SFNAMEP(this) = new string;
         SFFUNCP(this) = new SfFunction;
 
@@ -55,7 +55,6 @@ ScamData::~ScamData()
     case ScamData::Keyword:
     case ScamData::String:
     case ScamData::Symbol:
-    case ScamData::Primitive:
         delete STRVALP(this);
         break;
 
@@ -74,6 +73,7 @@ ScamData::~ScamData()
         break;
 
     case ScamData::SpecialForm:
+    case ScamData::Primitive:
         delete SFNAMEP(this);
         delete SFFUNCP(this);
         break;
