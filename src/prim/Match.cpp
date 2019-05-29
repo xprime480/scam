@@ -7,20 +7,13 @@
 using namespace scam;
 using namespace std;
 
-static const char * myName = "match";
 
-Match::Match()
-    : Primitive(myName)
+void scam::applyMatch(ScamValue args,
+                      Continuation * cont,
+                      ScamEngine * engine)
 {
-}
+    static const char * myName = "match";
 
-Match * Match::makeInstance()
-{
-    return new Match();
-}
-
-void Match::applyArgs(ScamValue args, Continuation * cont)
-{
     MatchUnifyParser * parser =
         standardMemoryManager.make<MatchUnifyParser>(true);
     if ( ! parser->accept(args) ) {
@@ -31,3 +24,4 @@ void Match::applyArgs(ScamValue args, Continuation * cont)
         solver.solve();
     }
 }
+

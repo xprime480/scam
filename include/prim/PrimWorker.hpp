@@ -8,8 +8,6 @@
 
 namespace scam
 {
-    class Primitive;
-
     class  PrimWorker : public Worker
     {
     private:
@@ -17,12 +15,12 @@ namespace scam
         PrimWorker(Continuation * cont,
                    Env * env,
                    ScamValue args,
-                   Primitive * caller);
+                   ScamValue caller);
 
         static PrimWorker * makeInstance(Continuation * cont,
                                          Env * env,
                                          ScamValue args,
-                                         Primitive * caller);
+                                         ScamValue caller);
 
     public:
         void mark() const override;

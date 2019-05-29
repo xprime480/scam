@@ -29,7 +29,8 @@ string scam::writeValue(const ScamData * data)
 {
     stringstream s;
 
-    if ( isNumeric(data) ) {
+    ScamValue hack = const_cast<ScamValue>(data);
+    if ( isNumeric(hack) ) {
         writeNumeric(s, data);
     }
     else {
@@ -195,25 +196,26 @@ namespace
 
     void writeNumeric(stringstream & s, const ScamData * data)
     {
-        if ( isNaN(data) ) {
+        ScamValue hack = const_cast<ScamValue>(data);
+        if ( isNaN(hack) ) {
             s << "+nan.0";
         }
-        else if ( isNegInf(data) ) {
+        else if ( isNegInf(hack) ) {
             s << "-inf.0";
         }
-        else if ( isPosInf(data) ) {
+        else if ( isPosInf(hack) ) {
             s << "+inf.0";
         }
-        else if ( isInteger(data) ) {
+        else if ( isInteger(hack) ) {
             s << INTVAL(data);
         }
-        else if ( isRational(data) ) {
+        else if ( isRational(hack) ) {
             s << NUMPART(data) << "/" << DENPART(data);
         }
-        else if ( isReal(data) ) {
+        else if ( isReal(hack) ) {
             s << REALVAL(data);
         }
-        else if ( isComplex(data) ) {
+        else if ( isComplex(hack) ) {
             //
             // The complexity is so that the output is in the simplest
             // form that will be read by the scanner as the same value.
@@ -266,33 +268,34 @@ namespace
 
     void writeType(std::stringstream & s, const ScamData * data)
     {
-        if ( isNumeric(data) ) {
-            if ( isExact(data) ) {
+        ScamValue hack = const_cast<ScamValue>(data);
+        if ( isNumeric(hack) ) {
+            if ( isExact(hack) ) {
                 s << "exact ";
             }
             else {
                 s << "inexact ";
             }
 
-            if ( isNaN(data) ) {
+            if ( isNaN(hack) ) {
                 s << "NaN";
             }
-            else if ( isNegInf(data) ) {
+            else if ( isNegInf(hack) ) {
                 s << "-inf";
             }
-            else if ( isPosInf(data) ) {
+            else if ( isPosInf(hack) ) {
                 s << "+inf";
             }
-            else if ( isInteger(data) ) {
+            else if ( isInteger(hack) ) {
                 s << "integer";
             }
-            else if ( isRational(data) ) {
+            else if ( isRational(hack) ) {
                 s << "rational";
             }
-            else if ( isReal(data) ) {
+            else if ( isReal(hack) ) {
                 s << "real";
             }
-            else if ( isComplex(data) ) {
+            else if ( isComplex(hack) ) {
                 s << "complex";
             }
             else {

@@ -8,18 +8,11 @@
 using namespace scam;
 using namespace std;
 
-Trace::Trace()
-    : Primitive("trace")
-{
-}
-
-Trace * Trace::makeInstance()
-{
-    return new Trace();
-}
-
-void Trace::applyArgs(ScamValue args, Continuation * cont)
+void scam::applyTrace(ScamValue args,
+                      Continuation * cont,
+                      ScamEngine * engine)
 {
     cerr << writeValue(args) << "\n";
     cont->run(args);
 }
+

@@ -3,6 +3,7 @@
 #include "Continuation.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/TypePredicates.hpp"
+#include "expr/ValueFactory.hpp"
 #include "input/SingletonParser.hpp"
 #include "input/TypeParsers.hpp"
 #include "util/ArgListHelper.hpp"
@@ -10,24 +11,26 @@
 using namespace scam;
 using namespace std;
 
-CarCdr::CarCdr(char const * name)
-    : Primitive(name)
+ScamValue scam::carCdrCommon(ScamValue args,
+                            Continuation * cont,
+                            const char * name)
 {
-}
+    ScamValue rv = makeNull();
 
-void CarCdr::applyArgs(ScamValue args, Continuation * cont)
-{
     if ( error(args) ) {
         cont->run(args);
-        return;
+        return rv;
     }
 
     ConsParser * cp = standardMemoryManager.make<ConsParser>();
-    SingletonParser * parser = standardMemoryManager.make<SingletonParser>(cp);
+    SingletonParser * parser =
+        standardMemoryManager.make<SingletonParser>(cp);
     if ( ! parser->accept(args) ) {
-        failedArgParseMessage(STRVAL(this).c_str(), "(a-cons)", args, cont);
-        return;
+        failedArgParseMessage(name, "(a-cons)", args, cont);
+        return rv;
     }
 
-    finish(parser->get(), cont);
+    rv = parser->get();
+    return rv;
 }
+

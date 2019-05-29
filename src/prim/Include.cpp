@@ -12,18 +12,9 @@ using namespace std;
 
 static const char * myName = "include";
 
-Include::Include(ScamEngine * engine)
-    : Primitive(myName)
-    , engine(engine)
-{
-}
-
-Include * Include::makeInstance(ScamEngine * engine)
-{
-    return new Include(engine);
-}
-
-void Include::applyArgs(ScamValue args, Continuation * cont)
+void scam::applyInclude(ScamValue args,
+                        Continuation * cont,
+                        ScamEngine * engine)
 {
     IncludeParser * parser = standardMemoryManager.make<IncludeParser>();
     if ( ! parser->accept(args) ) {

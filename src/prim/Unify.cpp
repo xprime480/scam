@@ -1,4 +1,3 @@
-
 #include "prim/Unify.hpp"
 
 #include "input/MatchUnifyParser.hpp"
@@ -7,20 +6,11 @@
 
 using namespace scam;
 
-static const char * myName = "unify";
-
-Unify::Unify()
-    : Primitive(myName)
+void scam::applyUnify(ScamValue args,
+                      Continuation * cont,
+                      ScamEngine * engine)
 {
-}
-
-Unify * Unify::makeInstance()
-{
-    return new Unify();
-}
-
-void Unify::applyArgs(ScamValue args, Continuation * cont)
-{
+    static const char * myName = "unify";
     MatchUnifyParser * parser =
         standardMemoryManager.make<MatchUnifyParser>(false);
     if ( ! parser->accept(args) ) {

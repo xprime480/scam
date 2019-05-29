@@ -5,20 +5,12 @@
 using namespace scam;
 using namespace std;
 
-List::List()
-    : Primitive("list")
-{
-}
-
-List * List::makeInstance()
-{
-    return new List();
-}
-
-void List::applyArgs(ScamValue args, Continuation * cont)
+void scam::applyList(ScamValue args,
+                     Continuation * cont,
+                     ScamEngine * engine)
 {
     /** literally anything goes **/
-    
     cont->run(args);
 }
+
 

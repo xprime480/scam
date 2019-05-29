@@ -8,28 +8,24 @@
 using namespace scam;
 using namespace std;
 
-static const char * myName = "instantiate";
-
-Instantiate::Instantiate()
-    : Primitive(myName)
+namespace
 {
+    size_t counter { 0 };
 }
 
-Instantiate * Instantiate::makeInstance()
+void scam::applyInstantiate(ScamValue args,
+                            Continuation * cont,
+                            ScamEngine * engine)
 {
-    return new Instantiate();
-}
+    static const char * myName = "instantiate";
 
-void Instantiate::applyArgs(ScamValue args, Continuation * cont)
-{
     SingletonParser * parser = getSingletonOfAnythingParser();
     if ( ! parser->accept(args) ) {
         failedArgParseMessage(myName, "(form)", args, cont);
+        return;
     }
 
     Instantiator inst(counter);
     ScamValue rv = inst.exec(parser);
     cont->run(rv);
 }
-
-size_t Instantiate::counter { 0 };

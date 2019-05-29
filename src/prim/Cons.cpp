@@ -10,20 +10,11 @@
 using namespace scam;
 using namespace std;
 
-static const char * myName = "cons";
-
-Cons::Cons()
-    : Primitive(myName)
+void scam::applyCons(ScamValue args,
+                     Continuation * cont,
+                     ScamEngine * engine)
 {
-}
-
-Cons * Cons::makeInstance()
-{
-    return new Cons();
-}
-
-void Cons::applyArgs(ScamValue args, Continuation * cont)
-{
+    static const char * myName = "cons";
     if ( error(args) ) {
         cont->run(args);
     }
@@ -39,3 +30,4 @@ void Cons::applyArgs(ScamValue args, Continuation * cont)
         cont->run(cons);
     }
 }
+

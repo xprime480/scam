@@ -55,6 +55,5 @@ void IncludeWorker::run()
                                                            nextIdx);
     }
 
-    Load * loader = standardMemoryManager.make<Load>(engine);
-    loader->applyArgs(newArg, nextCont);
+    applyLoad(newArg, nextCont, engine);
 }

@@ -9,17 +9,17 @@
 using namespace scam;
 using namespace std;
 
-bool scam::isNull(const ScamData * data)
+bool scam::isNull(ScamValue data)
 {
     return data->type == ScamData::Null;
 }
 
-bool scam::error(const ScamData * data)
+bool scam::error(ScamValue data)
 {
     return data->type == ScamData::Error;
 }
 
-bool scam::truth(const ScamData * data)
+bool scam::truth(ScamValue data)
 {
     if ( isNull(data) ) {
         return false;
@@ -31,37 +31,37 @@ bool scam::truth(const ScamData * data)
     return BOOLVAL(data);
 }
 
-bool scam::isBoolean(const ScamData * data)
+bool scam::isBoolean(ScamValue data)
 {
     return data->type == ScamData::Boolean;
 }
 
-bool scam::isChar(const ScamData * data)
+bool scam::isChar(ScamValue data)
 {
     return data->type == ScamData::Character;
 }
 
-bool scam::isString(const ScamData * data)
+bool scam::isString(ScamValue data)
 {
     return data->type == ScamData::String;
 }
 
-bool scam::isSymbol(const ScamData * data)
+bool scam::isSymbol(ScamValue data)
 {
     return data->type == ScamData::Symbol;
 }
 
-bool scam::isKeyword(const ScamData * data)
+bool scam::isKeyword(ScamValue data)
 {
     return data->type == ScamData::Keyword;
 }
 
-bool scam::isNumeric(const ScamData * data)
+bool scam::isNumeric(ScamValue data)
 {
     return 0 != (data->type & ScamData::Numeric);
 }
 
-bool scam::isExact(const ScamData * data)
+bool scam::isExact(ScamValue data)
 {
     if ( ! isNumeric(data) ) {
         stringstream s;
@@ -72,62 +72,62 @@ bool scam::isExact(const ScamData * data)
     return EXACT(data);
 }
 
-bool scam::isComplex(const ScamData * data)
+bool scam::isComplex(ScamValue data)
 {
     return ScamData::ComplexBit == (data->type & ScamData::ComplexBit);
 }
 
-bool scam::isPureComplex(const ScamData * data)
+bool scam::isPureComplex(ScamValue data)
 {
     return isComplex(data) && ! isReal(data);
 }
 
-bool scam::isReal(const ScamData * data)
+bool scam::isReal(ScamValue data)
 {
     return ScamData::RealBit == (data->type & ScamData::RealBit);
 }
 
-bool scam::isRational(const ScamData * data)
+bool scam::isRational(ScamValue data)
 {
     return ScamData::RationalBit == (data->type & ScamData::RationalBit);
 }
 
-bool scam::isInteger(const ScamData * data)
+bool scam::isInteger(ScamValue data)
 {
     return ScamData::IntegerBit == (data->type & ScamData::IntegerBit);
 }
 
-bool scam::isNaN(const ScamData * data)
+bool scam::isNaN(ScamValue data)
 {
     return ScamData::NaNBit == (data->type & ScamData::NaNBit);
 }
 
-bool scam::isNegInf(const ScamData * data)
+bool scam::isNegInf(ScamValue data)
 {
     return ScamData::NegInfBit == (data->type & ScamData::NegInfBit);
 }
 
-bool scam::isPosInf(const ScamData * data)
+bool scam::isPosInf(ScamValue data)
 {
     return ScamData::PosInfBit == (data->type & ScamData::PosInfBit);
 }
 
-bool scam::isSpecialNumeric(const ScamData * data)
+bool scam::isSpecialNumeric(ScamValue data)
 {
     return 0 != (data->type & ScamData::SpecialNumeric);
 }
 
-bool scam::isNil(const ScamData * data)
+bool scam::isNil(ScamValue data)
 {
     return data->type == ScamData::Nil;
 }
 
-bool scam::isCons(const ScamData * data)
+bool scam::isCons(ScamValue data)
 {
     return data->type == ScamData::Cons;
 }
 
-bool scam::isList(const ScamData * data)
+bool scam::isList(ScamValue data)
 {
     if ( isNil(data) ) {
         return true;
@@ -140,57 +140,57 @@ bool scam::isList(const ScamData * data)
     return false;
 }
 
-bool scam::isVector(const ScamData * data)
+bool scam::isVector(ScamValue data)
 {
     return data->type == ScamData::Vector;
 }
 
-bool scam::isByteVector(const ScamData * data)
+bool scam::isByteVector(ScamValue data)
 {
     return data->type == ScamData::ByteVector;
 }
 
-bool scam::isClosure(const ScamData * data)
+bool scam::isClosure(ScamValue data)
 {
     return 0 != (data->type & ScamData::Closure);
 }
 
-bool scam::isProcedure(const ScamData * data)
+bool scam::isProcedure(ScamValue data)
 {
     return 0 != (data->type & ScamData::Procedure);
 }
 
-bool scam::isClass(const ScamData * data)
+bool scam::isClass(ScamValue data)
 {
     return data->type == ScamData::Class;
 }
 
-bool scam::isInstance(const ScamData * data)
+bool scam::isInstance(ScamValue data)
 {
     return data->type == ScamData::Instance;
 }
 
-bool scam::isDict(const ScamData * data)
+bool scam::isDict(ScamValue data)
 {
     return data->type == ScamData::Dict;
 }
 
-bool scam::isSpecialForm(const ScamData * data)
+bool scam::isSpecialForm(ScamValue data)
 {
     return data->type == ScamData::SpecialForm;
 }
 
-bool scam::isPrimitive(const ScamData * data)
+bool scam::isPrimitive(ScamValue data)
 {
     return data->type == ScamData::Primitive;
 }
 
-bool scam::isApplicable(const ScamData * data)
+bool scam::isApplicable(ScamValue data)
 {
     return 0 != (data->type & ScamData::Applicable);
 }
 
-bool scam::isContinuation(const ScamData * data)
+bool scam::isContinuation(ScamValue data)
 {
     return data->type == ScamData::Cont;
 }

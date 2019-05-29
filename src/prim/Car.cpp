@@ -3,22 +3,19 @@
 #include "Continuation.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/SequenceOps.hpp"
+#include "expr/TypePredicates.hpp"
+#include "prim/CarCdr.hpp"
 
 using namespace scam;
 using namespace std;
 
-Car::Car()
-    : CarCdr("car")
+void scam::applyCar(ScamValue args,
+                    Continuation * cont,
+                    ScamEngine * engine)
 {
-}
-
-Car * Car::makeInstance()
-{
-    return new Car();
-}
-
-void Car::finish(ScamValue cons, Continuation * cont)
-{
-    ScamValue car = getCar(cons);
-    cont->run(car);
+    ScamValue obj = carCdrCommon(args, cont, "car");
+    if ( ! isNull(obj) ) {
+        ScamValue car = getCar(obj);
+        cont->run(car);
+    }
 }

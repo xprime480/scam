@@ -1,21 +1,13 @@
 #if ! defined(PRIMITIVE_TRACE_H)
 #define PRIMITIVE_TRACE_H 1
 
-#include "prim/Primitive.hpp"
+#include "ScamFwd.hpp"
 
 namespace scam
 {
-    class Continuation;
-
-    class Trace : public Primitive
-    {
-    private:
-        Trace();
-
-    public:
-        static Trace * makeInstance();
-        void applyArgs(ScamValue args, Continuation * cont) override;
-    };
+    extern void applyTrace(ScamValue args,
+                           Continuation * cont,
+                           ScamEngine * engine);
 }
 
 #endif

@@ -12,20 +12,13 @@
 using namespace scam;
 using namespace std;
 
-static const char * myName = "error";
 
-Error::Error()
-    : Primitive(myName)
+void scam::applyError(ScamValue args,
+                      Continuation * cont,
+                      ScamEngine * engine)
 {
-}
+    static const char * myName = "error";
 
-Error * Error::makeInstance()
-{
-    return new Error();
-}
-
-void Error::applyArgs(ScamValue args, Continuation * cont)
-{
     ListParser * parser = getListOfAnythingParser();
     if ( ! parser->accept(args) ) {
         failedArgParseMessage(myName, "(form*)", args, cont);
@@ -50,3 +43,4 @@ void Error::applyArgs(ScamValue args, Continuation * cont)
     ScamValue err = makeError(s.str());
     cont->run(err);
 }
+

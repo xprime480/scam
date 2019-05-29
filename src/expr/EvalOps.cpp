@@ -19,7 +19,6 @@
 #include "input/SingletonParser.hpp"
 #include "input/SymbolPlusManyParser.hpp"
 #include "prim/PrimWorker.hpp"
-#include "prim/Primitive.hpp"
 #include "util/ArgListHelper.hpp"
 
 #include <sstream>
@@ -156,12 +155,7 @@ scam::apply(ScamValue value, ScamValue args, Continuation * cont, Env * env)
     }
 
     else if ( isPrimitive(value) ) {
-        /*
-         * For primitives, the argument confirmation is delegated to the
-         * derived class' applyArgs function.
-         */
-        Primitive * hack = dynamic_cast<Primitive *>(value);
-        workQueueHelper<PrimWorker>(cont, env, args, hack);
+        workQueueHelper<PrimWorker>(cont, env, args, value);
     }
 
     else {

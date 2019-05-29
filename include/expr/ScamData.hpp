@@ -18,7 +18,8 @@ namespace scam
 
     using SfFunction =
         std::function<void(ScamValue, Continuation *, Env *, ScamEngine *)>;
-    using PrimFunction = SfFunction;
+    using PrimFunction =
+        std::function<void(ScamValue, Continuation *, ScamEngine *)>;
 
     struct ScamData : public ManagedObject
     {
@@ -172,6 +173,13 @@ namespace scam
                 ScamEngine  * engine;
             } specialFormData;
 
+            struct
+            {
+                std::string  * name;
+                PrimFunction * func;
+                ScamEngine   * engine;
+            } primitiveData;
+
         } value;
 
         mutable Env * metadata;
@@ -230,8 +238,10 @@ namespace scam
 #define SFFUNC(data) (*SFFUNCP(data))
 #define SFENGINE(data) ((data)->value.specialFormData.engine)
 
-#define PRIMNAME(data) (SFNAME(data))
-#define PRIMFUNC(data) (SFFUNC(data))
-#define PRIMENGINE(data) (SFENGINE(data))
+#define PRIMNAMEP(data) ((data)->value.primitiveData.name)
+#define PRIMNAME(data) (*PRIMNAMEP(data))
+#define PRIMFUNCP(data) ((data)->value.primitiveData.func)
+#define PRIMFUNC(data) (*PRIMFUNCP(data))
+#define PRIMENGINE(data) ((data)->value.primitiveData.engine)
 
 #endif

@@ -5,7 +5,6 @@
 #include "expr/EvalOps.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/TypePredicates.hpp"
-#include "prim/Primitive.hpp"
 
 using namespace scam;
 using namespace std;
@@ -13,7 +12,7 @@ using namespace std;
 PrimWorkerData::PrimWorkerData(ScamValue args,
                                Continuation * original,
                                Env * env,
-                               Primitive * caller)
+                               ScamValue caller)
     : args(args)
     , original(original)
     , cont(nullptr)
@@ -28,6 +27,7 @@ void PrimWorkerData::mark() const
     original->mark();
     if ( cont ) { cont->mark(); };
     env->mark();
+    caller->mark();
 }
 
 void PrimWorkerData::mapEval() const
@@ -41,6 +41,6 @@ void PrimWorkerData::handleResult(ScamValue expr)
         original->run(expr);
     }
     else {
-        caller->applyArgs(expr, original);
+        PRIMFUNC(caller)(expr, original, PRIMENGINE(caller));
     }
 }

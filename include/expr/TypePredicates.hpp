@@ -1,50 +1,50 @@
 #if ! defined(TYPEPREDICATES_HPP)
 #define TYPEPREDICATES_HPP 1
 
+#include "ScamFwd.hpp"
+
 namespace scam
 {
-    class ScamData;
+    extern bool isNull(ScamValue data);
+    extern bool error(ScamValue data);
+    extern bool truth(ScamValue data);
 
-    extern bool isNull(const ScamData * data);
-    extern bool error(const ScamData * data);
-    extern bool truth(const ScamData * data);
+    extern bool isBoolean(ScamValue data);
+    extern bool isChar(ScamValue data);
+    extern bool isString(ScamValue data);
+    extern bool isSymbol(ScamValue data);
+    extern bool isKeyword(ScamValue data);
 
-    extern bool isBoolean(const ScamData * data);
-    extern bool isChar(const ScamData * data);
-    extern bool isString(const ScamData * data);
-    extern bool isSymbol(const ScamData * data);
-    extern bool isKeyword(const ScamData * data);
+    extern bool isNumeric(ScamValue data);
+    extern bool isExact(ScamValue data);
+    extern bool isComplex(ScamValue data);
+    extern bool isPureComplex(ScamValue data);
+    extern bool isReal(ScamValue data);
+    extern bool isRational(ScamValue data);
+    extern bool isInteger(ScamValue data);
 
-    extern bool isNumeric(const ScamData * data);
-    extern bool isExact(const ScamData * data);
-    extern bool isComplex(const ScamData * data);
-    extern bool isPureComplex(const ScamData * data);
-    extern bool isReal(const ScamData * data);
-    extern bool isRational(const ScamData * data);
-    extern bool isInteger(const ScamData * data);
+    extern bool isNaN(ScamValue data);
+    extern bool isNegInf(ScamValue data);
+    extern bool isPosInf(ScamValue data);
+    extern bool isSpecialNumeric(ScamValue data);
 
-    extern bool isNaN(const ScamData * data);
-    extern bool isNegInf(const ScamData * data);
-    extern bool isPosInf(const ScamData * data);
-    extern bool isSpecialNumeric(const ScamData * data);
+    extern bool isNil(ScamValue data);
+    extern bool isCons(ScamValue data);
+    extern bool isList(ScamValue data);
 
-    extern bool isNil(const ScamData * data);
-    extern bool isCons(const ScamData * data);
-    extern bool isList(const ScamData * data);
+    extern bool isVector(ScamValue data);
+    extern bool isByteVector(ScamValue data);
+    extern bool isDict(ScamValue data);
 
-    extern bool isVector(const ScamData * data);
-    extern bool isByteVector(const ScamData * data);
-    extern bool isDict(const ScamData * data);
+    extern bool isClosure(ScamValue data);
+    extern bool isProcedure(ScamValue data);
+    extern bool isClass(ScamValue data);
+    extern bool isInstance(ScamValue data);
+    extern bool isSpecialForm(ScamValue data);
+    extern bool isPrimitive(ScamValue data);
+    extern bool isApplicable(ScamValue data);
 
-    extern bool isClosure(const ScamData * data);
-    extern bool isProcedure(const ScamData * data);
-    extern bool isClass(const ScamData * data);
-    extern bool isInstance(const ScamData * data);
-    extern bool isSpecialForm(const ScamData * data);
-    extern bool isPrimitive(const ScamData * data);
-    extern bool isApplicable(const ScamData * data);
-
-    extern bool isContinuation(const ScamData * data);
+    extern bool isContinuation(ScamValue data);
 }
 
 #endif

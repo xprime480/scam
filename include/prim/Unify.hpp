@@ -1,19 +1,13 @@
 #if ! defined(UNIFY_HPP)
 #define UNIFY_HPP 1
 
-#include "prim/Primitive.hpp"
+#include "ScamFwd.hpp"
 
 namespace scam
 {
-    class Unify : public Primitive
-    {
-    private:
-        Unify();
-
-    public:
-        static Unify * makeInstance();
-        void applyArgs(ScamValue args, Continuation * cont) override;
-    };
+    extern void applyUnify(ScamValue args,
+                           Continuation * cont,
+                           ScamEngine * engine);
 }
 
 #endif

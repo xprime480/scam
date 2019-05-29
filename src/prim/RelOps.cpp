@@ -12,26 +12,6 @@
 using namespace scam;
 using namespace std;
 
-CompareOp::CompareOp(char const * name, shared_ptr<OpImpl> impl)
-    : Primitive(name)
-    , impl(impl)
-{
-}
-
-void CompareOp::applyArgs(ScamValue args, Continuation * cont)
-{
-    string const context = writeValue(this);
-    RelopsListParser * parser = standardMemoryManager.make<RelopsListParser>();
-
-    if ( ! parser->accept(args) ) {
-        failedArgParseMessage(context.c_str(), "(num*)", args, cont);
-    }
-    else {
-        ScamValue rv = compareAlgorithm(parser, context, impl);
-        cont->run(rv);
-    }
-}
-
 namespace
 {
     template <typename T>
@@ -122,10 +102,21 @@ namespace
 }
 
 #define CMP_OP_DEFINE(Name, Impl)                                \
-    Name::Name()                                         \
-        : CompareOp(#Name, Impl) {}                      \
-    Name * Name::makeInstance() { return new Name(); }
-
+    void scam::apply##Name(ScamValue args,                       \
+                           Continuation * cont,                  \
+                           ScamEngine * engine)                  \
+    {                                                            \
+        string const context = { #Name };                        \
+        RelopsListParser * parser =                              \
+            standardMemoryManager.make<RelopsListParser>();      \
+        if ( ! parser->accept(args) ) {                          \
+            failedArgParseMessage(context.c_str(), "(num*)", args, cont); \
+        }                                                        \
+        else {                                                   \
+            ScamValue rv = compareAlgorithm(parser, context, Impl);  \
+            cont->run(rv);                                       \
+        }                                                        \
+    }
 
 CMP_OP_DEFINE(Eq, eqDef);
 CMP_OP_DEFINE(Ne, neDef);

@@ -1,19 +1,13 @@
 #if ! defined(SUBSTITUTE_HPP)
 #define SUBSTITUTE_HPP 1
 
-#include "prim/Primitive.hpp"
+#include "ScamFwd.hpp"
 
 namespace scam
 {
-    class Substitute : public Primitive
-    {
-    private:
-        Substitute();
-
-    public:
-        static Substitute * makeInstance();
-        void applyArgs(ScamValue args, Continuation * cont) override;
-    };
+    extern void applySubstitute(ScamValue args,
+                                Continuation * cont,
+                                ScamEngine * engine);
 }
 
 #endif

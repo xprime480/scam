@@ -1,19 +1,13 @@
 #if ! defined(PRIMITIVE_CONS_HPP)
 #define PRIMITIVE_CONS_HPP 1
 
-#include "prim/Primitive.hpp"
+#include "ScamFwd.hpp"
 
 namespace scam
 {
-    class Cons : public Primitive
-    {
-    private:
-        Cons();
-
-    public:
-        static Cons * makeInstance();
-        void applyArgs(ScamValue args, Continuation * cont) override;
-    };
+    extern void applyCons(ScamValue args,
+                          Continuation * cont,
+                          ScamEngine * engine);
 }
 
 #endif

@@ -1,6 +1,7 @@
 #include "expr/ScamToInternal.hpp"
 
 #include "ScamException.hpp"
+#include "expr/ScamData.hpp"
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueWriter.hpp"
 
@@ -9,7 +10,7 @@
 using namespace scam;
 using namespace std;
 
-char scam::asChar(const ScamData * data)
+char scam::asChar(ScamValue data)
 {
     if ( ! isChar(data) ) {
         stringstream s;
@@ -20,7 +21,7 @@ char scam::asChar(const ScamData * data)
     return CHARVAL(data);
 }
 
-double scam::asDouble(const ScamData * data)
+double scam::asDouble(ScamValue data)
 {
     if ( ! isReal(data) ) {
         stringstream s;
@@ -44,7 +45,7 @@ double scam::asDouble(const ScamData * data)
     return 0.0;
 }
 
-RationalPair scam::asRational(const ScamData * data)
+RationalPair scam::asRational(ScamValue data)
 {
     if ( ! isRational(data) ) {
         stringstream s;
@@ -65,7 +66,7 @@ RationalPair scam::asRational(const ScamData * data)
     return pair;
 }
 
-int scam::asInteger(const ScamData * data)
+int scam::asInteger(ScamValue data)
 {
     if ( ! isInteger(data) ) {
         stringstream s;

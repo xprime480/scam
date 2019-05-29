@@ -1,8 +1,10 @@
 #include "prim/MathOps.hpp"
 
 #include "Continuation.hpp"
+#include "expr/ExtendedNumeric.hpp"
 #include "expr/ValueFactory.hpp"
 #include "input/NumericListParser.hpp"
+#include "util/ArgListHelper.hpp"
 
 #include <algorithm>
 #include <numeric>
@@ -10,27 +12,6 @@
 
 using namespace scam;
 using namespace std;
-
-MathOp::MathOp(MathOpDef const & def)
-    : Primitive(def.name)
-    , algo(def.algo)
-{
-}
-
-void MathOp::applyArgs(ScamValue args, Continuation * cont)
-{
-    string const context = writeValue(this);
-    NumericListParser * parser =
-        standardMemoryManager.make<NumericListParser>();
-
-    if ( ! parser->accept(args) ) {
-        failedArgParseMessage(context.c_str(), "(num*)", args, cont);
-    }
-    else {
-        ScamValue rv = numericAlgorithm(parser, context, algo);
-        cont->run(rv);
-    }
-}
 
 namespace
 {
@@ -130,11 +111,23 @@ namespace
 }
 
 #define MATH_OP_DEFINE(Name, Proc) \
-    static const MathOpDef Name ## def { #Name, Proc }; \
-                                                         \
-    Name::Name()                                         \
-        : MathOp(Name ## def) {}                         \
-    Name * Name::makeInstance() { return new Name(); }
+    void scam::apply##Name(ScamValue args,                        \
+                           Continuation * cont,                   \
+                           ScamEngine * engine)                   \
+        {                                                         \
+            static const string context { #Name };                \
+            NumericListParser * parser =                          \
+                standardMemoryManager.make<NumericListParser>();  \
+                                                                  \
+            if ( ! parser->accept(args) ) {                       \
+                failedArgParseMessage(context.c_str(), "(num*)", args, cont); \
+            }                                                     \
+            else {                                                \
+                ScamValue rv = numericAlgorithm(parser, context, Proc); \
+                cont->run(rv);                                    \
+            }                                                     \
+        }
+
 
 MATH_OP_DEFINE(Add, do_add);
 MATH_OP_DEFINE(Sub, do_sub);

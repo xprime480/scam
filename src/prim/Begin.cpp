@@ -9,20 +9,12 @@
 using namespace scam;
 using namespace std;
 
-static const char * myName = "begin";
-
-Begin::Begin()
-    : Primitive(myName)
+void scam::applyBegin(ScamValue args,
+                      Continuation * cont,
+                      ScamEngine * engine)
 {
-}
+    static const char * myName = "begin";
 
-Begin * Begin::makeInstance()
-{
-    return new Begin();
-}
-
-void Begin::applyArgs(ScamValue args, Continuation * cont)
-{
     if ( ! isList(args) ) {
         failedArgParseMessage(myName, "(expr*)", args, cont);
         return;
@@ -37,3 +29,4 @@ void Begin::applyArgs(ScamValue args, Continuation * cont)
         cont->run(last);
     }
 }
+

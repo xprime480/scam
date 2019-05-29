@@ -17,20 +17,12 @@ namespace
     extern void equal_p_impl(ListParser * parser, Continuation * cont);
 }
 
-static const char * myName = "eq?";
 
-EqualP::EqualP()
-    : Primitive(myName)
+void scam::applyEqualP(ScamValue args,
+                       Continuation * cont,
+                       ScamEngine * engine)
 {
-}
-
-EqualP * EqualP::makeInstance()
-{
-    return new EqualP();
-}
-
-void EqualP::applyArgs(ScamValue args, Continuation * cont)
-{
+    static const char * myName = "eq?";
     ListParser * parser = getListOfAnythingParser();
     if ( ! parser->accept(args) ) {
         failedArgParseMessage(myName, "(form*)", args, cont);
@@ -93,8 +85,8 @@ namespace
     bool has_nulls(ListParser * parser, Continuation * cont)
     {
         auto fn = [](ScamValue arg) -> ScamValue {
-            return makeBoolean(isNull(arg));
-        };
+                      return makeBoolean(isNull(arg));
+                  };
         ScamValue answer = map_reduce(parser, fn, any);
         return truth(answer);
     }

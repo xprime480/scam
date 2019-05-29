@@ -8,20 +8,12 @@
 using namespace scam;
 using namespace std;
 
-static const char * myName = "vref";
-
-VRef::VRef()
-    : Primitive(myName)
+void scam::applyVRef(ScamValue args,
+                     Continuation * cont,
+                     ScamEngine * engine)
 {
-}
+    static const char * myName = "vref";
 
-VRef * VRef::makeInstance()
-{
-    return new VRef();
-}
-
-void VRef::applyArgs(ScamValue args, Continuation * cont)
-{
     VrefParser * parser = standardMemoryManager.make<VrefParser>();
     if ( ! parser->accept(args) ) {
         failedArgParseMessage(myName, "(form*)", args, cont);

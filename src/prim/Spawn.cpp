@@ -10,17 +10,9 @@ using namespace std;
 
 static const char * myName = "spawn";
 
-Spawn::Spawn()
-    : Primitive(myName)
-{
-}
-
-Spawn * Spawn::makeInstance()
-{
-    return new Spawn();
-}
-
-void Spawn::applyArgs(ScamValue args, Continuation * cont)
+void scam::applySpawn(ScamValue args,
+                      Continuation * cont,
+                      ScamEngine * engine)
 {
     if ( ! isNil(args) ) {
         failedArgParseMessage(myName, "()", args, cont);
@@ -30,3 +22,4 @@ void Spawn::applyArgs(ScamValue args, Continuation * cont)
         workQueueHelper<SpawnWorker>(cont, false);
     }
 }
+

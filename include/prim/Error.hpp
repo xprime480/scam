@@ -1,21 +1,13 @@
 #if ! defined(PRIMITIVE_ERROR_H)
 #define PRIMITIVE_ERROR_H 1
 
-#include "prim/Primitive.hpp"
+#include "ScamFwd.hpp"
 
 namespace scam
 {
-    class Continuation;
-
-    class Error : public Primitive
-    {
-    private:
-        Error();
-
-    public:
-        static Error * makeInstance();
-        void applyArgs(ScamValue args, Continuation * cont) override;
-    };
+    extern void applyError(ScamValue args,
+                           Continuation * cont,
+                           ScamEngine * engine);
 }
 
 #endif

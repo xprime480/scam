@@ -1,7 +1,7 @@
 #if ! defined(PRIMITIVE_PREDICATES_H)
 #define PRIMITIVE_PREDICATES_H 1
 
-#include "prim/Primitive.hpp"
+#include "ScamFwd.hpp"
 
 namespace scam
 {
@@ -10,14 +10,7 @@ namespace scam
 #else
 
 #define DECL_PREDICATE(name)                                            \
-    class name : public Primitive                                       \
-    {                                                                   \
-    private:                                                            \
-        name();                                                         \
-    public:                                                             \
-        static name * makeInstance();                                   \
-        void applyArgs(ScamValue args, Continuation * cont) override;   \
-    }                                                                   \
+    void apply##name(ScamValue args, Continuation * cont, ScamEngine * engine);
 
     DECL_PREDICATE(NilP);
     DECL_PREDICATE(ErrorP);

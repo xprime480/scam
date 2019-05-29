@@ -10,17 +10,9 @@
 using namespace std;
 using namespace scam;
 
-Substitute::Substitute()
-    : Primitive("substitute")
-{
-}
-
-Substitute * Substitute::makeInstance()
-{
-    return new Substitute();
-}
-
-void Substitute::applyArgs(ScamValue args, Continuation * cont)
+void scam::applySubstitute(ScamValue args,
+                           Continuation * cont,
+                           ScamEngine * engine)
 {
     if ( length(args) < 2 ) {
         ScamValue err = makeError("expected 2 args; got ", length(args));
@@ -32,7 +24,8 @@ void Substitute::applyArgs(ScamValue args, Continuation * cont)
     ScamValue dict = nthcar(args, 1);
     if ( ! dict ) {
         ScamValue err =
-            makeErrorExtended("expected 'form dict'; got ", writeValue(args));
+            makeErrorExtended("expected 'form dict'; got ",
+                              writeValue(args));
         cont->run(err);
         return;
     }
@@ -41,3 +34,4 @@ void Substitute::applyArgs(ScamValue args, Continuation * cont)
     ScamValue rv = resolver.resolve_value(form);
     cont->run(rv);
 }
+

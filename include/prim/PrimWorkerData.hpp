@@ -12,13 +12,13 @@ namespace scam
         PrimWorkerData(ScamValue args,
                        Continuation * original,
                        Env * env,
-                       Primitive * caller);
+                       ScamValue caller);
 
         ScamValue args;
         Continuation * original;
         Continuation * cont;
         Env * env;
-        Primitive * caller;
+        ScamValue caller;
 
         void mark() const;
 

@@ -17,23 +17,31 @@
 using namespace scam;
 using namespace std;
 
-static const char * myName = "load";
-
-Load::Load(ScamEngine * engine)
-    : Primitive(myName)
-    , engine(engine)
+namespace
 {
+    extern bool open_file(ifstream & source,
+                          string const & filename,
+                          Continuation * cont);
+
+    extern string get_data(ifstream & source);
+    extern bool file_exists(string fullpath);
+    extern void file_not_found(string const & filename, Continuation * cont);
+    extern ScamValue get_path();
+    extern ScamValue default_path();
+    extern ScamValue convert_path(char const * path);
+    extern string next_element(char const *& path);
+    extern string make_path(string dirname, string filename);
 }
 
-Load * Load::makeInstance(ScamEngine * engine)
+void scam::applyLoad(ScamValue args,
+                     Continuation * cont,
+                     ScamEngine * engine)
 {
-    return new Load(engine);
-}
+    static const char * myName = "load";
 
-void Load::applyArgs(ScamValue args, Continuation * cont)
-{
     StringParser * str = standardMemoryManager.make<StringParser>();
-    SingletonParser * parser = standardMemoryManager.make<SingletonParser>(str);
+    SingletonParser * parser
+        = standardMemoryManager.make<SingletonParser>(str);
     if ( ! parser->accept(args) ) {
         failedArgParseMessage(myName, "(filename-string)", args, cont);
         return;
@@ -60,116 +68,118 @@ void Load::applyArgs(ScamValue args, Continuation * cont)
     cont->run(last);
 }
 
-bool Load::open_file(ifstream & source,
-                     string const & filename,
-                     Continuation * cont)
+namespace
 {
-    if ( '/' == filename.at(0) ) {
-        if ( file_exists(filename) ) {
-            source.open(filename);
-            return true;
-        }
-    }
-    else {
-        ScamValue path = get_path();
-
-        size_t n = length(path);
-        for ( size_t i = 0 ; i < n ; ++i ) {
-            string fullpath = make_path(writeValue(nthcar(path, i)), filename);
-            if ( file_exists(fullpath) ) {
-                source.open(fullpath);
+    bool
+    open_file(ifstream & source, string const & filename, Continuation * cont)
+    {
+        if ( '/' == filename.at(0) ) {
+            if ( file_exists(filename) ) {
+                source.open(filename);
                 return true;
             }
         }
+        else {
+            ScamValue path = get_path();
+
+            size_t n = length(path);
+            for ( size_t i = 0 ; i < n ; ++i ) {
+                string fullpath = make_path(writeValue(nthcar(path, i)), filename);
+                if ( file_exists(fullpath) ) {
+                    source.open(fullpath);
+                    return true;
+                }
+            }
+        }
+
+        file_not_found(filename, cont);
+        return false;
     }
 
-    file_not_found(filename, cont);
-    return false;
-}
+    string get_data(ifstream & source)
+    {
+        char buf[1024];
+        stringstream text;
 
-string Load::get_data(ifstream & source)
-{
-    char buf[1024];
-    stringstream text;
+        while ( source.good() && ! source.eof() ) {
+            source.getline(buf, sizeof ( buf ));
+            text << buf << "\n";
+        }
+        source.close();
 
-    while ( source.good() && ! source.eof() ) {
-        source.getline(buf, sizeof ( buf ));
-        text << buf << "\n";
-    }
-    source.close();
-
-    return text.str();
-}
-
-bool Load::file_exists(string fullpath)
-{
-    ifstream x;
-    x.open(fullpath);
-    if ( x.good() ) {
-        x.close();
-        return true;
+        return text.str();
     }
 
-    return false;
-}
+    bool file_exists(string fullpath)
+    {
+        ifstream x;
+        x.open(fullpath);
+        if ( x.good() ) {
+            x.close();
+            return true;
+        }
 
-void Load::file_not_found(string const & filename, Continuation * cont)
-{
-    ScamValue err = makeErrorExtended("Unable to open file ", filename);
-    cont->run(err);
-}
-
-ScamValue Load::get_path()
-{
-    ScamValue rv = makeNull();
-
-    char const * path = getenv("SCAM_PATH");
-    if ( ! path || ! *path ) {
-        rv = default_path();
+        return false;
     }
-    else {
-        rv = convert_path(path);
+
+    void file_not_found(string const & filename, Continuation * cont)
+    {
+        ScamValue err = makeErrorExtended("Unable to open file ", filename);
+        cont->run(err);
     }
-    return rv;
-}
 
-ScamValue Load::default_path()
-{
-    return convert_path(".:..");
-}
+    ScamValue get_path()
+    {
+        ScamValue rv = makeNull();
 
-ScamValue Load::convert_path(char const * path)
-{
-    ExprVec dp;
+        char const * path = getenv("SCAM_PATH");
+        if ( ! path || ! *path ) {
+            rv = default_path();
+        }
+        else {
+            rv = convert_path(path);
+        }
+        return rv;
+    }
 
-    while ( *path ) {
-        string element = next_element(path);
-        if ( ! element.empty() ) {
-            dp.push_back(makeString(element));
+    ScamValue default_path()
+    {
+        return convert_path(".:..");
+    }
+
+    ScamValue convert_path(char const * path)
+    {
+        ExprVec dp;
+
+        while ( *path ) {
+            string element = next_element(path);
+            if ( ! element.empty() ) {
+                dp.push_back(makeString(element));
+            }
+        }
+
+        if ( dp.empty() ) {
+            return default_path();
+        }
+        return makeVector(dp);
+    }
+
+    string next_element(char const *& path)
+    {
+        stringstream s;
+        while ( true ) {
+            const char c = *path++;
+            if ( ':' == c || ! c  ) {
+                return s.str();
+            }
+            s << c;
         }
     }
 
-    if ( dp.empty() ) {
-        return default_path();
+    string make_path(string dirname, string filename)
+    {
+        stringstream s;
+        s << dirname << "/" << filename;
+        return s.str();
     }
-    return makeVector(dp);
-}
-
-string Load::next_element(char const *& path)
-{
-    stringstream s;
-    while ( true ) {
-        const char c = *path++;
-        if ( ':' == c || ! c  ) {
-            return s.str();
-        }
-        s << c;
-    }
-}
-
-string Load::make_path(string dirname, string filename)
-{
-    stringstream s;
-    s << dirname << "/" << filename;
-    return s.str();
 }

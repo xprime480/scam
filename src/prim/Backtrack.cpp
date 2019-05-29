@@ -10,21 +10,12 @@
 using namespace scam;
 using namespace std;
 
-static const char * myName = "backtrack";
-
-Backtrack::Backtrack(ScamEngine * engine)
-    : Primitive(myName)
-    , engine(engine)
+void scam::applyBacktrack(ScamValue args,
+                          Continuation * cont,
+                          ScamEngine * engine)
 {
-}
+    static const char * myName = "backtrack";
 
-Backtrack * Backtrack::makeInstance(ScamEngine * engine)
-{
-    return new Backtrack(engine);
-}
-
-void Backtrack::applyArgs(ScamValue args, Continuation * cont)
-{
     if ( ! isNil(args) ) {
         failedArgParseMessage(myName, "()", args, cont);
         return;

@@ -39,9 +39,14 @@ ScamData::ScamData(unsigned long type, bool managed)
         break;
 
     case ScamData::SpecialForm:
-    case ScamData::Primitive:
         SFNAMEP(this) = new string;
         SFFUNCP(this) = new SfFunction;
+        break;
+
+    case ScamData::Primitive:
+        PRIMNAMEP(this) = new string;
+        PRIMFUNCP(this) = new PrimFunction;
+        break;
 
     default:
         break;
@@ -73,9 +78,13 @@ ScamData::~ScamData()
         break;
 
     case ScamData::SpecialForm:
-    case ScamData::Primitive:
         delete SFNAMEP(this);
         delete SFFUNCP(this);
+        break;
+
+    case ScamData::Primitive:
+        delete PRIMNAMEP(this);
+        delete PRIMFUNCP(this);
         break;
 
     default:
@@ -99,8 +108,9 @@ void ScamData::mark() const
         metadata->mark();
     }
 
-    if ( isNumeric(this) ) {
-        if ( isPureComplex(this) ) {
+    ScamValue hack = const_cast<ScamValue>(this);
+    if ( isNumeric(hack) ) {
+        if ( isPureComplex(hack) ) {
             REALPART(this)->mark();
             IMAGPART(this)->mark();
         }

@@ -1,35 +1,14 @@
 #if ! defined(PRIMITIVE_COMPAREOPS_H)
 #define PRIMITIVE_COMPAREOPS_H 1
 
-#include "prim/Primitive.hpp"
-
-#include <memory>
-#include <string>
-#include <vector>
+#include "ScamFwd.hpp"
 
 namespace scam
 {
-    class OpImpl;
-
-    class CompareOp : public Primitive
-    {
-    public:
-        CompareOp(char const * name, std::shared_ptr<OpImpl> impl);
-
-        void applyArgs(ScamValue args, Continuation * cont) override;
-
-    private:
-        std::shared_ptr<OpImpl> impl;
-    };
-
-#define CMP_OP_DECL(Name) \
-    class Name : public CompareOp \
-    { \
-    private: \
-        Name(); \
-    public: \
-        static Name * makeInstance(); \
-    };
+#define CMP_OP_DECL(Name)                                             \
+    extern void apply##Name(ScamValue args,                           \
+                            Continuation * cont,                      \
+                            ScamEngine * engine);
 
     CMP_OP_DECL(Eq);
     CMP_OP_DECL(Ne);

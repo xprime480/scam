@@ -1,21 +1,13 @@
 #if ! defined(PRIMITIVE_VREF_H)
 #define PRIMITIVE_VREF_H 1
 
-#include "prim/Primitive.hpp"
+#include "ScamFwd.hpp"
 
 namespace scam
 {
-    class Continuation;
-
-    class VRef : public Primitive
-    {
-    private:
-        VRef();
-
-    public:
-        static VRef * makeInstance();
-        void applyArgs(ScamValue args, Continuation * cont) override;
-    };
+    extern void applyVRef(ScamValue args,
+                          Continuation * cont,
+                          ScamEngine * engine);
 }
 
 #endif
