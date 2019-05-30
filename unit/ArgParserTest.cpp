@@ -64,7 +64,7 @@ TEST_F(ArgParserTest, AcceptNonNull)
     acceptParse(parser, "1.234");
     acceptParse(parser, "#true");
     acceptParse(parser, "x");
-    // acceptParse(parser, "\"a string here\"");
+    acceptParse(parser, "\"a string here\"");
     acceptParse(parser, "#\\x");
     acceptParse(parser, "#(a b c)");
     acceptParse(parser, "(list should work)");
