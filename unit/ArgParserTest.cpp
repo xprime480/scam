@@ -536,14 +536,14 @@ TEST_F(ArgParserTest, IncludeParserOne)
 {
     IncludeParser * parser = mm.make<IncludeParser>();
     acceptParse(parser, "(\"test\")");
-    expectString(parser->get(0), "test");
+    expectString(parser->get(0), "\"test\"");
 }
 
 TEST_F(ArgParserTest, IncludeParserSeveral)
 {
     IncludeParser * parser = mm.make<IncludeParser>();
     acceptParse(parser, "(\"test\" \"best\" \"rest\")");
-    expectString(parser->get(2), "rest");
+    expectString(parser->get(2), "\"rest\"");
 }
 
 TEST_F(ArgParserTest, IncludeParserNonString)
@@ -641,7 +641,7 @@ TEST_F(ArgParserTest, RelopsListOfStrings)
     RelopsListParser * parser = mm.make<RelopsListParser>();
     acceptParse(parser, "(\"hello\" \"world\")");
     EXPECT_EQ(2, parser->size());
-    expectString(parser->get(0), "hello");
+    expectString(parser->get(0), "\"hello\"");
 }
 
 TEST_F(ArgParserTest, RelopsListMixed)

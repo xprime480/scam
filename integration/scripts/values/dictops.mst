@@ -20,4 +20,4 @@ aDict
 [keep 3]
 -3/2
 1
-{ fun hello }
+{ fun "hello" }

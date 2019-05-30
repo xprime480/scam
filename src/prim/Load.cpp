@@ -3,6 +3,7 @@
 #include "Continuation.hpp"
 #include "ScamEngine.hpp"
 #include "expr/ScamData.hpp"
+#include "expr/ScamToInternal.hpp"
 #include "expr/SequenceOps.hpp"
 #include "expr/ValueFactory.hpp"
 #include "input/SingletonParser.hpp"
@@ -19,18 +20,18 @@ using namespace std;
 
 namespace
 {
-    extern bool open_file(ifstream & source,
+    extern bool openFile(ifstream & source,
                           string const & filename,
                           Continuation * cont);
 
-    extern string get_data(ifstream & source);
-    extern bool file_exists(string fullpath);
-    extern void file_not_found(string const & filename, Continuation * cont);
-    extern ScamValue get_path();
-    extern ScamValue default_path();
-    extern ScamValue convert_path(char const * path);
-    extern string next_element(char const *& path);
-    extern string make_path(string dirname, string filename);
+    extern string getData(ifstream & source);
+    extern bool fileExists(string fullpath);
+    extern void fileNotFound(string const & filename, Continuation * cont);
+    extern ScamValue getPath();
+    extern ScamValue defaultPath();
+    extern ScamValue convertPath(char const * path);
+    extern string getNextElement(char const *& path);
+    extern string makePath(string dirname, string filename);
 }
 
 void scam::applyLoad(ScamValue args,
@@ -47,7 +48,7 @@ void scam::applyLoad(ScamValue args,
         return;
     }
 
-    string filename = writeValue(parser->get());
+    string filename = asString(parser->get());
     if ( engine->isLoaded(filename) ) {
         ScamValue err =
             makeErrorExtended("file \"", filename, "\" already loaded");
@@ -56,11 +57,11 @@ void scam::applyLoad(ScamValue args,
     }
 
     ifstream source;
-    if ( ! open_file(source, filename, cont) ) {
+    if ( ! openFile(source, filename, cont) ) {
         return;
     }
 
-    string data = get_data(source);
+    string data = getData(source);
     ReadEvalString helper(engine, data);
     ScamValue last = helper.run();
 
@@ -71,32 +72,32 @@ void scam::applyLoad(ScamValue args,
 namespace
 {
     bool
-    open_file(ifstream & source, string const & filename, Continuation * cont)
+    openFile(ifstream & source, string const & filename, Continuation * cont)
     {
         if ( '/' == filename.at(0) ) {
-            if ( file_exists(filename) ) {
+            if ( fileExists(filename) ) {
                 source.open(filename);
                 return true;
             }
         }
         else {
-            ScamValue path = get_path();
+            ScamValue path = getPath();
 
             size_t n = length(path);
             for ( size_t i = 0 ; i < n ; ++i ) {
-                string fullpath = make_path(writeValue(nthcar(path, i)), filename);
-                if ( file_exists(fullpath) ) {
+                string fullpath = makePath(asString(nthcar(path, i)), filename);
+                if ( fileExists(fullpath) ) {
                     source.open(fullpath);
                     return true;
                 }
             }
         }
 
-        file_not_found(filename, cont);
+        fileNotFound(filename, cont);
         return false;
     }
 
-    string get_data(ifstream & source)
+    string getData(ifstream & source)
     {
         char buf[1024];
         stringstream text;
@@ -110,7 +111,7 @@ namespace
         return text.str();
     }
 
-    bool file_exists(string fullpath)
+    bool fileExists(string fullpath)
     {
         ifstream x;
         x.open(fullpath);
@@ -122,49 +123,49 @@ namespace
         return false;
     }
 
-    void file_not_found(string const & filename, Continuation * cont)
+    void fileNotFound(string const & filename, Continuation * cont)
     {
         ScamValue err = makeErrorExtended("Unable to open file ", filename);
         cont->run(err);
     }
 
-    ScamValue get_path()
+    ScamValue getPath()
     {
         ScamValue rv = makeNull();
 
         char const * path = getenv("SCAM_PATH");
         if ( ! path || ! *path ) {
-            rv = default_path();
+            rv = defaultPath();
         }
         else {
-            rv = convert_path(path);
+            rv = convertPath(path);
         }
         return rv;
     }
 
-    ScamValue default_path()
+    ScamValue defaultPath()
     {
-        return convert_path(".:..");
+        return convertPath(".:..");
     }
 
-    ScamValue convert_path(char const * path)
+    ScamValue convertPath(char const * path)
     {
         ExprVec dp;
 
         while ( *path ) {
-            string element = next_element(path);
+            string element = getNextElement(path);
             if ( ! element.empty() ) {
                 dp.push_back(makeString(element));
             }
         }
 
         if ( dp.empty() ) {
-            return default_path();
+            return defaultPath();
         }
         return makeVector(dp);
     }
 
-    string next_element(char const *& path)
+    string getNextElement(char const *& path)
     {
         stringstream s;
         while ( true ) {
@@ -176,7 +177,7 @@ namespace
         }
     }
 
-    string make_path(string dirname, string filename)
+    string makePath(string dirname, string filename)
     {
         stringstream s;
         s << dirname << "/" << filename;

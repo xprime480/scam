@@ -13,4 +13,4 @@ Match Dictionary
 
 [result]
 [keep 1]
-{ :name Mike :age 58 }
+{ :name "Mike" :age 58 }

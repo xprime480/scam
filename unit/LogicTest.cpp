@@ -203,7 +203,7 @@ TEST_F(LogicTest, InstantiateNothing)
 TEST_F(LogicTest, InstantiateNoKeywords)
 {
     ScamValue expr = parseAndEvaluate("(instantiate \"test\")");
-    expectString(expr, "test");
+    expectString(expr, "\"test\"");
 }
 
 TEST_F(LogicTest, InstantiateKeyword)

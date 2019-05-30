@@ -50,7 +50,7 @@ TEST_F(SystemTest, ErrorTestZero)
 TEST_F(SystemTest, ErrorTestOne)
 {
     ScamValue expr = parseAndEvaluate("(error \"bagels are not doughnuts\")");
-    expectError(expr, "bagels are not doughnuts");
+    expectError(expr, "\"bagels are not doughnuts\"");
 }
 
 TEST_F(SystemTest, ErrorTestThree)

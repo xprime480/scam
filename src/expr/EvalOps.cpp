@@ -56,8 +56,7 @@ void scam::eval(ScamValue value, Continuation * cont, Env * env)
 
     else {
         // default case
-        ScamData * hack = const_cast<ScamData *>(value);
-        cont->run(hack);
+        cont->run(value);
     }
 }
 

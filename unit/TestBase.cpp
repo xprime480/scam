@@ -10,8 +10,6 @@
 #include "input/StringTokenizer.hpp"
 #include "util/ReadEvalString.hpp"
 
-#include "util/DebugTrace.hpp"
-
 using namespace scam;
 using namespace std;
 

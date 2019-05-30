@@ -267,12 +267,13 @@ TEST_F(MemoryTest, TestScamReal)
 TEST_F(MemoryTest, TestString)
 {
     const string value { "my test string" };
+    const string repr { "\"my test string\"" };
 
     ScamValue cut1 = makeString(value);
     ScamValue cut2 = makeString(value);
 
-    expectString(cut1, value);
-    expectString(cut2, value);
+    expectString(cut1, repr);
+    expectString(cut2, repr);
 
     expectManaged(cut1, cut2);
 }

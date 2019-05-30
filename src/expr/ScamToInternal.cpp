@@ -21,6 +21,18 @@ char scam::asChar(ScamValue data)
     return CHARVAL(data);
 }
 
+std::string scam::asString(ScamValue data)
+{
+    if ( ! isString(data) ) {
+        stringstream s;
+        s << "Cannot convert <" << writeValue(data) << "> to string";
+        throw ScamException(s.str());
+    }
+
+    return STRVAL(data);
+}
+
+
 double scam::asDouble(ScamValue data)
 {
     if ( ! isReal(data) ) {

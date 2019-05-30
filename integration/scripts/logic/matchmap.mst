@@ -23,4 +23,4 @@ Match Mapping
 
 [result]
 [keep 1]
-{ :name Connor }
+{ :name "Connor" }

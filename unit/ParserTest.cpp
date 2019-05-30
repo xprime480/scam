@@ -93,12 +93,13 @@ TEST_F(ParserTest, CharacterTest)
 TEST_F(ParserTest, StringTest)
 {
     static const string msg{ "Holy Test Coverage, Batman!" };
+    static const string repr{ "\"Holy Test Coverage, Batman!\"" };
     vector<Token> tokens {
         Token(TokenType::TT_STRING, msg)
     };
 
     ScamValue expr = runTest(tokens);
-    expectString(expr, msg);
+    expectString(expr, repr);
 }
 
 TEST_F(ParserTest, SymbolTest)

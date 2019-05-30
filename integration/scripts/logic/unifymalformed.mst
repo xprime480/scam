@@ -14,5 +14,5 @@ Unify Malformed
 
 [result]
 [keep 2]
-(#f Infinite Loop resolving keyword :Y)
-(#f Infinite Loop resolving keyword :X)
+(#f "Infinite Loop resolving keyword :Y")
+(#f "Infinite Loop resolving keyword :X")

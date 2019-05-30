@@ -404,7 +404,7 @@ TEST_F(PreludeTest, CondNoClauses)
 TEST_F(PreludeTest, CondOneTrueClause)
 {
     ScamValue expr = parseAndEvaluateFile("scripts/cond/onetrue.scm");
-    expectString(expr, "One");
+    expectString(expr, "\"One\"");
 }
 
 TEST_F(PreludeTest, CondOneFalseClause)
@@ -416,13 +416,13 @@ TEST_F(PreludeTest, CondOneFalseClause)
 TEST_F(PreludeTest, CondManyClauses)
 {
     ScamValue expr = parseAndEvaluateFile("scripts/cond/many.scm");
-    expectString(expr, "Last");
+    expectString(expr, "\"Last\"");
 }
 
 TEST_F(PreludeTest, CondElse)
 {
     ScamValue expr = parseAndEvaluateFile("scripts/cond/else.scm");
-    expectString(expr, "Else Evaluated");
+    expectString(expr, "\"Else Evaluated\"");
 }
 
 TEST_F(PreludeTest, CondManyForms)

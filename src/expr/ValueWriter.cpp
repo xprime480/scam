@@ -69,10 +69,14 @@ string scam::writeValue(const ScamData * data)
 
         case ScamData::Error:
         case ScamData::Keyword:
-        case ScamData::String:
         case ScamData::Symbol:
             s << STRVAL(data);
             break;
+
+        case ScamData::String:
+            s << '"' << STRVAL(data) << '"';
+            break;
+	    
 
         case ScamData::Instance:
             s << "instance";

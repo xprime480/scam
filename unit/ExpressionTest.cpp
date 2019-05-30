@@ -113,12 +113,13 @@ TEST_F(ExpressionTest, CharacterTest)
 TEST_F(ExpressionTest, StringTest)
 {
     string const value { "Fnord!" };
+    string const repr { "\"Fnord!\"" };
 
     ScamValue expr = makeString(value);
-    expectString(expr, value);
+    expectString(expr, repr);
 
     ScamValue evaled = evaluate(expr);
-    expectString(evaled, value);
+    expectString(evaled, repr);
 }
 
 TEST_F(ExpressionTest, SymbolTest)
@@ -347,7 +348,7 @@ TEST_F(ExpressionTest, VectorEmpty)
 
 TEST_F(ExpressionTest, VectorNonEmpty)
 {
-    string const value { "#(1 2 3)" };
+    string const value { "#(1 \"2\" 3)" };
     ExprVec vec;
     vec.push_back(makeInteger(1, true));
     vec.push_back(makeString("2"));
@@ -356,7 +357,7 @@ TEST_F(ExpressionTest, VectorNonEmpty)
     auto f = [this, &value] (ScamValue expr) {
                  expectVector(expr, value, 3u);
                  expectInteger(nthcar(expr, 0), 1, "1", true);
-                 expectString(nthcar(expr, 1), "2");
+                 expectString(nthcar(expr, 1), "\"2\"");
                  expectInteger(nthcar(expr, 2), 3, "3", true);
                  expectError(nthcar(expr, 3));
              };
@@ -412,7 +413,7 @@ TEST_F(ExpressionTest, DictNewSingleton)
     vec.push_back(makeString("one"));
 
     ScamValue expr = makeDict(vec);
-    expectDict(expr, 1u, "{ 1 one }");
+    expectDict(expr, 1u, "{ 1 \"one\" }");
 }
 
 TEST_F(ExpressionTest, DictNewSingletonDupKeys)
@@ -424,7 +425,7 @@ TEST_F(ExpressionTest, DictNewSingletonDupKeys)
     vec.push_back(makeString("ein"));
 
     ScamValue expr = makeDict(vec);
-    expectDict(expr, 1u, "{ 1 ein }");
+    expectDict(expr, 1u, "{ 1 \"ein\" }");
 }
 
 TEST_F(ExpressionTest, SpecialNumericNaN)
