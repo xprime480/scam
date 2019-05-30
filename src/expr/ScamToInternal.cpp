@@ -88,3 +88,15 @@ int scam::asInteger(ScamValue data)
 
     return INTVAL(data);
 }
+
+ScamPort * scam::asPort(ScamValue data)
+{
+    if ( ! isPort(data) ) {
+        stringstream s;
+        s << "Cannot convert <" << writeValue(data) << "> to port";
+        throw ScamException(s.str());
+    }
+
+    return PORT(data);
+}
+

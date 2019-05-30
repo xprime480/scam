@@ -1,12 +1,13 @@
 
-* Eventually this will be a Scheme interpreter fully compliant with R7RS
+* Eventually this will be a Scheme interpreter fully compliant
+  with R7RS
 
 * Remove unneeded classes.
 
 * Make ArgParser classes return something other than nullptr for failed
       parses.
   ** partially done -- still needs to be done when the return value
-     is either a parser or a subtype of ScamExpr.
+     is a parser.
 
 * Finish with the merge of branch arg-parse into arg-parse-2
   ** Then implement define-syntax
@@ -23,12 +24,12 @@
 * The various WorkerData structures are probably an anti-pattern.
   Look at removing them.
 
-* I think Undefine will be incorrect in the event of backtracking.  Should
-  the form be redefined when backtracking?
+* I think Undefine will be incorrect in the event of backtracking.
+  Should the form be redefined when backtracking?
 
 * Validate that arguments to ScamClass::apply should not be evaluated
-  twice.  The current code seems to mapEval once in the class and once in
-  the instance.
+  twice.  The current code seems to mapEval once in the class and once
+  in the instance.
 
 * Can validateClosureArgs be refactored or eliminated somehow?
 

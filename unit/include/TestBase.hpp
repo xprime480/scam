@@ -114,6 +114,10 @@ namespace scam
         void expectInstance(ScamValue expr);
 
         void expectDict(ScamValue expr, int count, std::string const & repr);
+
+        void expectPort(ScamValue expr,
+                        const std::string & repr,
+                        const std::string & contents);
     };
 }
 

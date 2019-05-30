@@ -4,6 +4,7 @@
 #include "util/ManagedObject.hpp"
 
 #include "ScamFwd.hpp"
+#include "port/ScamPort.hpp"
 
 #include <functional>
 #include <string>
@@ -15,11 +16,17 @@ namespace scam
     class Continuation;
     class Env;
     class LambdaParser;
+    class ScamPort;
 
     using SfFunction =
-        std::function<void(ScamValue, Continuation *, Env *, ScamEngine *)>;
+        std::function<void(ScamValue,
+                           Continuation *,
+                           Env *,
+                           ScamEngine *)>;
     using PrimFunction =
-        std::function<void(ScamValue, Continuation *, ScamEngine *)>;
+        std::function<void(ScamValue,
+                           Continuation *,
+                           ScamEngine *)>;
 
     struct ScamData : public ManagedObject
     {
@@ -32,7 +39,9 @@ namespace scam
         ScamData(ScamData &&) = delete;
         ScamData operator=(ScamData &&) = delete;
 
-        static ScamData * makeInstance(unsigned long type, bool managed = true);
+        static ScamData * makeInstance(unsigned long type,
+                                       bool managed = true);
+
         void mark() const override final;
 
         void setMeta(std::string const & key, ScamValue value) const;
@@ -92,6 +101,8 @@ namespace scam
         constexpr static unsigned long SpecialForm { 1 << 24 };
 
         constexpr static unsigned long Applicable = Dict | Procedure | Primitive | SpecialForm | Cont;
+
+        constexpr static unsigned long Port    { 1 << 25 };
 
         /**
          * member data
@@ -180,6 +191,8 @@ namespace scam
                 ScamEngine   * engine;
             } primitiveData;
 
+            ScamPort * portData;
+
         } value;
 
         mutable Env * metadata;
@@ -243,5 +256,7 @@ namespace scam
 #define PRIMFUNCP(data) ((data)->value.primitiveData.func)
 #define PRIMFUNC(data) (*PRIMFUNCP(data))
 #define PRIMENGINE(data) ((data)->value.primitiveData.engine)
+
+#define PORT(data) ((data)->value.portData)
 
 #endif

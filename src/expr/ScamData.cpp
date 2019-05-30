@@ -48,6 +48,10 @@ ScamData::ScamData(unsigned long type, bool managed)
         PRIMFUNCP(this) = new PrimFunction;
         break;
 
+    case ScamData::Port:
+        PORT(this) = nullptr;
+        break;
+
     default:
         break;
     }
@@ -65,7 +69,6 @@ ScamData::~ScamData()
 
     case ScamData::ByteVector:
         delete BYTEVECTORP(this);
-
         break;
 
     case ScamData::Dict:
@@ -85,6 +88,10 @@ ScamData::~ScamData()
     case ScamData::Primitive:
         delete PRIMNAMEP(this);
         delete PRIMFUNCP(this);
+        break;
+
+    case ScamData::Port:
+        delete PORT(this);
         break;
 
     default:

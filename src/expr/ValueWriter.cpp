@@ -15,22 +15,20 @@ using namespace std;
 
 namespace
 {
-    extern void writeByteVector(std::stringstream & s, const ScamData * data);
-    extern void writeClosure(std::stringstream & s, const ScamData * data);
-    extern void writeCons(std::stringstream & s, const ScamData * data);
-    extern void writeDict(std::stringstream & s, const ScamData * data);
-    extern void writeNumeric(std::stringstream & s, const ScamData * data);
-    extern void writeVector(std::stringstream & s, const ScamData * data);
-
-    extern void writeType(std::stringstream & s, const ScamData * data);
+    extern void writeByteVector(std::stringstream & s, ScamValue data);
+    extern void writeClosure(std::stringstream & s, ScamValue data);
+    extern void writeCons(std::stringstream & s, ScamValue data);
+    extern void writeDict(std::stringstream & s, ScamValue data);
+    extern void writeNumeric(std::stringstream & s, ScamValue data);
+    extern void writeVector(std::stringstream & s, ScamValue data);
+    extern void writeType(std::stringstream & s, ScamValue data);
 }
 
-string scam::writeValue(const ScamData * data)
+string scam::writeValue(ScamValue data)
 {
     stringstream s;
 
-    ScamValue hack = const_cast<ScamValue>(data);
-    if ( isNumeric(hack) ) {
+    if ( isNumeric(data) ) {
         writeNumeric(s, data);
     }
     else {
@@ -76,7 +74,7 @@ string scam::writeValue(const ScamData * data)
         case ScamData::String:
             s << '"' << STRVAL(data) << '"';
             break;
-	    
+
 
         case ScamData::Instance:
             s << "instance";
@@ -102,6 +100,10 @@ string scam::writeValue(const ScamData * data)
             s << "Primitive " << STRVAL(data);
             break;
 
+        case ScamData::Port:
+            s << PORT(data)->describe();
+            break;
+
         default:
             s << "don't know how to represent this object, type = "
               << data->type;
@@ -113,7 +115,7 @@ string scam::writeValue(const ScamData * data)
     return rv;
 }
 
-string scam::debugWriteValue(const ScamData * data)
+string scam::debugWriteValue(ScamValue data)
 {
     stringstream s;
 
@@ -128,7 +130,7 @@ string scam::debugWriteValue(const ScamData * data)
 
 namespace
 {
-    void writeByteVector(stringstream & s, const ScamData * data)
+    void writeByteVector(stringstream & s, ScamValue data)
     {
         string sep { "" };
 
@@ -140,7 +142,7 @@ namespace
         s << ")";
     }
 
-    void writeClosure(stringstream & s, const ScamData * data)
+    void writeClosure(stringstream & s, ScamValue data)
     {
         s << "(";
 
@@ -164,7 +166,7 @@ namespace
         s << ")";
     }
 
-    void writeCons(stringstream & s, const ScamData * data)
+    void writeCons(stringstream & s, ScamValue data)
     {
         s << "(";
         s << writeValue(CAR(data));
@@ -182,7 +184,7 @@ namespace
         s << ")";
     }
 
-    void writeDict(stringstream & s, const ScamData * data)
+    void writeDict(stringstream & s, ScamValue data)
     {
         s << "{";
 
@@ -198,7 +200,7 @@ namespace
         s << "}";
     }
 
-    void writeNumeric(stringstream & s, const ScamData * data)
+    void writeNumeric(stringstream & s, ScamValue data)
     {
         ScamValue hack = const_cast<ScamValue>(data);
         if ( isNaN(hack) ) {
@@ -258,7 +260,7 @@ namespace
         }
     }
 
-    void writeVector(stringstream & s, const ScamData * data)
+    void writeVector(stringstream & s, ScamValue data)
     {
         string sep { "" };
 
@@ -270,36 +272,35 @@ namespace
         s << ")";
     }
 
-    void writeType(std::stringstream & s, const ScamData * data)
+    void writeType(std::stringstream & s, ScamValue data)
     {
-        ScamValue hack = const_cast<ScamValue>(data);
-        if ( isNumeric(hack) ) {
-            if ( isExact(hack) ) {
+        if ( isNumeric(data) ) {
+            if ( isExact(data) ) {
                 s << "exact ";
             }
             else {
                 s << "inexact ";
             }
 
-            if ( isNaN(hack) ) {
+            if ( isNaN(data) ) {
                 s << "NaN";
             }
-            else if ( isNegInf(hack) ) {
+            else if ( isNegInf(data) ) {
                 s << "-inf";
             }
-            else if ( isPosInf(hack) ) {
+            else if ( isPosInf(data) ) {
                 s << "+inf";
             }
-            else if ( isInteger(hack) ) {
+            else if ( isInteger(data) ) {
                 s << "integer";
             }
-            else if ( isRational(hack) ) {
+            else if ( isRational(data) ) {
                 s << "rational";
             }
-            else if ( isReal(hack) ) {
+            else if ( isReal(data) ) {
                 s << "real";
             }
-            else if ( isComplex(hack) ) {
+            else if ( isComplex(data) ) {
                 s << "complex";
             }
             else {
@@ -378,6 +379,10 @@ namespace
 
             case ScamData::Primitive:
                 s << "Primitive ";
+                break;
+
+            case ScamData::Port:
+                s << "Port ";
                 break;
 
             default:

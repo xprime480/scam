@@ -38,7 +38,9 @@ namespace
     static const unsigned long SELECT_INSTANCE   { 1 << 20 };
     static const unsigned long SELECT_KEYWORD    { 1 << 21 };
     static const unsigned long SELECT_DICT       { 1 << 22 };
-    static const unsigned long SELECT_MANAGED    { 1 << 23 };
+    static const unsigned long SELECT_PORT       { 1 << 23 };
+
+    static const unsigned long SELECT_MANAGED    { 1 << 30 };
 
     static const unsigned long ALL_COMPLEX    = SELECT_NUMERIC | SELECT_COMPLEX | SELECT_MANAGED;
     static const unsigned long ALL_REAL       = ALL_COMPLEX | SELECT_REAL | SELECT_MANAGED;
@@ -179,6 +181,9 @@ string decodePredicate(unsigned exp, unsigned act)
         DECODER(CLASS);
         DECODER(INSTANCE);
 
+        DECODER(DICT);
+        DECODER(PORT);
+
         DECODER(MANAGED);
 
 #undef DECODER
@@ -221,6 +226,7 @@ void TestBase::checkPredicates(ScamValue expr, unsigned exp)
     act |= (isInstance(expr) ? SELECT_INSTANCE : 0);
 
     act |= (isDict(expr) ? SELECT_DICT : 0);
+    act |= (isPort(expr) ? SELECT_PORT : 0);
 
     act |= (expr->isManaged() ? SELECT_MANAGED : 0);
 
@@ -496,6 +502,21 @@ void TestBase::expectDict(ScamValue expr, int count, string const & repr)
     assertType(expr, "dictionary", isDict);
     checkPredicates(expr, SELECT_TRUTH | ALL_DICT);
     EXPECT_EQ(repr, writeValue(expr));
-    ScamValue hack = const_cast<ScamValue>(expr);
-    EXPECT_EQ(count, length(hack));
+    EXPECT_EQ(count, length(expr));
+}
+
+void TestBase::expectPort(ScamValue expr,
+                          const std::string & repr,
+                          const std::string & contents)
+{
+    assertType(expr, "port", isPort);
+    checkPredicates(expr, SELECT_TRUTH | SELECT_PORT | SELECT_MANAGED);
+
+    EXPECT_EQ(repr, writeValue(expr));
+
+    ScamPort * port = asPort(expr);
+    ASSERT_NE(nullptr, port);
+
+    ScamValue test = port->getContents();
+    expectString(test, contents);
 }

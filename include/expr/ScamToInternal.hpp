@@ -7,7 +7,7 @@
 
 namespace scam
 {
-    class ScamData;
+    class ScamPort;
 
     struct RationalPair
     {
@@ -20,6 +20,7 @@ namespace scam
     extern double asDouble(ScamValue data);
     extern RationalPair asRational(ScamValue data);
     extern int asInteger(ScamValue data);
+    extern ScamPort * asPort(ScamValue data);
 }
 
 

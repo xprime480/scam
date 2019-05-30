@@ -55,7 +55,7 @@ void scam::applyLoad(ScamValue args,
         cont->run(err);
         return;
     }
-
+    
     ifstream source;
     if ( ! openFile(source, filename, cont) ) {
         return;

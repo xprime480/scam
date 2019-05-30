@@ -332,9 +332,9 @@ ScamValue scam::makeSpecialForm(string const & name,
 }
 
 ScamValue scam::makePrimitive(string const & name,
-			      PrimFunction func,
-			      ScamEngine * engine,
-			      bool managed)
+                              PrimFunction func,
+                              ScamEngine * engine,
+                              bool managed)
 {
     static constexpr auto myType = ScamData::Primitive;
     ScamValue v = standardMemoryManager.make<ScamData>(myType, managed);
@@ -345,3 +345,10 @@ ScamValue scam::makePrimitive(string const & name,
     return v;
 }
 
+ScamValue scam::makePort(ScamPort * port)
+{
+    static constexpr auto myType = ScamData::Port;
+    ScamValue v = standardMemoryManager.make<ScamData>(myType);
+    PORT(v) = port;
+    return v;
+}

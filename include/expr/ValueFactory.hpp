@@ -95,11 +95,7 @@ namespace scam
                                    ScamEngine * engine = nullptr,
                                    bool managed = true);
 
-    template <typename T, typename... Args>
-    T * makeForm(Args... args)
-    {
-        return standardMemoryManager.make<T>(args...);
-    }
+    extern ScamValue makePort(ScamPort * port);
 }
 
 #endif
