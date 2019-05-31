@@ -83,8 +83,8 @@ TEST_F(PortTest, WriteFile)
 
 TEST_F(PortTest, FilePortAsValue)
 {
-    ScamValue expr = makePort(new FilePort("/tmp/test.txt", WO));
-    expectPort(expr, "file-port</tmp/test.txt>", "\"?\"");
+    ScamValue expr = makePort(new FilePort("/tmp/test2.txt", WO));
+    expectPort(expr, "file-port</tmp/test2.txt>", "\"?\"");
 }
 
 TEST_F(PortTest, ReadWriteStringPortInitiallyEmpty)

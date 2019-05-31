@@ -5,6 +5,8 @@
 
 namespace scam
 {
+    class CharStream;
+    
     class NumericConverter
     {
     private:
@@ -16,16 +18,14 @@ namespace scam
             };
 
     public:
-        explicit NumericConverter(const char * pos);
+        explicit NumericConverter(CharStream & stream);
 
         static ScamValue simplify(ScamValue value);
 
         ScamValue getValue() const;
-        const char * getPos() const;
 
     private:
-        const char * pos;
-
+        CharStream & stream;
         ScamValue value;
 
         int base;

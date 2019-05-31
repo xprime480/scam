@@ -10,7 +10,6 @@ namespace scam
     class ScamData;
 
     using ScamValue = ScamData *;
-
 }
 
 #endif

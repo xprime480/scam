@@ -6,6 +6,7 @@
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueFactory.hpp"
 #include "input/StringTokenizer.hpp"
+#include "input/CharStream.hpp"
 
 #include <cmath>
 #include <cstring>
@@ -13,8 +14,8 @@
 using namespace scam;
 using namespace std;
 
-NumericConverter::NumericConverter(const char * pos)
-    : pos(pos)
+NumericConverter::NumericConverter(CharStream & stream)
+    : stream(stream)
     , value(makeNull())
     , base(10)
     , exactness(ExactnessType::ET_CONTEXT)
@@ -78,17 +79,12 @@ ScamValue NumericConverter::getValue() const
     return value;
 }
 
-const char * NumericConverter::getPos() const
-{
-    return pos;
-}
-
 void NumericConverter::scanNum()
 {
     scanPrefix();
     scanComplex();
 
-    if ( ! StringTokenizer::isDelimiter(*pos) ) {
+    if ( ! isDelimiter(stream.peek()) ) {
         value = makeNull();
     }
 }
@@ -96,7 +92,7 @@ void NumericConverter::scanNum()
 void NumericConverter::scanComplex()
 {
     ScamValue rv = makeNull();
-    const char * original = pos;
+    PositionType original = stream.getPos();
 
     ScamValue real = scanInfNan();
     ScamValue imag = makeNull();
@@ -112,8 +108,8 @@ void NumericConverter::scanComplex()
             if ( isNull(imag) ) {
                 imag = makeIntegerWithExactness(1);
             }
-            if ( 'i' == tolower(*pos) ) {
-                ++pos;
+            if ( 'i' == tolower(stream.peek()) ) {
+                stream.advance();
                 imag = includeSign(sign, imag);
                 rv = makeComplex(real, imag);
             }
@@ -121,8 +117,8 @@ void NumericConverter::scanComplex()
     }
     else {                      // infnan
         imag = scanReal();
-        if ( 'i' == tolower(*pos) ) {
-            ++pos;
+        if ( 'i' == tolower(stream.peek()) ) {
+            stream.advance();
             if ( isNull(imag) ) {
                 imag = real;
                 real = makeIntegerWithExactness(0);
@@ -136,13 +132,13 @@ void NumericConverter::scanComplex()
 
     if ( isNull(rv) ) { // not infnan and not pure imaginary
         // try again from the start for real [+/- imag]
-        pos = original;
+        stream.setPos(original);
         real = scanReal();
         if ( isNull(real) ) {
             rv = real;          // not any kind of number
         }
         else {
-            original = pos;     // save in case rest does not compute
+            original = stream.getPos(); // save in case rest does not compute
             int sign = 1;
             imag = scanInfNan();
             if ( isNull(imag) ) {
@@ -158,12 +154,12 @@ void NumericConverter::scanComplex()
                 }
             }
 
-            if ( 'i' == tolower(*pos) ) {
-                ++pos;
+            if ( 'i' == tolower(stream.peek()) ) {
+                stream.advance();
                 imag = includeSign(sign, imag);
             }
             else {
-                pos = original;
+                stream.setPos(original);
                 rv = real;
             }
 
@@ -174,11 +170,12 @@ void NumericConverter::scanComplex()
     }
 
     if ( isReal(rv) ) {
-        if ( '@' == *pos ) {
-            ++pos;
+        if ( '@' == stream.peek() ) {
+            PositionType tmp = stream.getPos();
+            stream.advance();
             imag = scanReal();
             if ( isNull(imag) ) {
-                --pos;
+                stream.setPos(tmp);
             }
             else {
                 rv = makeComplexPolar(rv, imag);
@@ -196,13 +193,13 @@ ScamValue NumericConverter::scanReal()
         return rv;
     }
 
-    const char * original = pos;
+    PositionType original = stream.getPos();
 
     const int sign = scanSign();
     rv = scanUReal();
 
     if ( isNull(rv) ) {
-        pos = original;
+        stream.setPos(original);
         return rv;
     }
 
@@ -212,43 +209,43 @@ ScamValue NumericConverter::scanReal()
 
 ScamValue NumericConverter::scanUReal()
 {
-    const char * original = pos;
+    PositionType original = stream.getPos();
 
     ScamValue rv10 { makeNull() };
-    const char * pos10 = pos;
+    PositionType pos10 = stream.getPos();
     if ( 10 == base ) {
         rv10 = scanDecimal();
         if ( ! isNull(rv10) ) {
-            pos10 = pos;
+            pos10 = stream.getPos();
         }
     }
 
-    pos = original;
+    stream.setPos(original);
 
     ScamValue rvN = scanUInteger();
     if ( isNull(rvN) ) {
-        pos = pos10;
+        stream.setPos(pos10);
         return rv10;
     }
 
-    const char * posN = pos;
-    original = pos;
-    if ( '/' != *pos ) {
+    PositionType posN = stream.getPos();
+    original = stream.getPos();
+    if ( '/' != stream.peek() ) {
         if ( posN > pos10 ) {
-            pos = posN;
+            stream.setPos(posN);
             return rvN;
         }
         else {
-            pos = pos10;
+            stream.setPos(pos10);
             return rv10;
         }
     }
 
-    ++pos;
+    stream.advance();
 
     ScamValue rvD = scanUInteger();
     if ( isNull(rvD) ) {
-        pos = original;
+        stream.setPos(original);
         return ( posN > pos10 ) ? rvN : rv10;
     }
 
@@ -258,20 +255,20 @@ ScamValue NumericConverter::scanUReal()
 
 ScamValue NumericConverter::scanDecimal()
 {
-    const char * original = pos;
+    PositionType original = stream.getPos();
     ScamValue rv { makeNull() };
 
     if ( scanRadixPoint() ) {
         rv = makeFraction(1);
         if ( isNull(rv) ) {
-            pos = original;
+            stream.setPos(original);
             return rv;
         }
     }
     else {
         rv = scanUInteger();
         if ( isNull(rv) ) {
-            pos = original;
+            stream.setPos(original);
             return rv;
         }
 
@@ -299,24 +296,24 @@ ScamValue NumericConverter::scanDecimal()
 
 ScamValue NumericConverter::scanUInteger()
 {
-    const char * original = pos;
+    PositionType original = stream.getPos();
 
     size_t count { 0 };
     int value { 0 };
 
-    while ( *pos ) {
-        int digit = convertDigit(*pos);
+    while ( char c = stream.peek() ) {
+        int digit = convertDigit(c);
         if ( -1 == digit ) {
             break;
         }
 
-        ++pos;
+        stream.advance();
         ++count;
         value = value * base + digit;
     }
 
     if ( 0 == count ) {
-        pos = original;
+        stream.setPos(original);
         return makeNull();
     }
 
@@ -325,26 +322,29 @@ ScamValue NumericConverter::scanUInteger()
 
 void NumericConverter::scanPrefix()
 {
-    while ( '#' == *pos ) {
-        switch ( pos[1] ) {
+    while ( '#' == stream.peek() ) {
+        PositionType original = stream.getPos();
+        stream.advance();
+        switch ( char c = stream.peek() ) {
         case 'e': case 'E':
         case 'i': case 'I':
-            exactnessSeen(pos[1]);
+            exactnessSeen(c);
             break;
 
         case 'b': case 'B':
         case 'o': case 'O':
         case 'd': case 'D':
         case 'x': case 'X':
-            baseSeen(pos[1]);
+            baseSeen(c);
             break;
 
         default:
+            stream.setPos(original);
             return;
             break;
         }
 
-        pos += 2;
+        stream.advance();
     }
 }
 
@@ -352,30 +352,31 @@ ScamValue NumericConverter::scanInfNan()
 {
     ScamValue rv { makeNull() };
 
-    if ( 0 == strncmp(pos, "+nan.0", 6) || 0 == strncmp(pos, "-nan.0", 6) ) {
+    string peek6 = stream.strPeek(6);
+    if ( peek6 == "+nan.0" || peek6 == "-nan.0" ) {
         rv = makeNaN();
     }
-    else if ( 0 == strncmp(pos, "+inf.0", 6) ) {
+    else if ( peek6 == "+inf.0" ) {
         rv = makePosInf();
     }
-    else if ( 0 == strncmp(pos, "-inf.0", 6) ) {
+    else if ( peek6 == "-inf.0" ) {
         rv = makeNegInf();
     }
     else {
         return rv;
     }
 
-    pos += 6;
+    stream.advance(6);
     return rv;
 }
 
 ScamValue NumericConverter::scanSuffix()
 {
-    const char * original = pos;
+    PositionType original = stream.getPos();
     ScamValue rv { makeNull() };
 
-    if ( 'e' == tolower(*pos) ) {
-        ++pos;
+    if ( 'e' == tolower(stream.peek()) ) {
+        stream.advance();
         int sign = scanSign();
         ScamValue value = scanUInteger();
         if ( isInteger(value) ) {
@@ -385,7 +386,7 @@ ScamValue NumericConverter::scanSuffix()
     }
 
     if ( isNull(rv) ) {
-        pos = original;
+        stream.setPos(original);
     }
 
     return rv;
@@ -393,12 +394,13 @@ ScamValue NumericConverter::scanSuffix()
 
 int NumericConverter::scanSign(bool optional)
 {
-    if ( '+' == *pos ) {
-        ++pos;
+    char c = stream.peek();
+    if ( '+' == c ) {
+        stream.advance();
         return 1;
     }
-    else if ( '-' == *pos ) {
-        ++pos;
+    else if ( '-' == c ) {
+        stream.advance();
         return -1;
     }
     else {
@@ -443,12 +445,13 @@ void NumericConverter::baseSeen(char x)
 
 ScamValue NumericConverter::makeFraction(unsigned minCount)
 {
-    const char * original = pos;
+    PositionType original = stream.getPos();
     ScamValue rv = scanUInteger();
 
-    unsigned count = pos - original;
+    const string text = stream.strBetween(original);
+    unsigned count = text.size();
     if ( count < minCount ) {
-        pos = original;
+        stream.setPos(original);
         return makeNull();
     }
 
@@ -465,15 +468,14 @@ ScamValue NumericConverter::makeFraction(unsigned minCount)
         return makeRational(value, multiplier, makeExact);
     }
     else {
-
-        pos = original;
+        stream.setPos(original);
         double divisor = 1.0;
         double value = 0.0;
 
-        while ( isdigit(*pos) ) {
+        while ( isdigit(stream.peek() ) ) {
             divisor /= base;
-            value += divisor * convertDigit(*pos);
-            ++pos;
+            value += divisor * convertDigit(stream.peek());
+            stream.advance();
         }
 
         return makeRealWithExactness(value);
@@ -482,8 +484,8 @@ ScamValue NumericConverter::makeFraction(unsigned minCount)
 
 bool NumericConverter::scanRadixPoint()
 {
-    if ( '.' == *pos ) {
-        ++pos;
+    if ( '.' == stream.peek() ) {
+        stream.advance();
         return true;
     }
 

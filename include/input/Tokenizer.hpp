@@ -11,6 +11,8 @@ namespace scam
         virtual ~Tokenizer() {}
         virtual Token next() = 0;
     };
+
+    extern bool isDelimiter(char c);
 }
 
 #endif

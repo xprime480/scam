@@ -3,9 +3,11 @@
 
 #include "input/Tokenizer.hpp"
 
-#include <string>
-
+#include "input/CharStreamTokenizer.hpp"
+#include "input/StringCharStream.hpp"
 #include "input/Token.hpp"
+
+#include <string>
 
 namespace scam
 {
@@ -13,31 +15,12 @@ namespace scam
     {
     public:
         StringTokenizer(std::string const & input);
-        ~StringTokenizer();
 
         Token next() override;
 
-        static bool isDelimiter(char c);
-	
     private:
-        std::string const input;
-        char const * pos;
-
-        Token scanAtmosphere();
-        bool skipWhitespace();
-        bool skipSimpleComments();
-        Token skipNestedComments();
-
-        bool isIdentifierCharacter(char c) const;
-
-        Token scanSpecial();
-        Token scanBoolean();
-        Token scanCharacter();
-        Token scanString();
-        Token scanNumeric();
-        Token scanKeyword();
-        Token scanSymbol();
-        Token scanDelimitedSymbol();
+        StringCharStream stream;
+        CharStreamTokenizer tokenizer;
     };
 }
 

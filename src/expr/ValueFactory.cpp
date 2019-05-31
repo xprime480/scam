@@ -7,6 +7,7 @@
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueWriter.hpp"
 #include "input/FunctionDefParser.hpp"
+#include "input/StringCharStream.hpp"
 #include "util/MemoryManager.hpp"
 #include "util/NumericConverter.hpp"
 #include "util/NumericUtils.hpp"
@@ -96,7 +97,8 @@ ScamValue scam::makeKeyword(string const & value, bool managed)
 
 ScamValue scam::makeNumeric(string const & value)
 {
-    NumericConverter nc(value.c_str());
+    StringCharStream stream(value);
+    NumericConverter nc(stream);
     return nc.getValue();
 }
 
