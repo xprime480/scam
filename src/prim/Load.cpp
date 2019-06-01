@@ -2,17 +2,18 @@
 
 #include "Continuation.hpp"
 #include "ScamEngine.hpp"
-#include "expr/ScamData.hpp"
 #include "expr/ScamToInternal.hpp"
 #include "expr/SequenceOps.hpp"
 #include "expr/ValueFactory.hpp"
+#include "input/PortCharStream.hpp"
 #include "input/SingletonParser.hpp"
 #include "input/TypeParsers.hpp"
+#include "port/FilePort.hpp"
 #include "util/ArgListHelper.hpp"
-#include "util/ReadEvalString.hpp"
+#include "util/ReadEvalStream.hpp"
+#include "util/MemoryManager.hpp"
 
 #include <string>
-#include <sstream>
 #include <fstream>
 
 using namespace scam;
@@ -20,11 +21,7 @@ using namespace std;
 
 namespace
 {
-    extern bool openFile(ifstream & source,
-                          string const & filename,
-                          Continuation * cont);
-
-    extern string getData(ifstream & source);
+    extern string findFileOnPath(string const & filename);
     extern bool fileExists(string fullpath);
     extern void fileNotFound(string const & filename, Continuation * cont);
     extern ScamValue getPath();
@@ -55,14 +52,18 @@ void scam::applyLoad(ScamValue args,
         cont->run(err);
         return;
     }
-    
+
     ifstream source;
-    if ( ! openFile(source, filename, cont) ) {
+    string fullpath = findFileOnPath(filename);
+    if ( fullpath.empty() ) {
+        fileNotFound(filename, cont);
         return;
     }
 
-    string data = getData(source);
-    ReadEvalString helper(engine, data);
+    FilePort * port = new FilePort(fullpath.c_str(), ScamPort::Readable);
+    ScamValue value = makePort(port);
+    PortCharStream stream(value);
+    ReadEvalStream helper(engine, stream);
     ScamValue last = helper.run();
 
     engine->setLoaded(filename);
@@ -71,13 +72,11 @@ void scam::applyLoad(ScamValue args,
 
 namespace
 {
-    bool
-    openFile(ifstream & source, string const & filename, Continuation * cont)
+    string findFileOnPath(const string & filename)
     {
         if ( '/' == filename.at(0) ) {
             if ( fileExists(filename) ) {
-                source.open(filename);
-                return true;
+                return filename;
             }
         }
         else {
@@ -87,28 +86,12 @@ namespace
             for ( size_t i = 0 ; i < n ; ++i ) {
                 string fullpath = makePath(asString(nthcar(path, i)), filename);
                 if ( fileExists(fullpath) ) {
-                    source.open(fullpath);
-                    return true;
+                    return fullpath;
                 }
             }
         }
 
-        fileNotFound(filename, cont);
-        return false;
-    }
-
-    string getData(ifstream & source)
-    {
-        char buf[1024];
-        stringstream text;
-
-        while ( source.good() && ! source.eof() ) {
-            source.getline(buf, sizeof ( buf ));
-            text << buf << "\n";
-        }
-        source.close();
-
-        return text.str();
+        return "";
     }
 
     bool fileExists(string fullpath)
