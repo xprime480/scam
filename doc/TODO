@@ -34,3 +34,9 @@
 * Can validateClosureArgs be refactored or eliminated somehow?
 
 * "Parsers" should probably be renamed "Validators"
+
+* Think of a way to reduce the redundancy between Ports and CharStreams.
+  Maybe CharStreams can be eliminated.
+
+* Fix the build process -- some files are recompiled even when it is not
+  necessary to do so.

@@ -8,7 +8,7 @@
 #include "expr/TypePredicates.hpp"
 #include "input/ScamParser.hpp"
 #include "input/StringTokenizer.hpp"
-#include "util/ReadEvalString.hpp"
+#include "util/ReadEvalStream.hpp"
 
 using namespace scam;
 using namespace std;
@@ -92,7 +92,8 @@ ScamValue TestBase::apply(ScamValue expr, ScamValue args)
 ScamValue TestBase::parseAndEvaluate(string const & input)
 {
     try {
-        ReadEvalString helper(&engine, input);
+        StringCharStream stream(input);
+        ReadEvalStream helper(&engine, stream);
         ScamValue rv = helper.run();
         return rv;
     }
@@ -115,7 +116,8 @@ ScamValue TestBase::parseAndEvaluateFile(char const * filename)
 ScamValue TestBase::readString(char const * input)
 {
     try {
-        ReadEvalString helper(&engine, input);
+        StringCharStream stream(input);
+        ReadEvalStream   helper(&engine, stream);
         ScamValue rv = helper.read();
         return rv;
     }

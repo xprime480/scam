@@ -1,26 +1,22 @@
 #if ! defined(READEVALSTRING_HPP)
 #define READEVALSTRING_HPP 1
 
-#include "Extractor.hpp"
-#include "ScamEngine.hpp"
+#include "util/ReadEval.hpp"
+
 #include "input/StringTokenizer.hpp"
 
 #include <string>
-#include <vector>
 
 namespace scam
 {
-    class ReadEvalString
+    class ScamEngine;
+
+    class ReadEvalString : public ReadEval
     {
     public:
         ReadEvalString(ScamEngine * engine, std::string const & text);
-        ~ReadEvalString();
-
-        ScamValue run();
-        ScamValue read();
 
     private:
-        ScamEngine * engine;
         StringTokenizer tokenizer;
     };
 }
