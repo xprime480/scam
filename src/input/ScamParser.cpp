@@ -77,7 +77,7 @@ ScamValue ScamParser::tokenToExpr(Token const & token) const
         break;
 
     case TokenType::TT_CHARACTER:
-        rv = makeCharacter(token.getText());
+        rv = makeCharacter(token.getText().at(0));
         break;
 
     case TokenType::TT_STRING:

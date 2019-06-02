@@ -22,7 +22,7 @@ namespace scam
     extern ScamValue makeNull();
     extern ScamValue makeNil();
     extern ScamValue makeBoolean(bool value);
-    extern ScamValue makeCharacter(std::string const & value);
+    extern ScamValue makeCharacter(const char c);
     extern ScamValue makeString(std::string const & value);
 
     extern ScamValue makeError(char const * msg, bool managed = true);

@@ -1,0 +1,35 @@
+Test string equality with string=?.
+This operator is case sensitive
+
+;[skip] uncomment to skip this test
+
+[name]
+String equality
+
+[input]
+
+(define err :not-a-string)
+(define s1 "")
+(define s2 "boy")
+(define s3 "BoY")
+(define s4 "girl")
+
+(string=? s1 s2 err)
+(string=?)
+(string=? s1)
+(string=? s1 s2)
+(string=? s2 s2)
+(string=? s2 s4)
+(string=? s2 s3)                        ; strings are case sensitive
+(string=? s2 s2 s2 s2 s2)
+
+[result]
+[keep 8]
+string=?: excess arguments found: '(:not-a-string)'
+string=?: 0 values found, wanted at least 2 for key string=? input '()'
+string=?: 1 values found, wanted at least 2 for key string=? input '("")'
+#f
+#t
+#f
+#f
+#t

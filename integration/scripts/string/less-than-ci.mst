@@ -1,0 +1,38 @@
+Test string less than with string-ci<?
+This operator is not case sensitive
+
+;[skip] uncomment to skip this test
+
+[name]
+(CI) String Less Than
+
+[input]
+
+(define err :not-a-string)
+(define s1 "")
+(define s2 "boy")
+(define s3 "BoY")
+(define s4 "girl")
+(define s5 "GIRL")
+
+(string-ci<? s1 s2 err)
+(string-ci<?)
+(string-ci<? s1)
+(string-ci<? s1 s2)
+(string-ci<? s2 s2)
+(string-ci<? s2 s4)
+(string-ci<? s2 s3)
+(string-ci<? s3 s2)
+(string-ci<? s1 s2 s5)
+
+[result]
+[keep 9]
+string-ci<?: excess arguments found: '(:not-a-string)'
+string-ci<?: 0 values found, wanted at least 2 for key string-ci<? input '()'
+string-ci<?: 1 values found, wanted at least 2 for key string-ci<? input '("")'
+#t
+#f
+#t
+#f
+#f
+#t

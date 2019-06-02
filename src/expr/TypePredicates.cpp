@@ -9,6 +9,11 @@
 using namespace scam;
 using namespace std;
 
+bool scam::isImmutable(ScamValue data)
+{
+    return data->isImmutable();
+}
+
 bool scam::isNull(ScamValue data)
 {
     return data->type == ScamData::Null;

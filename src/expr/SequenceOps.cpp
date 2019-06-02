@@ -68,6 +68,9 @@ size_t scam::length(ScamValue value)
     else if ( isVector(value) ) {
         rv = VECTOR(value).size();
     }
+    else if ( isString(value) ) {
+	rv = STRVAL(value).size();
+    }
     else {
         stringstream s;
         s << "Cannot take the length of <" << writeValue(value) << ">";

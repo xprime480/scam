@@ -5,6 +5,8 @@
 
 namespace scam
 {
+    extern bool isImmutable(ScamValue data);
+
     extern bool isNull(ScamValue data);
     extern bool error(ScamValue data);
     extern bool truth(ScamValue data);

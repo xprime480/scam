@@ -5,6 +5,7 @@
 
 #include "ScamException.hpp"
 
+#include <exception>
 #include <iostream>
 #include <vector>
 
@@ -71,9 +72,15 @@ void ScamTest::run()
     catch ( ScamException e ) {
         actual = e.getMessage();
     }
+    catch ( exception & e ) {
+        actual = e.what();
+    }
+    catch ( ... ) {
+        actual = "Unknown Exception";
+    }
 
     if ( actual == expected ) {
-        dopass(SHOW_FAIL);
+        dopass(SHOW_FAIL | SHOW_PASS);
     }
     else {
         dofail(SHOW_FAIL, actual);

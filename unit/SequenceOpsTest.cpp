@@ -91,7 +91,7 @@ TEST_F(SequenceOpsTest, LengthDictionary)
 
 TEST_F(SequenceOpsTest, LengthNonSequence)
 {
-    ScamValue value = readString("\"This is a string\"");
+    ScamValue value = readString("symbols-have-no-length");
     EXPECT_THROW(length(value), ScamException);
 }
 

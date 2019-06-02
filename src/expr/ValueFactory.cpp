@@ -48,11 +48,11 @@ ScamValue scam::makeBoolean(bool value)
     return value ? yes : no;
 }
 
-ScamValue scam::makeCharacter(string const & value)
+ScamValue scam::makeCharacter(const char c)
 {
     static constexpr auto myType = ScamData::Character;
     ScamValue v = standardMemoryManager.make<ScamData>(myType);
-    CHARVAL(v) = 0 == value.size() ? '\0' : value[value.size() - 1];
+    CHARVAL(v) = c;
     return v;
 }
 
@@ -63,7 +63,6 @@ ScamValue scam::makeString(string const & value)
     STRVAL(v) = value;
     return v;
 }
-
 
 ScamValue scam::makeError(const char * msg, bool managed)
 {

@@ -14,6 +14,7 @@ using namespace std;
 ScamData::ScamData(unsigned long type, bool managed)
     : ManagedObject(managed)
     , type(type)
+    , immutable(true)
     , metadata(nullptr)
 {
     switch ( type ) {
@@ -165,6 +166,20 @@ void ScamData::mark() const
     default:
         break;
     }
+}
+
+void ScamData::makeMutable()
+{
+    if ( ScamData::String == type ) {
+        immutable = false;
+    }
+    else {
+    }
+}
+
+bool ScamData::isImmutable() const
+{
+    return immutable;
 }
 
 void ScamData::setMeta(string const & key, ScamValue value) const

@@ -83,7 +83,7 @@ TEST_F(ParserTest, CharacterTest)
 {
     static const string msg{ "#\\Z" };
     vector<Token> tokens {
-        Token(TokenType::TT_CHARACTER, msg)
+        Token(TokenType::TT_CHARACTER, "Z")
     };
 
     ScamValue expr = runTest(tokens);

@@ -9,24 +9,40 @@ Change string case
 
 (load "lib/prelude.scm")
 
-(string-upcase "")
-(string-upcase "123")
-(string-upcase "aBcD")
-(string-downcase "")
-(string-downcase "123")
-(string-downcase "aBcD")
-(string-foldcase "")
-(string-foldcase "123")
-(string-foldcase "aBcD")
+(define err :not-a-string)
+(define empty "")
+(define num-string "123")
+(define aBcD "aBcD")
+
+(string-upcase err)
+(string-upcase empty)
+(string-upcase num-string)
+(string-upcase aBcD)
+
+(string-downcase err)
+(string-downcase empty)
+(string-downcase num-string)
+(string-downcase aBcD)
+
+(string-foldcase err)
+(string-foldcase empty)
+(string-foldcase num-string)
+(string-foldcase aBcD)
+
+aBcD                       ;; original is unchanged
 
 [result]
-[keep 9]
+[keep 13]
+string-upcase: expected string for parm 'arg', got ':not-a-string'
 ""
 "123"
 "ABCD"
+string-downcase: expected string for parm 'arg', got ':not-a-string'
 ""
 "123"
 "abcd"
+string-downcase: expected string for parm 'arg', got ':not-a-string'
 ""
 "123"
 "abcd"
+"aBcD"

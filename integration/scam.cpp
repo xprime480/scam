@@ -50,5 +50,7 @@ string call_scam(string const & input)
     ReadEvalString helper(&engine, input);
     helper.run();
 
-    return accumulator->getResult();
+    string rv = accumulator->getResult();
+    
+    return rv;
 }

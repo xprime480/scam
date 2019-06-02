@@ -31,3 +31,5 @@ clean :
 	-@rm -f *.o *.d testscam
 
 include $(DEP)
+
+.PHONY : current testscam test

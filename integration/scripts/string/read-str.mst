@@ -1,0 +1,31 @@
+Read operations
+
+;[skip] uncomment to skip this test
+
+[name]
+Read operations on strings
+
+[input]
+
+(define test "hello, world")
+
+(string-length :i-am-no-string)
+(string-length "")
+(string-length test)
+(string-ref "" 0)
+(string-ref test -1)
+(string-ref test 99)
+(string-ref test 0)
+(string-ref test 4)
+;;(string-ref test 6) ;; want a better representation of a space
+
+[result]
+[keep 8]
+string-length: expected string for parm 'string', got ':i-am-no-string'
+0
+12
+string-ref: expected index for parm 'k', got '0'
+string-ref: expected index for parm 'k', got '-1'
+string-ref: expected index for parm 'k', got '99'
+#\h
+#\o

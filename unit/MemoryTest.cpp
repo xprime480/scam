@@ -226,8 +226,8 @@ TEST_F(MemoryTest, TestCharacter)
     const char val { 'a' };
     const string repr { "#\\a" };
 
-    ScamValue cut1 = makeCharacter(repr);
-    ScamValue cut2 = makeCharacter(repr);
+    ScamValue cut1 = makeCharacter(val);
+    ScamValue cut2 = makeCharacter(val);
 
     expectChar(cut1, val, repr);
     expectChar(cut2, val, repr);

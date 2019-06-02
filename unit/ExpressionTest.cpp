@@ -103,7 +103,7 @@ TEST_F(ExpressionTest, CharacterTest)
     string const repr { "#\\Q" };
     char value { 'Q' };
 
-    ScamValue expr = makeCharacter(repr);
+    ScamValue expr = makeCharacter(value);
     expectChar(expr, value, repr);
 
     ScamValue evaled = evaluate(expr);

@@ -112,6 +112,21 @@ void ScamEngine::getStandardEnv()
     addPrimitive(env, "backtrack", applyBacktrack, this);
     addPrimitive(env, "trace", applyTrace, this);
 
+    addPrimitive(env, "make-string", applyMakeString, this);
+    addPrimitive(env, "string", applyString, this);
+    addPrimitive(env, "string-length", applyStringLength, this);
+    addPrimitive(env, "string-ref", applyStringRef, this);
+    addPrimitive(env, "string-set!", applyStringSetX, this);
+    addPrimitive(env, "string=?", applyStringEqP, this);
+    addPrimitive(env, "string-ci=?", applyStringCiEqP, this);
+    addPrimitive(env, "string<?", applyStringLtP, this);
+    addPrimitive(env, "string-ci<?", applyStringCiLtP, this);
+    addPrimitive(env, "string<=?", applyStringLeP, this);
+    addPrimitive(env, "string-ci<=?", applyStringCiLeP, this);
+    addPrimitive(env, "string>?", applyStringGtP, this);
+    addPrimitive(env, "string-ci>?", applyStringCiGtP, this);
+    addPrimitive(env, "string>=?", applyStringGeP, this);
+    addPrimitive(env, "string-ci>=?", applyStringCiGeP, this);
     addPrimitive(env, "string-upcase", applyStringUpcase, this);
     addPrimitive(env, "string-downcase", applyStringDowncase, this);
 }
