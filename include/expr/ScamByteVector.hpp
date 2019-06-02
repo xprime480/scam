@@ -1,1 +1,0 @@
-#error "ScamByteVector deprecated"
