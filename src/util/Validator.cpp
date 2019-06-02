@@ -53,33 +53,36 @@ ScamValue ValidatorResult::get(const std::string & key) const
     return rv;
 }
 
-ValidatorResult scam::validate(const std::string & context,
-                               ScamValue args,
-                               Continuation * cont)
+void scam::validate(const std::string & context,
+                    ScamValue args,
+                    Continuation * cont,
+                    Callback callback)
 {
-    ValidatorResult rv;
-    return rv;
+    ValidatorResult trivial;
+    callback(trivial);
 }
 
-ValidatorResult scam::validate(const std::string & context,
-                               ScamValue args,
-                               Continuation * cont,
-                               Matcher matcher)
+void scam::validate(const std::string & context,
+                    ScamValue args,
+                    Continuation * cont,
+                    Callback callback,
+                    Matcher matcher)
 {
-    ValidatorResult rv;
-    ScamValue remainder = matcher(context, args, cont, rv);
-    if ( rv ) {
-        if ( ! isNil(remainder) ) {
-            rv.fail();
-            ScamValue err
-                = makeErrorExtended(context,
-                                    ": excess arguments found: '",
-                                    writeValue(remainder),
-                                    "'" );
+    ValidatorResult result;
+    ScamValue remainder = matcher(context, args, cont, result);
+    if ( result ) {
+        if ( isNil(remainder) ) {
+            callback(result);
+        }
+        else {
+            result.fail();
+            ScamValue err = makeErrorExtended(context,
+                                              ": excess arguments found: '",
+                                              writeValue(remainder),
+                                              "'" );
             cont->run(err);
         }
     }
-    return rv;
 }
 
 Matcher scam::matchString(const std::string & key)

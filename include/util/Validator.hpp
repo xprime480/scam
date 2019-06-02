@@ -16,27 +16,31 @@ namespace scam
 
         operator bool() const;
         void fail();
-	void set(const std::string & key, ScamValue value);
+        void set(const std::string & key, ScamValue value);
         ScamValue get(const std::string & key) const;
 
     private:
         bool status;
-	std::map<const std::string, ScamValue> parameters;
+        std::map<const std::string, ScamValue> parameters;
     };
+
+    using Callback = std::function<void(const ValidatorResult &)>;
 
     using Matcher = std::function<ScamValue(const std::string & context,
                                             ScamValue args,
                                             Continuation * cont,
                                             ValidatorResult & results)>;
 
-    ValidatorResult validate(const std::string & context,
-                             ScamValue args,
-                             Continuation * cont);
+    void validate(const std::string & context,
+                  ScamValue args,
+                  Continuation * cont,
+                  Callback callback);
 
-    ValidatorResult validate(const std::string & context,
-                             ScamValue args,
-                             Continuation * cont,
-                             Matcher matcher);
+    void validate(const std::string & context,
+                  ScamValue args,
+                  Continuation * cont,
+                  Callback callback,
+                  Matcher matcher);
 
     Matcher matchString(const std::string & key);
     Matcher matchInteger(const std::string & key);

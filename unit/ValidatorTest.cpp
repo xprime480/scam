@@ -26,18 +26,26 @@ protected:
 TEST_F(ValidatorTest, EmptyListOK)
 {
     ScamValue args = makeNil();
-    ValidatorResult result = validate(context, args, cont);
 
-    EXPECT_TRUE(result);
+    auto callback = [] (const ValidatorResult & result) -> void
+    {
+    };
+
+    validate(context, args, cont, callback);
+
     expectNull(cont->getExpr());
 }
 
 TEST_F(ValidatorTest, WantStringEmptyList)
 {
     ScamValue args = makeNil();
-    ValidatorResult result = validate(context, args, cont, matchString(arg1));
+    auto callback = [] (const ValidatorResult & result) -> void
+    {
+        FAIL() << "callback should not be invoked";
+    };
 
-    EXPECT_FALSE(result);
+    validate(context, args, cont, callback, matchInteger(arg1));
+
     expectError(cont->getExpr(), "ValidatorTest: parameter list too short");
 }
 
@@ -46,11 +54,14 @@ TEST_F(ValidatorTest, WantStringHaveString)
     const char * text { "\"roses are red\"" };
     ScamValue first = readString(text);
     ScamValue args = makeList(first);
-    ValidatorResult result = validate(context, args, cont, matchString(arg1));
+    auto callback = [=] (const ValidatorResult & result) -> void
+    {
+        expectString(result.get(arg1), text);
+    };
 
-    EXPECT_TRUE(result);
+    validate(context, args, cont, callback, matchString(arg1));
+
     expectNull(cont->getExpr());
-    expectString(result.get(arg1), text);
 }
 
 TEST_F(ValidatorTest, WantStringHaveNumber)
@@ -58,13 +69,16 @@ TEST_F(ValidatorTest, WantStringHaveNumber)
     const char * text { "2" };
     ScamValue first = readString(text);
     ScamValue args = makeList(first);
-    ValidatorResult result = validate(context, args, cont, matchString(arg1));
+    auto callback = [=] (const ValidatorResult & result) -> void
+    {
+        FAIL() << "callback should not be invoked";
+    };
+
+    validate(context, args, cont, callback, matchString(arg1));
 
     static const char * err =
         "ValidatorTest: expected string for parm 'arg1', got '2'";
-    EXPECT_FALSE(result);
     expectError(cont->getExpr(), err);
-    expectNull(result.get(arg1));
 }
 
 TEST_F(ValidatorTest, WantStringHaveTooManyArgs)
@@ -74,13 +88,16 @@ TEST_F(ValidatorTest, WantStringHaveTooManyArgs)
     ScamValue first = readString(text);
     ScamValue second = readString(extra);
     ScamValue args = makeList(first, second);
-    ValidatorResult result = validate(context, args, cont, matchString(arg1));
+    auto callback = [] (const ValidatorResult & result) -> void
+    {
+        FAIL() << "callback should not be invoked";
+    };
+
+    validate(context, args, cont, callback, matchString(arg1));
 
     static const char * err =
         "ValidatorTest: excess arguments found: '(\"never mind\")'";
-    EXPECT_FALSE(result);
     expectError(cont->getExpr(), err);
-    expectString(result.get(arg1), text);
 }
 
 TEST_F(ValidatorTest, WantIntegerHaveInteger)
@@ -88,11 +105,15 @@ TEST_F(ValidatorTest, WantIntegerHaveInteger)
     const char * text { "1960" };
     ScamValue first = readString(text);
     ScamValue args = makeList(first);
-    ValidatorResult result = validate(context, args, cont, matchInteger(arg1));
+    auto callback = [=] (const ValidatorResult & result) -> void
+    {
+        EXPECT_TRUE(result);
+        expectInteger(result.get(arg1), 1960, text, true);
+    };
 
-    EXPECT_TRUE(result);
+    validate(context, args, cont, callback, matchInteger(arg1));
+
     expectNull(cont->getExpr());
-    expectInteger(result.get(arg1), 1960, text, true);
 }
 
 TEST_F(ValidatorTest, WantIntegerHaveString)
@@ -100,11 +121,14 @@ TEST_F(ValidatorTest, WantIntegerHaveString)
     const char * text { "\"string\"" };
     ScamValue first = readString(text);
     ScamValue args = makeList(first);
-    ValidatorResult result = validate(context, args, cont, matchInteger(arg1));
+    auto callback = [=] (const ValidatorResult & result) -> void
+    {
+        FAIL() << "callback should not be invoked";
+    };
+
+    validate(context, args, cont, callback, matchInteger(arg1));
 
     static const char * err =
         "ValidatorTest: expected integer for parm 'arg1', got '\"string\"'";
-    EXPECT_FALSE(result);
     expectError(cont->getExpr(), err);
-    expectNull(result.get(arg1));
 }
