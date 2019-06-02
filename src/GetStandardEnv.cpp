@@ -111,4 +111,7 @@ void ScamEngine::getStandardEnv()
     addPrimitive(env, "error", applyError, this);
     addPrimitive(env, "backtrack", applyBacktrack, this);
     addPrimitive(env, "trace", applyTrace, this);
+
+    addPrimitive(env, "string-upcase", applyStringUpcase, this);
+    addPrimitive(env, "string-downcase", applyStringDowncase, this);
 }

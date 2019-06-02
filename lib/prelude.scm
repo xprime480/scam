@@ -219,4 +219,8 @@
                           (include-files rest))))))
           (include-files files)))))
 
+(define string-foldcase
+  (lambda (str)
+    (string-downcase str)))
+
 1

@@ -52,4 +52,3 @@ string call_scam(string const & input)
 
     return accumulator->getResult();
 }
-

@@ -1,0 +1,32 @@
+Test string-upcase, string-downcase, string-foldcase
+
+;[skip] uncomment to skip this test
+
+[name]
+Change string case
+
+[input]
+
+(load "lib/prelude.scm")
+
+(string-upcase "")
+(string-upcase "123")
+(string-upcase "aBcD")
+(string-downcase "")
+(string-downcase "123")
+(string-downcase "aBcD")
+(string-foldcase "")
+(string-foldcase "123")
+(string-foldcase "aBcD")
+
+[result]
+[keep 9]
+""
+"123"
+"ABCD"
+""
+"123"
+"abcd"
+""
+"123"
+"abcd"

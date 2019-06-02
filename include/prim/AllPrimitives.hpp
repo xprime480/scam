@@ -15,6 +15,7 @@
 #include "prim/Predicates.hpp"
 #include "prim/RelOps.hpp"
 #include "prim/Spawn.hpp"
+#include "prim/StringOps.hpp"
 #include "prim/Substitute.hpp"
 #include "prim/Trace.hpp"
 #include "prim/Unify.hpp"
