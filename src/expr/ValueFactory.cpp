@@ -166,6 +166,11 @@ ScamValue scam::makeRational(int num, int den, bool exact)
 
     EXACT(v) = exact;
 
+    if ( den < 0 && num > 0 ) {
+	den *= -1;
+	num *= -1;
+    }
+
     const int div = gcd(num, den);
     NUMPART(v) = num / div;
     DENPART(v) = den / div;

@@ -1,0 +1,31 @@
+Test operator - on complex numbers
+
+;[skip] uncomment to skip this test
+
+[name]
+Complex Minus
+
+[input]
+
+(define check
+  (lambda (val)
+    (list val
+          (complex? val)
+          (real? val)
+          (rational? val)
+          (integer? val)
+          (exact? val))))
+
+(check (- +i))
+(check (- 2+I 1+3I))
+(check (- 1.5+i -i))
+(check (- 1+i 2+i))
+(check (- 2+i 1-i 22/7+i))
+
+[result]
+[keep 5]
+(-i #t #f #f #f #t)
+(1-2i #t #f #f #f #t)
+(3/2+2i #t #f #f #f #f)
+(-1 #t #t #t #t #t)
+(-15/7+i #t #f #f #f #t)

@@ -1,0 +1,26 @@
+Test operator + on integers
+
+;[skip] uncomment to skip this test
+
+[name]
+Integer Plus
+
+[input]
+
+(define check
+  (lambda (val)
+    (list val (integer? val) (exact? val))))
+
+(check (+))
+(check (+ 2))
+(check (+ 2 2))
+(check (+ 2 2 -1 -3 4))
+(check (+ 2 2 -1 -3 4.0))
+
+[result]
+[keep 5]
+(0 #t #t)
+(2 #t #t)
+(4 #t #t)
+(4 #t #t)
+(4 #t #f)

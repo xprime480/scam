@@ -1,0 +1,27 @@
+Test operator * on infinity and NaN
+
+;[skip] uncomment to skip this test
+
+[name]
+Special Times
+
+[input]
+
+(* 2 -inf.0)
+(* 2 +inf.0)
+(* 2 +nan.0)
+(* -inf.0 +inf.0)
+(* +inf.0 +inf.0)
+(* -inf.0 -inf.0)
+(* 1+i 2-nan.0i)
+(* 1+inf.0i 1-inf.0i)
+
+[result]
+-inf.0
++inf.0
++nan.0
+-inf.0
++inf.0
++inf.0
++nan.0+nan.0i
++inf.0+nan.0i

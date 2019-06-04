@@ -1,0 +1,28 @@
+Test operator - on rationals
+
+;[skip] uncomment to skip this test
+
+[name]
+Rational Divide
+
+[input]
+
+(define check
+  (lambda (val)
+    (list val
+          (rational? val)
+          (integer? val)
+          (exact? val))))
+
+(check (/ 3/10 11/7))
+(check (/ 1.5 1))
+(check (/ 2/3 4/6))
+(check (/ 1/2 #i2/3 2/3))
+
+[result]
+[keep 4]
+(21/110 #t #f #t)
+(3/2 #t #f #f)
+(1 #t #t #t)
+(9/8 #t #f #f)
+

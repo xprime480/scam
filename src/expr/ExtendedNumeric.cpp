@@ -410,7 +410,7 @@ scam::operator/(const ExtendedNumeric & a, const ExtendedNumeric & b)
             const RationalPair ratB = asRational(dB);
             int s = ratB.num < 0 ? -1 : 1;
             ScamValue recipricolB =
-                makeRational(s * ratB.den, ::abs(ratB.num), joint.rational);
+                makeRational(s * ratB.den, ::abs(ratB.num), joint.exact);
             ExtendedNumeric newB(recipricolB);
             expr = (a * newB).get();
         }

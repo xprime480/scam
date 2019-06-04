@@ -1,0 +1,26 @@
+Test operator that produce errors
+
+;[skip] uncomment to skip this test
+
+[name]
+Math Errors
+
+[input]
+
+(+ 2 #f)
+(- :keyword)
+(* 2 #f)
+(/ 2 #f)
+(/ 2 0)
+(% 2 0)
+(+ (* 2 3) (/ 1 (+ 5 -5)) (- 3))
+;;(% +i +i)  this is a ill-behaved expression -- make it a simple error
+
+[result]
+Add expected "(num*)"; got "(2 #f)"
+Sub expected "(num*)"; got "(:keyword)"
+Mul expected "(num*)"; got "(2 #f)"
+Div expected "(num*)"; got "(2 #f)"
+Division By Zero
+Modulus By Zero
+Division By Zero
