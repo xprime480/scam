@@ -18,9 +18,12 @@ ScamData::ScamData(unsigned long type, bool managed)
     , metadata(nullptr)
 {
     switch ( type ) {
+    case ScamData::String:
+        immutable = false;
+        /* fallthrough */
+
     case ScamData::Error:
     case ScamData::Keyword:
-    case ScamData::String:
     case ScamData::Symbol:
         STRVALP(this) = new string;
         break;
@@ -168,13 +171,9 @@ void ScamData::mark() const
     }
 }
 
-void ScamData::makeMutable()
+void ScamData::makeImmutable()
 {
-    if ( ScamData::String == type ) {
-        immutable = false;
-    }
-    else {
-    }
+    immutable = true;
 }
 
 bool ScamData::isImmutable() const

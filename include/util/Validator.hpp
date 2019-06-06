@@ -53,8 +53,15 @@ namespace scam
     Matcher matchString(const std::string & key);
     Matcher matchSymbol(const std::string & key);
 
-    Matcher matchIndex(const std::string & key, const std::string & itemKey);
-    
+    Matcher matchIndex(const std::string & key,
+                       const std::string & itemKey);
+
+    Matcher matchStartIndex(const std::string & key,
+                            const std::string & itemKey);
+    Matcher matchEndIndex(const std::string & key,
+                          const std::string & itemKey,
+                          const std::string & startKey);
+
     Matcher matchSequence(const std::string & key, Matcher m1, Matcher m2);
 
     template <typename ... Args>

@@ -1,0 +1,39 @@
+Test substring
+
+;[skip]
+
+[name]
+Substring functions
+
+[input]
+
+(load "lib/prelude.scm")
+
+(define empty "")
+(define hello "Hello, World")
+
+(string-copy empty 0 0)
+(string-copy hello 0 0)
+(string-copy hello 1 1)
+(string-copy hello 2 4)
+(string-copy hello 7)
+(string-copy hello)
+(string-copy hello -1 555)
+(string-copy hello 0 555)
+(string-copy hello 5 0)
+
+(substring hello 2 4)
+
+
+[result]
+[keep 10]
+""
+""
+""
+"ll"
+"World"
+"Hello, World"
+string-copy: excess arguments found: '(-1 555)'
+string-copy: excess arguments found: '(555)'
+string-copy: excess arguments found: '(0)'
+"ll"

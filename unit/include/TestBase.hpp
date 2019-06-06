@@ -33,6 +33,8 @@ namespace scam
         ScamValue apply(ScamValue expr, ScamValue args);
         ScamValue parseAndEvaluate(std::string const & input);
         ScamValue parseAndEvaluateFile(char const * filename);
+        ScamValue readEval(std::string const & input);
+        ScamValue readEvalFile(char const * filename);
         ScamValue readString(char const * input);
 
         void doCheck(bool act, unsigned selector, unsigned which);

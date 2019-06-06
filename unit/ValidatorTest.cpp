@@ -565,9 +565,9 @@ TEST_F(ValidatorTest, WantSomeNestedLists)
     expectNull(cont->getExpr());
 }
 
-TEST_F(ValidatorTest, StringWithIndexOutOfBounds)
+TEST_F(ValidatorTest, StringWithSingleIndexOutOfBounds)
 {
-    const char * text { "(\"a string\" 600)" };
+    const char * text { "(\"\" 0)" };
     ScamValue args = readString(text);
 
     auto callback = [=] (const ValidatorResult & result) -> void
@@ -584,13 +584,90 @@ TEST_F(ValidatorTest, StringWithIndexOutOfBounds)
 
     EXPECT_FALSE(callbackInvoked);
     const string err =
-        "ValidatorTest: expected index for parm 'arg4', got '600'";
+        "ValidatorTest: expected index for parm 'arg4', got '0'";
     expectError(cont->getExpr(), err);
 }
 
-TEST_F(ValidatorTest, StringWithIndexOK)
+TEST_F(ValidatorTest, StringWithStartIndexOutOfBounds)
 {
-    const char * text { "(\"a string\" 4)" };
+    const char * text { "(\"a string\" 600)" };
+    ScamValue args = readString(text);
+
+    auto callback = [=] (const ValidatorResult & result) -> void
+    {
+        callbackInvoked = true;
+        FAIL() << "callback should not be invoked";
+    };
+
+    validate(context,
+             args,
+             cont,
+             callback,
+             matchSequence(arg5,
+                           matchString(arg3),
+                           matchStartIndex(arg4, arg3)));
+
+    EXPECT_FALSE(callbackInvoked);
+    const string err =
+        "ValidatorTest: expected start index for parm 'arg4', got '600'";
+    expectError(cont->getExpr(), err);
+}
+
+TEST_F(ValidatorTest, StringWithEndIndexOutOfBounds)
+{
+    const char * text { "(\"a string\" 0 600)" };
+    ScamValue args = readString(text);
+
+    auto callback = [=] (const ValidatorResult & result) -> void
+    {
+        callbackInvoked = true;
+        FAIL() << "callback should not be invoked";
+    };
+
+    validate(context,
+             args,
+             cont,
+             callback,
+             matchSequence(arg5,
+                           matchString(arg3),
+                           matchStartIndex(arg4, arg3),
+                           matchEndIndex(arg1, arg3, arg4)));
+
+    EXPECT_FALSE(callbackInvoked);
+    const string err =
+        "ValidatorTest: expected end index for parm 'arg1', got '600'";
+    expectError(cont->getExpr(), err);
+}
+
+TEST_F(ValidatorTest, StringWithEndValidIndicesOutOfOrder)
+{
+    const char * text { "(\"a string\" 2 0)" };
+    ScamValue args = readString(text);
+
+    auto callback = [=] (const ValidatorResult & result) -> void
+    {
+        callbackInvoked = true;
+        FAIL() << "callback should not be invoked";
+    };
+
+    validate(context,
+             args,
+             cont,
+             callback,
+             matchSequence(arg5,
+                           matchString(arg3),
+                           matchStartIndex(arg4, arg3),
+                           matchEndIndex(arg1, arg3, arg4)));
+
+    EXPECT_FALSE(callbackInvoked);
+    const string err =
+        "ValidatorTest: expected end index for parm 'arg1', got '0'";
+    expectError(cont->getExpr(), err);
+}
+
+TEST_F(ValidatorTest, StringWithIndicesOK)
+{
+    const char * text { "(\"a string\" 4 5)" };
     ScamValue args = readString(text);
 
     auto callback = [=] (const ValidatorResult & result) -> void
@@ -598,15 +675,20 @@ TEST_F(ValidatorTest, StringWithIndexOK)
         callbackInvoked = true;
         ScamValue str = result.get(arg3);
         expectString(str, "\"a string\"");
-        ScamValue idx = result.get(arg4);
-        expectInteger(idx, 4, "4", 4);
+        ScamValue start = result.get(arg4);
+        expectInteger(start, 4, "4", 4);
+        ScamValue end = result.get(arg1);
+        expectInteger(end, 5, "5", 4);
     };
 
     validate(context,
              args,
              cont,
              callback,
-             matchSequence(arg5, matchString(arg3), matchIndex(arg4, arg3)));
+             matchSequence(arg5,
+                           matchString(arg3),
+                           matchStartIndex(arg4, arg3),
+                           matchEndIndex(arg1, arg3, arg4)));
 
     EXPECT_TRUE(callbackInvoked);
     expectNull(cont->getExpr());

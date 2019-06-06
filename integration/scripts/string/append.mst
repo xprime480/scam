@@ -1,0 +1,24 @@
+Test string-append
+
+;[skip]
+
+[name]
+Append string
+
+[input]
+
+
+(string-append)
+(string-append "")
+(string-append "Hello")
+(string-append "Hello" ", World")
+(string-append "a" "b" "c")
+(string-append 1 2 3)
+
+[result]
+""
+""
+"Hello"
+"Hello, World"
+"abc"
+string-append: excess arguments found: '(1 2 3)'

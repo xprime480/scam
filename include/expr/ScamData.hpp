@@ -44,7 +44,7 @@ namespace scam
 
         void mark() const override final;
 
-        void makeMutable();
+        void makeImmutable();
         bool isImmutable() const;
 
         void setMeta(std::string const & key, ScamValue value) const;

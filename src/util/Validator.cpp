@@ -154,7 +154,7 @@ Matcher scam::matchSymbol(const string & key)
     return buildTypeMatcher(key, "symbol", isSymbol);
 }
 
-Matcher scam::matchIndex(const std::string & key, const std::string & itemKey)
+Matcher scam::matchIndex(const string & key, const string & itemKey)
 {
     auto pred = [itemKey] (ScamValue value, MatcherControl & control) -> bool
     {
@@ -171,6 +171,42 @@ Matcher scam::matchIndex(const std::string & key, const std::string & itemKey)
     return buildTypeMatcher(key, "index", pred);
 }
 
+Matcher scam::matchStartIndex(const string & key, const string & itemKey)
+{
+    auto pred = [itemKey] (ScamValue value, MatcherControl & control) -> bool
+    {
+        if ( ! isInteger(value) || ! isExact(value) ) {
+            return false;
+        }
+
+        int index = asInteger(value);
+        ScamValue item = control.results.get(itemKey);
+        int len = length(item);
+        return index >= 0 && index <= len;
+    };
+
+    return buildTypeMatcher(key, "start index", pred);
+}
+
+Matcher scam::matchEndIndex(const string & key,
+                            const string & itemKey,
+                            const string & startKey)
+{
+    auto pred = [=] (ScamValue value, MatcherControl & control) -> bool
+    {
+        if ( ! isInteger(value) || ! isExact(value) ) {
+            return false;
+        }
+
+        const int index = asInteger(value);
+        ScamValue item = control.results.get(itemKey);
+        const int len = length(item);
+        const int start = asInteger(control.results.get(startKey));
+        return index <= len && index >= start;
+    };
+
+    return buildTypeMatcher(key, "end index", pred);
+}
 
 Matcher scam::matchSequence(const string & key, Matcher m1, Matcher m2)
 {
@@ -180,7 +216,7 @@ Matcher scam::matchSequence(const string & key, Matcher m1, Matcher m2)
     return rv;
 }
 
-Matcher scam::matchAlternative(const std::string & key, Matcher m1, Matcher m2)
+Matcher scam::matchAlternative(const string & key, Matcher m1, Matcher m2)
 {
     auto fn = bind(alternativeMatcher, _1, key, m1, m2);
 

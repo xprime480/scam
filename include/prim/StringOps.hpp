@@ -72,6 +72,30 @@ namespace scam
     extern void applyStringDowncase(ScamValue args,
                                     Continuation * cont,
                                     ScamEngine * engine);
+
+    extern void applyStringCopy(ScamValue args,
+                                Continuation * cont,
+                                ScamEngine * engine);
+
+    extern void applyStringAppend(ScamValue args,
+                                  Continuation * cont,
+                                  ScamEngine * engine);
+
+    extern void applyString2List(ScamValue args,
+                                 Continuation * cont,
+                                 ScamEngine * engine);
+
+    extern void applyList2String(ScamValue args,
+                                 Continuation * cont,
+                                 ScamEngine * engine);
+
+    extern void applyStringCopyX(ScamValue args,
+                                 Continuation * cont,
+                                 ScamEngine * engine);
+
+    extern void applyStringFillX(ScamValue args,
+                                 Continuation * cont,
+                                 ScamEngine * engine);
 }
 
 #endif

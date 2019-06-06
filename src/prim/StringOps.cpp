@@ -45,6 +45,8 @@ namespace
                                 Continuation * cont,
                                 const char * name,
                                 Transformer transform);
+
+    extern int valueOrDefault(ScamValue src, int defaultValue);
 }
 
 void scam::applyString(ScamValue args,
@@ -96,7 +98,6 @@ void scam::applyMakeString(ScamValue args,
         }
         string newText(count, c);
         ScamValue newValue = makeString(newText);
-        newValue->makeMutable();
         cont->run(newValue);
     };
 
@@ -125,7 +126,9 @@ void scam::applyStringRef(ScamValue args,
 {
     static const char * name { "string-ref" };
     Matcher matcher =
-        matchSequence(name, matchString("string"), matchIndex("k", "string"));
+        matchSequence(name,
+                      matchString("string"),
+                      matchIndex("k", "string"));
 
     Callback callback = [cont] (const ValidatorResult & result) -> void
     {
@@ -274,6 +277,235 @@ void scam::applyStringDowncase(ScamValue args,
     transformString(args, cont, "string-downcase", downcaseString);
 }
 
+void scam::applyStringAppend(ScamValue args,
+                             Continuation * cont,
+                             ScamEngine * engine)
+{
+    static const char * name { "string-append" };
+    Matcher matcher = matchCount("strings", "string", matchString("string"));
+
+    Callback callback = [cont] (const ValidatorResult & result) -> void
+    {
+        ScamValue strs = result.get("strings");
+        const int len = length(strs);
+
+        stringstream s;
+        for ( int idx = 0 ; idx < len ; ++idx ) {
+            s << asString(nthcar(strs, idx));
+        }
+
+        cont->run(makeString(s.str()));
+    };
+
+    validate(name, args, cont, callback, matcher);
+}
+
+void scam::applyString2List(ScamValue args,
+                            Continuation * cont,
+                            ScamEngine * engine)
+{
+    static const char * name { "string->list" };
+    Matcher mStr   = matchString("string");
+    Matcher mStart = matchStartIndex("start", "string");
+    Matcher mEnd   = matchEndIndex("end", "string", "start");
+    Matcher matcher = matchAlternative(name,
+                                       matchSequence(name, mStr, mStart, mEnd),
+                                       matchSequence(name, mStr, mStart),
+                                       mStr);
+
+    Callback callback = [cont] (const ValidatorResult & result) -> void
+    {
+        const string str = asString(result.get("string"));
+        const int start = valueOrDefault(result.get("start"), 0);
+        const int end   = valueOrDefault(result.get("end"), str.size());
+
+        string newStr =
+            start == end ? string("") : str.substr(start, end-start);
+        vector<ScamValue> chars;
+
+        for ( const char c : newStr ) {
+            chars.push_back(makeCharacter(c));
+        }
+
+        cont->run(makeList(chars));
+    };
+
+    validate(name, args, cont, callback, matcher);
+}
+
+extern void scam::applyList2String(ScamValue args,
+                                   Continuation * cont,
+                                   ScamEngine * engine)
+{
+    static const char * name { "string->list" };
+    Matcher matcher =
+        matchSublist("chars", "cs", matchCount("cs", "c", matchCharacter("c")));
+
+    Callback callback = [cont] (const ValidatorResult & result) -> void
+    {
+        ScamValue chars = result.get("chars");
+        const int len = length(chars);
+
+        stringstream s;
+        for ( int idx = 0 ; idx < len ; ++idx ) {
+            s << asChar(nthcar(chars, idx));
+        }
+
+        cont->run(makeString(s.str()));
+    };
+
+    validate(name, args, cont, callback, matcher);
+}
+
+void scam::applyStringCopy(ScamValue args,
+                           Continuation * cont,
+                           ScamEngine * engine)
+{
+    static const char * name { "string-copy" };
+    Matcher mStr   = matchString("string");
+    Matcher mStart = matchStartIndex("start", "string");
+    Matcher mEnd   = matchEndIndex("end", "string", "start");
+    Matcher matcher = matchAlternative(name,
+                                       matchSequence(name, mStr, mStart, mEnd),
+                                       matchSequence(name, mStr, mStart),
+                                       mStr);
+
+    Callback callback = [cont] (const ValidatorResult & result) -> void
+    {
+        const string str = asString(result.get("string"));
+        const int start = valueOrDefault(result.get("start"), 0);
+        const int end   = valueOrDefault(result.get("end"), str.size());
+
+        string newStr =
+            start == end ? string("") : str.substr(start, end-start);
+
+        cont->run(makeString(newStr));
+    };
+
+    validate(name, args, cont, callback, matcher);
+}
+
+void scam::applyStringCopyX(ScamValue args,
+                            Continuation * cont,
+                            ScamEngine * engine)
+{
+    static const char * name { "string-copy!" };
+
+    Matcher mTo     = matchString("to");
+    Matcher mAt     = matchIndex("at", "to");
+    Matcher mFrom   = matchString("from");
+    Matcher mStart  = matchStartIndex("start", "from");
+    Matcher mEnd    = matchEndIndex("end", "from", "start");
+    Matcher mAlt5   = matchSequence(name, mTo, mAt, mFrom, mStart, mEnd);
+    Matcher mAlt4   = matchSequence(name, mTo, mAt, mFrom, mStart);
+    Matcher mAlt3   = matchSequence(name, mTo, mAt, mFrom);
+    Matcher matcher = matchAlternative(name, mAlt5, mAlt4, mAlt3);
+
+    Callback callback = [cont] (const ValidatorResult & result) -> void
+    {
+        ScamValue toValue = result.get("to");
+        if ( isImmutable(toValue) ) {
+            ScamValue err =
+                makeErrorExtended(name,
+                                  ": Cannot mutate constant string ",
+                                  writeValue(toValue));
+            cont->run(err);
+            return;
+        }
+
+        string toStr = asString(toValue);
+        const int at = asInteger(result.get("at"));
+        const string fromStr = asString(result.get("from"));
+        const int start = valueOrDefault(result.get("start"), 0);
+        const int end   = valueOrDefault(result.get("end"), fromStr.size());
+
+        const unsigned int count = end - start;
+        if ( 0 == count ) {
+            cont->run(toValue);
+            return;
+        }
+
+        const unsigned int space = toStr.size() - at;
+        if ( space < count ) {
+            ScamValue err =
+                makeErrorExtended(name,
+                                  ": Insufficient room in destination",
+                                  " to copy source");
+            cont->run(err);
+            return;
+        }
+
+        char * buffer = new char[1 + toStr.size()];
+        memcpy(buffer, toStr.c_str(), toStr.size());
+        buffer[toStr.size()] = '\0';
+
+        for ( unsigned int idx = 0 ; idx < count ; ++idx ) {
+            buffer[idx + at] = fromStr.at(idx + start);
+        }
+
+        STRVAL(toValue) = string(buffer);
+        delete[] buffer;
+
+        cont->run(toValue);
+    };
+
+    validate(name, args, cont, callback, matcher);
+}
+
+void scam::applyStringFillX(ScamValue args,
+                            Continuation * cont,
+                            ScamEngine * engine)
+{
+    static const char * name { "string-fill!" };
+
+    Matcher mString = matchString("string");
+    Matcher mFill   = matchCharacter("fill");
+    Matcher mStart  = matchStartIndex("start", "string");
+    Matcher mEnd    = matchEndIndex("end", "string", "start");
+    Matcher mAlt4   = matchSequence(name, mString, mFill, mStart, mEnd);
+    Matcher mAlt3   = matchSequence(name, mString, mFill, mStart);
+    Matcher mAlt2   = matchSequence(name, mString, mFill);
+    Matcher matcher = matchAlternative(name, mAlt4, mAlt3, mAlt2);
+
+    Callback callback = [cont] (const ValidatorResult & result) -> void
+    {
+        ScamValue strValue = result.get("string");
+        if ( isImmutable(strValue) ) {
+            ScamValue err =
+                makeErrorExtended(name,
+                                  ": Cannot mutate constant string ",
+                                  writeValue(strValue));
+            cont->run(err);
+            return;
+        }
+
+        string toStr = asString(strValue);
+        const char fill = asChar(result.get("fill"));
+        const int start = valueOrDefault(result.get("start"), 0);
+        const int end   = valueOrDefault(result.get("end"), toStr.size());
+
+        if ( start == end ) {
+            cont->run(strValue);
+            return;
+        }
+
+        char * buffer = new char[1 + toStr.size()];
+        memcpy(buffer, toStr.c_str(), toStr.size());
+        buffer[toStr.size()] = '\0';
+
+        for ( int idx = start ; idx < end ; ++idx ) {
+            buffer[idx] = fill;
+        }
+
+        STRVAL(strValue) = string(buffer);
+        delete[] buffer;
+
+        cont->run(strValue);
+    };
+
+    validate(name, args, cont, callback, matcher);
+}
+
 namespace
 {
     string upcaseString(const string & str)
@@ -345,4 +577,14 @@ namespace
             validate(name, args, cont, callback, matcher);
         }
     }
+
+    int valueOrDefault(ScamValue src, int defaultValue)
+    {
+        if ( isNull(src) ) {
+            return defaultValue;
+        }
+
+        return asInteger(src);
+    }
+
 }

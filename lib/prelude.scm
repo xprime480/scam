@@ -223,4 +223,8 @@
   (lambda (str)
     (string-downcase str)))
 
+(define substring
+  (lambda (str start end)
+    (string-copy str start end)))
+
 1

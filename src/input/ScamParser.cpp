@@ -82,6 +82,7 @@ ScamValue ScamParser::tokenToExpr(Token const & token) const
 
     case TokenType::TT_STRING:
         rv = makeString(token.getText());
+        rv->makeImmutable();
         break;
 
     case TokenType::TT_NUMERIC:
@@ -326,10 +327,10 @@ ScamValue ScamParser::expand_reader_macro(std::string const & text) const
     }
     if ( error(expr) ) {
         return makeErrorExtended("Error getting form for ",
-				 name,
-				 " macro",
-				 "\t",
-				 writeValue(expr));
+                                 name,
+                                 " macro",
+                                 "\t",
+                                 writeValue(expr));
     }
 
     ScamValue sym    = makeSymbol(name);

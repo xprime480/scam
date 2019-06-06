@@ -1,0 +1,50 @@
+Mutation operations via string-set! or string-copy!
+
+;[skip] uncomment to skip this test
+
+[name]
+Mutation operations on strings
+
+[input]
+
+(define test-immutable "0123456789")
+(define test-mutable (string-copy test-immutable))
+
+(string-set! :not-a-string 1 #\.)
+(string-set! test-mutable -1 #\.)
+(string-set! test-mutable 1 :not-char)
+(string-set! test-immutable 1 #\.)
+(string-set! test-mutable 4 #\.)
+
+(string-copy! test-immutable 0 "***")
+(string-copy! test-mutable 0 "***")
+(string-copy! test-mutable 8 "abcdefgh" 0 1)
+(string-copy! test-mutable 0 "abcdefgh" 0 0)
+(string-copy! test-mutable 9 "abcdefgh" 3)
+
+(string-fill! test-immutable #\_)
+(string-fill! test-mutable #\_ 8 10)
+(string-fill! test-mutable #\+ 7)
+(string-fill! test-mutable #\:)
+
+test-immutable
+test-mutable
+
+[result]
+[keep 16]
+string-set!: expected string for parm 'string', got ':not-a-string'
+string-set!: expected index for parm 'k', got '-1'
+string-set!: expected character for parm 'char', got ':not-char'
+string-set!: Cannot mutate constant string "0123456789"
+"0123.56789"
+string-copy!: Cannot mutate constant string "0123456789"
+"***3.56789"
+"***3.567a9"
+"***3.567a9"
+string-copy!: Insufficient room in destination to copy source
+string-fill!: Cannot mutate constant string "0123456789"
+"***3.567__"
+"***3.56+++"
+"::::::::::"
+"0123456789"
+"::::::::::"

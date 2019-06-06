@@ -61,7 +61,7 @@ TestBase::TestBase(bool loadPrelude)
     extractor = mm.make<Extractor>();
     engine.setCont(extractor);
     if ( loadPrelude ) {
-        ScamValue result = parseAndEvaluate("(load \"lib/prelude.scm\")");
+        ScamValue result = readEvalFile("lib/prelude.scm");
         expectInteger(result, 1, "1", true);
     }
 }
@@ -91,26 +91,12 @@ ScamValue TestBase::apply(ScamValue expr, ScamValue args)
 
 ScamValue TestBase::parseAndEvaluate(string const & input)
 {
-    try {
-        StringCharStream stream(input);
-        ReadEvalStream helper(&engine, stream);
-        ScamValue rv = helper.run();
-        return rv;
-    }
-    catch ( ScamException e ) {
-        ScamValue rv = makeError(e.getMessage());
-        return rv;
-    }
-    catch ( ... ) {
-        return makeError("Unknown exception");
-    }
+    return readEval(input);
 }
 
 ScamValue TestBase::parseAndEvaluateFile(char const * filename)
 {
-    stringstream s;
-    s << "(load \"" << filename << "\")";
-    return parseAndEvaluate(s.str());
+    return readEvalFile(filename);
 }
 
 ScamValue TestBase::readString(char const * input)
@@ -128,6 +114,34 @@ ScamValue TestBase::readString(char const * input)
     catch ( ... ) {
         return makeError("Unknown exception");
     }
+}
+
+ScamValue TestBase::readEval(std::string const & input)
+{
+    try {
+        StringCharStream stream(input);
+        ReadEvalStream helper(&engine, stream);
+        ScamValue rv = helper.run();
+        return rv;
+    }
+    catch ( ScamException e ) {
+        ScamValue rv = makeError(e.getMessage());
+        return rv;
+    }
+    catch ( std::exception & e ) {
+        ScamValue rv = makeError(e.what());
+        return rv;
+    }
+    catch ( ... ) {
+        return makeError("Unknown exception");
+    }
+}
+
+ScamValue TestBase::readEvalFile(char const * filename)
+{
+    stringstream s;
+    s << "(load \"" << filename << "\")";
+    return readEval(s.str());
 }
 
 void decodeBit(unsigned mismatch,
@@ -288,13 +302,13 @@ void TestBase::expectBoolean(ScamValue expr,
 
 void TestBase::expectTrue(string const & input)
 {
-    ScamValue expr = parseAndEvaluate(input);
+    ScamValue expr = readEval(input);
     expectBoolean(expr, true, "#t");
 }
 
 void TestBase::expectFalse(string const & input)
 {
-    ScamValue expr = parseAndEvaluate(input);
+    ScamValue expr = readEval(input);
     expectBoolean(expr, false, "#f");
 }
 
