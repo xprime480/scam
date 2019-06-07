@@ -15,6 +15,7 @@ namespace scam
         int den;
     };
 
+    extern char asBool(ScamValue data);
     extern char asChar(ScamValue data);
     extern std::string asString(ScamValue data);
     extern double asDouble(ScamValue data);

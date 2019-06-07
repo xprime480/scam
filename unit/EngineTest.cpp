@@ -151,18 +151,6 @@ TEST_F(EngineTest, AmbOperator)
     expectInteger(expr, 0, "0", true);
 }
 
-TEST_F(EngineTest, RequireTest)
-{
-    ScamValue expr = parseAndEvaluate("(load \"scripts/system/require.scm\")");
-    expectInteger(expr, 2, "2", true);
-
-    expr = parseAndEvaluate("?");
-    expectInteger(expr, 4, "4", true);
-
-    expr = parseAndEvaluate("?");
-    expectInteger(expr, 6, "6", true);
-}
-
 TEST_F(EngineTest, LoadTwiceTest)
 {
     ScamValue expr = parseAndEvaluate("(load \"lib/prelude.scm\")");

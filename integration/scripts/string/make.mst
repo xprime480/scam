@@ -18,12 +18,12 @@ Make some strings
 (string #\1 #\x #\*)
 
 [result]
-make-string: no alternative was accepted for input '(-5 #\*)'
-make-string: excess arguments found: '(3)'
+make-string: expected non-negative integer for parameter 1 got '-5'
+make-string: 1 parameter needed, 2 given
 ""
 ""
 "   "
 "ii"
-string: excess arguments found: '(1 2 3)'
+string: only accepts one list of characters
 ""
 "1x*"

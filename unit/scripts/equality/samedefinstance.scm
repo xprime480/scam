@@ -4,4 +4,4 @@
 (define thing1 (Trivial))
 (define thing2 (Trivial))
 
-(eq? thing1 thing2)
+(equal? thing1 thing2)

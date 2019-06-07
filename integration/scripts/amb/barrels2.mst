@@ -36,8 +36,8 @@ Barrels
            (barrel-2 (eval `(amb ,@(exclude (list barrel-1) wine))))
            (purchase (some-of (exclude (list barrel-1 barrel-2) wine))))
       (begin
-        (require (eq? (* 2 (+ barrel-1 barrel-2))
-                      (sum purchase)))
+        (require (= (* 2 (+ barrel-1 barrel-2))
+                          (sum purchase)))
         beer))))
 
 (barrels-of-fun)

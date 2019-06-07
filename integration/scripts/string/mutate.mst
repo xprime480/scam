@@ -10,31 +10,37 @@ Mutation operations on strings
 (define test-immutable "0123456789")
 (define test-mutable (string-copy test-immutable))
 
+;;;;0
 (string-set! :not-a-string 1 #\.)
 (string-set! test-mutable -1 #\.)
 (string-set! test-mutable 1 :not-char)
 (string-set! test-immutable 1 #\.)
 (string-set! test-mutable 4 #\.)
 
+;;;;;5
 (string-copy! test-immutable 0 "***")
 (string-copy! test-mutable 0 "***")
 (string-copy! test-mutable 8 "abcdefgh" 0 1)
 (string-copy! test-mutable 0 "abcdefgh" 0 0)
 (string-copy! test-mutable 9 "abcdefgh" 3)
 
+;;;;;10
 (string-fill! test-immutable #\_)
 (string-fill! test-mutable #\_ 8 10)
 (string-fill! test-mutable #\+ 7)
 (string-fill! test-mutable #\:)
 
+;;;;;14
 test-immutable
 test-mutable
 
+;;;;16
+
 [result]
 [keep 16]
-string-set!: expected string for parm 'string', got ':not-a-string'
-string-set!: expected index for parm 'k', got '-1'
-string-set!: expected character for parm 'char', got ':not-char'
+string-set!: expected string for parameter 1 got ':not-a-string'
+string-set!: expected index into parameter 1 ('"0123456789"') for parameter 2 got '-1'
+string-set!: expected character for parameter 3 got ':not-char'
 string-set!: Cannot mutate constant string "0123456789"
 "0123.56789"
 string-copy!: Cannot mutate constant string "0123456789"

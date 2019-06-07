@@ -1,0 +1,17 @@
+Test the equal? function for special cases
+
+;[skip]
+
+[name]
+Equal? Special
+
+[input]
+
+(equal?)
+(equal? #t)
+(equal? #t #t #t)
+
+[result]
+equal?: parameter 1 missing
+equal?: parameter 2 missing
+equal?: 2 parameter needed, 3 given

@@ -7,7 +7,6 @@ Append string
 
 [input]
 
-
 (string-append)
 (string-append "")
 (string-append "Hello")
@@ -21,4 +20,4 @@ Append string
 "Hello"
 "Hello, World"
 "abc"
-string-append: excess arguments found: '(1 2 3)'
+string-append: only accepts string parameters

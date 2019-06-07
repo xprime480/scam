@@ -20,7 +20,7 @@
 
    (get (key)
         (let ((item (filter (lambda (entry)
-                              (eq? key (car entry))) *data*)))
+                              (equal? key (car entry))) *data*)))
           (if (nil? item)
               item
               (cdr (car item)))))
@@ -28,5 +28,5 @@
    (remove (key)
            (assign! *data*
                     (filter (lambda (item)
-                              (not (eq? key (car item))))
+                              (not (equal? key (car item))))
                             *data*)))))

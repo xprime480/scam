@@ -63,7 +63,10 @@ void ScamEngine::getStandardEnv()
     addPrimitive(env, "<=", applyLe, this);
     addPrimitive(env, ">", applyGt, this);
     addPrimitive(env, ">=", applyGe, this);
-    addPrimitive(env, "eq?", applyEqualP, this);
+
+    addPrimitive(env, "eq?",    applyEqP,    this);
+    addPrimitive(env, "eqv?",   applyEqvP,   this);
+    addPrimitive(env, "equal?", applyEqualP, this);
 
     addPrimitive(env, "list", applyList, this);
     addPrimitive(env, "cons", applyCons, this);

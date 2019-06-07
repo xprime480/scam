@@ -44,13 +44,12 @@ string call_scam(string const & input)
         return "** Internal Test Error initializing test environment";
     }
 
-
     Accumulator * accumulator = standardMemoryManager.make<Accumulator>();
     engine.setCont(accumulator);
     ReadEvalString helper(&engine, input);
     helper.run();
 
     string rv = accumulator->getResult();
-    
+
     return rv;
 }

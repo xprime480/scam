@@ -1,0 +1,19 @@
+Test the eq? function for special cases
+
+;[skip]
+
+[name]
+Eq? Special
+
+[input]
+
+(eq?)
+(eq? #t)
+(eq? #t #t #t)
+
+[result]
+eq?: parameter 1 missing
+eq?: parameter 2 missing
+eq?: 2 parameter needed, 3 given
+
+

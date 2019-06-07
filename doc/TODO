@@ -40,3 +40,6 @@
 
 * Fix the build process -- some files are recompiled even when it is not
   necessary to do so.
+
+* '{:a 1}' does not scan as a dictionary literal but '{ :a 1 }'.  Make
+  the former work.

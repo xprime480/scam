@@ -33,7 +33,7 @@ Substring functions
 "ll"
 "World"
 "Hello, World"
-string-copy: excess arguments found: '(-1 555)'
-string-copy: excess arguments found: '(555)'
-string-copy: excess arguments found: '(0)'
+string-copy: invalid argument list
+string-copy: invalid argument list
+string-copy: invalid argument list
 "ll"

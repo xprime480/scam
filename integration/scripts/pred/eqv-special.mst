@@ -1,0 +1,19 @@
+Test the eqv? function for special cases
+
+;[skip]
+
+[name]
+Eqv? Special
+
+[input]
+
+(eqv?)
+(eqv? #t)
+(eqv? #t #t #t)
+
+[result]
+eqv?: parameter 1 missing
+eqv?: parameter 2 missing
+eqv?: 2 parameter needed, 3 given
+
+

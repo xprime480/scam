@@ -22,8 +22,10 @@ CharStreamTokenizer::~CharStreamTokenizer()
 
 Token CharStreamTokenizer::next()
 {
+    static const Token eof(TokenType::TT_END_OF_INPUT, "");
+
     if ( ! ok ) {
-        return none;
+        return eof;
     }
 
     Token rv;
@@ -34,7 +36,6 @@ Token CharStreamTokenizer::next()
     }
 
     if ( ! stream.peek() ) {
-        static const Token eof(TokenType::TT_END_OF_INPUT, "");
         return eof;
     }
 

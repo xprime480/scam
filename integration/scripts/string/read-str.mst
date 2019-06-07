@@ -21,11 +21,11 @@ Read operations on strings
 
 [result]
 [keep 8]
-string-length: expected string for parm 'string', got ':i-am-no-string'
+string-length: expected string for parameter 1 got ':i-am-no-string'
 0
 12
-string-ref: expected index for parm 'k', got '0'
-string-ref: expected index for parm 'k', got '-1'
-string-ref: expected index for parm 'k', got '99'
+string-ref: expected index into parameter 1 ('""') for parameter 2 got '0'
+string-ref: expected index into parameter 1 ('"hello, world"') for parameter 2 got '-1'
+string-ref: expected index into parameter 1 ('"hello, world"') for parameter 2 got '99'
 #\h
 #\o

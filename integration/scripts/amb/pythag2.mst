@@ -18,9 +18,9 @@ Pythag
            (x (integers-between 1 z))
            (y (integers-between x z)))
       (begin
-        (require (eq? (+ (square x)
-                         (square y))
-                      (square z)))
+        (require (= (+ (square x)
+                       (square y))
+                    (square z)))
         `((x ,x) (y ,y) (z ,z))))))
 
 (pythagorean-triples)

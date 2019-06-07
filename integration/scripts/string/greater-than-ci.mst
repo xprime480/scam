@@ -26,9 +26,9 @@ This operator is not case sensitive
 
 [result]
 [keep 9]
-string-ci>?: excess arguments found: '(:not-a-string)'
-string-ci>?: 0 values found, wanted at least 2 for key string-ci>? input '()'
-string-ci>?: 1 values found, wanted at least 2 for key string-ci>? input '("")'
+string-ci>?: invalid parameter list
+string-ci>?: found 0 values, wanted at least 2
+string-ci>?: found 1 values, wanted at least 2
 #f
 #f
 #t

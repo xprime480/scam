@@ -3,4 +3,4 @@
                  ()
                  (init ())))
 
-(eq? Trivial Trivial)
+(equal? Trivial Trivial)

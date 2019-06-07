@@ -76,7 +76,7 @@ void ScamTest::run()
         actual = e.what();
     }
     catch ( ... ) {
-        actual = "Unknown Exception";
+        cerr << "\t...\n";
     }
 
     if ( actual == expected ) {

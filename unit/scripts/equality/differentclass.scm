@@ -8,4 +8,4 @@
                  (x)
                  (init (q c) (assign! x (+ 3 q c)))))
 
-(eq? Trivial Other)
+(equal? Trivial Other)

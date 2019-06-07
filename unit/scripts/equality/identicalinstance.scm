@@ -3,4 +3,4 @@
 
 (define it (Trivial))
 
-(eq? it it)
+(equal? it it)

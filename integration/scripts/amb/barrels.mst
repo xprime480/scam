@@ -34,10 +34,10 @@ Barrels
            (barrel-2 (one-of (exclude (list barrel-1) wine)))
            (purchase (some-of (exclude (list barrel-1 barrel-2) wine))))
       (begin
-        ;(trace (list barrel-1 barrel-2 (sum purchase)))
-        (require (eq? (* 2 (+ barrel-1 barrel-2))
-                      (sum purchase)))
-        ;(trace (list "solution: " beer))
+        ;;;;(trace (list barrel-1 barrel-2 (sum purchase)))
+        (require (= (* 2 (+ barrel-1 barrel-2))
+                    (sum purchase)))
+        ;;;;(trace (list "solution: " beer))
         beer))))
 
 (barrels-of-fun)

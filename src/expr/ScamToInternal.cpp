@@ -10,6 +10,17 @@
 using namespace scam;
 using namespace std;
 
+char scam::asBool(ScamValue data)
+{
+    if ( ! isBoolean(data) ) {
+        stringstream s;
+        s << "Cannot convert <" << writeValue(data) << "> to boolean";
+        throw ScamException(s.str());
+    }
+
+    return BOOLVAL(data);
+}
+
 char scam::asChar(ScamValue data)
 {
     if ( ! isChar(data) ) {

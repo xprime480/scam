@@ -1,0 +1,28 @@
+Test the eqv? function on atoms
+
+;[skip]
+
+[name]
+Eqv for atoms
+
+[input]
+
+(list (eqv? #t #t)
+      (eqv? #f #f)
+      (eqv? #t #f))
+
+(list (eqv? 'sym1 'sym1)
+      (eqv? 'sym1 'sym2))
+
+(list (eqv? #\a #\a)
+      (eqv? #\a #\b))
+
+(list (eqv? '() '())
+      (eqv? '() 2))
+
+
+[result]
+(#t #t #f)
+(#t #f)
+(#t #f)
+(#t #f)

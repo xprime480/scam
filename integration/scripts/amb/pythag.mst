@@ -18,9 +18,9 @@ Pythag
           (y (amb 1 2 3 4 5 6 7 8))
           (z (amb 1 2 3 4 5 6 7 8 9 10 11 12)))
       (begin
-        (require (eq? (+ (square x)
-                         (square y))
-                      (square z)))
+        (require (= (+ (square x)
+                       (square y))
+                    (square z)))
         `((x ,x) (y ,y) (z ,z))))))
 
 (pythagorean-triples)

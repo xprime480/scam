@@ -18,7 +18,6 @@ namespace
     extern bool equalsVector(ScamValue lhs, ScamValue rhs);
 }
 
-
 bool scam::equals(ScamValue lhs, ScamValue rhs)
 {
     bool rv = false;

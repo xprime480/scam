@@ -4,7 +4,7 @@
 #include "prim/CarCdr.hpp"
 #include "prim/Cdr.hpp"
 #include "prim/Cons.hpp"
-#include "prim/EqualP.hpp"
+#include "prim/EquivOps.hpp"
 #include "prim/Error.hpp"
 #include "prim/Include.hpp"
 #include "prim/Instantiate.hpp"

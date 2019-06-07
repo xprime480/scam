@@ -27,9 +27,9 @@ String Less Than or Equal
 
 [result]
 [keep 9]
-string<=?: excess arguments found: '(:not-a-string)'
-string<=?: 0 values found, wanted at least 2 for key string<=? input '()'
-string<=?: 1 values found, wanted at least 2 for key string<=? input '("")'
+string<=?: invalid parameter list
+string<=?: found 0 values, wanted at least 2
+string<=?: found 1 values, wanted at least 2
 #t
 #t
 #t

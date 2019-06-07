@@ -61,7 +61,7 @@
 (define nth
   (lambda (idx some)
     (if (cons? some)
-        (if (eq? 0 idx)
+        (if (= 0 idx)
             (car some)
             (nth (- idx 1) (cdr some)))
         (if (vector? some)
@@ -79,7 +79,7 @@
 (define even?
   (lambda (x)
     (and (integer? x)
-         (eq? 0 (% x 2)))))
+         (= 0 (% x 2)))))
 
 (define odd?
   (lambda (x)
@@ -96,7 +96,7 @@
         #f
         (let ((item (car lst))
               (tail (cdr lst)))
-          (or (eq? val item) (member? val tail))))))
+          (or (equal? val item) (member? val tail))))))
 
 (define distinct?
   (lambda (lst)
@@ -175,7 +175,7 @@
 
             ;; check for the "else" keyword
             ;;
-            (if (eq? test 'else)
+            (if (equal? test 'else)
                 (if (nil? forms)
                     ''else
                     `(begin ,@forms))
@@ -191,7 +191,7 @@
 
                     ;; check for the "=>" form
                     ;;
-                    (if (eq? (car forms) '=>)
+                    (if (equal? (car forms) '=>)
                         `(let ((testval ,test))
                            (if testval
                                (apply ,@(car (cdr forms))

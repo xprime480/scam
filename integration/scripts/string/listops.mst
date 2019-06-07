@@ -27,5 +27,5 @@ List-String conversions
 (#\b)
 ""
 "foo"
-string->list: no sublist found for key chars input '(2)'
-string->list: excess parameters in sublist for key chars input '(2 #\x)'
+list->string: expected list for parameter 1 got '2'
+list->string: list for parameter 1 contains invalid value '2'
