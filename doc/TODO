@@ -43,3 +43,6 @@
 
 * '{:a 1}' does not scan as a dictionary literal but '{ :a 1 }'.  Make
   the former work.
+
+* Need a better unit test framework.  Current one is too much boilerplate.
+  A pure scam framework would be ideal :).
