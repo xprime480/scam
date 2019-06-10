@@ -1,0 +1,25 @@
+Test the boolean=? function
+
+;[skip]
+
+[name]
+Equality of Booleans
+
+[input]
+
+(load "lib/prelude.scm")
+
+(boolean=?)
+(boolean=? #t)
+
+(list
+ (boolean=? #t #t #t)
+ (boolean=? #f #f #f #f)
+ (boolean=? #t #f #t)
+ (boolean=? #t 2))
+
+[result]
+[keep 3]
+Expected 2 parameters; got 0
+Expected 2 parameters; got 1
+(#t #t #f #f)

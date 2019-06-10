@@ -81,16 +81,6 @@ TEST_F(PredicateTest, VectorTestNotVector)
     expectFalse("(vector? 2)");
 }
 
-TEST_F(PredicateTest, BooleanTestBoolean)
-{
-    expectTrue("(bool? (> 2 0))");
-}
-
-TEST_F(PredicateTest, BooleanTestNotBoolean)
-{
-    expectFalse("(bool? '(> 2 0))");
-}
-
 TEST_F(PredicateTest, CharTestChar)
 {
     expectTrue("(char? #\\a)");
@@ -98,7 +88,7 @@ TEST_F(PredicateTest, CharTestChar)
 
 TEST_F(PredicateTest, CharTestNotChar)
 {
-    expectFalse("(bool? 12.34)");
+    expectFalse("(char? 12.34)");
 }
 
 TEST_F(PredicateTest, StringTestEmptyString)

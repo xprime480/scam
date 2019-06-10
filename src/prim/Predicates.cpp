@@ -1,22 +1,12 @@
 #include "prim/Predicates.hpp"
 
 #include "Continuation.hpp"
-#include "ScamFwd.hpp"
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueFactory.hpp"
-#include "input/SingletonParser.hpp"
 #include "util/ArgListHelper.hpp"
-
-#include <functional>
 
 using namespace scam;
 using namespace std;
-
-namespace
-{
-    using ExprPredicate = function<bool(const ScamData *)>;
-}
-
 
 #if defined(DEFINE_PREDICATE)
 #error "DEFINE_PREDICATE already defined"
@@ -27,17 +17,19 @@ namespace
                         Continuation * cont,                    \
                         ScamEngine * engine)                    \
         {                                                       \
-            static const string name { label };                 \
-            SingletonParser * parser = getSingletonOfAnythingParser(); \
-            if ( ! parser->accept(args) ) {                     \
-                failedArgParseMessage(name.c_str(), "(form)", args, cont); \
+            static const char * name { label };                 \
+            ArgListHelper helper(args);                         \
+                                                                \
+            ScamValue arg;                                      \
+            if ( ! wantObject(name, helper, cont, arg) ) {      \
+                return;                                         \
             }                                                   \
-            else {                                              \
-                ScamValue arg = parser->get();                  \
-                bool answer = pred(arg);                        \
-                ScamValue rv = makeBoolean(answer);             \
-                cont->run(rv);                                  \
+            if ( ! finishArgs(name, helper, cont) ) {           \
+                return;                                         \
             }                                                   \
+            bool answer = pred(arg);                            \
+            ScamValue rv = makeBoolean(answer);                 \
+            cont->run(rv);                                      \
         }
 
 DEFINE_PREDICATE(NilP, "nil?", isNil)
@@ -45,7 +37,7 @@ DEFINE_PREDICATE(ErrorP, "error?", error)
 DEFINE_PREDICATE(ConsP, "cons?", isCons)
 DEFINE_PREDICATE(ListP, "list?", isList)
 DEFINE_PREDICATE(VectorP, "vector?", isVector)
-DEFINE_PREDICATE(BoolP, "bool?", isBoolean)
+DEFINE_PREDICATE(BoolP, "boolean?", isBoolean)
 DEFINE_PREDICATE(CharP, "char?", isChar)
 DEFINE_PREDICATE(StringP, "string?", isString)
 DEFINE_PREDICATE(SymbolP, "symbol?", isSymbol)

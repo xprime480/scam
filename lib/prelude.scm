@@ -227,4 +227,21 @@
   (lambda (str start end)
     (string-copy str start end)))
 
+(define type-helper=?
+  (lambda (pred bs)
+    (if (nil? bs)
+        #t
+        (if (= 1 (length bs))
+            (pred (car bs))
+            (let ((fst (car bs))
+                  (snd (car (cdr bs)))
+                  (rst (cdr bs)))
+              (and (pred fst)
+                   (eqv? fst snd)
+                   (type-helper=? pred rst)))))))
+
+(define boolean=?
+  (lambda (b1 b2 . bs)
+    (type-helper=? boolean? (cons b1 (cons b2 bs)))))
+
 1

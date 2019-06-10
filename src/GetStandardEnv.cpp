@@ -81,7 +81,7 @@ void ScamEngine::getStandardEnv()
     addPrimitive(env, "cons?", applyConsP, this);
     addPrimitive(env, "list?", applyListP, this);
     addPrimitive(env, "vector?", applyVectorP, this);
-    addPrimitive(env, "bool?", applyBoolP, this);
+    addPrimitive(env, "boolean?", applyBoolP, this);
     addPrimitive(env, "char?", applyCharP, this);
     addPrimitive(env, "string?", applyStringP, this);
     addPrimitive(env, "symbol?", applySymbolP, this);
