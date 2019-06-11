@@ -10,6 +10,10 @@ ReplTokenizer::ReplTokenizer()
 {
 }
 
+void ReplTokenizer::mark() const
+{
+}
+
 Token ReplTokenizer::next()
 {
     static Token end(TokenType::TT_END_OF_INPUT, "");

@@ -210,6 +210,9 @@ void ScamEngine::mark() const
         backtracker->mark();
     }
     cont->mark();
+    for ( const auto & i : input ) {
+        i.mark();
+    }
     GlobalWorkQueue.mark();
 }
 

@@ -109,10 +109,10 @@ namespace scam
 
     /***** **** NEW WORLD CODE *************/
     extern bool wantObject(const char * name,
-			   ArgListHelper & helper,
-			   Continuation * cont,
-			   ScamValue & value);
-    
+                           ArgListHelper & helper,
+                           Continuation * cont,
+                           ScamValue & value);
+
     extern bool wantChar(const char * name,
                          ArgListHelper & helper,
                          Continuation * cont,
@@ -144,7 +144,7 @@ namespace scam
     {
         using type = std::function<T(ScamValue)>;
     };
-    
+
     template <typename T>
     T wantOptional(const char * name,
                    ArgListHelper & helper,

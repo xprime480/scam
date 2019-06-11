@@ -27,7 +27,7 @@ FilePort::FilePort(const char * filename, unsigned int rw)
         stringstream s;
         char buf[1024];
         s << "Unable to open file " << filename
-	  << " (cwd = " << getcwd(buf, 1024) << ")";
+          << " (cwd = " << getcwd(buf, 1024) << ")";
         throw ScamException(s.str());
     }
 }

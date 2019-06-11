@@ -10,6 +10,7 @@ namespace scam
     public:
         virtual ~Tokenizer() {}
         virtual Token next() = 0;
+        virtual void mark() const = 0;
     };
 
     extern bool isDelimiter(char c);

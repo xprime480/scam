@@ -12,6 +12,8 @@ namespace scam
     public:
         ReplTokenizer();
 
+        void mark() const override;
+
         Token next() override;
 
         void bufferInput(std::string input);

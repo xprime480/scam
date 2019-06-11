@@ -10,6 +10,10 @@ StaticTokenizer::StaticTokenizer(vector<Token> const & tokens)
 {
 }
 
+void StaticTokenizer::mark() const
+{
+}
+
 Token StaticTokenizer::next()
 {
     if ( index >= tokens.size() ) {

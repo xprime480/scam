@@ -4,7 +4,6 @@
 #include "util/ManagedObject.hpp"
 
 #include "ScamFwd.hpp"
-#include "port/ScamPort.hpp"
 
 #include <functional>
 #include <string>

@@ -10,6 +10,8 @@ namespace scam
     public:
         StringCharStream(std::string const & input);
 
+        void mark() const override;
+
         char peek() const override;
         std::string strPeek(size_t n) const override;
         char getCurrent() override;
@@ -26,7 +28,7 @@ namespace scam
         const std::string input;
         const char * base;
         unsigned long int offset;
-	unsigned long int end;
+        unsigned long int end;
     };
 }
 

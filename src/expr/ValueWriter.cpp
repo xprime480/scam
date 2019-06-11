@@ -7,6 +7,7 @@
 #include "expr/TypePredicates.hpp"
 #include "input/LambdaParser.hpp"
 #include "input/ParameterListParser.hpp"
+#include "port/ScamPort.hpp"
 
 #include <sstream>
 

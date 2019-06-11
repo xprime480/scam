@@ -11,6 +11,10 @@ StringCharStream::StringCharStream(const string & input)
 {
 }
 
+void StringCharStream::mark() const
+{
+}
+
 char StringCharStream::peek() const
 {
     if ( offset < end ) {

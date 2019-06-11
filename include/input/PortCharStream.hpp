@@ -15,6 +15,8 @@ namespace scam
         PortCharStream(ScamValue value);
         ~PortCharStream();
 
+        void mark() const override;
+
         char peek() const override;
         std::string strPeek(size_t n) const override;
         char getCurrent() override;
@@ -28,6 +30,7 @@ namespace scam
                                PositionType to) const override;
 
     private:
+        ScamValue value;
         ScamPort * port;
         mutable char * buffer;
         size_t offset;

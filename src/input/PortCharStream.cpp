@@ -10,7 +10,8 @@ using namespace scam;
 using namespace std;
 
 PortCharStream::PortCharStream(ScamValue value)
-    : port(asPort(value))
+    : value(value)
+    , port(asPort(value))
     , buffer(nullptr)
     , offset(0)
     , capacity(0)
@@ -23,6 +24,11 @@ PortCharStream::PortCharStream(ScamValue value)
 PortCharStream::~PortCharStream()
 {
     free(buffer);
+}
+
+void PortCharStream::mark() const
+{
+    value->mark();
 }
 
 char PortCharStream::peek() const
@@ -97,13 +103,13 @@ size_t PortCharStream::fillBuffer(size_t n) const
     if ( 0 == n ) {
         // we want all the input from the port.  If the port is
         // infinite, we will never return until we run out of memory;
-	// if the port is blocked, we hang
+        // if the port is blocked, we hang
         while ( ! port->eof() ) {
-	    size_t old = capacity;
+            size_t old = capacity;
             fillBuffer(10240);
-	    if ( old == capacity ) {
-		break;		// hack to avoid the above problems
-	    }
+            if ( old == capacity ) {
+                break;          // hack to avoid the above problems
+            }
         }
         return capacity - offset;
     }

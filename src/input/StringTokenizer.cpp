@@ -9,6 +9,12 @@ StringTokenizer::StringTokenizer(string const & input)
 {
 }
 
+void StringTokenizer::mark() const
+{
+    stream.mark();
+    tokenizer.mark();
+}
+
 Token StringTokenizer::next()
 {
     return tokenizer.next();

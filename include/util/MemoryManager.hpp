@@ -1,22 +1,22 @@
 #if ! defined(MEMORYMANAGER_H)
 #define MEMORYMANAGER_H 1
 
+#include "util/ManagedObject.hpp"
+
 #include <functional>
 #include <memory>
 #include <vector>
-
-#include "util/ManagedObject.hpp"
 
 namespace scam
 {
     class MemoryManager
     {
     public:
-	struct Hook
-	{
-	    virtual void operator()() const = 0;
-	};
-	
+        struct Hook
+        {
+            virtual void operator()() const = 0;
+        };
+
         static constexpr size_t DEFAULT_SIZE = 2 << 16;
 
         MemoryManager(size_t size = DEFAULT_SIZE);

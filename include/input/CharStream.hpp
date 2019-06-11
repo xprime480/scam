@@ -18,6 +18,8 @@ namespace scam
     public:
         virtual ~CharStream() {}
 
+        virtual void mark() const = 0;
+
         virtual char peek() const = 0;
         virtual std::string strPeek(size_t n) const = 0;
         virtual char getCurrent() = 0;
@@ -27,6 +29,7 @@ namespace scam
         virtual std::string allInput(PositionType where) const = 0;
 
         virtual std::string strBetween(PositionType from) const = 0;
+
         virtual std::string strBetween(PositionType from,
                                        PositionType to) const = 0;
     };

@@ -7,6 +7,7 @@
 #include "expr/ValueFactory.hpp"
 #include "input/ClassDefParser.hpp"
 #include "input/LambdaParser.hpp"
+#include "port/ScamPort.hpp"
 
 using namespace scam;
 using namespace std;

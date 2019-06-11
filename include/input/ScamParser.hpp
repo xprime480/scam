@@ -15,6 +15,8 @@ namespace scam
     public:
         ScamParser(Tokenizer & tokenizer);
 
+        void mark() const;
+
         ScamValue parseExpr() const;
 
     private:

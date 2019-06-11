@@ -1,0 +1,23 @@
+Test the cons? function
+
+;[skip]
+
+[name]
+Type Checker of Pairs
+
+[input]
+
+(cons?)
+(cons? '(a . b) (list 1 2 3))
+
+(list
+ (cons? (cons 1 2))
+ (cons? (list 1 2 3))
+ (cons? 2)
+ (cons? '()))
+
+[result]
+[keep 0]
+cons?: parameter 1 missing
+cons?: 1 parameter needed, 2 given
+(#t #t #f #f)

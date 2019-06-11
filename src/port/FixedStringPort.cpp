@@ -22,7 +22,6 @@ FixedStringPort::~FixedStringPort()
 
 bool FixedStringPort::eof() const
 {
-
     return nextRead == contents.size();
 }
 

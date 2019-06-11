@@ -1,15 +1,14 @@
 #if ! defined(VALUEFACTORY_HPP)
 #define VALUEFACTORY_HPP 1
 
+#include "expr/ScamData.hpp"
 #include "ScamFwd.hpp"
 #include "expr/DictOps.hpp"
-#include "expr/ScamData.hpp"
 #include "util/MemoryManager.hpp"
 
 #include <sstream>
 #include <string>
 #include <vector>
-
 
 namespace scam
 {

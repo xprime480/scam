@@ -8,6 +8,7 @@
 #include "expr/TypePredicates.hpp"
 #include "input/ScamParser.hpp"
 #include "input/StringTokenizer.hpp"
+#include "port/ScamPort.hpp"
 #include "util/ReadEvalStream.hpp"
 
 using namespace scam;

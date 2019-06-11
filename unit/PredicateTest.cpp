@@ -31,21 +31,6 @@ TEST_F(PredicateTest, NilTestNotNil)
     expectFalse("(nil? 2)");
 }
 
-TEST_F(PredicateTest, ConsTestCons)
-{
-    expectTrue("(cons? (cons 1 2))");
-}
-
-TEST_F(PredicateTest, ConsTestList)
-{
-    expectTrue("(cons? (list 1 2 3))");
-}
-
-TEST_F(PredicateTest, ConsTestNotCons)
-{
-    expectFalse("(cons? 2)");
-}
-
 TEST_F(PredicateTest, ListTestNil)
 {
     expectTrue("(list? ())");

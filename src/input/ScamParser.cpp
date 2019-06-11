@@ -19,6 +19,11 @@ ScamParser::ScamParser(Tokenizer & tokenizer)
 {
 }
 
+void ScamParser::mark() const
+{
+    tokenizer.mark();
+}
+
 ScamValue ScamParser::parseExpr() const
 {
     ScamValue expr = parseSubExpr();

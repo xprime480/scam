@@ -20,6 +20,11 @@ CharStreamTokenizer::~CharStreamTokenizer()
 {
 }
 
+void CharStreamTokenizer::mark() const
+{
+    stream.mark();
+}
+
 Token CharStreamTokenizer::next()
 {
     static const Token eof(TokenType::TT_END_OF_INPUT, "");

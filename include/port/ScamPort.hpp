@@ -6,6 +6,9 @@
 #include <cstddef>
 #include <string>
 
+#include "expr/ValueFactory.hpp"
+#include <iostream>
+
 namespace scam
 {
     class ScamPort
@@ -20,7 +23,7 @@ namespace scam
         bool isReadable() const;
         bool isWriteable() const;
 
-	virtual bool eof() const = 0;
+        virtual bool eof() const = 0;
 
         virtual char getChar() = 0;
         virtual size_t get(char * buf, size_t max) = 0;
