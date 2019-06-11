@@ -140,7 +140,7 @@ void ScamData::mark() const
         CLOSUREENV(this)->mark();
         break;
 
-    case ScamData::Cons:
+    case ScamData::Pair:
         CAR(this)->mark();
         CDR(this)->mark();
         break;

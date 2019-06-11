@@ -38,7 +38,7 @@ bool ListParser::accept(ScamValue expr)
 
     clearValue();
 
-    if ( ! isCons(expr) && ! isNil(expr) ) {
+    if ( ! isPair(expr) && ! isNil(expr) ) {
         return false;
     }
 
@@ -48,7 +48,7 @@ bool ListParser::accept(ScamValue expr)
     }
 
     ScamValue current = expr;
-    while ( isCons(current) ) {
+    while ( isPair(current) ) {
         ScamValue item = getCar(current);
         current = getCdr(current);
         if ( ! itemParser->accept(item) ) {

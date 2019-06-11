@@ -24,7 +24,7 @@ namespace
     extern bool compareBoolean(ScamValue obj1, ScamValue obj2);
     extern bool compareChar(ScamValue obj1, ScamValue obj2);
     extern bool compareStringLike(ScamValue obj1, ScamValue obj2);
-    extern bool compareCons(ScamValue obj1, ScamValue obj2);
+    extern bool comparePair(ScamValue obj1, ScamValue obj2);
     extern bool compareSequence(ScamValue obj1, ScamValue obj2);
     extern bool compareDict(ScamValue obj1, ScamValue obj2);
 
@@ -137,7 +137,7 @@ namespace
         return STRVAL(obj1) == STRVAL(obj2);
     }
 
-    bool compareCons(ScamValue obj1, ScamValue obj2)
+    bool comparePair(ScamValue obj1, ScamValue obj2)
     {
         return (doEqual(getCar(obj1), getCar(obj2)) &&
                 doEqual(getCdr(obj1), getCdr(obj2)));
@@ -216,7 +216,7 @@ namespace
                 break;
 
             case ScamData::String:
-            case ScamData::Cons:
+            case ScamData::Pair:
             case ScamData::Vector:
             case ScamData::ByteVector:
             case ScamData::Dict:
@@ -255,8 +255,8 @@ namespace
                 rv = compareStringLike(obj1, obj2);
                 break;
 
-            case ScamData::Cons:
-                rv = compareCons(obj1, obj2);
+            case ScamData::Pair:
+                rv = comparePair(obj1, obj2);
                 break;
 
             case ScamData::Vector:

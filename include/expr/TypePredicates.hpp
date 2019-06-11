@@ -31,7 +31,7 @@ namespace scam
     extern bool isSpecialNumeric(ScamValue data);
 
     extern bool isNil(ScamValue data);
-    extern bool isCons(ScamValue data);
+    extern bool isPair(ScamValue data);
     extern bool isList(ScamValue data);
 
     extern bool isVector(ScamValue data);

@@ -34,7 +34,7 @@ void CdrContinuation::run(ScamValue expr)
         data.original->run(expr);
     }
     else {
-        ScamValue e = makeCons(data.car, expr);
+        ScamValue e = makePair(data.car, expr);
         data.original->run(e);
     }
 }

@@ -127,9 +127,9 @@ bool scam::isNil(ScamValue data)
     return data->type == ScamData::Nil;
 }
 
-bool scam::isCons(ScamValue data)
+bool scam::isPair(ScamValue data)
 {
-    return data->type == ScamData::Cons;
+    return data->type == ScamData::Pair;
 }
 
 bool scam::isList(ScamValue data)
@@ -137,7 +137,7 @@ bool scam::isList(ScamValue data)
     if ( isNil(data) ) {
         return true;
     }
-    if ( isCons(data) ) {
+    if ( isPair(data) ) {
         ScamValue cdr = CDR(data);
         return isList(cdr);
     }

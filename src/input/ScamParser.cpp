@@ -161,7 +161,7 @@ ScamValue ScamParser::parseList() const
     if ( error(cdr) ) {
         return cdr;
     }
-    return makeCons(car, cdr);
+    return makePair(car, cdr);
 }
 
 ScamValue ScamParser::parseDotContext() const
@@ -340,7 +340,7 @@ ScamValue ScamParser::expand_reader_macro(std::string const & text) const
 
     ScamValue sym    = makeSymbol(name);
     ScamValue listed = makeList(expr);
-    return makeCons(sym, listed);
+    return makePair(sym, listed);
 }
 
 namespace

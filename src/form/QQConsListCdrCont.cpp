@@ -51,14 +51,14 @@ void QQConsListCdrCont::run(ScamValue expr)
 void QQConsListCdrCont::handle(ScamValue expr)
 {
     if ( ! check_splice(expr) ) {
-        ScamValue rv = makeCons(car, expr);
+        ScamValue rv = makePair(car, expr);
         cont->run(rv);
     }
 }
 
 bool QQConsListCdrCont::check_splice(ScamValue expr)
 {
-    if ( isCons(car) ) {
+    if ( isPair(car) ) {
         ScamValue first = nthcar(car, 0);
         if ( isSymbol(first) ) {
             if ( writeValue(first) == writeValue(spliceTag) ) {
@@ -78,7 +78,7 @@ void QQConsListCdrCont::do_splice(ScamValue expr)
 
     while ( --count > 0 ) {
         ScamValue form = nthcar(car, count);
-        f = makeCons(form, f);
+        f = makePair(form, f);
     }
 
     cont->run(f);

@@ -52,6 +52,6 @@ void ClassInitWorker::run()
 
     Continuation * newCont
         = standardMemoryManager.make<ClassInitCont>(instance, cont);
-    ScamValue newArgs = makeCons(initSym, args);
+    ScamValue newArgs = makePair(initSym, args);
     apply(instance, newArgs, newCont, env);
 }

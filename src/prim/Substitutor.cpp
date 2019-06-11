@@ -23,8 +23,8 @@ ScamValue Substitutor::resolve_value(ScamValue expr)
 {
     ScamValue rv;
 
-    if ( isCons(expr) ) {
-        rv = resolve_cons(expr);
+    if ( isPair(expr) ) {
+        rv = resolve_pair(expr);
     }
     else if ( isVector(expr) ) {
         rv = resolve_vector(expr);
@@ -47,9 +47,9 @@ ScamValue Substitutor::map_value(ScamValue val)
     return resolve_value(val);
 }
 
-ScamValue Substitutor::resolve_cons(ScamValue expr)
+ScamValue Substitutor::resolve_pair(ScamValue expr)
 {
-    return map_cons(expr);
+    return map_pair(expr);
 }
 
 ScamValue Substitutor::resolve_vector(ScamValue expr)
@@ -78,7 +78,7 @@ ScamValue Substitutor::resolve_keyword(ScamValue expr)
         return make_common_error(s.str().c_str());
     }
 
-    helper = makeCons(expr, helper);
+    helper = makePair(expr, helper);
     ScamValue val = dictGet(answers, expr);
     ScamValue rv  = resolve_value(val);
     helper = nthcdr(helper, 0);

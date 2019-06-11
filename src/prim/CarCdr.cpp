@@ -22,7 +22,7 @@ ScamValue scam::carCdrCommon(ScamValue args,
         return rv;
     }
 
-    ConsParser * cp = standardMemoryManager.make<ConsParser>();
+    PairParser * cp = standardMemoryManager.make<PairParser>();
     SingletonParser * parser =
         standardMemoryManager.make<SingletonParser>(cp);
     if ( ! parser->accept(args) ) {

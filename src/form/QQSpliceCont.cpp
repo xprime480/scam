@@ -34,7 +34,7 @@ void QQSpliceCont::run(ScamValue expr)
         cont->run(expr);
     }
     else {
-        ScamValue internal = makeCons(spliceTag, expr);
+        ScamValue internal = makePair(spliceTag, expr);
         cont->run(internal);
     }
 }

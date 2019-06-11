@@ -26,8 +26,8 @@ void scam::applyCons(ScamValue args,
     else {
         ScamValue car = parser->get(0);
         ScamValue cdr = parser->get(1);
-        ScamValue cons = makeCons(car, cdr);
-        cont->run(cons);
+        ScamValue pair = makePair(car, cdr);
+        cont->run(pair);
     }
 }
 

@@ -28,7 +28,7 @@ using namespace std;
 
 void scam::eval(ScamValue value, Continuation * cont, Env * env)
 {
-    if ( isCons(value) ) {
+    if ( isPair(value) ) {
         workQueueHelper<ConsWorker>(cont, env, CAR(value), CDR(value));
     }
 
@@ -169,7 +169,7 @@ scam::apply(ScamValue value, ScamValue args, Continuation * cont, Env * env)
 
 void scam::mapEval(ScamValue value, Continuation * cont, Env * env)
 {
-    if ( isCons(value) ) {
+    if ( isPair(value) ) {
         workQueueHelper<MapWorker>(cont, env, CAR(value), CDR(value));
     }
 

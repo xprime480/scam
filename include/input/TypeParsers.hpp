@@ -76,7 +76,7 @@ namespace scam
 
     using NumericParser = TypeParser<ScamData::Numeric>;
 
-    using ConsParser    = TypeParser<ScamData::Cons>;
+    using PairParser    = TypeParser<ScamData::Pair>;
     using DictParser    = TypeParser<ScamData::Dict>;
     using VectorParser  = TypeParser<ScamData::Vector>;
 }

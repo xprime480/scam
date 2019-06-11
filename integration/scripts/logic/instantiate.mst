@@ -17,13 +17,13 @@ Instantiate
        (not (equal? :X result))))
 
 (let ((result (instantiate '(:Q))))
-  (and (cons? result)
+  (and (pair? result)
        (let ((r2 (car result)))
          (and (keyword? r2)
               (not (equal? :Q r2))))))
 
 (let ((result (instantiate '(:Q :Q))))
-  (and (cons? result)
+  (and (pair? result)
        (let ((r2 (car result))
              (r3 (car (cdr result))))
          (and (keyword? r2)
@@ -32,7 +32,7 @@ Instantiate
               (not (equal? :Q r2))))))
 
 (let ((result (instantiate '(:Q :E :Q))))
-  (and (cons? result)
+  (and (pair? result)
        (let ((r2 (car result))
              (r3 (car (cdr result)))
              (r4 (car (cdr (cdr result)))))

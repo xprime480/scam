@@ -42,7 +42,7 @@ bool scam::equals(ScamValue lhs, ScamValue rhs)
         rv = (CHARVAL(lhs) == CHARVAL(rhs));
     }
 
-    else if ( isCons(lhs) ) {
+    else if ( isPair(lhs) ) {
         rv = (equals(CAR(lhs), CAR(rhs)) && equals(CDR(lhs), CDR(rhs)));
     }
 

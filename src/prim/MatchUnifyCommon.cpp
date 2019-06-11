@@ -96,9 +96,9 @@ ScamValue MatchUnifyCommon::check_keyword_reversed(ScamValue dict,
 }
 
 ScamValue
-MatchUnifyCommon::check_cons(ScamValue dict, ScamValue lhs, ScamValue rhs)
+MatchUnifyCommon::check_pair(ScamValue dict, ScamValue lhs, ScamValue rhs)
 {
-    if ( isCons(lhs) && isCons(rhs) ) {
+    if ( isPair(lhs) && isPair(rhs) ) {
         ScamValue lhsCar  = getCar(lhs);
         ScamValue rhsCar  = getCar(rhs);
         ScamValue carMatch = exec(dict, lhsCar, rhsCar);
@@ -181,7 +181,7 @@ ScamValue MatchUnifyCommon::exec(ScamValue dict, ScamValue lhs, ScamValue rhs)
          &MatchUnifyCommon::check_literals,
          &MatchUnifyCommon::check_keyword,
          &MatchUnifyCommon::check_keyword_reversed,
-         &MatchUnifyCommon::check_cons,
+         &MatchUnifyCommon::check_pair,
          &MatchUnifyCommon::check_vector,
          &MatchUnifyCommon::check_dict
     };

@@ -18,7 +18,7 @@ namespace
 {
     extern void writeByteVector(std::stringstream & s, ScamValue data);
     extern void writeClosure(std::stringstream & s, ScamValue data);
-    extern void writeCons(std::stringstream & s, ScamValue data);
+    extern void writePair(std::stringstream & s, ScamValue data);
     extern void writeDict(std::stringstream & s, ScamValue data);
     extern void writeNumeric(std::stringstream & s, ScamValue data);
     extern void writeVector(std::stringstream & s, ScamValue data);
@@ -54,8 +54,8 @@ string scam::writeValue(ScamValue data)
             writeClosure(s, data);
             break;
 
-        case ScamData::Cons:
-            writeCons(s, data);
+        case ScamData::Pair:
+            writePair(s, data);
             break;
 
         case ScamData::Dict:
@@ -167,13 +167,13 @@ namespace
         s << ")";
     }
 
-    void writeCons(stringstream & s, ScamValue data)
+    void writePair(stringstream & s, ScamValue data)
     {
         s << "(";
         s << writeValue(CAR(data));
         ScamValue next = CDR(data);
         while ( ! isNil(next) ) {
-            if ( isCons(next) ) {
+            if ( isPair(next) ) {
                 s << " " << writeValue(getCar(next));
                 next = getCdr(next);
             }
@@ -330,8 +330,8 @@ namespace
                 s << "closure";
                 break;
 
-            case ScamData::Cons:
-                s << "cons";
+            case ScamData::Pair:
+                s << "pair";
                 break;
 
             case ScamData::Dict:

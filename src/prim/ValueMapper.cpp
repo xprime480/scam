@@ -45,11 +45,11 @@ ScamValue ValueMapper::map_vector(ScamValue expr)
     return rv;
 }
 
-ScamValue ValueMapper::map_cons(ScamValue expr)
+ScamValue ValueMapper::map_pair(ScamValue expr)
 {
     ScamValue head = nthcar(expr, 0);
     ScamValue tail = nthcdr(expr, 0);
     ScamValue newHead = map_value(head);
     ScamValue newTail = map_value(tail);
-    return makeCons(newHead, newTail);
+    return makePair(newHead, newTail);
 }

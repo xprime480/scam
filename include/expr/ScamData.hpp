@@ -88,7 +88,7 @@ namespace scam
         constexpr static unsigned long Keyword      { 1 << 12 };
         constexpr static unsigned long String       { 1 << 13 };
         constexpr static unsigned long Error        { 1 << 14 };
-        constexpr static unsigned long Cons         { 1 << 15 };
+        constexpr static unsigned long Pair         { 1 << 15 };
         constexpr static unsigned long Vector       { 1 << 16 };
         constexpr static unsigned long ByteVector   { 1 << 17 };
         constexpr static unsigned long Dict         { 1 << 18 };
@@ -127,7 +127,7 @@ namespace scam
             {
                 ScamValue car;
                 ScamValue cdr;
-            }  consValue;
+            }  pairValue;
 
             std::vector<ScamValue> * vectorData;
 
@@ -224,8 +224,8 @@ namespace scam
 #define STRVALP(data) ((data)->value.strVal)
 #define STRVAL(data) (*(STRVALP(data)))
 
-#define CAR(data) ((data)->value.consValue.car)
-#define CDR(data) ((data)->value.consValue.cdr)
+#define CAR(data) ((data)->value.pairValue.car)
+#define CDR(data) ((data)->value.pairValue.cdr)
 
 #define VECTORP(data) ((data)->value.vectorData)
 #define VECTOR(data) (*(VECTORP(data)))

@@ -346,7 +346,7 @@ void scam::applyUndefine(ScamValue args,
 
 ScamValue scam::safeCons(ScamValue expr)
 {
-    if ( isCons(expr) ) {
+    if ( isPair(expr) ) {
         return expr;
     }
     return makeList(expr);

@@ -197,7 +197,7 @@ TEST_F(ParserTest, DottedPairTest)
     };
 
     ScamValue expr = runTest(tokens);
-    expectCons(expr, msg);
+    expectPair(expr, msg);
 }
 
 TEST_F(ParserTest, DottedPairNoCdr)

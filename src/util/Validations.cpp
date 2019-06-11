@@ -13,9 +13,9 @@ using namespace std;
 
 ScamValue scam::validateClosureArgs(ScamValue args, const char * name)
 {
-    if ( ! isCons(args) ) {
+    if ( ! isPair(args) ) {
         ScamValue nameSymbol = makeSymbol(name);
-        ScamValue extended = makeCons(nameSymbol, args);
+        ScamValue extended = makePair(nameSymbol, args);
         return makeErrorExtended("Expected (", name, " args body*)",
                                  "; got: ",
                                  writeValue(extended));
@@ -34,7 +34,7 @@ ScamValue scam::validateFormals(ScamValue formals)
         return ok;
     }
 
-    if ( ! isCons(formals) ) {
+    if ( ! isPair(formals) ) {
         return makeErrorExtended("Formals should be list or symbol",
                                  "; got: ",
                                  writeValue(formals));
@@ -75,7 +75,7 @@ ScamValue scam::validateFormals(ScamValue formals)
             }
         }
 
-        if ( ! isCons(formals) ) {
+        if ( ! isPair(formals) ) {
             return makeErrorExtended("Formal parameter should ",
                                      "be a symbol; got: ",
                                      writeValue(formals));

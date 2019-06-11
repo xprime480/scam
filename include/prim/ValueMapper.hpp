@@ -10,7 +10,7 @@ namespace scam
     protected:
         ScamValue map_dict(ScamValue expr);
         ScamValue map_vector(ScamValue expr);
-        ScamValue map_cons(ScamValue expr);
+        ScamValue map_pair(ScamValue expr);
         virtual ScamValue map_value(ScamValue expr) = 0;
     };
 }

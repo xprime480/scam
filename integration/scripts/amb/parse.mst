@@ -29,7 +29,7 @@ Parse
 (define parse-word
   (lambda (words)
     (begin
-      (require (cons? *unparsed*))
+      (require (pair? *unparsed*))
       (require (member? (car *unparsed*) (cdr words)))
       (let ((found-word (car *unparsed*)))
         (begin

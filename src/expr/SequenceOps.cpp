@@ -14,7 +14,7 @@ using namespace std;
 
 ScamValue scam::getCar(ScamValue value)
 {
-    if ( ! isCons(value) ) {
+    if ( ! isPair(value) ) {
         stringstream s;
         s << "Cannot take car of <" << writeValue(value) << ">";
         s << " at " << __FILE__ << ":" << __LINE__;
@@ -28,7 +28,7 @@ ScamValue scam::getCar(ScamValue value)
 
 ScamValue scam::getCdr(ScamValue value)
 {
-    if ( ! isCons(value) ) {
+    if ( ! isPair(value) ) {
         stringstream s;
         s << "Cannot take cdr of <" << writeValue(value) << ">";
         s << " at " << __FILE__ << ":" << __LINE__;
@@ -47,10 +47,10 @@ size_t scam::length(ScamValue value)
     if ( isByteVector(value) ) {
         rv = BYTEVECTOR(value).size();
     }
-    else if ( isCons(value) ) {
+    else if ( isPair(value) ) {
         ScamValue cdr = CDR(value);
         size_t len = 1;
-        if ( isCons(cdr) ) {
+        if ( isPair(cdr) ) {
             len += length(cdr);
         }
         else if ( ! isNil(cdr) ) {
@@ -109,7 +109,7 @@ ScamValue scam::nthcar(ScamValue value, size_t n)
             rv = makeInteger(BYTEVECTOR(value)[n], true);
         }
     }
-    else if ( isCons(value) ) {
+    else if ( isPair(value) ) {
         rv = checkLength(value, n);
         if ( ! error(rv) ) {
             ScamValue cdr = CDR(value);
@@ -117,7 +117,7 @@ ScamValue scam::nthcar(ScamValue value, size_t n)
             if ( 0 == n ) {
                 rv = CAR(value);
             }
-            else if ( isCons(cdr) ) {
+            else if ( isPair(cdr) ) {
                 rv = nthcar(cdr, n-1);
             }
             else {
@@ -144,7 +144,7 @@ ScamValue scam::nthcar(ScamValue value, size_t n)
 
 ScamValue scam::nthcdr(ScamValue value, size_t n)
 {
-    if ( ! isCons(value) ) {
+    if ( ! isPair(value) ) {
         stringstream s;
         s << "Cannot index <" << writeValue(value) << ">";
         s << " at " << __FILE__ << ":" << __LINE__;
@@ -164,7 +164,7 @@ ScamValue scam::nthcdr(ScamValue value, size_t n)
     if ( 0 == n ) {
         rv = cdr;
     }
-    else if ( isCons(cdr) ) {
+    else if ( isPair(cdr) ) {
         rv = nthcdr(cdr, n-1);
     }
     else if ( n >= 1 ) {
@@ -190,10 +190,10 @@ ScamValue scam::append(ScamValue expr, ScamValue tail)
         return makeList(tail);
     }
 
-    /* by assumption, isCons! */
+    /* by assumption, isPair! */
 
     ScamValue car = nthcar(expr, 0);
     ScamValue cdr = nthcdr(expr, 0);
     ScamValue newCdr = append(cdr, tail);
-    return makeCons(car, newCdr);
+    return makePair(car, newCdr);
 }

@@ -34,7 +34,7 @@ using namespace std;
 
 DEFINE_PREDICATE(NilP, "nil?", isNil)
 DEFINE_PREDICATE(ErrorP, "error?", error)
-DEFINE_PREDICATE(ConsP, "cons?", isCons)
+DEFINE_PREDICATE(PairP, "pair?", isPair)
 DEFINE_PREDICATE(ListP, "list?", isList)
 DEFINE_PREDICATE(VectorP, "vector?", isVector)
 DEFINE_PREDICATE(BoolP, "boolean?", isBoolean)

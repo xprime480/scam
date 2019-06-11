@@ -147,13 +147,13 @@ TEST_F(ExpressionTest, NilTest)
     expectNil(evaled);
 }
 
-TEST_F(ExpressionTest, ConsSingletonTest)
+TEST_F(ExpressionTest, PairSingletonTest)
 {
     string const value { "(works)" };
 
     ScamValue car = makeSymbol("works");
     ScamValue cdr = makeNil();
-    ScamValue expr = makeCons(car, cdr);
+    ScamValue expr = makePair(car, cdr);
 
     expectList(expr, value, 1);
 
@@ -168,8 +168,8 @@ TEST_F(ExpressionTest, ConsDoubletonTest)
     ScamValue car  = makeSymbol("works");
     ScamValue cadr = makeSymbol("also");
     ScamValue cddr = makeNil();
-    ScamValue cdr  = makeCons(cadr, cddr);;
-    ScamValue expr = makeCons(car, cdr);
+    ScamValue cdr  = makePair(cadr, cddr);;
+    ScamValue expr = makePair(car, cdr);
 
     expectList(expr, value, 2);
 
@@ -246,9 +246,9 @@ TEST_F(ExpressionTest, ConsDottedPair)
 
     ScamValue car = makeInteger(1, true);
     ScamValue cdr = makeInteger(2, true);
-    ScamValue expr = makeCons(car, cdr);
+    ScamValue expr = makePair(car, cdr);
 
-    expectCons(expr, value);
+    expectPair(expr, value);
 
     expectInteger(getCar(expr), 1, "1", true);
     expectInteger(getCdr(expr), 2, "2", true);
@@ -261,8 +261,8 @@ TEST_F(ExpressionTest, ConsEvalTest)
     ScamValue car  = makeSymbol("quote");
     ScamValue cadr = makeInteger(2, true);
     ScamValue cddr = makeNil();
-    ScamValue cdr  = makeCons(cadr, cddr);;
-    ScamValue expr = makeCons(car, cdr);
+    ScamValue cdr  = makePair(cadr, cddr);;
+    ScamValue expr = makePair(car, cdr);
 
     expectList(expr, value, 2);
     expectSymbol(getCar(expr), "quote");
@@ -298,13 +298,13 @@ TEST_F(ExpressionTest, PseudoListCdrTest)
     ScamValue two   = makeInteger(2, true);
     ScamValue three = makeInteger(3, true);
 
-    ScamValue cons  = makeCons(two, three);
-    ScamValue plist = makeCons(one, cons);
+    ScamValue pair  = makePair(two, three);
+    ScamValue plist = makePair(one, pair);
 
-    expectCons(plist, "(1 2 . 3)");
+    expectPair(plist, "(1 2 . 3)");
 
     ScamValue cdr0 = nthcdr(plist, 0);
-    expectCons(cdr0, "(2 . 3)");
+    expectPair(cdr0, "(2 . 3)");
 
     ScamValue cdr1 = nthcdr(plist, 1);
     expectInteger(cdr1, 3, "3", true);

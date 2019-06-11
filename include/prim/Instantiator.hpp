@@ -26,7 +26,7 @@ namespace scam
         ScamValue inst_value(ScamValue expr);
         ScamValue new_mapping(ScamValue expr);
         ScamValue inst_keyword(ScamValue expr);
-        ScamValue inst_cons(ScamValue expr);
+        ScamValue inst_pair(ScamValue expr);
         ScamValue inst_vector(ScamValue expr);
         ScamValue inst_dict(ScamValue expr);
     };

@@ -30,7 +30,7 @@ TEST_F(ListTest, ListNonEmpty)
 TEST_F(ListTest, ConsBasic)
 {
     ScamValue expr = parseAndEvaluate("(cons 2 3)");
-    expectCons(expr, "(2 . 3)");
+    expectPair(expr, "(2 . 3)");
 }
 
 TEST_F(ListTest, ConsNoArgs)

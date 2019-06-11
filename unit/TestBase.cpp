@@ -29,7 +29,7 @@ namespace
     static const unsigned long SELECT_INTEGER    { 1 << 10 };
     static const unsigned long SELECT_BOOLEAN    { 1 << 11 };
     static const unsigned long SELECT_NIL        { 1 << 12 };
-    static const unsigned long SELECT_CONS       { 1 << 13 };
+    static const unsigned long SELECT_PAIR       { 1 << 13 };
     static const unsigned long SELECT_LIST       { 1 << 14 };
     static const unsigned long SELECT_VECTOR     { 1 << 15 };
     static const unsigned long SELECT_BYTEVECTOR { 1 << 16 };
@@ -187,7 +187,7 @@ string decodePredicate(unsigned exp, unsigned act)
         DECODER(BOOLEAN);
 
         DECODER(NIL);
-        DECODER(CONS);
+        DECODER(PAIR);
         DECODER(LIST);
         DECODER(VECTOR);
         DECODER(BYTEVECTOR);
@@ -231,7 +231,7 @@ void TestBase::checkPredicates(ScamValue expr, unsigned exp)
     act |= (isInteger(expr) ? SELECT_INTEGER : 0);
 
     act |= (isNil(expr) ? SELECT_NIL : 0);
-    act |= (isCons(expr) ? SELECT_CONS : 0);
+    act |= (isPair(expr) ? SELECT_PAIR : 0);
     act |= (isList(expr) ? SELECT_LIST : 0);
     act |= (isVector(expr) ? SELECT_VECTOR : 0);
     act |= (isByteVector(expr) ? SELECT_BYTEVECTOR : 0);
@@ -444,7 +444,7 @@ void TestBase::expectList(ScamValue expr, string const & repr, size_t len)
 {
     assertType(expr, "list", isList);
     const auto flags =
-        SELECT_TRUTH | SELECT_CONS | SELECT_LIST | SELECT_MANAGED;
+        SELECT_TRUTH | SELECT_PAIR | SELECT_LIST | SELECT_MANAGED;
 
     checkPredicates(expr, flags);
     EXPECT_EQ(repr, writeValue(expr));
@@ -452,10 +452,10 @@ void TestBase::expectList(ScamValue expr, string const & repr, size_t len)
     EXPECT_EQ(len, length(hack));
 }
 
-void TestBase::expectCons(ScamValue expr, string const & repr)
+void TestBase::expectPair(ScamValue expr, string const & repr)
 {
-    assertType(expr, "cons", isCons);
-    checkPredicates(expr, SELECT_TRUTH | SELECT_CONS | SELECT_MANAGED);
+    assertType(expr, "pair", isPair);
+    checkPredicates(expr, SELECT_TRUTH | SELECT_PAIR | SELECT_MANAGED);
     EXPECT_EQ(repr, writeValue(expr));
 }
 

@@ -59,7 +59,7 @@ namespace scam
     extern ScamValue makeRational(int num, int den, bool exact);
     extern ScamValue makeInteger(int value, bool exact);
 
-    extern ScamValue makeCons(ScamValue car, ScamValue cdr);
+    extern ScamValue makePair(ScamValue car, ScamValue cdr);
     extern ScamValue makeList();
     extern ScamValue makeList(ScamValue item);
     extern ScamValue makeList(std::vector<ScamValue> & items);
@@ -67,7 +67,7 @@ namespace scam
     template <typename... Args>
     ScamValue makeList(ScamValue car, Args... args)
     {
-        return makeCons(car, makeList(args...));
+        return makePair(car, makeList(args...));
     }
 
     extern ScamValue makeVector(ExprVec const & elts);

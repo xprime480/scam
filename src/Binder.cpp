@@ -22,7 +22,7 @@ Env * Binder::bind(ScamValue formals, ScamValue actuals) const
 
 void Binder::bindOne(Env * env, ScamValue syms, ScamValue vals) const
 {
-    if ( isCons(syms) ) {
+    if ( isPair(syms) ) {
         ScamValue key = getCar(syms);
         env->put(key, getCar(vals));
         bindOne(env, getCdr(syms), getCdr(vals));

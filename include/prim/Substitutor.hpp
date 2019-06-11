@@ -21,7 +21,7 @@ namespace scam
         ScamValue answers;
         ScamValue helper;
 
-        ScamValue resolve_cons(ScamValue expr);
+        ScamValue resolve_pair(ScamValue expr);
         ScamValue resolve_vector(ScamValue expr);
         bool have_seen(ScamValue expr);
         ScamValue resolve_keyword(ScamValue expr);

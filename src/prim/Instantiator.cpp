@@ -32,8 +32,8 @@ ScamValue Instantiator::inst_value(ScamValue expr)
     if ( isKeyword(expr) ) {
         return inst_keyword(expr);
     }
-    else if ( isCons(expr) ) {
-        return inst_cons(expr);
+    else if ( isPair(expr) ) {
+        return inst_pair(expr);
     }
     else if ( isVector(expr) ) {
         return inst_vector(expr);
@@ -64,9 +64,9 @@ ScamValue Instantiator::inst_keyword(ScamValue expr)
     return new_mapping(expr);
 }
 
-ScamValue Instantiator::inst_cons(ScamValue expr)
+ScamValue Instantiator::inst_pair(ScamValue expr)
 {
-    return map_cons(expr);
+    return map_pair(expr);
 }
 
 ScamValue Instantiator::inst_vector(ScamValue expr)

@@ -50,7 +50,7 @@
   (lambda (some)
     (if (nil? some)
         0
-        (if (cons? some)
+        (if (pair? some)
             (+ 1 (length (cdr some)))
             (if (vector? some)
                 (vlen some)
@@ -60,7 +60,7 @@
 
 (define nth
   (lambda (idx some)
-    (if (cons? some)
+    (if (pair? some)
         (if (= 0 idx)
             (car some)
             (nth (- idx 1) (cdr some)))

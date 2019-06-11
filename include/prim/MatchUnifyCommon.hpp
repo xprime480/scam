@@ -24,7 +24,7 @@ namespace scam
         ScamValue
         check_keyword_reversed(ScamValue dict, ScamValue lhs, ScamValue rhs);
 
-        ScamValue check_cons(ScamValue dict, ScamValue lhs, ScamValue rhs);
+        ScamValue check_pair(ScamValue dict, ScamValue lhs, ScamValue rhs);
         ScamValue check_vector(ScamValue dict, ScamValue lhs, ScamValue rhs);
         ScamValue check_dict(ScamValue dict, ScamValue lhs, ScamValue rhs);
         ScamValue exec(ScamValue dict, ScamValue lhs, ScamValue rhs);

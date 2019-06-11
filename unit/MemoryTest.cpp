@@ -327,15 +327,15 @@ TEST_F(MemoryTest, TestError)
  *****************************************************************
  */
 
-TEST_F(MemoryTest, TestCons)
+TEST_F(MemoryTest, TestPair)
 {
     ScamValue car = makeInteger(1, true);
     ScamValue cdr = makeInteger(2, true);
-    ScamValue cons1 = makeCons(car, cdr);
+    ScamValue pair1 = makePair(car, cdr);
 
-    cons1->mark();
-    expectMarked(true, cons1, car, cdr);
-    EXPECT_TRUE(cons1->isMarked());
+    pair1->mark();
+    expectMarked(true, pair1, car, cdr);
+    EXPECT_TRUE(pair1->isMarked());
     EXPECT_TRUE(car->isMarked());
     EXPECT_TRUE(cdr->isMarked());
 }

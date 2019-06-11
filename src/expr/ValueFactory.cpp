@@ -189,9 +189,9 @@ ScamValue scam::makeInteger(int value, bool exact)
     return v;
 }
 
-ScamValue scam::makeCons(ScamValue car, ScamValue cdr)
+ScamValue scam::makePair(ScamValue car, ScamValue cdr)
 {
-    static constexpr auto myType = ScamData::Cons;
+    static constexpr auto myType = ScamData::Pair;
     ScamValue v = standardMemoryManager.make<ScamData>(myType);
     CAR(v) = car;
     CDR(v) = cdr;
@@ -205,7 +205,7 @@ ScamValue scam::makeList()
 
 ScamValue scam::makeList(ScamValue item)
 {
-    return makeCons(item, makeNil());
+    return makePair(item, makeNil());
 }
 
 ScamValue scam::makeList(vector<ScamValue> & items)
@@ -213,7 +213,7 @@ ScamValue scam::makeList(vector<ScamValue> & items)
     ScamValue rv = makeNil();
 
     for ( auto iter = items.rbegin() ; iter != items.rend() ; ++iter ) {
-        rv = makeCons(*iter, rv);
+        rv = makePair(*iter, rv);
     }
 
     return rv;

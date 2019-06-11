@@ -70,7 +70,7 @@ ScamValue LetBaseWorker::parse_bindings()
     ScamValue symList = makeList(syms);
     ScamValue valList = makeList(vals);
 
-    return makeCons(symList, valList);
+    return makePair(symList, valList);
 }
 
 ScamValue LetBaseWorker::parse_args()
@@ -78,5 +78,5 @@ ScamValue LetBaseWorker::parse_args()
     ScamValue forms     = parser->getForms();
     ScamValue separated = parse_bindings();
 
-    return makeCons(separated, forms);
+    return makePair(separated, forms);
 }

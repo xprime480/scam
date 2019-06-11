@@ -14,7 +14,7 @@ namespace scam
 
     DECL_PREDICATE(NilP);
     DECL_PREDICATE(ErrorP);
-    DECL_PREDICATE(ConsP);
+    DECL_PREDICATE(PairP);
     DECL_PREDICATE(ListP);
     DECL_PREDICATE(VectorP);
     DECL_PREDICATE(BoolP);
