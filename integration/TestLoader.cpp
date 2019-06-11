@@ -1,7 +1,6 @@
 #include "TestLoader.hpp"
 
 #include <fstream>
-#include <iostream>
 
 using namespace std;
 using namespace scam;
@@ -13,8 +12,6 @@ TestLoader::TestLoader(char const * script)
     , ok(false)
     , linesToKeep(0u)
 {
-    //    std::cerr << "Script: " << script << "\n";
-
     testspec.open(script);
     std::string line;
 

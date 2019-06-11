@@ -1,4 +1,4 @@
-Test the cons? function
+Test the pair? function
 
 ;[skip]
 
@@ -7,17 +7,17 @@ Type Checker of Pairs
 
 [input]
 
-(cons?)
-(cons? '(a . b) (list 1 2 3))
+(pair?)
+(pair? '(a . b) (list 1 2 3))
 
 (list
- (cons? (cons 1 2))
- (cons? (list 1 2 3))
- (cons? 2)
- (cons? '()))
+ (pair? (cons 1 2))
+ (pair? (list 1 2 3))
+ (pair? 2)
+ (pair? '()))
 
 [result]
-[keep 0]
-cons?: parameter 1 missing
-cons?: 1 parameter needed, 2 given
+[keep 3]
+pair?: parameter 1 missing
+pair?: 1 parameter needed, 2 given
 (#t #t #f #f)
