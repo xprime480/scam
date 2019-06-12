@@ -214,7 +214,7 @@ void TestBase::checkPredicates(ScamValue expr, unsigned exp)
     ASSERT_NE(nullptr, expr);
     unsigned act { 0 };
 
-    act |= (isNull(expr) ? SELECT_NULL : 0);
+    act |= (isNothing(expr) ? SELECT_NULL : 0);
     act |= (error(expr) ? SELECT_ERROR : 0);
     act |= (truth(expr) ? SELECT_TRUTH : 0);
 
@@ -230,7 +230,7 @@ void TestBase::checkPredicates(ScamValue expr, unsigned exp)
     act |= (isRational(expr) ? SELECT_RATIONAL : 0);
     act |= (isInteger(expr) ? SELECT_INTEGER : 0);
 
-    act |= (isNil(expr) ? SELECT_NIL : 0);
+    act |= (isNull(expr) ? SELECT_NIL : 0);
     act |= (isPair(expr) ? SELECT_PAIR : 0);
     act |= (isList(expr) ? SELECT_LIST : 0);
     act |= (isVector(expr) ? SELECT_VECTOR : 0);
@@ -265,9 +265,9 @@ void expectNonNumeric(ScamValue expr)
     EXPECT_FALSE(isNumeric(expr));
 }
 
-void TestBase::expectNull(ScamValue expr)
+void TestBase::expectNothing(ScamValue expr)
 {
-    assertType(expr, "null", isNull);
+    assertType(expr, "null", isNothing);
     checkPredicates(expr, SELECT_NULL);
     EXPECT_EQ("null", writeValue(expr));
 
@@ -432,9 +432,9 @@ void TestBase::expectKeyword(ScamValue expr, string const & name)
     EXPECT_EQ(name, writeValue(expr));
 }
 
-void TestBase::expectNil(ScamValue expr)
+void TestBase::expectNull(ScamValue expr)
 {
-    assertType(expr, "nil", isNil);
+    assertType(expr, "nil", isNull);
     static const string repr { "()" };
     checkPredicates(expr, SELECT_TRUTH | ALL_NIL);
     EXPECT_EQ(repr, writeValue(expr));

@@ -71,7 +71,7 @@ ScamValue scam::dictRemove(ScamValue value, ScamValue key)
 {
     checkDict(value, "dictRemove");
 
-    ScamValue rv = makeNil();
+    ScamValue rv = makeNull();
 
     for ( size_t jdx = 0 ; jdx < DICTKEYS(value).size() ; ++jdx ) {
         if ( equals(DICTKEYS(value)[jdx], key) ) {

@@ -17,7 +17,7 @@ namespace scam
         friend class MemoryManager;
         Extractor()
             : Continuation("Extractor")
-            , e(makeNull())
+            , e(makeNothing())
         {
         }
 

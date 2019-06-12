@@ -33,8 +33,10 @@ namespace scam
         ScamValue getInteger(int & value);
         ScamValue getNonNegativeInteger(int & value);
         ScamValue getString(std::string & value);
+        ScamValue getPair(ScamValue & value);
 
         ScamValue getIndex(int & index, int refParameter);
+
 
         ScamValue getZeroPlus(ScamValue & value, ValuePredicate pred);
 
@@ -60,7 +62,7 @@ namespace scam
             ScamValue temp;
             getAnyValue(temp);
 
-            if ( isNull(status) ) {
+            if ( isNothing(status) ) {
                 if ( test(temp) ) {
                     value = convert(temp);
                 }
@@ -133,6 +135,16 @@ namespace scam
                                   Continuation * cont,
                                   ScamValue & value);
 
+    extern bool wantPair(const char * name,
+                         ArgListHelper & helper,
+                         Continuation * cont,
+                         ScamValue & value);
+
+    extern bool wantMutablePair(const char * name,
+				ArgListHelper & helper,
+				Continuation * cont,
+				ScamValue & value);
+
     extern bool wantIndex(const char * name,
                           ArgListHelper & helper,
                           Continuation * cont,
@@ -156,7 +168,7 @@ namespace scam
         ScamValue temp;
         T value = defaultValue;
         (void) helper.getOptional(temp, pred);
-        if ( ! isNull(temp) ) {
+        if ( ! isNothing(temp) ) {
             value = convert(temp);
         }
 
@@ -216,6 +228,14 @@ namespace scam
             return rv;
         };
     }
+
+    extern bool getTwoObjs(ScamValue args,
+                           Continuation * cont,
+                           const char * name,
+                           ScamValue & obj1,
+                           ScamValue & obj2);
+
+    extern ScamValue identity(ScamValue value);
 }
 
 #endif

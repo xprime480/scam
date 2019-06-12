@@ -22,7 +22,7 @@ TEST_F(ClosureTest, ClosureBasic)
     ScamValue expr = makeClosure(lambda, engine.getFrame());
     expectProcedure(expr, "(lambda () 2)");
 
-    ScamValue args = makeNil();
+    ScamValue args = makeNull();
     ScamValue finalValue = apply(expr, args);
 
     expectInteger(finalValue, 2, "2", true);
@@ -38,7 +38,7 @@ TEST_F(ClosureTest, ClosureMultipleForms)
     ScamValue expr = makeClosure(lambda, engine.getFrame());
     expectProcedure(expr, "(lambda () 2 #\\z)");
 
-    ScamValue args = makeNil();
+    ScamValue args = makeNull();
     ScamValue finalValue = apply(expr, args);
 
     expectChar(finalValue, 'z', "#\\z");
@@ -109,7 +109,7 @@ TEST_F(ClosureTest, LambdaDottedParmListZero)
 {
     ScamValue expr =
         parseAndEvaluateFile("scripts/closure/dottedzero.scm");
-    expectNil(expr);
+    expectNull(expr);
 }
 
 TEST_F(ClosureTest, LambdaDottedParmListOne)
@@ -128,7 +128,7 @@ TEST_F(ClosureTest, LambdaDottedParmListSeveral)
 TEST_F(ClosureTest, LambdaSymbolParmListNone)
 {
     ScamValue expr = parseAndEvaluateFile("scripts/closure/listnone.scm");
-    expectNil(expr);
+    expectNull(expr);
 }
 
 TEST_F(ClosureTest, LambdaSymbolParmListOne)

@@ -32,7 +32,7 @@ TEST_F(ArgListHelperTest, PeekAtEmptyList)
 
     ArgListHelper helper(args);
     ScamValue next = helper.peek();
-    expectNull(next);
+    expectNothing(next);
 }
 
 TEST_F(ArgListHelperTest, PeekAtNonEmptyList)
@@ -53,10 +53,10 @@ TEST_F(ArgListHelperTest, EmptyListOK)
 
     ArgListHelper helper(args);
     ScamValue status = helper.getStatus();
-    expectNull(status);
+    expectNothing(status);
 
     status = helper.finish();
-    expectNull(status);
+    expectNothing(status);
 }
 
 TEST_F(ArgListHelperTest, EmptyListWantOne)
@@ -68,7 +68,7 @@ TEST_F(ArgListHelperTest, EmptyListWantOne)
     ScamValue value;
     ScamValue status = helper.getAnyValue(value);
 
-    expectNull(value);
+    expectNothing(value);
     expectError(status, "parameter 1 missing");
 }
 
@@ -79,11 +79,11 @@ TEST_F(ArgListHelperTest, SingletonListWantOne)
 
     ScamValue value;
     ScamValue status = helper.getAnyValue(value);
-    expectNull(status);
+    expectNothing(status);
     expectKeyword(value, ":arg1");
 
     status = helper.finish();
-    expectNull(status);
+    expectNothing(status);
 }
 
 TEST_F(ArgListHelperTest, SingletonListWantTwo)
@@ -94,11 +94,11 @@ TEST_F(ArgListHelperTest, SingletonListWantTwo)
     ScamValue arg1;
     ScamValue status = helper.getAnyValue(arg1);
     expectKeyword(arg1, ":arg1");
-    expectNull(status);
+    expectNothing(status);
 
     ScamValue arg2;
     status = helper.getAnyValue(arg2);
-    expectNull(arg2);
+    expectNothing(arg2);
     expectError(status, "parameter 2 missing");
 }
 
@@ -112,7 +112,7 @@ TEST_F(ArgListHelperTest, HaveTwoWantOne)
     ScamValue arg1;
     status = helper.getAnyValue(arg1);
     expectKeyword(arg1, ":arg1");
-    expectNull(status);
+    expectNothing(status);
 
     status = helper.finish();
     expectError(status, "1 parameter needed, 2 given");
@@ -128,10 +128,10 @@ TEST_F(ArgListHelperTest, GetOneCharacter)
     char arg1;
     status = helper.getCharacter(arg1);
     EXPECT_EQ('x', arg1);
-    expectNull(status);
+    expectNothing(status);
 
     status = helper.finish();
-    expectNull(status);
+    expectNothing(status);
 }
 
 TEST_F(ArgListHelperTest, GetInteger)
@@ -144,10 +144,10 @@ TEST_F(ArgListHelperTest, GetInteger)
     int arg1;
     status = helper.getInteger(arg1);
     EXPECT_EQ(-5, arg1);
-    expectNull(status);
+    expectNothing(status);
 
     status = helper.finish();
-    expectNull(status);
+    expectNothing(status);
 }
 
 TEST_F(ArgListHelperTest, GetIntegerFailure)
@@ -173,10 +173,10 @@ TEST_F(ArgListHelperTest, GetNonNegativeInteger)
     int arg1;
     status = helper.getNonNegativeInteger(arg1);
     EXPECT_EQ(32, arg1);
-    expectNull(status);
+    expectNothing(status);
 
     status = helper.finish();
-    expectNull(status);
+    expectNothing(status);
 }
 
 TEST_F(ArgListHelperTest, GetNonNegativeIntegerFailure)
@@ -203,10 +203,10 @@ TEST_F(ArgListHelperTest, GetString)
     string arg1;
     status = helper.getString(arg1);
     EXPECT_EQ("help me", arg1);
-    expectNull(status);
+    expectNothing(status);
 
     status = helper.finish();
-    expectNull(status);
+    expectNothing(status);
 }
 
 TEST_F(ArgListHelperTest, GetStringFailure)
@@ -232,15 +232,15 @@ TEST_F(ArgListHelperTest, GetIndexInRange)
     string arg1;
     status = helper.getString(arg1);
     EXPECT_EQ("help me", arg1);
-    expectNull(status);
+    expectNothing(status);
 
     int index { 0 };
     status = helper.getIndex(index, 0);
     EXPECT_EQ(3, index);
-    expectNull(status);
+    expectNothing(status);
 
     status = helper.finish();
-    expectNull(status);
+    expectNothing(status);
 }
 
 TEST_F(ArgListHelperTest, GetIndexOutsideRange)
@@ -253,7 +253,7 @@ TEST_F(ArgListHelperTest, GetIndexOutsideRange)
     string arg1;
     status = helper.getString(arg1);
     EXPECT_EQ("help me", arg1);
-    expectNull(status);
+    expectNothing(status);
 
     int index { 0 };
     status = helper.getIndex(index, 0);
@@ -274,11 +274,11 @@ TEST_F(ArgListHelperTest, GetCharacterListEmpty)
 
     ScamValue arg1;
     status = helper.getZeroPlus(arg1, isChar);
-    expectNil(arg1);
-    expectNull(status);
+    expectNull(arg1);
+    expectNothing(status);
 
     status = helper.finish();
-    expectNull(status);
+    expectNothing(status);
 }
 
 TEST_F(ArgListHelperTest, GetCharacterListNonEmpty)
@@ -292,10 +292,10 @@ TEST_F(ArgListHelperTest, GetCharacterListNonEmpty)
     ScamValue arg1;
     status = helper.getZeroPlus(arg1, isChar);
     expectList(arg1, text, 2);
-    expectNull(status);
+    expectNothing(status);
 
     status = helper.finish();
-    expectNull(status);
+    expectNothing(status);
 }
 
 TEST_F(ArgListHelperTest, GetCountWant3to5Have2)
@@ -306,9 +306,9 @@ TEST_F(ArgListHelperTest, GetCountWant3to5Have2)
     ArgListHelper helper(args);
     ScamValue status;
 
-    ScamValue arg1 = makeNull();
+    ScamValue arg1 = makeNothing();
     status = helper.getCount(arg1, isInteger, 3, 5);
-    expectNull(arg1);
+    expectNothing(arg1);
     expectError(status, "found 2 values, wanted at least 3");
 }
 
@@ -320,13 +320,13 @@ TEST_F(ArgListHelperTest, GetCountWant3to5Have4)
     ArgListHelper helper(args);
     ScamValue status;
 
-    ScamValue arg1 = makeNull();
+    ScamValue arg1 = makeNothing();
     status = helper.getCount(arg1, isInteger, 3, 5);
     expectList(arg1, text, 4);
-    expectNull(status);
+    expectNothing(status);
 
     status = helper.finish();
-    expectNull(status);
+    expectNothing(status);
 }
 
 TEST_F(ArgListHelperTest, GetCountWant3to5Have6)
@@ -337,10 +337,10 @@ TEST_F(ArgListHelperTest, GetCountWant3to5Have6)
     ArgListHelper helper(args);
     ScamValue status;
 
-    ScamValue arg1 = makeNull();
+    ScamValue arg1 = makeNothing();
     status = helper.getCount(arg1, isInteger, 3, 5);
     expectList(arg1, "(1 2 3 4 5)", 5);
-    expectNull(status);
+    expectNothing(status);
 
     status = helper.finish();
     expectError(status, "5 parameter needed, 6 given");
@@ -355,11 +355,11 @@ TEST_F(ArgListHelperTest, GetOptionalCharacterMissing)
 
     ScamValue arg1;
     status = helper.getOptional(arg1, isChar);
-    expectNull(arg1);
-    expectNull(status);
+    expectNothing(arg1);
+    expectNothing(status);
 
     status = helper.finish();
-    expectNull(status);
+    expectNothing(status);
 }
 
 TEST_F(ArgListHelperTest, GetOptionalCharacterPresent)
@@ -372,10 +372,10 @@ TEST_F(ArgListHelperTest, GetOptionalCharacterPresent)
     ScamValue arg1;
     status = helper.getOptional(arg1, isChar);
     expectChar(arg1, '$', "#\\$");
-    expectNull(status);
+    expectNothing(status);
 
     status = helper.finish();
-    expectNull(status);
+    expectNothing(status);
 }
 
 TEST_F(ArgListHelperTest, GetSublistEmpty)
@@ -385,13 +385,13 @@ TEST_F(ArgListHelperTest, GetSublistEmpty)
     ArgListHelper helper(args);
     ScamValue status;
 
-    ScamValue arg1 = makeNull();
+    ScamValue arg1 = makeNothing();
     status = helper.getSublistOf(arg1, isInteger);
-    expectNil(arg1);
-    expectNull(status);
+    expectNull(arg1);
+    expectNothing(status);
 
     status = helper.finish();
-    expectNull(status);
+    expectNothing(status);
 }
 
 TEST_F(ArgListHelperTest, GetSublistNonEmpty)
@@ -401,13 +401,13 @@ TEST_F(ArgListHelperTest, GetSublistNonEmpty)
     ArgListHelper helper(args);
     ScamValue status;
 
-    ScamValue arg1 = makeNull();
+    ScamValue arg1 = makeNothing();
     status = helper.getSublistOf(arg1, isInteger);
     expectList(arg1, "(1 3 5 7)", 4);
-    expectNull(status);
+    expectNothing(status);
 
     status = helper.finish();
-    expectNull(status);
+    expectNothing(status);
 }
 
 TEST_F(ArgListHelperTest, GetSublistWrongType)
@@ -417,8 +417,8 @@ TEST_F(ArgListHelperTest, GetSublistWrongType)
     ArgListHelper helper(args);
     ScamValue status;
 
-    ScamValue arg1 = makeNull();
+    ScamValue arg1 = makeNothing();
     status = helper.getSublistOf(arg1, isInteger);
-    expectNull(arg1);
+    expectNothing(arg1);
     expectError(status, "list for parameter 1 contains invalid value '\"\"'");
 }

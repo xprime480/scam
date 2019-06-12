@@ -55,7 +55,7 @@ TEST_P(LetTest, LetCreatesNewEnv)
 TEST_P(LetTest, LetNoForms)
 {
     ScamValue expr = runTest("(%s ())");
-    expectNil(expr);
+    expectNull(expr);
 }
 
 TEST_P(LetTest, LetBadBindings1)

@@ -1,20 +1,23 @@
+
+(load "lib/listops.scm")
+
 (define map
   (lambda (fn seq)
-    (if (nil? seq)
+    (if (null? seq)
         ()
         (cons (fn (car seq)) (map fn (cdr seq))))))
 
 (define reduce
   (lambda (fn init seq)
     (letrec ((helper (lambda (acc tail)
-                       (if (nil? tail)
+                       (if (null? tail)
                            acc
                            (helper (fn acc (car tail)) (cdr tail))))))
       (helper init seq))))
 
 (define filter
   (lambda (fn lst)
-    (if (nil? lst)
+    (if (null? lst)
         lst
         (let ((head (car lst))
               (tail (cdr lst)))
@@ -46,12 +49,12 @@
                  ()))))
        (loop))))
 
-(define length
+(define old-length
   (lambda (some)
-    (if (nil? some)
+    (if (null? some)
         0
         (if (pair? some)
-            (+ 1 (length (cdr some)))
+            (+ 1 (old-length (cdr some)))
             (if (vector? some)
                 (vlen some)
                 (if (dict? some)
@@ -67,14 +70,6 @@
         (if (vector? some)
             (vref idx some)
             (error "Cannot index unknown type")))))
-
-(define append
-  (lambda (fst snd)
-    (if (nil? fst)
-        snd
-        (if (= 1 (length fst))
-            (cons (car fst) snd)
-            (cons (car fst) (append (cdr fst) snd))))))
 
 (define even?
   (lambda (x)
@@ -92,7 +87,7 @@
 
 (define member?
   (lambda (val lst)
-    (if (nil? lst)
+    (if (null? lst)
         #f
         (let ((item (car lst))
               (tail (cdr lst)))
@@ -100,7 +95,7 @@
 
 (define distinct?
   (lambda (lst)
-    (if (nil? lst)
+    (if (null? lst)
         #t
         (let ((item (car lst))
               (tail (cdr lst)))
@@ -116,13 +111,13 @@
   (lambda (lst)
     (begin
       (require (and (list? lst)
-                    (not (nil? lst))))
+                    (not (null? lst))))
       (amb (car lst)
            (one-of (cdr lst))))))
 
 (define cross
   (lambda (fn fst snd)
-    (if (or (nil? fst) (nil? snd))
+    (if (or (null? fst) (null? snd))
         '()
         (reduce append
                 '()
@@ -134,7 +129,7 @@
 
 (define power-set
   (lambda (elts)
-    (if (nil? elts)
+    (if (null? elts)
         (list '())
         (let ((first (list (car elts)))
               (pscdr (power-set (cdr elts))))
@@ -146,14 +141,14 @@
 (define some-of
   (lambda (lst)
     (let ((ffn (lambda (item)
-                 (not (nil? item))))
+                 (not (null? item))))
           (mfn (lambda (item)
                  `(quote ,item))))
       (eval `(amb ,@(map mfn (filter ffn (power-set lst))))))))
 
 (define exclude
   (lambda (vals lst)
-    (if (nil? lst)
+    (if (null? lst)
         lst
         (let ((item (car lst))
               (tail (cdr lst)))
@@ -164,9 +159,9 @@
 (define cond
   (macro (clauses)
 
-    ;; if there are no clauses return nil (implementation defined)
+    ;; if there are no clauses return empty list (implementation defined)
     ;;
-    (if (nil? clauses)
+    (if (null? clauses)
         '()
         (begin
           (let* ((clause (car clauses))
@@ -176,14 +171,14 @@
             ;; check for the "else" keyword
             ;;
             (if (equal? test 'else)
-                (if (nil? forms)
+                (if (null? forms)
                     ''else
                     `(begin ,@forms))
 
                 ;; check for a test with no forms; return test
                 ;; value if truthy
                 ;;
-                (if (nil? forms)
+                (if (null? forms)
                     `(let ((testval ,test))
                        (if testval
                            testval
@@ -194,7 +189,7 @@
                     (if (equal? (car forms) '=>)
                         `(let ((testval ,test))
                            (if testval
-                               (apply ,@(car (cdr forms))
+                               (apply ,@(cadr forms)
                                       (list testval))
                                (cond ,(cdr clauses))))
 
@@ -207,14 +202,14 @@
 
 (define include
   (lambda files
-    (if (nil? files)
+    (if (null? files)
         (error "include requires at least one file")
         (letrec ((include-files
                   (lambda (files)
                     (let* ((file (car files))
                            (rest (cdr files))
                            (val (load file)))
-                      (if (or (error? val) (nil? rest))
+                      (if (or (error? val) (null? rest))
                           val
                           (include-files rest))))))
           (include-files files)))))
@@ -229,12 +224,12 @@
 
 (define type-helper=?
   (lambda (pred bs)
-    (if (nil? bs)
+    (if (null? bs)
         #t
-        (if (= 1 (length bs))
+        (if (= 1 (old-length bs))
             (pred (car bs))
             (let ((fst (car bs))
-                  (snd (car (cdr bs)))
+                  (snd (cadr bs))
                   (rst (cdr bs)))
               (and (pred fst)
                    (eqv? fst snd)

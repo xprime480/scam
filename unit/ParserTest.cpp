@@ -55,7 +55,7 @@ TEST_F(ParserTest, EndOfInput)
     };
 
     ScamValue expr = runTest(tokens);
-    expectNull(expr);
+    expectNothing(expr);
 }
 
 TEST_F(ParserTest, ScanError)
@@ -104,7 +104,7 @@ TEST_F(ParserTest, StringTest)
 
 TEST_F(ParserTest, SymbolTest)
 {
-    static const string msg{ "nil?" };
+    static const string msg{ "null?" };
     vector<Token> tokens {
         Token(TokenType::TT_SYMBOL, msg)
     };
@@ -144,7 +144,7 @@ TEST_F(ParserTest, NilTest)
     };
 
     ScamValue expr = runTest(tokens);
-    expectNil(expr);
+    expectNull(expr);
 }
 
 TEST_F(ParserTest, ListTest)

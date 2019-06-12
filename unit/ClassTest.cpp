@@ -48,7 +48,7 @@ TEST_F(ClassTest, InitError)
 TEST_F(ClassTest, NoInitFunction)
 {
     ScamValue expr = parseAndEvaluateFile("scripts/class/noinit.scm");
-    expectNil(expr);
+    expectNull(expr);
 }
 
 TEST_F(ClassTest, CallMemberFunction)

@@ -27,7 +27,7 @@ void Binder::bindOne(Env * env, ScamValue syms, ScamValue vals) const
         env->put(key, getCar(vals));
         bindOne(env, getCdr(syms), getCdr(vals));
     }
-    else if ( ! isNil(syms) ) {
+    else if ( ! isNull(syms) ) {
         env->put(syms, vals);
     }
 }

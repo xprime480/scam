@@ -42,7 +42,7 @@ ScamValue ApplyParser::getParsedOp() const
     if ( 2u == parser->size() ) {
         return parser->get(0);
     }
-    return makeNull();
+    return makeNothing();
 }
 
 ScamValue ApplyParser::getArgs() const
@@ -50,5 +50,5 @@ ScamValue ApplyParser::getArgs() const
     if ( 2u == parser->size() ) {
         return parser->get(1);
     }
-    return makeNull();
+    return makeNothing();
 }

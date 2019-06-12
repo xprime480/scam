@@ -173,7 +173,7 @@ namespace scam
     {
         os << "{Token: " << (t.getType()) << "; <" << (t.getText()) << ">";
         ScamValue expr = t.getExpr();
-        if ( ! isNull(expr) ) {
+        if ( ! isNothing(expr) ) {
             os << " <" << writeValue(expr) << ">";
         }
         os << "}";

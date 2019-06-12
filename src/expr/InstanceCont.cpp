@@ -46,7 +46,7 @@ void InstanceCont::run(ScamValue expr)
     }
 
     ScamValue func = find_func(obj);
-    if ( isNil(func) ) {
+    if ( isNull(func) ) {
         return;
     }
 
@@ -73,5 +73,5 @@ ScamValue InstanceCont::function_not_found() const
     ScamValue err =
         makeErrorExtended("Instance method ", writeValue(name), " not found");
     cont->run(err);
-    return makeNil();
+    return makeNull();
 }

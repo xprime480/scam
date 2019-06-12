@@ -78,7 +78,7 @@ ScamValue scam::getInstanceParent(ScamValue inst)
         return INSTANCELOCALENV(inst)->get(parentKey);
     }
 
-    return makeNil();
+    return makeNull();
 }
 
 void scam::setInstanceSelf(ScamValue inst, ScamValue expr)

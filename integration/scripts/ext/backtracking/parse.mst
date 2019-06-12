@@ -23,7 +23,7 @@ Parse
       (assign! *unparsed* input)
       (let ((sentence (parse-sentence)))
         (begin
-          (require (nil? *unparsed*))
+          (require (null? *unparsed*))
           sentence)))))
 
 (define parse-word

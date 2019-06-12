@@ -9,48 +9,6 @@ class PredicateTest : public TestBase
 {
 };
 
-TEST_F(PredicateTest, NilTestZeroArg)
-{
-    ScamValue expr = parseAndEvaluate("(nil?)");
-    expectError(expr);
-}
-
-TEST_F(PredicateTest, NilTestExtraArg)
-{
-    ScamValue expr = parseAndEvaluate("(nil? 1 2 3)");
-    expectError(expr);
-}
-
-TEST_F(PredicateTest, NilTestNil)
-{
-    expectTrue("(nil? ())");
-}
-
-TEST_F(PredicateTest, NilTestNotNil)
-{
-    expectFalse("(nil? 2)");
-}
-
-TEST_F(PredicateTest, ListTestNil)
-{
-    expectTrue("(list? ())");
-}
-
-TEST_F(PredicateTest, ListTestList)
-{
-    expectTrue("(list? (list 1 2 3))");
-}
-
-TEST_F(PredicateTest, ListTestCons)
-{
-    expectFalse("(list? (cons 'a 'b))");
-}
-
-TEST_F(PredicateTest, ListTestNotList)
-{
-    expectFalse("(list? 2)");
-}
-
 TEST_F(PredicateTest, VectorTestVector)
 {
     expectTrue("(vector? #(1 2 3))");

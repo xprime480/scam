@@ -48,7 +48,7 @@ void scam::eval(ScamValue value, Continuation * cont, Env * env)
         cont->run(evaluated);
     }
 
-    else if ( isNull(value) ) {
+    else if ( isNothing(value) ) {
         static const string msg{ "The null type cannot be evaluated." };
         static ScamValue expr = makeError(msg, false);
         cont->run(expr);
@@ -141,7 +141,7 @@ scam::apply(ScamValue value, ScamValue args, Continuation * cont, Env * env)
 
         Continuation * newCont =
             standardMemoryManager.make<InstanceCont>(value, name, cont);
-        if ( isNil(funargs) ) {
+        if ( isNull(funargs) ) {
             newCont->run(funargs);
         }
         else {

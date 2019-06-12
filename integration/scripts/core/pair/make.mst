@@ -1,0 +1,33 @@
+Test creation of pair values
+
+;[skip] uncomment to skip this test
+
+[name]
+Create Pairs
+
+[input]
+
+'(1 . 2)
+'(1 2 3)
+'(1 2 . 3)
+
+(cons)
+(cons 1)
+(cons 1 2 3)
+(cons 1 2)
+(cons 1 '())
+
+(list)
+(list 1 2 3)
+
+[result]
+(1 . 2)
+(1 2 3)
+(1 2 . 3)
+cons: parameter 1 missing
+cons: parameter 2 missing
+cons: 2 parameter needed, 3 given
+(1 . 2)
+(1)
+()
+(1 2 3)

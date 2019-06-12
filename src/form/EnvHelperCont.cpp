@@ -32,5 +32,5 @@ void EnvHelperCont::mark() const
 void EnvHelperCont::run(ScamValue expr)
 {
     finish(expr);
-    cont->run(makeNull());
+    cont->run(makeNothing());
 }

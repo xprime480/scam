@@ -38,11 +38,11 @@ bool ListParser::accept(ScamValue expr)
 
     clearValue();
 
-    if ( ! isPair(expr) && ! isNil(expr) ) {
+    if ( ! isPair(expr) && ! isNull(expr) ) {
         return false;
     }
 
-    if ( isNil(expr) ) {
+    if ( isNull(expr) ) {
         callback(expr);
         return true;
     }
@@ -58,7 +58,7 @@ bool ListParser::accept(ScamValue expr)
         items.push_back(item);
     }
 
-    if ( ! isNil(current) ) {
+    if ( ! isNull(current) ) {
         if ( ! itemParser->accept(current) )  {
             clearValue();
             return false;
@@ -84,7 +84,7 @@ size_t ListParser::size() const
 ScamValue ListParser::get(size_t idx) const
 {
     if ( idx >= size() ) {
-        return makeNull();
+        return makeNothing();
     }
     return items[idx];
 }

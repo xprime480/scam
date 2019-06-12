@@ -58,11 +58,11 @@ bool scam::equals(ScamValue lhs, ScamValue rhs)
         rv = (STRVAL(lhs) == STRVAL(rhs));
     }
 
-    else if ( isNil(lhs) ) {
+    else if ( isNull(lhs) ) {
         rv = true;
     }
 
-    else if ( isNull(lhs) ) {
+    else if ( isNothing(lhs) ) {
         rv = false;
     }
 

@@ -15,7 +15,7 @@ using namespace scam;
 
 Substitutor::Substitutor(ScamValue answers)
     : answers(answers)
-    , helper(makeNil())
+    , helper(makeNull())
 {
 }
 
@@ -60,7 +60,7 @@ ScamValue Substitutor::resolve_vector(ScamValue expr)
 bool Substitutor::have_seen(ScamValue expr)
 {
     ScamValue t = helper;
-    while ( ! isNil(t) ) {
+    while ( ! isNull(t) ) {
         if ( equals(nthcar(t, 0), expr) ) {
             return true;
         }

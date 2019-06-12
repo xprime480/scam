@@ -10,7 +10,7 @@ using namespace scam;
 using namespace std;
 
 LambdaParser::LambdaParser()
-    : formList(makeNull())
+    : formList(makeNothing())
 {
     MemoryManager & mm = standardMemoryManager;
 
@@ -68,7 +68,7 @@ void LambdaParser::clearValue()
 {
     ArgParser::clearValue();
     forms.clear();
-    formList = makeNull();
+    formList = makeNothing();
 }
 
 const ParameterListParser * LambdaParser::getArgs() const
@@ -86,7 +86,7 @@ ScamValue LambdaParser::getForm(size_t idx) const
     if ( idx < forms.size() ) {
         return forms[idx];
     }
-    return makeNull();
+    return makeNothing();
 }
 
 ScamValue LambdaParser::getFormList() const

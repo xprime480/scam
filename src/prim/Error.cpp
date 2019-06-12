@@ -17,27 +17,27 @@ void scam::applyError(ScamValue args,
                       Continuation * cont,
                       ScamEngine * engine)
 {
-    static const char * myName = "error";
+    static const char * name = "error";
+    ArgListHelper helper(args);
 
-    ListParser * parser = getListOfAnythingParser();
-    if ( ! parser->accept(args) ) {
-        failedArgParseMessage(myName, "(form*)", args, cont);
+    string str;
+    ScamValue objs;
+    if ( ! wantString(name, helper, cont, str) ) {
+        return;
+    }
+    if ( ! wantZeroPlus(name, helper, cont, objs, isAnything) ) {
+        return;
+    }
+    const char * msg { "Internal error: This should be literally impossible" };
+    if ( ! finishArgs(name, helper, cont, msg) ) {
         return;
     }
 
     stringstream s;
-    unsigned len = length(args);
-    if ( 0 == len ) {
-        s << "Error detected";
-    }
-    else if ( 1 == len ) {
-        s << writeValue(nthcar(args, 0));
-    }
-    else {
-        for ( unsigned i = 0 ; i < len ; ++i ) {
-            s << "[" << (i+1) << "] "
-              << writeValue(nthcar(args, i)) << "\n";
-        }
+    unsigned len = length(objs);
+    s << str;
+    for ( unsigned i = 0 ; i < len ; ++i ) {
+        s << " " << writeValue(nthcar(objs, i));
     }
 
     ScamValue err = makeError(s.str());

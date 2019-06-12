@@ -14,7 +14,7 @@ void scam::applySpawn(ScamValue args,
                       Continuation * cont,
                       ScamEngine * engine)
 {
-    if ( ! isNil(args) ) {
+    if ( ! isNull(args) ) {
         failedArgParseMessage(myName, "()", args, cont);
     }
     else {

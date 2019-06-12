@@ -7,10 +7,12 @@ Match Var False
 
 [input]
 
+(load "lib/listops.scm")
+
 (define match-data (match '(:X) '()))
 (if (dict? match-data)
     match-data
-    (car (cdr match-data)))
+    (cadr match-data))
 
 [result]
 [keep 1]

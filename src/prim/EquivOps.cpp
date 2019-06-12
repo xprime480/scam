@@ -15,12 +15,6 @@ using namespace std;
 
 namespace
 {
-    extern bool getObjs(ScamValue args,
-                        Continuation * cont,
-                        const char * name,
-                        ScamValue & obj1,
-                        ScamValue & obj2);
-
     extern bool compareBoolean(ScamValue obj1, ScamValue obj2);
     extern bool compareChar(ScamValue obj1, ScamValue obj2);
     extern bool compareStringLike(ScamValue obj1, ScamValue obj2);
@@ -38,7 +32,7 @@ void scam::applyEqP(ScamValue args,
 {
     static const char * name = "eq?";
     ScamValue obj1, obj2;
-    if ( ! getObjs(args, cont, name, obj1, obj2) ) {
+    if ( ! getTwoObjs(args, cont, name, obj1, obj2) ) {
         return;
     }
 
@@ -64,7 +58,7 @@ void scam::applyEqvP(ScamValue args,
 {
     static const char * name = "eqv?";
     ScamValue obj1, obj2;
-    if ( ! getObjs(args, cont, name, obj1, obj2) ) {
+    if ( ! getTwoObjs(args, cont, name, obj1, obj2) ) {
         return;
     }
 
@@ -84,7 +78,7 @@ void scam::applyEqualP(ScamValue args,
 {
     static const char * name = "equal?";
     ScamValue obj1, obj2;
-    if ( ! getObjs(args, cont, name, obj1, obj2) ) {
+    if ( ! getTwoObjs(args, cont, name, obj1, obj2) ) {
         return;
     }
 
@@ -100,28 +94,6 @@ void scam::applyEqualP(ScamValue args,
 
 namespace
 {
-    bool getObjs(ScamValue args,
-                 Continuation * cont,
-                 const char * name,
-                 ScamValue & obj1,
-                 ScamValue & obj2)
-    {
-        ArgListHelper helper(args);
-
-        if ( ! wantObject(name, helper, cont, obj1) ) {
-            return false;
-        }
-        if ( ! wantObject(name, helper, cont, obj2) ) {
-            return false;
-        }
-        if ( ! finishArgs(name, helper, cont) ) {
-            return false;
-        }
-
-        return true;
-    }
-
-
     bool compareBoolean(ScamValue obj1, ScamValue obj2)
     {
         return asBool(obj1) == asBool(obj2);
@@ -194,10 +166,10 @@ namespace
         }
         else if ( obj1->type == obj2->type ) {
             switch ( obj1->type ) {
-            case ScamData::Null:
+            case ScamData::Nothing:
                 break;
 
-            case ScamData::Nil:
+            case ScamData::Null:
                 rv = true;
                 break;
 

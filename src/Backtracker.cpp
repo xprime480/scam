@@ -16,7 +16,7 @@ namespace
 {
     static unsigned counter { 0 };
     static ScamValue nomore = makeError("No more choices", false);
-    static bool init = (nomore->setMeta("amb-error", makeNil()), true);
+    static bool init = (nomore->setMeta("amb-error", makeNull()), true);
 }
 
 Backtracker::Backtracker(char const * id, Backtracker * parent)

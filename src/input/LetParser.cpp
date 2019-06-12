@@ -11,7 +11,7 @@ using namespace scam;
 using namespace std;
 
 LetParser::LetParser()
-    : forms(makeNull())
+    : forms(makeNothing())
 {
     clearValue();
 }
@@ -67,7 +67,7 @@ void LetParser::clearValue()
 {
     ArgParser::clearValue();
     bindings.clear();
-    forms = makeNull();
+    forms = makeNothing();
 }
 
 size_t LetParser::getBindingCount() const

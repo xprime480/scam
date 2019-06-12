@@ -18,8 +18,8 @@ protected:
     ScamValue exp;
 
     EnvTest()
-        : key(makeNull())
-        , exp(makeNull())
+        : key(makeNothing())
+        , exp(makeNothing())
     {
     }
 
@@ -139,7 +139,7 @@ TEST_F(EnvTest, DefineConstant)
 {
     reset(true);
     ScamValue expr = parseAndEvaluate("(define x 1)");
-    expectNull(expr);
+    expectNothing(expr);
 
     ScamValue sym = makeSymbol("x");
     ScamValue val = engine.getBinding(sym);
@@ -150,7 +150,7 @@ TEST_F(EnvTest, DefineEvaluated)
 {
     reset(true);
     ScamValue expr = parseAndEvaluate("(define x (- 3 2))");
-    expectNull(expr);
+    expectNothing(expr);
 
     ScamValue sym = makeSymbol("x");
     ScamValue val = engine.getBinding(sym);

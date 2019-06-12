@@ -32,7 +32,7 @@ using namespace std;
             cont->run(rv);                                      \
         }
 
-DEFINE_PREDICATE(NilP, "nil?", isNil)
+DEFINE_PREDICATE(NullP, "null?", isNull)
 DEFINE_PREDICATE(ErrorP, "error?", error)
 DEFINE_PREDICATE(PairP, "pair?", isPair)
 DEFINE_PREDICATE(ListP, "list?", isList)

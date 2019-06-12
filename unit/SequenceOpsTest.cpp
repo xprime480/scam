@@ -18,7 +18,7 @@ protected:
 
 TEST_F(SequenceOpsTest, CarEmpty)
 {
-    ScamValue value = makeNil();
+    ScamValue value = makeNull();
     EXPECT_THROW(getCar(value), ScamException);
 }
 
@@ -37,7 +37,7 @@ TEST_F(SequenceOpsTest, CarNonEmpty)
 
 TEST_F(SequenceOpsTest, CdrEmpty)
 {
-    ScamValue value = makeNil();
+    ScamValue value = makeNull();
     EXPECT_THROW(getCdr(value), ScamException);
 }
 

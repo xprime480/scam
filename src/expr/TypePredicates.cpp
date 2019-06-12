@@ -14,9 +14,14 @@ bool scam::isImmutable(ScamValue data)
     return data->isImmutable();
 }
 
-bool scam::isNull(ScamValue data)
+bool scam::isNothing(ScamValue data)
 {
-    return data->type == ScamData::Null;
+    return data->type == ScamData::Nothing;
+}
+
+bool scam::isAnything(ScamValue data)
+{
+    return ! isNothing(data);
 }
 
 bool scam::error(ScamValue data)
@@ -26,7 +31,7 @@ bool scam::error(ScamValue data)
 
 bool scam::truth(ScamValue data)
 {
-    if ( isNull(data) ) {
+    if ( isNothing(data) ) {
         return false;
     }
     if ( ! isBoolean(data) ) {
@@ -122,9 +127,9 @@ bool scam::isSpecialNumeric(ScamValue data)
     return 0 != (data->type & ScamData::SpecialNumeric);
 }
 
-bool scam::isNil(ScamValue data)
+bool scam::isNull(ScamValue data)
 {
-    return data->type == ScamData::Nil;
+    return data->type == ScamData::Null;
 }
 
 bool scam::isPair(ScamValue data)
@@ -134,7 +139,7 @@ bool scam::isPair(ScamValue data)
 
 bool scam::isList(ScamValue data)
 {
-    if ( isNil(data) ) {
+    if ( isNull(data) ) {
         return true;
     }
     if ( isPair(data) ) {

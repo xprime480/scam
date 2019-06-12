@@ -53,7 +53,7 @@ size_t scam::length(ScamValue value)
         if ( isPair(cdr) ) {
             len += length(cdr);
         }
-        else if ( ! isNil(cdr) ) {
+        else if ( ! isNull(cdr) ) {
             len += 1;
         }
 
@@ -62,7 +62,7 @@ size_t scam::length(ScamValue value)
     else if ( isDict(value) ) {
         rv = DICTKEYS(value).size();
     }
-    else if ( isNil(value) ) {
+    else if ( isNull(value) ) {
         rv = 0u;
     }
     else if ( isVector(value) ) {
@@ -84,7 +84,7 @@ size_t scam::length(ScamValue value)
 
 ScamValue checkLength(ScamValue value, size_t n)
 {
-    ScamValue rv = makeNull();
+    ScamValue rv = makeNothing();
 
     const size_t len = length(value);
     if ( n >= len ) {
@@ -101,7 +101,7 @@ ScamValue checkLength(ScamValue value, size_t n)
 
 ScamValue scam::nthcar(ScamValue value, size_t n)
 {
-    ScamValue rv = makeNull();
+    ScamValue rv = makeNothing();
 
     if ( isByteVector(value) ) {
         rv = checkLength(value, n);
@@ -186,7 +186,7 @@ ScamValue scam::append(ScamValue expr, ScamValue tail)
         throw ScamException(msg);
     }
 
-    if ( isNil(expr) ) {
+    if ( isNull(expr) ) {
         return makeList(tail);
     }
 

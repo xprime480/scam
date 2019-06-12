@@ -16,7 +16,7 @@ void scam::applyBacktrack(ScamValue args,
 {
     static const char * myName = "backtrack";
 
-    if ( ! isNil(args) ) {
+    if ( ! isNull(args) ) {
         failedArgParseMessage(myName, "()", args, cont);
         return;
     }

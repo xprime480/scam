@@ -7,7 +7,8 @@ namespace scam
 {
     extern bool isImmutable(ScamValue data);
 
-    extern bool isNull(ScamValue data);
+    extern bool isNothing(ScamValue data);
+    extern bool isAnything(ScamValue data);
     extern bool error(ScamValue data);
     extern bool truth(ScamValue data);
 
@@ -30,7 +31,7 @@ namespace scam
     extern bool isPosInf(ScamValue data);
     extern bool isSpecialNumeric(ScamValue data);
 
-    extern bool isNil(ScamValue data);
+    extern bool isNull(ScamValue data);
     extern bool isPair(ScamValue data);
     extern bool isList(ScamValue data);
 

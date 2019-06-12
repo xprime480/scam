@@ -56,5 +56,5 @@ ScamValue BindFormParser::getForm() const
     if ( parser->size() ) {
         return parser->get(1u);
     }
-    return makeNull();
+    return makeNothing();
 }

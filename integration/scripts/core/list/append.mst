@@ -1,0 +1,30 @@
+Append lists
+
+;[skip] uncomment to skip this test
+
+[name]
+Append Lists
+
+[input]
+
+(append 2 3)
+(append)
+(append '(x) '(y))
+(append '(a) '(b c d))
+(append '(a (b)) '((c)))
+(append '(a b) '(c . d))
+(append '() 'a)
+(append 'a)
+(append '(a b c) '())
+
+
+[result]
+append: 1 parameter needed, 2 given
+()
+(x y)
+(a b c d)
+(a (b) (c))
+(a b c . d)
+a
+a
+(a b c)

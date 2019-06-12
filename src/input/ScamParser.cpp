@@ -38,7 +38,7 @@ ScamValue ScamParser::parseSubExpr() const
 
 ScamValue ScamParser::tokenToExpr(Token const & token) const
 {
-    ScamValue rv = makeNull();
+    ScamValue rv = makeNothing();
 
     switch ( token.getType() ) {
     case TokenType::TT_NONE:
@@ -112,10 +112,11 @@ ScamValue ScamParser::tokenToExpr(Token const & token) const
     case TokenType::TT_QUESTION:
         rv = makeSymbol("backtrack");
         rv = makeList(rv);
+        rv->makeImmutable();
         break;
 
     case TokenType::TT_END_OF_INPUT:
-        rv = makeNull();
+        rv = makeNothing();
         break;
 
     case TokenType::TT_SCAN_ERROR:
@@ -146,7 +147,7 @@ ScamValue ScamParser::parseList() const
     }
 
     if ( TokenType::TT_CLOSE_PAREN == type ) {
-        return makeNil();
+        return makeNull();
     }
 
     if ( TokenType::TT_DOT == type ) {
@@ -157,11 +158,15 @@ ScamValue ScamParser::parseList() const
     if ( error(car) ) {
         return car;
     }
+
     ScamValue cdr = parseList();
     if ( error(cdr) ) {
         return cdr;
     }
-    return makePair(car, cdr);
+
+    ScamValue rv = makePair(car, cdr);
+    rv->makeImmutable();
+    return rv;
 }
 
 ScamValue ScamParser::parseDotContext() const
@@ -327,7 +332,7 @@ ScamValue ScamParser::expand_reader_macro(std::string const & text) const
     }
 
     ScamValue expr = parseSubExpr();
-    if ( isNull(expr) ) {
+    if ( isNothing(expr) ) {
         return makeErrorExtended("Unterminated macro: ", name);
     }
     if ( error(expr) ) {
@@ -340,7 +345,10 @@ ScamValue ScamParser::expand_reader_macro(std::string const & text) const
 
     ScamValue sym    = makeSymbol(name);
     ScamValue listed = makeList(expr);
-    return makePair(sym, listed);
+    listed->makeImmutable();
+    ScamValue rv = makePair(sym, listed);
+    rv->makeImmutable();
+    return rv;
 }
 
 namespace
@@ -349,7 +357,7 @@ namespace
     {
         static string tag = "partial";
         if ( expr ) {
-            expr->setMeta(tag, makeNil());
+            expr->setMeta(tag, makeNull());
         }
     }
 }

@@ -1,11 +1,13 @@
 
+(load "lib/listops.scm")
+
 (define cars
   (lambda (lst)
     (map car lst)))
 
 (define cadrs
   (lambda (lst)
-    (map (lambda (item) (car (cdr item))) lst)))
+    (map cadr lst)))
 
 (let* ((mylet
         (macro (bindings body)

@@ -46,10 +46,10 @@ bool ScamRepl::load_prelude()
     ScamValue expr = parser.parseExpr();
     tokenizer.flush();
 
-    if ( isNull(expr) || error(expr) ) {
+    if ( isNothing(expr) || error(expr) ) {
         cerr << "Unable to read the prelude\n";
 
-        if ( isNull(expr) ) {
+        if ( isNothing(expr) ) {
             return false;
         }
 
@@ -65,7 +65,7 @@ int ScamRepl::repl()
 {
     for ( ;; ) {
         ScamValue form = read();
-        if ( isNull(form) ) {
+        if ( isNothing(form) ) {
             break;
         }
         ScamValue value = eval(form);
@@ -84,7 +84,7 @@ ScamValue ScamRepl::read()
         else {
             ScamValue form = parser.parseExpr();
 
-            if ( ! isNull(form) && ! error(form) ) {
+            if ( ! isNothing(form) && ! error(form) ) {
                 tokenizer.flush();
                 return form;
             }
@@ -99,13 +99,13 @@ ScamValue ScamRepl::read()
 
         if ( ! cin.good() ) {
             cerr << "End of input detected\n";
-            return makeNull();
+            return makeNothing();
         }
 
         string line;
         getline(cin, line);
         if ( ! checkInternal(line) ) {
-            return makeNull();
+            return makeNothing();
         }
         tokenizer.bufferInput(line);
     }

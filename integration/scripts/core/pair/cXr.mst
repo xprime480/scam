@@ -1,0 +1,76 @@
+Test access to components of pair values via caar, etc
+
+;[skip] uncomment to skip this test
+
+[name]
+Car / Cdr combinations
+
+[input]
+
+(load "lib/listops.scm")
+
+(define l1 '((a b) c))
+(define l2 '(((x y) b) (q r) z))
+(define l3 '((((x y) b) (q r) z) (((1 2) 3) foo) (4 5) 6))
+
+(caar l1)
+(cadr l1)
+(cdar l1)
+(cddr l1)
+
+(caaar l2)
+(caadr l2)
+(cadar l2)
+(caddr l2)
+(cdaar l2)
+(cdadr l2)
+(cddar l2)
+(cdddr l2)
+
+(caaaar l3)
+(caaadr l3)
+(caadar l3)
+(caaddr l3)
+(cadaar l3)
+(cadadr l3)
+(caddar l3)
+(cadddr l3)
+(cdaaar l3)
+(cdaadr l3)
+(cdadar l3)
+(cdaddr l3)
+(cddaar l3)
+(cddadr l3)
+(cdddar l3)
+(cddddr l3)
+
+[result]
+[keep 28]
+a
+c
+(b)
+()
+x
+q
+b
+z
+(y)
+(r)
+()
+()
+x
+(1 2)
+q
+4
+b
+foo
+z
+6
+(y)
+(3)
+(r)
+(5)
+()
+()
+()
+()

@@ -8,14 +8,14 @@ using namespace std;
 Token::Token()
     : type(TokenType::TT_NONE)
     , text("")
-    , expr(makeNull())
+    , expr(makeNothing())
 {
 }
 
 Token::Token(TokenType type, string const & text)
     : type(type)
     , text(text)
-    , expr(makeNull())
+    , expr(makeNothing())
 {
 }
 

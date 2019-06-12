@@ -45,7 +45,7 @@ namespace scam
                         const char * name,
                         std::function<bool(ScamValue)> pred);
 
-        void expectNull(ScamValue expr);
+        void expectNothing(ScamValue expr);
 
         void expectError(ScamValue expr,
                          std::string const msg = "",
@@ -93,7 +93,7 @@ namespace scam
 
         void expectKeyword(ScamValue expr, std::string const & name);
 
-        void expectNil(ScamValue expr);
+        void expectNull(ScamValue expr);
 
         void expectList(ScamValue expr, std::string const & repr, size_t len);
 

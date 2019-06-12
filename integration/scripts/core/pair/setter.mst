@@ -1,0 +1,40 @@
+Test modification of components of pair values
+
+;[skip] uncomment to skip this test
+
+[name]
+Set-Car / Set-Cdr
+
+[input]
+
+(define immutable '(1 . 2))
+(define mutable (cons 1 2))
+(define list-val (list 1 2 3))
+
+(set-car! immutable 3)
+(set-cdr! immutable 4)
+
+(begin
+  (set-car! mutable 3)
+  mutable)
+
+(begin
+  (set-cdr! mutable '(5 5 5))
+  mutable)
+
+(begin
+  (set-car! list-val 3)
+  list-val)
+
+(begin
+  (set-cdr! list-val '())
+  list-val)
+
+[result]
+[keep 6]
+set-car!: Cannot mutate constant pair (1 . 2)
+set-cdr!: Cannot mutate constant pair (1 . 2)
+(3 . 2)
+(3 5 5 5)
+(3 2 3)
+(3)

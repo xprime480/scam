@@ -114,7 +114,7 @@ namespace
 
     ScamValue getPath()
     {
-        ScamValue rv = makeNull();
+        ScamValue rv = makeNothing();
 
         char const * path = getenv("SCAM_PATH");
         if ( ! path || ! *path ) {

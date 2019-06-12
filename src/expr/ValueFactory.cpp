@@ -17,15 +17,15 @@
 using namespace scam;
 using namespace std;
 
-ScamValue scam::makeNull()
+ScamValue scam::makeNothing()
 {
-    static ScamData instance(ScamData::Null, false);
+    static ScamData instance(ScamData::Nothing, false);
     return &instance;
 }
 
-ScamValue scam::makeNil()
+ScamValue scam::makeNull()
 {
-    static ScamData instance(ScamData::Nil, false);
+    static ScamData instance(ScamData::Null, false);
     return &instance;
 }
 
@@ -200,17 +200,17 @@ ScamValue scam::makePair(ScamValue car, ScamValue cdr)
 
 ScamValue scam::makeList()
 {
-    return makeNil();
+    return makeNull();
 }
 
 ScamValue scam::makeList(ScamValue item)
 {
-    return makePair(item, makeNil());
+    return makePair(item, makeNull());
 }
 
 ScamValue scam::makeList(vector<ScamValue> & items)
 {
-    ScamValue rv = makeNil();
+    ScamValue rv = makeNull();
 
     for ( auto iter = items.rbegin() ; iter != items.rend() ; ++iter ) {
         rv = makePair(*iter, rv);
@@ -248,7 +248,7 @@ ScamValue scam::makeDict(ExprVec const & args)
 
     ValVec input = args;
     if ( 1 == (input.size() % 2) ) {
-        input.push_back(makeNil());
+        input.push_back(makeNull());
     }
 
     for ( size_t idx = 0 ; idx < input.size() ; idx += 2 ) {
@@ -298,7 +298,7 @@ ScamValue scam::makeClassInstance(ScamValue value, Env * env)
     size_t var_count = getClassVarCount(value);
     for ( size_t n = 0 ; n < var_count ; ++n ) {
         ScamValue var = getClassVar(value, n);
-        INSTANCELOCALENV(v)->put(var, makeNil());
+        INSTANCELOCALENV(v)->put(var, makeNull());
     }
 
     size_t fun_count = getClassMethodCount(value);

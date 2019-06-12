@@ -1,0 +1,24 @@
+Reverse lists
+
+;[skip] uncomment to skip this test
+
+[name]
+Reverse Lists
+
+[input]
+
+(load "lib/listops.scm")
+
+(reverse)
+(reverse '() '(a b c))
+(reverse '())
+(reverse '(1 2 3))
+(reverse '(1 (2 3) 4))
+
+[result]
+[keep 5]
+Expected 1 parameters; got 0
+Expected 1 parameters; got 2
+()
+(3 2 1)
+(4 (2 3) 1)

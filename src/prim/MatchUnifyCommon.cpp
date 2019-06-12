@@ -47,7 +47,7 @@ MatchUnifyCommon::check_ignore(ScamValue dict, ScamValue lhs, ScamValue rhs)
         return dict;
     }
 
-    return makeNil();
+    return makeNull();
 }
 
 ScamValue
@@ -57,13 +57,13 @@ MatchUnifyCommon::check_literals(ScamValue dict, ScamValue lhs, ScamValue rhs)
         return dict;
     }
 
-    return makeNil();
+    return makeNull();
 }
 
 ScamValue
 MatchUnifyCommon::check_keyword(ScamValue dict, ScamValue lhs, ScamValue rhs)
 {
-    if ( isKeyword(lhs) && ! isNil(rhs) ) {
+    if ( isKeyword(lhs) && ! isNull(rhs) ) {
         ScamValue old = dictGet(dict, lhs);
         if ( error(old) ) {
             dictPut(dict, lhs, rhs);
@@ -80,7 +80,7 @@ MatchUnifyCommon::check_keyword(ScamValue dict, ScamValue lhs, ScamValue rhs)
         return dict;
     }
 
-    return makeNil();
+    return makeNull();
 }
 
 ScamValue MatchUnifyCommon::check_keyword_reversed(ScamValue dict,
@@ -88,7 +88,7 @@ ScamValue MatchUnifyCommon::check_keyword_reversed(ScamValue dict,
                                                    ScamValue rhs)
 {
     if ( parser->isMatch() ) {
-        return makeNil();
+        return makeNull();
     }
     else {
         return check_keyword(dict, rhs, lhs);
@@ -111,7 +111,7 @@ MatchUnifyCommon::check_pair(ScamValue dict, ScamValue lhs, ScamValue rhs)
         return exec(dict, lhsCdr, rhsCdr);
     }
 
-    return makeNil();
+    return makeNull();
 }
 
 ScamValue
@@ -138,7 +138,7 @@ MatchUnifyCommon::check_vector(ScamValue dict, ScamValue lhs, ScamValue rhs)
         return dict;
     }
 
-    return makeNil();
+    return makeNull();
 }
 
 ScamValue
@@ -168,7 +168,7 @@ MatchUnifyCommon::check_dict(ScamValue dict, ScamValue lhs, ScamValue rhs)
         return dict;
     }
 
-    return makeNil();
+    return makeNull();
 }
 
 ScamValue MatchUnifyCommon::exec(ScamValue dict, ScamValue lhs, ScamValue rhs)
@@ -188,7 +188,7 @@ ScamValue MatchUnifyCommon::exec(ScamValue dict, ScamValue lhs, ScamValue rhs)
 
     for ( auto checker : checkers ) {
         ScamValue rv = (this->*checker)(dict, lhs, rhs);
-        if ( ! isNil(rv) ) {
+        if ( ! isNull(rv) ) {
           return rv;
         }
     }

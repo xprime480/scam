@@ -1,0 +1,21 @@
+Test the null? function
+
+;[skip]
+
+[name]
+Type Checker of Null
+
+[input]
+
+(null?)
+(null? '() '())
+
+(null? ())
+(null? 2)
+
+[result]
+[keep 4]
+null?: parameter 1 missing
+null?: 1 parameter needed, 2 given
+#t
+#f

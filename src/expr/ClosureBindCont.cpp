@@ -65,7 +65,7 @@ void ClosureBindCont::run(ScamValue expr)
 
 bool ClosureBindCont::malformedActuals(ScamValue expr) const
 {
-    if ( isPair(expr) || isNil(expr) || isSymbol(expr) ) {
+    if ( isPair(expr) || isNull(expr) || isSymbol(expr) ) {
         return false;
     }
 

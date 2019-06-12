@@ -5,9 +5,17 @@
 
 namespace scam
 {
+    extern void applyMakeList(ScamValue args,
+                              Continuation * cont,
+                              ScamEngine * engine);
+
     extern void applyList(ScamValue args,
                           Continuation * cont,
                           ScamEngine * engine);
+
+    extern void applyAppend(ScamValue args,
+			    Continuation * cont,
+			    ScamEngine * engine);
 }
 
 #endif

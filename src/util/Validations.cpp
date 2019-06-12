@@ -28,9 +28,9 @@ ScamValue scam::validateClosureArgs(ScamValue args, const char * name)
 
 ScamValue scam::validateFormals(ScamValue formals)
 {
-    ScamValue ok = makeNil();
+    ScamValue ok = makeNull();
 
-    if ( isSymbol(formals) || isNil(formals) ) {
+    if ( isSymbol(formals) || isNull(formals) ) {
         return ok;
     }
 
@@ -59,7 +59,7 @@ ScamValue scam::validateFormals(ScamValue formals)
         parms.insert(name);
 
         formals = getCdr(formals);
-        if ( isNil(formals) ) {
+        if ( isNull(formals) ) {
             break;
         }
 

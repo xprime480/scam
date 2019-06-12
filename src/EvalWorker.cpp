@@ -39,7 +39,7 @@ namespace
 
         void run(ScamValue expr) override
         {
-            if ( isList(expr) && ! isNil(expr) ) {
+            if ( isList(expr) && ! isNull(expr) ) {
                 unsigned len = length(expr);
                 ScamValue last = nthcar(expr, len - 1);
                 cont->run(last);

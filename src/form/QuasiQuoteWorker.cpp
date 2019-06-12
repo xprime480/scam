@@ -104,7 +104,7 @@ void QuasiQuoteWorker::build_qq_list(ScamValue input, Continuation * cont)
 
 void QuasiQuoteWorker::build_qq_form(ScamValue input, Continuation * cont)
 {
-    if ( ! isList(input) || isNil(input) ) {
+    if ( ! isList(input) || isNull(input) ) {
         cont->run(input);
     }
     else {

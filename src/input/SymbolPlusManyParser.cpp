@@ -56,7 +56,7 @@ bool SymbolPlusManyParser::accept(ScamValue expr)
 void SymbolPlusManyParser::clearValue()
 {
     ArgParser::clearValue();
-    forms = makeNull();
+    forms = makeNothing();
 }
 
 

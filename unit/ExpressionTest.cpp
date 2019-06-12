@@ -19,8 +19,8 @@ protected:
 
 TEST_F(ExpressionTest, NullExpression)
 {
-    ScamValue expr = makeNull();
-    expectNull(expr);
+    ScamValue expr = makeNothing();
+    expectNothing(expr);
 
     ScamValue evaled = evaluate(expr);
     expectError(evaled, "The null type cannot be evaluated.", false);
@@ -140,11 +140,11 @@ TEST_F(ExpressionTest, SymbolTest)
 
 TEST_F(ExpressionTest, NilTest)
 {
-    ScamValue expr = makeNil();
-    expectNil(expr);
+    ScamValue expr = makeNull();
+    expectNull(expr);
 
     ScamValue evaled = evaluate(expr);
-    expectNil(evaled);
+    expectNull(evaled);
 }
 
 TEST_F(ExpressionTest, PairSingletonTest)
@@ -152,7 +152,7 @@ TEST_F(ExpressionTest, PairSingletonTest)
     string const value { "(works)" };
 
     ScamValue car = makeSymbol("works");
-    ScamValue cdr = makeNil();
+    ScamValue cdr = makeNull();
     ScamValue expr = makePair(car, cdr);
 
     expectList(expr, value, 1);
@@ -167,7 +167,7 @@ TEST_F(ExpressionTest, ConsDoubletonTest)
 
     ScamValue car  = makeSymbol("works");
     ScamValue cadr = makeSymbol("also");
-    ScamValue cddr = makeNil();
+    ScamValue cddr = makeNull();
     ScamValue cdr  = makePair(cadr, cddr);;
     ScamValue expr = makePair(car, cdr);
 
@@ -189,16 +189,16 @@ TEST_F(ExpressionTest, ConsDoubletonTest)
     expectList(cdr2, "(also)", 1);
 
     ScamValue cdr3 = nthcdr(expr, 1);
-    expectNil(cdr3);
+    expectNull(cdr3);
 }
 
 TEST_F(ExpressionTest, ListEmptyTest)
 {
     ScamValue expr = makeList();
-    expectNil(expr);
+    expectNull(expr);
 
     ScamValue evaled = evaluate(expr);
-    expectNil(evaled);
+    expectNull(evaled);
 }
 
 TEST_F(ExpressionTest, ListSingletonTest)
@@ -260,7 +260,7 @@ TEST_F(ExpressionTest, ConsEvalTest)
 
     ScamValue car  = makeSymbol("quote");
     ScamValue cadr = makeInteger(2, true);
-    ScamValue cddr = makeNil();
+    ScamValue cddr = makeNull();
     ScamValue cdr  = makePair(cadr, cddr);;
     ScamValue expr = makePair(car, cdr);
 
@@ -286,7 +286,7 @@ TEST_F(ExpressionTest, ListCdrTest)
     expectList(cdr3, "(1)", 1);
 
     ScamValue cdr4 = nthcdr(list, 4);
-    expectNil(cdr4);
+    expectNull(cdr4);
 
     ScamValue cdr5 = nthcdr(list, 5);
     expectError(cdr5);

@@ -1,0 +1,25 @@
+Take the length of some lists
+
+;[skip] uncomment to skip this test
+
+[name]
+List Length
+
+[input]
+
+(error)
+(error 1 2 3)
+(error "bagels are not doughnuts")
+(error "wanted a list, got:" 2 3 4)
+
+;; this one needs more infrastructure to work
+;;
+;;(error? (error "wanted a list, got " 2 3 4))
+;;
+
+
+[result]
+error: parameter 1 missing
+error: expected string for parameter 1 got '1'
+bagels are not doughnuts
+wanted a list, got: 2 3 4

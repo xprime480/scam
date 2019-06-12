@@ -51,6 +51,6 @@ void IfCont::run(ScamValue expr)
         eval(elseExpr, cont, env);
     }
     else {
-        cont->run(makeNil());
+        cont->run(makeNull());
     }
 }

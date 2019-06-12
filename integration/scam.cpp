@@ -27,7 +27,7 @@ namespace
         engine.pushFrame();
         ReadEvalString helper(&engine, testforms);
         ScamValue status = helper.run();
-        if ( isNull(status) || error(status) ) {
+        if ( isNothing(status) || error(status) ) {
             return false;
         }
         else {

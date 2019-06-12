@@ -247,7 +247,7 @@ TEST_F(NumericParserTest, ComplexSimpleParts)
 {
     const char * text { "5+3i" };
     ScamValue expr = makeNumeric(text);
-    ScamValue null  { makeNull() };
+    ScamValue null  { makeNothing() };
     expectComplex(expr, null, null, text, true);
 }
 
@@ -255,7 +255,7 @@ TEST_F(NumericParserTest, ComplexSimplePartsNegativeImaginary)
 {
     const char * text { "5-3i" };
     ScamValue expr = makeNumeric(text);
-    ScamValue null  { makeNull() };
+    ScamValue null  { makeNothing() };
     expectComplex(expr, null, null, text, true);
 }
 
@@ -263,7 +263,7 @@ TEST_F(NumericParserTest, ComplexInfiniteImaginary)
 {
     const char * text { "5-inf.0i" };
     ScamValue expr = makeNumeric(text);
-    ScamValue null  { makeNull() };
+    ScamValue null  { makeNothing() };
     expectComplex(expr, null, null, text, false);
 }
 
@@ -271,7 +271,7 @@ TEST_F(NumericParserTest, ComplexNanImaginary)
 {
     const char * text { "5+nan.0i" };
     ScamValue expr = makeNumeric(text);
-    ScamValue null  { makeNull() };
+    ScamValue null  { makeNothing() };
     expectComplex(expr, null, null, text, false);
 }
 
@@ -279,7 +279,7 @@ TEST_F(NumericParserTest, ComplexJustNanImaginary)
 {
     const char * text { "+nan.0i" };
     ScamValue expr = makeNumeric(text);
-    ScamValue null  { makeNull() };
+    ScamValue null  { makeNothing() };
     expectComplex(expr, null, null, text, false);
 }
 
@@ -287,7 +287,7 @@ TEST_F(NumericParserTest, ComplexMinusI)
 {
     const char * text { "-i" };
     ScamValue expr = makeNumeric(text);
-    ScamValue null  { makeNull() };
+    ScamValue null  { makeNothing() };
     expectComplex(expr, null, null, text, true);
 }
 
@@ -295,7 +295,7 @@ TEST_F(NumericParserTest, ComplexCompletelyNan)
 {
     const char * text { "+nan.0+nan.0i" };
     ScamValue expr = makeNumeric(text);
-    ScamValue null  { makeNull() };
+    ScamValue null  { makeNothing() };
     expectComplex(expr, null, null, text, false);
 }
 
@@ -303,7 +303,7 @@ TEST_F(NumericParserTest, ComplexInfRealFiniteImag)
 {
     const char * text { "-inf.0-7i" };
     ScamValue expr = makeNumeric(text);
-    ScamValue null  { makeNull() };
+    ScamValue null  { makeNothing() };
     expectComplex(expr, null, null, text, false);
 }
 
@@ -312,7 +312,7 @@ TEST_F(NumericParserTest, ComplexPolarForm)
     const char * text { "1.41421356237@-0.78539816339" };
     const char * repr { "1-i" };
     ScamValue expr = makeNumeric(text);
-    ScamValue null  { makeNull() };
+    ScamValue null  { makeNothing() };
     expectComplex(expr, null, null, repr, false);
 }
 

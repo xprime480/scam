@@ -21,6 +21,8 @@ namespace
                              ScamEngine * engine);
 
     extern void addStringOps(Env * env, ScamEngine * engine);
+    extern void addPairOps(Env * env, ScamEngine * engine);
+    extern void addListOps(Env * env, ScamEngine * engine);
 }
 
 void ScamEngine::getStandardEnv()
@@ -68,15 +70,10 @@ void ScamEngine::getStandardEnv()
     addPrimitive(env, "eqv?",   applyEqvP,   this);
     addPrimitive(env, "equal?", applyEqualP, this);
 
-    addPrimitive(env, "list", applyList, this);
-    addPrimitive(env, "cons", applyCons, this);
-    addPrimitive(env, "car", applyCar, this);
-    addPrimitive(env, "cdr", applyCdr, this);
-
     addPrimitive(env, "vlen", applyVLen, this);
     addPrimitive(env, "vref", applyVRef, this);
 
-    addPrimitive(env, "nil?", applyNilP, this);
+    addPrimitive(env, "null?", applyNullP, this);
     addPrimitive(env, "error?", applyErrorP, this);
     addPrimitive(env, "pair?", applyPairP, this);
     addPrimitive(env, "list?", applyListP, this);
@@ -108,6 +105,8 @@ void ScamEngine::getStandardEnv()
     addPrimitive(env, "trace", applyTrace, this);
 
     addStringOps(env, this);
+    addPairOps(env, this);
+    addListOps(env, this);
 }
 
 namespace
@@ -157,5 +156,21 @@ namespace
         addPrimitive(env, "string-copy",     applyStringCopy,     engine);
         addPrimitive(env, "string-copy!",    applyStringCopyX,    engine);
         addPrimitive(env, "string-fill!",    applyStringFillX,    engine);
+    }
+
+    void addPairOps(Env * env, ScamEngine * engine)
+    {
+        addPrimitive(env, "cons",     applyCons,    engine);
+        addPrimitive(env, "car",      applyCar,     engine);
+        addPrimitive(env, "cdr",      applyCdr,     engine);
+        addPrimitive(env, "set-car!", applySetCarX, engine);
+        addPrimitive(env, "set-cdr!", applySetCdrX, engine);
+    }
+
+    void addListOps(Env * env, ScamEngine * engine)
+    {
+        addPrimitive(env, "make-list", applyMakeList, engine);
+        addPrimitive(env, "list",      applyList,     engine);
+        addPrimitive(env, "append",    applyAppend,   engine);
     }
 }

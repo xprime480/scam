@@ -95,7 +95,7 @@ void DictOpsParser::clearValue()
 
 ScamValue DictOpsParser::getParsedOp() const
 {
-    ScamValue rv = makeNull();
+    ScamValue rv = makeNothing();
 
     if ( matched ) {
         ArgParser * ap = matched->get(0);
@@ -108,7 +108,7 @@ ScamValue DictOpsParser::getParsedOp() const
 
 ScamValue DictOpsParser::getOpKey() const
 {
-    ScamValue rv { makeNull() };
+    ScamValue rv { makeNothing() };
     if ( matched ) {
         ArgParser * ap = matched->get(1);
         if ( ap ) {
@@ -120,7 +120,7 @@ ScamValue DictOpsParser::getOpKey() const
 
 ScamValue DictOpsParser::getOpVal() const
 {
-    ScamValue rv { makeNull() };
+    ScamValue rv { makeNothing() };
     if ( matched ) {
         ArgParser * ap = matched->get(2);
         if ( ap ) {

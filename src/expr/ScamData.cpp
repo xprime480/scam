@@ -29,6 +29,10 @@ ScamData::ScamData(unsigned long type, bool managed)
         STRVALP(this) = new string;
         break;
 
+    case ScamData::Pair:
+        immutable = false;
+        break;
+
     case ScamData::ByteVector:
         BYTEVECTORP(this) = new vector<unsigned char>;
 
@@ -210,7 +214,7 @@ bool ScamData::hasMeta(string const & key) const
 
 ScamValue ScamData::getMeta(string const & key) const
 {
-    ScamValue rv = makeNil();
+    ScamValue rv = makeNull();
     if ( ! metadata ) {
         return rv;
     }

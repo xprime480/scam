@@ -28,7 +28,7 @@ void LetWorker::do_next(ScamValue formals,
                         ScamValue values,
                         ScamValue forms)
 {
-    ScamValue evaled = makeNil();
+    ScamValue evaled = makeNull();
     workQueueHelper<LetEvalWorker>(formals,
                                    evaled,
                                    values,

@@ -78,7 +78,7 @@ ScamValue ClassCont::build(ScamValue cls, InstanceVec & instances) const
         return temp;
     }
 
-    return makeNil();
+    return makeNull();
 }
 
 ScamValue ClassCont::connect(InstanceVec & instances) const
@@ -102,7 +102,7 @@ ScamValue ClassCont::get_parent(ScamValue value) const
 {
     ScamValue base = getClassBase(value);
     if ( writeValue(base) == "Root" ) {
-        return makeNil();
+        return makeNull();
     }
 
     if ( ! env->check(base) ) {

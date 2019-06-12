@@ -8,7 +8,7 @@ using namespace scam;
 using namespace std;
 
 ArgParser::ArgParser()
-    : value(makeNull())
+    : value(makeNothing())
 {
 }
 
@@ -35,7 +35,7 @@ bool ArgParser::accept(ScamValue expr)
 {
     clearValue();
 
-    if ( nullptr != expr && ! isNull(expr) ) {
+    if ( nullptr != expr && ! isNothing(expr) ) {
         value = expr;
         return true;
     }
@@ -54,5 +54,5 @@ ScamValue ArgParser::getValue() const
 
 void ArgParser::clearValue()
 {
-    value = makeNull();
+    value = makeNothing();
 }

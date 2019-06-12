@@ -54,7 +54,7 @@ void scam::applyString(ScamValue args,
     static const char * name { "string" };
     ArgListHelper helper(args);
 
-    ScamValue chars = makeNil();
+    ScamValue chars = makeNull();
     if ( ! wantZeroPlus(name, helper, cont, chars, isChar) ) {
         return;
     }
@@ -277,7 +277,7 @@ void scam::applyStringAppend(ScamValue args,
     static const char * name { "string-append" };
     ArgListHelper helper(args);
 
-    ScamValue strs = makeNil();
+    ScamValue strs = makeNull();
     if ( ! wantZeroPlus(name, helper, cont, strs, isString) ) {
         return;
     }
@@ -340,7 +340,7 @@ extern void scam::applyList2String(ScamValue args,
     static const char * name { "list->string" };
     ArgListHelper helper(args);
 
-    ScamValue chars = makeNil();
+    ScamValue chars = makeNull();
     if ( ! wantSublistOf(name, helper, cont, chars, isChar) ) {
         return;
     }

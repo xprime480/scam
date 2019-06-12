@@ -117,7 +117,7 @@ TEST_F(EvalTest, BeginOne)
 TEST_F(EvalTest, BeginZero)
 {
     ScamValue expr = parseAndEvaluate("(begin)");
-    expectNil(expr);
+    expectNull(expr);
 }
 
 TEST_F(EvalTest, ApplyValid)

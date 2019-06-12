@@ -80,8 +80,8 @@ namespace scam
         /*
          * tags and types for other atoms
          */
-        constexpr static unsigned long Null         { 1 << 7 };
-        constexpr static unsigned long Nil          { 1 << 8 };
+        constexpr static unsigned long Nothing      { 1 << 7 };
+        constexpr static unsigned long Null         { 1 << 8 };
         constexpr static unsigned long Boolean      { 1 << 9 };
         constexpr static unsigned long Character    { 1 << 10 };
         constexpr static unsigned long Symbol       { 1 << 11 };

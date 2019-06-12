@@ -13,10 +13,14 @@
 using namespace scam;
 using namespace std;
 
+namespace
+{
+}
+
 ArgListHelper::ArgListHelper(ScamValue args)
     : args(args)
     , lastRead(0)
-    , status(makeNull())
+    , status(makeNothing())
 {
     if ( ! isList(args)  ) {
         status = makeErrorExtended("ArgListHelper expected list, got '",
@@ -32,7 +36,7 @@ ScamValue ArgListHelper::getStatus()
 
 ScamValue ArgListHelper::peek()
 {
-    ScamValue rv = makeNull();
+    ScamValue rv = makeNothing();
 
     if ( lastRead < length(args) ) {
         rv = nthcar(args, lastRead);
@@ -43,7 +47,7 @@ ScamValue ArgListHelper::peek()
 
 ScamValue ArgListHelper::getAnyValue(ScamValue & value)
 {
-    value = makeNull();
+    value = makeNothing();
 
     if ( lastRead < length(args) ) {
         value = nthcar(args, lastRead);
@@ -61,7 +65,7 @@ ScamValue ArgListHelper::getCharacter(char & c)
     ScamValue temp;
     getAnyValue(temp);
 
-    if ( isNull(status) ) {
+    if ( isNothing(status) ) {
         if ( isChar(temp) ) {
             c = asChar(temp);
         }
@@ -94,6 +98,11 @@ ScamValue ArgListHelper::getNonNegativeInteger(int & value)
 ScamValue ArgListHelper::getString(string & value)
 {
     return getOneArg<string>(value, isString, asString, "string");
+}
+
+ScamValue ArgListHelper::getPair(ScamValue & value)
+{
+    return getOneArg<ScamValue>(value, isPair, identity, "pair");
 }
 
 ScamValue ArgListHelper::getIndex(int & index, int refParameter)
@@ -163,7 +172,7 @@ ScamValue ArgListHelper::getCount(ScamValue & value,
 
 ScamValue ArgListHelper::getOptional(ScamValue & value, ValuePredicate pred)
 {
-    value = makeNull();
+    value = makeNothing();
 
     if ( lastRead != length(args) ) {
         ScamValue peek = nthcar(args, lastRead);
@@ -181,7 +190,7 @@ ScamValue ArgListHelper::getSublistOf(ScamValue & value, ValuePredicate pred)
     ScamValue temp;
     getAnyValue(temp);
 
-    if ( isNull(status) ) {
+    if ( isNothing(status) ) {
         if ( isList(temp) ) {
             const int len = length(temp);
             for ( int idx = 0 ; idx < len ; ++idx ) {
@@ -422,7 +431,7 @@ namespace
                       F getter)
     {
         ScamValue status = getter();
-        if ( isNull(status) ) {
+        if ( isNothing(status) ) {
             return true;
         }
 
@@ -490,7 +499,7 @@ bool scam::wantMutableString(const char * name,
         ScamValue temp = helper.peek();
         string str;
         ScamValue status = helper.getString(str);
-        if ( ! isNull(status) ) {
+        if ( ! isNothing(status) ) {
             return status;
         }
 
@@ -502,7 +511,46 @@ bool scam::wantMutableString(const char * name,
         }
 
         value = temp;
-        return makeNull();
+        return makeNothing();
+    };
+
+    return wantOneValue(name, cont, func);
+}
+
+bool scam::wantPair(const char * name,
+                    ArgListHelper & helper,
+                    Continuation * cont,
+                    ScamValue & value)
+{
+    auto func = [&] () -> ScamValue
+    {
+        return helper.getPair(value);
+    };
+    return wantOneValue(name, cont, func);
+}
+
+bool scam::wantMutablePair(const char * name,
+                           ArgListHelper & helper,
+                           Continuation * cont,
+                           ScamValue & value)
+{
+    auto func = [&] () -> ScamValue
+    {
+        ScamValue temp;
+        ScamValue status = helper.getPair(temp);
+        if ( ! isNothing(status) ) {
+            return status;
+        }
+
+        if ( isImmutable(temp) ) {
+            ScamValue err =
+                makeErrorExtended("Cannot mutate constant pair ",
+                                  writeValue(temp));
+            return err;
+        }
+
+        value = temp;
+        return makeNothing();
     };
 
     return wantOneValue(name, cont, func);
@@ -529,7 +577,7 @@ bool scam::wantZeroPlus(const char * name,
 {
     ScamValue status = helper.getZeroPlus(value, pred);
 
-    if ( isNull(status) ) {
+    if ( isNothing(status) ) {
         return true;
     }
 
@@ -548,7 +596,7 @@ bool scam::wantCount(const char * name,
 {
     ScamValue status = helper.getCount(value, pred, min, max);
 
-    if ( isNull(status) ) {
+    if ( isNothing(status) ) {
         return true;
     }
 
@@ -565,7 +613,7 @@ bool scam::wantSublistOf(const char * name,
 {
     ScamValue status = helper.getSublistOf(value, pred);
 
-    if ( isNull(status) ) {
+    if ( isNothing(status) ) {
         return true;
     }
 
@@ -580,7 +628,7 @@ bool scam::finishArgs(const char * name,
                       const char * msg)
 {
     ScamValue status = helper.finish();
-    if ( isNull(status) ) {
+    if ( isNothing(status) ) {
         return true;
     }
 
@@ -588,4 +636,30 @@ bool scam::finishArgs(const char * name,
         makeErrorExtended(name, ": ", (msg ? msg : writeValue(status)));
     cont->run(err);
     return false;
+}
+
+bool scam::getTwoObjs(ScamValue args,
+                      Continuation * cont,
+                      const char * name,
+                      ScamValue & obj1,
+                      ScamValue & obj2)
+{
+    ArgListHelper helper(args);
+
+    if ( ! wantObject(name, helper, cont, obj1) ) {
+        return false;
+    }
+    if ( ! wantObject(name, helper, cont, obj2) ) {
+        return false;
+    }
+    if ( ! finishArgs(name, helper, cont) ) {
+        return false;
+    }
+
+    return true;
+}
+
+ScamValue scam::identity(ScamValue value)
+{
+    return value;
 }

@@ -51,7 +51,7 @@ protected:
         bool accept = parser->accept(value);
         EXPECT_FALSE(accept);
         ScamValue v = parser->getValue();
-        expectNull(v);
+        expectNothing(v);
     }
 };
 
@@ -74,7 +74,7 @@ TEST_F(ArgParserTest, AcceptNonNull)
 
 TEST_F(ArgParserTest, AcceptNil)
 {
-    NilParser * parser = mm.make<NilParser>();
+    NullParser * parser = mm.make<NullParser>();
     acceptParse(parser, "()");
 }
 
@@ -99,7 +99,7 @@ TEST_F(ArgParserTest, AcceptListOfAnything)
     acceptParse(parser, "(a symbol (+ 2 2) #\\c)");
     EXPECT_EQ(4u, parser->size());
     expectSymbol(parser->get(1), text);
-    expectNull(parser->get(4));
+    expectNothing(parser->get(4));
 
     rejectParse(parser, text);
 }
@@ -135,7 +135,7 @@ TEST_F(ArgParserTest, AcceptOneToThreeNumbers)
     EXPECT_EQ(3u, parser->size());
 
     rejectParse(parser, "(-5 -4 -3 -2)");
-    expectNull(parser->get(0));
+    expectNothing(parser->get(0));
 }
 
 TEST_F(ArgParserTest, AcceptSingletonAnything)
@@ -391,7 +391,7 @@ TEST_F(ArgParserTest, DictGet)
     acceptParse(parser, "(:get anything)");
     expectKeyword(parser->getParsedOp(), ":get");
     expectSymbol(parser->getOpKey(), "anything");
-    expectNull(parser->getOpVal());
+    expectNothing(parser->getOpVal());
 }
 
 TEST_F(ArgParserTest, DictPut)
@@ -410,8 +410,8 @@ TEST_F(ArgParserTest, DictLength)
 
     acceptParse(parser, "(:length)");
     expectKeyword(parser->getParsedOp(), ":length");
-    expectNull(parser->getOpKey());
-    expectNull(parser->getOpVal());
+    expectNothing(parser->getOpKey());
+    expectNothing(parser->getOpVal());
 }
 
 TEST_F(ArgParserTest, DictHas)
@@ -421,7 +421,7 @@ TEST_F(ArgParserTest, DictHas)
     acceptParse(parser, "(:has anything)");
     expectKeyword(parser->getParsedOp(), ":has");
     expectSymbol(parser->getOpKey(), "anything");
-    expectNull(parser->getOpVal());
+    expectNothing(parser->getOpVal());
 }
 
 TEST_F(ArgParserTest, DictRemove)
@@ -431,7 +431,7 @@ TEST_F(ArgParserTest, DictRemove)
     acceptParse(parser, "(:remove anything)");
     expectKeyword(parser->getParsedOp(), ":remove");
     expectSymbol(parser->getOpKey(), "anything");
-    expectNull(parser->getOpVal());
+    expectNothing(parser->getOpVal());
 }
 
 TEST_F(ArgParserTest, DictTooMany)
@@ -477,7 +477,7 @@ TEST_F(ArgParserTest, SymbolManyWithoutForm)
     SymbolPlusManyParser * parser = mm.make<SymbolPlusManyParser>();
     acceptParse(parser, "(answer)");
     expectSymbol(parser->getSymbol(), "answer");
-    expectNil(parser->getForms());
+    expectNull(parser->getForms());
 }
 
 TEST_F(ArgParserTest, BindFormSymbolOnly)
@@ -499,7 +499,7 @@ TEST_F(ArgParserTest, TrivialLet)
     LetParser * parser = mm.make<LetParser>();
     acceptParse(parser, "(())");
     EXPECT_EQ(0u, parser->getBindingCount());
-    expectNil(parser->getForms());
+    expectNull(parser->getForms());
 }
 
 TEST_F(ArgParserTest, NonTrivialLet)

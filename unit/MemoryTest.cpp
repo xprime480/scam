@@ -195,22 +195,22 @@ TEST_F(MemoryTest, GCTestWithProxy)
  */
 TEST_F(MemoryTest, TestNull)
 {
-    ScamValue cut1 = makeNull();
-    ScamValue cut2 = makeNull();
+    ScamValue cut1 = makeNothing();
+    ScamValue cut2 = makeNothing();
 
-    expectNull(cut1);
-    expectNull(cut2);
+    expectNothing(cut1);
+    expectNothing(cut2);
 
     expectNonManaged(cut1, cut2);
 }
 
 TEST_F(MemoryTest, TestNil)
 {
-    ScamValue cut1 = makeNil();
-    ScamValue cut2 = makeNil();
+    ScamValue cut1 = makeNull();
+    ScamValue cut2 = makeNull();
 
-    expectNil(cut1);
-    expectNil(cut2);
+    expectNull(cut1);
+    expectNull(cut2);
 
     expectNonManaged(cut1, cut2);
 }
@@ -414,7 +414,7 @@ TEST_F(MemoryTest, TestClosure)
 TEST_F(MemoryTest, TestClass)
 {
     ScamValue base = makeSymbol("Root");
-    ScamValue vars = makeNil();
+    ScamValue vars = makeNull();
 
     ScamValue symPlus = makeSymbol("+");
     ScamValue symA    = makeSymbol("a");

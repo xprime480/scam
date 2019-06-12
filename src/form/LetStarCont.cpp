@@ -50,7 +50,7 @@ void LetStarCont::mark() const
 
 void LetStarCont::do_let(ScamValue expr)
 {
-    if ( isNil(formals) ) {
+    if ( isNull(formals) ) {
         final_eval(env);
     }
     else {

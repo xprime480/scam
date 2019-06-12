@@ -86,7 +86,7 @@ ScamValue ParameterListParser::get(size_t idx) const
     if ( idx < parameters.size() ) {
         return parameters[idx];
     }
-    return makeNull();
+    return makeNothing();
 }
 
 ScamValue ParameterListParser::getRest() const
@@ -99,7 +99,7 @@ bool ParameterListParser::uniquifyParameters()
     if ( bare == parser->getMatch() ) {
 
         ScamValue rest = bare->getValue();
-        if ( isNull(rest) ) {
+        if ( isNothing(rest) ) {
             return false;
         }
         parameters.push_back(rest);

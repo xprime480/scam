@@ -16,7 +16,7 @@ using namespace std;
 
 NumericConverter::NumericConverter(CharStream & stream)
     : stream(stream)
-    , value(makeNull())
+    , value(makeNothing())
     , base(10)
     , exactness(ExactnessType::ET_CONTEXT)
 {
@@ -85,19 +85,19 @@ void NumericConverter::scanNum()
     scanComplex();
 
     if ( ! isDelimiter(stream.peek()) ) {
-        value = makeNull();
+        value = makeNothing();
     }
 }
 
 void NumericConverter::scanComplex()
 {
-    ScamValue rv = makeNull();
+    ScamValue rv = makeNothing();
     PositionType original = stream.getPos();
 
     ScamValue real = scanInfNan();
-    ScamValue imag = makeNull();
+    ScamValue imag = makeNothing();
 
-    if ( isNull(real) ) { // not infnan
+    if ( isNothing(real) ) { // not infnan
         int sign = scanSign(false);
         if ( 0 == sign ) {
             rv = imag;
@@ -105,7 +105,7 @@ void NumericConverter::scanComplex()
         else {
             real = makeIntegerWithExactness(0);
             imag = scanUReal();
-            if ( isNull(imag) ) {
+            if ( isNothing(imag) ) {
                 imag = makeIntegerWithExactness(1);
             }
             if ( 'i' == tolower(stream.peek()) ) {
@@ -119,7 +119,7 @@ void NumericConverter::scanComplex()
         imag = scanReal();
         if ( 'i' == tolower(stream.peek()) ) {
             stream.advance();
-            if ( isNull(imag) ) {
+            if ( isNothing(imag) ) {
                 imag = real;
                 real = makeIntegerWithExactness(0);
             }
@@ -130,25 +130,25 @@ void NumericConverter::scanComplex()
         }
     }
 
-    if ( isNull(rv) ) { // not infnan and not pure imaginary
+    if ( isNothing(rv) ) { // not infnan and not pure imaginary
         // try again from the start for real [+/- imag]
         stream.setPos(original);
         real = scanReal();
-        if ( isNull(real) ) {
+        if ( isNothing(real) ) {
             rv = real;          // not any kind of number
         }
         else {
             original = stream.getPos(); // save in case rest does not compute
             int sign = 1;
             imag = scanInfNan();
-            if ( isNull(imag) ) {
+            if ( isNothing(imag) ) {
                 sign = scanSign();
                 if ( 0 == sign ) {
                     imag = makeIntegerWithExactness(0);
                 }
                 else {
                     imag = scanUReal();
-                    if ( isNull(imag) ) {
+                    if ( isNothing(imag) ) {
                         imag = makeIntegerWithExactness(1);
                     }
                 }
@@ -163,7 +163,7 @@ void NumericConverter::scanComplex()
                 rv = real;
             }
 
-            if ( isNull(rv) ) {
+            if ( isNothing(rv) ) {
                 rv = makeComplex(real, imag);
             }
         }
@@ -174,7 +174,7 @@ void NumericConverter::scanComplex()
             PositionType tmp = stream.getPos();
             stream.advance();
             imag = scanReal();
-            if ( isNull(imag) ) {
+            if ( isNothing(imag) ) {
                 stream.setPos(tmp);
             }
             else {
@@ -189,7 +189,7 @@ void NumericConverter::scanComplex()
 ScamValue NumericConverter::scanReal()
 {
     ScamValue rv = scanInfNan();
-    if ( ! isNull(rv) ) {
+    if ( ! isNothing(rv) ) {
         return rv;
     }
 
@@ -198,7 +198,7 @@ ScamValue NumericConverter::scanReal()
     const int sign = scanSign();
     rv = scanUReal();
 
-    if ( isNull(rv) ) {
+    if ( isNothing(rv) ) {
         stream.setPos(original);
         return rv;
     }
@@ -211,11 +211,11 @@ ScamValue NumericConverter::scanUReal()
 {
     PositionType original = stream.getPos();
 
-    ScamValue rv10 { makeNull() };
+    ScamValue rv10 { makeNothing() };
     PositionType pos10 = stream.getPos();
     if ( 10 == base ) {
         rv10 = scanDecimal();
-        if ( ! isNull(rv10) ) {
+        if ( ! isNothing(rv10) ) {
             pos10 = stream.getPos();
         }
     }
@@ -223,7 +223,7 @@ ScamValue NumericConverter::scanUReal()
     stream.setPos(original);
 
     ScamValue rvN = scanUInteger();
-    if ( isNull(rvN) ) {
+    if ( isNothing(rvN) ) {
         stream.setPos(pos10);
         return rv10;
     }
@@ -244,7 +244,7 @@ ScamValue NumericConverter::scanUReal()
     stream.advance();
 
     ScamValue rvD = scanUInteger();
-    if ( isNull(rvD) ) {
+    if ( isNothing(rvD) ) {
         stream.setPos(original);
         return ( posN > pos10 ) ? rvN : rv10;
     }
@@ -256,25 +256,25 @@ ScamValue NumericConverter::scanUReal()
 ScamValue NumericConverter::scanDecimal()
 {
     PositionType original = stream.getPos();
-    ScamValue rv { makeNull() };
+    ScamValue rv { makeNothing() };
 
     if ( scanRadixPoint() ) {
         rv = makeFraction(1);
-        if ( isNull(rv) ) {
+        if ( isNothing(rv) ) {
             stream.setPos(original);
             return rv;
         }
     }
     else {
         rv = scanUInteger();
-        if ( isNull(rv) ) {
+        if ( isNothing(rv) ) {
             stream.setPos(original);
             return rv;
         }
 
         if ( scanRadixPoint() ) {
             ScamValue fp = makeFraction(0);
-            if ( ! isNull(rv) ) {
+            if ( ! isNothing(rv) ) {
                 ExtendedNumeric lhs(rv);
                 ExtendedNumeric rhs(fp);
                 ExtendedNumeric result = lhs + rhs;
@@ -314,7 +314,7 @@ ScamValue NumericConverter::scanUInteger()
 
     if ( 0 == count ) {
         stream.setPos(original);
-        return makeNull();
+        return makeNothing();
     }
 
     return makeIntegerWithExactness(value);
@@ -350,7 +350,7 @@ void NumericConverter::scanPrefix()
 
 ScamValue NumericConverter::scanInfNan()
 {
-    ScamValue rv { makeNull() };
+    ScamValue rv { makeNothing() };
 
     string peek6 = stream.strPeek(6);
     if ( peek6 == "+nan.0" || peek6 == "-nan.0" ) {
@@ -373,7 +373,7 @@ ScamValue NumericConverter::scanInfNan()
 ScamValue NumericConverter::scanSuffix()
 {
     PositionType original = stream.getPos();
-    ScamValue rv { makeNull() };
+    ScamValue rv { makeNothing() };
 
     if ( 'e' == tolower(stream.peek()) ) {
         stream.advance();
@@ -385,7 +385,7 @@ ScamValue NumericConverter::scanSuffix()
         }
     }
 
-    if ( isNull(rv) ) {
+    if ( isNothing(rv) ) {
         stream.setPos(original);
     }
 
@@ -452,12 +452,12 @@ ScamValue NumericConverter::makeFraction(unsigned minCount)
     unsigned count = text.size();
     if ( count < minCount ) {
         stream.setPos(original);
-        return makeNull();
+        return makeNothing();
     }
 
     bool makeExact = exactness == ExactnessType::ET_EXACT;
 
-    if ( isNull(rv) ) {
+    if ( isNothing(rv) ) {
         return makeInteger(0, makeExact);
     }
 

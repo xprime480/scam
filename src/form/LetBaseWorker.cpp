@@ -46,7 +46,7 @@ void LetBaseWorker::run()
 
 ScamValue LetBaseWorker::parse_bindings()
 {
-    ScamValue nil = makeNil();
+    ScamValue nil = makeNull();
     std::vector<ScamValue> syms;
     std::vector<ScamValue> vals;
 

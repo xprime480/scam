@@ -66,8 +66,8 @@ namespace scam
         const bool      invert;
     };
 
+    using NothingParser = TypeParser<ScamData::Nothing>;
     using NullParser    = TypeParser<ScamData::Null>;
-    using NilParser     = TypeParser<ScamData::Nil>;
     using CharParser    = TypeParser<ScamData::Character>;
     using StringParser  = TypeParser<ScamData::String>;
     using BooleanParser = TypeParser<ScamData::Boolean>;

@@ -81,11 +81,11 @@ string scam::writeValue(ScamValue data)
             s << "instance";
             break;
 
-        case ScamData::Nil:
+        case ScamData::Null:
             s << "()";
             break;
 
-        case ScamData::Null:
+        case ScamData::Nothing:
             s << "null";
             break;
 
@@ -172,7 +172,7 @@ namespace
         s << "(";
         s << writeValue(CAR(data));
         ScamValue next = CDR(data);
-        while ( ! isNil(next) ) {
+        while ( ! isNull(next) ) {
             if ( isPair(next) ) {
                 s << " " << writeValue(getCar(next));
                 next = getCdr(next);
@@ -362,11 +362,11 @@ namespace
                 s << "instance";
                 break;
 
-            case ScamData::Nil:
+            case ScamData::Null:
                 s << "nil";
                 break;
 
-            case ScamData::Null:
+            case ScamData::Nothing:
                 s << "null";
                 break;
 

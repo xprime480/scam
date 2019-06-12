@@ -18,8 +18,8 @@ namespace scam
     using ExprVec = std::vector<ScamValue>;
     using ByteVec = std::vector<unsigned char>;
 
+    extern ScamValue makeNothing();
     extern ScamValue makeNull();
-    extern ScamValue makeNil();
     extern ScamValue makeBoolean(bool value);
     extern ScamValue makeCharacter(const char c);
     extern ScamValue makeString(std::string const & value);

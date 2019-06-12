@@ -136,7 +136,7 @@ ScamValue ScamEngine::parseCurrentInput()
 
     while ( true ) {
         ScamValue expr = read();
-        if ( isNull(expr) ) {
+        if ( isNothing(expr) ) {
             break;
         }
         (void) eval(expr);
@@ -144,7 +144,7 @@ ScamValue ScamEngine::parseCurrentInput()
 
     ScamValue rv;
     if ( ! hc || hc->current() == mark ) {
-        rv = makeNull();
+        rv = makeNothing();
     }
     else {
         rv = hc->get();
@@ -155,7 +155,7 @@ ScamValue ScamEngine::parseCurrentInput()
 ScamValue ScamEngine::read()
 {
     if ( input.empty() ) {
-        return makeNull();
+        return makeNothing();
     }
 
     ScamParser & p = input.back();
@@ -265,7 +265,7 @@ namespace
     ScamValue HistoryCont::get(size_t which) const
     {
         if ( which == 0 || which > history.size() ) {
-            return makeNull();
+            return makeNothing();
         }
 
         auto p = history.rbegin();
