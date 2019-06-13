@@ -14,10 +14,15 @@ namespace scam
     private:
         friend class scam::MemoryManager;
 
-        NotWorker(Continuation * cont, Env * env, SingletonParser * parser);
+        NotWorker(Continuation * cont,
+                  Env * env,
+                  ScamEngine * engine,
+                  SingletonParser * parser);
 
-        static NotWorker *
-        makeInstance(Continuation * cont, Env * env, SingletonParser * parser);
+        static NotWorker * makeInstance(Continuation * cont,
+                                        Env * env,
+                                        ScamEngine * engine,
+                                        SingletonParser * parser);
 
     public:
         void mark() const override;

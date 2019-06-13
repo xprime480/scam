@@ -10,8 +10,12 @@
 using namespace scam;
 using namespace std;
 
-OrCont::OrCont(ListParser * parser, Continuation * cont, Env * env, size_t n)
-    : Continuation("Or")
+OrCont::OrCont(ListParser * parser,
+               Continuation * cont,
+               Env * env,
+               ScamEngine * engine,
+               size_t n)
+    : Continuation("Or", engine)
     , parser(parser)
     , cont(cont)
     , env(env)
@@ -22,9 +26,10 @@ OrCont::OrCont(ListParser * parser, Continuation * cont, Env * env, size_t n)
 OrCont * OrCont::makeInstance(ListParser * parser,
                               Continuation * cont,
                               Env * env,
+                              ScamEngine * engine,
                               size_t n)
 {
-  return new OrCont(parser, cont, env, n);
+    return new OrCont(parser, cont, env, engine, n);
 }
 
 void OrCont::mark() const
@@ -48,6 +53,6 @@ void OrCont::run(ScamValue expr)
         cont->run(expr);
     }
     else {
-        workQueueHelper<OrWorker>(cont, env, parser, n);
+        workQueueHelper<OrWorker>(cont, env, parser, engine, n);
     }
 }

@@ -8,7 +8,7 @@ namespace scam
     class MemoryManager;
     class Continuation;
     class Env;
-    
+
     class LetCont : public LetCommonCont
     {
     private:
@@ -18,6 +18,7 @@ namespace scam
                 ScamValue forms,
                 Continuation * cont,
                 Env * env,
+                ScamEngine * engine,
                 bool rebind);
 
 
@@ -25,6 +26,7 @@ namespace scam
                                       ScamValue forms,
                                       Continuation * cont,
                                       Env * env,
+                                      ScamEngine * engine,
                                       bool rebind);
 
     public:

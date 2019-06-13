@@ -13,8 +13,10 @@ namespace scam
     {
     private:
         friend class scam::MemoryManager;
-        ExprEvalCont(WorkerData const & data);
-        static ExprEvalCont * makeInstance(WorkerData const & data);
+        ExprEvalCont(WorkerData const & data, ScamEngine * engine);
+
+        static ExprEvalCont *
+        makeInstance(WorkerData const & data, ScamEngine * engine);
 
     public:
         void mark() const override;

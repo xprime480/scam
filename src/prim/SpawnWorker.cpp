@@ -6,16 +6,17 @@
 using namespace scam;
 using namespace std;
 
-SpawnWorker::SpawnWorker(Continuation * cont, bool value)
-    : Worker("SpawnWorker")
+SpawnWorker::SpawnWorker(Continuation * cont, ScamEngine * engine, bool value)
+    : Worker("SpawnWorker", engine)
     , cont(cont)
     , value(value)
 {
 }
 
-SpawnWorker * SpawnWorker::makeInstance(Continuation * cont, bool value)
+SpawnWorker *
+SpawnWorker::makeInstance(Continuation * cont, ScamEngine * engine, bool value)
 {
-    return new SpawnWorker(cont, value);
+    return new SpawnWorker(cont, engine, value);
 }
 
 void SpawnWorker::mark() const

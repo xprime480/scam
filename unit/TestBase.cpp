@@ -59,7 +59,7 @@ TestBase::TestBase(bool loadPrelude)
 {
     mm.reset();
     engine.reset(true);
-    extractor = mm.make<Extractor>();
+    extractor = mm.make<Extractor>(&engine);
     engine.setCont(extractor);
     if ( loadPrelude ) {
         ScamValue result = readEvalFile("lib/prelude.scm");

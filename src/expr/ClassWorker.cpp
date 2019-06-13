@@ -13,8 +13,9 @@ using namespace std;
 ClassWorker::ClassWorker(ScamValue cls,
                          ScamValue args,
                          Continuation * cont,
-                         Env * env)
-    : Worker("ClassWorker")
+                         Env * env,
+                         ScamEngine * engine)
+    : Worker("ClassWorker", engine)
     , cls(cls)
     , args(args)
     , cont(cont)
@@ -25,9 +26,10 @@ ClassWorker::ClassWorker(ScamValue cls,
 ClassWorker * ClassWorker::makeInstance(ScamValue cls,
                                         ScamValue args,
                                         Continuation * cont,
-                                        Env * env)
+                                        Env * env,
+                                        ScamEngine * engine)
 {
-    return new ClassWorker(cls, args, cont, env);
+    return new ClassWorker(cls, args, cont, env, engine);
 }
 
 void ClassWorker::mark() const
@@ -44,6 +46,7 @@ void ClassWorker::mark() const
 void ClassWorker::run()
 {
     Worker::run();
-    Continuation * newCont = standardMemoryManager.make<ClassCont>(cls, cont);
-    mapEval(args, newCont, env);
+    Continuation * newCont =
+        standardMemoryManager.make<ClassCont>(cls, cont, engine);
+    mapEval(args, newCont, env, engine);
 }

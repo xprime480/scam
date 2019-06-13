@@ -19,14 +19,16 @@ namespace scam
                       Continuation * cont,
                       ScamValue args,
                       Env * argEnv,
-                      bool macrolike);
+                      bool macrolike,
+                      ScamEngine * engine);
 
         static ClosureWorker * makeInstance(const LambdaParser * parser,
                                             Env * capture,
                                             Continuation * cont,
                                             ScamValue args,
                                             Env * argEnv,
-                                            bool macrolike);
+                                            bool macrolike,
+                                            ScamEngine * engine);
 
     public:
         void mark() const override;

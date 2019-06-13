@@ -117,7 +117,8 @@ ScamValue ScamRepl::eval(ScamValue form)
         return engine.eval(form);
     }
     catch ( ScamException e ) {
-        return makeErrorExtended("Caught exception: ", e.getMessage());
+        ScamValue err = makeErrorExtended("Caught exception: ", e.getMessage());
+        return engine.handleError(err);
     }
 }
 

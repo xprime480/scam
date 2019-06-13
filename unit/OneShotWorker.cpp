@@ -3,14 +3,15 @@
 using namespace scam;
 using namespace scam::test_impl;
 
-OneShotWorker::OneShotWorker(size_t * counter)
-    : TestWorkerBase(counter, "OneShotWorker")
+OneShotWorker::OneShotWorker(ScamEngine * engine, size_t * counter)
+    : TestWorkerBase(engine, counter, "OneShotWorker")
 {
 }
 
-OneShotWorker * OneShotWorker::makeInstance(size_t * counter)
+OneShotWorker *
+OneShotWorker::makeInstance(ScamEngine * engine, size_t * counter)
 {
-    return new OneShotWorker(counter);
+    return new OneShotWorker(engine, counter);
 }
 
 void OneShotWorker::run()

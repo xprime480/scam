@@ -31,7 +31,6 @@ namespace scam
     private:
         IncludeParser * parser;
         Continuation * cont;
-        ScamEngine * engine;
         const size_t  idx;;
     };
 }

@@ -17,11 +17,13 @@ namespace scam
         AndWorker(Continuation * cont,
                   Env * env,
                   ListParser * parser,
+                  ScamEngine * engine,
                   size_t n);
 
         static AndWorker * makeInstance(Continuation * cont,
                                         Env * env,
                                         ListParser * parser,
+                                        ScamEngine * engine,
                                         size_t n);
 
     public:

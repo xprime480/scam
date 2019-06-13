@@ -8,15 +8,16 @@
 using namespace scam;
 using namespace std;
 
-CarContinuation::CarContinuation(WorkerData const & data)
-    : Continuation("Cons Map Car")
+CarContinuation::CarContinuation(WorkerData const & data, ScamEngine * engine)
+    : Continuation("Cons Map Car", engine)
     , data(data)
 {
 }
 
-CarContinuation * CarContinuation::makeInstance(WorkerData const & data)
+CarContinuation *
+CarContinuation::makeInstance(WorkerData const & data, ScamEngine * engine)
 {
-  return new CarContinuation(data);
+  return new CarContinuation(data, engine);
 }
 
 void CarContinuation::mark() const
@@ -36,6 +37,6 @@ void CarContinuation::run(ScamValue expr)
     }
     else {
         ScamValue e = data.cdr;
-        workQueueHelper<MapCdr>(expr, e, data.original, data.env);
+        workQueueHelper<MapCdr>(expr, e, data.original, data.env, engine);
     }
 }

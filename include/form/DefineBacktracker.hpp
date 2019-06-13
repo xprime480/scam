@@ -14,20 +14,22 @@ namespace scam
 
         DefineBacktracker(ScamValue sym,
                           Env * env,
-                          Backtracker * backtracker);
+                          Backtracker * backtracker,
+                          ScamEngine * engine);
 
-        static DefineBacktracker *
-        makeInstance(ScamValue sym,
-                     Env * env,
-                     Backtracker * backtracker);
+        static DefineBacktracker * makeInstance(ScamValue sym,
+                                                Env * env,
+                                                Backtracker * backtracker,
+                                                ScamEngine * engine);
 
     public:
         void mark() const override;
         void run() override;
 
     private:
-        ScamValue   sym;
-        Env       * env;
+        ScamValue    sym;
+        Env        * env;
+        ScamEngine * engine;
     };
 }
 

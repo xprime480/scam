@@ -18,12 +18,14 @@ namespace scam
         ClosureBindCont(const LambdaParser * lambda,
                         Env * capture,
                         Continuation * cont,
-                        bool macrolike);
+                        bool macrolike,
+                        ScamEngine * engine);
 
         static ClosureBindCont * makeInstance(const LambdaParser * lambda,
                                               Env * capture,
                                               Continuation * cont,
-                                              bool macrolike);
+                                              bool macrolike,
+                                              ScamEngine * engine);
 
     public:
         void mark() const override;

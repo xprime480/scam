@@ -15,12 +15,15 @@ namespace scam
         private:
             friend class scam::MemoryManager;
 
-            CountdownWorker(size_t n,
+            CountdownWorker(ScamEngine * engine,
+                            size_t n,
                             size_t * counter,
                             WorkQueue & queue);
 
-            static CountdownWorker *
-            makeInstance(size_t n, size_t * counter, WorkQueue & queue);
+            static CountdownWorker * makeInstance(ScamEngine * engine,
+                                                  size_t n,
+                                                  size_t * counter,
+                                                  WorkQueue & queue);
 
         public:
             size_t n;

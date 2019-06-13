@@ -6,13 +6,13 @@
 namespace scam
 {
     class MemoryManager;
-    
+
     class NotCont : public Continuation
     {
     private:
         friend class scam::MemoryManager;
-        NotCont(Continuation * cont);
-        static NotCont * makeInstance(Continuation * cont);
+        NotCont(Continuation * cont, ScamEngine * engine);
+        static NotCont * makeInstance(Continuation * cont, ScamEngine * engine);
 
     public:
         void mark() const override;

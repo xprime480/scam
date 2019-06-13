@@ -11,8 +11,9 @@ using namespace std;
 EnvHelperCont::EnvHelperCont(ScamValue sym,
                              Continuation * cont,
                              Env * env,
+                             ScamEngine * engine,
                              char const * name)
-    : Continuation(name)
+    : Continuation(name, engine)
     , sym(sym)
     , env(env)
     , cont(cont)

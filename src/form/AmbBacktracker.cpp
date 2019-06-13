@@ -63,6 +63,6 @@ void AmbBacktracker::run()
                                                        getParent());
         engine->setBacktracker(newBt);
 
-        eval(head, cont, env);
+        eval(head, cont, env, engine);
     }
 }

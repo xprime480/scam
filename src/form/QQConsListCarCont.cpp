@@ -14,18 +14,21 @@ using namespace std;
 
 QQConsListCarCont::QQConsListCarCont(ScamValue cdr,
                                      Continuation * cont,
-                                     Env * env)
-    : Continuation("QQConsListCarCont")
+                                     Env * env,
+                                     ScamEngine * engine)
+    : Continuation("QQConsListCarCont", engine)
     , cdr(cdr)
     , cont(cont)
     , env(env)
 {
 }
 
-QQConsListCarCont *
-QQConsListCarCont::makeInstance(ScamValue cdr, Continuation * cont, Env * env)
+QQConsListCarCont * QQConsListCarCont::makeInstance(ScamValue cdr,
+                                                    Continuation * cont,
+                                                    Env * env,
+                                                    ScamEngine * engine)
 {
-    return new QQConsListCarCont(cdr, cont, env);
+    return new QQConsListCarCont(cdr, cont, env, engine);
 }
 
 void QQConsListCarCont::mark() const
@@ -46,7 +49,10 @@ void QQConsListCarCont::run(ScamValue expr)
     }
     else {
         Continuation * h =
-            standardMemoryManager.make<QQConsListCdrCont>(expr, cont, env);
-        workQueueHelper<QuasiQuoteWorker>(cdr, h, env);
+            standardMemoryManager.make<QQConsListCdrCont>(expr,
+                                                          cont,
+                                                          env,
+                                                          engine);
+        workQueueHelper<QuasiQuoteWorker>(cdr, h, env, engine);
     }
 }

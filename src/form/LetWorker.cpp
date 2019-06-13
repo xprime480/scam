@@ -10,8 +10,9 @@ using namespace std;
 LetWorker::LetWorker(LetParser * parser,
                      Continuation * cont,
                      Env * env,
+                     ScamEngine * engine,
                      bool rebind)
-    : LetBaseWorker("Let", parser, cont, env)
+    : LetBaseWorker("Let", parser, cont, env, engine)
     , rebind(rebind)
 {
 }
@@ -19,9 +20,10 @@ LetWorker::LetWorker(LetParser * parser,
 LetWorker * LetWorker::makeInstance(LetParser * parser,
                                     Continuation * cont,
                                     Env * env,
+                                    ScamEngine * engine,
                                     bool rebind)
 {
-    return new LetWorker(parser, cont, env, rebind);
+    return new LetWorker(parser, cont, env, engine, rebind);
 }
 
 void LetWorker::do_next(ScamValue formals,
@@ -35,5 +37,6 @@ void LetWorker::do_next(ScamValue formals,
                                    forms,
                                    cont,
                                    env,
+                                   engine,
                                    rebind);
 }

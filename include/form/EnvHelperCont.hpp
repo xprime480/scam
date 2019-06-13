@@ -13,6 +13,7 @@ namespace scam
         EnvHelperCont(ScamValue sym,
                       Continuation * cont,
                       Env * env,
+                      ScamEngine * engine,
                       char const * name);
 
         void mark() const override;

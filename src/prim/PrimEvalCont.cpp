@@ -3,16 +3,16 @@
 using namespace scam;
 using namespace std;
 
-PrimEvalCont::PrimEvalCont(PrimWorkerData const & data)
-    : Continuation("Primitive Eval")
+PrimEvalCont::PrimEvalCont(PrimWorkerData const & data, ScamEngine * engine)
+    : Continuation("Primitive Eval", engine)
     , data(data.args, data.original, data.env, data.caller)
 {
 }
 
 PrimEvalCont *
-PrimEvalCont::makeInstance(PrimWorkerData const & data)
+PrimEvalCont::makeInstance(PrimWorkerData const & data, ScamEngine * engine)
 {
-    return new PrimEvalCont(data);
+    return new PrimEvalCont(data, engine);
 }
 
 void PrimEvalCont::mark() const

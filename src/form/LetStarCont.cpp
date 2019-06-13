@@ -20,11 +20,10 @@ LetStarCont::LetStarCont(ScamValue formals,
                          Continuation * cont,
                          Env * env,
                          ScamEngine * engine)
-    : LetCommonCont("Let*", forms, cont)
+    : LetCommonCont("Let*", forms, cont, engine)
     , formals(formals)
     , rest(rest)
     , env(env)
-    , engine(engine)
 {
 }
 
@@ -67,7 +66,7 @@ void LetStarCont::do_let(ScamValue expr)
                                                     cont,
                                                     env,
                                                     engine);
-        eval(getCar(safe), ch, env);
+        eval(getCar(safe), ch, env, engine);
     }
 }
 
@@ -77,6 +76,7 @@ void LetStarCont::makeBacktracker(ScamValue sym) const
     Backtracker * newBT =
         standardMemoryManager.make<LetStarBacktracker>(env,
                                                        sym,
-                                                       backtracker);
+                                                       backtracker,
+                                                       engine);
     engine->setBacktracker(newBT);
 }

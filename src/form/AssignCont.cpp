@@ -14,8 +14,7 @@ AssignCont::AssignCont(ScamValue sym,
                        Continuation * cont,
                        Env * env,
                        ScamEngine * engine)
-    : EnvHelperCont(sym, cont, env, "Assign")
-    , engine(engine)
+    : EnvHelperCont(sym, cont, env, engine, "Assign")
 {
 }
 
@@ -45,6 +44,7 @@ void AssignCont::finish(ScamValue expr) const
         standardMemoryManager.make<AssignBacktracker>(sym,
                                                       old,
                                                       env,
-                                                      backtracker);
+                                                      backtracker,
+                                                      engine);
     engine->setBacktracker(bt);
 }

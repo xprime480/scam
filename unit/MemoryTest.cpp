@@ -470,7 +470,7 @@ TEST_F(MemoryTest, TestInstance)
 
 TEST_F(MemoryTest, TestContinuation)
 {
-    Continuation * original = mm.make<Continuation>("Test");
+    Continuation * original = mm.make<Continuation>("Test", &engine);
     ScamValue      wrapper  = makeContinuation(original);
 
     wrapper->mark();
@@ -479,7 +479,7 @@ TEST_F(MemoryTest, TestContinuation)
 
 TEST_F(MemoryTest, TestExtractor)
 {
-    Continuation * cont = mm.make<Extractor>();
+    Continuation * cont = mm.make<Extractor>(&engine);
     ScamValue expr = makeKeyword(":best");
 
     cont->run(expr);
@@ -502,7 +502,7 @@ TEST_F(MemoryTest, TestEnv)
 
 TEST_F(MemoryTest, TestWorkQueue)
 {
-    Worker * worker = standardMemoryManager.make<Worker>("Test");
+    Worker * worker = standardMemoryManager.make<Worker>("Test", &engine);
     WorkQueue queue;
 
     queue.put(worker);

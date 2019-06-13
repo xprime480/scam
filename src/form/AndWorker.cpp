@@ -15,8 +15,9 @@ using namespace std;
 AndWorker::AndWorker(Continuation * cont,
                      Env * env,
                      ListParser * parser,
+                     ScamEngine * engine,
                      size_t n)
-    : Worker("And")
+    : Worker("And", engine)
     , cont(cont)
     , env(env)
     , parser(parser)
@@ -27,9 +28,10 @@ AndWorker::AndWorker(Continuation * cont,
 AndWorker * AndWorker::makeInstance(Continuation * cont,
                                     Env * env,
                                     ListParser * parser,
+                                    ScamEngine * engine,
                                     size_t n)
 {
-    return new AndWorker(cont, env, parser, n);
+    return new AndWorker(cont, env, parser, engine, n);
 }
 
 void AndWorker::mark() const
@@ -51,12 +53,12 @@ void AndWorker::run()
         cont->run(makeBoolean(true));
     }
     else if ( n == (len - 1) ) {
-        eval(parser->get(len-1), cont, env);
+        eval(parser->get(len-1), cont, env, engine);
     }
     else {
         ScamValue test = parser->get(n);
         Continuation * newCont =
-            standardMemoryManager.make<AndCont>(parser, cont, env, n+1);
-        eval(test, newCont, env);
+            standardMemoryManager.make<AndCont>(parser, cont, env, engine, n+1);
+        eval(test, newCont, env, engine);
     }
 }

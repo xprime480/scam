@@ -11,19 +11,21 @@ using namespace std;
 MapWorker::MapWorker(Continuation * cont,
                      Env * env,
                      ScamValue car,
-                     ScamValue cdr)
-    : Worker("Cons Map")
+                     ScamValue cdr,
+                     ScamEngine * engine)
+    : Worker("Cons Map", engine)
     , data(car, cdr, cont, env)
 {
-    data.cont = standardMemoryManager.make<CarContinuation>(data);
+    data.cont = standardMemoryManager.make<CarContinuation>(data, engine);
 }
 
 MapWorker * MapWorker::makeInstance(Continuation * cont,
                                     Env * env,
                                     ScamValue car,
-                                    ScamValue cdr)
+                                    ScamValue cdr,
+                                    ScamEngine * engine)
 {
-    return new MapWorker(cont, env, car, cdr);
+    return new MapWorker(cont, env, car, cdr, engine);
 }
 
 void MapWorker::mark() const
@@ -37,5 +39,5 @@ void MapWorker::mark() const
 void MapWorker::run()
 {
     Worker::run();
-    eval(data.car, data.cont, data.env);
+    eval(data.car, data.cont, data.env, engine);
 }

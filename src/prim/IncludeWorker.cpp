@@ -15,10 +15,9 @@ IncludeWorker::IncludeWorker(IncludeParser * parser,
                              Continuation * cont,
                              ScamEngine * engine,
                              size_t idx)
-    : Worker("Include")
+    : Worker("Include", engine)
     , parser(parser)
     , cont(cont)
-    , engine(engine)
     , idx(idx)
 {
 }

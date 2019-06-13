@@ -18,6 +18,7 @@ namespace scam
                     ScamValue args,
                     Continuation * cont,
                     Env * env,
+                    ScamEngine * engine,
                     bool rebind);
 
         static LetStepCont * makeInstance(ScamValue formals,
@@ -26,6 +27,7 @@ namespace scam
                                           ScamValue args,
                                           Continuation * cont,
                                           Env * env,
+                                          ScamEngine * engine,
                                           bool rebind);
 
     public:

@@ -17,6 +17,7 @@ namespace scam
                       ScamValue forms,
                       Continuation * cont,
                       Env * env,
+                      ScamEngine * engine,
                       bool rebind);
 
         static LetEvalWorker * makeInstance(ScamValue formals,
@@ -25,6 +26,7 @@ namespace scam
                                             ScamValue forms,
                                             Continuation * cont,
                                             Env * env,
+                                            ScamEngine * engine,
                                             bool rebind);
 
     public:

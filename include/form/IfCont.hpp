@@ -8,17 +8,22 @@ namespace scam
     class CountedListParser;
     class Env;
     class MemoryManager;
-    
+
 
     class IfCont : public Continuation
     {
     private:
         friend class scam::MemoryManager;
-        IfCont(CountedListParser * parser, Continuation * cont, Env * env);
+
+        IfCont(CountedListParser * parser,
+               Continuation * cont,
+               Env * env,
+               ScamEngine * engine);
 
         static IfCont * makeInstance(CountedListParser * parser,
                                      Continuation * cont,
-                                     Env * env);
+                                     Env * env,
+                                     ScamEngine * engine);
 
     public:
         void mark() const override;

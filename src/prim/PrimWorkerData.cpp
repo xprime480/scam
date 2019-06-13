@@ -30,9 +30,9 @@ void PrimWorkerData::mark() const
     caller->mark();
 }
 
-void PrimWorkerData::mapEval() const
+void PrimWorkerData::mapEval(ScamEngine * engine) const
 {
-    scam::mapEval(args, cont, env);
+    scam::mapEval(args, cont, env, engine);
 }
 
 void PrimWorkerData::handleResult(ScamValue expr)

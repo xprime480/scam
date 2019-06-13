@@ -11,8 +11,11 @@ namespace scam
     {
     private:
         friend class scam::MemoryManager;
-        MacroEvalCont(Continuation * cont, Env * capture);
-        static MacroEvalCont * makeInstance(Continuation * cont, Env * capture);
+        MacroEvalCont(Continuation * cont, Env * capture, ScamEngine * engine);
+
+        static MacroEvalCont * makeInstance(Continuation * cont,
+                                            Env * capture,
+                                            ScamEngine * engine);
 
     public:
         void mark() const override;

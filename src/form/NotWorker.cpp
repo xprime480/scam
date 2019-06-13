@@ -11,8 +11,11 @@
 using namespace scam;
 using namespace std;
 
-NotWorker::NotWorker(Continuation * cont, Env * env, SingletonParser * parser)
-    : Worker("Not")
+NotWorker::NotWorker(Continuation * cont,
+                     Env * env,
+                     ScamEngine * engine,
+                     SingletonParser * parser)
+    : Worker("Not", engine)
     , parser(parser)
     , cont(cont)
     , env(env)
@@ -21,9 +24,10 @@ NotWorker::NotWorker(Continuation * cont, Env * env, SingletonParser * parser)
 
 NotWorker * NotWorker::makeInstance(Continuation * cont,
                                     Env * env,
+                                    ScamEngine * engine,
                                     SingletonParser * parser)
 {
-    return new NotWorker(cont, env, parser);
+    return new NotWorker(cont, env, engine, parser);
 }
 
 void NotWorker::mark() const
@@ -40,8 +44,8 @@ void NotWorker::run()
 {
     Worker::run();
 
-    Continuation * newCont = standardMemoryManager.make<NotCont>(cont);
+    Continuation * newCont = standardMemoryManager.make<NotCont>(cont, engine);
     ScamValue form = parser->get();
-    eval(form, newCont, env);
+    eval(form, newCont, env, engine);
 }
 

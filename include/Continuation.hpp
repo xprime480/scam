@@ -15,10 +15,11 @@ namespace scam
         friend class MemoryManager;
 
     protected:
-        Continuation(char const * name);
+        Continuation(char const * name, ScamEngine * engine);
 
     private:
-        static Continuation * makeInstance(char const * name);
+        static Continuation *
+        makeInstance(char const * name, ScamEngine * engine);
 
     public:
         virtual ~Continuation();
@@ -28,6 +29,11 @@ namespace scam
 
     private:
         std::string const name;
+
+    protected:
+        ScamEngine * engine;
+
+    private:
         static std::string makeName(char const * id);
     };
 }

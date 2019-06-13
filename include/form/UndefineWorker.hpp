@@ -16,11 +16,13 @@ namespace scam
 
         UndefineWorker(UndefineParser * parser,
                        Continuation * cont,
-                       Env * env);
+                       Env * env,
+                       ScamEngine * engine);
 
         static UndefineWorker * makeInstance(UndefineParser * parser,
                                              Continuation * cont,
-                                             Env * env);
+                                             Env * env,
+                                             ScamEngine * engine);
 
     public:
         void mark() const override;

@@ -7,15 +7,16 @@
 using namespace scam;
 using namespace std;
 
-CdrContinuation::CdrContinuation(WorkerData const & data)
-    : Continuation("Cons Map Cdr")
+CdrContinuation::CdrContinuation(WorkerData const & data, ScamEngine * engine)
+    : Continuation("Cons Map Cdr", engine)
     , data(data)
 {
 }
 
-CdrContinuation * CdrContinuation::makeInstance(WorkerData const & data)
+CdrContinuation *
+CdrContinuation::makeInstance(WorkerData const & data, ScamEngine * engine)
 {
-    return new CdrContinuation(data);
+    return new CdrContinuation(data, engine);
 }
 
 void CdrContinuation::mark() const

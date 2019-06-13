@@ -13,8 +13,9 @@ using namespace std;
 
 UndefineWorker::UndefineWorker(UndefineParser * parser,
                                Continuation * cont,
-                               Env * env)
-    : Worker("Undefine")
+                               Env * env,
+                               ScamEngine * engine)
+    : Worker("Undefine", engine)
     , parser(parser)
     , cont(cont)
     , env(env)
@@ -23,9 +24,10 @@ UndefineWorker::UndefineWorker(UndefineParser * parser,
 
 UndefineWorker * UndefineWorker::makeInstance(UndefineParser * parser,
                                               Continuation * cont,
-                                              Env * env)
+                                              Env * env,
+                                              ScamEngine * engine)
 {
-    return new UndefineWorker(parser, cont, env);
+    return new UndefineWorker(parser, cont, env, engine);
 }
 
 void UndefineWorker::mark() const
@@ -43,7 +45,8 @@ void UndefineWorker::run()
     Worker::run();
 
     ScamValue sym = parser->getSymbol();
-    Continuation * c = standardMemoryManager.make<UndefineCont>(sym, cont, env);
+    Continuation * c =
+        standardMemoryManager.make<UndefineCont>(sym, cont, env, engine);
     ScamValue expr = makeNull();
 
     c->run(expr);

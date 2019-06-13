@@ -14,8 +14,9 @@ LetCont::LetCont(ScamValue formals,
                  ScamValue forms,
                  Continuation * cont,
                  Env * env,
+                 ScamEngine * engine,
                  bool rebind)
-    : LetCommonCont("Let", forms, cont)
+    : LetCommonCont("Let", forms, cont, engine)
     , formals(formals)
     , env(env)
     , rebind(rebind)
@@ -25,10 +26,10 @@ LetCont::LetCont(ScamValue formals,
 LetCont * LetCont::makeInstance(ScamValue formals,
                                 ScamValue forms,
                                 Continuation * cont,
-                                Env * env,
+                                Env * env, ScamEngine * engine,
                                 bool rebind)
 {
-    return new LetCont(formals, forms, cont, env, rebind);
+    return new LetCont(formals, forms, cont, env, engine, rebind);
 }
 
 void LetCont::mark() const

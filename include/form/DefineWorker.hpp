@@ -31,7 +31,6 @@ namespace scam
         DefineParser * parser;
         Continuation * cont;
         Env          * env;
-        ScamEngine   * engine;
     };
 }
 

@@ -16,12 +16,14 @@ namespace scam
         MapCdr(ScamValue car,
                ScamValue cdr,
                Continuation * cont,
-               Env * env);
+               Env * env,
+               ScamEngine * engine);
 
         static MapCdr * makeInstance(ScamValue car,
                                      ScamValue cdr,
                                      Continuation * cont,
-                                     Env * env);
+                                     Env * env,
+                                     ScamEngine * engine);
 
     public:
         void mark() const override;

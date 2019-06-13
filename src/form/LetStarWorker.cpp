@@ -15,8 +15,7 @@ LetStarWorker::LetStarWorker(LetParser * parser,
                              Continuation * cont,
                              Env * env,
                              ScamEngine * engine)
-    : LetBaseWorker("LetStar", parser, cont, env)
-    , engine(engine)
+    : LetBaseWorker("LetStar", parser, cont, env, engine)
 {
 }
 
@@ -41,6 +40,6 @@ LetStarWorker::do_next(ScamValue formals, ScamValue values, ScamValue forms)
                                                 cont,
                                                 extended,
                                                 engine);
-    eval(getCar(safe), ch, env);
+    eval(getCar(safe), ch, env, engine);
 }
 

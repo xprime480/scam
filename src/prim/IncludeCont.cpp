@@ -13,10 +13,9 @@ IncludeCont::IncludeCont(IncludeParser * parser,
                          Continuation * cont,
                          ScamEngine * engine,
                          size_t nextIdx)
-    : Continuation("Include")
+    : Continuation("Include", engine)
     , parser(parser)
     , cont(cont)
-    , engine(engine)
 {
 }
 

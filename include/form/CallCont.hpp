@@ -12,8 +12,10 @@ namespace scam
     private:
         friend class scam::MemoryManager;
 
-        CallCont(Continuation * cont, Env * env);
-        static CallCont * makeInstance(Continuation * cont, Env * env);
+        CallCont(Continuation * cont, Env * env, ScamEngine * engine);
+
+        static CallCont *
+        makeInstance(Continuation * cont, Env * env, ScamEngine * engine);
 
     public:
         void mark() const override;

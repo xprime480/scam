@@ -3,8 +3,10 @@
 using namespace scam;
 using namespace scam::test_impl;
 
-TestWorkerBase::TestWorkerBase(size_t * counter, char const *name)
-    : Worker(name)
+TestWorkerBase::TestWorkerBase(ScamEngine * engine,
+                               size_t * counter,
+                               char const *name)
+    : Worker(name, engine)
     , counter(counter)
 {
 }

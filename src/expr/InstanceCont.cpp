@@ -12,18 +12,23 @@
 using namespace scam;
 using namespace std;
 
-InstanceCont::InstanceCont(ScamValue obj, ScamValue name, Continuation * cont)
-    : Continuation("InstanceCont")
+InstanceCont::InstanceCont(ScamValue obj,
+                           ScamValue name,
+                           Continuation * cont,
+                           ScamEngine * engine)
+    : Continuation("InstanceCont", engine)
     , obj(obj)
     , name(name)
     , cont(cont)
 {
 }
 
-InstanceCont *
-InstanceCont::makeInstance(ScamValue obj, ScamValue name, Continuation * cont)
+InstanceCont * InstanceCont::makeInstance(ScamValue obj,
+                                          ScamValue name,
+                                          Continuation * cont,
+                                          ScamEngine * engine)
 {
-    return new InstanceCont(obj, name, cont);
+    return new InstanceCont(obj, name, cont, engine);
 }
 
 void InstanceCont::mark() const
@@ -51,7 +56,7 @@ void InstanceCont::run(ScamValue expr)
     }
 
     Env * env = getInstanceEnv(obj);
-    apply(func, expr, cont, env);
+    apply(func, expr, cont, env, engine);
 }
 
 ScamValue InstanceCont::find_func(ScamValue o) const

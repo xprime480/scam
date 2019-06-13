@@ -14,11 +14,16 @@ namespace scam
     private:
         friend class scam::MemoryManager;
 
-        AndCont(ListParser * parser, Continuation * cont, Env * env, size_t n);
+        AndCont(ListParser * parser,
+                Continuation * cont,
+                Env * env,
+                ScamEngine * engine,
+                size_t n);
 
         static AndCont * makeInstance(ListParser * parser,
                                       Continuation * cont,
                                       Env * env,
+                                      ScamEngine * engine,
                                       size_t n);
 
     public:

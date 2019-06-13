@@ -11,16 +11,17 @@ using namespace std;
 ConsWorker::ConsWorker(Continuation * cont,
                        Env * env,
                        ScamValue car,
-                       ScamValue cdr)
+                       ScamValue cdr,
+                       ScamEngine * engine)
 
-    : Worker("Cons Eval")
+    : Worker("Cons Eval", engine)
     , data(car, cdr, cont, env)
 {
-    data.cont = standardMemoryManager.make<ExprEvalCont>(data);
+    data.cont = standardMemoryManager.make<ExprEvalCont>(data, engine);
 }
 
-ConsWorker::ConsWorker(WorkerData const & data)
-    : Worker("Cons Eval Copy")
+ConsWorker::ConsWorker(WorkerData const & data, ScamEngine * engine)
+    : Worker("Cons Eval Copy", engine)
     , data(data)
 {
 }
@@ -28,15 +29,16 @@ ConsWorker::ConsWorker(WorkerData const & data)
 ConsWorker * ConsWorker::makeInstance(Continuation * cont,
                                       Env * env,
                                       ScamValue car,
-                                      ScamValue cdr)
-
+                                      ScamValue cdr,
+                                      ScamEngine * engine)
 {
-    return new ConsWorker(cont, env, car, cdr);
+    return new ConsWorker(cont, env, car, cdr, engine);
 }
 
-ConsWorker * ConsWorker::makeInstance(WorkerData const & data)
+ConsWorker *
+ConsWorker::makeInstance(WorkerData const & data, ScamEngine * engine)
 {
-    return new ConsWorker(data);
+    return new ConsWorker(data, engine);
 }
 
 void ConsWorker::mark() const
@@ -50,5 +52,5 @@ void ConsWorker::mark() const
 void ConsWorker::run()
 {
     Worker::run();
-    eval(data.car, data.cont, data.env);
+    eval(data.car, data.cont, data.env, engine);
 }

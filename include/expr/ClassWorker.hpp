@@ -17,12 +17,14 @@ namespace scam
         ClassWorker(ScamValue cls,
                     ScamValue args,
                     Continuation * cont,
-                    Env * env);
+                    Env * env,
+                    ScamEngine * engine);
 
         static ClassWorker * makeInstance(ScamValue cls,
                                           ScamValue args,
                                           Continuation * cont,
-                                          Env * env);
+                                          Env * env,
+                                          ScamEngine * engine);
 
     public:
         void mark() const override;

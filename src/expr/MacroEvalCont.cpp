@@ -7,17 +7,20 @@
 using namespace scam;
 using namespace std;
 
-MacroEvalCont::MacroEvalCont(Continuation * cont, Env * capture)
-    : Continuation("macro eval")
+MacroEvalCont::MacroEvalCont(Continuation * cont,
+                             Env * capture,
+                             ScamEngine * engine)
+    : Continuation("macro eval", engine)
     , cont(cont)
     , capture(capture)
 {
 }
 
-MacroEvalCont *
-MacroEvalCont::makeInstance(Continuation * cont, Env * capture)
+MacroEvalCont * MacroEvalCont::makeInstance(Continuation * cont,
+                                            Env * capture,
+                                            ScamEngine * engine)
 {
-    return new MacroEvalCont(cont, capture);
+    return new MacroEvalCont(cont, capture, engine);
 }
 
 void MacroEvalCont::mark() const
@@ -32,5 +35,5 @@ void MacroEvalCont::mark() const
 void MacroEvalCont::run(ScamValue expr)
 {
     Continuation::run(expr);
-    eval(expr, cont, capture);
+    eval(expr, cont, capture, engine);
 }

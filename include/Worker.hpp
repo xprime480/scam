@@ -3,6 +3,8 @@
 
 #include "util/ManagedObject.hpp"
 
+#include "ScamFwd.hpp"
+
 #include <string>
 
 namespace scam
@@ -13,13 +15,13 @@ namespace scam
     {
     protected:
         friend class scam::MemoryManager;
-        Worker(char const * id);
+        Worker(char const * id, ScamEngine * engine);
 
     public:
         ~Worker();
 
     private:
-        static Worker * makeInstance(char const * id);
+        static Worker * makeInstance(char const * id, ScamEngine * engine);
 
     public:
         virtual void run();
@@ -27,6 +29,11 @@ namespace scam
 
     private:
         std::string const name;
+
+    protected:
+        ScamEngine * engine;
+
+    private:
         static std::string makeName(char const * id);
     };
 }

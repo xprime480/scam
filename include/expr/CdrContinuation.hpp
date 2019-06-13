@@ -12,8 +12,11 @@ namespace scam
     {
     private:
         friend class scam::MemoryManager;
-        CdrContinuation(WorkerData const & data);
-        static CdrContinuation * makeInstance(WorkerData const & data);
+
+        CdrContinuation(WorkerData const & data, ScamEngine * engine);
+
+        static CdrContinuation *
+        makeInstance(WorkerData const & data, ScamEngine * engine);
 
     public:
         void mark() const override;

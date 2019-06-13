@@ -32,7 +32,6 @@ namespace scam
         AssignParser * parser;
         Continuation * cont;
         Env          * env;
-        ScamEngine   * engine;
     };
 }
 

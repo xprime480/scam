@@ -11,19 +11,21 @@ using namespace std;
 MapCdr::MapCdr(ScamValue car,
                ScamValue cdr,
                Continuation * cont,
-               Env * env)
-    : Worker("Cons Map Cdr")
+               Env * env,
+               ScamEngine * engine)
+    : Worker("Cons Map Cdr", engine)
     , data(car, cdr, cont, env)
 {
-    data.cont = standardMemoryManager.make<CdrContinuation>(data);
+    data.cont = standardMemoryManager.make<CdrContinuation>(data, engine);
 }
 
 MapCdr * MapCdr::makeInstance(ScamValue car,
                               ScamValue cdr,
                               Continuation * cont,
-                              Env * env)
+                              Env * env,
+                              ScamEngine * engine)
 {
-    return new MapCdr(car, cdr, cont, env);
+    return new MapCdr(car, cdr, cont, env, engine);
 }
 
 void MapCdr::mark() const
@@ -37,5 +39,5 @@ void MapCdr::mark() const
 void MapCdr::run()
 {
     Worker::run();
-    mapEval(data.cdr, data.cont, data.env);
+    mapEval(data.cdr, data.cont, data.env, engine);
 }

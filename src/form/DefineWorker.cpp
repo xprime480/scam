@@ -14,11 +14,10 @@ DefineWorker::DefineWorker(DefineParser * parser,
                            Continuation * cont,
                            Env * env,
                            ScamEngine * engine)
-    : Worker("Define")
+    : Worker("Define", engine)
     , parser(parser)
     , cont(cont)
     , env(env)
-    , engine(engine)
 {
 }
 
@@ -49,5 +48,5 @@ void DefineWorker::run()
         standardMemoryManager.make<DefineCont>(sym, cont, env, engine);
 
     ScamValue expr = parser->getForm();
-    eval(expr, c, env);
+    eval(expr, c, env, engine);
 }

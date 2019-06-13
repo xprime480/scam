@@ -16,11 +16,10 @@ AssignWorker::AssignWorker(AssignParser * parser,
                            Continuation * cont,
                            Env * env,
                            ScamEngine * engine)
-    : Worker("Assign")
+    : Worker("Assign", engine)
     , parser(parser)
     , cont(cont)
     , env(env)
-    , engine(engine)
 {
 }
 
@@ -53,5 +52,5 @@ void AssignWorker::run()
                                                               engine);
 
     ScamValue expr = parser->getForm();
-    eval(expr, c, env);
+    eval(expr, c, env, engine);
 }

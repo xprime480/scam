@@ -24,9 +24,6 @@ namespace scam
 
     protected:
         void finish(ScamValue expr) const override;
-
-    private:
-        ScamEngine * engine;
     };
 }
 

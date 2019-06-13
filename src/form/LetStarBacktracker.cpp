@@ -10,19 +10,22 @@ using namespace std;
 
 LetStarBacktracker::LetStarBacktracker(Env * env,
                                        ScamValue sym,
-                                       Backtracker * backtracker)
+                                       Backtracker * backtracker,
+                                       ScamEngine * engine)
     : Backtracker("Let*", backtracker)
     , env(env)
     , sym(sym)
+    , engine(engine)
 {
 }
 
 LetStarBacktracker *
 LetStarBacktracker::makeInstance(Env * env,
                                  ScamValue sym,
-                                 Backtracker * backtracker)
+                                 Backtracker * backtracker,
+                                 ScamEngine * engine)
 {
-    return new LetStarBacktracker(env, sym, backtracker);
+    return new LetStarBacktracker(env, sym, backtracker, engine);
 }
 
 void LetStarBacktracker::mark() const
@@ -39,6 +42,6 @@ void LetStarBacktracker::run()
     Backtracker::run();
     env->remove(sym);
     Continuation * cont =
-        standardMemoryManager.make<Continuation>("Assign Backtrack");
+        standardMemoryManager.make<Continuation>("Assign Backtrack", engine);
     runParent(cont);
 }

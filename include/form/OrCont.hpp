@@ -14,11 +14,16 @@ namespace scam
     private:
         friend class scam::MemoryManager;
 
-        OrCont(ListParser * parser, Continuation * cont, Env * env, size_t n);
+        OrCont(ListParser * parser,
+               Continuation * cont,
+               Env * env,
+               ScamEngine * engine,
+               size_t n);
 
         static OrCont * makeInstance(ListParser * parser,
                                      Continuation * cont,
                                      Env * env,
+                                     ScamEngine * engine,
                                      size_t n);
 
     public:

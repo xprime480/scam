@@ -14,9 +14,10 @@ namespace scam
     private:
         friend class scam::MemoryManager;
 
-        PrimEvalCont(PrimWorkerData const & data);
+        PrimEvalCont(PrimWorkerData const & data, ScamEngine * engine);
 
-        static PrimEvalCont * makeInstance(PrimWorkerData const & data);
+        static PrimEvalCont *
+        makeInstance(PrimWorkerData const & data, ScamEngine * engine);
 
     public:
         void mark() const override;

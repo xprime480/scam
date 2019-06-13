@@ -26,10 +26,13 @@
 using namespace scam;
 using namespace std;
 
-void scam::eval(ScamValue value, Continuation * cont, Env * env)
+void scam::eval(ScamValue value,
+                Continuation * cont,
+                Env * env,
+                ScamEngine * engine)
 {
     if ( isPair(value) ) {
-        workQueueHelper<ConsWorker>(cont, env, CAR(value), CDR(value));
+        workQueueHelper<ConsWorker>(cont, env, CAR(value), CDR(value), engine);
     }
 
     else if ( isSymbol(value) ) {
@@ -60,11 +63,14 @@ void scam::eval(ScamValue value, Continuation * cont, Env * env)
     }
 }
 
-void
-scam::apply(ScamValue value, ScamValue args, Continuation * cont, Env * env)
+void scam::apply(ScamValue value,
+                 ScamValue args,
+                 Continuation * cont,
+                 Env * env,
+                 ScamEngine * engine)
 {
     if ( isClass(value) ) {
-        workQueueHelper<ClassWorker>(value, args, cont, env);
+        workQueueHelper<ClassWorker>(value, args, cont, env, engine);
     }
 
     else if ( isClosure(value) ) {
@@ -73,7 +79,8 @@ scam::apply(ScamValue value, ScamValue args, Continuation * cont, Env * env)
                                        cont,
                                        args,
                                        env,
-                                       MACROLIKE(value));
+                                       MACROLIKE(value),
+                                       engine);
     }
 
     else if ( isContinuation(value) ) {
@@ -140,12 +147,12 @@ scam::apply(ScamValue value, ScamValue args, Continuation * cont, Env * env)
         ScamValue funargs = parser->getForms();
 
         Continuation * newCont =
-            standardMemoryManager.make<InstanceCont>(value, name, cont);
+            standardMemoryManager.make<InstanceCont>(value, name, cont, engine);
         if ( isNull(funargs) ) {
             newCont->run(funargs);
         }
         else {
-            mapEval(funargs, newCont, env);
+            mapEval(funargs, newCont, env, engine);
         }
     }
 
@@ -154,7 +161,7 @@ scam::apply(ScamValue value, ScamValue args, Continuation * cont, Env * env)
     }
 
     else if ( isPrimitive(value) ) {
-        workQueueHelper<PrimWorker>(cont, env, args, value);
+        workQueueHelper<PrimWorker>(cont, env, engine, args, value);
     }
 
     else {
@@ -167,10 +174,13 @@ scam::apply(ScamValue value, ScamValue args, Continuation * cont, Env * env)
     }
 }
 
-void scam::mapEval(ScamValue value, Continuation * cont, Env * env)
+void scam::mapEval(ScamValue value,
+                   Continuation * cont,
+                   Env * env,
+                   ScamEngine * engine)
 {
     if ( isPair(value) ) {
-        workQueueHelper<MapWorker>(cont, env, CAR(value), CDR(value));
+        workQueueHelper<MapWorker>(cont, env, CAR(value), CDR(value), engine);
     }
 
     else {

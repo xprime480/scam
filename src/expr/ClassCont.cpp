@@ -14,17 +14,18 @@
 using namespace scam;
 using namespace std;
 
-ClassCont::ClassCont(ScamValue cls, Continuation * cont)
-    : Continuation("ClassCont")
+ClassCont::ClassCont(ScamValue cls, Continuation * cont, ScamEngine * engine)
+    : Continuation("ClassCont", engine)
     , cls(cls)
     , cont(cont)
 {
     env = getClassCapture(cls);
 }
 
-ClassCont * ClassCont::makeInstance(ScamValue cls, Continuation * cont)
+ClassCont *
+ClassCont::makeInstance(ScamValue cls, Continuation * cont, ScamEngine * engine)
 {
-    return new ClassCont(cls, cont);
+    return new ClassCont(cls, cont, engine);
 }
 
 void ClassCont::mark() const
@@ -134,5 +135,5 @@ ScamValue ClassCont::base_class_not_class(ScamValue name, ScamValue value) const
 
 void ClassCont::init(ScamValue instance, ScamValue expr) const
 {
-    workQueueHelper<ClassInitWorker>(instance, expr, cont, env);
+    workQueueHelper<ClassInitWorker>(instance, expr, cont, env, engine);
 }

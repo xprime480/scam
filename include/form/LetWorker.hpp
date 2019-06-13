@@ -13,15 +13,17 @@ namespace scam
     {
     private:
         friend class scam::MemoryManager;
-	
+
         LetWorker(LetParser * parser,
-		  Continuation * cont,
-		  Env * env,
-		  bool rebind);
+                  Continuation * cont,
+                  Env * env,
+                  ScamEngine * engine,
+                  bool rebind);
 
         static LetWorker * makeInstance(LetParser * parser,
                                         Continuation * cont,
                                         Env * env,
+                                        ScamEngine * engine,
                                         bool rebind);
 
     protected:

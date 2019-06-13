@@ -1,5 +1,6 @@
 #include "Continuation.hpp"
 
+#include "ScamEngine.hpp"
 #include "expr/ScamData.hpp"
 
 #include <sstream>
@@ -12,14 +13,16 @@ namespace
     static unsigned counter { 0 };
 }
 
-Continuation::Continuation(char const * id)
+Continuation::Continuation(char const * id, ScamEngine * engine)
     : name(makeName(id))
+    , engine(engine)
 {
 }
 
-Continuation * Continuation::makeInstance(char const * name)
+Continuation *
+Continuation::makeInstance(char const * name, ScamEngine * engine)
 {
-    return new Continuation(name);
+    return new Continuation(name, engine);
 }
 
 Continuation::~Continuation()

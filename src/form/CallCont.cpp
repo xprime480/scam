@@ -11,16 +11,17 @@
 using namespace scam;
 using namespace std;
 
-CallCont::CallCont(Continuation * cont, Env * env)
-    : Continuation("CallCont")
+CallCont::CallCont(Continuation * cont, Env * env, ScamEngine * engine)
+    : Continuation("CallCont", engine)
     , cont(cont)
     , env(env)
 {
 }
 
-CallCont * CallCont::makeInstance(Continuation * cont, Env * env)
+CallCont *
+CallCont::makeInstance(Continuation * cont, Env * env, ScamEngine * engine)
 {
-    return new CallCont(cont, env);
+    return new CallCont(cont, env, engine);
 }
 
 void CallCont::mark() const
@@ -49,5 +50,5 @@ void CallCont::run(ScamValue expr)
 
     ScamValue contExpr = makeContinuation(cont);
     ScamValue args = makeList(contExpr);
-    apply(expr, args, cont, env);
+    apply(expr, args, cont, env, engine);
 }

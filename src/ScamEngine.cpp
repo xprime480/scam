@@ -21,9 +21,9 @@ namespace
     {
     private:
         friend class scam::MemoryManager;
-        HistoryCont(size_t size);
+        HistoryCont(size_t size, ScamEngine * engine);
 
-        static HistoryCont * makeInstance(size_t size);
+        static HistoryCont * makeInstance(size_t size, ScamEngine * engine);
 
     public:
         void mark() const override;
@@ -60,10 +60,11 @@ ScamEngine::~ScamEngine()
 void ScamEngine::reset(bool initEnv)
 {
     backtracker = nullptr;
-    cont = standardMemoryManager.make<HistoryCont>(1);
+    cont = standardMemoryManager.make<HistoryCont>(1, this);
 
     input.clear();
     loaded.clear();
+    handlers.clear();
 
     env = standardMemoryManager.make<Env>();
     if ( initEnv ) {
@@ -164,7 +165,7 @@ ScamValue ScamEngine::read()
 
 ScamValue ScamEngine::eval(ScamValue expr)
 {
-    scam::eval(expr, cont, env);
+    scam::eval(expr, cont, env, this);
 
     Trampoline(GlobalWorkQueue);
 
@@ -175,7 +176,7 @@ ScamValue ScamEngine::eval(ScamValue expr)
 
 ScamValue ScamEngine::apply(ScamValue expr, ScamValue args)
 {
-    scam::apply(expr, args, cont, env);
+    scam::apply(expr, args, cont, env, this);
     Trampoline(GlobalWorkQueue);
     HistoryCont const * hc = dynamic_cast<HistoryCont const *>(cont);
     return hc->get();
@@ -203,6 +204,37 @@ void ScamEngine::setLoaded(std::string const & filename)
     loaded.insert(filename);
 }
 
+void ScamEngine::pushHandler(Handler * handler)
+{
+    handlers.push_back(handler);
+}
+
+ScamValue ScamEngine::handleError(ScamValue err)
+{
+    ScamValue rv = err;
+    if ( handlers.empty() ) {
+        Handler handler;
+        rv = handler.handleError(err);
+    }
+    else {
+        rv = handlers.back()->handleError(err);
+    }
+
+    if ( error(rv) ) {
+        reset(false);
+        exit(1);                // unhandled errors kill the system
+    }
+
+    return rv;
+}
+
+void ScamEngine::popHandler()
+{
+    if ( ! handlers.empty() ) {
+        handlers.pop_back();
+    }
+}
+
 void ScamEngine::mark() const
 {
     env->mark();
@@ -218,17 +250,17 @@ void ScamEngine::mark() const
 
 namespace
 {
-    HistoryCont::HistoryCont(size_t size)
-        : Continuation("History")
+    HistoryCont::HistoryCont(size_t size, ScamEngine * engine)
+        : Continuation("History", engine)
         , size(size)
-        , cont(standardMemoryManager.make<Continuation>("Default"))
+        , cont(standardMemoryManager.make<Continuation>("Default", engine))
         , serial(0u)
     {
     }
 
-    HistoryCont * HistoryCont::makeInstance(size_t size)
+    HistoryCont * HistoryCont::makeInstance(size_t size, ScamEngine * engine)
     {
-        return new HistoryCont(size);
+        return new HistoryCont(size, engine);
     }
 
     void HistoryCont::mark() const

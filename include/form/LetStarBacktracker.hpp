@@ -14,19 +14,22 @@ namespace scam
 
         LetStarBacktracker(Env * env,
                            ScamValue sym,
-                           Backtracker * backtracker);
+                           Backtracker * backtracker,
+                           ScamEngine * engine);
 
         static LetStarBacktracker * makeInstance(Env * env,
                                                  ScamValue sym,
-                                                 Backtracker * backtracker);
+                                                 Backtracker * backtracker,
+                                                 ScamEngine * engine);
 
     public:
         void mark() const override;
         void run() override;
 
     private:
-        Env       * env;
-        ScamValue   sym;
+        Env        * env;
+        ScamValue    sym;
+        ScamEngine * engine;
     };
 }
 

@@ -18,8 +18,9 @@ LetEvalWorker::LetEvalWorker(ScamValue formals,
                              ScamValue forms,
                              Continuation * cont,
                              Env * env,
+                             ScamEngine * engine,
                              bool rebind)
-    : Worker("LetEvalWorker")
+    : Worker("LetEvalWorker", engine)
     , formals(formals)
     , evaled(evaled)
     , args(args)
@@ -36,6 +37,7 @@ LetEvalWorker * LetEvalWorker::makeInstance(ScamValue formals,
                                             ScamValue forms,
                                             Continuation * cont,
                                             Env * env,
+                                            ScamEngine * engine,
                                             bool rebind)
 {
     return new LetEvalWorker(formals,
@@ -44,6 +46,7 @@ LetEvalWorker * LetEvalWorker::makeInstance(ScamValue formals,
                              forms,
                              cont,
                              env,
+                             engine,
                              rebind);
 }
 
@@ -75,8 +78,9 @@ void LetEvalWorker::run()
                                                       cdr,
                                                       cont,
                                                       env,
+                                                      engine,
                                                       rebind);
-        eval(car, ch, env);
+        eval(car, ch, env, engine);
     }
     else {
         Continuation * ch
@@ -84,6 +88,7 @@ void LetEvalWorker::run()
                                                   forms,
                                                   cont,
                                                   env,
+                                                  engine,
                                                   rebind);
         ch->run(evaled);
     }

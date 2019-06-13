@@ -17,15 +17,15 @@ namespace
     {
     private:
         friend class scam::MemoryManager;
-        EvalCont(Continuation * cont)
-            : Continuation("eval")
+        EvalCont(Continuation * cont, ScamEngine * engine)
+            : Continuation("eval", engine)
             , cont(cont)
         {
         }
 
-        static EvalCont * makeInstance(Continuation * cont)
+        static EvalCont * makeInstance(Continuation * cont, ScamEngine * engine)
         {
-            return new EvalCont(cont);
+            return new EvalCont(cont, engine);
         }
 
     public:
@@ -56,18 +56,21 @@ namespace
 
 EvalWorker::EvalWorker(ScamValue forms,
                        Env * extended,
-                       Continuation * cont)
-    : Worker("eval")
+                       Continuation * cont,
+                       ScamEngine * engine)
+    : Worker("eval", engine)
     , forms(forms)
     , extended(extended)
     , cont(cont)
 {
 }
 
-EvalWorker *
-EvalWorker::makeInstance(ScamValue forms, Env * env, Continuation * cont)
+EvalWorker * EvalWorker::makeInstance(ScamValue forms,
+                                      Env * env,
+                                      Continuation * cont,
+                                      ScamEngine * engine)
 {
-    return new EvalWorker(forms, env, cont);
+    return new EvalWorker(forms, env, cont, engine);
 }
 
 void EvalWorker::mark() const
@@ -84,6 +87,6 @@ void EvalWorker::run()
 {
     Worker::run();
 
-    EvalCont * newCont = standardMemoryManager.make<EvalCont>(cont);
-    mapEval(forms, newCont, extended);
+    EvalCont * newCont = standardMemoryManager.make<EvalCont>(cont, engine);
+    mapEval(forms, newCont, extended, engine);
 }

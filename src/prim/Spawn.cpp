@@ -18,8 +18,8 @@ void scam::applySpawn(ScamValue args,
         failedArgParseMessage(myName, "()", args, cont);
     }
     else {
-        workQueueHelper<SpawnWorker>(cont, true);
-        workQueueHelper<SpawnWorker>(cont, false);
+        workQueueHelper<SpawnWorker>(cont, engine, true);
+        workQueueHelper<SpawnWorker>(cont, engine, false);
     }
 }
 

@@ -1,6 +1,7 @@
 #include "OneShotWorker.hpp"
 #include "CountdownWorker.hpp"
 
+#include "ScamEngine.hpp"
 #include "Trampoline.hpp"
 #include "WorkQueue.hpp"
 #include "Worker.hpp"
@@ -19,14 +20,16 @@ namespace
 
 TEST(TrampolineTest, SimpleTest)
 {
+    ScamEngine engine;
+
     MemoryManager & mm = scam::standardMemoryManager;
 
     size_t exec1{ 0 };
-    Worker * count = mm.make<CountdownWorker>(3, &exec1, queue);
+    Worker * count = mm.make<CountdownWorker>(&engine, 3, &exec1, queue);
     queue.put(count);
 
     size_t exec2{ 0 };
-    Worker * start = mm.make<OneShotWorker>(&exec2);
+    Worker * start = mm.make<OneShotWorker>(&engine, &exec2);
     queue.put(start);
 
     Trampoline(queue);

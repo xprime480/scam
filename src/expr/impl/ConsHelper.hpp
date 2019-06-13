@@ -25,11 +25,13 @@ namespace scam
             WorkerData(ScamValue car,
                        ScamValue cdr,
                        Continuation * original,
-                       Env * env)
+                       Env * env,
+                       ScamEngine * engine)
                 : car(car)
                 , cdr(cdr)
                 , original(original)
                 , env(env)
+                , engine(engine)
             {
             }
 
@@ -50,6 +52,7 @@ namespace scam
             Continuation * original;
             Continuation * cont;
             Env * env;
+            ScamEngine * engine;
         };
     }
 }

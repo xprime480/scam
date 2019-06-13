@@ -3,6 +3,7 @@
 
 #include "Backtracker.hpp"
 #include "EngineMarker.hpp"
+#include "Handler.hpp"
 #include "ScamFwd.hpp"
 #include "input/ScamParser.hpp"
 
@@ -58,6 +59,12 @@ namespace scam
         bool isLoaded(std::string const & filename) const;
         void setLoaded(std::string const & filename);
 
+        /*** functions to manager error handling ***/
+
+        void pushHandler(Handler * handler);
+        ScamValue handleError(ScamValue err);
+        void popHandler();
+
         /*** function to manage garbage collection ***/
 
         void mark() const;
@@ -68,6 +75,7 @@ namespace scam
         Backtracker * backtracker;
         Continuation * cont;
         std::set<std::string> loaded;
+        std::vector<Handler *> handlers;
         EngineMarker marker;
 
         void getStandardEnv();

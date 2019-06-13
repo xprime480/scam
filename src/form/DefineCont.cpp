@@ -14,8 +14,7 @@ DefineCont::DefineCont(ScamValue sym,
                        Continuation * cont,
                        Env * env,
                        ScamEngine * engine)
-    : EnvHelperCont(sym, cont, env, "Define")
-    , engine(engine)
+    : EnvHelperCont(sym, cont, env, engine, "Define")
 {
 }
 
@@ -44,6 +43,7 @@ void DefineCont::finish(ScamValue expr) const
     Backtracker * bt =
         standardMemoryManager.make<DefineBacktracker>(sym,
                                                       env,
-                                                      backtracker);
+                                                      backtracker,
+                                                      engine);
     engine->setBacktracker(bt);
 }

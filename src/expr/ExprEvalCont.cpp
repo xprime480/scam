@@ -7,15 +7,16 @@
 using namespace scam;
 using namespace std;
 
-ExprEvalCont::ExprEvalCont(WorkerData const & data)
-    : Continuation("Cons Eval Eval")
+ExprEvalCont::ExprEvalCont(WorkerData const & data, ScamEngine * engine)
+    : Continuation("Cons Eval Eval", engine)
     , data(data)
 {
 }
 
-ExprEvalCont * ExprEvalCont::makeInstance(WorkerData const & data)
+ExprEvalCont *
+ExprEvalCont::makeInstance(WorkerData const & data, ScamEngine * engine)
 {
-    return new ExprEvalCont(data);
+    return new ExprEvalCont(data, engine);
 }
 
 void ExprEvalCont::mark() const
@@ -34,6 +35,6 @@ void ExprEvalCont::run(ScamValue expr)
         data.original->run(expr);
     }
     else {
-        apply(expr, data.cdr, data.original, data.env);
+        apply(expr, data.cdr, data.original, data.env, engine);
     }
 }

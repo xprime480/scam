@@ -11,8 +11,9 @@ using namespace std;
 
 LetCommonCont::LetCommonCont(char const * name,
                              ScamValue forms,
-                             Continuation * cont)
-    : Continuation(name)
+                             Continuation * cont,
+                             ScamEngine * engine)
+    : Continuation(name, engine)
     , forms(forms)
     , cont(cont)
 {
@@ -41,6 +42,6 @@ void LetCommonCont::run(ScamValue expr)
 
 void LetCommonCont::final_eval(Env * env)
 {
-    workQueueHelper<EvalWorker>(forms, env, cont);
+    workQueueHelper<EvalWorker>(forms, env, cont, engine);
 }
 

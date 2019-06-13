@@ -141,9 +141,9 @@ namespace scam
                          ScamValue & value);
 
     extern bool wantMutablePair(const char * name,
-				ArgListHelper & helper,
-				Continuation * cont,
-				ScamValue & value);
+                                ArgListHelper & helper,
+                                Continuation * cont,
+                                ScamValue & value);
 
     extern bool wantIndex(const char * name,
                           ArgListHelper & helper,

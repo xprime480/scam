@@ -14,14 +14,14 @@ namespace scam
     {
     private:
         friend class MemoryManager;
-        Accumulator()
-            : Continuation("Accumulator")
+        Accumulator(ScamEngine * engine)
+            : Continuation("Accumulator", engine)
         {
         }
 
-        static Accumulator * makeInstance()
+        static Accumulator * makeInstance(ScamEngine * engine)
         {
-            return new Accumulator();
+            return new Accumulator(engine);
         }
 
     public:

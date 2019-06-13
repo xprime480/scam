@@ -14,12 +14,17 @@ namespace scam
     private:
         friend class scam::MemoryManager;
 
-        OrWorker(Continuation * cont, Env * env, ListParser * parser, size_t n);
+        OrWorker(Continuation * cont,
+                 Env * env,
+                 ListParser * parser,
+                 ScamEngine * engine,
+                 size_t n);
 
         static OrWorker * makeInstance(Continuation * cont,
                                        Env * env,
-                                       ListParser *
-                                       parser, size_t n);
+                                       ListParser * parser,
+                                       ScamEngine * engine,
+                                       size_t n);
 
     public:
         void mark() const override;

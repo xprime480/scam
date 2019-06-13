@@ -7,15 +7,15 @@
 using namespace scam;
 using namespace std;
 
-NotCont::NotCont(Continuation * cont)
-    : Continuation("Not")
+NotCont::NotCont(Continuation * cont, ScamEngine * engine)
+    : Continuation("Not", engine)
     , cont(cont)
 {
 }
 
-NotCont * NotCont::makeInstance(Continuation * cont)
+NotCont * NotCont::makeInstance(Continuation * cont, ScamEngine * engine)
 {
-    return new NotCont(cont);
+    return new NotCont(cont, engine);
 }
 
 void NotCont::mark() const

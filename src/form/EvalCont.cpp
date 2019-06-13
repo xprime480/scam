@@ -9,16 +9,17 @@
 using namespace scam;
 using namespace std;
 
-EvalCont::EvalCont(Continuation * cont, Env * env)
-    : Continuation("eval")
+EvalCont::EvalCont(Continuation * cont, Env * env, ScamEngine * engine)
+    : Continuation("eval", engine)
     , cont(cont)
     , env(env)
 {
 }
 
-EvalCont * EvalCont::makeInstance(Continuation * cont, Env * env)
+EvalCont *
+EvalCont::makeInstance(Continuation * cont, Env * env, ScamEngine * engine)
 {
-    return new EvalCont(cont, env);
+    return new EvalCont(cont, env, engine);
 }
 
 void EvalCont::mark() const
@@ -38,6 +39,6 @@ void EvalCont::run(ScamValue expr)
         cont->run(expr);
     }
     else {
-        eval(expr, cont, env->getTop());
+        eval(expr, cont, env->getTop(), engine);
     }
 }

@@ -10,19 +10,22 @@ using namespace std;
 
 DefineBacktracker::DefineBacktracker(ScamValue sym,
                                      Env * env,
-                                     Backtracker * backtracker)
+                                     Backtracker * backtracker,
+                                     ScamEngine * engine)
     : Backtracker("DefineBacktracker", backtracker)
     , sym(sym)
     , env(env)
+    , engine(engine)
 {
 }
 
 DefineBacktracker *
 DefineBacktracker::makeInstance(ScamValue sym,
                                 Env * env,
-                                Backtracker * backtracker)
+                                Backtracker * backtracker,
+                                ScamEngine * engine)
 {
-    return new DefineBacktracker(sym, env, backtracker);
+    return new DefineBacktracker(sym, env, backtracker, engine);
 }
 
 void DefineBacktracker::mark() const
@@ -39,6 +42,6 @@ void DefineBacktracker::run()
     Backtracker::run();
     env->remove(sym);
     Continuation * cont
-        = standardMemoryManager.make<Continuation>("Define Backtrack");
+        = standardMemoryManager.make<Continuation>("Define Backtrack", engine);
     runParent(cont);
 }

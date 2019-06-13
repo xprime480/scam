@@ -14,10 +14,13 @@ namespace scam
     private:
         friend class scam::MemoryManager;
 
-        ClassInitCont(ScamValue instance, Continuation * cont);
+        ClassInitCont(ScamValue instance,
+                      Continuation * cont,
+                      ScamEngine * engine);
 
-        static ClassInitCont *
-        makeInstance(ScamValue instance, Continuation * cont);
+        static ClassInitCont * makeInstance(ScamValue instance,
+                                            Continuation * cont,
+                                            ScamEngine * engine);
 
     public:
         void mark() const override;

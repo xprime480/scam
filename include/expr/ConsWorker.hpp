@@ -16,16 +16,19 @@ namespace scam
         ConsWorker(Continuation * cont,
                    Env * env,
                    ScamValue car,
-                   ScamValue cdr);
+                   ScamValue cdr,
+                   ScamEngine * engine);
 
-        ConsWorker(WorkerData const & data);
+        ConsWorker(WorkerData const & data, ScamEngine * engine);
 
         static ConsWorker * makeInstance(Continuation * cont,
                                          Env * env,
                                          ScamValue car,
-                                         ScamValue cdr);
+                                         ScamValue cdr,
+                                         ScamEngine * engine);
 
-        static ConsWorker * makeInstance(WorkerData const & data);
+        static ConsWorker *
+        makeInstance(WorkerData const & data, ScamEngine * engine);
 
     public:
         void mark() const override;

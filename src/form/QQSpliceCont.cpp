@@ -8,15 +8,16 @@
 using namespace scam;
 using namespace std;
 
-QQSpliceCont::QQSpliceCont(Continuation * cont)
-    : Continuation("QQSpliceCont")
+QQSpliceCont::QQSpliceCont(Continuation * cont, ScamEngine * engine)
+    : Continuation("QQSpliceCont", engine)
     , cont(cont)
 {
 }
 
-QQSpliceCont * QQSpliceCont::makeInstance(Continuation * cont)
+QQSpliceCont *
+QQSpliceCont::makeInstance(Continuation * cont, ScamEngine * engine)
 {
-    return new QQSpliceCont(cont);
+    return new QQSpliceCont(cont, engine);
 }
 
 void QQSpliceCont::mark() const

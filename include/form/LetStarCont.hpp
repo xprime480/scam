@@ -35,8 +35,7 @@ namespace scam
     private:
         ScamValue formals;
         ScamValue rest;
-        Env *        env;
-        ScamEngine * engine;
+        Env     * env;
 
         void makeBacktracker(ScamValue sym) const;
     };

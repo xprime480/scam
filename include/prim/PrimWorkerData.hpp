@@ -22,7 +22,7 @@ namespace scam
 
         void mark() const;
 
-        void mapEval() const;
+        void mapEval(ScamEngine * engine) const;
         void handleResult(ScamValue expr);
     };
 }

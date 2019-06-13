@@ -18,18 +18,21 @@ static const char * myName = "quasiquote";
 
 QuasiQuoteWorker::QuasiQuoteWorker(ScamValue form,
                                    Continuation * cont,
-                                   Env * env)
-    : Worker(myName)
+                                   Env * env,
+                                   ScamEngine * engine)
+    : Worker(myName, engine)
     , form(form)
     , cont(cont)
     , env(env)
 {
 }
 
-QuasiQuoteWorker *
-QuasiQuoteWorker::makeInstance(ScamValue form, Continuation * cont, Env * env)
+QuasiQuoteWorker * QuasiQuoteWorker::makeInstance(ScamValue form,
+                                                  Continuation * cont,
+                                                  Env * env,
+                                                  ScamEngine * engine)
 {
-    return new QuasiQuoteWorker(form, cont, env);
+    return new QuasiQuoteWorker(form, cont, env, engine);
 }
 
 void QuasiQuoteWorker::mark() const
@@ -60,16 +63,17 @@ void QuasiQuoteWorker::unquote_form(ScamValue input, Continuation * cont)
 {
     if ( verify_single_form(input, cont) ) {
         ScamValue form = nthcar(input, 0);
-        eval(form, cont, env);
+        eval(form, cont, env, engine);
     }
 }
 
 void QuasiQuoteWorker::splice_form(ScamValue input, Continuation * cont)
 {
     if ( verify_single_form(input, cont) ) {
-        Continuation * h = standardMemoryManager.make<QQSpliceCont>(cont);
+        Continuation * h =
+            standardMemoryManager.make<QQSpliceCont>(cont, engine);
         ScamValue form = nthcar(input, 0);
-        eval(form, h, env);
+        eval(form, h, env, engine);
     }
 }
 
@@ -80,7 +84,8 @@ void QuasiQuoteWorker::cons_qq_list(ScamValue car,
     Continuation * h =
         standardMemoryManager.make<QQConsListCarCont>(cdr,
                                                       cont,
-                                                      env);
+                                                      env,
+                                                      engine);
     build_qq_form(car, h);
 }
 

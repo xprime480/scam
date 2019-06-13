@@ -10,8 +10,12 @@
 using namespace scam;
 using namespace std;
 
-AndCont::AndCont(ListParser * parser, Continuation * cont, Env * env, size_t n)
-    : Continuation("And")
+AndCont::AndCont(ListParser * parser,
+                 Continuation * cont,
+                 Env * env,
+                 ScamEngine * engine,
+                 size_t n)
+    : Continuation("And", engine)
     , parser(parser)
     , cont(cont)
     , env(env)
@@ -22,9 +26,10 @@ AndCont::AndCont(ListParser * parser, Continuation * cont, Env * env, size_t n)
 AndCont * AndCont::makeInstance(ListParser * parser,
                                 Continuation * cont,
                                 Env * env,
+                                ScamEngine * engine,
                                 size_t n)
 {
-    return new AndCont(parser, cont, env, n);
+    return new AndCont(parser, cont, env, engine, n);
 }
 
 void AndCont::mark() const
@@ -48,6 +53,6 @@ void AndCont::run(ScamValue expr)
         cont->run(expr);
     }
     else {
-        workQueueHelper<AndWorker>(cont, env, parser, n);
+        workQueueHelper<AndWorker>(cont, env, parser, engine, n);
     }
 }

@@ -13,18 +13,20 @@ using namespace std;
 
 QQConsListCdrCont::QQConsListCdrCont(ScamValue car,
                                      Continuation * cont,
-                                     Env * env)
-    : Continuation("QQConsListCdrCont")
+                                     Env * env, ScamEngine * engine)
+    : Continuation("QQConsListCdrCont", engine)
     , car(car)
     , cont(cont)
     , env(env)
 {
 }
 
-QQConsListCdrCont *
-QQConsListCdrCont::makeInstance(ScamValue car, Continuation * cont, Env * env)
+QQConsListCdrCont * QQConsListCdrCont::makeInstance(ScamValue car,
+                                                    Continuation * cont,
+                                                    Env * env,
+                                                    ScamEngine * engine)
 {
-    return new  QQConsListCdrCont(car, cont, env);
+    return new  QQConsListCdrCont(car, cont, env, engine);
 }
 
 void QQConsListCdrCont::mark() const

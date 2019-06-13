@@ -60,7 +60,7 @@ void scam::applyAnd(ScamValue args,
     }
 
     unsigned pos { 0 };
-    workQueueHelper<AndWorker>(cont, env, parser, pos);
+    workQueueHelper<AndWorker>(cont, env, parser, engine, pos);
 }
 
 void scam::applyApply(ScamValue args,
@@ -78,9 +78,9 @@ void scam::applyApply(ScamValue args,
     ScamValue sym     = parser->getParsedOp();
     ScamValue arglist = parser->getArgs();
     Continuation * newCont =
-        standardMemoryManager.make<ApplyOpCont>(arglist, cont, env);
+        standardMemoryManager.make<ApplyOpCont>(arglist, cont, env, engine);
 
-    eval(sym, newCont, env);
+    eval(sym, newCont, env, engine);
 }
 
 void scam::applyAssign(ScamValue args,
@@ -112,8 +112,8 @@ void scam::applyCallCC(ScamValue args,
     else {
         ScamValue body = parser->get();
         Continuation * newCont =
-            standardMemoryManager.make<CallCont>(cont, env);
-        eval(body, newCont, env);
+            standardMemoryManager.make<CallCont>(cont, env, engine);
+        eval(body, newCont, env, engine);
     }
 }
 
@@ -163,9 +163,9 @@ void scam::applyEval(ScamValue args,
     }
     else {
         Continuation * finisher =
-            standardMemoryManager.make<EvalCont>(cont, env);
+            standardMemoryManager.make<EvalCont>(cont, env, engine);
         ScamValue expr = const_cast<ScamValue>(parser->get());
-        eval(expr, finisher, env);
+        eval(expr, finisher, env, engine);
     }
 }
 
@@ -184,7 +184,7 @@ void scam::applyIf(ScamValue args,
                               cont);
     }
     else {
-        workQueueHelper<IfWorker>(cont, env, parser);
+        workQueueHelper<IfWorker>(cont, env, engine, parser);
     }
 }
 
@@ -217,7 +217,7 @@ void scam::applyLet(ScamValue args,
         failedArgParseMessage(myName, "(((sym form)*) form*)", args, cont);
     }
     else {
-        workQueueHelper<LetWorker>(parser, cont, env, false);
+        workQueueHelper<LetWorker>(parser, cont, env, engine, false);
     }
 }
 
@@ -232,7 +232,7 @@ void scam::applyLetRec(ScamValue args,
         failedArgParseMessage(myName, "(((sym form)*) form*)", args, cont);
     }
     else {
-        workQueueHelper<LetWorker>(parser, cont, env, true);
+        workQueueHelper<LetWorker>(parser, cont, env, engine, true);
     }
 }
 
@@ -280,7 +280,7 @@ void scam::applyNot(ScamValue args,
         failedArgParseMessage(myName, "(form)", args, cont);
     }
     else {
-        workQueueHelper<NotWorker>(cont, env, parser);
+        workQueueHelper<NotWorker>(cont, env, engine, parser);
     }
 }
 
@@ -295,7 +295,7 @@ void scam::applyOr(ScamValue args,
         failedArgParseMessage(myName, "(form*)", args, cont);
     }
     else {
-        workQueueHelper<OrWorker>(cont, env, parser, 0u);
+        workQueueHelper<OrWorker>(cont, env, parser, engine, 0u);
     }
 }
 
@@ -310,7 +310,7 @@ void scam::applyQuasiQuote(ScamValue args,
         failedArgParseMessage(myName, "(form)", args, cont);
     }
     else {
-        workQueueHelper<QuasiQuoteWorker>(parser->get(), cont, env);
+        workQueueHelper<QuasiQuoteWorker>(parser->get(), cont, env, engine);
     }
 }
 
@@ -340,7 +340,7 @@ void scam::applyUndefine(ScamValue args,
         failedArgParseMessage(myName, "(sym)", args, cont);
     }
     else {
-        workQueueHelper<UndefineWorker>(parser, cont, env);
+        workQueueHelper<UndefineWorker>(parser, cont, env, engine);
     }
 }
 

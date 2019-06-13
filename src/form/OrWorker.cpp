@@ -15,8 +15,9 @@ using namespace std;
 OrWorker::OrWorker(Continuation * cont,
                    Env * env,
                    ListParser * parser,
+                   ScamEngine * engine,
                    size_t n)
-    : Worker("Or")
+    : Worker("Or", engine)
     , parser(parser)
     , cont(cont)
     , env(env)
@@ -27,9 +28,10 @@ OrWorker::OrWorker(Continuation * cont,
 OrWorker * OrWorker::makeInstance(Continuation * cont,
                                   Env * env,
                                   ListParser * parser,
+                                  ScamEngine * engine,
                                   size_t n)
 {
-    return new OrWorker(cont, env, parser, n);
+    return new OrWorker(cont, env, parser, engine, n);
 }
 
 void OrWorker::mark() const
@@ -52,12 +54,12 @@ void OrWorker::run()
         cont->run(rv);
     }
     else if ( n == (len - 1) ) {
-        eval(parser->get(len-1), cont, env);
+        eval(parser->get(len-1), cont, env, engine);
     }
     else {
         ScamValue test = parser->get(n);
         Continuation * newCont =
-            standardMemoryManager.make<OrCont>(parser, cont, env, n+1);
-        eval(test, newCont, env);
+            standardMemoryManager.make<OrCont>(parser, cont, env, engine, n+1);
+        eval(test, newCont, env, engine);
     }
 }
