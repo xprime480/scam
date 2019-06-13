@@ -5,6 +5,8 @@
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueFactory.hpp"
 
+#include "ReplHandler.hpp"
+
 #include <iostream>
 
 using namespace scam;
@@ -12,18 +14,24 @@ using namespace std;
 
 ScamRepl::ScamRepl()
     : parser(tokenizer)
+    , done(false)
 {
 }
 
 int ScamRepl::run()
 {
+    ReplHandler handler;
+
     banner();
     engine.reset(true);
+    engine.pushHandler(&handler);
     if ( ! load_prelude() ) {
         return 1;
     }
 
-    return repl();
+    int rv = repl();
+    engine.popHandler();
+    return rv;
 }
 
 void ScamRepl::banner() const
@@ -63,13 +71,14 @@ bool ScamRepl::load_prelude()
 
 int ScamRepl::repl()
 {
-    for ( ;; ) {
+    while ( ! done ) {
         ScamValue form = read();
-        if ( isNothing(form) ) {
-            break;
+        if ( isAnything(form) ) {
+            ScamValue value = eval(form);
+            if ( isAnything(value) ) {
+                print(value);
+            }
         }
-        ScamValue value = eval(form);
-        print(value);
     }
 
     return 0;
@@ -89,6 +98,7 @@ ScamValue ScamRepl::read()
                 return form;
             }
             if ( error(form) && ! form->hasMeta("partial") ) {
+                form = engine.handleError(form);
                 tokenizer.flush();
                 return form;
             }
@@ -99,12 +109,14 @@ ScamValue ScamRepl::read()
 
         if ( ! cin.good() ) {
             cerr << "End of input detected\n";
+            done = true;
             return makeNothing();
         }
 
         string line;
         getline(cin, line);
-        if ( ! checkInternal(line) ) {
+        checkInternal(line);
+        if ( done ) {
             return makeNothing();
         }
         tokenizer.bufferInput(line);
@@ -113,13 +125,20 @@ ScamValue ScamRepl::read()
 
 ScamValue ScamRepl::eval(ScamValue form)
 {
+    ScamValue rv = makeNull();
     try {
-        return engine.eval(form);
+        rv = engine.eval(form);
     }
     catch ( ScamException e ) {
-        ScamValue err = makeErrorExtended("Caught exception: ", e.getMessage());
-        return engine.handleError(err);
+        rv = makeErrorExtended("Caught exception: ", e.getMessage());
     }
+
+    if ( error(rv) ) {
+        rv = engine.handleError(rv);
+    }
+
+    return rv;
+
 }
 
 void ScamRepl::print(ScamValue value)
@@ -127,14 +146,14 @@ void ScamRepl::print(ScamValue value)
     cerr << writeValue(value) << "\n";
 }
 
-bool ScamRepl::checkInternal(string & line)
+void ScamRepl::checkInternal(string & line)
 {
     if ( line.empty() ) {
-        return true;
+        return;
     }
 
     if ( '~' != line.at(0) ) {
-        return true;
+        return;
     }
 
     string cmd = line;
@@ -142,14 +161,14 @@ bool ScamRepl::checkInternal(string & line)
 
     if ( cmd.size() < 2 ) {
         cerr << "invalid command sequence: " << cmd << "\n";
-        return true;
+        return;
     }
 
     const char c = cmd.at(1);
     if ( 'q' == c || 'Q' == c ) {
-        return false;
+        done = true;
+        return;
     }
 
     cerr << "unknown command sequence: " << cmd << "\n";
-    return true;
 }

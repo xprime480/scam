@@ -8,6 +8,8 @@ namespace scam
     class Handler
     {
     public:
+        virtual ~Handler() {}
+
         virtual ScamValue handleError(ScamValue err);
     };
 }

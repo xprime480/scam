@@ -18,6 +18,7 @@ namespace scam
         ScamEngine engine;
         ReplTokenizer tokenizer;
         ScamParser parser;
+        bool done;
 
         void banner() const;
         bool load_prelude();
@@ -27,7 +28,7 @@ namespace scam
         ScamValue eval(ScamValue form);
         void print(ScamValue value);
 
-        bool checkInternal(std::string & line);
+        void checkInternal(std::string & line);
     };
 }
 
