@@ -50,12 +50,12 @@ void ClosureBindCont::mark() const
     }
 }
 
-void ClosureBindCont::run(ScamValue expr)
+void ClosureBindCont::handleValue(ScamValue expr)
 {
-    Continuation::run(expr);
+    Continuation::handleValue(expr);
 
     if ( isError(expr) ) {
-        cont->run(expr);
+        cont->handleValue(expr);
     }
     else if ( malformedActuals(expr) ) {
         /* do nothing */
@@ -73,7 +73,7 @@ bool ClosureBindCont::malformedActuals(ScamValue expr) const
 
     ScamValue err =
         makeErrorExtended( "Expected a paramter list, got: ", writeValue(expr));
-    cont->run(err);
+    cont->handleValue(err);
 
     return true;
 }
@@ -99,7 +99,7 @@ void ClosureBindCont::wrongNumberOfParameters(unsigned formalsLen,
                                       formalsLen,
                                       " parameters; got ",
                                       actualsLen);
-    cont->run(err);
+    cont->handleValue(err);
 }
 
 bool ClosureBindCont::checkArgLength(ScamValue expr) const

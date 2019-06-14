@@ -42,15 +42,15 @@ void AndCont::mark() const
     }
 }
 
-void AndCont::run(ScamValue expr)
+void AndCont::handleValue(ScamValue expr)
 {
-    Continuation::run(expr);
+    Continuation::handleValue(expr);
 
     if ( isError(expr) ) {
-        cont->run(expr);
+        cont->handleValue(expr);
     }
     else if ( ! truth(expr) ) {
-        cont->run(expr);
+        cont->handleValue(expr);
     }
     else {
         workQueueHelper<AndWorker>(cont, env, parser, engine, n);

@@ -25,9 +25,9 @@ namespace scam
         }
 
     public:
-        void run(ScamValue expr) override
+        void handleValue(ScamValue expr) override
         {
-            Continuation::run(expr);
+            Continuation::handleValue(expr);
             s << writeValue(expr) << "\n";
         }
 

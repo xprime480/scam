@@ -49,7 +49,7 @@ void scam::applyLoad(ScamValue args,
     if ( engine->isLoaded(filename) ) {
         ScamValue err =
             makeErrorExtended("file \"", filename, "\" already loaded");
-        cont->run(err);
+        cont->handleValue(err);
         return;
     }
 
@@ -67,7 +67,7 @@ void scam::applyLoad(ScamValue args,
     ScamValue last = helper.run();
 
     engine->setLoaded(filename);
-    cont->run(last);
+    cont->handleValue(last);
 }
 
 namespace
@@ -109,7 +109,7 @@ namespace
     void fileNotFound(string const & filename, Continuation * cont)
     {
         ScamValue err = makeErrorExtended("Unable to open file ", filename);
-        cont->run(err);
+        cont->handleValue(err);
     }
 
     ScamValue getPath()

@@ -49,5 +49,5 @@ void UndefineWorker::run()
         standardMemoryManager.make<UndefineCont>(sym, cont, env, engine);
     ScamValue expr = makeNull();
 
-    c->run(expr);
+    c->handleValue(expr);
 }

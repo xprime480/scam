@@ -27,15 +27,15 @@ void CdrContinuation::mark() const
     }
 }
 
-void CdrContinuation::run(ScamValue expr)
+void CdrContinuation::handleValue(ScamValue expr)
 {
-    Continuation::run(expr);
+    Continuation::handleValue(expr);
 
     if ( isError(expr) ) {
-        data.original->run(expr);
+        data.original->handleValue(expr);
     }
     else {
         ScamValue e = makePair(data.car, expr);
-        data.original->run(e);
+        data.original->handleValue(e);
     }
 }

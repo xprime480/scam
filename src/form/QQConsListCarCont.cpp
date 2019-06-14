@@ -41,11 +41,11 @@ void QQConsListCarCont::mark() const
     }
 }
 
-void QQConsListCarCont::run(ScamValue expr)
+void QQConsListCarCont::handleValue(ScamValue expr)
 {
-    Continuation::run(expr);
+    Continuation::handleValue(expr);
     if ( isError(expr) ) {
-        cont->run(expr);
+        cont->handleValue(expr);
     }
     else {
         Continuation * h =

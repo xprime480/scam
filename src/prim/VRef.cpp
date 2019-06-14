@@ -21,6 +21,6 @@ void scam::applyVRef(ScamValue args,
     else {
         size_t idx = parser->getIndex();
         ScamValue vec = parser->getVector();
-        cont->run(nthcar(vec, idx));
+        cont->handleValue(nthcar(vec, idx));
     }
 }

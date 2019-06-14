@@ -30,5 +30,5 @@ void SpawnWorker::mark() const
 void SpawnWorker::run()
 {
     ScamValue flag = makeBoolean(value);
-    cont->run(flag);
+    cont->handleValue(flag);
 }

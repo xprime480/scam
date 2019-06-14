@@ -50,7 +50,7 @@ void AndWorker::run()
 
     size_t const len = parser->size();
     if ( 0 == len ) {
-        cont->run(makeBoolean(true));
+        cont->handleValue(makeBoolean(true));
     }
     else if ( n == (len - 1) ) {
         eval(parser->get(len-1), cont, env, engine);

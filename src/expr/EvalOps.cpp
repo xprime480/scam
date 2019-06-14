@@ -48,18 +48,18 @@ void scam::eval(ScamValue value,
                                           " in the current environment");
         }
 
-        cont->run(evaluated);
+        cont->handleValue(evaluated);
     }
 
     else if ( isNothing(value) ) {
         static const string msg{ "The null type cannot be evaluated." };
         static ScamValue expr = makeError(msg, false);
-        cont->run(expr);
+        cont->handleValue(expr);
     }
 
     else {
         // default case
-        cont->run(value);
+        cont->handleValue(value);
     }
 }
 
@@ -89,7 +89,7 @@ void scam::apply(ScamValue value,
 
         if ( accepted ) {
             ScamValue arg = parser->get();
-            CONTINUATION(value)->run(arg);
+            CONTINUATION(value)->handleValue(arg);
         }
         else {
             failedArgParseMessage(writeValue(value).c_str(),
@@ -132,7 +132,7 @@ void scam::apply(ScamValue value,
                                    writeValue(op));
         }
 
-        cont->run(rv);
+        cont->handleValue(rv);
     }
 
     else if ( isInstance(value) ) {
@@ -149,7 +149,7 @@ void scam::apply(ScamValue value,
         Continuation * newCont =
             standardMemoryManager.make<InstanceCont>(value, name, cont, engine);
         if ( isNull(funargs) ) {
-            newCont->run(funargs);
+            newCont->handleValue(funargs);
         }
         else {
             mapEval(funargs, newCont, env, engine);
@@ -170,7 +170,7 @@ void scam::apply(ScamValue value,
                                           writeValue(value),
                                           "> to args ",
                                           writeValue(args));
-        cont->run(err);
+        cont->handleValue(err);
     }
 }
 
@@ -185,7 +185,7 @@ void scam::mapEval(ScamValue value,
 
     else {
         // default case
-        cont->run(value);
+        cont->handleValue(value);
     }
 }
 

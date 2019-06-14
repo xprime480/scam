@@ -31,12 +31,12 @@ void EvalCont::mark() const
     }
 }
 
-void EvalCont::run(ScamValue expr)
+void EvalCont::handleValue(ScamValue expr)
 {
-    Continuation::run(expr);
+    Continuation::handleValue(expr);
 
     if ( isError(expr) ) {
-        cont->run(expr);
+        cont->handleValue(expr);
     }
     else {
         eval(expr, cont, env->getTop(), engine);

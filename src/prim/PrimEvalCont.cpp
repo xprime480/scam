@@ -23,8 +23,8 @@ void PrimEvalCont::mark() const
     }
 }
 
-void PrimEvalCont::run(ScamValue expr)
+void PrimEvalCont::handleValue(ScamValue expr)
 {
-    Continuation::run(expr);
+    Continuation::handleValue(expr);
     data.handleResult(expr);
 }

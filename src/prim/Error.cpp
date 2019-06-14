@@ -41,6 +41,6 @@ void scam::applyError(ScamValue args,
     }
 
     ScamValue err = makeError(s.str());
-    cont->run(err);
+    cont->handleValue(err);
 }
 

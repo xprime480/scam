@@ -34,7 +34,7 @@ void scam::applyMakeList(ScamValue args,
         rv = makePair(fill, rv);
     }
 
-    cont->run(rv);
+    cont->handleValue(rv);
 }
 
 void scam::applyList(ScamValue args,
@@ -42,7 +42,7 @@ void scam::applyList(ScamValue args,
                      ScamEngine * engine)
 {
     /** literally anything goes **/
-    cont->run(args);
+    cont->handleValue(args);
 }
 
 void scam::applyAppend(ScamValue args,
@@ -77,5 +77,5 @@ void scam::applyAppend(ScamValue args,
         }
     }
 
-    cont->run(rv);
+    cont->handleValue(rv);
 }

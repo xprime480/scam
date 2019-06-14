@@ -16,7 +16,7 @@ void scam::applySubstitute(ScamValue args,
 {
     if ( length(args) < 2 ) {
         ScamValue err = makeError("expected 2 args; got ", length(args));
-        cont->run(err);
+        cont->handleValue(err);
         return;
     }
 
@@ -26,12 +26,12 @@ void scam::applySubstitute(ScamValue args,
         ScamValue err =
             makeErrorExtended("expected 'form dict'; got ",
                               writeValue(args));
-        cont->run(err);
+        cont->handleValue(err);
         return;
     }
 
     Substitutor resolver(dict);
     ScamValue rv = resolver.resolve_value(form);
-    cont->run(rv);
+    cont->handleValue(rv);
 }
 

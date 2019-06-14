@@ -22,11 +22,11 @@ void scam::applyBegin(ScamValue args,
 
     const size_t count = length(args);
     if ( 0 == count ) {
-        cont->run(args);
+        cont->handleValue(args);
     }
     else {
         ScamValue last = nthcar(args, count - 1);
-        cont->run(last);
+        cont->handleValue(last);
     }
 }
 

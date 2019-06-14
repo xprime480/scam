@@ -13,6 +13,6 @@ void scam::applyTrace(ScamValue args,
                       ScamEngine * engine)
 {
     cerr << writeValue(args) << "\n";
-    cont->run(args);
+    cont->handleValue(args);
 }
 

@@ -27,12 +27,12 @@ void ExprEvalCont::mark() const
     }
 }
 
-void ExprEvalCont::run(ScamValue expr)
+void ExprEvalCont::handleValue(ScamValue expr)
 {
-    Continuation::run(expr);
+    Continuation::handleValue(expr);
 
     if ( isError(expr) ) {
-        data.original->run(expr);
+        data.original->handleValue(expr);
     }
     else {
         apply(expr, data.cdr, data.original, data.env, engine);

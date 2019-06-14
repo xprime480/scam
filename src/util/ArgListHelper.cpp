@@ -411,7 +411,7 @@ void scam::failedArgParseMessage(const char * who,
                                       "\"; got \"",
                                       writeValue(act),
                                       "\"");
-    cont->run(err);
+    cont->handleValue(err);
 }
 
 
@@ -436,7 +436,7 @@ namespace
         }
 
         ScamValue err = makeErrorExtended(name, ": ", writeValue(status));
-        cont->run(err);
+        cont->handleValue(err);
         return false;
     }
 }
@@ -582,7 +582,7 @@ bool scam::wantZeroPlus(const char * name,
     }
 
     ScamValue err = makeErrorExtended(name, ": ", writeValue(status));
-    cont->run(err);
+    cont->handleValue(err);
     return false;
 }
 
@@ -601,7 +601,7 @@ bool scam::wantCount(const char * name,
     }
 
     ScamValue err = makeErrorExtended(name, ": ", writeValue(status));
-    cont->run(err);
+    cont->handleValue(err);
     return false;
 }
 
@@ -618,7 +618,7 @@ bool scam::wantSublistOf(const char * name,
     }
 
     ScamValue err = makeErrorExtended(name, ": ", writeValue(status));
-    cont->run(err);
+    cont->handleValue(err);
     return false;
 }
 
@@ -634,7 +634,7 @@ bool scam::finishArgs(const char * name,
 
     ScamValue err =
         makeErrorExtended(name, ": ", (msg ? msg : writeValue(status)));
-    cont->run(err);
+    cont->handleValue(err);
     return false;
 }
 

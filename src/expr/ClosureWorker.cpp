@@ -68,7 +68,7 @@ void ClosureWorker::run()
                                                       macrolike,
                                                       engine);
     if ( macrolike ) {
-        newCont->run(args);
+        newCont->handleValue(args);
     }
     else {
         mapEval(args, newCont, argEnv, engine);

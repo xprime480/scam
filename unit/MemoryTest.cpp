@@ -482,7 +482,7 @@ TEST_F(MemoryTest, TestExtractor)
     Continuation * cont = mm.make<Extractor>(&engine);
     ScamValue expr = makeKeyword(":best");
 
-    cont->run(expr);
+    cont->handleValue(expr);
     cont->mark();
     expectMarked(true, cont, expr);
 }

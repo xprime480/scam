@@ -28,12 +28,12 @@ void CarContinuation::mark() const
   }
 }
 
-void CarContinuation::run(ScamValue expr)
+void CarContinuation::handleValue(ScamValue expr)
 {
-    Continuation::run(expr);
+    Continuation::handleValue(expr);
 
     if ( isError(expr) ) {
-        data.original->run(expr);
+        data.original->handleValue(expr);
     }
     else {
         ScamValue e = data.cdr;

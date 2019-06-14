@@ -33,10 +33,12 @@ void CallCont::mark() const
     }
 }
 
-void CallCont::run(ScamValue expr)
+void CallCont::handleValue(ScamValue expr)
 {
+    Continuation::handleValue(expr);
+
     if ( isError(expr) ) {
-        cont->run(expr);
+        cont->handleValue(expr);
         return;
     }
 
@@ -44,7 +46,7 @@ void CallCont::run(ScamValue expr)
         ScamValue err = makeErrorExtended("call/cc: form ",
                                           writeValue(expr),
                                           "cannot be applied");
-        cont->run(err);
+        cont->handleValue(err);
         return;
     }
 

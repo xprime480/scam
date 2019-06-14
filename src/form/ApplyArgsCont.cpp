@@ -37,12 +37,12 @@ void ApplyArgsCont::mark() const
     }
 }
 
-void ApplyArgsCont::run(ScamValue expr)
+void ApplyArgsCont::handleValue(ScamValue expr)
 {
-    Continuation::run(expr);
+    Continuation::handleValue(expr);
 
     if ( isError(expr) ) {
-        cont->run(expr);
+        cont->handleValue(expr);
     }
     else {
         apply(op, expr, cont, env, engine);

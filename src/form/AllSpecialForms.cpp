@@ -130,7 +130,7 @@ void scam::applyClassMaker(ScamValue args,
     }
     else {
         ScamValue cls = makeClass(parser, env);
-        cont->run(cls);
+        cont->handleValue(cls);
     }
 }
 
@@ -203,7 +203,7 @@ void scam::applyLambda(ScamValue args,
         expr = makeClosure(lambda, env);
     }
 
-    cont->run(expr);
+    cont->handleValue(expr);
 }
 
 void scam::applyLet(ScamValue args,
@@ -266,7 +266,7 @@ void scam::applyMacro(ScamValue args,
         expr = makeClosure(lambda, env, true);
     }
 
-    cont->run(expr);
+    cont->handleValue(expr);
 }
 
 void scam::applyNot(ScamValue args,
@@ -325,7 +325,7 @@ void scam::applyQuote(ScamValue args,
         failedArgParseMessage(myName, "(expr)", args, cont);
     }
     else {
-        cont->run(parser->get());
+        cont->handleValue(parser->get());
     }
 }
 

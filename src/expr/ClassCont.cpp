@@ -38,12 +38,12 @@ void ClassCont::mark() const
     }
 }
 
-void ClassCont::run(ScamValue expr)
+void ClassCont::handleValue(ScamValue expr)
 {
-    Continuation::run(expr);
+    Continuation::handleValue(expr);
 
     if ( isError(expr) ) {
-        cont->run(expr);
+        cont->handleValue(expr);
     }
     else {
         InstanceVec instances;
@@ -51,7 +51,7 @@ void ClassCont::run(ScamValue expr)
 
         result = build(cls, instances);
         if ( isError(result) ) {
-            cont->run(result);
+            cont->handleValue(result);
         }
         else {
             ScamValue instance = connect(instances);

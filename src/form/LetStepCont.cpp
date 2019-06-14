@@ -61,10 +61,12 @@ void LetStepCont::mark() const
     }
 }
 
-void LetStepCont::run(ScamValue expr)
+void LetStepCont::handleValue(ScamValue expr)
 {
+    Continuation::handleValue(expr);
+
     if ( isError(expr) ) {
-        cont->run(expr);
+        cont->handleValue(expr);
     }
     else {
         ScamValue extend = append(evaled, expr);

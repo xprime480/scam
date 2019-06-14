@@ -41,12 +41,12 @@ void InstanceCont::mark() const
     }
 }
 
-void InstanceCont::run(ScamValue expr)
+void InstanceCont::handleValue(ScamValue expr)
 {
-    Continuation::run(expr);
+    Continuation::handleValue(expr);
 
     if ( isError(expr) ) {
-        cont->run(expr);
+        cont->handleValue(expr);
         return;
     }
 
@@ -77,6 +77,6 @@ ScamValue InstanceCont::function_not_found() const
 {
     ScamValue err =
         makeErrorExtended("Instance method ", writeValue(name), " not found");
-    cont->run(err);
+    cont->handleValue(err);
     return makeNull();
 }

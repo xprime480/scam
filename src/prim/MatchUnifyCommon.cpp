@@ -35,7 +35,7 @@ void MatchUnifyCommon::solve()
         result = resolve(result);
     }
 
-    cont->run(result);
+    cont->handleValue(result);
 }
 
 ScamValue

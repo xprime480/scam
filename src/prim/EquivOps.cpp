@@ -44,10 +44,10 @@ void scam::applyEqP(ScamValue args,
         else {
             rv = doEqv(obj1, obj2);
         }
-        cont->run(makeBoolean(rv));
+        cont->handleValue(makeBoolean(rv));
     }
     catch ( int ) {
-        cont->run(makeError("eq? not implemented for this type"));
+        cont->handleValue(makeError("eq? not implemented for this type"));
         return;
     }
 }
@@ -64,10 +64,10 @@ void scam::applyEqvP(ScamValue args,
 
     try {
         bool rv = doEqv(obj1, obj2);
-        cont->run(makeBoolean(rv));
+        cont->handleValue(makeBoolean(rv));
     }
     catch ( int ) {
-        cont->run(makeError("eqv? not implemented for this type"));
+        cont->handleValue(makeError("eqv? not implemented for this type"));
         return;
     }
 }
@@ -84,10 +84,10 @@ void scam::applyEqualP(ScamValue args,
 
     try {
         bool rv = doEqual(obj1, obj2);
-        cont->run(makeBoolean(rv));
+        cont->handleValue(makeBoolean(rv));
     }
     catch ( int ) {
-        cont->run(makeError("equal? not implemented for this type"));
+        cont->handleValue(makeError("equal? not implemented for this type"));
         return;
     }
 }

@@ -26,15 +26,15 @@ void NotCont::mark() const
   }
 }
 
-void NotCont::run(ScamValue expr)
+void NotCont::handleValue(ScamValue expr)
 {
-    Continuation::run(expr);
+    Continuation::handleValue(expr);
 
     if ( isError(expr) ) {
-        cont->run(expr);
+        cont->handleValue(expr);
     }
     else {
         ScamValue rv = makeBoolean(! truth(expr));
-        cont->run(rv);
+        cont->handleValue(rv);
     }
 }

@@ -73,7 +73,7 @@ void Backtracker::safeRun(Backtracker * bt, Continuation * cont)
         bt->run();
     }
     else {
-        cont->run(nomore);
+        cont->handleValue(nomore);
     }
 }
 
@@ -97,7 +97,7 @@ Backtracker * Backtracker::getParent() const
 void Backtracker::runParent(Continuation * cont) const
 {
     if ( ! parent ) {
-        cont->run(nomore);
+        cont->handleValue(nomore);
     }
     else {
         parent->run();

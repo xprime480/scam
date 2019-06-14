@@ -90,6 +90,6 @@ void LetEvalWorker::run()
                                                   env,
                                                   engine,
                                                   rebind);
-        ch->run(evaled);
+        ch->handleValue(evaled);
     }
 }

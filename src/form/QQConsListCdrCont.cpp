@@ -39,11 +39,12 @@ void QQConsListCdrCont::mark() const
     }
 }
 
-void QQConsListCdrCont::run(ScamValue expr)
+void QQConsListCdrCont::handleValue(ScamValue expr)
 {
-    Continuation::run(expr);
+    Continuation::handleValue(expr);
+
     if ( isError(expr) ) {
-        cont->run(expr);
+        cont->handleValue(expr);
     }
     else {
         handle(expr);
@@ -54,7 +55,7 @@ void QQConsListCdrCont::handle(ScamValue expr)
 {
     if ( ! check_splice(expr) ) {
         ScamValue rv = makePair(car, expr);
-        cont->run(rv);
+        cont->handleValue(rv);
     }
 }
 
@@ -83,6 +84,6 @@ void QQConsListCdrCont::do_splice(ScamValue expr)
         f = makePair(form, f);
     }
 
-    cont->run(f);
+    cont->handleValue(f);
 }
 

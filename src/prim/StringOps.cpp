@@ -72,7 +72,7 @@ void scam::applyString(ScamValue args,
     }
 
     string newText(buffer);
-    cont->run(makeString(newText));
+    cont->handleValue(makeString(newText));
 
     delete[] buffer;
 }
@@ -95,7 +95,7 @@ void scam::applyMakeString(ScamValue args,
 
     string newText(count, c);
     ScamValue newValue = makeString(newText);
-    cont->run(newValue);
+    cont->handleValue(newValue);
 }
 
 void scam::applyStringLength(ScamValue args,
@@ -113,7 +113,7 @@ void scam::applyStringLength(ScamValue args,
         return;
     }
 
-    cont->run(makeInteger(value.size(), true));
+    cont->handleValue(makeInteger(value.size(), true));
 }
 
 void scam::applyStringRef(ScamValue args,
@@ -136,7 +136,7 @@ void scam::applyStringRef(ScamValue args,
     }
 
     const char c     = str.at(idx);
-    cont->run(makeCharacter(c));
+    cont->handleValue(makeCharacter(c));
 }
 
 void scam::applyStringSetX(ScamValue args,
@@ -171,7 +171,7 @@ void scam::applyStringSetX(ScamValue args,
     buffer[idx] = c;
 
     STRVAL(original) = string(buffer);
-    cont->run(original);
+    cont->handleValue(original);
 
     delete[] buffer;
 }
@@ -292,7 +292,7 @@ void scam::applyStringAppend(ScamValue args,
         s << asString(nthcar(strs, idx));
     }
 
-    cont->run(makeString(s.str()));
+    cont->handleValue(makeString(s.str()));
 }
 
 void scam::applyString2List(ScamValue args,
@@ -330,7 +330,7 @@ void scam::applyString2List(ScamValue args,
         chars.push_back(makeCharacter(c));
     }
 
-    cont->run(makeList(chars));
+    cont->handleValue(makeList(chars));
 }
 
 extern void scam::applyList2String(ScamValue args,
@@ -356,7 +356,7 @@ extern void scam::applyList2String(ScamValue args,
         s << asChar(nthcar(chars, idx));
     }
 
-    cont->run(makeString(s.str()));
+    cont->handleValue(makeString(s.str()));
 }
 
 void scam::applyStringCopy(ScamValue args,
@@ -389,7 +389,7 @@ void scam::applyStringCopy(ScamValue args,
 
     string newStr = start == end ? string("") : str.substr(start, end-start);
 
-    cont->run(makeString(newStr));
+    cont->handleValue(makeString(newStr));
 }
 
 void scam::applyStringCopyX(ScamValue args,
@@ -432,7 +432,7 @@ void scam::applyStringCopyX(ScamValue args,
 
     const unsigned int count = end - start;
     if ( 0 == count ) {
-        cont->run(toValue);
+        cont->handleValue(toValue);
         return;
     }
 
@@ -442,7 +442,7 @@ void scam::applyStringCopyX(ScamValue args,
             makeErrorExtended(name,
                               ": Insufficient room in destination",
                               " to copy source");
-        cont->run(err);
+        cont->handleValue(err);
         return;
     }
 
@@ -457,7 +457,7 @@ void scam::applyStringCopyX(ScamValue args,
     STRVAL(toValue) = string(buffer);
     delete[] buffer;
 
-    cont->run(toValue);
+    cont->handleValue(toValue);
 }
 
 void scam::applyStringFillX(ScamValue args,
@@ -495,7 +495,7 @@ void scam::applyStringFillX(ScamValue args,
     }
 
     if ( start == end ) {
-        cont->run(strValue);
+        cont->handleValue(strValue);
         return;
     }
 
@@ -510,7 +510,7 @@ void scam::applyStringFillX(ScamValue args,
     STRVAL(strValue) = string(buffer);
     delete[] buffer;
 
-    cont->run(strValue);
+    cont->handleValue(strValue);
 }
 
 namespace
@@ -565,7 +565,7 @@ namespace
             prev = curr;
         }
 
-        cont->run(makeBoolean(rv));
+        cont->handleValue(makeBoolean(rv));
     }
 
     void transformString(ScamValue args,
@@ -585,6 +585,6 @@ namespace
         }
 
         string newText = transformer(text);
-        cont->run(makeString(newText));
+        cont->handleValue(makeString(newText));
     }
 }

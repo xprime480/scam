@@ -36,10 +36,12 @@ void IncludeCont::mark() const
     }
 }
 
-void IncludeCont::run(ScamValue expr)
+void IncludeCont::handleValue(ScamValue expr)
 {
+    Continuation::handleValue(expr);
+
     if ( isError(expr) ) {
-        cont->run(expr);
+        cont->handleValue(expr);
         return;
     }
 

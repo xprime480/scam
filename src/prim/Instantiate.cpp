@@ -27,5 +27,5 @@ void scam::applyInstantiate(ScamValue args,
 
     Instantiator inst(counter);
     ScamValue rv = inst.exec(parser);
-    cont->run(rv);
+    cont->handleValue(rv);
 }

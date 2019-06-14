@@ -26,6 +26,6 @@ void scam::applyVLen(ScamValue args,
     else {
         size_t len = length(parser->get());
         ScamValue val = makeInteger(len, true);
-        cont->run(val);
+        cont->handleValue(val);
     }
 }

@@ -35,13 +35,13 @@ namespace scam
             }
         }
 
-        void run(ScamValue expr) override
+        void handleValue(ScamValue expr) override
         {
 #if 0
             std::cerr << "Extractor " << id()
                       << " getting " << writeValue(expr) << "\n";
 #endif
-            Continuation::run(expr);
+            Continuation::handleValue(expr);
             e = expr;
         }
 

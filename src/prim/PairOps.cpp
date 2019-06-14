@@ -30,7 +30,7 @@ void scam::applyCar(ScamValue args,
     ScamValue obj = carCdrCommon(args, cont, "car");
     if ( ! isNothing(obj) ) {
         ScamValue car = getCar(obj);
-        cont->run(car);
+        cont->handleValue(car);
     }
 }
 
@@ -41,7 +41,7 @@ void scam::applyCdr(ScamValue args,
     ScamValue obj = carCdrCommon(args, cont, "cdr");
     if ( ! isNothing(obj) ) {
         ScamValue car = getCdr(obj);
-        cont->run(car);
+        cont->handleValue(car);
     }
 }
 
@@ -57,7 +57,7 @@ void scam::applyCons(ScamValue args,
     }
 
     ScamValue pair = makePair(obj1, obj2);
-    cont->run(pair);
+    cont->handleValue(pair);
 }
 
 void scam::applySetCarX(ScamValue args,
@@ -69,7 +69,7 @@ void scam::applySetCarX(ScamValue args,
     ScamValue pair, obj;
     if ( setCarCdrCommon(args, cont, name, pair, obj) ) {
         CAR(pair) = obj;
-        cont->run(makeNothing());
+        cont->handleValue(makeNothing());
     }
 }
 
@@ -82,7 +82,7 @@ void scam::applySetCdrX(ScamValue args,
     ScamValue pair, obj;
     if ( setCarCdrCommon(args, cont, name, pair, obj) ) {
         CDR(pair) = obj;
-        cont->run(makeNothing());
+        cont->handleValue(makeNothing());
     }
 }
 

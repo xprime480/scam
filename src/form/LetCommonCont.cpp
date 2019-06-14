@@ -28,12 +28,12 @@ void LetCommonCont::mark() const
     }
 }
 
-void LetCommonCont::run(ScamValue expr)
+void LetCommonCont::handleValue(ScamValue expr)
 {
-    Continuation::run(expr);
+    Continuation::handleValue(expr);
 
     if ( isError(expr) ) {
-        cont->run(expr);
+        cont->handleValue(expr);
     }
     else {
         do_let(expr);

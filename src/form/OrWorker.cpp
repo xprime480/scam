@@ -51,7 +51,7 @@ void OrWorker::run()
     size_t const len = parser->size();
     if ( 0 == len ) {
         ScamValue rv = makeBoolean(false);
-        cont->run(rv);
+        cont->handleValue(rv);
     }
     else if ( n == (len - 1) ) {
         eval(parser->get(len-1), cont, env, engine);

@@ -30,7 +30,7 @@ namespace
 
         void setCont(Continuation * c);
 
-        void run(ScamValue expr) override;
+        void handleValue(ScamValue expr) override;
 
         ScamValue get(size_t which = 1) const;
         size_t current() const;
@@ -281,11 +281,11 @@ namespace
         cont = c;
     }
 
-    void HistoryCont::run(ScamValue expr)
+    void HistoryCont::handleValue(ScamValue expr)
     {
-        Continuation::run(expr);
+        Continuation::handleValue(expr);
 
-        cont->run(expr);
+        cont->handleValue(expr);
 
         history.push_back(expr);
         ++serial;

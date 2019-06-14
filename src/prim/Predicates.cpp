@@ -29,7 +29,7 @@ using namespace std;
             }                                                   \
             bool answer = pred(arg);                            \
             ScamValue rv = makeBoolean(answer);                 \
-            cont->run(rv);                                      \
+            cont->handleValue(rv);                              \
         }
 
 DEFINE_PREDICATE(NullP, "null?", isNull)

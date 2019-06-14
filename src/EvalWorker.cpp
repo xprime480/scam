@@ -37,15 +37,17 @@ namespace
             }
         }
 
-        void run(ScamValue expr) override
+        void handleValue(ScamValue expr) override
         {
+            Continuation::handleValue(expr);
+
             if ( isList(expr) && ! isNull(expr) ) {
                 unsigned len = length(expr);
                 ScamValue last = nthcar(expr, len - 1);
-                cont->run(last);
+                cont->handleValue(last);
             }
             else {
-                cont->run(expr);
+                cont->handleValue(expr);
             }
         }
 

@@ -25,7 +25,7 @@ void scam::applyBacktrack(ScamValue args,
     if ( ! backtracker ) {
         static const string msg = "No current backtrack context";
         static ScamValue rv = makeError(msg, false);
-        cont->run(rv);
+        cont->handleValue(rv);
     }
     else {
         backtracker->run();

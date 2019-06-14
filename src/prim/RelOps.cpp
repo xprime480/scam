@@ -114,7 +114,7 @@ namespace
         }                                                        \
         else {                                                   \
             ScamValue rv = compareAlgorithm(parser, context, Impl);  \
-            cont->run(rv);                                       \
+            cont->handleValue(rv);                               \
         }                                                        \
     }
 

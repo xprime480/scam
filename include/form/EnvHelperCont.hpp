@@ -18,7 +18,7 @@ namespace scam
 
         void mark() const override;
 
-        void run(ScamValue expr) override;
+        void handleValue(ScamValue expr) override;
 
     protected:
         ScamValue     sym;
