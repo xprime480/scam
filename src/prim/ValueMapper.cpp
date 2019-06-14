@@ -21,7 +21,7 @@ ScamValue ValueMapper::map_dict(ScamValue expr)
     for ( auto key : keys ) {
         ScamValue val = dictGet(dict, key);
         ScamValue newVal = map_value(val);
-        if ( error(newVal) ) {
+        if ( isError(newVal) ) {
             return newVal;
         }
         dictPut(rv, key, newVal);

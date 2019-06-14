@@ -24,7 +24,7 @@ bool scam::isAnything(ScamValue data)
     return ! isNothing(data);
 }
 
-bool scam::error(ScamValue data)
+bool scam::isError(ScamValue data)
 {
     return data->type == ScamData::Error;
 }

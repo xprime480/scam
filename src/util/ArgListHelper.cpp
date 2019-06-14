@@ -378,12 +378,12 @@ ScamValue scam::numericAlgorithm(NumericListParser * parser,
     vector<ExtendedNumeric> ns;
 
     ScamValue state = argsToType(parser, ns, context);
-    if ( error(state) ) {
+    if ( isError(state) ) {
         return state;
     }
 
     ExtendedNumeric total = algo(ns, state);
-    if ( error(state) ) {
+    if ( isError(state) ) {
         return state;
     }
 

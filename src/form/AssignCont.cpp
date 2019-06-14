@@ -28,7 +28,7 @@ AssignCont * AssignCont::makeInstance(ScamValue sym,
 
 void AssignCont::finish(ScamValue expr) const
 {
-    if ( error(expr) && expr->hasMeta("amb-error") ) {
+    if ( isError(expr) && expr->hasMeta("amb-error") ) {
         return;
     }
 

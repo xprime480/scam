@@ -37,7 +37,7 @@ void PrimWorkerData::mapEval(ScamEngine * engine) const
 
 void PrimWorkerData::handleResult(ScamValue expr)
 {
-    if ( error(expr) ) {
+    if ( isError(expr) ) {
         original->run(expr);
     }
     else {

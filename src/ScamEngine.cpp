@@ -220,7 +220,7 @@ ScamValue ScamEngine::handleError(ScamValue err)
         rv = handlers.back()->handleError(err);
     }
 
-    if ( error(rv) ) {
+    if ( isError(rv) ) {
         reset(false);
         exit(1);                // unhandled errors kill the system
     }

@@ -42,7 +42,7 @@ void ApplyOpCont::run(ScamValue expr)
 {
     Continuation::run(expr);
 
-    if ( error(expr) ) {
+    if ( isError(expr) ) {
         cont->run(expr);
     }
     else {

@@ -105,13 +105,13 @@ ScamValue scam::nthcar(ScamValue value, size_t n)
 
     if ( isByteVector(value) ) {
         rv = checkLength(value, n);
-        if ( ! error(rv) ) {
+        if ( ! isError(rv) ) {
             rv = makeInteger(BYTEVECTOR(value)[n], true);
         }
     }
     else if ( isPair(value) ) {
         rv = checkLength(value, n);
-        if ( ! error(rv) ) {
+        if ( ! isError(rv) ) {
             ScamValue cdr = CDR(value);
 
             if ( 0 == n ) {
@@ -127,7 +127,7 @@ ScamValue scam::nthcar(ScamValue value, size_t n)
     }
     else if ( isVector(value) ) {
         rv = checkLength(value, n);
-        if ( ! error(rv) ) {
+        if ( ! isError(rv) ) {
             rv = VECTOR(value)[n];
         }
     }

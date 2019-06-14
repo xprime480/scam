@@ -42,7 +42,7 @@ void ClassCont::run(ScamValue expr)
 {
     Continuation::run(expr);
 
-    if ( error(expr) ) {
+    if ( isError(expr) ) {
         cont->run(expr);
     }
     else {
@@ -50,7 +50,7 @@ void ClassCont::run(ScamValue expr)
         ScamValue  result;
 
         result = build(cls, instances);
-        if ( error(result) ) {
+        if ( isError(result) ) {
             cont->run(result);
         }
         else {
@@ -75,7 +75,7 @@ ScamValue ClassCont::build(ScamValue cls, InstanceVec & instances) const
         cls = temp;
     }
 
-    if ( error(temp) ) {
+    if ( isError(temp) ) {
         return temp;
     }
 

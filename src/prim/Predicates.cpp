@@ -33,7 +33,7 @@ using namespace std;
         }
 
 DEFINE_PREDICATE(NullP, "null?", isNull)
-DEFINE_PREDICATE(ErrorP, "error?", error)
+DEFINE_PREDICATE(ErrorP, "error?", isError)
 DEFINE_PREDICATE(PairP, "pair?", isPair)
 DEFINE_PREDICATE(ListP, "list?", isList)
 DEFINE_PREDICATE(VectorP, "vector?", isVector)

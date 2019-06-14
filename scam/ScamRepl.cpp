@@ -54,7 +54,7 @@ bool ScamRepl::load_prelude()
     ScamValue expr = parser.parseExpr();
     tokenizer.flush();
 
-    if ( isNothing(expr) || error(expr) ) {
+    if ( isNothing(expr) || isError(expr) ) {
         cerr << "Unable to read the prelude\n";
 
         if ( isNothing(expr) ) {
@@ -93,11 +93,11 @@ ScamValue ScamRepl::read()
         else {
             ScamValue form = parser.parseExpr();
 
-            if ( ! isNothing(form) && ! error(form) ) {
+            if ( ! isNothing(form) && ! isError(form) ) {
                 tokenizer.flush();
                 return form;
             }
-            if ( error(form) && ! form->hasMeta("partial") ) {
+            if ( isError(form) && ! form->hasMeta("partial") ) {
                 form = engine.handleError(form);
                 tokenizer.flush();
                 return form;
@@ -133,7 +133,7 @@ ScamValue ScamRepl::eval(ScamValue form)
         rv = makeErrorExtended("Caught exception: ", e.getMessage());
     }
 
-    if ( error(rv) ) {
+    if ( isError(rv) ) {
         rv = engine.handleError(rv);
     }
 

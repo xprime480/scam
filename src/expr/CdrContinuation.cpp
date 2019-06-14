@@ -31,7 +31,7 @@ void CdrContinuation::run(ScamValue expr)
 {
     Continuation::run(expr);
 
-    if ( error(expr) ) {
+    if ( isError(expr) ) {
         data.original->run(expr);
     }
     else {

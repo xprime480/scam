@@ -63,7 +63,7 @@ void LetStepCont::mark() const
 
 void LetStepCont::run(ScamValue expr)
 {
-    if ( error(expr) ) {
+    if ( isError(expr) ) {
         cont->run(expr);
     }
     else {

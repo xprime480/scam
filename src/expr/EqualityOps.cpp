@@ -50,7 +50,7 @@ bool scam::equals(ScamValue lhs, ScamValue rhs)
         rv = equalsDict(lhs, rhs);
     }
 
-    else if ( error(lhs) ) {
+    else if ( isError(lhs) ) {
         rv = (STRVAL(lhs) == STRVAL(rhs));
     }
 

@@ -155,12 +155,12 @@ ScamValue ScamParser::parseList() const
     }
 
     ScamValue car = tokenToExpr(token);
-    if ( error(car) ) {
+    if ( isError(car) ) {
         return car;
     }
 
     ScamValue cdr = parseList();
-    if ( error(cdr) ) {
+    if ( isError(cdr) ) {
         return cdr;
     }
 
@@ -233,7 +233,7 @@ ScamValue ScamParser::parseVector() const
         }
 
         ScamValue expr = tokenToExpr(token);
-        if ( error(expr) ) {
+        if ( isError(expr) ) {
             return expr;
         }
 
@@ -264,7 +264,7 @@ ScamValue ScamParser::parseByteVector() const
         }
 
         ScamValue expr = tokenToExpr(token);
-        if ( error(expr) ) {
+        if ( isError(expr) ) {
             return expr;
         }
 
@@ -304,7 +304,7 @@ ScamValue ScamParser::parseDict() const
         }
 
         ScamValue expr = tokenToExpr(token);
-        if ( error(expr) ) {
+        if ( isError(expr) ) {
             return expr;
         }
 
@@ -335,7 +335,7 @@ ScamValue ScamParser::expand_reader_macro(std::string const & text) const
     if ( isNothing(expr) ) {
         return makeErrorExtended("Unterminated macro: ", name);
     }
-    if ( error(expr) ) {
+    if ( isError(expr) ) {
         return makeErrorExtended("Error getting form for ",
                                  name,
                                  " macro",

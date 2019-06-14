@@ -215,7 +215,7 @@ void TestBase::checkPredicates(ScamValue expr, unsigned exp)
     unsigned act { 0 };
 
     act |= (isNothing(expr) ? SELECT_NULL : 0);
-    act |= (error(expr) ? SELECT_ERROR : 0);
+    act |= (isError(expr) ? SELECT_ERROR : 0);
     act |= (truth(expr) ? SELECT_TRUTH : 0);
 
     act |= (isBoolean(expr) ? SELECT_BOOLEAN : 0);
@@ -278,7 +278,7 @@ void TestBase::expectError(ScamValue expr,
                            string const msg,
                            bool managed)
 {
-    assertType(expr, "error", error);
+    assertType(expr, "error", isError);
     auto pred = SELECT_TRUTH | SELECT_ERROR;
     pred |= (managed ? SELECT_MANAGED : 0x0);
     checkPredicates(expr, pred);

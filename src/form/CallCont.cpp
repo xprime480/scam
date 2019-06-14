@@ -35,7 +35,7 @@ void CallCont::mark() const
 
 void CallCont::run(ScamValue expr)
 {
-    if ( error(expr) ) {
+    if ( isError(expr) ) {
         cont->run(expr);
         return;
     }

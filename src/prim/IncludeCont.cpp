@@ -38,7 +38,7 @@ void IncludeCont::mark() const
 
 void IncludeCont::run(ScamValue expr)
 {
-    if ( error(expr) ) {
+    if ( isError(expr) ) {
         cont->run(expr);
         return;
     }
