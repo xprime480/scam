@@ -2,6 +2,7 @@
 
 #include "Continuation.hpp"
 #include "EvalWorker.hpp"
+#include "ScamEngine.hpp"
 #include "WorkQueue.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/TypePredicates.hpp"
@@ -33,7 +34,7 @@ void LetCommonCont::handleValue(ScamValue expr)
     Continuation::handleValue(expr);
 
     if ( isError(expr) ) {
-        cont->handleValue(expr);
+        engine->handleError(expr);
     }
     else {
         do_let(expr);

@@ -2,6 +2,7 @@
 
 #include "Continuation.hpp"
 #include "Env.hpp"
+#include "ScamEngine.hpp"
 #include "WorkQueue.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/TypePredicates.hpp"
@@ -45,7 +46,7 @@ void QQConsListCarCont::handleValue(ScamValue expr)
 {
     Continuation::handleValue(expr);
     if ( isError(expr) ) {
-        cont->handleValue(expr);
+        engine->handleError(expr);
     }
     else {
         Continuation * h =

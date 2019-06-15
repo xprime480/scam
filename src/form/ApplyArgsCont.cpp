@@ -1,6 +1,7 @@
 #include "form/ApplyArgsCont.hpp"
 
 #include "Env.hpp"
+#include "ScamEngine.hpp"
 #include "expr/EvalOps.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/TypePredicates.hpp"
@@ -42,7 +43,7 @@ void ApplyArgsCont::handleValue(ScamValue expr)
     Continuation::handleValue(expr);
 
     if ( isError(expr) ) {
-        cont->handleValue(expr);
+        engine->handleError(expr);
     }
     else {
         apply(op, expr, cont, env, engine);

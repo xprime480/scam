@@ -1,6 +1,7 @@
 #include "form/LetStepCont.hpp"
 
 #include "Env.hpp"
+#include "ScamEngine.hpp"
 #include "WorkQueue.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/SequenceOps.hpp"
@@ -66,7 +67,7 @@ void LetStepCont::handleValue(ScamValue expr)
     Continuation::handleValue(expr);
 
     if ( isError(expr) ) {
-        cont->handleValue(expr);
+        engine->handleError(expr);
     }
     else {
         ScamValue extend = append(evaled, expr);

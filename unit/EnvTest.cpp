@@ -32,6 +32,7 @@ protected:
     void reset(bool init)
     {
         engine.reset(init);
+        engine.pushHandler(handler);
 
         key = makeSymbol("key");
         exp = makeInteger(1, true);

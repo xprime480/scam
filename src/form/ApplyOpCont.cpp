@@ -1,6 +1,7 @@
 #include "form/ApplyOpCont.hpp"
 
 #include "Env.hpp"
+#include "ScamEngine.hpp"
 #include "WorkQueue.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/TypePredicates.hpp"
@@ -43,7 +44,7 @@ void ApplyOpCont::handleValue(ScamValue expr)
     Continuation::handleValue(expr);
 
     if ( isError(expr) ) {
-        cont->handleValue(expr);
+        engine->handleError(expr);
     }
     else {
         workQueueHelper<ApplyArgsWorker>(expr, args, cont, env, engine);

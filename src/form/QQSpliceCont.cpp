@@ -1,5 +1,6 @@
 #include "form/QQSpliceCont.hpp"
 
+#include "ScamEngine.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueFactory.hpp"
@@ -33,7 +34,7 @@ void QQSpliceCont::handleValue(ScamValue expr)
     Continuation::handleValue(expr);
 
     if ( isError(expr) ) {
-        cont->handleValue(expr);
+        engine->handleError(expr);
     }
     else {
         ScamValue internal = makePair(spliceTag, expr);

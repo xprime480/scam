@@ -19,7 +19,7 @@ ReadEval::~ReadEval()
 
 ScamValue ReadEval::run()
 {
-    return engine->parseCurrentInput();
+    return engine->readEvalCurrent();
 }
 
 ScamValue ReadEval::read()

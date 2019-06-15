@@ -2,6 +2,7 @@
 
 #include "Continuation.hpp"
 #include "Env.hpp"
+#include "ScamEngine.hpp"
 #include "ScamException.hpp"
 #include "WorkQueue.hpp"
 #include "expr/ClassWorker.hpp"
@@ -36,25 +37,23 @@ void scam::eval(ScamValue value,
     }
 
     else if ( isSymbol(value) ) {
-        ScamValue evaluated;
-
         if ( env->check(value) ) {
-            evaluated = env->get(value);
+            ScamValue evaluated = env->get(value);
+            cont->handleValue(evaluated);
         }
         else {
-            evaluated = makeErrorExtended("Symbol ",
-                                          STRVAL(value),
-                                          " does not exist",
-                                          " in the current environment");
+            ScamValue err = makeErrorExtended("Symbol ",
+                                              writeValue(value),
+                                              " does not exist",
+                                              " in the current environment");
+            engine->handleError(err);
         }
-
-        cont->handleValue(evaluated);
     }
 
     else if ( isNothing(value) ) {
         static const string msg{ "The null type cannot be evaluated." };
-        static ScamValue expr = makeError(msg, false);
-        cont->handleValue(expr);
+        static ScamValue err = makeError(msg, false);
+        engine->handleError(err);
     }
 
     else {

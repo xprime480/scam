@@ -4,6 +4,7 @@
 #include "Continuation.hpp"
 #include "Env.hpp"
 #include "EvalWorker.hpp"
+#include "ScamEngine.hpp"
 #include "WorkQueue.hpp"
 #include "expr/MacroEvalCont.hpp"
 #include "expr/ScamData.hpp"
@@ -55,7 +56,7 @@ void ClosureBindCont::handleValue(ScamValue expr)
     Continuation::handleValue(expr);
 
     if ( isError(expr) ) {
-        cont->handleValue(expr);
+        engine->handleError(expr);
     }
     else if ( malformedActuals(expr) ) {
         /* do nothing */
@@ -73,7 +74,7 @@ bool ClosureBindCont::malformedActuals(ScamValue expr) const
 
     ScamValue err =
         makeErrorExtended( "Expected a paramter list, got: ", writeValue(expr));
-    cont->handleValue(err);
+    engine->handleError(err);
 
     return true;
 }

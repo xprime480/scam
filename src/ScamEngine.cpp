@@ -130,7 +130,7 @@ void ScamEngine::setCont(Continuation * c)
     }
 }
 
-ScamValue ScamEngine::parseCurrentInput()
+ScamValue ScamEngine::readEvalCurrent()
 {
     HistoryCont const * hc = dynamic_cast<HistoryCont const *>(cont);
     size_t const mark = hc ? hc->current() : 0;

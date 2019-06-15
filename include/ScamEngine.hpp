@@ -44,7 +44,7 @@ namespace scam
 
         /*** functions to read, eval, and apply ***/
 
-        ScamValue parseCurrentInput();
+        ScamValue readEvalCurrent();
         ScamValue read();
         ScamValue eval(ScamValue expr);
         ScamValue apply(ScamValue expr, ScamValue args);

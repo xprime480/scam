@@ -1,6 +1,7 @@
 #include "expr/ClassCont.hpp"
 
 #include "Env.hpp"
+#include "ScamEngine.hpp"
 #include "WorkQueue.hpp"
 #include "expr/ClassInitWorker.hpp"
 #include "expr/ClassOps.hpp"
@@ -43,7 +44,7 @@ void ClassCont::handleValue(ScamValue expr)
     Continuation::handleValue(expr);
 
     if ( isError(expr) ) {
-        cont->handleValue(expr);
+        engine->handleError(expr);
     }
     else {
         InstanceVec instances;
@@ -51,7 +52,7 @@ void ClassCont::handleValue(ScamValue expr)
 
         result = build(cls, instances);
         if ( isError(result) ) {
-            cont->handleValue(result);
+            engine->handleError(result);
         }
         else {
             ScamValue instance = connect(instances);

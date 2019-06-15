@@ -26,5 +26,5 @@ void PrimEvalCont::mark() const
 void PrimEvalCont::handleValue(ScamValue expr)
 {
     Continuation::handleValue(expr);
-    data.handleResult(expr);
+    data.handleResult(expr, engine);
 }

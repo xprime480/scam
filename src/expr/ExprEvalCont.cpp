@@ -1,5 +1,6 @@
 #include "expr/ExprEvalCont.hpp"
 
+#include "ScamEngine.hpp"
 #include "expr/EvalOps.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/TypePredicates.hpp"
@@ -32,7 +33,7 @@ void ExprEvalCont::handleValue(ScamValue expr)
     Continuation::handleValue(expr);
 
     if ( isError(expr) ) {
-        data.original->handleValue(expr);
+        engine->handleError(expr);
     }
     else {
         apply(expr, data.cdr, data.original, data.env, engine);

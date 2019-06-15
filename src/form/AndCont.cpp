@@ -1,6 +1,7 @@
 #include "form/AndCont.hpp"
 
 #include "Env.hpp"
+#include "ScamEngine.hpp"
 #include "WorkQueue.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/TypePredicates.hpp"
@@ -47,7 +48,7 @@ void AndCont::handleValue(ScamValue expr)
     Continuation::handleValue(expr);
 
     if ( isError(expr) ) {
-        cont->handleValue(expr);
+        engine->handleError(expr);
     }
     else if ( ! truth(expr) ) {
         cont->handleValue(expr);

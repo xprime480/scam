@@ -2,6 +2,7 @@
 
 #include "Continuation.hpp"
 #include "Env.hpp"
+#include "ScamEngine.hpp"
 #include "expr/EvalOps.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/TypePredicates.hpp"
@@ -35,10 +36,10 @@ void PrimWorkerData::mapEval(ScamEngine * engine) const
     scam::mapEval(args, cont, env, engine);
 }
 
-void PrimWorkerData::handleResult(ScamValue expr)
+void PrimWorkerData::handleResult(ScamValue expr, ScamEngine * engine)
 {
     if ( isError(expr) ) {
-        original->handleValue(expr);
+        engine->handleError(expr);
     }
     else {
         PRIMFUNC(caller)(expr, original, PRIMENGINE(caller));

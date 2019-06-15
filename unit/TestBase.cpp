@@ -86,7 +86,11 @@ void TestBase::TearDown()
 
 ScamValue TestBase::evaluate(ScamValue input)
 {
-    return engine.eval(input);
+    ScamValue rv = engine.eval(input);
+    if ( isNothing(rv) ) {
+        rv = extractor->getLastValue();
+    }
+    return rv;
 }
 
 ScamValue TestBase::apply(ScamValue expr, ScamValue args)
