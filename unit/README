@@ -1,0 +1,4 @@
+The tests in this directory should test the internals of the
+implementation.  Tests that run scheme code should be migrated to the
+integration directory.
+

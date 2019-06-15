@@ -4,6 +4,7 @@
 #include "Continuation.hpp"
 
 #include "ScamFwd.hpp"
+#include "expr/TypePredicates.hpp"
 #include "expr/ValueWriter.hpp"
 
 #include <sstream>
@@ -28,6 +29,9 @@ namespace scam
         void handleValue(ScamValue expr) override
         {
             Continuation::handleValue(expr);
+            if ( isNothing(expr) ) {
+                return;
+            }
             s << writeValue(expr) << "\n";
         }
 

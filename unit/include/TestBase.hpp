@@ -5,6 +5,8 @@
 #include "ScamEngine.hpp"
 #include "expr/ScamToInternal.hpp"
 
+#include "TestHandler.hpp"
+
 #include <functional>
 #include <memory>
 #include <string>
@@ -28,11 +30,10 @@ namespace scam
         Extractor * extractor;
         ScamEngine engine;
         MemoryManager & mm;
+        TestHandler * handler;
 
         ScamValue evaluate(ScamValue input);
         ScamValue apply(ScamValue expr, ScamValue args);
-        ScamValue parseAndEvaluate(std::string const & input);
-        ScamValue parseAndEvaluateFile(char const * filename);
         ScamValue readEval(std::string const & input);
         ScamValue readEvalFile(char const * filename);
         ScamValue readString(char const * input);

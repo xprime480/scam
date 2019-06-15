@@ -13,7 +13,7 @@ protected:
     {
         char buf[256];
         sprintf(buf, fmt, GetParam());
-        return parseAndEvaluate(buf);
+        return readEval(buf);
     }
 };
 
@@ -43,12 +43,12 @@ TEST_P(LetTest, LetSeveralForms)
 
 TEST_P(LetTest, LetCreatesNewEnv)
 {
-    parseAndEvaluate("(define x 2)");
-    parseAndEvaluate("(define y 0)");
+    readEval("(define x 2)");
+    readEval("(define y 0)");
     ScamValue expr = runTest("(%s ((y 1.0)) (/ x y))");
     expectInteger(expr, 2, "2", false);
 
-    expr = parseAndEvaluate("y");
+    expr = readEval("y");
     expectInteger(expr, 0, "0", true);
 }
 
@@ -84,8 +84,8 @@ TEST_P(LetTest, LetBadBindings4)
 
 TEST_P(LetTest, LetDependentForms)
 {
-    parseAndEvaluate("(define x 2)");
-    parseAndEvaluate("(define y 0)");
+    readEval("(define x 2)");
+    readEval("(define y 0)");
     ScamValue expr = runTest("(%s ((x 1) (y x)) y)");
 
     if ( 0 == strcmp("let*", GetParam()) ) {

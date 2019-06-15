@@ -2,6 +2,7 @@
 
 #include "Accumulator.hpp"
 #include "Extractor.hpp"
+#include "TestHandler.hpp"
 #include "ScamEngine.hpp"
 #include "input/StringTokenizer.hpp"
 #include "util/ReadEvalString.hpp"
@@ -47,10 +48,15 @@ string call_scam(string const & input)
     Accumulator * accumulator =
         standardMemoryManager.make<Accumulator>(&engine);
     engine.setCont(accumulator);
+
+    TestHandler handler(accumulator);
+    engine.pushHandler(&handler);
+
     ReadEvalString helper(&engine, input);
     helper.run();
 
-    string rv = accumulator->getResult();
+    engine.popHandler();
 
+    string rv = accumulator->getResult();
     return rv;
 }

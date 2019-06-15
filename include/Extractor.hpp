@@ -5,6 +5,7 @@
 
 #include "expr/ScamData.hpp"
 #include "expr/ValueFactory.hpp"
+#include "expr/TypePredicates.hpp"
 
 #include <iostream>
 #include <memory>
@@ -17,7 +18,7 @@ namespace scam
         friend class MemoryManager;
         Extractor(ScamEngine * engine)
             : Continuation("Extractor", engine)
-            , e(makeNothing())
+            , lastValue(makeNothing())
         {
         }
 
@@ -31,7 +32,7 @@ namespace scam
         {
             if ( ! isMarked() ) {
                 Continuation::mark();
-                e->mark();
+                lastValue->mark();
             }
         }
 
@@ -42,16 +43,18 @@ namespace scam
                       << " getting " << writeValue(expr) << "\n";
 #endif
             Continuation::handleValue(expr);
-            e = expr;
+            if ( ! isNothing(expr) ) {
+                lastValue = expr;
+            }
         }
 
-        ScamValue getExpr() const
+        ScamValue getLastValue() const
         {
-            return e;
+            return lastValue;
         }
 
     private:
-        ScamValue e;
+        ScamValue lastValue;
     };
 }
 

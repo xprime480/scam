@@ -61,6 +61,8 @@ TestBase::TestBase(bool loadPrelude)
     engine.reset(true);
     extractor = mm.make<Extractor>(&engine);
     engine.setCont(extractor);
+    handler = new TestHandler(extractor);
+    engine.pushHandler(handler);
     if ( loadPrelude ) {
         ScamValue result = readEvalFile("lib/prelude.scm");
         expectInteger(result, 1, "1", true);
@@ -69,6 +71,8 @@ TestBase::TestBase(bool loadPrelude)
 
 TestBase::~TestBase()
 {
+    engine.popHandler();
+    delete handler;
 }
 
 void TestBase::SetUp()
@@ -88,16 +92,6 @@ ScamValue TestBase::evaluate(ScamValue input)
 ScamValue TestBase::apply(ScamValue expr, ScamValue args)
 {
     return engine.apply(expr, args);
-}
-
-ScamValue TestBase::parseAndEvaluate(string const & input)
-{
-    return readEval(input);
-}
-
-ScamValue TestBase::parseAndEvaluateFile(char const * filename)
-{
-    return readEvalFile(filename);
 }
 
 ScamValue TestBase::readString(char const * input)
@@ -123,6 +117,9 @@ ScamValue TestBase::readEval(std::string const & input)
         StringCharStream stream(input);
         ReadEvalStream helper(&engine, stream);
         ScamValue rv = helper.run();
+        if ( isNothing(rv) ) {
+            rv = extractor->getLastValue();
+        }
         return rv;
     }
     catch ( ScamException e ) {

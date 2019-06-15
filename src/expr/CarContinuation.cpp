@@ -1,5 +1,6 @@
 #include "expr/CarContinuation.hpp"
 
+#include "ScamEngine.hpp"
 #include "WorkQueue.hpp"
 #include "expr/MapCdr.hpp"
 #include "expr/ScamData.hpp"
@@ -33,7 +34,7 @@ void CarContinuation::handleValue(ScamValue expr)
     Continuation::handleValue(expr);
 
     if ( isError(expr) ) {
-        data.original->handleValue(expr);
+        engine->handleError(expr);
     }
     else {
         ScamValue e = data.cdr;

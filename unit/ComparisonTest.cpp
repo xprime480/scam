@@ -54,10 +54,10 @@ TEST_F(ComparisonTest, EqString)
 
 TEST_F(ComparisonTest, EqBadArgs)
 {
-    ScamValue expr = parseAndEvaluate("(= #t)");
+    ScamValue expr = readEval("(= #t)");
     expectError(expr);
 
-    expr = parseAndEvaluate("(= 3 \"x\")");
+    expr = readEval("(= 3 \"x\")");
     expectError(expr);
 }
 

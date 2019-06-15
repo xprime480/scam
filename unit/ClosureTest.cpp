@@ -61,132 +61,130 @@ TEST_F(ClosureTest, ClosureWithArg)
 
 TEST_F(ClosureTest, LambdaBasic)
 {
-    ScamValue expr = parseAndEvaluate("(lambda () 2)");
+    ScamValue expr = readEval("(lambda () 2)");
     expectProcedure(expr, "(lambda () 2)");
 }
 
 TEST_F(ClosureTest, LambdaEvalConst)
 {
-    ScamValue expr = parseAndEvaluate("((lambda () 2))");
+    ScamValue expr = readEval("((lambda () 2))");
     expectInteger(expr, 2, "2", true);
 }
 
 TEST_F(ClosureTest, LambdaEvalWithArg)
 {
-    ScamValue expr = parseAndEvaluate("((lambda (x) (* x 2)) (+ 1 3))");
+    ScamValue expr = readEval("((lambda (x) (* x 2)) (+ 1 3))");
     expectInteger(expr, 8, "8", true);
 }
 
 TEST_F(ClosureTest, LambdaCaptures)
 {
-    ScamValue expr = parseAndEvaluateFile("scripts/closure/capture.scm");
+    ScamValue expr = readEvalFile("scripts/closure/capture.scm");
     expectInteger(expr, 20, "20", true);
 }
 
 TEST_F(ClosureTest, LambdaFormalsMaskEnv)
 {
-    ScamValue expr = parseAndEvaluateFile("scripts/closure/formalsmask.scm");
+    ScamValue expr = readEvalFile("scripts/closure/formalsmask.scm");
     RationalPair value { 1, 2 };
     expectRational(expr, value, "1/2", false);
 
-    expr = parseAndEvaluate("x");
+    expr = readEval("x");
     expectInteger(expr, 0, "0", false);
 }
 
 TEST_F(ClosureTest, LambdaTooFewActuals)
 {
-    ScamValue expr = parseAndEvaluateFile("scripts/closure/toofew.scm");
+    ScamValue expr = readEvalFile("scripts/closure/toofew.scm");
     expectError(expr);
 }
 
 TEST_F(ClosureTest, LambdaTooManyActuals)
 {
-    ScamValue expr = parseAndEvaluateFile("scripts/closure/toomany.scm");
+    ScamValue expr = readEvalFile("scripts/closure/toomany.scm");
     expectError(expr);
 }
 
 TEST_F(ClosureTest, LambdaDottedParmListZero)
 {
-    ScamValue expr =
-        parseAndEvaluateFile("scripts/closure/dottedzero.scm");
+    ScamValue expr = readEvalFile("scripts/closure/dottedzero.scm");
     expectNull(expr);
 }
 
 TEST_F(ClosureTest, LambdaDottedParmListOne)
 {
-    ScamValue expr = parseAndEvaluateFile("scripts/closure/dottedone.scm");
+    ScamValue expr = readEvalFile("scripts/closure/dottedone.scm");
     expectList(expr, "(2)", 1);
 }
 
 TEST_F(ClosureTest, LambdaDottedParmListSeveral)
 {
-    ScamValue expr =
-        parseAndEvaluateFile("scripts/closure/dottedmany.scm");
+    ScamValue expr = readEvalFile("scripts/closure/dottedmany.scm");
     expectList(expr, "(2 4 #t)", 3);
 }
 
 TEST_F(ClosureTest, LambdaSymbolParmListNone)
 {
-    ScamValue expr = parseAndEvaluateFile("scripts/closure/listnone.scm");
+    ScamValue expr = readEvalFile("scripts/closure/listnone.scm");
     expectNull(expr);
 }
 
 TEST_F(ClosureTest, LambdaSymbolParmListOne)
 {
-    ScamValue expr = parseAndEvaluateFile("scripts/closure/listone.scm");
+    ScamValue expr = readEvalFile("scripts/closure/listone.scm");
     expectList(expr, "(5)", 1);
 }
 
 TEST_F(ClosureTest, LambdaSymbolParmListSeveral)
 {
-    ScamValue expr = parseAndEvaluateFile("scripts/closure/listmany.scm");
+    ScamValue expr = readEvalFile("scripts/closure/listmany.scm");
     expectList(expr, "(5 10 15)", 3);
 }
 
 TEST_F(ClosureTest, LambdaNoFormalsOrBody)
 {
-    ScamValue expr = parseAndEvaluate("(lambda)");
+    ScamValue expr = readEval("(lambda)");
     expectError(expr, "Expected (lambda args body*); got: (lambda)");
 }
 
 TEST_F(ClosureTest, LambdaFormalsNotListorSymbol)
 {
-    ScamValue expr = parseAndEvaluate("(lambda 2 (+ 2 2))");
+    ScamValue expr = readEval("(lambda 2 (+ 2 2))");
     expectError(expr, "Formals should be list or symbol; got: 2");
 }
 
 TEST_F(ClosureTest, LambdaParameterNotSymbol)
 {
-    ScamValue expr = parseAndEvaluate("(lambda (:keyword) (+ 2 2))");
+    ScamValue expr = readEval("(lambda (:keyword) (+ 2 2))");
     expectError(expr, "Formal parameter should be a symbol; got: :keyword");
 }
 
 TEST_F(ClosureTest, LambdaDuplicateParameter)
 {
-    ScamValue expr = parseAndEvaluate("(lambda (x x) (* x 2))");
+    ScamValue expr = readEval("(lambda (x x) (* x 2))");
     expectError(expr, "Symbol cannot appear twice in formals list: x");
 }
 
 TEST_F(ClosureTest, LambdaDuplicateParameterInImproperList)
 {
-    ScamValue expr = parseAndEvaluate("(lambda (x . x) (* x 2))");
+    ScamValue expr = readEval("(lambda (x . x) (* x 2))");
     expectError(expr, "Symbol cannot appear twice in formals list: x");
 }
 
 TEST_F(ClosureTest, LambdaParameterNotSymbolInImproperList)
 {
-    ScamValue expr = parseAndEvaluate("(lambda (ok . :keyword) (+ 2 2))");
+    ScamValue expr = readEval("(lambda (ok . :keyword) (+ 2 2))");
     expectError(expr, "Formal parameter should be a symbol; got: :keyword");
 }
 
 TEST_F(ClosureTest, MacroBasic)
 {
-    ScamValue expr = parseAndEvaluate("(macro () 2)");
+    ScamValue expr = readEval("(macro () 2)");
     expectProcedure(expr, "(macro () 2)");
 }
 
 TEST_F(ClosureTest, MacroNoFormalsOrBody)
 {
-    ScamValue expr = parseAndEvaluate("(macro)");
+    ScamValue expr = readEval("(macro)");
     expectError(expr, "Expected (macro args body*); got: (macro)");
 }
