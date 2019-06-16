@@ -29,7 +29,7 @@ Continuation::~Continuation()
 {
 };
 
-void Continuation::handleValue(ScamValue expr)
+void Continuation::handleValue(ScamValue value)
 {
 }
 

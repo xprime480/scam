@@ -29,15 +29,15 @@ void LetCommonCont::mark() const
     }
 }
 
-void LetCommonCont::handleValue(ScamValue expr)
+void LetCommonCont::handleValue(ScamValue value)
 {
-    Continuation::handleValue(expr);
+    Continuation::handleValue(value);
 
-    if ( isError(expr) ) {
-        engine->handleError(expr);
+    if ( isError(value) ) {
+        engine->handleError(value);
     }
     else {
-        do_let(expr);
+        do_let(value);
     }
 }
 

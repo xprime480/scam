@@ -26,13 +26,13 @@ namespace scam
         }
 
     public:
-        void handleValue(ScamValue expr) override
+        void handleValue(ScamValue value) override
         {
-            Continuation::handleValue(expr);
-            if ( isNothing(expr) ) {
+            Continuation::handleValue(value);
+            if ( isNothing(value) ) {
                 return;
             }
-            s << writeValue(expr) << "\n";
+            s << writeValue(value) << "\n";
         }
 
         std::string getResult() const

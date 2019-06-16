@@ -39,12 +39,12 @@ void ClassCont::mark() const
     }
 }
 
-void ClassCont::handleValue(ScamValue expr)
+void ClassCont::handleValue(ScamValue value)
 {
-    Continuation::handleValue(expr);
+    Continuation::handleValue(value);
 
-    if ( isError(expr) ) {
-        engine->handleError(expr);
+    if ( isError(value) ) {
+        engine->handleError(value);
     }
     else {
         InstanceVec instances;
@@ -56,7 +56,7 @@ void ClassCont::handleValue(ScamValue expr)
         }
         else {
             ScamValue instance = connect(instances);
-            init(instance, expr);
+            init(instance, value);
         }
     }
 }

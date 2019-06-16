@@ -43,15 +43,15 @@ void OrCont::mark() const
     }
 }
 
-void OrCont::handleValue(ScamValue expr)
+void OrCont::handleValue(ScamValue value)
 {
-    Continuation::handleValue(expr);
+    Continuation::handleValue(value);
 
-    if ( isError(expr) ) {
-        engine->handleError(expr);
+    if ( isError(value) ) {
+        engine->handleError(value);
     }
-    else if ( truth(expr) ) {
-        cont->handleValue(expr);
+    else if ( truth(value) ) {
+        cont->handleValue(value);
     }
     else {
         workQueueHelper<OrWorker>(cont, env, parser, engine, n);

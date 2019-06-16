@@ -37,12 +37,12 @@ void IncludeCont::mark() const
     }
 }
 
-void IncludeCont::handleValue(ScamValue expr)
+void IncludeCont::handleValue(ScamValue value)
 {
-    Continuation::handleValue(expr);
+    Continuation::handleValue(value);
 
-    if ( isError(expr) ) {
-        engine->handleError(expr);
+    if ( isError(value) ) {
+        engine->handleError(value);
         return;
     }
 

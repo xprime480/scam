@@ -62,15 +62,15 @@ void LetStepCont::mark() const
     }
 }
 
-void LetStepCont::handleValue(ScamValue expr)
+void LetStepCont::handleValue(ScamValue value)
 {
-    Continuation::handleValue(expr);
+    Continuation::handleValue(value);
 
-    if ( isError(expr) ) {
-        engine->handleError(expr);
+    if ( isError(value) ) {
+        engine->handleError(value);
     }
     else {
-        ScamValue extend = append(evaled, expr);
+        ScamValue extend = append(evaled, value);
         workQueueHelper<LetEvalWorker>(formals,
                                        extend,
                                        args,

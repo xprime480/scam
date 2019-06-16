@@ -42,12 +42,12 @@ void InstanceCont::mark() const
     }
 }
 
-void InstanceCont::handleValue(ScamValue expr)
+void InstanceCont::handleValue(ScamValue value)
 {
-    Continuation::handleValue(expr);
+    Continuation::handleValue(value);
 
-    if ( isError(expr) ) {
-        engine->handleError(expr);
+    if ( isError(value) ) {
+        engine->handleError(value);
         return;
     }
 
@@ -57,7 +57,7 @@ void InstanceCont::handleValue(ScamValue expr)
     }
 
     Env * env = getInstanceEnv(obj);
-    apply(func, expr, cont, env, engine);
+    apply(func, value, cont, env, engine);
 }
 
 ScamValue InstanceCont::find_func(ScamValue o) const

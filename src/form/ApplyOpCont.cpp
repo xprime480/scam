@@ -39,14 +39,14 @@ void ApplyOpCont::mark() const
     }
 }
 
-void ApplyOpCont::handleValue(ScamValue expr)
+void ApplyOpCont::handleValue(ScamValue value)
 {
-    Continuation::handleValue(expr);
+    Continuation::handleValue(value);
 
-    if ( isError(expr) ) {
-        engine->handleError(expr);
+    if ( isError(value) ) {
+        engine->handleError(value);
     }
     else {
-        workQueueHelper<ApplyArgsWorker>(expr, args, cont, env, engine);
+        workQueueHelper<ApplyArgsWorker>(value, args, cont, env, engine);
     }
 }

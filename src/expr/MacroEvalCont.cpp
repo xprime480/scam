@@ -32,8 +32,8 @@ void MacroEvalCont::mark() const
     }
 }
 
-void MacroEvalCont::handleValue(ScamValue expr)
+void MacroEvalCont::handleValue(ScamValue value)
 {
-    Continuation::handleValue(expr);
-    eval(expr, cont, capture, engine);
+    Continuation::handleValue(value);
+    eval(value, cont, capture, engine);
 }

@@ -47,7 +47,7 @@ void UndefineWorker::run()
     ScamValue sym = parser->getSymbol();
     Continuation * c =
         standardMemoryManager.make<UndefineCont>(sym, cont, env, engine);
-    ScamValue expr = makeNull();
+    ScamValue value = makeNull();
 
-    c->handleValue(expr);
+    c->handleValue(value);
 }

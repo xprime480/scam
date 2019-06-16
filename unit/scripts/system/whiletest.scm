@@ -1,4 +1,3 @@
-
 (define x 5)
 (define y 0)
 
@@ -8,5 +7,3 @@
          (assign! x (- x 1))))
 
 y
-
-

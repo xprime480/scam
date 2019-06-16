@@ -69,7 +69,7 @@ size_t scam::length(ScamValue value)
         rv = VECTOR(value).size();
     }
     else if ( isString(value) ) {
-	rv = STRVAL(value).size();
+        rv = STRVAL(value).size();
     }
     else {
         stringstream s;

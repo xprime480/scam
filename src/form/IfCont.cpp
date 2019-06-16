@@ -40,14 +40,14 @@ void IfCont::mark() const
     }
 }
 
-void IfCont::handleValue(ScamValue expr)
+void IfCont::handleValue(ScamValue value)
 {
-    Continuation::handleValue(expr);
+    Continuation::handleValue(value);
 
-    if ( isError(expr) ) {
-        engine->handleError(expr);
+    if ( isError(value) ) {
+        engine->handleError(value);
     }
-    else if ( truth(expr) ) {
+    else if ( truth(value) ) {
         ScamValue thenExpr = parser->get(1u);
         eval(thenExpr, cont, env, engine);
     }

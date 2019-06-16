@@ -27,15 +27,15 @@ void NotCont::mark() const
   }
 }
 
-void NotCont::handleValue(ScamValue expr)
+void NotCont::handleValue(ScamValue value)
 {
-    Continuation::handleValue(expr);
+    Continuation::handleValue(value);
 
-    if ( isError(expr) ) {
-        engine->handleError(expr);
+    if ( isError(value) ) {
+        engine->handleError(value);
     }
     else {
-        ScamValue rv = makeBoolean(! truth(expr));
+        ScamValue rv = makeBoolean(! truth(value));
         cont->handleValue(rv);
     }
 }

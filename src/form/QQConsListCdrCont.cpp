@@ -40,15 +40,15 @@ void QQConsListCdrCont::mark() const
     }
 }
 
-void QQConsListCdrCont::handleValue(ScamValue expr)
+void QQConsListCdrCont::handleValue(ScamValue value)
 {
-    Continuation::handleValue(expr);
+    Continuation::handleValue(value);
 
-    if ( isError(expr) ) {
-        engine->handleError(expr);
+    if ( isError(value) ) {
+        engine->handleError(value);
     }
     else {
-        handle(expr);
+        handle(value);
     }
 }
 

@@ -7,7 +7,6 @@
 using namespace scam;
 using namespace std;
 
-
 void scam::applyMatch(ScamValue args,
                       Continuation * cont,
                       ScamEngine * engine)

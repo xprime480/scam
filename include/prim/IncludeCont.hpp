@@ -26,7 +26,7 @@ namespace scam
 
     public:
         void mark() const override;
-        void handleValue(ScamValue expr) override;
+        void handleValue(ScamValue value) override;
 
     private:
         IncludeParser * parser;

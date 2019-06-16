@@ -29,15 +29,15 @@ void QQSpliceCont::mark() const
     }
 }
 
-void QQSpliceCont::handleValue(ScamValue expr)
+void QQSpliceCont::handleValue(ScamValue value)
 {
-    Continuation::handleValue(expr);
+    Continuation::handleValue(value);
 
-    if ( isError(expr) ) {
-        engine->handleError(expr);
+    if ( isError(value) ) {
+        engine->handleError(value);
     }
     else {
-        ScamValue internal = makePair(spliceTag, expr);
+        ScamValue internal = makePair(spliceTag, value);
         cont->handleValue(internal);
     }
 }

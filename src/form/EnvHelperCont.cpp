@@ -30,9 +30,9 @@ void EnvHelperCont::mark() const
     }
 }
 
-void EnvHelperCont::handleValue(ScamValue expr)
+void EnvHelperCont::handleValue(ScamValue value)
 {
-    Continuation::handleValue(expr);
-    finish(expr);
+    Continuation::handleValue(value);
+    finish(value);
     cont->handleValue(makeNothing());
 }

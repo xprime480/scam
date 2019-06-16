@@ -42,8 +42,8 @@ void scam::applyCdr(ScamValue args,
 {
     ScamValue obj = carCdrCommon(args, cont, engine, "cdr");
     if ( ! isNothing(obj) ) {
-        ScamValue car = getCdr(obj);
-        cont->handleValue(car);
+        ScamValue cdr = getCdr(obj);
+        cont->handleValue(cdr);
     }
 }
 

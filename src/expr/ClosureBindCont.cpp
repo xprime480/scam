@@ -51,18 +51,18 @@ void ClosureBindCont::mark() const
     }
 }
 
-void ClosureBindCont::handleValue(ScamValue expr)
+void ClosureBindCont::handleValue(ScamValue value)
 {
-    Continuation::handleValue(expr);
+    Continuation::handleValue(value);
 
-    if ( isError(expr) ) {
-        engine->handleError(expr);
+    if ( isError(value) ) {
+        engine->handleError(value);
     }
-    else if ( malformedActuals(expr) ) {
+    else if ( malformedActuals(value) ) {
         /* do nothing */
     }
-    else if ( checkArgLength(expr) ) {
-        finalize(expr);
+    else if ( checkArgLength(value) ) {
+        finalize(value);
     }
 }
 

@@ -32,14 +32,14 @@ void EvalCont::mark() const
     }
 }
 
-void EvalCont::handleValue(ScamValue expr)
+void EvalCont::handleValue(ScamValue value)
 {
-    Continuation::handleValue(expr);
+    Continuation::handleValue(value);
 
-    if ( isError(expr) ) {
-        engine->handleError(expr);
+    if ( isError(value) ) {
+        engine->handleError(value);
     }
     else {
-        eval(expr, cont, env->getTop(), engine);
+        eval(value, cont, env->getTop(), engine);
     }
 }

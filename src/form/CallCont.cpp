@@ -34,18 +34,18 @@ void CallCont::mark() const
     }
 }
 
-void CallCont::handleValue(ScamValue expr)
+void CallCont::handleValue(ScamValue value)
 {
-    Continuation::handleValue(expr);
+    Continuation::handleValue(value);
 
-    if ( isError(expr) ) {
-        engine->handleError(expr);
+    if ( isError(value) ) {
+        engine->handleError(value);
         return;
     }
 
-    if ( ! isApplicable(expr) ) {
+    if ( ! isApplicable(value) ) {
         ScamValue err = makeErrorExtended("call/cc: form ",
-                                          writeValue(expr),
+                                          writeValue(value),
                                           "cannot be applied");
         engine->handleError(err);
         return;
@@ -53,5 +53,5 @@ void CallCont::handleValue(ScamValue expr)
 
     ScamValue contExpr = makeContinuation(cont);
     ScamValue args = makeList(contExpr);
-    apply(expr, args, cont, env, engine);
+    apply(value, args, cont, env, engine);
 }

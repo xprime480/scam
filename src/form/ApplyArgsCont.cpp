@@ -38,14 +38,14 @@ void ApplyArgsCont::mark() const
     }
 }
 
-void ApplyArgsCont::handleValue(ScamValue expr)
+void ApplyArgsCont::handleValue(ScamValue value)
 {
-    Continuation::handleValue(expr);
+    Continuation::handleValue(value);
 
-    if ( isError(expr) ) {
-        engine->handleError(expr);
+    if ( isError(value) ) {
+        engine->handleError(value);
     }
     else {
-        apply(op, expr, cont, env, engine);
+        apply(op, value, cont, env, engine);
     }
 }

@@ -33,8 +33,8 @@ void ClassInitCont::mark() const
     }
 }
 
-void ClassInitCont::handleValue(ScamValue expr)
+void ClassInitCont::handleValue(ScamValue value)
 {
-    Continuation::handleValue(expr);
+    Continuation::handleValue(value);
     cont->handleValue(instance);
 }

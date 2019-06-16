@@ -29,4 +29,3 @@ void scam::applyBegin(ScamValue args,
         cont->handleValue(last);
     }
 }
-

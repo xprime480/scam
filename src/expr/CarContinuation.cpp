@@ -29,15 +29,15 @@ void CarContinuation::mark() const
   }
 }
 
-void CarContinuation::handleValue(ScamValue expr)
+void CarContinuation::handleValue(ScamValue value)
 {
-    Continuation::handleValue(expr);
+    Continuation::handleValue(value);
 
-    if ( isError(expr) ) {
-        engine->handleError(expr);
+    if ( isError(value) ) {
+        engine->handleError(value);
     }
     else {
         ScamValue e = data.cdr;
-        workQueueHelper<MapCdr>(expr, e, data.original, data.env, engine);
+        workQueueHelper<MapCdr>(value, e, data.original, data.env, engine);
     }
 }
