@@ -2,8 +2,10 @@
 
 #include "Continuation.hpp"
 #include "Env.hpp"
+#include "ScamEngine.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/ValueFactory.hpp"
+#include "expr/ValueWriter.hpp"
 #include "form/UndefineCont.hpp"
 #include "input/UndefineParser.hpp"
 #include "util/MemoryManager.hpp"
@@ -45,9 +47,17 @@ void UndefineWorker::run()
     Worker::run();
 
     ScamValue sym = parser->getSymbol();
-    Continuation * c =
-        standardMemoryManager.make<UndefineCont>(sym, cont, env, engine);
-    ScamValue value = makeNull();
 
-    c->handleValue(value);
+    if ( env->check(sym, false) ) {
+        Continuation * c =
+            standardMemoryManager.make<UndefineCont>(sym, cont, env, engine);
+        c->handleValue(makeNull());
+    }
+    else {
+        static ScamValue err =
+            makeErrorExtended("Symbol '"
+                              , writeValue(sym),
+                              "' does not exist in current scope");
+        engine->handleError(err);
+    }
 }

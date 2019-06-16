@@ -136,58 +136,6 @@ TEST_F(EnvTest, NullKey)
     EXPECT_THROW(engine.rebind(nullptr, exp), ScamException);
 }
 
-TEST_F(EnvTest, DefineConstant)
-{
-    reset(true);
-    const char * text = "(define x 1)";
-    (void) readEval(text);
-
-    ScamValue sym = makeSymbol("x");
-    ScamValue val = engine.getBinding(sym);
-    expectInteger(val, 1, "1", true);
-}
-
-TEST_F(EnvTest, DefineEvaluated)
-{
-    reset(true);
-    const char * text = "(define x (- 3 2))";
-    (void) readEval(text);
-
-    ScamValue sym = makeSymbol("x");
-    ScamValue val = engine.getBinding(sym);
-    expectInteger(val, 1, "1", true);
-}
-
-TEST_F(EnvTest, DefineScope)
-{
-    engine.pushFrame();
-    (void) readEval("(define x 1)");
-    engine.popFrame();
-    ScamValue sym = makeSymbol("x");
-    EXPECT_FALSE(engine.hasBinding(sym));
-    EXPECT_THROW(engine.getBinding(sym), ScamException);
-}
-
-TEST_F(EnvTest, DefineTwice)
-{
-    ScamValue expr = readEvalFile("scripts/env/definetwice.scm");
-    expectError(expr);
-}
-
-TEST_F(EnvTest, AssignKeyword)
-{
-    reset(true);
-    ScamValue expr = readEvalFile("scripts/env/assign.scm");
-    expectInteger(expr, 77, "77", true);
-}
-
-TEST_F(EnvTest, AssignScope)
-{
-    reset(true);
-    ScamValue expr = readEvalFile("scripts/env/assignscope.scm");
-    expectInteger(expr, 77, "77", true);
-}
-
 TEST_F(EnvTest, GetTopLevel)
 {
     reset(true);
@@ -197,29 +145,5 @@ TEST_F(EnvTest, GetTopLevel)
 
     ScamValue sym = makeSymbol("x");
     ScamValue val = engine.getBinding(sym, true);
-    expectInteger(val, 1, "1", true);
-}
-
-TEST_F(EnvTest, Undefine)
-{
-    reset(true);
-
-    ScamValue val = readEval("(define test 1) test");
-    expectInteger(val, 1, "1", true);
-
-    val = readEval("(undefine test)  test");
-    expectError(val);
-}
-
-TEST_F(EnvTest, UndefineOnlyAffectsCurrentFrame)
-{
-    reset(true);
-
-    ScamValue val = readEval("(define test 1) test");
-    expectInteger(val, 1, "1", true);
-
-    engine.pushFrame();
-
-    val = readEval("(undefine test)  test");
     expectInteger(val, 1, "1", true);
 }

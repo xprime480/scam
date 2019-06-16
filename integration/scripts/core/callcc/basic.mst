@@ -1,0 +1,23 @@
+Basic Call/CC usage
+
+;[skip] uncomment to skip this test
+
+[name]
+Call/CC
+
+[input]
+
+(+ 4 (call/cc (lambda (k) 2)))
+(+ 4 (call/cc
+      (lambda (cont)
+	(+ (cont 1) 2))))
+[result]
+6
+5
+
+
+
+
+
+
+

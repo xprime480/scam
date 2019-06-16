@@ -1,0 +1,24 @@
+Undefine only affects current scope
+
+;[skip] uncomment to skip this test
+
+[name]
+Undefine Scope
+
+[input]
+
+(define test 1)
+
+test
+
+(let ()
+  (undefine test)
+  test)
+
+test
+
+[result]
+[keep 3]
+1
+Symbol 'test' does not exist in current scope
+1

@@ -1,0 +1,15 @@
+Simple Apply
+
+;[skip] uncomment to skip this test
+
+[name]
+Apply
+
+[input]
+
+(apply * (list 3 33))
+(apply (lambda (x y) (+ x 2 (* 2 y))) '(1 5))
+
+[result]
+99
+13

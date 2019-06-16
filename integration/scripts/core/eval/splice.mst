@@ -1,0 +1,21 @@
+Quasiquote with splicing
+
+;[skip] uncomment to skip this test
+
+[name]
+Splicing
+
+[input]
+
+(define x 99)
+
+`(+ x ,@(list 3 (+ x 1)) 2)
+`(,@(list 3 (+ x 1)))
+`(+ x ,@(list) 2)
+
+[result]
+[keep 3]
+(+ x 3 100 2)
+(3 100)
+(+ x 2)
+

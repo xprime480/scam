@@ -10,7 +10,8 @@ Basic Macro
 (let ((x (macro () 2)))
   (list
    x
-   (procedure? x)))
+   (procedure? x)
+   (x)))
 
 [result]
-((macro () 2) #t)
+((macro () 2) #t 2)

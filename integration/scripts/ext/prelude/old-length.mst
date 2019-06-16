@@ -1,0 +1,18 @@
+Old-length function
+
+;[skip] uncomment to skip this test
+
+[name]
+Old-Length
+
+[input]
+
+(load "lib/prelude.scm")
+
+(old-length #(1 2 3))
+(old-length { :a 44 :b "cat" })
+
+[result]
+[keep 2]
+3
+2

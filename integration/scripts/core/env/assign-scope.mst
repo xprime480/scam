@@ -1,0 +1,17 @@
+Assign to symbol in enclosing scope
+
+;[skip] uncomment to skip this test
+
+[name]
+Assign Outer Scope
+
+[input]
+
+(define x (- 3 2))
+(let ()
+  (assign! x 77))
+x
+
+[result]
+[keep 1]
+77

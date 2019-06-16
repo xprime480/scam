@@ -1,0 +1,18 @@
+Require function
+
+;[skip] uncomment to skip this test
+
+[name]
+Require
+
+[input]
+
+(load "lib/prelude.scm")
+
+(require #t)
+(require #f)
+
+[result]
+[keep 2]
+#t
+No more choices

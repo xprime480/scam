@@ -1,0 +1,23 @@
+Simple map usage
+
+;[skip] uncomment to skip this test
+
+[name]
+Map
+
+[input]
+
+(load "lib/prelude.scm")
+
+(map integer? (list 1 0.123 "xx"))
+
+[result]
+[keep 1]
+(#t #f #f)
+
+
+
+
+
+
+

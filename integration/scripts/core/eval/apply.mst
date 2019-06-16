@@ -1,0 +1,19 @@
+Simple Apply
+
+;[skip] uncomment to skip this test
+
+[name]
+Apply
+
+[input]
+
+(apply * (list 3 33))
+(apply (lambda (x y) (+ x 2 (* 2 y))) '(1 5))
+(apply)
+(apply * 3 33)
+
+[result]
+99
+13
+apply expected "(function (args*))"; got "()"
+apply expected "(function (args*))"; got "(* 3 33)"

@@ -1,0 +1,18 @@
+Filter function
+
+;[skip] uncomment to skip this test
+
+[name]
+Filter
+
+[input]
+
+(load "lib/prelude.scm")
+
+(filter even? '())
+(filter even? '(1 2 3 4 5))
+
+[result]
+[keep 2]
+()
+(2 4)

@@ -1,0 +1,17 @@
+Call/CC invoked in various incorrect ways
+
+;[skip] uncomment to skip this test
+
+[name]
+Bad Continuation Invocation
+
+[input]
+
+(call/cc 2)
+(+ 4 (call/cc (lambda (k) (k))))
+(+ 4 (call/cc (lambda (k) (k 1 2))))
+
+[result]
+call/cc: form '2' cannot be applied
+continuation expected "(form)"; got "()"
+continuation expected "(form)"; got "(1 2)"

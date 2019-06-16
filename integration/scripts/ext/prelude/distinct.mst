@@ -1,0 +1,24 @@
+Distinct? function
+
+;[skip] uncomment to skip this test
+
+[name]
+Distinct?
+
+[input]
+
+(load "lib/prelude.scm")
+
+(distinct? (list))
+(distinct? (list 1))
+(distinct? (list 1 5 #f 'cat))
+(distinct? (list 1 5 #f 'cat 5))
+
+[result]
+[keep 4]
+#t
+#t
+#t
+#f
+
+

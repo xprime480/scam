@@ -1,0 +1,15 @@
+Define symbol twice
+
+;[skip] uncomment to skip this test
+
+[name]
+Symbol Defined Twice
+
+[input]
+
+(define x 1)
+(define x 2)
+
+[result]
+[keep 1]
+Key: 'x' already exists in current frame

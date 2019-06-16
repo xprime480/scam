@@ -1,0 +1,20 @@
+Basic unquote usage
+
+;[skip] uncomment to skip this test
+
+[name]
+Unquote
+
+[input]
+
+(define x 99)
+
+',(+ 2 2)
+`,(+ 2 2)
+`(+ (+ 3 (+ ,x 1 2 3)) 2)
+
+[result]
+[keep 3]
+(unquote (+ 2 2))
+4
+(+ (+ 3 (+ 99 1 2 3)) 2)

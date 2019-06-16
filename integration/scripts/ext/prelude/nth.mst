@@ -1,0 +1,28 @@
+Nth function
+
+;[skip] uncomment to skip this test
+
+[name]
+Nth
+
+[input]
+
+(load "lib/prelude.scm")
+
+(nth 0 '(a b c))
+(nth 4 '(a b c))
+(nth 0 #(1 2 3))
+(nth -50 #(1 2 3))
+(nth 0 { :a 333.333 })
+
+[result]
+[keep 5]
+a
+Cannot index unknown type
+1
+vref expected "(index form)"; got "(-50 #(1 2 3))"
+Cannot index unknown type
+
+
+
+

@@ -1,0 +1,24 @@
+Define in an inner scope does not affect outer scope
+
+;[skip] uncomment to skip this test
+
+[name]
+Define Scope
+
+[input]
+
+(define x 17)
+
+(let ()
+  (define x 42)
+  (define y 0)
+  (list x y))
+
+x
+y
+
+[result]
+[keep 3]
+(42 0)
+17
+Symbol y does not exist in the current environment

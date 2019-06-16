@@ -1,0 +1,22 @@
+Call/CC saved in a variable
+
+;[skip] uncomment to skip this test
+
+[name]
+Persisted Continuation
+
+[input]
+
+(define **cont** ())
+
+(+ 1 (call/cc
+      (lambda (k)
+        (assign! **cont** k)
+        99)))
+
+(+ 2 3 (* 4 (/ 1 (**cont** 0)) (/ 2 0)))
+
+[result]
+[keep 2]
+100
+1
