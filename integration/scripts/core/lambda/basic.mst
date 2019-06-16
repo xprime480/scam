@@ -1,0 +1,30 @@
+Create Basic Lambda Values
+
+;[skip] uncomment to skip this test
+
+[name]
+Basic Lambda Expressions
+
+[input]
+(let* ((proc (lambda () 2))
+       (args ()))
+  (list
+   (proc)
+   (apply proc args)))
+
+(let* ((proc (lambda () 2 #\z))
+       (args ()))
+  (list
+   (proc)
+   (apply proc args)))
+
+(let* ((proc (lambda (x) (+ x x)))
+       (args '(3)))
+  (list
+   (proc 3)
+   (apply proc args)))
+
+[result]
+(2 2)
+(#\z #\z)
+(6 6)

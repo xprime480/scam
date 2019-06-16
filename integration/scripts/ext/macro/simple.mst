@@ -1,0 +1,16 @@
+Simple macro definition
+
+;[skip] uncomment to skip this test
+
+[name]
+Basic Macro
+
+[input]
+
+(let ((x (macro () 2)))
+  (list
+   x
+   (procedure? x)))
+
+[result]
+((macro () 2) #t)

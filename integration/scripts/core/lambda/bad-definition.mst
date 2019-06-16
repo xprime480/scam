@@ -1,0 +1,23 @@
+Malformed lambda expressions
+
+;[skip] uncomment to skip this test
+
+[name]
+Malformed Lambda Expressions
+
+[input]
+
+(lambda)
+(lambda 2 (+ 2 2))
+(lambda (:keyword) (+ 2 2))
+(lambda (x x) (* x 2))
+(lambda (x . x) (* x 2))
+(lambda (ok . :keyword) (+ 2 2))
+
+[result]
+Expected (lambda args body*); got: (lambda)
+Formals should be list or symbol; got: 2
+Formal parameter should be a symbol; got: :keyword
+Symbol cannot appear twice in formals list: x
+Symbol cannot appear twice in formals list: x
+Formal parameter should be a symbol; got: :keyword

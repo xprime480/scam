@@ -1,0 +1,22 @@
+Lambda captures it definition environment
+
+In this case 'y' retains its value.
+
+;[skip] uncomment to skip this test
+
+[name]
+Lambda With Capture
+
+[input]
+
+(define f ())
+(let ((y 5))
+  (assign! f (lambda (x)
+               (* x y))))
+
+(f (+ 1 3))
+
+
+[result]
+[keep 1]
+20

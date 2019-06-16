@@ -1,0 +1,13 @@
+Malformed macro definition
+
+;[skip] uncomment to skip this test
+
+[name]
+Malformed Macro
+
+[input]
+
+(macro)
+
+[result]
+Expected (macro args body*); got: (macro)

@@ -1,0 +1,23 @@
+Call parent function directly
+
+;[skip] uncomment to skip this test
+
+[name]
+Call Parent Function Parent Directly
+
+[input]
+
+(let* ((Parent
+        (make-class
+         Root
+         ()
+         (get () -1)))
+       (Trivial
+        (make-class
+         Parent
+         ()))
+       (obj (Trivial)))
+  (obj get))
+
+[result]
+-1

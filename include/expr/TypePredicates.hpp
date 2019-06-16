@@ -49,6 +49,8 @@ namespace scam
 
     extern bool isContinuation(ScamValue data);
 
+    extern bool isScamProcedure(ScamValue data);
+
     extern bool isPort(ScamValue data);
 }
 

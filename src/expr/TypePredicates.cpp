@@ -205,6 +205,11 @@ bool scam::isContinuation(ScamValue data)
     return data->type == ScamData::Cont;
 }
 
+bool scam::isScamProcedure(ScamValue data)
+{
+    return isProcedure(data) || isApplicable(data);
+}
+
 bool scam::isPort(ScamValue data)
 {
     return data->type == ScamData::Port;

@@ -1,0 +1,27 @@
+Call a parent function of derived class
+
+;[skip] uncomment to skip this test
+
+[name]
+Call Function in Parent
+
+[input]
+
+(let* ((Parent
+        (make-class
+         Root
+         ()
+         (jarthur (n) (* n 17))))
+       (Trivial
+        (make-class
+         Parent
+         ()
+         (get () (parent jarthur 1))))
+       (obj (Trivial))
+       )
+  (list
+   (obj get)
+   (obj jarthur 3)))
+
+[result]
+(17 51)

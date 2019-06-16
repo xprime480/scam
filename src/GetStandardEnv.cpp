@@ -91,7 +91,7 @@ void ScamEngine::getStandardEnv()
     addPrimitive(env, "integer?", applyIntegerP, this);
     addPrimitive(env, "exact?", applyExactP, this);
 
-    addPrimitive(env, "proc?", applyProcP, this);
+    addPrimitive(env, "procedure?", applyProcedureP, this);
     addPrimitive(env, "class?", applyClassP, this);
     addPrimitive(env, "instance?", applyInstanceP, this);
     addPrimitive(env, "dict?", applyDictP, this);

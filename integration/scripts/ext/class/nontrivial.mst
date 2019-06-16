@@ -1,0 +1,23 @@
+Class with nontrivial computation
+
+;[skip] uncomment to skip this test
+
+[name]
+Nontrivial Class Method
+
+[input]
+
+(load "lib/prelude.scm")
+
+(let* ((Maxxer (make-class
+                Root
+                (val)
+                (init (v) (assign! val v))
+                (get (n) (max val n))))
+       (obj (Maxxer 0)))
+  (list (obj get -42)
+        (obj get (/ 84 2))))
+
+[result]
+[keep 1]
+(0 42)

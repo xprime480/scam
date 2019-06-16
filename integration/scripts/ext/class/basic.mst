@@ -1,0 +1,34 @@
+Class and instance predicates
+
+;[skip] uncomment to skip this test
+
+[name]
+Class Predicates
+
+[input]
+
+(let* ((Trivial (make-class
+                 Root
+                 ()
+                 (init ())))
+       (instance (Trivial)))
+  (list
+   (list
+    (procedure? make-class)
+    (procedure? Trivial)
+    (procedure? instance))
+   (list
+    (class? make-class)
+    (class? Trivial)
+    (class? instance))
+   (list
+    (instance? make-class)
+    (instance? Trivial)
+    (instance? instance))))
+
+[result]
+((#t #t #t) (#f #t #f) (#f #f #t))
+
+
+
+

@@ -134,46 +134,6 @@ TEST_F(PredicateTest, IntegerTestNotNumeric)
     expectFalse("(integer? ())");
 }
 
-TEST_F(PredicateTest, ProcTestProc)
-{
-    expectTrue("(proc? (lambda (x) 2))");
-}
-
-TEST_F(PredicateTest, ProcTestClass)
-{
-    expectTrue("(proc? (make-class Root ()))");
-}
-
-TEST_F(PredicateTest, ProcTestInstance)
-{
-    expectTrue("(proc? (load \"scripts/class/trivial2.scm\"))");
-}
-
-TEST_F(PredicateTest, ProcTestNotProc)
-{
-    expectFalse("(proc? ())");
-}
-
-TEST_F(PredicateTest, ClassTestClass)
-{
-    expectTrue("(class? (make-class Root ()))");
-}
-
-TEST_F(PredicateTest, ClassTestNotClass)
-{
-    expectFalse("(class? ())");
-}
-
-TEST_F(PredicateTest, InstanceTestInstance)
-{
-    expectTrue("(instance? (load \"scripts/class/trivial2.scm\"))");
-}
-
-TEST_F(PredicateTest, InstanceTestNotInstance)
-{
-    expectFalse("(instance? ())");
-}
-
 TEST_F(PredicateTest, KeywordTestKeyword)
 {
     expectTrue("(keyword? :yesiam)");

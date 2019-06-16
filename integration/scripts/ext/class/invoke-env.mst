@@ -1,0 +1,26 @@
+Environments are captured correctly
+
+Distinguish between the environments where the class was defined,
+where the instance was created, and where the method was invoked.
+
+;[skip] uncomment to skip this test
+
+[name]
+Captured Env in Class
+
+[input]
+
+(let* ((x 2)
+       (Trivial
+        (let ((x 3))
+          (make-class
+           Root
+           (q)
+           (init (n) (assign! q n))
+           (get (n) (list q x n)))))
+       (obj (Trivial x)))
+  (let ((x 5))
+    (obj get x)))
+
+[result]
+(2 3 5)

@@ -1,0 +1,17 @@
+Class with runtime initialization error
+
+;[skip] uncomment to skip this test
+
+[name]
+Class Init Error
+
+[input]
+
+(let* ((Trivial (make-class
+                 Root
+                 (n)
+                 (init (v) (assign! n v)))))
+  (Trivial (/ 1 0)))
+
+[result]
+Division By Zero

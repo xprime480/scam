@@ -1,0 +1,21 @@
+Class with no initialization functions
+
+Not sure if this is really a good test -- if you reference an
+unitialized variable, anything (almost) goes.
+
+;[skip] uncomment to skip this test
+
+[name]
+Class Without Init
+
+[input]
+
+(let* ((Trivial (make-class
+                 Root
+                 (n)
+                 (get () n)))
+       (obj (Trivial)))
+  (obj get))
+
+[result]
+()

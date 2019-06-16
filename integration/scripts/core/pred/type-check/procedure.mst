@@ -1,0 +1,24 @@
+Test the procedure? function
+
+;[skip]
+
+[name]
+Type Checker of Procedures
+
+[input]
+
+(procedure?)
+(procedure? car cdr)
+
+(list
+ (procedure? car)
+ (procedure? 'car)
+ (procedure? (lambda (x) (* x x)))
+ (procedure? '(lambda (x) (* x x)))
+ (call/cc procedure?))
+
+[result]
+[keep 3]
+procedure?: parameter 1 missing
+procedure?: 1 parameter needed, 2 given
+(#t #f #t #f #t)

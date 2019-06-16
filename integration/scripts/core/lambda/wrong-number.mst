@@ -1,0 +1,18 @@
+Call closure with the wrong number of parameters.
+
+;[skip] uncomment to skip this test
+
+[name]
+Lambda Wrong Arg Count
+
+[input]
+
+(define f (lambda (x)
+            (/ 1.0 x)))
+(f)
+(f 1 2 3 4)
+
+[result]
+[keep 2]
+Expected 1 parameters; got 0
+Expected 1 parameters; got 4

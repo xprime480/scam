@@ -1,0 +1,19 @@
+Formal parameters mask symbols of the same name in
+the defining environment.
+
+;[skip] uncomment to skip this test
+
+[name]
+Lambda Formals Override Env
+
+[input]
+
+(define x 0.0)
+(define f (lambda (x)
+            (/ 1.0 x)))
+
+(f 2)
+
+[result]
+[keep 1]
+1/2
