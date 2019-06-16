@@ -18,7 +18,7 @@ void scam::applyInclude(ScamValue args,
 {
     IncludeParser * parser = standardMemoryManager.make<IncludeParser>();
     if ( ! parser->accept(args) ) {
-        failedArgParseMessage(myName, "(string+)", args, cont);
+        failedArgParseMessage(myName, "(string+)", args, cont, engine);
     }
     else {
         workQueueHelper<IncludeWorker>(parser, cont, engine, 0);

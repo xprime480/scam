@@ -106,48 +106,57 @@ namespace scam
     extern void failedArgParseMessage(const char * who,
                                       const char * exp,
                                       ScamValue act,
-                                      Continuation * cont);
+                                      Continuation * cont,
+                                      ScamEngine * engine);
 
 
     /***** **** NEW WORLD CODE *************/
     extern bool wantObject(const char * name,
                            ArgListHelper & helper,
                            Continuation * cont,
+                           ScamEngine * engine,
                            ScamValue & value);
 
     extern bool wantChar(const char * name,
                          ArgListHelper & helper,
                          Continuation * cont,
+                         ScamEngine * engine,
                          char & c);
 
     extern bool wantNonNegativeInteger(const char * name,
                                        ArgListHelper & helper,
                                        Continuation * cont,
+                                       ScamEngine * engine,
                                        int & count);
 
     extern bool wantString(const char * name,
                            ArgListHelper & helper,
                            Continuation * cont,
+                           ScamEngine * engine,
                            std::string & str);
 
     extern bool wantMutableString(const char * name,
                                   ArgListHelper & helper,
                                   Continuation * cont,
+                                  ScamEngine * engine,
                                   ScamValue & value);
 
     extern bool wantPair(const char * name,
                          ArgListHelper & helper,
                          Continuation * cont,
+                         ScamEngine * engine,
                          ScamValue & value);
 
     extern bool wantMutablePair(const char * name,
                                 ArgListHelper & helper,
                                 Continuation * cont,
+                                ScamEngine * engine,
                                 ScamValue & value);
 
     extern bool wantIndex(const char * name,
                           ArgListHelper & helper,
                           Continuation * cont,
+                          ScamEngine * engine,
                           int & index,
                           int ref);
 
@@ -178,12 +187,14 @@ namespace scam
     extern bool wantZeroPlus(const char * name,
                              ArgListHelper & helper,
                              Continuation * cont,
+                             ScamEngine * engine,
                              ScamValue & value,
                              ValuePredicate pred);
 
     extern bool wantCount(const char * name,
                           ArgListHelper & helper,
                           Continuation * cont,
+                          ScamEngine * engine,
                           ScamValue & value,
                           ValuePredicate pred,
                           int min,
@@ -192,12 +203,14 @@ namespace scam
     extern bool wantSublistOf(const char * name,
                               ArgListHelper & helper,
                               Continuation * cont,
+                              ScamEngine * engine,
                               ScamValue & value,
                               ValuePredicate pred);
 
     extern bool finishArgs(const char * name,
                            ArgListHelper & helper,
                            Continuation * cont,
+                           ScamEngine * engine,
                            const char * msg = nullptr);
 
     extern size_t length(const std::string & v);
@@ -231,6 +244,7 @@ namespace scam
 
     extern bool getTwoObjs(ScamValue args,
                            Continuation * cont,
+                           ScamEngine * engine,
                            const char * name,
                            ScamValue & obj1,
                            ScamValue & obj2);

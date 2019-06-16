@@ -53,7 +53,7 @@ void QuasiQuoteWorker::run()
 bool QuasiQuoteWorker::verify_single_form(ScamValue input, Continuation * cont)
 {
     if ( ! isList(input) || 1 != length(input) ) {
-        failedArgParseMessage(myName, "form", input, cont);
+        failedArgParseMessage(myName, "form", input, cont, engine);
         return false;
     }
     return true;

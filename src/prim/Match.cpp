@@ -17,7 +17,7 @@ void scam::applyMatch(ScamValue args,
     MatchUnifyParser * parser =
         standardMemoryManager.make<MatchUnifyParser>(true);
     if ( ! parser->accept(args) ) {
-        failedArgParseMessage(myName, "(form form)", args, cont);
+        failedArgParseMessage(myName, "(form form)", args, cont, engine);
     }
     else {
         MatchUnifyCommon solver(parser, cont);

@@ -21,7 +21,7 @@ void scam::applyInstantiate(ScamValue args,
 
     SingletonParser * parser = getSingletonOfAnythingParser();
     if ( ! parser->accept(args) ) {
-        failedArgParseMessage(myName, "(form)", args, cont);
+        failedArgParseMessage(myName, "(form)", args, cont, engine);
         return;
     }
 

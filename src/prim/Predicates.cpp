@@ -21,10 +21,12 @@ using namespace std;
             ArgListHelper helper(args);                         \
                                                                 \
             ScamValue arg;                                      \
-            if ( ! wantObject(name, helper, cont, arg) ) {      \
+            bool ok =                                           \
+                wantObject(name, helper, cont, engine, arg);    \
+            if ( ! ok ) {                                       \
                 return;                                         \
             }                                                   \
-            if ( ! finishArgs(name, helper, cont) ) {           \
+            if ( ! finishArgs(name, helper, cont, engine) ) {   \
                 return;                                         \
             }                                                   \
             bool answer = pred(arg);                            \

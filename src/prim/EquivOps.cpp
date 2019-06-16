@@ -1,6 +1,7 @@
 #include "prim/EquivOps.hpp"
 
 #include "Continuation.hpp"
+#include "ScamEngine.hpp"
 #include "ScamException.hpp"
 #include "expr/EqualityOps.hpp"
 #include "expr/ScamToInternal.hpp"
@@ -32,7 +33,7 @@ void scam::applyEqP(ScamValue args,
 {
     static const char * name = "eq?";
     ScamValue obj1, obj2;
-    if ( ! getTwoObjs(args, cont, name, obj1, obj2) ) {
+    if ( ! getTwoObjs(args, cont, engine, name, obj1, obj2) ) {
         return;
     }
 
@@ -47,8 +48,8 @@ void scam::applyEqP(ScamValue args,
         cont->handleValue(makeBoolean(rv));
     }
     catch ( int ) {
-        cont->handleValue(makeError("eq? not implemented for this type"));
-        return;
+        ScamValue err = makeError("eq? not implemented for this type");
+        engine->handleError(err);
     }
 }
 
@@ -58,7 +59,7 @@ void scam::applyEqvP(ScamValue args,
 {
     static const char * name = "eqv?";
     ScamValue obj1, obj2;
-    if ( ! getTwoObjs(args, cont, name, obj1, obj2) ) {
+    if ( ! getTwoObjs(args, cont, engine, name, obj1, obj2) ) {
         return;
     }
 
@@ -67,8 +68,8 @@ void scam::applyEqvP(ScamValue args,
         cont->handleValue(makeBoolean(rv));
     }
     catch ( int ) {
-        cont->handleValue(makeError("eqv? not implemented for this type"));
-        return;
+        ScamValue err = makeError("eqv? not implemented for this type");
+        engine->handleError(err);
     }
 }
 
@@ -78,7 +79,7 @@ void scam::applyEqualP(ScamValue args,
 {
     static const char * name = "equal?";
     ScamValue obj1, obj2;
-    if ( ! getTwoObjs(args, cont, name, obj1, obj2) ) {
+    if ( ! getTwoObjs(args, cont, engine, name, obj1, obj2) ) {
         return;
     }
 
@@ -87,8 +88,8 @@ void scam::applyEqualP(ScamValue args,
         cont->handleValue(makeBoolean(rv));
     }
     catch ( int ) {
-        cont->handleValue(makeError("equal? not implemented for this type"));
-        return;
+        ScamValue err = makeError("equal? not implemented for this type");
+        engine->handleError(err);
     }
 }
 

@@ -100,7 +100,7 @@ void ClosureBindCont::wrongNumberOfParameters(unsigned formalsLen,
                                       formalsLen,
                                       " parameters; got ",
                                       actualsLen);
-    cont->handleValue(err);
+    engine->handleError(err);
 }
 
 bool ClosureBindCont::checkArgLength(ScamValue expr) const

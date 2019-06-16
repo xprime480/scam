@@ -94,7 +94,8 @@ void scam::apply(ScamValue value,
             failedArgParseMessage(writeValue(value).c_str(),
                                   "(form)",
                                   args,
-                                  cont);
+                                  cont,
+                                  engine);
         }
     }
 
@@ -102,7 +103,11 @@ void scam::apply(ScamValue value,
         DictOpsParser * parser = standardMemoryManager.make<DictOpsParser>();
 
         if ( ! parser->accept(args) ) {
-            failedArgParseMessage("dict", "(:op args{0,2})", args, cont);
+            failedArgParseMessage("dict",
+                                  "(:op args{0,2})",
+                                  args,
+                                  cont,
+                                  engine);
             return;
         }
 
@@ -129,6 +134,8 @@ void scam::apply(ScamValue value,
         else {
             rv = makeErrorExtended("Unknown dictionary operator: ",
                                    writeValue(op));
+            engine->handleError(rv);
+            return;
         }
 
         cont->handleValue(rv);
@@ -138,7 +145,11 @@ void scam::apply(ScamValue value,
         InstanceParser * parser = standardMemoryManager.make<InstanceParser>();
 
         if ( ! parser->accept(args) ) {
-            failedArgParseMessage("instance", "(sym forms*)", args, cont);
+            failedArgParseMessage("instance",
+                                  "(sym forms*)",
+                                  args,
+                                  cont,
+                                  engine);
             return;
         }
 
@@ -169,7 +180,7 @@ void scam::apply(ScamValue value,
                                           writeValue(value),
                                           "> to args ",
                                           writeValue(args));
-        cont->handleValue(err);
+        engine->handleError(err);
     }
 }
 

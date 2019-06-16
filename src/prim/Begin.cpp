@@ -16,7 +16,7 @@ void scam::applyBegin(ScamValue args,
     static const char * myName = "begin";
 
     if ( ! isList(args) ) {
-        failedArgParseMessage(myName, "(expr*)", args, cont);
+        failedArgParseMessage(myName, "(expr*)", args, cont, engine);
         return;
     }
 

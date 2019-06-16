@@ -16,7 +16,7 @@ void scam::applyMakeList(ScamValue args,
     ArgListHelper helper(args);
 
     int count;
-    if ( ! wantNonNegativeInteger(name, helper, cont, count) ) {
+    if ( ! wantNonNegativeInteger(name, helper, cont, engine, count) ) {
         return;
     }
     ScamValue fill = wantOptional<ScamValue>(name,
@@ -25,7 +25,7 @@ void scam::applyMakeList(ScamValue args,
                                              isAnything,
                                              identity,
                                              makeNull());
-    if ( ! finishArgs(name, helper, cont) ) {
+    if ( ! finishArgs(name, helper, cont, engine) ) {
         return;
     }
 
@@ -53,7 +53,7 @@ void scam::applyAppend(ScamValue args,
     ArgListHelper helper(args);
 
     ScamValue objs;
-    if ( ! wantZeroPlus(name, helper, cont, objs, isList) ) {
+    if ( ! wantZeroPlus(name, helper, cont, engine, objs, isList) ) {
         return;
     }
     ScamValue tail = wantOptional<ScamValue>(name,
@@ -62,7 +62,7 @@ void scam::applyAppend(ScamValue args,
                                              isAnything,
                                              identity,
                                              makeNull());
-    if ( ! finishArgs(name, helper, cont) ) {
+    if ( ! finishArgs(name, helper, cont, engine) ) {
         return;
     }
 

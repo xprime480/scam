@@ -1,6 +1,7 @@
 #include "prim/Substitute.hpp"
 
 #include "Continuation.hpp"
+#include "ScamEngine.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/SequenceOps.hpp"
 #include "expr/ValueFactory.hpp"
@@ -26,7 +27,7 @@ void scam::applySubstitute(ScamValue args,
         ScamValue err =
             makeErrorExtended("expected 'form dict'; got ",
                               writeValue(args));
-        cont->handleValue(err);
+	engine->handleError(err);
         return;
     }
 

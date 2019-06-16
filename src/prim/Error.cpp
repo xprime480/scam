@@ -1,6 +1,7 @@
 #include "prim/Error.hpp"
 
 #include "Continuation.hpp"
+#include "ScamEngine.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/SequenceOps.hpp"
 #include "expr/ValueFactory.hpp"
@@ -22,14 +23,14 @@ void scam::applyError(ScamValue args,
 
     string str;
     ScamValue objs;
-    if ( ! wantString(name, helper, cont, str) ) {
+    if ( ! wantString(name, helper, cont, engine, str) ) {
         return;
     }
-    if ( ! wantZeroPlus(name, helper, cont, objs, isAnything) ) {
+    if ( ! wantZeroPlus(name, helper, cont, engine, objs, isAnything) ) {
         return;
     }
     const char * msg { "Internal error: This should be literally impossible" };
-    if ( ! finishArgs(name, helper, cont, msg) ) {
+    if ( ! finishArgs(name, helper, cont, engine, msg) ) {
         return;
     }
 
@@ -41,6 +42,6 @@ void scam::applyError(ScamValue args,
     }
 
     ScamValue err = makeError(s.str());
-    cont->handleValue(err);
+    engine->handleError(err);
 }
 

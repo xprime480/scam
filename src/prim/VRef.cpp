@@ -16,7 +16,7 @@ void scam::applyVRef(ScamValue args,
 
     VrefParser * parser = standardMemoryManager.make<VrefParser>();
     if ( ! parser->accept(args) ) {
-        failedArgParseMessage(myName, "(form*)", args, cont);
+        failedArgParseMessage(myName, "(form*)", args, cont, engine);
     }
     else {
         size_t idx = parser->getIndex();

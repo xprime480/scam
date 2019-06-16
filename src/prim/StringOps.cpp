@@ -1,6 +1,7 @@
 #include "prim/StringOps.hpp"
 
 #include "Continuation.hpp"
+#include "ScamEngine.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/ScamToInternal.hpp"
 #include "expr/SequenceOps.hpp"
@@ -37,12 +38,14 @@ namespace
     template <typename Comparator>
     extern void compareString(ScamValue args,
                               Continuation * cont,
+                              ScamEngine * engine,
                               const char * name,
                               Transformer transform,
                               Comparator compare);
 
     extern void transformString(ScamValue args,
                                 Continuation * cont,
+                                ScamEngine * engine,
                                 const char * name,
                                 Transformer transform);
 }
@@ -55,11 +58,11 @@ void scam::applyString(ScamValue args,
     ArgListHelper helper(args);
 
     ScamValue chars = makeNull();
-    if ( ! wantZeroPlus(name, helper, cont, chars, isChar) ) {
+    if ( ! wantZeroPlus(name, helper, cont, engine, chars, isChar) ) {
         return;
     }
     const char * msg { "only accepts one list of characters" };
-    if ( ! finishArgs(name, helper, cont, msg) ) {
+    if ( ! finishArgs(name, helper, cont, engine, msg) ) {
         return;
     }
 
@@ -85,11 +88,11 @@ void scam::applyMakeString(ScamValue args,
     ArgListHelper helper(args);
 
     int count;
-    if ( ! wantNonNegativeInteger(name, helper, cont, count) ) {
+    if ( ! wantNonNegativeInteger(name, helper, cont, engine, count) ) {
         return;
     }
     char c = wantOptional<char>(name, helper, cont, isChar, asChar, ' ');
-    if ( ! finishArgs(name, helper, cont) ) {
+    if ( ! finishArgs(name, helper, cont, engine) ) {
         return;
     }
 
@@ -106,10 +109,10 @@ void scam::applyStringLength(ScamValue args,
     ArgListHelper helper(args);
 
     string value;
-    if ( ! wantString(name, helper, cont, value) ) {
+    if ( ! wantString(name, helper, cont, engine, value) ) {
         return;
     }
-    if ( ! finishArgs(name, helper, cont) ) {
+    if ( ! finishArgs(name, helper, cont, engine) ) {
         return;
     }
 
@@ -124,14 +127,14 @@ void scam::applyStringRef(ScamValue args,
     ArgListHelper helper(args);
 
     string str;
-    if ( ! wantString(name, helper, cont, str) ) {
+    if ( ! wantString(name, helper, cont, engine, str) ) {
         return;
     }
     int idx;
-    if ( ! wantIndex(name, helper, cont, idx, 0) ) {
+    if ( ! wantIndex(name, helper, cont, engine, idx, 0) ) {
         return;
     }
-    if ( ! finishArgs(name, helper, cont) ) {
+    if ( ! finishArgs(name, helper, cont, engine) ) {
         return;
     }
 
@@ -147,18 +150,18 @@ void scam::applyStringSetX(ScamValue args,
     ArgListHelper helper(args);
 
     ScamValue original;
-    if ( ! wantMutableString(name, helper, cont, original) ) {
+    if ( ! wantMutableString(name, helper, cont, engine, original) ) {
         return;
     }
     int idx;
-    if ( ! wantIndex(name, helper, cont, idx, 0) ) {
+    if ( ! wantIndex(name, helper, cont, engine, idx, 0) ) {
         return;
     }
     char c;
-    if ( ! wantChar(name, helper, cont, c) ) {
+    if ( ! wantChar(name, helper, cont, engine, c) ) {
         return;
     }
-    if ( ! finishArgs(name, helper, cont) ) {
+    if ( ! finishArgs(name, helper, cont, engine) ) {
         return;
     }
 
@@ -181,7 +184,7 @@ void scam::applyStringEqP(ScamValue args,
                           ScamEngine * engine)
 {
     static const char * name { "string=?" };
-    compareString(args, cont, name, identityString, eqString());
+    compareString(args, cont, engine, name, identityString, eqString());
 }
 
 void scam::applyStringCiEqP(ScamValue args,
@@ -189,7 +192,7 @@ void scam::applyStringCiEqP(ScamValue args,
                             ScamEngine * engine)
 {
     static const char * name { "string-ci=?" };
-    compareString(args, cont, name, downcaseString, eqString());
+    compareString(args, cont, engine, name, downcaseString, eqString());
 }
 
 void scam::applyStringLtP(ScamValue args,
@@ -197,7 +200,7 @@ void scam::applyStringLtP(ScamValue args,
                           ScamEngine * engine)
 {
     static const char * name { "string<?" };
-    compareString(args, cont, name, identityString, ltString());
+    compareString(args, cont, engine, name, identityString, ltString());
 }
 
 void scam::applyStringCiLtP(ScamValue args,
@@ -205,7 +208,7 @@ void scam::applyStringCiLtP(ScamValue args,
                             ScamEngine * engine)
 {
     static const char * name { "string-ci<?" };
-    compareString(args, cont, name, downcaseString, ltString());
+    compareString(args, cont, engine, name, downcaseString, ltString());
 }
 
 void scam::applyStringLeP(ScamValue args,
@@ -213,7 +216,7 @@ void scam::applyStringLeP(ScamValue args,
                           ScamEngine * engine)
 {
     static const char * name { "string<=?" };
-    compareString(args, cont, name, identityString, leString());
+    compareString(args, cont, engine, name, identityString, leString());
 }
 
 void scam::applyStringCiLeP(ScamValue args,
@@ -221,7 +224,7 @@ void scam::applyStringCiLeP(ScamValue args,
                             ScamEngine * engine)
 {
     static const char * name { "string-ci<=?" };
-    compareString(args, cont, name, downcaseString, leString());
+    compareString(args, cont, engine, name, downcaseString, leString());
 }
 
 void scam::applyStringGtP(ScamValue args,
@@ -229,7 +232,7 @@ void scam::applyStringGtP(ScamValue args,
                           ScamEngine * engine)
 {
     static const char * name { "string>?" };
-    compareString(args, cont, name, identityString, gtString());
+    compareString(args, cont, engine, name, identityString, gtString());
 }
 
 void scam::applyStringCiGtP(ScamValue args,
@@ -237,7 +240,7 @@ void scam::applyStringCiGtP(ScamValue args,
                             ScamEngine * engine)
 {
     static const char * name { "string-ci>?" };
-    compareString(args, cont, name, downcaseString, gtString());
+    compareString(args, cont, engine, name, downcaseString, gtString());
 }
 
 void scam::applyStringGeP(ScamValue args,
@@ -245,7 +248,7 @@ void scam::applyStringGeP(ScamValue args,
                           ScamEngine * engine)
 {
     static const char * name { "string>=?" };
-    compareString(args, cont, name, identityString, geString());
+    compareString(args, cont, engine, name, identityString, geString());
 }
 
 void scam::applyStringCiGeP(ScamValue args,
@@ -253,21 +256,21 @@ void scam::applyStringCiGeP(ScamValue args,
                             ScamEngine * engine)
 {
     static const char * name { "string-ci>=?" };
-    compareString(args, cont, name, downcaseString, geString());
+    compareString(args, cont, engine, name, downcaseString, geString());
 }
 
 void scam::applyStringUpcase(ScamValue args,
                              Continuation * cont,
                              ScamEngine * engine)
 {
-    transformString(args, cont, "string-upcase", upcaseString);
+    transformString(args, cont, engine, "string-upcase", upcaseString);
 }
 
 void scam::applyStringDowncase(ScamValue args,
                                Continuation * cont,
                                ScamEngine * engine)
 {
-    transformString(args, cont, "string-downcase", downcaseString);
+    transformString(args, cont, engine, "string-downcase", downcaseString);
 }
 
 void scam::applyStringAppend(ScamValue args,
@@ -278,11 +281,11 @@ void scam::applyStringAppend(ScamValue args,
     ArgListHelper helper(args);
 
     ScamValue strs = makeNull();
-    if ( ! wantZeroPlus(name, helper, cont, strs, isString) ) {
+    if ( ! wantZeroPlus(name, helper, cont, engine, strs, isString) ) {
         return;
     }
     const char * msg { "only accepts string parameters" };
-    if ( ! finishArgs(name, helper, cont, msg) ) {
+    if ( ! finishArgs(name, helper, cont, engine, msg) ) {
         return;
     }
 
@@ -303,7 +306,7 @@ void scam::applyString2List(ScamValue args,
     ArgListHelper helper(args);
 
     string str;
-    if ( ! wantString(name, helper, cont, str) ) {
+    if ( ! wantString(name, helper, cont, engine, str) ) {
         return;
     }
     int start = wantOptional<int>(name,
@@ -319,7 +322,7 @@ void scam::applyString2List(ScamValue args,
                                 asInteger,
                                 str.size());
     const char * msg { "invalid parameter list" };
-    if ( ! finishArgs(name, helper, cont, msg) ) {
+    if ( ! finishArgs(name, helper, cont, engine, msg) ) {
         return;
     }
 
@@ -341,11 +344,11 @@ extern void scam::applyList2String(ScamValue args,
     ArgListHelper helper(args);
 
     ScamValue chars = makeNull();
-    if ( ! wantSublistOf(name, helper, cont, chars, isChar) ) {
+    if ( ! wantSublistOf(name, helper, cont, engine, chars, isChar) ) {
         return;
     }
     const char * msg { "only accepts character parameters" };
-    if ( ! finishArgs(name, helper, cont, msg) ) {
+    if ( ! finishArgs(name, helper, cont, engine, msg) ) {
         return;
     }
 
@@ -367,7 +370,7 @@ void scam::applyStringCopy(ScamValue args,
     ArgListHelper helper(args);
 
     string str;
-    if ( ! wantString(name, helper, cont, str) ) {
+    if ( ! wantString(name, helper, cont, engine, str) ) {
         return;
     }
     int start = wantOptional<int>(name,
@@ -383,7 +386,7 @@ void scam::applyStringCopy(ScamValue args,
                                 asInteger,
                                 str.size());
     const char * msg { "invalid argument list" };
-    if ( ! finishArgs(name, helper, cont, msg) ) {
+    if ( ! finishArgs(name, helper, cont, engine, msg) ) {
         return;
     }
 
@@ -400,15 +403,15 @@ void scam::applyStringCopyX(ScamValue args,
     ArgListHelper helper(args);
 
     ScamValue toValue;
-    if ( ! wantMutableString(name, helper, cont, toValue) ) {
+    if ( ! wantMutableString(name, helper, cont, engine, toValue) ) {
         return;
     }
     int at;
-    if ( ! wantIndex(name, helper, cont, at, 0) ) {
+    if ( ! wantIndex(name, helper, cont, engine, at, 0) ) {
         return;
     }
     string fromStr;
-    if ( ! wantString(name, helper, cont, fromStr) ) {
+    if ( ! wantString(name, helper, cont, engine, fromStr) ) {
         return;
     }
     int start = wantOptional<int>(name,
@@ -424,7 +427,7 @@ void scam::applyStringCopyX(ScamValue args,
                                 asInteger,
                                 fromStr.size());
     const char * msg { "invalid argument list" };
-    if ( ! finishArgs(name, helper, cont, msg) ) {
+    if ( ! finishArgs(name, helper, cont, engine, msg) ) {
         return;
     }
 
@@ -442,7 +445,7 @@ void scam::applyStringCopyX(ScamValue args,
             makeErrorExtended(name,
                               ": Insufficient room in destination",
                               " to copy source");
-        cont->handleValue(err);
+        engine->handleError(err);
         return;
     }
 
@@ -468,13 +471,13 @@ void scam::applyStringFillX(ScamValue args,
     ArgListHelper helper(args);
 
     ScamValue strValue;
-    if ( ! wantMutableString(name, helper, cont, strValue) ) {
+    if ( ! wantMutableString(name, helper, cont, engine, strValue) ) {
         return;
     }
     string toStr = asString(strValue);
 
     char fill;
-    if ( ! wantChar(name, helper, cont, fill) ) {
+    if ( ! wantChar(name, helper, cont, engine, fill) ) {
         return;
     }
     int start = wantOptional<int>(name,
@@ -490,7 +493,7 @@ void scam::applyStringFillX(ScamValue args,
                                 asInteger,
                                 toStr.size());
     const char * msg { "invalid parameter list" };
-    if ( ! finishArgs(name, helper, cont, msg) ) {
+    if ( ! finishArgs(name, helper, cont, engine, msg) ) {
         return;
     }
 
@@ -540,6 +543,7 @@ namespace
     template <typename Comparator>
     void compareString(ScamValue args,
                        Continuation * cont,
+                       ScamEngine * engine,
                        const char * name,
                        Transformer transform,
                        Comparator compare)
@@ -547,11 +551,13 @@ namespace
         ArgListHelper helper(args);
 
         ScamValue strs;
-        if ( ! wantCount(name, helper, cont, strs, isString, 2, 9999) ) {
+        bool ok =
+            wantCount(name, helper, cont, engine, strs, isString, 2, 9999);
+        if ( ! ok ) {
             return;
         }
         const char * msg { "invalid parameter list" };
-        if ( ! finishArgs(name, helper, cont, msg) ) {
+        if ( ! finishArgs(name, helper, cont, engine, msg) ) {
             return;
         }
 
@@ -570,17 +576,18 @@ namespace
 
     void transformString(ScamValue args,
                          Continuation * cont,
+                         ScamEngine * engine,
                          const char * name,
                          Transformer transformer)
     {
         ArgListHelper helper(args);
 
         string text;
-        if ( ! wantString(name, helper, cont, text) ) {
+        if ( ! wantString(name, helper, cont, engine, text) ) {
             return;
         }
         const char * msg { "invalid parameter list" };
-        if ( ! finishArgs(name, helper, cont, msg) ) {
+        if ( ! finishArgs(name, helper, cont, engine, msg) ) {
             return;
         }
 

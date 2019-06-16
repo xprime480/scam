@@ -21,7 +21,7 @@ void scam::applyVLen(ScamValue args,
         = standardMemoryManager.make<SingletonParser>(vec);
 
     if ( ! parser->accept(args) ) {
-        failedArgParseMessage(myName, "(vec)", args, cont);
+        failedArgParseMessage(myName, "(vec)", args, cont, engine);
     }
     else {
         size_t len = length(parser->get());

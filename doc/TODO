@@ -46,3 +46,13 @@
 
 * Need a better unit test framework.  Current one is too much boilerplate.
   A pure scam framework would be ideal :).
+
+* Is it worth it to make the ScamInstance a global parameter, and make it
+  the only way.  Is it really ever going to be necessary to have more than
+  one engine at once?
+
+* ClassInitWorker::run could probably use the original continuation and
+  not need ClassInitCont.  See comments in the latter implementation file.
+
+* Error values need to be able to be created outside the garbage collector
+  framework so that they can be kept statically.

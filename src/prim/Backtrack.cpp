@@ -17,15 +17,15 @@ void scam::applyBacktrack(ScamValue args,
     static const char * myName = "backtrack";
 
     if ( ! isNull(args) ) {
-        failedArgParseMessage(myName, "()", args, cont);
+        failedArgParseMessage(myName, "()", args, cont, engine);
         return;
     }
 
     Backtracker * backtracker = engine->getBacktracker();
     if ( ! backtracker ) {
         static const string msg = "No current backtrack context";
-        static ScamValue rv = makeError(msg, false);
-        cont->handleValue(rv);
+        static ScamValue err = makeError(msg, false);
+        engine->handleError(err);
     }
     else {
         backtracker->run();

@@ -120,7 +120,11 @@ namespace
                 standardMemoryManager.make<NumericListParser>();  \
                                                                   \
             if ( ! parser->accept(args) ) {                       \
-                failedArgParseMessage(context.c_str(), "(num*)", args, cont); \
+                failedArgParseMessage(context.c_str(),            \
+                "(num*)",                                         \
+                args,                                             \
+                cont,                                             \
+                engine);                                          \
             }                                                     \
             else {                                                \
                 ScamValue rv = numericAlgorithm(parser, context, Proc); \

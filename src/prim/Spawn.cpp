@@ -15,7 +15,7 @@ void scam::applySpawn(ScamValue args,
                       ScamEngine * engine)
 {
     if ( ! isNull(args) ) {
-        failedArgParseMessage(myName, "()", args, cont);
+        failedArgParseMessage(myName, "()", args, cont, engine);
     }
     else {
         workQueueHelper<SpawnWorker>(cont, engine, true);

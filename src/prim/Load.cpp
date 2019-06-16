@@ -23,7 +23,11 @@ namespace
 {
     extern string findFileOnPath(string const & filename);
     extern bool fileExists(string fullpath);
-    extern void fileNotFound(string const & filename, Continuation * cont);
+
+    extern void fileNotFound(string const & filename,
+                             Continuation * cont,
+                             ScamEngine * engine);
+
     extern ScamValue getPath();
     extern ScamValue defaultPath();
     extern ScamValue convertPath(char const * path);
@@ -41,7 +45,7 @@ void scam::applyLoad(ScamValue args,
     SingletonParser * parser
         = standardMemoryManager.make<SingletonParser>(str);
     if ( ! parser->accept(args) ) {
-        failedArgParseMessage(myName, "(filename-string)", args, cont);
+        failedArgParseMessage(myName, "(filename-string)", args, cont, engine);
         return;
     }
 
@@ -49,14 +53,14 @@ void scam::applyLoad(ScamValue args,
     if ( engine->isLoaded(filename) ) {
         ScamValue err =
             makeErrorExtended("file \"", filename, "\" already loaded");
-        cont->handleValue(err);
+        engine->handleError(err);
         return;
     }
 
     ifstream source;
     string fullpath = findFileOnPath(filename);
     if ( fullpath.empty() ) {
-        fileNotFound(filename, cont);
+        fileNotFound(filename, cont, engine);
         return;
     }
 
@@ -106,10 +110,12 @@ namespace
         return false;
     }
 
-    void fileNotFound(string const & filename, Continuation * cont)
+    void fileNotFound(string const & filename,
+                      Continuation * cont,
+                      ScamEngine * engine)
     {
         ScamValue err = makeErrorExtended("Unable to open file ", filename);
-        cont->handleValue(err);
+        engine->handleError(err);
     }
 
     ScamValue getPath()

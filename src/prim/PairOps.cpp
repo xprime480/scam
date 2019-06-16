@@ -14,10 +14,12 @@ namespace
 {
     extern ScamValue carCdrCommon(ScamValue args,
                                   Continuation * cont,
+                                  ScamEngine * engine,
                                   const char * name);
 
     extern bool setCarCdrCommon(ScamValue args,
                                 Continuation * cont,
+                                ScamEngine * engine,
                                 const char * name,
                                 ScamValue & pair,
                                 ScamValue & obj);
@@ -27,7 +29,7 @@ void scam::applyCar(ScamValue args,
                     Continuation * cont,
                     ScamEngine * engine)
 {
-    ScamValue obj = carCdrCommon(args, cont, "car");
+    ScamValue obj = carCdrCommon(args, cont, engine, "car");
     if ( ! isNothing(obj) ) {
         ScamValue car = getCar(obj);
         cont->handleValue(car);
@@ -38,7 +40,7 @@ void scam::applyCdr(ScamValue args,
                     Continuation * cont,
                     ScamEngine * engine)
 {
-    ScamValue obj = carCdrCommon(args, cont, "cdr");
+    ScamValue obj = carCdrCommon(args, cont, engine, "cdr");
     if ( ! isNothing(obj) ) {
         ScamValue car = getCdr(obj);
         cont->handleValue(car);
@@ -52,7 +54,7 @@ void scam::applyCons(ScamValue args,
     static const char * name = "cons";
 
     ScamValue obj1, obj2;
-    if ( ! getTwoObjs(args, cont, name, obj1, obj2) ) {
+    if ( ! getTwoObjs(args, cont, engine, name, obj1, obj2) ) {
         return;
     }
 
@@ -67,7 +69,7 @@ void scam::applySetCarX(ScamValue args,
     static const char * name = "set-car!";
 
     ScamValue pair, obj;
-    if ( setCarCdrCommon(args, cont, name, pair, obj) ) {
+    if ( setCarCdrCommon(args, cont, engine, name, pair, obj) ) {
         CAR(pair) = obj;
         cont->handleValue(makeNothing());
     }
@@ -80,7 +82,7 @@ void scam::applySetCdrX(ScamValue args,
     static const char * name = "set-cdr!";
 
     ScamValue pair, obj;
-    if ( setCarCdrCommon(args, cont, name, pair, obj) ) {
+    if ( setCarCdrCommon(args, cont, engine, name, pair, obj) ) {
         CDR(pair) = obj;
         cont->handleValue(makeNothing());
     }
@@ -90,15 +92,16 @@ namespace
 {
     ScamValue carCdrCommon(ScamValue args,
                            Continuation * cont,
+                           ScamEngine * engine,
                            const char * name)
     {
         ArgListHelper helper(args);
 
         ScamValue pair;
-        if ( ! wantPair(name, helper, cont, pair) ) {
+        if ( ! wantPair(name, helper, cont, engine, pair) ) {
             return makeNothing();
         }
-        if ( ! finishArgs(name, helper, cont) ) {
+        if ( ! finishArgs(name, helper, cont, engine) ) {
             return makeNothing();
         }
         return pair;
@@ -106,19 +109,20 @@ namespace
 
     bool setCarCdrCommon(ScamValue args,
                          Continuation * cont,
+                         ScamEngine * engine,
                          const char * name,
                          ScamValue & pair,
                          ScamValue & obj)
     {
         ArgListHelper helper(args);
 
-        if ( ! wantMutablePair(name, helper, cont, pair) ) {
+        if ( ! wantMutablePair(name, helper, cont, engine, pair) ) {
             return false;
         }
-        if ( ! wantObject(name, helper, cont, obj) ) {
+        if ( ! wantObject(name, helper, cont, engine, obj) ) {
             return false;
         }
-        if ( ! finishArgs(name, helper, cont) ) {
+        if ( ! finishArgs(name, helper, cont, engine) ) {
             return false;
         }
         return true;

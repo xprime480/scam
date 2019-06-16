@@ -110,7 +110,11 @@ namespace
         RelopsListParser * parser =                              \
             standardMemoryManager.make<RelopsListParser>();      \
         if ( ! parser->accept(args) ) {                          \
-            failedArgParseMessage(context.c_str(), "(num*)", args, cont); \
+            failedArgParseMessage(context.c_str(),               \
+                                  "(num*)",                      \
+                                  args,                          \
+                                  cont,                          \
+                                  engine);                       \
         }                                                        \
         else {                                                   \
             ScamValue rv = compareAlgorithm(parser, context, Impl);  \

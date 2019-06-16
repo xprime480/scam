@@ -1,6 +1,7 @@
 #include "util/ArgListHelper.hpp"
 
 #include "Continuation.hpp"
+#include "ScamEngine.hpp"
 #include "ScamException.hpp"
 #include "expr/ExtendedNumeric.hpp"
 #include "expr/ScamToInternal.hpp"
@@ -403,7 +404,8 @@ ScamValue scam::compareAlgorithm(RelopsListParser * parser,
 void scam::failedArgParseMessage(const char * who,
                                  const char * exp,
                                  ScamValue act,
-                                 Continuation * cont)
+                                 Continuation * cont,
+                                 ScamEngine * engine)
 {
     ScamValue err = makeErrorExtended(who,
                                       " expected \"",
@@ -411,7 +413,7 @@ void scam::failedArgParseMessage(const char * who,
                                       "\"; got \"",
                                       writeValue(act),
                                       "\"");
-    cont->handleValue(err);
+    engine->handleError(err);
 }
 
 
@@ -428,6 +430,7 @@ namespace
     template <typename F>
     bool wantOneValue(const char * name,
                       Continuation * cont,
+                      ScamEngine * engine,
                       F getter)
     {
         ScamValue status = getter();
@@ -436,7 +439,7 @@ namespace
         }
 
         ScamValue err = makeErrorExtended(name, ": ", writeValue(status));
-        cont->handleValue(err);
+        engine->handleError(err);
         return false;
     }
 }
@@ -444,54 +447,59 @@ namespace
 bool scam::wantObject(const char * name,
                       ArgListHelper & helper,
                       Continuation * cont,
+                      ScamEngine * engine,
                       ScamValue & value)
 {
     auto func = [&] () -> ScamValue
     {
         return helper.getAnyValue(value);
     };
-    return wantOneValue(name, cont, func);
+    return wantOneValue(name, cont, engine, func);
 }
 
 bool scam::wantChar(const char * name,
                     ArgListHelper & helper,
                     Continuation * cont,
+                    ScamEngine * engine,
                     char & c)
 {
     auto func = [&] () -> ScamValue
     {
         return helper.getCharacter(c);
     };
-    return wantOneValue(name, cont, func);
+    return wantOneValue(name, cont, engine, func);
 }
 
 bool scam::wantNonNegativeInteger(const char * name,
                                   ArgListHelper & helper,
                                   Continuation * cont,
+                                  ScamEngine * engine,
                                   int & count)
 {
     auto func = [&] () -> ScamValue
     {
         return helper.getNonNegativeInteger(count);
     };
-    return wantOneValue(name, cont, func);
+    return wantOneValue(name, cont, engine, func);
 }
 
 bool scam::wantString(const char * name,
                       ArgListHelper & helper,
                       Continuation * cont,
+                      ScamEngine * engine,
                       string & str)
 {
     auto func = [&] () -> ScamValue
     {
         return helper.getString(str);
     };
-    return wantOneValue(name, cont, func);
+    return wantOneValue(name, cont, engine, func);
 }
 
 bool scam::wantMutableString(const char * name,
                              ArgListHelper & helper,
                              Continuation * cont,
+                             ScamEngine * engine,
                              ScamValue & value)
 {
     auto func = [&] () -> ScamValue
@@ -514,24 +522,26 @@ bool scam::wantMutableString(const char * name,
         return makeNothing();
     };
 
-    return wantOneValue(name, cont, func);
+    return wantOneValue(name, cont, engine, func);
 }
 
 bool scam::wantPair(const char * name,
                     ArgListHelper & helper,
                     Continuation * cont,
+                    ScamEngine * engine,
                     ScamValue & value)
 {
     auto func = [&] () -> ScamValue
     {
         return helper.getPair(value);
     };
-    return wantOneValue(name, cont, func);
+    return wantOneValue(name, cont, engine, func);
 }
 
 bool scam::wantMutablePair(const char * name,
                            ArgListHelper & helper,
                            Continuation * cont,
+                           ScamEngine * engine,
                            ScamValue & value)
 {
     auto func = [&] () -> ScamValue
@@ -553,12 +563,13 @@ bool scam::wantMutablePair(const char * name,
         return makeNothing();
     };
 
-    return wantOneValue(name, cont, func);
+    return wantOneValue(name, cont, engine, func);
 }
 
 bool scam::wantIndex(const char * name,
                      ArgListHelper & helper,
                      Continuation * cont,
+                     ScamEngine * engine,
                      int & index,
                      int ref)
 {
@@ -566,12 +577,13 @@ bool scam::wantIndex(const char * name,
     {
         return helper.getIndex(index, ref);
     };
-    return wantOneValue(name, cont, func);
+    return wantOneValue(name, cont, engine, func);
 }
 
 bool scam::wantZeroPlus(const char * name,
                         ArgListHelper & helper,
                         Continuation * cont,
+                        ScamEngine * engine,
                         ScamValue & value,
                         ValuePredicate pred)
 {
@@ -582,13 +594,14 @@ bool scam::wantZeroPlus(const char * name,
     }
 
     ScamValue err = makeErrorExtended(name, ": ", writeValue(status));
-    cont->handleValue(err);
+    engine->handleError(err);
     return false;
 }
 
 bool scam::wantCount(const char * name,
                      ArgListHelper & helper,
                      Continuation * cont,
+                     ScamEngine * engine,
                      ScamValue & value,
                      ValuePredicate pred,
                      int min,
@@ -601,13 +614,14 @@ bool scam::wantCount(const char * name,
     }
 
     ScamValue err = makeErrorExtended(name, ": ", writeValue(status));
-    cont->handleValue(err);
+    engine->handleError(err);
     return false;
 }
 
 bool scam::wantSublistOf(const char * name,
                          ArgListHelper & helper,
                          Continuation * cont,
+                         ScamEngine * engine,
                          ScamValue & value,
                          ValuePredicate pred)
 {
@@ -618,13 +632,14 @@ bool scam::wantSublistOf(const char * name,
     }
 
     ScamValue err = makeErrorExtended(name, ": ", writeValue(status));
-    cont->handleValue(err);
+    engine->handleError(err);
     return false;
 }
 
 bool scam::finishArgs(const char * name,
                       ArgListHelper & helper,
                       Continuation * cont,
+                      ScamEngine * engine,
                       const char * msg)
 {
     ScamValue status = helper.finish();
@@ -634,25 +649,26 @@ bool scam::finishArgs(const char * name,
 
     ScamValue err =
         makeErrorExtended(name, ": ", (msg ? msg : writeValue(status)));
-    cont->handleValue(err);
+    engine->handleError(err);
     return false;
 }
 
 bool scam::getTwoObjs(ScamValue args,
                       Continuation * cont,
+                      ScamEngine * engine,
                       const char * name,
                       ScamValue & obj1,
                       ScamValue & obj2)
 {
     ArgListHelper helper(args);
 
-    if ( ! wantObject(name, helper, cont, obj1) ) {
+    if ( ! wantObject(name, helper, cont, engine, obj1) ) {
         return false;
     }
-    if ( ! wantObject(name, helper, cont, obj2) ) {
+    if ( ! wantObject(name, helper, cont, engine, obj2) ) {
         return false;
     }
-    if ( ! finishArgs(name, helper, cont) ) {
+    if ( ! finishArgs(name, helper, cont, engine) ) {
         return false;
     }
 
