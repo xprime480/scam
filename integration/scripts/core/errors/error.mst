@@ -1,9 +1,9 @@
-Take the length of some lists
+Raise errors
 
 ;[skip] uncomment to skip this test
 
 [name]
-List Length
+Error
 
 [input]
 
@@ -16,7 +16,6 @@ List Length
 ;;
 ;;(error? (error "wanted a list, got " 2 3 4))
 ;;
-
 
 [result]
 error: parameter 1 missing

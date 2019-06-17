@@ -1,4 +1,4 @@
-#include "prim/Error.hpp"
+#include "prim/ErrorOps.hpp"
 
 #include "Continuation.hpp"
 #include "ScamEngine.hpp"
@@ -29,8 +29,7 @@ void scam::applyError(ScamValue args,
     if ( ! wantZeroPlus(name, helper, cont, engine, objs, isAnything) ) {
         return;
     }
-    const char * msg { "Internal error: This should be literally impossible" };
-    if ( ! finishArgs(name, helper, cont, engine, msg) ) {
+    if ( ! finishArgs(name, helper, cont, engine) ) {
         return;
     }
 
@@ -43,5 +42,23 @@ void scam::applyError(ScamValue args,
 
     ScamValue err = makeError(s.str());
     engine->handleError(err);
+}
+
+void scam::applyRaise(ScamValue args,
+                      Continuation * cont,
+                      ScamEngine * engine)
+{
+    static const char * name = "raise";
+    ArgListHelper helper(args);
+
+    ScamValue obj;
+    if ( ! wantObject(name, helper, cont, engine, obj) ) {
+        return;
+    }
+    if ( ! finishArgs(name, helper, cont, engine) ) {
+        return;
+    }
+
+    engine->handleError(obj);
 }
 

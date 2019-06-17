@@ -3,7 +3,7 @@ Quasiquote with splicing
 ;[skip] uncomment to skip this test
 
 [name]
-Splicing
+Splice
 
 [input]
 
@@ -18,4 +18,3 @@ Splicing
 (+ x 3 100 2)
 (3 100)
 (+ x 2)
-

@@ -23,6 +23,7 @@ namespace
     extern void addStringOps(Env * env, ScamEngine * engine);
     extern void addPairOps(Env * env, ScamEngine * engine);
     extern void addListOps(Env * env, ScamEngine * engine);
+    extern void addErrorOps(Env * env, ScamEngine * engine);
 }
 
 void ScamEngine::getStandardEnv()
@@ -100,13 +101,13 @@ void ScamEngine::getStandardEnv()
 
     addPrimitive(env, "load", applyLoad, this);
     addPrimitive(env, "spawn", applySpawn, this);
-    addPrimitive(env, "error", applyError, this);
     addPrimitive(env, "backtrack", applyBacktrack, this);
     addPrimitive(env, "trace", applyTrace, this);
 
     addStringOps(env, this);
     addPairOps(env, this);
     addListOps(env, this);
+    addErrorOps(env, this);
 }
 
 namespace
@@ -172,5 +173,11 @@ namespace
         addPrimitive(env, "make-list", applyMakeList, engine);
         addPrimitive(env, "list",      applyList,     engine);
         addPrimitive(env, "append",    applyAppend,   engine);
+    }
+
+    void addErrorOps(Env * env, ScamEngine * engine)
+    {
+        addPrimitive(env, "error", applyError, engine);
+        addPrimitive(env, "raise", applyRaise, engine);
     }
 }

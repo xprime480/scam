@@ -1,0 +1,25 @@
+Raise errors of different objects
+
+;[skip] uncomment to skip this test
+
+[name]
+Raise
+
+[input]
+
+(raise)
+(raise 1 2 3)
+(raise "bagels are not doughnuts")
+(raise 2)
+
+;; this one needs more infrastructure to work
+;;
+;;(error? (raise "wanted a list, got " 2 3 4))
+;;
+
+
+[result]
+raise: parameter 1 missing
+raise: 1 parameter needed, 3 given
+"bagels are not doughnuts"
+2

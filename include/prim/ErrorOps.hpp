@@ -1,11 +1,15 @@
-#if ! defined(PRIMITIVE_ERROR_H)
-#define PRIMITIVE_ERROR_H 1
+#if ! defined(ERROROPS_HPP)
+#define ERROROPS_HPP 1
 
 #include "ScamFwd.hpp"
 
 namespace scam
 {
     extern void applyError(ScamValue args,
+                           Continuation * cont,
+                           ScamEngine * engine);
+
+    extern void applyRaise(ScamValue args,
                            Continuation * cont,
                            ScamEngine * engine);
 }
