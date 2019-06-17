@@ -39,7 +39,7 @@ ClassInitWorker * ClassInitWorker::makeInstance(ScamValue instance,
     return new ClassInitWorker(instance, args, cont, env, engine);
 }
 
-void ClassInitWorker::mark() const
+void ClassInitWorker::mark()
 {
     if ( ! isMarked() ) {
         Worker::mark();

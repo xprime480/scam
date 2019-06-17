@@ -11,7 +11,7 @@ StringCharStream::StringCharStream(const string & input)
 {
 }
 
-void StringCharStream::mark() const
+void StringCharStream::mark()
 {
 }
 

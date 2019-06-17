@@ -33,7 +33,7 @@ AndCont * AndCont::makeInstance(ListParser * parser,
     return new AndCont(parser, cont, env, engine, n);
 }
 
-void AndCont::mark() const
+void AndCont::mark()
 {
     if ( ! isMarked() ) {
         Continuation::mark();

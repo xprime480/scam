@@ -17,7 +17,7 @@ namespace scam
         CharStreamTokenizer(CharStream & stream);
         ~CharStreamTokenizer();
 
-        void mark() const override;
+        void mark() override;
         Token next() override;
 
     private:

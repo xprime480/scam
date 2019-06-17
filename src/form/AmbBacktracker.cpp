@@ -33,7 +33,7 @@ AmbBacktracker * AmbBacktracker::makeInstance(ScamValue args,
     return new AmbBacktracker(args, cont, env, engine, parent);
 }
 
-void AmbBacktracker::mark() const
+void AmbBacktracker::mark()
 {
     if ( ! isMarked() ) {
         Backtracker::mark();

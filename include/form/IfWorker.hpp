@@ -26,7 +26,7 @@ namespace scam
                                        CountedListParser * parser);
 
     public:
-        void mark() const override;
+        void mark() override;
         void run() override;
 
     private:

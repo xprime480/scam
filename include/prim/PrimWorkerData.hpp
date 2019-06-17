@@ -20,7 +20,7 @@ namespace scam
         Env * env;
         ScamValue caller;
 
-        void mark() const;
+        void mark();
 
         void mapEval(ScamEngine * engine) const;
         void handleResult(ScamValue expr, ScamEngine * engine);

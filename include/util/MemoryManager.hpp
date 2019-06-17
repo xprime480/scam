@@ -51,9 +51,9 @@ namespace scam
 
       size_t createCount;
 
-      void mark() const;
+      void mark();
       void sweep();
-      void unmark() const;
+      void unmark();
     };
 
     // for now, a global variable!

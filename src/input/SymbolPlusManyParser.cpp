@@ -20,7 +20,7 @@ SymbolPlusManyParser * SymbolPlusManyParser::makeInstance()
     return new SymbolPlusManyParser;
 }
 
-void SymbolPlusManyParser::mark() const
+void SymbolPlusManyParser::mark()
 {
     if ( ! isMarked() ) {
         ArgParser::mark();

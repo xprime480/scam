@@ -31,8 +31,7 @@ namespace scam
                                           bool rebind);
 
     public:
-        void mark() const override;
-
+        void mark() override;
         void handleValue(ScamValue value) override;
 
     private:

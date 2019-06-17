@@ -26,7 +26,7 @@ PrimWorker * PrimWorker::makeInstance(Continuation * cont,
     return new PrimWorker(cont, env, engine, args, caller);
 }
 
-void PrimWorker::mark() const
+void PrimWorker::mark()
 {
     if ( ! isMarked() ) {
         Worker::mark();

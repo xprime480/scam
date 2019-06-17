@@ -23,7 +23,7 @@ RelopsListParser * RelopsListParser::makeInstance()
     return new RelopsListParser;
 }
 
-void RelopsListParser::mark() const
+void RelopsListParser::mark()
 {
     if ( ! isMarked() ) {
         ArgParser::mark();

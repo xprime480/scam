@@ -30,7 +30,7 @@ IfCont * IfCont::makeInstance(CountedListParser * parser,
     return new IfCont(parser, cont, env, engine);
 }
 
-void IfCont::mark() const
+void IfCont::mark()
 {
     if ( ! isMarked() ) {
         Continuation::mark();

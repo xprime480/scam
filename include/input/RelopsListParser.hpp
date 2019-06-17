@@ -19,7 +19,7 @@ namespace scam
         static RelopsListParser * makeInstance();
 
     public:
-        void mark() const override;
+        void mark() override;
         bool accept(ScamValue expr) override;
 
         bool isNumeric() const;

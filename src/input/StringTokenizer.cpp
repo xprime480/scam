@@ -9,7 +9,7 @@ StringTokenizer::StringTokenizer(string const & input)
 {
 }
 
-void StringTokenizer::mark() const
+void StringTokenizer::mark()
 {
     stream.mark();
     tokenizer.mark();

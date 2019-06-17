@@ -32,7 +32,7 @@ UndefineWorker * UndefineWorker::makeInstance(UndefineParser * parser,
     return new UndefineWorker(parser, cont, env, engine);
 }
 
-void UndefineWorker::mark() const
+void UndefineWorker::mark()
 {
     if ( ! isMarked() ) {
         Worker::mark();

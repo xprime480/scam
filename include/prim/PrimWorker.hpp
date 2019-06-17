@@ -25,7 +25,7 @@ namespace scam
                                          ScamValue caller);
 
     public:
-        void mark() const override;
+        void mark() override;
         void run() override;
 
     private:

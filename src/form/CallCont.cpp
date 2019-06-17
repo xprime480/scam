@@ -25,7 +25,7 @@ CallCont::makeInstance(Continuation * cont, Env * env, ScamEngine * engine)
     return new CallCont(cont, env, engine);
 }
 
-void CallCont::mark() const
+void CallCont::mark()
 {
     if ( ! isMarked() ) {
         Continuation::mark();

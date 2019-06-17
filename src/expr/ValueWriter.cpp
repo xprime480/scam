@@ -35,7 +35,7 @@ string scam::writeValue(ScamValue data)
     else {
         switch ( data->type ) {
         case ScamData::Boolean:
-            s << (BOOLVAL(data) ? "#t" : "#f");
+            s << (data->boolValue() ? "#t" : "#f");
             break;
 
         case ScamData::ByteVector:
@@ -43,7 +43,7 @@ string scam::writeValue(ScamValue data)
             break;
 
         case ScamData::Character:
-            s << "#\\" << CHARVAL(data);
+            s << "#\\" << data->charValue();
             break;
 
         case ScamData::Class:
@@ -69,11 +69,11 @@ string scam::writeValue(ScamValue data)
         case ScamData::Error:
         case ScamData::Keyword:
         case ScamData::Symbol:
-            s << STRVAL(data);
+            s << data->stringValue();
             break;
 
         case ScamData::String:
-            s << '"' << STRVAL(data) << '"';
+            s << '"' << data->stringValue() << '"';
             break;
 
 
@@ -94,15 +94,15 @@ string scam::writeValue(ScamValue data)
             break;
 
         case ScamData::SpecialForm:
-            s << "Special Form " << STRVAL(data);
+            s << "Special Form " << data->sfName();
             break;
 
         case ScamData::Primitive:
-            s << "Primitive " << STRVAL(data);
+            s << "Primitive " << data->primName();
             break;
 
         case ScamData::Port:
-            s << PORT(data)->describe();
+            s << data->portValue()->describe();
             break;
 
         default:
@@ -134,9 +134,10 @@ namespace
     void writeByteVector(stringstream & s, ScamValue data)
     {
         string sep { "" };
+        const ScamData::ByteVectorData & bv = data->byteVectorData();
 
         s << "#u8(";
-        for ( auto const & e : BYTEVECTOR(data) ) {
+        for ( auto const & e : bv ) {
             s << sep << (int)e;
             sep = " ";
         }
@@ -147,21 +148,21 @@ namespace
     {
         s << "(";
 
-        if ( MACROLIKE(data) ) {
+        if ( data->closureMacroLike() ) {
             s << "macro ";
         }
         else {
             s << "lambda ";
         }
-        s << writeValue(CLOSUREDEF(data)->getArgs()->getValue());
+        s << writeValue(data->closureDef()->getArgs()->getValue());
         s << " ";
 
-        const size_t count = CLOSUREDEF(data)->getFormCount();
+        const size_t count = data->closureDef()->getFormCount();
         for ( size_t idx = 0 ; idx < count ; ++ idx ) {
             if ( idx > 0 ) {
                 s << " ";
             }
-            s << writeValue(CLOSUREDEF(data)->getForm(idx));
+            s << writeValue(data->closureDef()->getForm(idx));
         }
 
         s << ")";
@@ -170,8 +171,8 @@ namespace
     void writePair(stringstream & s, ScamValue data)
     {
         s << "(";
-        s << writeValue(CAR(data));
-        ScamValue next = CDR(data);
+        s << writeValue(data->carValue());
+        ScamValue next = data->cdrValue();
         while ( ! isNull(next) ) {
             if ( isPair(next) ) {
                 s << " " << writeValue(getCar(next));
@@ -187,14 +188,17 @@ namespace
 
     void writeDict(stringstream & s, ScamValue data)
     {
+        ScamData::DictKeyData   & keys = data->dictKeys();
+        ScamData::DictValueData & vals = data->dictValues();
+
         s << "{";
 
-        for ( size_t idx = 0 ; idx < DICTKEYS(data).size() ; ++idx ) {
-            s << " " << writeValue(DICTKEYS(data)[idx])
-              << " " << writeValue(DICTVALS(data)[idx]);
+        for ( size_t idx = 0 ; idx < keys.size() ; ++idx ) {
+            s << " " << writeValue(keys[idx])
+              << " " << writeValue(vals[idx]);
         }
 
-        if ( DICTKEYS(data).size() ) {
+        if ( keys.size() ) {
             s << " ";
         }
 
@@ -214,13 +218,13 @@ namespace
             s << "+inf.0";
         }
         else if ( isInteger(hack) ) {
-            s << INTVAL(data);
+            s << data->intPart();
         }
         else if ( isRational(hack) ) {
-            s << NUMPART(data) << "/" << DENPART(data);
+            s << data->numPart() << "/" << data->denPart();
         }
         else if ( isReal(hack) ) {
-            s << REALVAL(data);
+            s << data->realValue();
         }
         else if ( isComplex(hack) ) {
             //
@@ -230,8 +234,8 @@ namespace
             // "-i", so the latter is used for the representation.  The
             // real pa
             //
-            ScamValue r { REALPART(data) };
-            ScamValue i { IMAGPART(data) };
+            ScamValue r { data->realPart() };
+            ScamValue i { data->imagPart() };
 
             if ( ! isInteger(r) || 0 != asInteger(r) ) {
                 s << writeValue(r);
@@ -263,10 +267,12 @@ namespace
 
     void writeVector(stringstream & s, ScamValue data)
     {
+        const ScamData::VectorData & vec = data->vectorData();
+
         string sep { "" };
 
         s << "#(";
-        for ( auto const & e : VECTOR(data) ) {
+        for ( auto const & e : vec ) {
             s << sep << writeValue(e);
             sep = " ";
         }

@@ -20,7 +20,7 @@ CdrContinuation::makeInstance(WorkerData const & data, ScamEngine * engine)
     return new CdrContinuation(data, engine);
 }
 
-void CdrContinuation::mark() const
+void CdrContinuation::mark()
 {
     if ( ! isMarked() ) {
         Continuation::mark();

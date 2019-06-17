@@ -21,7 +21,7 @@ BindFormParser * BindFormParser::makeInstance()
     return new BindFormParser;
 }
 
-void BindFormParser::mark() const
+void BindFormParser::mark()
 {
     if ( ! isMarked() ) {
         ArgParser::mark();

@@ -38,7 +38,7 @@ bool scam::truth(ScamValue data)
         return true;
     }
 
-    return BOOLVAL(data);
+    return data->boolValue();
 }
 
 bool scam::isBoolean(ScamValue data)
@@ -79,7 +79,7 @@ bool scam::isExact(ScamValue data)
         throw ScamException(s.str());
     }
 
-    return EXACT(data);
+    return data->exactFlag();
 }
 
 bool scam::isComplex(ScamValue data)
@@ -143,7 +143,7 @@ bool scam::isList(ScamValue data)
         return true;
     }
     if ( isPair(data) ) {
-        ScamValue cdr = CDR(data);
+        ScamValue cdr = data->cdrValue();
         return isList(cdr);
     }
 

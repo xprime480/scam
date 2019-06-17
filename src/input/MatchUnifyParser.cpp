@@ -19,7 +19,7 @@ MatchUnifyParser * MatchUnifyParser::makeInstance(bool match)
     return new MatchUnifyParser(match);
 }
 
-void MatchUnifyParser::mark() const
+void MatchUnifyParser::mark()
 {
     if ( ! isMarked() ) {
         ArgParser::mark();

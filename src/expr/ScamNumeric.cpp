@@ -23,7 +23,7 @@ ScamValue scam::realPart(ScamValue data)
     }
 
     if ( isPureComplex(data) ) {
-        return REALPART(data);
+        return data->realPart();
     }
 
     return data;
@@ -39,7 +39,7 @@ ScamValue scam::imagPart(ScamValue data)
     }
 
     if ( isPureComplex(data) ) {
-        return IMAGPART(data);
+        return data->imagPart();
     }
 
     return makeInteger(0, true);

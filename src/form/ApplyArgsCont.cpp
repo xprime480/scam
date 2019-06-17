@@ -28,7 +28,7 @@ ApplyArgsCont * ApplyArgsCont::makeInstance(ScamValue op,
     return new ApplyArgsCont(op, cont, env, engine);
 }
 
-void ApplyArgsCont::mark() const
+void ApplyArgsCont::mark()
 {
     if ( ! isMarked() ) {
         Continuation::mark();

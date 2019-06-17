@@ -23,7 +23,7 @@ namespace scam
         static LambdaParser * makeInstance();
 
     public:
-        void mark() const override;
+        void mark() override;
         bool accept(ScamValue expr) override;
         void clearValue() override;
 

@@ -10,7 +10,7 @@ ReplTokenizer::ReplTokenizer()
 {
 }
 
-void ReplTokenizer::mark() const
+void ReplTokenizer::mark()
 {
 }
 

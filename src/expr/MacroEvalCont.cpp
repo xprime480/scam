@@ -23,7 +23,7 @@ MacroEvalCont * MacroEvalCont::makeInstance(Continuation * cont,
     return new MacroEvalCont(cont, capture, engine);
 }
 
-void MacroEvalCont::mark() const
+void MacroEvalCont::mark()
 {
     if ( ! isMarked() ) {
         Continuation::mark();

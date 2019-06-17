@@ -29,7 +29,7 @@ DefineWorker * DefineWorker::makeInstance(DefineParser * parser,
     return new DefineWorker(parser, cont, env, engine);
 }
 
-void DefineWorker::mark() const
+void DefineWorker::mark()
 {
     if ( ! isMarked() ) {
         Worker::mark();

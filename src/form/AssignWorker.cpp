@@ -31,7 +31,7 @@ AssignWorker * AssignWorker::makeInstance(AssignParser * parser,
     return new AssignWorker(parser, cont, env, engine);
 }
 
-void AssignWorker::mark() const
+void AssignWorker::mark()
 {
     if ( ! isMarked() ) {
         Worker::mark();

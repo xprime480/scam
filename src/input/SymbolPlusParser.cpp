@@ -21,7 +21,7 @@ SymbolPlusParser * SymbolPlusParser::makeInstance()
     return new SymbolPlusParser;
 }
 
-void SymbolPlusParser::mark() const
+void SymbolPlusParser::mark()
 {
     if ( ! isMarked() ) {
         ArgParser::mark();

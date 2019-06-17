@@ -19,7 +19,7 @@ SubstituteParser * SubstituteParser::makeInstance()
     return new SubstituteParser;
 }
 
-void SubstituteParser::mark() const
+void SubstituteParser::mark()
 {
     if ( ! isMarked() ) {
         ArgParser::mark();

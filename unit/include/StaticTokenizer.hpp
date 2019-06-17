@@ -15,8 +15,7 @@ namespace scam
         public:
             StaticTokenizer(std::vector<scam::Token> const & tokens);
 
-            void mark() const override;
-
+            void mark() override;
             Token next() override;
 
         private:

@@ -24,7 +24,7 @@ namespace scam
         static ListParser * makeInstance(ArgParser * itemParser);
 
     public:
-        void mark() const override;
+        void mark() override;
         bool accept(ScamValue expr) override;
         void clearValue() override;
 

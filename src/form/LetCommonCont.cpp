@@ -20,7 +20,7 @@ LetCommonCont::LetCommonCont(char const * name,
 {
 }
 
-void LetCommonCont::mark() const
+void LetCommonCont::mark()
 {
     if ( ! isMarked() ) {
         Continuation::mark();

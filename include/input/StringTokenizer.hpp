@@ -16,7 +16,7 @@ namespace scam
     public:
         StringTokenizer(std::string const & input);
 
-        void mark() const override;
+        void mark() override;
 
         Token next() override;
 

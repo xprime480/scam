@@ -6,7 +6,7 @@
 using namespace scam;
 using namespace std;
 
-void SequenceParser::mark() const
+void SequenceParser::mark()
 {
     if ( ! isMarked() ) {
         ArgParser::mark();

@@ -30,7 +30,7 @@ IncludeWorker * IncludeWorker::makeInstance(IncludeParser * parser,
     return new IncludeWorker(parser, cont, engine, idx);
 }
 
-void IncludeWorker::mark() const
+void IncludeWorker::mark()
 {
     if ( ! isMarked() ) {
         Worker::mark();

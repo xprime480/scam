@@ -17,7 +17,7 @@ ApplyParser * ApplyParser::makeInstance()
     return new ApplyParser;
 }
 
-void ApplyParser::mark() const
+void ApplyParser::mark()
 {
     if ( ! isMarked() ) {
         ArgParser::mark();

@@ -2,13 +2,14 @@
 #define DICTOPS_HPP 1
 
 #include "ScamFwd.hpp"
+#include "expr/ScamData.hpp"
 
 #include <vector>
 
 namespace scam
 {
-    using KeyVec = std::vector<ScamValue>;
-    using ValVec = std::vector<ScamValue>;
+    using KeyVec = ScamData::DictKeyData;
+    using ValVec = ScamData::DictValueData;
 
     extern bool dictHas(ScamValue value, ScamValue key);
     extern ScamValue dictGet(ScamValue value, ScamValue key);

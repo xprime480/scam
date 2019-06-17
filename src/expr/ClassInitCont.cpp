@@ -24,7 +24,7 @@ ClassInitCont * ClassInitCont::makeInstance(ScamValue instance,
     return new ClassInitCont(instance, cont, engine);
 }
 
-void ClassInitCont::mark() const
+void ClassInitCont::mark()
 {
     if ( ! isMarked() ) {
         Continuation::mark();

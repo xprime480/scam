@@ -27,7 +27,7 @@ ParameterListParser * ParameterListParser::makeInstance()
     return new ParameterListParser();
 }
 
-void ParameterListParser::mark() const
+void ParameterListParser::mark()
 {
     if ( ! isMarked() ) {
         ArgParser::mark();

@@ -173,7 +173,7 @@ void scam::applyStringSetX(ScamValue args,
     memcpy(buffer, str.c_str(), str.size());
     buffer[idx] = c;
 
-    STRVAL(original) = string(buffer);
+    original->stringValue() = string(buffer);
     cont->handleValue(original);
 
     delete[] buffer;
@@ -457,7 +457,7 @@ void scam::applyStringCopyX(ScamValue args,
         buffer[idx + at] = fromStr.at(idx + start);
     }
 
-    STRVAL(toValue) = string(buffer);
+    toValue->stringValue() = string(buffer);
     delete[] buffer;
 
     cont->handleValue(toValue);
@@ -510,7 +510,7 @@ void scam::applyStringFillX(ScamValue args,
         buffer[idx] = fill;
     }
 
-    STRVAL(strValue) = string(buffer);
+    strValue->stringValue() = string(buffer);
     delete[] buffer;
 
     cont->handleValue(strValue);

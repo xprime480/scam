@@ -21,7 +21,7 @@ ArgParser::~ArgParser()
 {
 }
 
-void ArgParser::mark() const
+void ArgParser::mark()
 {
     if ( ! isMarked() ) {
         ManagedObject::mark();

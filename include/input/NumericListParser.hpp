@@ -21,7 +21,7 @@ namespace scam
         static NumericListParser * makeInstance();
 
     public:
-        void mark() const override;
+        void mark() override;
         bool accept(ScamValue expr) override;
 
         size_t size() const;

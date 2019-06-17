@@ -18,7 +18,7 @@ namespace scam
         static SubstituteParser * makeInstance();
 
     public:
-        void mark() const override;
+        void mark() override;
         bool accept(ScamValue expr) override;
 
         ScamValue getForm() const;

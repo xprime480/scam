@@ -15,7 +15,7 @@ PrimEvalCont::makeInstance(PrimWorkerData const & data, ScamEngine * engine)
     return new PrimEvalCont(data, engine);
 }
 
-void PrimEvalCont::mark() const
+void PrimEvalCont::mark()
 {
     if ( ! isMarked() ) {
         Continuation::mark();

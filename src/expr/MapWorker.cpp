@@ -28,7 +28,7 @@ MapWorker * MapWorker::makeInstance(Continuation * cont,
     return new MapWorker(cont, env, car, cdr, engine);
 }
 
-void MapWorker::mark() const
+void MapWorker::mark()
 {
     if ( ! isMarked() ) {
         Worker::mark();

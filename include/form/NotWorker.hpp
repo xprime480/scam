@@ -25,7 +25,7 @@ namespace scam
                                         SingletonParser * parser);
 
     public:
-        void mark() const override;
+        void mark() override;
         void run() override;
 
     private:

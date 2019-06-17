@@ -33,7 +33,7 @@ OrCont * OrCont::makeInstance(ListParser * parser,
     return new OrCont(parser, cont, env, engine, n);
 }
 
-void OrCont::mark() const
+void OrCont::mark()
 {
     if ( ! isMarked() ) {
         Continuation::mark();

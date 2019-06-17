@@ -20,7 +20,7 @@ CharStreamTokenizer::~CharStreamTokenizer()
 {
 }
 
-void CharStreamTokenizer::mark() const
+void CharStreamTokenizer::mark()
 {
     stream.mark();
 }

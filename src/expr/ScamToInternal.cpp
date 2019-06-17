@@ -18,7 +18,7 @@ char scam::asBool(ScamValue data)
         throw ScamException(s.str());
     }
 
-    return BOOLVAL(data);
+    return data->boolValue();
 }
 
 char scam::asChar(ScamValue data)
@@ -29,7 +29,7 @@ char scam::asChar(ScamValue data)
         throw ScamException(s.str());
     }
 
-    return CHARVAL(data);
+    return data->charValue();
 }
 
 std::string scam::asString(ScamValue data)
@@ -40,9 +40,8 @@ std::string scam::asString(ScamValue data)
         throw ScamException(s.str());
     }
 
-    return STRVAL(data);
+    return data->stringValue();
 }
-
 
 double scam::asDouble(ScamValue data)
 {
@@ -53,16 +52,16 @@ double scam::asDouble(ScamValue data)
     }
 
     if ( isInteger(data) ) {
-        return (double) INTVAL(data);
+        return (double) data->intPart();
     }
     else if ( isRational(data) ) {
-        return ((double) NUMPART(data) / (double) DENPART(data) );
+        return ((double) data->numPart() / (double) data->denPart() );
     }
     else if ( isSpecialNumeric(data) ) {
         // drop through to error case;
     }
     else if ( isReal(data) ) {
-        return REALVAL(data);
+        return data->realValue();
     }
 
     return 0.0;
@@ -79,11 +78,11 @@ RationalPair scam::asRational(ScamValue data)
     RationalPair pair { 0, 1 };
 
     if ( isInteger(data) ) {
-        pair.num = INTVAL(data);
+        pair.num = data->intPart();
     }
     else {
-        pair.num = NUMPART(data);
-        pair.den = DENPART(data);
+        pair.num = data->numPart();
+        pair.den = data->denPart();
     }
 
     return pair;
@@ -97,7 +96,7 @@ int scam::asInteger(ScamValue data)
         throw ScamException(s.str());
     }
 
-    return INTVAL(data);
+    return data->intPart();
 }
 
 ScamPort * scam::asPort(ScamValue data)
@@ -108,6 +107,6 @@ ScamPort * scam::asPort(ScamValue data)
         throw ScamException(s.str());
     }
 
-    return PORT(data);
+    return data->portValue();
 }
 

@@ -34,7 +34,7 @@ OrWorker * OrWorker::makeInstance(Continuation * cont,
     return new OrWorker(cont, env, parser, engine, n);
 }
 
-void OrWorker::mark() const
+void OrWorker::mark()
 {
     if ( ! isMarked() ) {
         Worker::mark();

@@ -23,7 +23,7 @@ LetBaseWorker::LetBaseWorker(char const * name,
 {
 }
 
-void LetBaseWorker::mark() const
+void LetBaseWorker::mark()
 {
     if ( ! isMarked() ) {
         Worker::mark();

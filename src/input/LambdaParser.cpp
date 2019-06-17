@@ -22,7 +22,7 @@ LambdaParser * LambdaParser::makeInstance()
     return new LambdaParser();
 }
 
-void LambdaParser::mark() const
+void LambdaParser::mark()
 {
     if ( ! isMarked() ) {
         ArgParser::mark();

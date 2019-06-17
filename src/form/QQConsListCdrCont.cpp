@@ -30,7 +30,7 @@ QQConsListCdrCont * QQConsListCdrCont::makeInstance(ScamValue car,
     return new  QQConsListCdrCont(car, cont, env, engine);
 }
 
-void QQConsListCdrCont::mark() const
+void QQConsListCdrCont::mark()
 {
     if ( ! isMarked() ) {
         Continuation::mark();

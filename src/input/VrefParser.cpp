@@ -22,7 +22,7 @@ VrefParser * VrefParser::makeInstance()
     return new VrefParser;
 }
 
-void VrefParser::mark() const
+void VrefParser::mark()
 {
     if ( ! isMarked() ) {
         ArgParser::mark();

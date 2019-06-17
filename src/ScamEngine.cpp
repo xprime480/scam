@@ -26,7 +26,7 @@ namespace
         static HistoryCont * makeInstance(size_t size, ScamEngine * engine);
 
     public:
-        void mark() const override;
+        void mark() override;
 
         void setCont(Continuation * c);
 
@@ -235,14 +235,14 @@ void ScamEngine::popHandler()
     }
 }
 
-void ScamEngine::mark() const
+void ScamEngine::mark()
 {
     env->mark();
     if ( backtracker ) {
         backtracker->mark();
     }
     cont->mark();
-    for ( const auto & i : input ) {
+    for ( auto & i : input ) {
         i.mark();
     }
     GlobalWorkQueue.mark();
@@ -263,7 +263,7 @@ namespace
         return new HistoryCont(size, engine);
     }
 
-    void HistoryCont::mark() const
+    void HistoryCont::mark()
     {
         if ( ! isMarked() ) {
             Continuation::mark();

@@ -25,7 +25,7 @@ bool WorkQueue::empty() const
     return workers.empty();
 }
 
-void WorkQueue::mark() const
+void WorkQueue::mark()
 {
     for ( const auto w : workers ) {
         w->mark();

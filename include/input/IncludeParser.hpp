@@ -17,7 +17,7 @@ namespace scam
         static IncludeParser * makeInstance();
 
     public:
-        void mark() const override;
+        void mark() override;
         bool accept(ScamValue expr) override;
 
     public:

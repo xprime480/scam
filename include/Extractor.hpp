@@ -28,7 +28,7 @@ namespace scam
         }
 
     public:
-        void mark() const override
+        void mark() override
         {
             if ( ! isMarked() ) {
                 Continuation::mark();

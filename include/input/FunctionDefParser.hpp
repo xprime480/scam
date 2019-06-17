@@ -14,11 +14,11 @@ namespace scam
         static FunctionDefParser * makeInstance();
 
     public:
-        void mark() const override;
+        void mark() override;
         bool accept(ScamValue expr) override;
 
         ScamValue getName() const;
-        const LambdaParser * getLambda() const;
+        LambdaParser * getLambda() const;
 
     private:
         SymbolParser * name;

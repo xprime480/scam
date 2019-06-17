@@ -17,7 +17,7 @@ namespace scam
         static LetParser * makeInstance();
 
     public:
-        void mark() const override;
+        void mark() override;
         bool accept(ScamValue expr) override;
 
     protected:

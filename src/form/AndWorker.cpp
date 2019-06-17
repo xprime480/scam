@@ -34,7 +34,7 @@ AndWorker * AndWorker::makeInstance(Continuation * cont,
     return new AndWorker(cont, env, parser, engine, n);
 }
 
-void AndWorker::mark() const
+void AndWorker::mark()
 {
     if ( ! isMarked() ) {
         Worker::mark();

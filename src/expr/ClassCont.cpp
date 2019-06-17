@@ -29,7 +29,7 @@ ClassCont::makeInstance(ScamValue cls, Continuation * cont, ScamEngine * engine)
     return new ClassCont(cls, cont, engine);
 }
 
-void ClassCont::mark() const
+void ClassCont::mark()
 {
     if ( ! isMarked() ) {
         Continuation::mark();

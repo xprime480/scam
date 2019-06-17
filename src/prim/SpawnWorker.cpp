@@ -19,7 +19,7 @@ SpawnWorker::makeInstance(Continuation * cont, ScamEngine * engine, bool value)
     return new SpawnWorker(cont, engine, value);
 }
 
-void SpawnWorker::mark() const
+void SpawnWorker::mark()
 {
     if ( ! isMarked() ) {
         Worker::mark();

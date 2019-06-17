@@ -17,7 +17,7 @@ IncludeParser * IncludeParser::makeInstance()
     return new IncludeParser;
 }
 
-void IncludeParser::mark() const
+void IncludeParser::mark()
 {
     if ( ! isMarked() ) {
         ArgParser::mark();

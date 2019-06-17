@@ -21,7 +21,7 @@ LetParser * LetParser::makeInstance()
     return new LetParser;
 }
 
-void LetParser::mark() const
+void LetParser::mark()
 {
     if ( ! isMarked() ) {
         ArgParser::mark();

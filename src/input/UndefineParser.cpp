@@ -20,7 +20,7 @@ UndefineParser * UndefineParser::makeInstance()
     return new UndefineParser;
 }
 
-void UndefineParser::mark() const
+void UndefineParser::mark()
 {
     if ( ! isMarked() ) {
         ArgParser::mark();

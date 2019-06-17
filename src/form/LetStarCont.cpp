@@ -37,7 +37,7 @@ LetStarCont * LetStarCont::makeInstance(ScamValue formals,
     return new LetStarCont(formals, rest, forms, cont, env, engine);
 }
 
-void LetStarCont::mark() const
+void LetStarCont::mark()
 {
     if ( ! isMarked() ) {
         LetCommonCont::mark();

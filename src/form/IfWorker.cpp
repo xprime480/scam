@@ -31,7 +31,7 @@ IfWorker * IfWorker::makeInstance(Continuation * cont,
     return new IfWorker(cont, env, engine, parser);
 }
 
-void IfWorker::mark() const
+void IfWorker::mark()
 {
     if ( ! isMarked() ) {
         Worker::mark();

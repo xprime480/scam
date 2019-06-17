@@ -20,7 +20,7 @@ namespace scam
         makeInstance(PrimWorkerData const & data, ScamEngine * engine);
 
     public:
-        void mark() const override;
+        void mark() override;
         void handleValue(ScamValue value) override;
 
     private:

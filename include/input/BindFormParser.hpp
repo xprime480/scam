@@ -15,7 +15,7 @@ namespace scam
         static BindFormParser * makeInstance();
 
     public:
-        void mark() const override;
+        void mark() override;
         bool accept(ScamValue expr) override;
 
         ScamValue getSymbol() const;

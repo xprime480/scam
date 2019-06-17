@@ -23,7 +23,7 @@ EvalCont::makeInstance(Continuation * cont, Env * env, ScamEngine * engine)
     return new EvalCont(cont, env, engine);
 }
 
-void EvalCont::mark() const
+void EvalCont::mark()
 {
     if ( ! isMarked() ) {
         Continuation::mark();

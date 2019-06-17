@@ -3,7 +3,7 @@
 using namespace scam;
 using namespace std;
 
-void AlternativeParser::mark() const
+void AlternativeParser::mark()
 {
     if ( ! isMarked() ) {
         ArgParser::mark();

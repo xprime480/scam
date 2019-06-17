@@ -22,7 +22,7 @@ ClassDefParser * ClassDefParser::makeInstance()
     return new ClassDefParser();
 }
 
-void ClassDefParser::mark() const
+void ClassDefParser::mark()
 {
     if ( ! isMarked() ) {
         ArgParser::mark();

@@ -28,7 +28,7 @@ IncludeCont * IncludeCont::makeInstance(IncludeParser * parser,
     return new IncludeCont(parser, cont, engine, nextIdx);
 }
 
-void IncludeCont::mark() const
+void IncludeCont::mark()
 {
     if ( ! isMarked() ) {
         Continuation::mark();

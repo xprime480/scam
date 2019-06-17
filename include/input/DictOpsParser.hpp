@@ -24,7 +24,7 @@ namespace scam
         static DictOpsParser * makeInstance();
 
     public:
-        void mark() const override;
+        void mark() override;
         bool accept(ScamValue expr) override;
         void callback(ScamValue expr) override;
         void clearValue() override;

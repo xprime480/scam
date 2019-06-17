@@ -107,7 +107,7 @@ namespace
 
     bool compareStringLike(ScamValue obj1, ScamValue obj2)
     {
-        return STRVAL(obj1) == STRVAL(obj2);
+        return obj1->stringValue() == obj2->stringValue();
     }
 
     bool comparePair(ScamValue obj1, ScamValue obj2)
@@ -134,16 +134,21 @@ namespace
 
     bool compareDict(ScamValue obj1, ScamValue obj2)
     {
+        const ScamData::DictKeyData & k1 = obj1->dictKeys();
+        const ScamData::DictKeyData & k2 = obj2->dictKeys();
+        const ScamData::DictValueData & v1 = obj1->dictValues();
+        const ScamData::DictValueData & v2 = obj2->dictValues();
+
         int len = length(obj1);
 
         for ( int idx1 = 0 ; idx1 < len ; ++idx1 ) {
-            ScamValue myKey = DICTKEYS(obj1)[idx1];
+            ScamValue myKey = k1[idx1];
             bool keyExists = false;
             for ( int idx2 = 0 ; (! keyExists) && (idx2 < len) ; ++idx2 ) {
-                if ( doEqual(DICTKEYS(obj2)[idx2], myKey) ) {
+                if ( doEqual(k2[idx2], myKey) ) {
                     keyExists = true;
-                    ScamValue myVal = DICTVALS(obj1)[idx1];
-                    if ( ! doEqual(DICTVALS(obj2)[idx2], myVal) ) {
+                    ScamValue myVal = v1[idx1];
+                    if ( ! doEqual(v2[idx2], myVal) ) {
                         return false;
                     }
                 }

@@ -20,7 +20,7 @@ namespace scam
 
     public:
         virtual ~ArgParser();
-        void mark() const override;
+        void mark() override;
 
         virtual bool accept(ScamValue expr);
         virtual void callback(ScamValue expr);

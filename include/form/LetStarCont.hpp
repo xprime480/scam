@@ -27,7 +27,7 @@ namespace scam
                                           ScamEngine * engine);
 
     public:
-        void mark() const override;
+        void mark() override;
 
     protected:
         void do_let(ScamValue expr) override;

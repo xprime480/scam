@@ -41,7 +41,7 @@ DictOpsParser * DictOpsParser::makeInstance()
     return new DictOpsParser;
 }
 
-void DictOpsParser::mark() const
+void DictOpsParser::mark()
 {
     if ( ! isMarked() ) {
         ArgParser::mark();

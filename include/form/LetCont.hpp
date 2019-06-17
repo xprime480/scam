@@ -30,7 +30,7 @@ namespace scam
                                       bool rebind);
 
     public:
-        void mark() const override;
+        void mark() override;
 
     protected:
         void do_let(ScamValue expr) override;

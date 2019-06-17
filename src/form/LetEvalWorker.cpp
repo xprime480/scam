@@ -50,7 +50,7 @@ LetEvalWorker * LetEvalWorker::makeInstance(ScamValue formals,
                              rebind);
 }
 
-void LetEvalWorker::mark() const
+void LetEvalWorker::mark()
 {
     if ( ! isMarked() ) {
         Worker::mark();

@@ -18,7 +18,7 @@ namespace scam
     public:
         virtual ~CharStream() {}
 
-        virtual void mark() const = 0;
+        virtual void mark() = 0;
 
         virtual char peek() const = 0;
         virtual std::string strPeek(size_t n) const = 0;

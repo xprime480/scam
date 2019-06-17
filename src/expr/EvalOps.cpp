@@ -33,7 +33,11 @@ void scam::eval(ScamValue value,
                 ScamEngine * engine)
 {
     if ( isPair(value) ) {
-        workQueueHelper<ConsWorker>(cont, env, CAR(value), CDR(value), engine);
+        workQueueHelper<ConsWorker>(cont,
+                                    env,
+                                    value->carValue(),
+                                    value->cdrValue(),
+                                    engine);
     }
 
     else if ( isSymbol(value) ) {
@@ -73,12 +77,12 @@ void scam::apply(ScamValue value,
     }
 
     else if ( isClosure(value) ) {
-        workQueueHelper<ClosureWorker>(CLOSUREDEF(value),
-                                       CLOSUREENV(value),
+        workQueueHelper<ClosureWorker>(value->closureDef(),
+                                       value->closureEnv(),
                                        cont,
                                        args,
                                        env,
-                                       MACROLIKE(value),
+                                       value->closureMacroLike(),
                                        engine);
     }
 
@@ -88,7 +92,7 @@ void scam::apply(ScamValue value,
 
         if ( accepted ) {
             ScamValue arg = parser->get();
-            CONTINUATION(value)->handleValue(arg);
+            value->contValue()->handleValue(arg);
         }
         else {
             failedArgParseMessage(writeValue(value).c_str(),
@@ -167,7 +171,7 @@ void scam::apply(ScamValue value,
     }
 
     else if ( isSpecialForm(value) ) {
-        SFFUNC(value)(args, cont, env, SFENGINE(value));
+        (value->sfFunc())(args, cont, env, value->sfEngine());
     }
 
     else if ( isPrimitive(value) ) {
@@ -190,7 +194,11 @@ void scam::mapEval(ScamValue value,
                    ScamEngine * engine)
 {
     if ( isPair(value) ) {
-        workQueueHelper<MapWorker>(cont, env, CAR(value), CDR(value), engine);
+        workQueueHelper<MapWorker>(cont,
+                                   env,
+                                   value->carValue(),
+                                   value->cdrValue(),
+                                   engine);
     }
 
     else {
@@ -207,5 +215,5 @@ ScamValue scam::withEnvUpdate(ScamValue value, Env * updated)
         throw ScamException(s.str());
     }
 
-    return makeClosure(CLOSUREDEF(value), updated, MACROLIKE(value));
+    return makeClosure(value->closureDef(), updated, value->closureMacroLike());
 }

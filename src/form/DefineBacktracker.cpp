@@ -28,7 +28,7 @@ DefineBacktracker::makeInstance(ScamValue sym,
     return new DefineBacktracker(sym, env, backtracker, engine);
 }
 
-void DefineBacktracker::mark() const
+void DefineBacktracker::mark()
 {
     if ( ! isMarked() ) {
         Backtracker::mark();

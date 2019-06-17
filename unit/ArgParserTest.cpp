@@ -289,7 +289,7 @@ TEST_F(ArgParserTest, TrivialFunctionDef)
 
     acceptParse(parser, "(foo ())");
     expectSymbol(parser->getName(), "foo");
-    const LambdaParser * lambda = parser->getLambda();
+    LambdaParser * lambda = parser->getLambda();
     EXPECT_EQ(0u, lambda->getArgs()->size());
     EXPECT_EQ(0u, lambda->getFormCount());
 }
@@ -300,7 +300,7 @@ TEST_F(ArgParserTest, NoArgFunctionDef)
 
     acceptParse(parser, "(answer () 42)");
     expectSymbol(parser->getName(), "answer");
-    const LambdaParser * lambda = parser->getLambda();
+    LambdaParser * lambda = parser->getLambda();
     EXPECT_EQ(0u, lambda->getArgs()->size());
     EXPECT_EQ(1u, lambda->getFormCount());
     expectInteger(lambda->getForm(0), 42, "42", true);
@@ -313,7 +313,7 @@ TEST_F(ArgParserTest, GeneralFunctionDef)
     acceptParse(parser, "(stuff (x y . z) (side-effect) (if (> x y) z 1))");
     expectSymbol(parser->getName(), "stuff");
 
-    const LambdaParser * lambda = parser->getLambda();
+    LambdaParser * lambda = parser->getLambda();
     const auto args = lambda->getArgs();
     EXPECT_EQ(3u, args->size());
     expectSymbol(args->get(2), "z");

@@ -31,7 +31,7 @@ namespace scam
         makeInstance(WorkerData const & data, ScamEngine * engine);
 
     public:
-        void mark() const override;
+        void mark() override;
         void run() override;
 
     private:

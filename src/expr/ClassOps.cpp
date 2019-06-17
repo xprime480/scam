@@ -25,57 +25,58 @@ namespace
 ScamValue scam::getClassBase(ScamValue cls)
 {
     checkClass(cls, "getClassBase");
-    return CLASSDEF(cls)->getBase();
+    return cls->classDef()->getBase();
 }
 
 size_t scam::getClassVarCount(ScamValue cls)
 {
     checkClass(cls, "getClassVarCount");
-    return CLASSDEF(cls)->getVarCount();
+    return cls->classDef()->getVarCount();
 }
 
 ScamValue scam::getClassVar(ScamValue cls, size_t idx)
 {
     checkClass(cls, "getClassVar");
-    return CLASSDEF(cls)->getVar(idx);
+    return cls->classDef()->getVar(idx);
 }
 
 size_t scam::getClassMethodCount(ScamValue cls)
 {
     checkClass(cls, "getClassMethodCount");
-    return CLASSDEF(cls)->getMethodCount();
+    return cls->classDef()->getMethodCount();
 }
 
 const FunctionDefParser * scam::getClassMethod(ScamValue cls, size_t idx)
 {
     checkClass(cls, "getClassMethod");
-    return CLASSDEF(cls)->getMethod(idx);
+    return cls->classDef()->getMethod(idx);
 }
 
 Env * scam::getClassCapture(ScamValue cls)
 {
     checkClass(cls, "getClassCapture");
-    return CLASSENV(cls);
+    return cls->classEnv();
 }
 
 Env * scam::getInstanceFunctionMap(ScamValue inst)
 {
     checkInstance(inst, "getInstanceFunctionMap");
-    return INSTANCEPRIVENV(inst);
+    return inst->instancePrivate();
 }
 
 Env * scam::getInstanceEnv(ScamValue inst)
 {
     checkInstance(inst, "getInstanceEnv");
-    return INSTANCELOCALENV(inst);
+    return inst->instanceLocal();
 }
 
 ScamValue scam::getInstanceParent(ScamValue inst)
 {
     checkInstance(inst, "getInstanceParent");
+    Env *& local = inst->instanceLocal();
 
-    if ( INSTANCELOCALENV(inst)->check(parentKey) ) {
-        return INSTANCELOCALENV(inst)->get(parentKey);
+    if ( local->check(parentKey) ) {
+        return local->get(parentKey);
     }
 
     return makeNull();
@@ -84,13 +85,13 @@ ScamValue scam::getInstanceParent(ScamValue inst)
 void scam::setInstanceSelf(ScamValue inst, ScamValue expr)
 {
     checkInstance(inst, "setInstanceSelf");
-    INSTANCELOCALENV(inst)->put(self, expr);
+    inst->instanceLocal()->put(self, expr);
 }
 
 void scam::setInstanceParent(ScamValue inst, ScamValue expr)
 {
     checkInstance(inst, "setInstanceParent");
-    INSTANCELOCALENV(inst)->put(parentKey, expr);
+    inst->instanceLocal()->put(parentKey, expr);
 }
 
 namespace

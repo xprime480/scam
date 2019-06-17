@@ -28,7 +28,7 @@ MapCdr * MapCdr::makeInstance(ScamValue car,
     return new MapCdr(car, cdr, cont, env, engine);
 }
 
-void MapCdr::mark() const
+void MapCdr::mark()
 {
     if ( ! isMarked() ) {
         Worker::mark();

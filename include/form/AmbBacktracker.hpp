@@ -25,7 +25,7 @@ namespace scam
                                              Backtracker * parent);
 
     public:
-        void mark() const override;
+        void mark() override;
         void run() override;
 
     private:

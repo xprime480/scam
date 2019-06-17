@@ -27,10 +27,12 @@ namespace scam
                            Continuation *,
                            ScamEngine *)>;
 
+    using ValueType = unsigned long;
+
     struct ScamData : public ManagedObject
     {
     public:
-        explicit ScamData(unsigned long type, bool managed = true);
+        explicit ScamData(ValueType type, bool managed = true);
         ~ScamData();
 
         ScamData(const ScamData &) = delete;
@@ -38,10 +40,9 @@ namespace scam
         ScamData(ScamData &&) = delete;
         ScamData operator=(ScamData &&) = delete;
 
-        static ScamData * makeInstance(unsigned long type,
-                                       bool managed = true);
+        static ScamData * makeInstance(ValueType type, bool managed = true);
 
-        void mark() const override final;
+        void mark() override final;
 
         void makeImmutable();
         bool isImmutable() const;
@@ -57,211 +58,213 @@ namespace scam
         class NegInfType {};
         class PosInfType {};
 
-        constexpr static unsigned long ComplexBit  { 1 << 0 };
-        constexpr static unsigned long RealBit     { 1 << 1 };
-        constexpr static unsigned long RationalBit { 1 << 2 };
-        constexpr static unsigned long IntegerBit  { 1 << 3 };
+        constexpr static ValueType ComplexBit  { 1 << 0 };
+        constexpr static ValueType RealBit     { 1 << 1 };
+        constexpr static ValueType RationalBit { 1 << 2 };
+        constexpr static ValueType IntegerBit  { 1 << 3 };
 
-        constexpr static unsigned long NaNBit      { 1 << 4 };
-        constexpr static unsigned long NegInfBit   { 1 << 5 };
-        constexpr static unsigned long PosInfBit   { 1 << 6 };
+        constexpr static ValueType NaNBit      { 1 << 4 };
+        constexpr static ValueType NegInfBit   { 1 << 5 };
+        constexpr static ValueType PosInfBit   { 1 << 6 };
 
-        constexpr static unsigned long Complex  = ComplexBit;
-        constexpr static unsigned long Real     = Complex | RealBit;
-        constexpr static unsigned long Rational = Real | RationalBit;
-        constexpr static unsigned long Integer  = Rational | IntegerBit;
-        constexpr static unsigned long NaN      = Real | NaNBit;
-        constexpr static unsigned long NegInf   = Real | NegInfBit;
-        constexpr static unsigned long PosInf   = Real | PosInfBit;
+        constexpr static ValueType Complex  = ComplexBit;
+        constexpr static ValueType Real     = Complex | RealBit;
+        constexpr static ValueType Rational = Real | RationalBit;
+        constexpr static ValueType Integer  = Rational | IntegerBit;
+        constexpr static ValueType NaN      = Real | NaNBit;
+        constexpr static ValueType NegInf   = Real | NegInfBit;
+        constexpr static ValueType PosInf   = Real | PosInfBit;
 
-        constexpr static unsigned long SpecialNumeric = NaNBit | NegInfBit | PosInfBit;
-        constexpr static unsigned long Numeric  = (1 << 7) - 1;
+        constexpr static ValueType SpecialNumeric = NaNBit | NegInfBit | PosInfBit;
+        constexpr static ValueType Numeric  = (1 << 7) - 1;
 
         /*
          * tags and types for other atoms
          */
-        constexpr static unsigned long Nothing      { 1 << 7 };
-        constexpr static unsigned long Null         { 1 << 8 };
-        constexpr static unsigned long Boolean      { 1 << 9 };
-        constexpr static unsigned long Character    { 1 << 10 };
-        constexpr static unsigned long Symbol       { 1 << 11 };
-        constexpr static unsigned long Keyword      { 1 << 12 };
-        constexpr static unsigned long String       { 1 << 13 };
-        constexpr static unsigned long Error        { 1 << 14 };
-        constexpr static unsigned long Pair         { 1 << 15 };
-        constexpr static unsigned long Vector       { 1 << 16 };
-        constexpr static unsigned long ByteVector   { 1 << 17 };
-        constexpr static unsigned long Dict         { 1 << 18 };
-        constexpr static unsigned long Closure      { 1 << 19 };
-        constexpr static unsigned long Class        { 1 << 20 };
-        constexpr static unsigned long Instance     { 1 << 21 };
-        constexpr static unsigned long Cont         { 1 << 22 };
+        constexpr static ValueType Nothing      { 1 << 7 };
+        constexpr static ValueType Null         { 1 << 8 };
+        constexpr static ValueType Boolean      { 1 << 9 };
+        constexpr static ValueType Character    { 1 << 10 };
+        constexpr static ValueType Symbol       { 1 << 11 };
+        constexpr static ValueType Keyword      { 1 << 12 };
+        constexpr static ValueType String       { 1 << 13 };
+        constexpr static ValueType Error        { 1 << 14 };
+        constexpr static ValueType Pair         { 1 << 15 };
+        constexpr static ValueType Vector       { 1 << 16 };
+        constexpr static ValueType ByteVector   { 1 << 17 };
+        constexpr static ValueType Dict         { 1 << 18 };
+        constexpr static ValueType Closure      { 1 << 19 };
+        constexpr static ValueType Class        { 1 << 20 };
+        constexpr static ValueType Instance     { 1 << 21 };
+        constexpr static ValueType Cont         { 1 << 22 };
 
-        constexpr static unsigned long Procedure = Closure | Class | Instance;
+        constexpr static ValueType StringLike = Symbol | Keyword | String | Error;
 
-        constexpr static unsigned long Primitive   { 1 << 23 };
-        constexpr static unsigned long SpecialForm { 1 << 24 };
+        constexpr static ValueType Procedure = Closure | Class | Instance;
 
-        constexpr static unsigned long Applicable = Dict | Procedure | Primitive | SpecialForm | Cont;
+        constexpr static ValueType Primitive   { 1 << 23 };
+        constexpr static ValueType SpecialForm { 1 << 24 };
 
-        constexpr static unsigned long Port    { 1 << 25 };
+        constexpr static ValueType Applicable = Dict | Procedure | Primitive | SpecialForm | Cont;
+
+        constexpr static ValueType Port    { 1 << 25 };
 
         /**
          * member data
          */
+        const ValueType type;
 
-        const unsigned long type;
     private:
         bool immutable;
     public:
+        struct ComplexData
+        {
+            ScamValue real;
+            ScamValue imag;
+        };
 
+        struct RationalData
+        {
+            int num;
+            int den;
+        };
+
+        struct NumericData
+        {
+            bool exact;
+            union
+            {
+                ComplexData * complexValue;
+                double realValue;
+                RationalData * rationalValue;
+                int intValue;
+            } value;
+        };
+
+        using StringData = std::string;
+
+        struct PairData
+        {
+            ScamValue car;
+            ScamValue cdr;
+        };
+
+        using VectorData = std::vector<ScamValue>;
+        using ByteVectorData = std::vector<unsigned char>;
+        using DictKeyData = std::vector<ScamValue>;
+        using DictValueData = std::vector<ScamValue>;
+
+        struct DictData
+        {
+            DictKeyData   keys;
+            DictValueData vals;
+        };
+
+        using ClosureDefType = LambdaParser *;
+        struct ClosureData
+        {
+            ClosureDefType parser;
+            Env * env;
+            bool macrolike;
+        };
+
+        struct ClassData
+        {
+            ClassDefParser * def;
+            Env            * capture;
+        };
+
+        struct InstanceData
+        {
+            Env * priv;
+            Env * local;
+        };
+
+        struct PrimitiveData
+        {
+            std::string    name;
+            PrimFunction   func;
+            ScamEngine   * engine;
+        };
+
+        struct SpecialFormData
+        {
+            std::string   name;
+            SfFunction    func;
+            ScamEngine  * engine;
+        };
+
+    private:
         union
         {
+            NumericData * numericValue;
             bool boolValue;
-
             char charValue;
-
-            std::string * strVal;
-
-            struct
-            {
-                ScamValue car;
-                ScamValue cdr;
-            }  pairValue;
-
-            std::vector<ScamValue> * vectorData;
-
-            std::vector<unsigned char> * byteVectorData;
-
-            struct
-            {
-                std::vector<ScamValue> * keys;
-                std::vector<ScamValue> * vals;
-            } dictData;
-
-            struct
-            {
-                bool exact;
-                union
-                {
-                    struct
-                    {
-                        ScamValue real;
-                        ScamValue imag;
-                    }  complexValue;
-
-                    double realValue;
-
-                    struct {
-                        int num;
-                        int den;
-                    } rationalValue;
-
-                    int intValue;
-                } value;
-            } numericValue ;
-
-            struct
-            {
-                ClassDefParser * def;
-                Env            * capture;
-            } classValue;
-
-            struct
-            {
-                const LambdaParser * parser;
-                Env * env;
-                bool macrolike;
-            } closureData;
-
-            struct
-            {
-                Env * priv;
-                Env * local;
-            } instanceData;
-
+            StringData * strVal;
+            PairData * pairValue;
+            VectorData * vectorData;
+            ByteVectorData * byteVectorData;
+            DictData * dictData;
+            ClosureData * closureData;
+            ClassData * classValue;
+            InstanceData * instanceData;
             Continuation * contData;
-
-            struct
-            {
-                std::string * name;
-                SfFunction  * func;
-                ScamEngine  * engine;
-            } specialFormData;
-
-            struct
-            {
-                std::string  * name;
-                PrimFunction * func;
-                ScamEngine   * engine;
-            } primitiveData;
-
+            PrimitiveData * primitiveData;
+            SpecialFormData * specialFormData;
             ScamPort * portData;
-
         } value;
 
+    public:
         mutable Env * metadata;
+
+    private:
+        void assertType(ValueType requiredType);
+
+    public:
+
+        bool & exactFlag();
+        ScamValue & realPart();
+        ScamValue & imagPart();
+        double & realValue();
+        int & numPart();
+        int & denPart();
+        int & intPart();
+
+        bool & boolValue();
+        char & charValue();
+        StringData & stringValue();
+
+        ScamValue & carValue();
+        ScamValue & cdrValue();
+
+        VectorData & vectorData();
+        ByteVectorData & byteVectorData();
+
+        DictKeyData & dictKeys();
+        DictValueData & dictValues();
+
+        ClosureDefType & closureDef();
+        Env *& closureEnv();
+        bool & closureMacroLike();
+
+        ClassDefParser *& classDef();
+        Env *& classEnv();
+
+        Env *& instancePrivate();
+        Env *& instanceLocal();
+
+        Continuation *& contValue();
+
+        std::string & primName();
+        PrimFunction & primFunc();
+        ScamEngine *& primEngine();
+
+        std::string & sfName();
+        SfFunction & sfFunc();
+        ScamEngine *& sfEngine();
+
+        ScamPort *& portValue();
     };
 }
-
-#define BOOLVAL(data) ((data)->value.boolValue)
-
-#define CHARVAL(data) ((data)->value.charValue)
-
-#define NUMERIC(data) ((data)->value.numericValue)
-#define EXACT(data) (NUMERIC(data).exact)
-
-#define REALPART(data) (NUMERIC(data).value.complexValue.real)
-#define IMAGPART(data) (NUMERIC(data).value.complexValue.imag)
-
-#define REALVAL(data) (NUMERIC(data).value.realValue)
-
-#define NUMPART(data) (NUMERIC(data).value.rationalValue.num)
-#define DENPART(data) (NUMERIC(data).value.rationalValue.den)
-
-#define INTVAL(data) (NUMERIC(data).value.intValue)
-
-#define STRVALP(data) ((data)->value.strVal)
-#define STRVAL(data) (*(STRVALP(data)))
-
-#define CAR(data) ((data)->value.pairValue.car)
-#define CDR(data) ((data)->value.pairValue.cdr)
-
-#define VECTORP(data) ((data)->value.vectorData)
-#define VECTOR(data) (*(VECTORP(data)))
-
-#define BYTEVECTORP(data) ((data)->value.byteVectorData)
-#define BYTEVECTOR(data) (*(BYTEVECTORP(data)))
-
-#define DICTKEYSP(data) ((data)->value.dictData.keys)
-#define DICTKEYS(data) (*(DICTKEYSP(data)))
-#define DICTVALSP(data) ((data)->value.dictData.vals)
-#define DICTVALS(data) (*(DICTVALSP(data)))
-
-#define CLOSUREDEF(data) ((data)->value.closureData.parser)
-#define CLOSUREENV(data) ((data)->value.closureData.env)
-#define MACROLIKE(data) ((data)->value.closureData.macrolike)
-
-#define CLASSDEF(data) ((data)->value.classValue.def)
-#define CLASSENV(data) ((data)->value.classValue.capture)
-
-#define INSTANCEPRIVENV(data) ((data)->value.instanceData.priv)
-#define INSTANCELOCALENV(data) ((data)->value.instanceData.local)
-
-#define CONTINUATION(data) ((data)->value.contData)
-
-#define SFNAMEP(data) ((data)->value.specialFormData.name)
-#define SFNAME(data) (*SFNAMEP(data))
-#define SFFUNCP(data) ((data)->value.specialFormData.func)
-#define SFFUNC(data) (*SFFUNCP(data))
-#define SFENGINE(data) ((data)->value.specialFormData.engine)
-
-#define PRIMNAMEP(data) ((data)->value.primitiveData.name)
-#define PRIMNAME(data) (*PRIMNAMEP(data))
-#define PRIMFUNCP(data) ((data)->value.primitiveData.func)
-#define PRIMFUNC(data) (*PRIMFUNCP(data))
-#define PRIMENGINE(data) ((data)->value.primitiveData.engine)
-
-#define PORT(data) ((data)->value.portData)
 
 #endif

@@ -15,7 +15,7 @@ namespace scam
         PortCharStream(ScamValue value);
         ~PortCharStream();
 
-        void mark() const override;
+        void mark() override;
 
         char peek() const override;
         std::string strPeek(size_t n) const override;

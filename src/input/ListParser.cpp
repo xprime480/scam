@@ -19,7 +19,7 @@ ListParser * ListParser::makeInstance(ArgParser * itemParser)
     return new ListParser(itemParser);
 }
 
-void ListParser::mark() const
+void ListParser::mark()
 {
     if ( ! isMarked() ) {
         ArgParser::mark();

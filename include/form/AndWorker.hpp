@@ -27,7 +27,7 @@ namespace scam
                                         size_t n);
 
     public:
-        void mark() const override;
+        void mark() override;
         void run() override;
 
     private:

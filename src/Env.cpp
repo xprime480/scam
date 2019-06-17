@@ -36,7 +36,7 @@ Env * Env::makeInstance()
     return new Env();
 }
 
-void Env::mark() const
+void Env::mark()
 {
     if ( ! isMarked() ) {
         ManagedObject::mark();

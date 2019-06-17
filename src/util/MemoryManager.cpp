@@ -65,7 +65,7 @@ size_t MemoryManager::getCurrentCount() const
     return arena.size();
 }
 
-void MemoryManager::mark() const
+void MemoryManager::mark()
 {
     for ( const auto & hook : hooks ) {
         (*hook)();
@@ -94,7 +94,7 @@ void MemoryManager::sweep()
     arena.erase(iter, arena.end());
 }
 
-void MemoryManager::unmark() const
+void MemoryManager::unmark()
 {
     for ( auto & p : arena ) {
         p->unmark();

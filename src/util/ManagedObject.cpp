@@ -18,7 +18,7 @@ bool ManagedObject::isManaged() const
     return managed;
 }
 
-void ManagedObject::mark() const
+void ManagedObject::mark()
 {
     marked = true;
 }
@@ -28,7 +28,7 @@ bool ManagedObject::isMarked() const
     return marked;
 }
 
-void ManagedObject::unmark() const
+void ManagedObject::unmark()
 {
     marked = false;
 }

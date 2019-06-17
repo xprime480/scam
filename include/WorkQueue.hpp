@@ -15,7 +15,7 @@ namespace scam
         void put(Worker * worker);
         Worker * get();
         bool empty() const;
-        void mark() const;
+        void mark();
 
     private:
         std::deque<Worker *> workers;

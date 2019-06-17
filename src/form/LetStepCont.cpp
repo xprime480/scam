@@ -49,7 +49,7 @@ LetStepCont * LetStepCont::makeInstance(ScamValue formals,
                            rebind);
 }
 
-void LetStepCont::mark() const
+void LetStepCont::mark()
 {
     if ( ! isMarked() ) {
         Continuation::mark();

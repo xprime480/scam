@@ -67,7 +67,7 @@ namespace scam
 
         /*** function to manage garbage collection ***/
 
-        void mark() const;
+        void mark();
 
     private:
         Env * env;

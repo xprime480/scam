@@ -20,7 +20,7 @@ FunctionDefParser * FunctionDefParser::makeInstance()
     return new FunctionDefParser();
 }
 
-void FunctionDefParser::mark() const
+void FunctionDefParser::mark()
 {
     if ( ! isMarked() ) {
         ArgParser::mark();
@@ -61,7 +61,7 @@ ScamValue FunctionDefParser::getName() const
     return name->getValue();
 }
 
-const LambdaParser * FunctionDefParser::getLambda() const
+LambdaParser * FunctionDefParser::getLambda() const
 {
     return lambda;
 }

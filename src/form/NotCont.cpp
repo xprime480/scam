@@ -19,7 +19,7 @@ NotCont * NotCont::makeInstance(Continuation * cont, ScamEngine * engine)
     return new NotCont(cont, engine);
 }
 
-void NotCont::mark() const
+void NotCont::mark()
 {
   if ( ! isMarked() ) {
       Continuation::mark();

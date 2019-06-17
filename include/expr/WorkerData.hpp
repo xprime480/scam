@@ -15,7 +15,7 @@ namespace scam
         WorkerData(const WorkerData &) = default;
         WorkerData & operator=(const WorkerData &) = default;
 
-        void mark() const;
+        void mark();
 
         ScamValue car;
         ScamValue cdr;

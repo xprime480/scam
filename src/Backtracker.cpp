@@ -37,7 +37,7 @@ Backtracker::~Backtracker()
 #endif
 };
 
-void Backtracker::mark() const
+void Backtracker::mark()
 {
     if ( ! isMarked() ) {
         ManagedObject::mark();

@@ -41,7 +41,7 @@ ConsWorker::makeInstance(WorkerData const & data, ScamEngine * engine)
     return new ConsWorker(data, engine);
 }
 
-void ConsWorker::mark() const
+void ConsWorker::mark()
 {
     if ( ! isMarked() ) {
         Worker::mark();

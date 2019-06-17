@@ -28,7 +28,7 @@ namespace scam
         }
 
     public:
-        void mark() const override;
+        void mark() override;
         bool accept(ScamValue expr) override;
 
         ArgParser * get(size_t idx) const;

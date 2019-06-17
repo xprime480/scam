@@ -11,13 +11,13 @@ namespace scam
 
         bool isManaged() const;
 
-        virtual void mark() const;
+        virtual void mark();
         bool isMarked() const;
-        void unmark() const;
+        void unmark();
 
     private:
-        const   bool managed;
-        mutable bool marked;
+        const bool managed;
+              bool marked;
     };
 }
 

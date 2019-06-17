@@ -32,7 +32,7 @@ ClassWorker * ClassWorker::makeInstance(ScamValue cls,
     return new ClassWorker(cls, args, cont, env, engine);
 }
 
-void ClassWorker::mark() const
+void ClassWorker::mark()
 {
     if ( ! isMarked() ) {
         Worker::mark();

@@ -28,7 +28,7 @@ LetStarBacktracker::makeInstance(Env * env,
     return new LetStarBacktracker(env, sym, backtracker, engine);
 }
 
-void LetStarBacktracker::mark() const
+void LetStarBacktracker::mark()
 {
     if ( ! isMarked() ) {
         Backtracker::mark();

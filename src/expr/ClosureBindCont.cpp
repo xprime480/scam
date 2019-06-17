@@ -19,7 +19,7 @@
 using namespace scam;
 using namespace std;
 
-ClosureBindCont::ClosureBindCont(const LambdaParser * lambda,
+ClosureBindCont::ClosureBindCont(LambdaParser * lambda,
                                  Env * capture,
                                  Continuation * cont,
                                  bool macrolike,
@@ -32,7 +32,7 @@ ClosureBindCont::ClosureBindCont(const LambdaParser * lambda,
 {
 }
 
-ClosureBindCont * ClosureBindCont::makeInstance(const LambdaParser * lambda,
+ClosureBindCont * ClosureBindCont::makeInstance(LambdaParser * lambda,
                                                 Env * capture,
                                                 Continuation * cont,
                                                 bool macrolike,
@@ -41,7 +41,7 @@ ClosureBindCont * ClosureBindCont::makeInstance(const LambdaParser * lambda,
     return new ClosureBindCont(lambda, capture, cont, macrolike, engine);
 }
 
-void ClosureBindCont::mark() const
+void ClosureBindCont::mark()
 {
     if ( ! isMarked() ) {
         Continuation::mark();

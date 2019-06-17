@@ -35,7 +35,7 @@ QuasiQuoteWorker * QuasiQuoteWorker::makeInstance(ScamValue form,
     return new QuasiQuoteWorker(form, cont, env, engine);
 }
 
-void QuasiQuoteWorker::mark() const
+void QuasiQuoteWorker::mark()
 {
     if ( ! isMarked() ) {
         Worker::mark();

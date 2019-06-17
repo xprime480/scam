@@ -31,7 +31,7 @@ namespace scam
             makeInstance(SampleManagedObject * proxy);
 
         public:
-            void mark() const override;
+            void mark() override;
             int getValue() const;
 
         private:

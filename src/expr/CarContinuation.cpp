@@ -21,7 +21,7 @@ CarContinuation::makeInstance(WorkerData const & data, ScamEngine * engine)
   return new CarContinuation(data, engine);
 }
 
-void CarContinuation::mark() const
+void CarContinuation::mark()
 {
   if ( ! isMarked() ) {
       Continuation::mark();

@@ -20,9 +20,10 @@ namespace
 bool scam::dictHas(ScamValue value, ScamValue key)
 {
     checkDict(value, "dictHas");
+    const ScamData::DictKeyData & keys = value->dictKeys();
 
-    for ( size_t jdx = 0 ; jdx < DICTKEYS(value).size() ; ++jdx ) {
-        if ( equals(DICTKEYS(value)[jdx], key) ) {
+    for ( size_t jdx = 0 ; jdx < keys.size() ; ++jdx ) {
+        if ( equals(keys[jdx], key) ) {
             return true;
         }
     }
@@ -33,10 +34,11 @@ bool scam::dictHas(ScamValue value, ScamValue key)
 ScamValue scam::dictGet(ScamValue value, ScamValue key)
 {
     checkDict(value, "dictGet");
+    const ScamData::DictKeyData & keys = value->dictKeys();
 
-    for ( size_t jdx = 0 ; jdx < DICTKEYS(value).size() ; ++jdx ) {
-        if ( equals(DICTKEYS(value)[jdx], key) ) {
-            return DICTVALS(value)[jdx];
+    for ( size_t jdx = 0 ; jdx < keys.size() ; ++jdx ) {
+        if ( equals(keys[jdx], key) ) {
+            return (value->dictValues())[jdx];
         }
     }
 
@@ -47,21 +49,23 @@ ScamValue scam::dictPut(ScamValue value, ScamValue key, ScamValue val)
 {
     checkDict(value, "dictPut");
 
-    size_t prev = DICTKEYS(value).size();
+    ScamData::DictKeyData   & keys = value->dictKeys();
+    ScamData::DictValueData & vals = value->dictValues();
+    size_t prev = keys.size();
 
-    for ( size_t jdx = 0 ; jdx < DICTKEYS(value).size() ; ++jdx ) {
-        if ( equals(DICTKEYS(value)[jdx], key) ) {
+    for ( size_t jdx = 0 ; jdx < keys.size() ; ++jdx ) {
+        if ( equals(keys[jdx], key) ) {
             prev = jdx;
             break;
         }
     }
 
-    if ( prev >= DICTKEYS(value).size() ) {
-        DICTKEYS(value).push_back(key);
-        DICTVALS(value).push_back(val);
+    if ( prev >= keys.size() ) {
+        keys.push_back(key);
+        vals.push_back(val);
     }
     else {
-        DICTVALS(value)[prev] = val;
+        vals[prev] = val;
     }
 
     return val;
@@ -71,13 +75,15 @@ ScamValue scam::dictRemove(ScamValue value, ScamValue key)
 {
     checkDict(value, "dictRemove");
 
+    ScamData::DictKeyData   & keys = value->dictKeys();
+    ScamData::DictValueData & vals = value->dictValues();
     ScamValue rv = makeNull();
 
-    for ( size_t jdx = 0 ; jdx < DICTKEYS(value).size() ; ++jdx ) {
-        if ( equals(DICTKEYS(value)[jdx], key) ) {
-            DICTKEYS(value).erase(DICTKEYS(value).begin() + jdx);
-            rv = DICTVALS(value)[jdx];
-            DICTVALS(value).erase(DICTVALS(value).begin() + jdx);
+    for ( size_t jdx = 0 ; jdx < keys.size() ; ++jdx ) {
+        if ( equals(keys[jdx], key) ) {
+            keys.erase(keys.begin() + jdx);
+            rv = vals[jdx];
+            vals.erase(vals.begin() + jdx);
             break;
         }
     }
@@ -89,7 +95,7 @@ const KeyVec & scam::getDictKeys(ScamValue value)
 {
     checkDict(value, "getDictKeys");
 
-    return DICTKEYS(value);
+    return value->dictKeys();
 }
 
 namespace

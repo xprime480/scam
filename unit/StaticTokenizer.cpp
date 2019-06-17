@@ -10,7 +10,7 @@ StaticTokenizer::StaticTokenizer(vector<Token> const & tokens)
 {
 }
 
-void StaticTokenizer::mark() const
+void StaticTokenizer::mark()
 {
 }
 

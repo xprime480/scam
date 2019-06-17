@@ -21,7 +21,7 @@ namespace scam
         static Env * makeInstance();
 
     public:
-        void mark() const override;
+        void mark() override;
 
         void put(ScamValue key, ScamValue val);
         bool check(ScamValue key, bool checkParent = true) const;

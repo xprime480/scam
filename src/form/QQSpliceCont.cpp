@@ -21,7 +21,7 @@ QQSpliceCont::makeInstance(Continuation * cont, ScamEngine * engine)
     return new QQSpliceCont(cont, engine);
 }
 
-void QQSpliceCont::mark() const
+void QQSpliceCont::mark()
 {
     if ( ! isMarked() ) {
         Continuation::mark();

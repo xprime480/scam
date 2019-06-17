@@ -18,7 +18,7 @@ namespace scam
         makeInstance(Continuation * cont, ScamEngine * engine, bool value);
 
     public:
-        void mark() const override;
+        void mark() override;
         void run() override;
 
     private:

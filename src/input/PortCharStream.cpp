@@ -26,7 +26,7 @@ PortCharStream::~PortCharStream()
     free(buffer);
 }
 
-void PortCharStream::mark() const
+void PortCharStream::mark()
 {
     value->mark();
 }

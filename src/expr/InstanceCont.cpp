@@ -32,7 +32,7 @@ InstanceCont * InstanceCont::makeInstance(ScamValue obj,
     return new InstanceCont(obj, name, cont, engine);
 }
 
-void InstanceCont::mark() const
+void InstanceCont::mark()
 {
     if ( ! isMarked() ) {
         Continuation::mark();

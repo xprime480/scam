@@ -19,7 +19,7 @@ ScamParser::ScamParser(Tokenizer & tokenizer)
 {
 }
 
-void ScamParser::mark() const
+void ScamParser::mark()
 {
     tokenizer.mark();
 }

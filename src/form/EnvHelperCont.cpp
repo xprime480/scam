@@ -20,7 +20,7 @@ EnvHelperCont::EnvHelperCont(ScamValue sym,
 {
 }
 
-void EnvHelperCont::mark() const
+void EnvHelperCont::mark()
 {
     if ( ! isMarked() ) {
         Continuation::mark();

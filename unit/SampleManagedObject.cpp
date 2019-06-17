@@ -36,7 +36,7 @@ SampleManagedObject::makeInstance(SampleManagedObject * proxy)
     return new SampleManagedObject(proxy);
 }
 
-void SampleManagedObject::mark() const
+void SampleManagedObject::mark()
 {
     if ( ! isMarked() ) {
         ManagedObject::mark();

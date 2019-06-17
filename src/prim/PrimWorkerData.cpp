@@ -22,7 +22,7 @@ PrimWorkerData::PrimWorkerData(ScamValue args,
 {
 }
 
-void PrimWorkerData::mark() const
+void PrimWorkerData::mark()
 {
     args->mark();
     original->mark();
@@ -42,6 +42,6 @@ void PrimWorkerData::handleResult(ScamValue expr, ScamEngine * engine)
         engine->handleError(expr);
     }
     else {
-        PRIMFUNC(caller)(expr, original, PRIMENGINE(caller));
+        (caller->primFunc())(expr, original, caller->primEngine());
     }
 }

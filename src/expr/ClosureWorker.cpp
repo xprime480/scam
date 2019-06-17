@@ -11,7 +11,7 @@
 using namespace scam;
 using namespace std;
 
-ClosureWorker::ClosureWorker(const LambdaParser * parser,
+ClosureWorker::ClosureWorker(LambdaParser * parser,
                              Env * capture,
                              Continuation * cont,
                              ScamValue args,
@@ -28,7 +28,7 @@ ClosureWorker::ClosureWorker(const LambdaParser * parser,
 {
 }
 
-ClosureWorker * ClosureWorker::makeInstance(const LambdaParser * parser,
+ClosureWorker * ClosureWorker::makeInstance(LambdaParser * parser,
                                             Env * capture,
                                             Continuation * cont,
                                             ScamValue args,
@@ -45,7 +45,7 @@ ClosureWorker * ClosureWorker::makeInstance(const LambdaParser * parser,
                              engine);
 }
 
-void ClosureWorker::mark() const
+void ClosureWorker::mark()
 {
     if ( ! isMarked() ) {
         Worker::mark();

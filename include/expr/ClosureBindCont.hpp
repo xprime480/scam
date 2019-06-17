@@ -15,27 +15,27 @@ namespace scam
     private:
         friend class scam::MemoryManager;
 
-        ClosureBindCont(const LambdaParser * lambda,
+        ClosureBindCont(LambdaParser * lambda,
                         Env * capture,
                         Continuation * cont,
                         bool macrolike,
                         ScamEngine * engine);
 
-        static ClosureBindCont * makeInstance(const LambdaParser * lambda,
+        static ClosureBindCont * makeInstance(LambdaParser * lambda,
                                               Env * capture,
                                               Continuation * cont,
                                               bool macrolike,
                                               ScamEngine * engine);
 
     public:
-        void mark() const override;
+        void mark() override;
         void handleValue(ScamValue value) override;
 
     private:
-        const LambdaParser * lambda;
-        Env *        capture;
+        LambdaParser * lambda;
+        Env          * capture;
         Continuation * cont;
-        bool       macrolike;
+        bool           macrolike;
 
         bool malformedActuals(ScamValue expr) const;
         bool describeFormals(unsigned & len) const;

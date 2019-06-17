@@ -30,7 +30,7 @@ NotWorker * NotWorker::makeInstance(Continuation * cont,
     return new NotWorker(cont, env, engine, parser);
 }
 
-void NotWorker::mark() const
+void NotWorker::mark()
 {
     if ( ! isMarked() ) {
         Worker::mark();

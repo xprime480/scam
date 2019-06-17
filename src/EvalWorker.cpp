@@ -29,7 +29,7 @@ namespace
         }
 
     public:
-        void mark() const override
+        void mark() override
         {
             if ( ! isMarked() ) {
                 Continuation::mark();
@@ -75,7 +75,7 @@ EvalWorker * EvalWorker::makeInstance(ScamValue forms,
     return new EvalWorker(forms, env, cont, engine);
 }
 
-void EvalWorker::mark() const
+void EvalWorker::mark()
 {
     if ( ! isMarked() ) {
         Worker::mark();

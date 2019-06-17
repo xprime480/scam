@@ -15,18 +15,18 @@ namespace scam
         static SymbolPlusManyParser * makeInstance();
 
     public:
-        void mark() const override;
+        void mark() override;
         bool accept(ScamValue expr) override;
 
         ScamValue getSymbol() const;
         ScamValue getForms() const;
 
     protected:
-	void clearValue() override;
+        void clearValue() override;
 
     private:
         SymbolParser * sym;
-	ScamValue     forms;
+        ScamValue     forms;
     };
 }
 

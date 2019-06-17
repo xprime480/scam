@@ -2,6 +2,7 @@
 
 #include "Continuation.hpp"
 #include "Env.hpp"
+#include "ScamException.hpp"
 #include "expr/ScamNumeric.hpp"
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueFactory.hpp"
@@ -9,16 +10,40 @@
 #include "input/LambdaParser.hpp"
 #include "port/ScamPort.hpp"
 
+#include "util/GlobalId.hpp"
+#include "util/DebugTrace.hpp"
+#include "expr/ValueWriter.hpp"
+
 using namespace scam;
 using namespace std;
 
-ScamData::ScamData(unsigned long type, bool managed)
+ScamData::ScamData(ValueType type, bool managed)
     : ManagedObject(managed)
     , type(type)
     , immutable(true)
     , metadata(nullptr)
 {
+    if ( 0 != (type & Numeric) ) {
+        value.numericValue = new NumericData;
+        switch ( type ) {
+        case Complex:
+            value.numericValue->value.complexValue = new ComplexData;
+            break;
+
+        case Rational:
+            value.numericValue->value.rationalValue = new RationalData;
+            break;
+
+        default:
+            /* nothing more to be done */
+            break;
+        }
+
+        return;
+    }
+
     switch ( type ) {
+
     case ScamData::String:
         immutable = false;
         /* fallthrough */
@@ -26,39 +51,48 @@ ScamData::ScamData(unsigned long type, bool managed)
     case ScamData::Error:
     case ScamData::Keyword:
     case ScamData::Symbol:
-        STRVALP(this) = new string;
+        value.strVal = new string;
         break;
 
     case ScamData::Pair:
+        value.pairValue = new PairData;
         immutable = false;
         break;
 
-    case ScamData::ByteVector:
-        BYTEVECTORP(this) = new vector<unsigned char>;
+    case ScamData::Vector:
+        value.vectorData = new VectorData;
+        break;
 
+    case ScamData::ByteVector:
+        value.byteVectorData = new ByteVectorData;
         break;
 
     case ScamData::Dict:
-        DICTKEYSP(this) = new vector<ScamValue>;
-        DICTVALSP(this) = new vector<ScamValue>;
+        value.dictData = new DictData;
         break;
 
-    case ScamData::Vector:
-        VECTORP(this) = new vector<ScamValue>;
+    case ScamData::Closure:
+        value.closureData = new ClosureData;
         break;
 
-    case ScamData::SpecialForm:
-        SFNAMEP(this) = new string;
-        SFFUNCP(this) = new SfFunction;
+    case ScamData::Class:
+        value.classValue = new ClassData;
+        break;
+
+    case ScamData::Instance:
+        value.instanceData = new InstanceData;
         break;
 
     case ScamData::Primitive:
-        PRIMNAMEP(this) = new string;
-        PRIMFUNCP(this) = new PrimFunction;
+        value.primitiveData = new PrimitiveData;
+        break;
+
+    case ScamData::SpecialForm:
+        value.specialFormData = new SpecialFormData;
         break;
 
     case ScamData::Port:
-        PORT(this) = nullptr;
+        value.portData = nullptr;
         break;
 
     default:
@@ -68,39 +102,71 @@ ScamData::ScamData(unsigned long type, bool managed)
 
 ScamData::~ScamData()
 {
+    if ( 0 != (type & Numeric) ) {
+        switch ( type ) {
+        case Complex:
+            delete value.numericValue->value.complexValue;
+            break;
+
+        case Rational:
+            delete value.numericValue->value.rationalValue;
+            break;
+
+        default:
+            /* nothing more to be done */
+            break;
+        }
+
+        delete value.numericValue;
+        return;
+    }
+
     switch ( type ) {
     case ScamData::Error:
     case ScamData::Keyword:
     case ScamData::String:
     case ScamData::Symbol:
-        delete STRVALP(this);
+        delete value.strVal;
         break;
 
-    case ScamData::ByteVector:
-        delete BYTEVECTORP(this);
-        break;
-
-    case ScamData::Dict:
-        delete DICTKEYSP(this);
-        delete DICTVALSP(this);
+    case ScamData::Pair:
+        delete value.pairValue;
         break;
 
     case ScamData::Vector:
-        delete VECTORP(this);
+        delete value.vectorData;
         break;
 
-    case ScamData::SpecialForm:
-        delete SFNAMEP(this);
-        delete SFFUNCP(this);
+    case ScamData::ByteVector:
+        delete value.byteVectorData;
+        break;
+
+    case ScamData::Dict:
+        delete value.dictData;
+        break;
+
+    case ScamData::Closure:
+        delete value.closureData;
+        break;
+
+    case ScamData::Class:
+        delete value.classValue;
+        break;
+
+    case ScamData::Instance:
+        delete value.instanceData;
         break;
 
     case ScamData::Primitive:
-        delete PRIMNAMEP(this);
-        delete PRIMFUNCP(this);
+        delete value.primitiveData;
+        break;
+
+    case ScamData::SpecialForm:
+        delete value.specialFormData;
         break;
 
     case ScamData::Port:
-        delete PORT(this);
+        delete value.portData;
         break;
 
     default:
@@ -108,12 +174,12 @@ ScamData::~ScamData()
     }
 }
 
-ScamData * ScamData::makeInstance(unsigned long type, bool managed)
+ScamData * ScamData::makeInstance(ValueType type, bool managed)
 {
     return new ScamData(type, managed);
 }
 
-void ScamData::mark() const
+void ScamData::mark()
 {
     if ( isMarked() ) {
         return;
@@ -124,51 +190,56 @@ void ScamData::mark() const
         metadata->mark();
     }
 
-    ScamValue hack = const_cast<ScamValue>(this);
-    if ( isNumeric(hack) ) {
-        if ( isPureComplex(hack) ) {
-            REALPART(this)->mark();
-            IMAGPART(this)->mark();
+    if ( isNumeric(this) ) {
+        if ( isPureComplex(this) ) {
+            realPart()->mark();
+            imagPart()->mark();
         }
         return;
     }
 
     switch ( type ) {
-    case ScamData::Class:
-        CLASSDEF(this)->mark();
-        CLASSENV(this)->mark();
-        break;
-
-    case ScamData::Closure:
-        CLOSUREDEF(this)->mark();
-        CLOSUREENV(this)->mark();
-        break;
-
     case ScamData::Pair:
-        CAR(this)->mark();
-        CDR(this)->mark();
-        break;
-
-    case ScamData::Cont:
-        CONTINUATION(this)->mark();
-        break;
-
-    case ScamData::Dict:
-        for ( size_t idx = 0 ; idx < DICTKEYS(this).size() ; ++idx ) {
-            DICTKEYS(this)[idx]->mark();
-            DICTVALS(this)[idx]->mark();
-        }
-        break;
-
-    case ScamData::Instance:
-        INSTANCELOCALENV(this)->mark();
-        INSTANCEPRIVENV(this)->mark();
+        carValue()->mark();
+        cdrValue()->mark();
         break;
 
     case ScamData::Vector:
-        for ( auto const & e : VECTOR(this) ) {
+        for ( auto const & e : vectorData() ) {
             e->mark();
         }
+        break;
+
+    case ScamData::Dict: {
+        const DictKeyData & keys   = dictKeys();
+        const DictValueData & vals = dictValues();
+
+        size_t size = keys.size();
+
+        for ( size_t idx = 0 ; idx < size ; ++idx ) {
+            keys[idx]->mark();
+            vals[idx]->mark();
+        }
+    }
+        break;
+
+    case ScamData::Closure:
+        closureDef()->mark();
+        closureEnv()->mark();
+        break;
+
+    case ScamData::Class:
+        classDef()->mark();
+        classEnv()->mark();
+        break;
+
+    case ScamData::Instance:
+        instancePrivate()->mark();
+        instanceLocal()->mark();
+        break;
+
+    case ScamData::Cont:
+        contValue()->mark();
         break;
 
     default:
@@ -225,4 +296,213 @@ ScamValue ScamData::getMeta(string const & key) const
     }
 
     return rv;
+}
+
+void ScamData::assertType(ValueType requiredType)
+{
+    if ( type != requiredType ) {
+        stringstream s;
+        s << "InternalError, type assertion in ScamData: expected: "
+          << hex << requiredType
+          << "; operating on "
+          << hex << type;
+
+        throw ScamException(s.str());
+    }
+}
+
+bool & ScamData::exactFlag()
+{
+    GlobalId id;
+    scamTrace(id, __FILE__, __LINE__, __FUNCTION__);
+
+    if ( 0 == (type & ScamData::Numeric) ) {
+        assertType(ScamData::Numeric);
+    }
+    return value.numericValue->exact;
+}
+
+ScamValue & ScamData::realPart()
+{
+    assertType(ScamData::Complex);
+    return value.numericValue->value.complexValue->real;
+}
+
+ScamValue & ScamData::imagPart()
+{
+    assertType(ScamData::Complex);
+    return value.numericValue->value.complexValue->imag;
+}
+
+double & ScamData::realValue()
+{
+    assertType(ScamData::Real);
+    return value.numericValue->value.realValue;
+}
+
+int & ScamData::numPart()
+{
+    assertType(ScamData::Rational);
+    return value.numericValue->value.rationalValue->num;
+}
+
+int & ScamData::denPart()
+{
+    assertType(ScamData::Rational);
+    return value.numericValue->value.rationalValue->den;
+}
+
+int & ScamData::intPart()
+{
+    assertType(ScamData::Integer);
+    return value.numericValue->value.intValue;
+}
+
+bool & ScamData::boolValue()
+{
+    assertType(ScamData::Boolean);
+    return value.boolValue;
+}
+
+char & ScamData::charValue()
+{
+    assertType(ScamData::Character);
+    return value.charValue;
+}
+
+ScamData::StringData & ScamData::stringValue()
+{
+    GlobalId id;
+    scamTrace(id, __FILE__, __LINE__, __FUNCTION__);
+
+    if ( 0 == (type & ScamData::StringLike) ) {
+        assertType(ScamData::StringLike);
+    }
+    return *(value.strVal);
+}
+
+ScamValue & ScamData::carValue()
+{
+    assertType(ScamData::Pair);
+    return value.pairValue->car;
+}
+
+ScamValue & ScamData::cdrValue()
+{
+    assertType(ScamData::Pair);
+    return value.pairValue->cdr;
+}
+
+ScamData::VectorData & ScamData::vectorData()
+{
+    assertType(ScamData::Vector);
+    return *(value.vectorData);
+}
+
+ScamData::ByteVectorData & ScamData::byteVectorData()
+{
+    assertType(ScamData::ByteVector);
+    return *(value.byteVectorData);
+}
+
+ScamData::DictKeyData & ScamData::dictKeys()
+{
+    assertType(ScamData::Dict);
+    return value.dictData->keys;
+}
+
+ScamData::DictValueData & ScamData::dictValues()
+{
+    assertType(ScamData::Dict);
+    return value.dictData->vals;
+}
+
+ScamData::ClosureDefType & ScamData::closureDef()
+{
+    assertType(ScamData::Closure);
+    return value.closureData->parser;
+}
+
+Env *& ScamData::closureEnv()
+{
+    assertType(ScamData::Closure);
+    return value.closureData->env;
+}
+
+bool & ScamData::closureMacroLike()
+{
+    assertType(ScamData::Closure);
+    return value.closureData->macrolike;
+}
+
+ClassDefParser *& ScamData::classDef()
+{
+    assertType(ScamData::Class);
+    return value.classValue->def;
+}
+
+Env *& ScamData::classEnv()
+{
+    assertType(ScamData::Class);
+    return value.classValue->capture;
+}
+
+Env *& ScamData::instancePrivate()
+{
+    assertType(ScamData::Instance);
+    return value.instanceData->priv;
+}
+
+Env *& ScamData::instanceLocal()
+{
+    assertType(ScamData::Instance);
+    return value.instanceData->local;
+}
+
+Continuation *& ScamData::contValue()
+{
+    assertType(ScamData::Cont);
+    return value.contData;
+}
+
+std::string & ScamData::primName()
+{
+    assertType(ScamData::Primitive);
+    return value.primitiveData->name;
+}
+
+PrimFunction & ScamData::primFunc()
+{
+    assertType(ScamData::Primitive);
+    return value.primitiveData->func;
+}
+
+ScamEngine *& ScamData::primEngine()
+{
+    assertType(ScamData::Primitive);
+    return value.primitiveData->engine;
+}
+
+std::string & ScamData::sfName()
+{
+    assertType(ScamData::SpecialForm);
+    return value.specialFormData->name;
+}
+
+SfFunction & ScamData::sfFunc()
+{
+    assertType(ScamData::SpecialForm);
+    return value.specialFormData->func;
+}
+
+ScamEngine *& ScamData::sfEngine()
+{
+    assertType(ScamData::SpecialForm);
+    return value.specialFormData->engine;
+}
+
+ScamPort *& ScamData::portValue()
+{
+    assertType(ScamData::Port);
+    return value.portData;
 }

@@ -31,7 +31,7 @@ bool scam::equals(ScamValue lhs, ScamValue rhs)
     }
 
     else if ( isBoolean(lhs) ) {
-        rv = (BOOLVAL(lhs) == BOOLVAL(rhs));
+        rv = (lhs->boolValue() == rhs->boolValue());
     }
 
     else if ( isByteVector(lhs) ) {
@@ -39,23 +39,23 @@ bool scam::equals(ScamValue lhs, ScamValue rhs)
     }
 
     else if ( isChar(lhs) ) {
-        rv = (CHARVAL(lhs) == CHARVAL(rhs));
+        rv = (lhs->charValue() == rhs->charValue());
     }
 
     else if ( isPair(lhs) ) {
-        rv = (equals(CAR(lhs), CAR(rhs)) && equals(CDR(lhs), CDR(rhs)));
+        rv = (equals(lhs->carValue(), rhs->carValue()) &&
+              equals(lhs->cdrValue(), rhs->cdrValue()));
     }
 
     else if ( isDict(lhs) ) {
         rv = equalsDict(lhs, rhs);
     }
 
-    else if ( isError(lhs) ) {
-        rv = (STRVAL(lhs) == STRVAL(rhs));
-    }
-
-    else if ( isKeyword(lhs) ) {
-        rv = (STRVAL(lhs) == STRVAL(rhs));
+    else if ( isError(lhs) ||
+              isKeyword(lhs) ||
+              isString(lhs) ||
+              isSymbol(lhs) ) {
+        rv = (lhs->stringValue() == rhs->stringValue());
     }
 
     else if ( isNull(lhs) ) {
@@ -64,14 +64,6 @@ bool scam::equals(ScamValue lhs, ScamValue rhs)
 
     else if ( isNothing(lhs) ) {
         rv = false;
-    }
-
-    else if ( isString(lhs) ) {
-        rv = (STRVAL(lhs) == STRVAL(rhs));
-    }
-
-    else if ( isSymbol(lhs) ) {
-        rv = (STRVAL(lhs) == STRVAL(rhs));
     }
 
     else if ( isVector(lhs) ) {
@@ -121,12 +113,17 @@ namespace
 
     bool equalsByteVector(ScamValue lhs, ScamValue rhs)
     {
-        if ( BYTEVECTOR(lhs).size() != BYTEVECTOR(rhs).size() ) {
+        const ScamData::ByteVectorData & lhbv = lhs->byteVectorData();
+        const ScamData::ByteVectorData & rhbv = rhs->byteVectorData();
+
+        if ( lhbv.size() != rhbv.size() ) {
             return false;
         }
 
-        for ( size_t idx = 0 ; idx < BYTEVECTOR(rhs).size() ; ++idx ) {
-            if ( BYTEVECTOR(lhs)[idx] != BYTEVECTOR(rhs)[idx] ) {
+        size_t size = lhbv.size();
+
+        for ( size_t idx = 0 ; idx < size ; ++idx ) {
+            if ( lhbv[idx] != rhbv[idx] ) {
                 return false;
             }
         }
@@ -136,19 +133,24 @@ namespace
 
     bool equalsDict(ScamValue lhs, ScamValue rhs)
     {
-        if ( DICTKEYS(lhs).size() != DICTKEYS(rhs).size() ) {
+        const ScamData::DictKeyData & lhk = lhs->dictKeys();
+        const ScamData::DictKeyData & rhk = rhs->dictKeys();
+
+        if ( lhk.size() != rhk.size() ) {
             return false;
         }
 
-        size_t len = length(lhs);
+        size_t len = lhk.size();
         size_t otherIdx = len+1;
+        const ScamData::DictValueData & lhv = lhs->dictValues();
+        const ScamData::DictValueData & rhv = rhs->dictValues();
 
         for ( size_t lhsIdx = 0 ; lhsIdx < len ; ++lhsIdx ) {
-            ScamValue myKey = DICTKEYS(lhs)[lhsIdx];
+            ScamValue myKey = lhk[lhsIdx];
             for ( otherIdx = 0 ; otherIdx < len ; ++otherIdx ) {
-                if ( equals(DICTKEYS(rhs)[otherIdx], myKey) ) {
-                    ScamValue myVal = DICTVALS(lhs)[lhsIdx];
-                    if ( ! equals(DICTVALS(rhs)[otherIdx], myVal) ) {
+                if ( equals(rhk[otherIdx], myKey) ) {
+                    ScamValue myVal = lhv[lhsIdx];
+                    if ( ! equals(rhv[otherIdx], myVal) ) {
                         return false;
                     }
                     break;
@@ -164,12 +166,17 @@ namespace
 
     bool equalsVector(ScamValue lhs, ScamValue rhs)
     {
-        if ( VECTOR(lhs).size() != VECTOR(rhs).size() ) {
+        const ScamData::VectorData & lhv = lhs->vectorData();
+        const ScamData::VectorData & rhv = rhs->vectorData();
+
+        if ( lhv.size() != rhv.size() ) {
             return false;
         }
 
-        for ( size_t idx = 0 ; idx < VECTOR(lhs).size() ; ++idx ) {
-            if ( ! equals(VECTOR(lhs)[idx], VECTOR(rhs)[idx]) ) {
+        size_t size = lhv.size();
+
+        for ( size_t idx = 0 ; idx < size ; ++idx ) {
+            if ( ! equals(lhv[idx], rhv[idx]) ) {
                 return false;
             }
         }

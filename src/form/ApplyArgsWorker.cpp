@@ -32,7 +32,7 @@ ApplyArgsWorker * ApplyArgsWorker::makeInstance(ScamValue op,
     return new ApplyArgsWorker(op, args, cont, env, engine);
 }
 
-void ApplyArgsWorker::mark() const
+void ApplyArgsWorker::mark()
 {
     if ( ! isMarked() ) {
         Worker::mark();

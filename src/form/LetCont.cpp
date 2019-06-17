@@ -32,7 +32,7 @@ LetCont * LetCont::makeInstance(ScamValue formals,
     return new LetCont(formals, forms, cont, env, engine, rebind);
 }
 
-void LetCont::mark() const
+void LetCont::mark()
 {
     if ( ! isMarked() ) {
         LetCommonCont::mark();

@@ -15,7 +15,7 @@ namespace scam
         static MatchUnifyParser * makeInstance(bool match);
 
     public:
-        void mark() const override;
+        void mark() override;
         bool accept(ScamValue expr) override;
 
         bool isMatch() const;

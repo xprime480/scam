@@ -70,7 +70,7 @@ void scam::applySetCarX(ScamValue args,
 
     ScamValue pair, obj;
     if ( setCarCdrCommon(args, cont, engine, name, pair, obj) ) {
-        CAR(pair) = obj;
+        pair->carValue() = obj;
         cont->handleValue(makeNothing());
     }
 }
@@ -83,7 +83,7 @@ void scam::applySetCdrX(ScamValue args,
 
     ScamValue pair, obj;
     if ( setCarCdrCommon(args, cont, engine, name, pair, obj) ) {
-        CDR(pair) = obj;
+        pair->cdrValue() = obj;
         cont->handleValue(makeNothing());
     }
 }

@@ -18,7 +18,7 @@ NumericListParser * NumericListParser::makeInstance()
     return new NumericListParser;
 }
 
-void NumericListParser::mark() const
+void NumericListParser::mark()
 {
     if ( ! isMarked() ) {
         ArgParser::mark();

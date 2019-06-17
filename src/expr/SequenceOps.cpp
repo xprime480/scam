@@ -22,7 +22,7 @@ ScamValue scam::getCar(ScamValue value)
         throw ScamException(msg);
     }
 
-    auto rv = CAR(value);
+    auto rv = value->carValue();
     return rv;
 }
 
@@ -36,7 +36,7 @@ ScamValue scam::getCdr(ScamValue value)
         throw ScamException(msg);
     }
 
-    auto rv = CDR(value);
+    auto rv = value->cdrValue();
     return rv;
 }
 
@@ -45,10 +45,10 @@ size_t scam::length(ScamValue value)
     size_t rv { 0u };
 
     if ( isByteVector(value) ) {
-        rv = BYTEVECTOR(value).size();
+        rv = value->byteVectorData().size();
     }
     else if ( isPair(value) ) {
-        ScamValue cdr = CDR(value);
+        ScamValue cdr = value->cdrValue();
         size_t len = 1;
         if ( isPair(cdr) ) {
             len += length(cdr);
@@ -60,16 +60,16 @@ size_t scam::length(ScamValue value)
         rv = len;
     }
     else if ( isDict(value) ) {
-        rv = DICTKEYS(value).size();
+        rv = value->dictKeys().size();
     }
     else if ( isNull(value) ) {
         rv = 0u;
     }
     else if ( isVector(value) ) {
-        rv = VECTOR(value).size();
+        rv = value->vectorData().size();
     }
     else if ( isString(value) ) {
-        rv = STRVAL(value).size();
+        rv = value->stringValue().size();
     }
     else {
         stringstream s;
@@ -106,16 +106,16 @@ ScamValue scam::nthcar(ScamValue value, size_t n)
     if ( isByteVector(value) ) {
         rv = checkLength(value, n);
         if ( ! isError(rv) ) {
-            rv = makeInteger(BYTEVECTOR(value)[n], true);
+            rv = makeInteger(value->byteVectorData()[n], true);
         }
     }
     else if ( isPair(value) ) {
         rv = checkLength(value, n);
         if ( ! isError(rv) ) {
-            ScamValue cdr = CDR(value);
+            ScamValue cdr = value->cdrValue();
 
             if ( 0 == n ) {
-                rv = CAR(value);
+                rv = value->carValue();
             }
             else if ( isPair(cdr) ) {
                 rv = nthcar(cdr, n-1);
@@ -128,7 +128,7 @@ ScamValue scam::nthcar(ScamValue value, size_t n)
     else if ( isVector(value) ) {
         rv = checkLength(value, n);
         if ( ! isError(rv) ) {
-            rv = VECTOR(value)[n];
+            rv = value->vectorData()[n];
         }
     }
     else {
@@ -158,7 +158,7 @@ ScamValue scam::nthcdr(ScamValue value, size_t n)
         return outOfRange;
     }
 
-    ScamValue cdr = CDR(value);
+    ScamValue cdr = value->cdrValue();
     ScamValue rv;
 
     if ( 0 == n ) {

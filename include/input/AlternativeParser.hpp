@@ -33,7 +33,7 @@ namespace scam
         }
 
     public:
-        void mark() const override;
+        void mark() override;
         bool accept(ScamValue expr) override;
         void clearValue() override;
 

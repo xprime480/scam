@@ -12,7 +12,7 @@ namespace scam
     public:
         ReplTokenizer();
 
-        void mark() const override;
+        void mark() override;
 
         Token next() override;
 

@@ -19,7 +19,7 @@ WorkerData::WorkerData(ScamValue car,
 {
 }
 
-void WorkerData::mark() const
+void WorkerData::mark()
 {
     car->mark();
     cdr->mark();

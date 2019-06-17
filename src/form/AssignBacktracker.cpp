@@ -30,7 +30,7 @@ AssignBacktracker * AssignBacktracker::makeInstance(ScamValue sym,
     return new AssignBacktracker(sym, old, env, backtracker, engine);
 }
 
-void AssignBacktracker::mark() const
+void AssignBacktracker::mark()
 {
     if ( ! isMarked() ) {
         Backtracker::mark();

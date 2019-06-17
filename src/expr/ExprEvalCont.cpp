@@ -20,7 +20,7 @@ ExprEvalCont::makeInstance(WorkerData const & data, ScamEngine * engine)
     return new ExprEvalCont(data, engine);
 }
 
-void ExprEvalCont::mark() const
+void ExprEvalCont::mark()
 {
     if ( ! isMarked() ) {
         Continuation::mark();

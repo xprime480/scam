@@ -18,7 +18,7 @@ namespace scam
         static VrefParser * makeInstance();
 
     public:
-        void mark() const override;
+        void mark() override;
         bool accept(ScamValue expr) override;
 
         size_t getIndex() const;
