@@ -54,10 +54,7 @@ void UndefineWorker::run()
         c->handleValue(makeNull());
     }
     else {
-        static ScamValue err =
-            makeErrorExtended("Symbol '"
-                              , writeValue(sym),
-                              "' does not exist in current scope");
+        static ScamValue err = makeError("Symbol not found (%{0})", sym);
         engine->handleError(err);
     }
 }

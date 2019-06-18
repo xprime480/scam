@@ -16,7 +16,8 @@ void scam::applySubstitute(ScamValue args,
                            ScamEngine * engine)
 {
     if ( length(args) < 2 ) {
-        ScamValue err = makeError("expected 2 args; got ", length(args));
+        ScamValue err = makeError("Incorrect parameter count",
+                                  makeInteger(length(args), true));
         cont->handleValue(err);
         return;
     }
@@ -24,10 +25,9 @@ void scam::applySubstitute(ScamValue args,
     ScamValue form = nthcar(args, 0);
     ScamValue dict = nthcar(args, 1);
     if ( ! dict ) {
-        ScamValue err =
-            makeErrorExtended("expected 'form dict'; got ",
-                              writeValue(args));
-	engine->handleError(err);
+        const ScamValue err =
+            makeError("substitute requires dictionary", args);
+        engine->handleError(err);
         return;
     }
 

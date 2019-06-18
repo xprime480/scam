@@ -19,5 +19,5 @@ Type Checker of Booleans
 [result]
 [keep 3]
 boolean?: parameter 1 missing
-boolean?: 1 parameter needed, 2 given
+boolean?: Expected 1 values, got 2
 (#t #t #f #t)

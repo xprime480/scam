@@ -20,4 +20,4 @@ Append string
 "Hello"
 "Hello, World"
 "abc"
-string-append: only accepts string parameters
+string-append: Expected 0 values, got 3

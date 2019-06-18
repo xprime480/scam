@@ -48,10 +48,13 @@ ScamData::ScamData(ValueType type, bool managed)
         immutable = false;
         /* fallthrough */
 
-    case ScamData::Error:
     case ScamData::Keyword:
     case ScamData::Symbol:
         value.strVal = new string;
+        break;
+
+    case ScamData::Error:
+        value.errorData = new ErrorData;
         break;
 
     case ScamData::Pair:
@@ -122,11 +125,14 @@ ScamData::~ScamData()
     }
 
     switch ( type ) {
-    case ScamData::Error:
     case ScamData::Keyword:
     case ScamData::String:
     case ScamData::Symbol:
         delete value.strVal;
+        break;
+
+    case ScamData::Error:
+        delete value.errorData;
         break;
 
     case ScamData::Pair:
@@ -199,6 +205,12 @@ void ScamData::mark()
     }
 
     switch ( type ) {
+    case ScamData::Error:
+        for ( auto const & e : errorIrritants() ) {
+            e->mark();
+        }
+        break;
+
     case ScamData::Pair:
         carValue()->mark();
         cdrValue()->mark();
@@ -379,6 +391,18 @@ ScamData::StringData & ScamData::stringValue()
         assertType(ScamData::StringLike);
     }
     return *(value.strVal);
+}
+
+ScamData::StringData & ScamData:: errorMsg()
+{
+    assertType(ScamData::Error);
+    return value.errorData->msg;
+}
+
+ScamData::VectorData & ScamData:: errorIrritants()
+{
+    assertType(ScamData::Error);
+    return value.errorData->irritants;
 }
 
 ScamValue & ScamData::carValue()

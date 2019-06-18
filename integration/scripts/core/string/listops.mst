@@ -27,5 +27,5 @@ List-String conversions
 (#\b)
 ""
 "foo"
-list->string: expected list for parameter 1 got '2'
-list->string: list for parameter 1 contains invalid value '2'
+list->string: expected list (2)
+list->string: invalid value at position 2 (2)

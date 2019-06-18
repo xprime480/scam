@@ -46,7 +46,7 @@ TEST_F(ParserTest, NoneToken)
         Token(TokenType::TT_NONE, "")
     };
     ScamValue expr = runTest(tokens);
-    expectError(expr);
+    expectError(expr, "**Internal Error: No Tokens", false);
 }
 
 TEST_F(ParserTest, EndOfInput)
@@ -168,7 +168,7 @@ TEST_F(ParserTest, UnterminatedList)
     };
 
     ScamValue expr = runTest(tokens);
-    expectError(expr);
+    expectError(expr, "Unterminated List", false);
 }
 
 TEST_F(ParserTest, ListWithTokenError)
@@ -211,7 +211,7 @@ TEST_F(ParserTest, DottedPairNoCdr)
     };
 
     ScamValue expr = runTest(tokens);
-    expectError(expr);
+    expectError(expr, "No form after '.'", false);
 }
 
 TEST_F(ParserTest, DottedPairNoClose)
@@ -224,7 +224,7 @@ TEST_F(ParserTest, DottedPairNoClose)
     };
 
     ScamValue expr = runTest(tokens);
-    expectError(expr);
+    expectError(expr, "Unterminated List", false);
 }
 
 TEST_F(ParserTest, DottedPairExcessForms)
@@ -239,7 +239,7 @@ TEST_F(ParserTest, DottedPairExcessForms)
     };
 
     ScamValue expr = runTest(tokens);
-    expectError(expr);
+    expectError(expr, "Too many forms after '.'", false);
 }
 
 TEST_F(ParserTest, ExtraDot)
@@ -249,7 +249,7 @@ TEST_F(ParserTest, ExtraDot)
     };
 
     ScamValue expr = runTest(tokens);
-    expectError(expr);
+    expectError(expr, "Dot (.) outside list", false);
 }
 
 TEST_F(ParserTest, CloseWithoutOpenParen)
@@ -259,7 +259,7 @@ TEST_F(ParserTest, CloseWithoutOpenParen)
     };
 
     ScamValue expr = runTest(tokens);
-    expectError(expr);
+    expectError(expr, "Extra ')' in input", false);
 }
 
 TEST_F(ParserTest, ReaderMacroQuote)

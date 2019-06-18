@@ -38,9 +38,9 @@ test-mutable
 
 [result]
 [keep 16]
-string-set!: expected string for parameter 1 got ':not-a-string'
-string-set!: expected index into parameter 1 ('"0123456789"') for parameter 2 got '-1'
-string-set!: expected character for parameter 3 got ':not-char'
+string-set!: wanted string for parameter 1 (:not-a-string)
+string-set!: wanted index into parameter 1 ('"0123456789"') for parameter 2 (-1)
+string-set!: wanted character for parameter 3 (:not-char)
 string-set!: Cannot mutate constant string "0123456789"
 "0123.56789"
 string-copy!: Cannot mutate constant string "0123456789"

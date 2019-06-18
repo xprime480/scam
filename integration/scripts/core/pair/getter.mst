@@ -24,8 +24,8 @@ Car / Cdr
 
 [result]
 [keep 7]
-car: expected pair for parameter 1 got '2'
-cdr: expected pair for parameter 1 got '2'
+car: wanted pair for parameter 1 (2)
+cdr: wanted pair for parameter 1 (2)
 1
 2
 1

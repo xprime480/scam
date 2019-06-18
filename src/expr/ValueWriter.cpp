@@ -11,6 +11,10 @@
 
 #include <sstream>
 
+#include "util/GlobalId.hpp"
+#include "util/DebugTrace.hpp"
+#include "expr/ValueWriter.hpp"
+
 using namespace scam;
 using namespace std;
 
@@ -22,6 +26,7 @@ namespace
     extern void writeDict(std::stringstream & s, ScamValue data);
     extern void writeNumeric(std::stringstream & s, ScamValue data);
     extern void writeVector(std::stringstream & s, ScamValue data);
+    extern void writeError(std::stringstream & s, ScamValue data);
     extern void writeType(std::stringstream & s, ScamValue data);
 }
 
@@ -66,7 +71,6 @@ string scam::writeValue(ScamValue data)
             s << "continuation";
             break;
 
-        case ScamData::Error:
         case ScamData::Keyword:
         case ScamData::Symbol:
             s << data->stringValue();
@@ -76,6 +80,9 @@ string scam::writeValue(ScamValue data)
             s << '"' << data->stringValue() << '"';
             break;
 
+        case ScamData::Error:
+            writeError(s, data);
+            break;
 
         case ScamData::Instance:
             s << "instance";
@@ -277,6 +284,92 @@ namespace
             sep = " ";
         }
         s << ")";
+    }
+
+    void writeError(std::stringstream & s, ScamValue data)
+    {
+        GlobalId id;
+
+        vector<string> values;
+
+        for ( const auto & v : data->errorIrritants() ) {
+            auto s = writeValue(v);
+            scamTrace(id, __FILE__, __LINE__, __FUNCTION__, s);
+            values.push_back(s);
+        }
+
+        int state = 0;
+        size_t index = 0;
+        const string & msg = data->errorMsg();
+        scamTrace(id, __FILE__, __LINE__, __FUNCTION__, msg);
+        size_t size = msg.size();
+        scamTrace(id, __FILE__, __LINE__, __FUNCTION__, size);
+
+        for ( size_t cur = 0 ; cur < size ; ++cur  ) {
+            const char c = msg[cur];
+            scamTrace(id, __FILE__, __LINE__, __FUNCTION__,
+                      cur, c, state, index);
+
+            switch ( state ) {
+            case 0:
+                if ( '%' == c ) {
+                    state = 1;
+                }
+                else {
+                    s << c;
+                }
+                break;
+
+            case 1:             // have seen a %
+                if ( '{' == c ) {
+                    index = 0;
+                    state = 2;
+                }
+                else {
+                    s << '%' << c;
+                    state = 0;
+                }
+                break;
+
+            case 2:             // have seen %{
+                if ( isdigit(c) ) {
+                    index = index * 10 + (c - '0');
+                    state = 3;
+                }
+                else {
+                    state = 4;
+                }
+                break;
+
+            case 3:             // have seen %{digit+
+                if ( isdigit(c) ) {
+                    index = index * 10 + (c - '0');
+                }
+                else if ( '}' == c ) { // %{digit+} is time to write value
+                    if ( index >= values.size() ) {
+                        s << '?';
+                    }
+                    else {
+                        s << values[index];
+                    }
+                    state = 0;
+                }
+                else {
+                    state = 4;
+                }
+                break;
+
+            case 4:             // have seen %{...non-digit...
+                if ( '}' == c ) {
+                    state = 0;
+                }
+                break;
+
+            default:
+                break;
+            }
+
+        }
     }
 
     void writeType(std::stringstream & s, ScamValue data)

@@ -10,4 +10,4 @@ Malformed Macro
 (macro)
 
 [result]
-Expected (macro args body*); got: (macro)
+Expected (macro args body*); got (macro)

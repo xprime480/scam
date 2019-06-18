@@ -27,9 +27,9 @@ String Less Than or Equal
 
 [result]
 [keep 9]
-string<=?: invalid parameter list
-string<=?: found 0 values, wanted at least 2
-string<=?: found 1 values, wanted at least 2
+string<=?: Expected 2 values, got 3
+string<=?: Too Few Values (0 of at least 2)
+string<=?: Too Few Values (1 of at least 2)
 #t
 #t
 #t

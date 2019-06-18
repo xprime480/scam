@@ -106,7 +106,6 @@ TEST_F(ArgListHelperTest, HaveTwoWantOne)
 {
     ScamValue args = readString("(:arg1 :arg2)");
     ArgListHelper helper(args);
-
     ScamValue status;
 
     ScamValue arg1;
@@ -115,7 +114,7 @@ TEST_F(ArgListHelperTest, HaveTwoWantOne)
     expectNothing(status);
 
     status = helper.finish();
-    expectError(status, "1 parameter needed, 2 given");
+    expectError(status, "Expected 1 values, got 2");
 }
 
 TEST_F(ArgListHelperTest, GetOneCharacter)
@@ -160,7 +159,7 @@ TEST_F(ArgListHelperTest, GetIntegerFailure)
     int arg1 { -2 };
     status = helper.getInteger(arg1);
     EXPECT_EQ(-2, arg1);
-    expectError(status, "expected integer for parameter 1 got ':k'");
+    expectError(status, "wanted integer for parameter 1 (:k)");
 }
 
 TEST_F(ArgListHelperTest, GetNonNegativeInteger)
@@ -189,8 +188,7 @@ TEST_F(ArgListHelperTest, GetNonNegativeIntegerFailure)
     int arg1 { -2 };
     status = helper.getNonNegativeInteger(arg1);
     EXPECT_EQ(-2, arg1);
-    expectError(status,
-                "expected non-negative integer for parameter 1 got '-1'");
+    expectError(status, "wanted non-negative integer for parameter 1 (-1)");
 }
 
 TEST_F(ArgListHelperTest, GetString)
@@ -219,7 +217,7 @@ TEST_F(ArgListHelperTest, GetStringFailure)
     string arg1;
     status = helper.getString(arg1);
     EXPECT_EQ("", arg1);
-    expectError(status, "expected string for parameter 1 got '-1'");
+    expectError(status, "wanted string for parameter 1 (-1)");
 }
 
 TEST_F(ArgListHelperTest, GetIndexInRange)
@@ -260,8 +258,7 @@ TEST_F(ArgListHelperTest, GetIndexOutsideRange)
     EXPECT_EQ(0, index);
 
     const char * err
-    { "expected index into parameter 1 ('\"help me\"') "
-            "for parameter 2 got '55'" };
+    { "wanted index into parameter 1 ('\"help me\"') for parameter 2 (55)" };
     expectError(status, err);
 }
 
@@ -309,7 +306,7 @@ TEST_F(ArgListHelperTest, GetCountWant3to5Have2)
     ScamValue arg1 = makeNothing();
     status = helper.getCount(arg1, isInteger, 3, 5);
     expectNothing(arg1);
-    expectError(status, "found 2 values, wanted at least 3");
+    expectError(status, "Too Few Values (2 of at least 3)");
 }
 
 TEST_F(ArgListHelperTest, GetCountWant3to5Have4)
@@ -343,7 +340,7 @@ TEST_F(ArgListHelperTest, GetCountWant3to5Have6)
     expectNothing(status);
 
     status = helper.finish();
-    expectError(status, "5 parameter needed, 6 given");
+    expectError(status, "Expected 5 values, got 6", true);
 }
 
 TEST_F(ArgListHelperTest, GetOptionalCharacterMissing)
@@ -412,7 +409,7 @@ TEST_F(ArgListHelperTest, GetSublistNonEmpty)
 
 TEST_F(ArgListHelperTest, GetSublistWrongType)
 {
-    ScamValue args = readString("((1 3 \"\" 7))");
+    ScamValue args = readString("((1 3 :keyword 7))");
 
     ArgListHelper helper(args);
     ScamValue status;
@@ -420,5 +417,6 @@ TEST_F(ArgListHelperTest, GetSublistWrongType)
     ScamValue arg1 = makeNothing();
     status = helper.getSublistOf(arg1, isInteger);
     expectNothing(arg1);
-    expectError(status, "list for parameter 1 contains invalid value '\"\"'");
+    expectError(status, "invalid value at position 3 (:keyword)");
 }
+

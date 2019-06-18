@@ -76,8 +76,7 @@ ScamValue InstanceCont::find_func(ScamValue o) const
 
 ScamValue InstanceCont::function_not_found() const
 {
-    ScamValue err =
-        makeErrorExtended("Instance method ", writeValue(name), " not found");
+    ScamValue err = makeError("Instance method not found", name);
     engine->handleError(err);
     return makeNull();
 }

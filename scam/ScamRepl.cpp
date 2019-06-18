@@ -130,7 +130,8 @@ ScamValue ScamRepl::eval(ScamValue form)
         rv = engine.eval(form);
     }
     catch ( ScamException e ) {
-        rv = makeErrorExtended("Caught exception: ", e.getMessage());
+        ScamValue temp = makeString(e.getMessage());
+        rv = makeError("Caught exception", temp);
     }
 
     if ( isError(rv) ) {

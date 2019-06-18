@@ -67,13 +67,10 @@ namespace scam
                     value = convert(temp);
                 }
                 else {
-                    status = makeErrorExtended("expected ",
-                                               name,
-                                               " for parameter ",
-                                               lastRead,
-                                               " got '",
-                                               writeValue(temp),
-                                               "'");
+                    status = makeError("wanted %{1} for parameter %{0} (%{2})",
+                                       makeInteger(lastRead, true),
+                                       makeSymbol(name),
+                                       temp);
                 }
             }
 
@@ -210,8 +207,7 @@ namespace scam
     extern bool finishArgs(const char * name,
                            ArgListHelper & helper,
                            Continuation * cont,
-                           ScamEngine * engine,
-                           const char * msg = nullptr);
+                           ScamEngine * engine);
 
     extern size_t length(const std::string & v);
 

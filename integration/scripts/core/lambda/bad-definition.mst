@@ -15,9 +15,9 @@ Malformed Lambda Expressions
 (lambda (ok . :keyword) (+ 2 2))
 
 [result]
-Expected (lambda args body*); got: (lambda)
-Formals should be list or symbol; got: 2
-Formal parameter should be a symbol; got: :keyword
-Symbol cannot appear twice in formals list: x
-Symbol cannot appear twice in formals list: x
-Formal parameter should be a symbol; got: :keyword
+Expected (lambda args body*); got (lambda)
+Formals should be list or symbol (2)
+Formal parameter should be a symbol (:keyword)
+Symbol cannot appear twice in formals (x)
+Symbol cannot appear twice in formals (x)
+Formal parameter should be a symbol (:keyword)

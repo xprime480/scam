@@ -19,7 +19,7 @@ Append Lists
 
 
 [result]
-append: 1 parameter needed, 2 given
+append: Expected 1 values, got 2
 ()
 (x y)
 (a b c d)

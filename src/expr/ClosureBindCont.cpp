@@ -72,8 +72,7 @@ bool ClosureBindCont::malformedActuals(ScamValue expr) const
         return false;
     }
 
-    ScamValue err =
-        makeErrorExtended( "Expected a paramter list, got: ", writeValue(expr));
+    ScamValue err = makeError("Expecting list or symbol for parameter list (%{0})", expr);
     engine->handleError(err);
 
     return true;
@@ -96,10 +95,17 @@ bool ClosureBindCont::describeFormals(unsigned & len) const
 void ClosureBindCont::wrongNumberOfParameters(unsigned formalsLen,
                                               unsigned actualsLen) const
 {
-    ScamValue err = makeErrorExtended("Expected ",
-                                      formalsLen,
-                                      " parameters; got ",
-                                      actualsLen);
+    const char * cause;
+    if ( formalsLen > actualsLen ) {
+        cause = "Too few parameters (%{1} of %{0})";
+    }
+    else {
+        cause = "Too many parameters (%{1} of %{0})";
+    }
+
+    ScamValue err = makeError(cause,
+                              makeInteger(formalsLen, true),
+                              makeInteger(actualsLen, true));
     engine->handleError(err);
 }
 

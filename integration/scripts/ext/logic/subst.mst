@@ -18,4 +18,4 @@ Substitute
 (23 99)
 #(23 99)
 #(23 cat 23)
-Dict key ':X' does not exist
+Key not found (:X)

@@ -20,6 +20,6 @@ Raise
 
 [result]
 raise: parameter 1 missing
-raise: 1 parameter needed, 3 given
+raise: Expected 1 values, got 3
 "bagels are not doughnuts"
 2

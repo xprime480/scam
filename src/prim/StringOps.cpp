@@ -61,8 +61,7 @@ void scam::applyString(ScamValue args,
     if ( ! wantZeroPlus(name, helper, cont, engine, chars, isChar) ) {
         return;
     }
-    const char * msg { "only accepts one list of characters" };
-    if ( ! finishArgs(name, helper, cont, engine, msg) ) {
+    if ( ! finishArgs(name, helper, cont, engine) ) {
         return;
     }
 
@@ -284,8 +283,7 @@ void scam::applyStringAppend(ScamValue args,
     if ( ! wantZeroPlus(name, helper, cont, engine, strs, isString) ) {
         return;
     }
-    const char * msg { "only accepts string parameters" };
-    if ( ! finishArgs(name, helper, cont, engine, msg) ) {
+    if ( ! finishArgs(name, helper, cont, engine) ) {
         return;
     }
 
@@ -321,8 +319,7 @@ void scam::applyString2List(ScamValue args,
                                 isEndIndexOf<string>(str, start),
                                 asInteger,
                                 str.size());
-    const char * msg { "invalid parameter list" };
-    if ( ! finishArgs(name, helper, cont, engine, msg) ) {
+    if ( ! finishArgs(name, helper, cont, engine) ) {
         return;
     }
 
@@ -347,8 +344,7 @@ extern void scam::applyList2String(ScamValue args,
     if ( ! wantSublistOf(name, helper, cont, engine, chars, isChar) ) {
         return;
     }
-    const char * msg { "only accepts character parameters" };
-    if ( ! finishArgs(name, helper, cont, engine, msg) ) {
+    if ( ! finishArgs(name, helper, cont, engine) ) {
         return;
     }
 
@@ -385,8 +381,7 @@ void scam::applyStringCopy(ScamValue args,
                                 isEndIndexOf<string>(str, start),
                                 asInteger,
                                 str.size());
-    const char * msg { "invalid argument list" };
-    if ( ! finishArgs(name, helper, cont, engine, msg) ) {
+    if ( ! finishArgs(name, helper, cont, engine) ) {
         return;
     }
 
@@ -426,8 +421,7 @@ void scam::applyStringCopyX(ScamValue args,
                                 isEndIndexOf<string>(fromStr, start),
                                 asInteger,
                                 fromStr.size());
-    const char * msg { "invalid argument list" };
-    if ( ! finishArgs(name, helper, cont, engine, msg) ) {
+    if ( ! finishArgs(name, helper, cont, engine) ) {
         return;
     }
 
@@ -441,10 +435,9 @@ void scam::applyStringCopyX(ScamValue args,
 
     const unsigned int space = toStr.size() - at;
     if ( space < count ) {
-        ScamValue err =
-            makeErrorExtended(name,
-                              ": Insufficient room in destination",
-                              " to copy source");
+        static const ScamValue err =
+            makeStaticError("string-copy!: Insufficient room in destination"
+                            " to copy source");
         engine->handleError(err);
         return;
     }
@@ -492,8 +485,7 @@ void scam::applyStringFillX(ScamValue args,
                                 isEndIndexOf<string>(toStr, start),
                                 asInteger,
                                 toStr.size());
-    const char * msg { "invalid parameter list" };
-    if ( ! finishArgs(name, helper, cont, engine, msg) ) {
+    if ( ! finishArgs(name, helper, cont, engine) ) {
         return;
     }
 
@@ -556,8 +548,7 @@ namespace
         if ( ! ok ) {
             return;
         }
-        const char * msg { "invalid parameter list" };
-        if ( ! finishArgs(name, helper, cont, engine, msg) ) {
+        if ( ! finishArgs(name, helper, cont, engine) ) {
             return;
         }
 
@@ -586,8 +577,7 @@ namespace
         if ( ! wantString(name, helper, cont, engine, text) ) {
             return;
         }
-        const char * msg { "invalid parameter list" };
-        if ( ! finishArgs(name, helper, cont, engine, msg) ) {
+        if ( ! finishArgs(name, helper, cont, engine) ) {
             return;
         }
 

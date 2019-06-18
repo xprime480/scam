@@ -48,7 +48,8 @@ void scam::applyEqP(ScamValue args,
         cont->handleValue(makeBoolean(rv));
     }
     catch ( int ) {
-        ScamValue err = makeError("eq? not implemented for this type");
+        static const ScamValue err =
+            makeStaticError("eq? not implemented for this type");
         engine->handleError(err);
     }
 }
@@ -68,7 +69,8 @@ void scam::applyEqvP(ScamValue args,
         cont->handleValue(makeBoolean(rv));
     }
     catch ( int ) {
-        ScamValue err = makeError("eqv? not implemented for this type");
+        static const ScamValue err =
+            makeStaticError("eqv? not implemented for this type");
         engine->handleError(err);
     }
 }
@@ -88,7 +90,8 @@ void scam::applyEqualP(ScamValue args,
         cont->handleValue(makeBoolean(rv));
     }
     catch ( int ) {
-        ScamValue err = makeError("equal? not implemented for this type");
+        static const ScamValue err =
+            makeStaticError("equal? not implemented for this type");
         engine->handleError(err);
     }
 }
@@ -189,7 +192,6 @@ namespace
 
             case ScamData::Symbol:
             case ScamData::Keyword:
-            case ScamData::Error:
                 rv = compareStringLike(obj1, obj2);
                 break;
 
@@ -201,6 +203,7 @@ namespace
                 rv = obj1 == obj2;
                 break;
 
+            case ScamData::Error:
             case ScamData::Closure:
             case ScamData::Class:
             case ScamData::Instance:

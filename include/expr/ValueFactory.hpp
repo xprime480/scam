@@ -24,28 +24,28 @@ namespace scam
     extern ScamValue makeCharacter(const char c);
     extern ScamValue makeString(std::string const & value);
 
-    extern ScamValue makeError(char const * msg, bool managed = true);
-    extern ScamValue makeError(std::string const & msg, bool managed = true);
+    extern ScamValue makeError(char const * msg, ExprVec & irritants);
 
-    template <typename ... Ts>
-    ScamValue makeErrorExtended(Ts && ... args)
+    template <typename Irr, typename... Irrs>
+    extern ScamValue makeError(char const * msg,
+                               ExprVec irritants,
+                               Irr && first,
+                               Irrs... rest)
     {
-        std::stringstream s;
-        bool iHateTheCompiler { true };
-
-        if ( sizeof...(Ts) > 0 ) {
-            int dummy[sizeof...(Ts)] = { (s << args, 0)... };
-            iHateTheCompiler = dummy[0] == 0;
-        }
-
-        const std::string msg = (iHateTheCompiler
-                                 ? s.str()
-                                 : std::string("never"));
-        return makeError(msg, true);
+        irritants.push_back(first);
+        return makeError(msg, irritants, rest...);
     }
 
-    extern ScamValue makeSymbol(std::string const & value,
-                                bool managed = true);
+    template <typename... Irrs>
+    extern ScamValue makeError(char const * msg, Irrs... irrs)
+    {
+        ExprVec irritants;
+        return makeError(msg, irritants, irrs...);
+    }
+
+    extern ScamValue makeStaticError(char const * msg);
+
+    extern ScamValue makeSymbol(std::string const & value, bool managed = true);
 
     extern ScamValue makeKeyword(std::string const & value,
                                  bool managed = true);

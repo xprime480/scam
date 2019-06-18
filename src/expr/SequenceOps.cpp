@@ -88,12 +88,7 @@ ScamValue checkLength(ScamValue value, size_t n)
 
     const size_t len = length(value);
     if ( n >= len ) {
-        rv = makeErrorExtended("Requested index ",
-                               n,
-                               " of a ",
-                               len,
-                               "-element seaquence",
-                               writeValue(value));
+        rv = makeError("Index out of range", makeInteger(n, true));
     }
 
     return rv;
@@ -152,8 +147,8 @@ ScamValue scam::nthcdr(ScamValue value, size_t n)
         throw ScamException(msg);
     }
 
-    auto outOfRange =
-        makeErrorExtended("Index ", n, " requested for ", writeValue(value));
+    auto outOfRange = makeError("Index out of range", makeInteger(n, true));
+
     if ( n >= length(value) ) {
         return outOfRange;
     }

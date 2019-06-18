@@ -23,8 +23,7 @@ void scam::applyBacktrack(ScamValue args,
 
     Backtracker * backtracker = engine->getBacktracker();
     if ( ! backtracker ) {
-        static const string msg = "No current backtrack context";
-        static ScamValue err = makeError(msg, false);
+        static ScamValue err = makeStaticError("No current backtrack context");
         engine->handleError(err);
     }
     else {

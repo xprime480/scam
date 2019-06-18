@@ -33,15 +33,15 @@ aBcD                       ;; original is unchanged
 
 [result]
 [keep 13]
-string-upcase: expected string for parameter 1 got ':not-a-string'
+string-upcase: wanted string for parameter 1 (:not-a-string)
 ""
 "123"
 "ABCD"
-string-downcase: expected string for parameter 1 got ':not-a-string'
+string-downcase: wanted string for parameter 1 (:not-a-string)
 ""
 "123"
 "abcd"
-string-downcase: expected string for parameter 1 got ':not-a-string'
+string-downcase: wanted string for parameter 1 (:not-a-string)
 ""
 "123"
 "abcd"

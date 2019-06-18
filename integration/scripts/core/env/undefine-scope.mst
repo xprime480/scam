@@ -20,5 +20,5 @@ test
 [result]
 [keep 3]
 1
-Symbol 'test' does not exist in current scope
+Symbol not found (test)
 1

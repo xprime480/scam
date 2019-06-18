@@ -119,7 +119,7 @@ TEST_F(EngineTest, AmbDefine)
     expectInteger(expr, 4, "4", true);
 
     expr = readEval("? test");
-    expectError(expr, "Symbol test does not exist in the current environment");
+    expectError(expr, "Symbol not found (test)");
 }
 
 TEST_F(EngineTest, AmbAssign)
@@ -150,5 +150,5 @@ TEST_F(EngineTest, AmbOperator)
 TEST_F(EngineTest, LoadTwiceTest)
 {
     ScamValue expr = readEval("(load \"lib/prelude.scm\")");
-    expectError(expr,  "file \"lib/prelude.scm\" already loaded");
+    expectError(expr,  "File \"lib/prelude.scm\" already loaded");
 }

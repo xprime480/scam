@@ -5,6 +5,10 @@
 #include "expr/ValueFactory.hpp"
 #include "form/AllSpecialForms.hpp"
 
+#include "util/GlobalId.hpp"
+#include "util/DebugTrace.hpp"
+#include "expr/ValueWriter.hpp"
+
 using namespace std;
 using namespace scam;
 
@@ -26,15 +30,45 @@ TEST_F(ExpressionTest, NullExpression)
     expectError(evaled, "The null type cannot be evaluated.", false);
 }
 
-TEST_F(ExpressionTest, ErrorExpression)
+TEST_F(ExpressionTest, ErrorExpressionNoIrritants)
 {
-    string const msg("Test message");
+    const char * msg { "Test message" };
 
     ScamValue expr = makeError(msg);
     expectError(expr, msg);
 
     ScamValue evaled = evaluate(expr);
     expectError(evaled, msg);
+}
+
+TEST_F(ExpressionTest, ErrorExpressionOneIrritant)
+{
+    const char * msg { "Test message %{0}" };
+    const char * out { "Test message 99" };
+
+    ScamValue v = makeInteger(99, true);
+    ScamValue expr = makeError(msg, v);
+    expectError(expr, out);
+}
+
+TEST_F(ExpressionTest, ErrorExpressionNotEnoughIrritants)
+{
+    const char * msg { "Test message %{0} %{1}" };
+    const char * out { "Test message 99 ?" };
+
+    ScamValue v = makeInteger(99, true);
+    ScamValue expr = makeError(msg, v);
+    expectError(expr, out);
+}
+
+TEST_F(ExpressionTest, ErrorExpressionBadFormatter)
+{
+    const char * msg { "Test message %{only-digits}" };
+    const char * out { "Test message " };
+
+    ScamValue v = makeInteger(99, true);
+    ScamValue expr = makeError(msg, v);
+    expectError(expr, out);
 }
 
 TEST_F(ExpressionTest, BooleanTrue)

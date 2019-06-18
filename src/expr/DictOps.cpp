@@ -42,7 +42,7 @@ ScamValue scam::dictGet(ScamValue value, ScamValue key)
         }
     }
 
-    return makeErrorExtended("Dict key '", writeValue(key), "' does not exist");
+    return makeError("Key not found (%{0})", key);
 }
 
 ScamValue scam::dictPut(ScamValue value, ScamValue key, ScamValue val)

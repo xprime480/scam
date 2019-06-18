@@ -39,7 +39,7 @@
                     (+ 1 (list-length (cdr l)))))))
       (if (list? lst)
           (list-length lst)
-          (error "length: expected a list, got:" lst)))))
+          (error "length: expected a list, got: %{0}" lst)))))
 
 (define reverse
   (lambda (lst)
@@ -50,6 +50,6 @@
                     (append (reverse (cdr l)) (list (car l)))))))
       (if (list? lst)
           (list-reverse lst)
-          (error "reverse expected a list, got:" lst)))))
+          (error "reverse expected a list, got: %{0}" lst)))))
 
 #t

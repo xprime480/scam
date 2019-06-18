@@ -18,12 +18,12 @@ Make some strings
 (string #\1 #\x #\*)
 
 [result]
-make-string: expected non-negative integer for parameter 1 got '-5'
-make-string: 1 parameter needed, 2 given
+make-string: wanted non-negative integer for parameter 1 (-5)
+make-string: Expected 1 values, got 2
 ""
 ""
 "   "
 "ii"
-string: only accepts one list of characters
+string: Expected 0 values, got 3
 ""
 "1x*"

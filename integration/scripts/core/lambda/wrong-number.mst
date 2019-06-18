@@ -14,5 +14,5 @@ Lambda Wrong Arg Count
 
 [result]
 [keep 2]
-Expected 1 parameters; got 0
-Expected 1 parameters; got 4
+Too few parameters (0 of 1)
+Too many parameters (4 of 1)

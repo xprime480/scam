@@ -14,4 +14,4 @@ test
 
 [result]
 [keep 1]
-Symbol test does not exist in the current environment
+Symbol not found (test)

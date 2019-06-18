@@ -44,9 +44,8 @@ void CallCont::handleValue(ScamValue value)
     }
 
     if ( ! isApplicable(value) ) {
-        ScamValue err = makeErrorExtended("call/cc: form '",
-                                          writeValue(value),
-                                          "' cannot be applied");
+        ScamValue err = makeError("call/cc: form '%{0}' cannot be applied",
+                                  value);
         engine->handleError(err);
         return;
     }

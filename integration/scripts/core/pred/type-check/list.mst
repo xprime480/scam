@@ -20,5 +20,5 @@ Type Checker of Lists
 [result]
 [keep 3]
 list?: parameter 1 missing
-list?: 1 parameter needed, 2 given
+list?: Expected 1 values, got 2
 (#f #t #f #t #f)

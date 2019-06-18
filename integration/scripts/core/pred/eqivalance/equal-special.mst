@@ -14,4 +14,4 @@ Equal? Special
 [result]
 equal?: parameter 1 missing
 equal?: parameter 2 missing
-equal?: 2 parameter needed, 3 given
+equal?: Expected 2 values, got 3

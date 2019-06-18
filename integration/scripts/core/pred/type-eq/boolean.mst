@@ -20,6 +20,6 @@ Equality of Booleans
 
 [result]
 [keep 3]
-Expected 2 parameters; got 0
-Expected 2 parameters; got 1
+Too few parameters (0 of 2)
+Too few parameters (1 of 2)
 (#t #t #f #f)

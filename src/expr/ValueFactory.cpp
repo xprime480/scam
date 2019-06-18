@@ -64,17 +64,20 @@ ScamValue scam::makeString(string const & value)
     return v;
 }
 
-ScamValue scam::makeError(const char * msg, bool managed)
-{
-    string tmp(msg);
-    return makeError(tmp, managed);
-}
-
-ScamValue scam::makeError(string const & msg, bool managed)
+ScamValue scam::makeError(const char * msg, ExprVec & irritants)
 {
     static constexpr auto myType = ScamData::Error;
-    ScamValue v = standardMemoryManager.make<ScamData>(myType, managed);
-    v->stringValue() = msg;
+    ScamValue v = standardMemoryManager.make<ScamData>(myType);
+    v->errorMsg() = msg;
+    v->errorIrritants() = irritants;
+    return v;
+}
+
+ScamValue scam::makeStaticError(char const * msg)
+{
+    static constexpr auto myType = ScamData::Error;
+    ScamValue v = standardMemoryManager.make<ScamData>(myType, false);
+    v->errorMsg() = msg;
     return v;
 }
 

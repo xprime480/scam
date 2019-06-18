@@ -7,6 +7,7 @@
 #include "expr/ValueWriter.hpp"
 
 #include <set>
+#include <sstream>
 
 using namespace scam;
 using namespace std;
@@ -16,9 +17,9 @@ ScamValue scam::validateClosureArgs(ScamValue args, const char * name)
     if ( ! isPair(args) ) {
         ScamValue nameSymbol = makeSymbol(name);
         ScamValue extended = makePair(nameSymbol, args);
-        return makeErrorExtended("Expected (", name, " args body*)",
-                                 "; got: ",
-                                 writeValue(extended));
+        return makeError("Expected (%{0} args body*); got %{1}",
+                         nameSymbol,
+                         extended);
     }
 
     ScamValue formals = getCar(args);
@@ -28,6 +29,14 @@ ScamValue scam::validateClosureArgs(ScamValue args, const char * name)
 
 ScamValue scam::validateFormals(ScamValue formals)
 {
+    static const char * badTop { "Formals should be list or symbol (%{0})" };
+
+    static const char * nonSymbol
+    { "Formal parameter should be a symbol (%{0})" };
+
+    static const char * dupSymbol
+    { "Symbol cannot appear twice in formals (%{0})" };
+
     ScamValue ok = makeNull();
 
     if ( isSymbol(formals) || isNull(formals) ) {
@@ -35,25 +44,19 @@ ScamValue scam::validateFormals(ScamValue formals)
     }
 
     if ( ! isPair(formals) ) {
-        return makeErrorExtended("Formals should be list or symbol",
-                                 "; got: ",
-                                 writeValue(formals));
+        return makeError(badTop, formals);
     }
 
     set<string> parms;
     while ( true ) {
         ScamValue arg = getCar(formals);
         if ( ! isSymbol(arg) ) {
-            return makeErrorExtended("Formal parameter should ",
-                                     "be a symbol; got: ",
-                                     writeValue(arg));
+            return makeError(nonSymbol, arg);
         }
 
         string name = writeValue(arg);
         if ( parms.end() != parms.find(name) ) {
-            return makeErrorExtended("Symbol cannot appear twice ",
-                                     "in formals list: ",
-                                     name);
+            return makeError(dupSymbol, arg);
         }
 
         parms.insert(name);
@@ -69,19 +72,14 @@ ScamValue scam::validateFormals(ScamValue formals)
                 break;
             }
             else {
-                return makeErrorExtended("Symbol cannot appear ",
-                                         "twice in formals list: ",
-                                         name);
+                return makeError(dupSymbol, formals);
             }
         }
 
         if ( ! isPair(formals) ) {
-            return makeErrorExtended("Formal parameter should ",
-                                     "be a symbol; got: ",
-                                     writeValue(formals));
+            return makeError(nonSymbol, formals);
         }
     }
 
     return ok;
 }
-

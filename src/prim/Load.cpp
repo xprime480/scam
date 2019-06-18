@@ -51,8 +51,7 @@ void scam::applyLoad(ScamValue args,
 
     string filename = asString(parser->get());
     if ( engine->isLoaded(filename) ) {
-        ScamValue err =
-            makeErrorExtended("file \"", filename, "\" already loaded");
+        ScamValue err = makeError("File %{0} already loaded", parser->get());
         engine->handleError(err);
         return;
     }
@@ -114,7 +113,8 @@ namespace
                       Continuation * cont,
                       ScamEngine * engine)
     {
-        ScamValue err = makeErrorExtended("Unable to open file ", filename);
+        ScamValue err = makeError("File Error, file not found (%{0})",
+                                  makeSymbol(filename));
         engine->handleError(err);
     }
 

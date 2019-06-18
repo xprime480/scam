@@ -10,8 +10,6 @@
 #include "expr/ValueFactory.hpp"
 #include "expr/ValueWriter.hpp"
 
-#include <sstream>
-
 using namespace scam;
 using namespace std;
 
@@ -121,17 +119,12 @@ ScamValue ClassCont::get_parent(ScamValue value) const
 
 ScamValue ClassCont::base_class_not_found(ScamValue name) const
 {
-    stringstream s;
-    s << "Class definition: " << writeValue(name) << " not found";
-    return makeError(s.str());
+    return makeError("Class definition not found", name);
 }
 
 ScamValue ClassCont::base_class_not_class(ScamValue name, ScamValue value) const
 {
-    stringstream s;
-    s << "Name: " << writeValue(name)
-      << " is not a class; got: " << writeValue(value);
-    return makeError(s.str());
+    return makeError("Not a class", name);
 }
 
 void ClassCont::init(ScamValue instance, ScamValue expr) const

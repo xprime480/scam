@@ -54,5 +54,4 @@
 * ClassInitWorker::run could probably use the original continuation and
   not need ClassInitCont.  See comments in the latter implementation file.
 
-* Error values need to be able to be created outside the garbage collector
-  framework so that they can be kept statically.
+* Rationalize error messages.  They are not consistent.

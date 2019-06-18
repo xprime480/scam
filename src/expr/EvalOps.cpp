@@ -46,17 +46,14 @@ void scam::eval(ScamValue value,
             cont->handleValue(evaluated);
         }
         else {
-            ScamValue err = makeErrorExtended("Symbol ",
-                                              writeValue(value),
-                                              " does not exist",
-                                              " in the current environment");
+            ScamValue err = makeError("Symbol not found (%{0})", value);
             engine->handleError(err);
         }
     }
 
     else if ( isNothing(value) ) {
-        static const string msg{ "The null type cannot be evaluated." };
-        static ScamValue err = makeError(msg, false);
+        static const char * msg{ "The null type cannot be evaluated." };
+        static ScamValue err = makeStaticError(msg);
         engine->handleError(err);
     }
 
@@ -136,8 +133,7 @@ void scam::apply(ScamValue value,
             rv = dictRemove(value, parser->getOpKey());
         }
         else {
-            rv = makeErrorExtended("Unknown dictionary operator: ",
-                                   writeValue(op));
+            rv = makeError("Unknown dictionary operator", op);
             engine->handleError(rv);
             return;
         }
@@ -180,10 +176,7 @@ void scam::apply(ScamValue value,
 
     else {
         // default case
-        ScamValue err = makeErrorExtended("Not possible to apply <",
-                                          writeValue(value),
-                                          "> to args ",
-                                          writeValue(args));
+        ScamValue err = makeError("Cannot apply", value, args);
         engine->handleError(err);
     }
 }

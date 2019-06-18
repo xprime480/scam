@@ -16,6 +16,6 @@ Type Checker of Null
 [result]
 [keep 4]
 null?: parameter 1 missing
-null?: 1 parameter needed, 2 given
+null?: Expected 1 values, got 2
 #t
 #f

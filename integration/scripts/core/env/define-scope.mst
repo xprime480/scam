@@ -21,4 +21,4 @@ y
 [keep 3]
 (42 0)
 17
-Symbol y does not exist in the current environment
+Symbol not found (y)

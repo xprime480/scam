@@ -11,11 +11,14 @@
 #include "input/NumericListParser.hpp"
 #include "input/RelopsListParser.hpp"
 
+#include <sstream>
+
 using namespace scam;
 using namespace std;
 
 namespace
 {
+    extern ScamValue statusToError(const char * name, ScamValue status);
 }
 
 ArgListHelper::ArgListHelper(ScamValue args)
@@ -24,9 +27,7 @@ ArgListHelper::ArgListHelper(ScamValue args)
     , status(makeNothing())
 {
     if ( ! isList(args)  ) {
-        status = makeErrorExtended("ArgListHelper expected list, got '",
-                                   writeValue(args),
-                                   "'");
+        status = makeError("Expected list <%{1}>", args);
     }
 }
 
@@ -55,7 +56,8 @@ ScamValue ArgListHelper::getAnyValue(ScamValue & value)
         ++lastRead;
     }
     else {
-        status = makeErrorExtended("parameter ", (1+lastRead), " missing");
+        status = makeError("parameter %{0} missing",
+                           makeInteger(1+lastRead, true));
     }
 
     return status;
@@ -63,23 +65,7 @@ ScamValue ArgListHelper::getAnyValue(ScamValue & value)
 
 ScamValue ArgListHelper::getCharacter(char & c)
 {
-    ScamValue temp;
-    getAnyValue(temp);
-
-    if ( isNothing(status) ) {
-        if ( isChar(temp) ) {
-            c = asChar(temp);
-        }
-        else {
-            status = makeErrorExtended("expected character for parameter ",
-                                       lastRead,
-                                       " got '",
-                                       writeValue(temp),
-                                       "'");
-        }
-    }
-
-    return status;
+    return getOneArg<char>(c, isChar, asChar, "character");
 }
 
 ScamValue ArgListHelper::getInteger(int & value)
@@ -158,10 +144,9 @@ ScamValue ArgListHelper::getCount(ScamValue & value,
     }
 
     if ( (int)values.size() < min ) {
-        status = makeErrorExtended("found ",
-                                   values.size(),
-                                   " values, wanted at least ",
-                                   min);
+        status = makeError("Too Few Values (%{1} of at least %{0})",
+                           makeInteger(min, true),
+                           makeInteger(values.size(), true));
         lastRead -= values.size();
     }
     else {
@@ -197,21 +182,15 @@ ScamValue ArgListHelper::getSublistOf(ScamValue & value, ValuePredicate pred)
             for ( int idx = 0 ; idx < len ; ++idx ) {
                 ScamValue val = nthcar(temp, idx);
                 if ( ! pred(val) ) {
-                    return makeErrorExtended("list for parameter ",
-                                             lastRead,
-                                             " contains invalid value '",
-                                             writeValue(val),
-                                             "'");
+                    return makeError("invalid value at position %{1} (%{0})",
+                                     val,
+                                     makeInteger(idx+1, true));
                 }
             }
             value = temp;
         }
         else {
-            status = makeErrorExtended("expected list for parameter ",
-                                       lastRead,
-                                       " got '",
-                                       writeValue(temp),
-                                       "'");
+            status = makeError("expected list (%{0})", temp);
         }
     }
 
@@ -221,10 +200,9 @@ ScamValue ArgListHelper::getSublistOf(ScamValue & value, ValuePredicate pred)
 ScamValue ArgListHelper::finish()
 {
     if ( lastRead != length(args) ) {
-        status = makeErrorExtended(lastRead,
-                                   " parameter needed, ",
-                                   length(args),
-                                   " given");
+        status = makeError("Expected %{0} values, got %{1}",
+                           makeInteger(lastRead, true),
+                           makeInteger(length(args), true));
     }
 
     return status;
@@ -320,11 +298,10 @@ namespace
         typedef TypeChecks<T> Checker;
 
         if ( ! Checker::isType(arg) ) {
-            rv = makeErrorExtended(context,
-                                   " expects ",
-                                   Checker::id(),
-                                   ", got ",
-                                   writeValue(arg));
+            rv = makeError("%{0} expects %{1} (%2)",
+                           makeSymbol(context),
+                           makeSymbol(Checker::id()),
+                           arg);
             return false;
         }
 
@@ -407,12 +384,10 @@ void scam::failedArgParseMessage(const char * who,
                                  Continuation * cont,
                                  ScamEngine * engine)
 {
-    ScamValue err = makeErrorExtended(who,
-                                      " expected \"",
-                                      exp,
-                                      "\"; got \"",
-                                      writeValue(act),
-                                      "\"");
+    ScamValue err = makeError("%{0} expected %{1}; got \"%{2}\"",
+                              makeSymbol(who),
+                              makeString(exp),
+                              act);
     engine->handleError(err);
 }
 
@@ -438,7 +413,7 @@ namespace
             return true;
         }
 
-        ScamValue err = makeErrorExtended(name, ": ", writeValue(status));
+        ScamValue err = statusToError(name, status);
         engine->handleError(err);
         return false;
     }
@@ -513,8 +488,7 @@ bool scam::wantMutableString(const char * name,
 
         if ( isImmutable(temp) ) {
             ScamValue err =
-                makeErrorExtended("Cannot mutate constant string ",
-                                  writeValue(temp));
+                makeError("Cannot mutate constant string %{0}", temp);
             return err;
         }
 
@@ -553,9 +527,7 @@ bool scam::wantMutablePair(const char * name,
         }
 
         if ( isImmutable(temp) ) {
-            ScamValue err =
-                makeErrorExtended("Cannot mutate constant pair ",
-                                  writeValue(temp));
+            ScamValue err = makeError("Cannot mutate constant pair %{0}", temp);
             return err;
         }
 
@@ -593,7 +565,7 @@ bool scam::wantZeroPlus(const char * name,
         return true;
     }
 
-    ScamValue err = makeErrorExtended(name, ": ", writeValue(status));
+    ScamValue err = statusToError(name, status);
     engine->handleError(err);
     return false;
 }
@@ -613,7 +585,7 @@ bool scam::wantCount(const char * name,
         return true;
     }
 
-    ScamValue err = makeErrorExtended(name, ": ", writeValue(status));
+    ScamValue err = statusToError(name, status);
     engine->handleError(err);
     return false;
 }
@@ -631,7 +603,7 @@ bool scam::wantSublistOf(const char * name,
         return true;
     }
 
-    ScamValue err = makeErrorExtended(name, ": ", writeValue(status));
+    ScamValue err = statusToError(name, status);
     engine->handleError(err);
     return false;
 }
@@ -639,16 +611,14 @@ bool scam::wantSublistOf(const char * name,
 bool scam::finishArgs(const char * name,
                       ArgListHelper & helper,
                       Continuation * cont,
-                      ScamEngine * engine,
-                      const char * msg)
+                      ScamEngine * engine)
 {
     ScamValue status = helper.finish();
     if ( isNothing(status) ) {
         return true;
     }
 
-    ScamValue err =
-        makeErrorExtended(name, ": ", (msg ? msg : writeValue(status)));
+    ScamValue err = statusToError(name, status);
     engine->handleError(err);
     return false;
 }
@@ -678,4 +648,26 @@ bool scam::getTwoObjs(ScamValue args,
 ScamValue scam::identity(ScamValue value)
 {
     return value;
+}
+
+namespace
+{
+    ScamValue statusToError(const char * name, ScamValue status)
+    {
+        stringstream s;
+        s << name << ": ";
+
+        ScamValue rv;
+
+        if ( isError(status) ) {
+            s << status->errorMsg();
+            rv = makeError(s.str().c_str(), status->errorIrritants());
+        }
+        else {
+            s << writeValue(status);
+            rv = makeError(s.str().c_str());
+        }
+
+        return rv;
+    }
 }

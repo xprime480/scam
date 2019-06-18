@@ -107,11 +107,11 @@ ScamValue TestBase::readString(char const * input)
         return rv;
     }
     catch ( ScamException e ) {
-        ScamValue rv = makeError(e.getMessage());
+        ScamValue rv = makeError(e.getMessage().c_str(), makeString(input));
         return rv;
     }
     catch ( ... ) {
-        return makeError("Unknown exception");
+        return makeError("Unknown exception", makeString(input));
     }
 }
 
@@ -127,15 +127,15 @@ ScamValue TestBase::readEval(std::string const & input)
         return rv;
     }
     catch ( ScamException e ) {
-        ScamValue rv = makeError(e.getMessage());
+        ScamValue rv = makeError(e.getMessage().c_str(), makeString(input));
         return rv;
     }
     catch ( std::exception & e ) {
-        ScamValue rv = makeError(e.what());
+        ScamValue rv = makeError(e.what(), makeString(input));
         return rv;
     }
     catch ( ... ) {
-        return makeError("Unknown exception");
+        return makeError("Unknown exception", makeString(input));
     }
 }
 

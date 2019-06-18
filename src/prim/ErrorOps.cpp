@@ -8,8 +8,6 @@
 #include "input/ListParser.hpp"
 #include "util/ArgListHelper.hpp"
 
-#include <sstream>
-
 using namespace scam;
 using namespace std;
 
@@ -33,14 +31,13 @@ void scam::applyError(ScamValue args,
         return;
     }
 
-    stringstream s;
+    ScamData::VectorData irritants;
     unsigned len = length(objs);
-    s << str;
     for ( unsigned i = 0 ; i < len ; ++i ) {
-        s << " " << writeValue(nthcar(objs, i));
+        irritants.push_back(nthcar(objs, i));
     }
 
-    ScamValue err = makeError(s.str());
+    ScamValue err = makeError(str.c_str(), irritants);
     engine->handleError(err);
 }
 

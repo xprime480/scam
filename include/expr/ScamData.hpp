@@ -98,7 +98,7 @@ namespace scam
         constexpr static ValueType Instance     { 1 << 21 };
         constexpr static ValueType Cont         { 1 << 22 };
 
-        constexpr static ValueType StringLike = Symbol | Keyword | String | Error;
+        constexpr static ValueType StringLike = Symbol | Keyword | String;
 
         constexpr static ValueType Procedure = Closure | Class | Instance;
 
@@ -142,14 +142,20 @@ namespace scam
         };
 
         using StringData = std::string;
+        using VectorData = std::vector<ScamValue>;
 
+	struct ErrorData
+	{
+	    StringData msg;
+	    VectorData irritants;
+	};
+	
         struct PairData
         {
             ScamValue car;
             ScamValue cdr;
         };
 
-        using VectorData = std::vector<ScamValue>;
         using ByteVectorData = std::vector<unsigned char>;
         using DictKeyData = std::vector<ScamValue>;
         using DictValueData = std::vector<ScamValue>;
@@ -201,6 +207,7 @@ namespace scam
             bool boolValue;
             char charValue;
             StringData * strVal;
+	    ErrorData * errorData;
             PairData * pairValue;
             VectorData * vectorData;
             ByteVectorData * byteVectorData;
@@ -233,6 +240,9 @@ namespace scam
         bool & boolValue();
         char & charValue();
         StringData & stringValue();
+
+	StringData & errorMsg();
+	VectorData & errorIrritants();
 
         ScamValue & carValue();
         ScamValue & cdrValue();

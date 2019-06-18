@@ -16,7 +16,7 @@ Make Lists
 (list)
 
 [result]
-make-list: expected non-negative integer for parameter 1 got '-5'
+make-list: wanted non-negative integer for parameter 1 (-5)
 ()
 ()
 (() () ())

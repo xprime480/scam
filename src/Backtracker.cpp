@@ -15,7 +15,7 @@ using namespace std;
 namespace
 {
     static unsigned counter { 0 };
-    static ScamValue nomore = makeError("No more choices", false);
+    static ScamValue nomore = makeStaticError("No more choices");
     static bool init = (nomore->setMeta("amb-error", makeNull()), true);
 }
 
