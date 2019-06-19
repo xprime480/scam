@@ -16,6 +16,8 @@ namespace scam
                Env * env,
                ScamEngine * engine);
 
+    Env * env(ScamValue value);
+
     void mapEval(ScamValue value,
                  Continuation * cont,
                  Env * env,

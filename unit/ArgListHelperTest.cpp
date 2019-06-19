@@ -340,7 +340,7 @@ TEST_F(ArgListHelperTest, GetCountWant3to5Have6)
     expectNothing(status);
 
     status = helper.finish();
-    expectError(status, "Expected 5 values, got 6", true);
+    expectError(status, "Expected 5 values, got 6");
 }
 
 TEST_F(ArgListHelperTest, GetOptionalCharacterMissing)

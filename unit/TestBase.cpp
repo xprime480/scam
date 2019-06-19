@@ -61,7 +61,7 @@ TestBase::TestBase(bool loadPrelude)
     engine.reset(true);
     extractor = mm.make<Extractor>(&engine);
     engine.setCont(extractor);
-    handler = new TestHandler(extractor);
+    handler = mm.make<TestHandler>(extractor);
     engine.pushHandler(handler);
     if ( loadPrelude ) {
         ScamValue result = readEvalFile("lib/prelude.scm");
@@ -72,7 +72,6 @@ TestBase::TestBase(bool loadPrelude)
 TestBase::~TestBase()
 {
     engine.popHandler();
-    delete handler;
 }
 
 void TestBase::SetUp()
@@ -275,13 +274,10 @@ void TestBase::expectNothing(ScamValue expr)
     expectNonNumeric(expr);
 }
 
-void TestBase::expectError(ScamValue expr,
-                           string const msg,
-                           bool managed)
+void TestBase::expectError(ScamValue expr, string const msg)
 {
     assertType(expr, "error", isError);
-    auto pred = SELECT_TRUTH | SELECT_ERROR;
-    pred |= (managed ? SELECT_MANAGED : 0x0);
+    auto pred = SELECT_TRUTH | SELECT_ERROR | SELECT_MANAGED;
     checkPredicates(expr, pred);
 
     if ( ! msg.empty() ) {

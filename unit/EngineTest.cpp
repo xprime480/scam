@@ -10,13 +10,13 @@ class EngineTest : public TestBase
 TEST_F(EngineTest, BacktrackInitial)
 {
     ScamValue expr = readEval("?");
-    expectError(expr, "No current backtrack context", false);
+    expectError(expr, "No current backtrack context");
 }
 
 TEST_F(EngineTest, AmbZeroForms)
 {
     ScamValue expr = readEval("(amb)");
-    expectError(expr, "No more choices", false);
+    expectError(expr, "No more choices");
 }
 
 TEST_F(EngineTest, AmbOneFormFirst)
@@ -29,7 +29,7 @@ TEST_F(EngineTest, AmbOneFormSecond)
 {
     ScamValue expr = readEval("(amb 2)");
     expr = readEval("?");
-    expectError(expr, "No more choices", false);
+    expectError(expr, "No more choices");
 }
 
 TEST_F(EngineTest, AmbOneFormThird)
@@ -37,7 +37,7 @@ TEST_F(EngineTest, AmbOneFormThird)
     readEval("(amb 2)");
     readEval("?");
     ScamValue expr = readEval("?");
-    expectError(expr, "No current backtrack context", false);
+    expectError(expr, "No current backtrack context");
 }
 
 TEST_F(EngineTest, AmbManyFormSecond)
@@ -62,13 +62,13 @@ TEST_F(EngineTest, AmbNestedLet)
     expectList(expr, "(b 2)", 2);
 
     expr = readEval("?");
-    expectError(expr, "No more choices", false);
+    expectError(expr, "No more choices");
 
     expr = readEval("?");
-    expectError(expr, "No current backtrack context", false);
+    expectError(expr, "No current backtrack context");
 
     expr = readEval("?");
-    expectError(expr, "No current backtrack context", false);
+    expectError(expr, "No current backtrack context");
 }
 
 TEST_F(EngineTest, AmbNestedLetStar)
@@ -86,13 +86,13 @@ TEST_F(EngineTest, AmbNestedLetStar)
     expectList(expr, "(b 2)", 2);
 
     expr = readEval("?");
-    expectError(expr, "No more choices", false);
+    expectError(expr, "No more choices");
 
     expr = readEval("?");
-    expectError(expr, "No current backtrack context", false);
+    expectError(expr, "No current backtrack context");
 
     expr = readEval("?");
-    expectError(expr, "No current backtrack context", false);
+    expectError(expr, "No current backtrack context");
 }
 
 TEST_F(EngineTest, AmbPrimitive)
@@ -107,10 +107,10 @@ TEST_F(EngineTest, AmbPrimitive)
     expectInteger(expr, 5, "5", true);
 
     expr = readEval("?");
-    expectError(expr, "No more choices", false);
+    expectError(expr, "No more choices");
 
     expr = readEval("?");
-    expectError(expr, "No current backtrack context", false);
+    expectError(expr, "No current backtrack context");
 }
 
 TEST_F(EngineTest, AmbDefine)

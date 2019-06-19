@@ -211,13 +211,19 @@ void ScamEngine::pushHandler(Handler * handler)
 
 ScamValue ScamEngine::handleError(ScamValue err)
 {
+    if ( isError(err) ) {
+        err->errorHandled() = true;
+    }
+
     ScamValue rv = err;
     if ( handlers.empty() ) {
-        Handler handler;
-        rv = handler.handleError(err);
+        Handler * handler = standardMemoryManager.make<Handler>();
+        pushHandler(handler);
+        rv = handler->handleError(err);
     }
     else {
-        rv = handlers.back()->handleError(err);
+        auto h = handlers.back();
+        rv = h->handleError(err);
     }
 
     if ( isError(rv) ) {
@@ -244,6 +250,9 @@ void ScamEngine::mark()
     cont->mark();
     for ( auto & i : input ) {
         i.mark();
+    }
+    for ( auto & h : handlers ) {
+        h->mark();
     }
     GlobalWorkQueue.mark();
 }

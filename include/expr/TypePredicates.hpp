@@ -10,6 +10,7 @@ namespace scam
     extern bool isNothing(ScamValue data);
     extern bool isAnything(ScamValue data);
     extern bool isError(ScamValue data);
+    extern bool isUnhandledError(ScamValue data);
     extern bool truth(ScamValue data);
 
     extern bool isBoolean(ScamValue data);

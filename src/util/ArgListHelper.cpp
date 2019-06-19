@@ -87,9 +87,19 @@ ScamValue ArgListHelper::getString(string & value)
     return getOneArg<string>(value, isString, asString, "string");
 }
 
+ScamValue ArgListHelper::getError(ScamValue & value)
+{
+    return getOneArg<ScamValue>(value, isError, identity, "error-object");
+}
+
 ScamValue ArgListHelper::getPair(ScamValue & value)
 {
     return getOneArg<ScamValue>(value, isPair, identity, "pair");
+}
+
+ScamValue ArgListHelper::getApplicable(ScamValue & value)
+{
+    return getOneArg<ScamValue>(value, isApplicable, identity, "procedure");
 }
 
 ScamValue ArgListHelper::getIndex(int & index, int refParameter)
@@ -499,6 +509,19 @@ bool scam::wantMutableString(const char * name,
     return wantOneValue(name, cont, engine, func);
 }
 
+bool scam::wantError(const char * name,
+                     ArgListHelper & helper,
+                     Continuation * cont,
+                     ScamEngine * engine,
+                     ScamValue & error)
+{
+    auto func = [&] () -> ScamValue
+    {
+        return helper.getError(error);
+    };
+    return wantOneValue(name, cont, engine, func);
+}
+
 bool scam::wantPair(const char * name,
                     ArgListHelper & helper,
                     Continuation * cont,
@@ -535,6 +558,21 @@ bool scam::wantMutablePair(const char * name,
         return makeNothing();
     };
 
+    return wantOneValue(name, cont, engine, func);
+}
+
+bool scam::wantApplicable(const char * name,
+                          ArgListHelper & helper,
+                          Continuation * cont,
+                          ScamEngine * engine,
+                          ScamValue & value,
+                          int paramCount)
+{
+    auto func = [&] () -> ScamValue
+    {
+        // figure out how to get parameter count
+        return helper.getApplicable(value);
+    };
     return wantOneValue(name, cont, engine, func);
 }
 
@@ -660,7 +698,7 @@ namespace
         ScamValue rv;
 
         if ( isError(status) ) {
-            s << status->errorMsg();
+            s << status->errorMessage();
             rv = makeError(s.str().c_str(), status->errorIrritants());
         }
         else {

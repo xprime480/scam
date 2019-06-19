@@ -38,7 +38,7 @@ void PrimWorkerData::mapEval(ScamEngine * engine) const
 
 void PrimWorkerData::handleResult(ScamValue expr, ScamEngine * engine)
 {
-    if ( isError(expr) ) {
+    if ( isUnhandledError(expr) ) {
         engine->handleError(expr);
     }
     else {

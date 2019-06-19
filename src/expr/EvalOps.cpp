@@ -53,7 +53,7 @@ void scam::eval(ScamValue value,
 
     else if ( isNothing(value) ) {
         static const char * msg{ "The null type cannot be evaluated." };
-        static ScamValue err = makeStaticError(msg);
+        ScamValue err = makeError(msg);
         engine->handleError(err);
     }
 
@@ -89,7 +89,7 @@ void scam::apply(ScamValue value,
 
         if ( accepted ) {
             ScamValue arg = parser->get();
-            value->contValue()->handleValue(arg);
+            eval(arg, value->contValue(), env, engine);
         }
         else {
             failedArgParseMessage(writeValue(value).c_str(),
@@ -179,6 +179,11 @@ void scam::apply(ScamValue value,
         ScamValue err = makeError("Cannot apply", value, args);
         engine->handleError(err);
     }
+}
+
+Env * scam::env(ScamValue value)
+{
+    return standardMemoryManager.make<Env>();
 }
 
 void scam::mapEval(ScamValue value,

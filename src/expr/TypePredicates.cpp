@@ -29,6 +29,11 @@ bool scam::isError(ScamValue data)
     return data->type == ScamData::Error;
 }
 
+bool scam::isUnhandledError(ScamValue data)
+{
+    return isError(data) && ! data->errorHandled();
+}
+
 bool scam::truth(ScamValue data)
 {
     if ( isNothing(data) ) {

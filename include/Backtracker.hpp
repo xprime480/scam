@@ -3,6 +3,8 @@
 
 #include "util/ManagedObject.hpp"
 
+#include "util/GlobalId.hpp"
+
 #include <string>
 
 namespace scam
@@ -33,8 +35,6 @@ namespace scam
     private:
         std::string const name;
         Backtracker * parent;
-
-        static std::string makeName(char const * id);
     };
 }
 

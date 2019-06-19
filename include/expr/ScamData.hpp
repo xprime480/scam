@@ -144,12 +144,15 @@ namespace scam
         using StringData = std::string;
         using VectorData = std::vector<ScamValue>;
 
-	struct ErrorData
-	{
-	    StringData msg;
-	    VectorData irritants;
-	};
-	
+        struct ErrorData
+        {
+            ErrorData() : handled(false) {}
+
+            StringData msg;
+            VectorData irritants;
+            bool       handled;
+        };
+
         struct PairData
         {
             ScamValue car;
@@ -207,7 +210,7 @@ namespace scam
             bool boolValue;
             char charValue;
             StringData * strVal;
-	    ErrorData * errorData;
+            ErrorData * errorData;
             PairData * pairValue;
             VectorData * vectorData;
             ByteVectorData * byteVectorData;
@@ -241,8 +244,9 @@ namespace scam
         char & charValue();
         StringData & stringValue();
 
-	StringData & errorMsg();
-	VectorData & errorIrritants();
+        StringData & errorMessage();
+        VectorData & errorIrritants();
+        bool & errorHandled();
 
         ScamValue & carValue();
         ScamValue & cdrValue();

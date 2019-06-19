@@ -42,8 +42,8 @@ void ApplyArgsCont::handleValue(ScamValue value)
 {
     Continuation::handleValue(value);
 
-    if ( isError(value) ) {
-        engine->handleError(value);
+    if ( isUnhandledError(value) ) {
+	engine->handleError(value);
     }
     else {
         apply(op, value, cont, env, engine);

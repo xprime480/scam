@@ -1,14 +1,16 @@
 #if ! defined(GLOBALID_HPP)
 #define GLOBALID_HPP 1
 
+#include <string>
+
 namespace scam
 {
     struct GlobalId
     {
-        GlobalId() : id(++counter) {}
-        const long id;
-    private:
-        static long counter;
+        static std::string makeName(const char * tag);
+
+        GlobalId();
+        const unsigned long id;
     };
 
     template <typename T>

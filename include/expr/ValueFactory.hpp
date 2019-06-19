@@ -43,8 +43,6 @@ namespace scam
         return makeError(msg, irritants, irrs...);
     }
 
-    extern ScamValue makeStaticError(char const * msg);
-
     extern ScamValue makeSymbol(std::string const & value, bool managed = true);
 
     extern ScamValue makeKeyword(std::string const & value,
@@ -62,7 +60,7 @@ namespace scam
     extern ScamValue makePair(ScamValue car, ScamValue cdr);
     extern ScamValue makeList();
     extern ScamValue makeList(ScamValue item);
-    extern ScamValue makeList(std::vector<ScamValue> & items);
+    extern ScamValue makeList(const std::vector<ScamValue> & items);
 
     template <typename... Args>
     ScamValue makeList(ScamValue car, Args... args)

@@ -25,8 +25,7 @@ void scam::applySubstitute(ScamValue args,
     ScamValue form = nthcar(args, 0);
     ScamValue dict = nthcar(args, 1);
     if ( ! dict ) {
-        const ScamValue err =
-            makeError("substitute requires dictionary", args);
+        ScamValue err = makeError("substitute requires dictionary", args);
         engine->handleError(err);
         return;
     }

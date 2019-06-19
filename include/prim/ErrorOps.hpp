@@ -5,6 +5,10 @@
 
 namespace scam
 {
+    extern void applyMakeError(ScamValue args,
+                               Continuation * cont,
+                               ScamEngine * engine);
+
     extern void applyError(ScamValue args,
                            Continuation * cont,
                            ScamEngine * engine);
@@ -12,6 +16,18 @@ namespace scam
     extern void applyRaise(ScamValue args,
                            Continuation * cont,
                            ScamEngine * engine);
+
+    extern void applyWithHandler(ScamValue args,
+                                 Continuation * cont,
+                                 ScamEngine * engine);
+
+    extern void applyErrorMessage(ScamValue args,
+                                  Continuation * cont,
+                                  ScamEngine * engine);
+
+    extern void applyErrorIrritant(ScamValue args,
+                                   Continuation * cont,
+                                   ScamEngine * engine);
 }
 
 #endif

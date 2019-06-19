@@ -46,13 +46,13 @@ void InstanceCont::handleValue(ScamValue value)
 {
     Continuation::handleValue(value);
 
-    if ( isError(value) ) {
+    if ( isUnhandledError(value) ) {
         engine->handleError(value);
         return;
     }
 
     ScamValue func = find_func(obj);
-    if ( isNull(func) ) {
+    if ( isNothing(func) ) {
         return;
     }
 
@@ -78,5 +78,5 @@ ScamValue InstanceCont::function_not_found() const
 {
     ScamValue err = makeError("Instance method not found", name);
     engine->handleError(err);
-    return makeNull();
+    return makeNothing();
 }

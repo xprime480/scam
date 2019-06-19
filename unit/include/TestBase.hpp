@@ -47,10 +47,7 @@ namespace scam
                         std::function<bool(ScamValue)> pred);
 
         void expectNothing(ScamValue expr);
-
-        void expectError(ScamValue expr,
-                         std::string const msg = "",
-                         bool managed = true);
+        void expectError(ScamValue expr, std::string const msg = "");
 
         void expectBoolean(ScamValue expr,
                            bool value,

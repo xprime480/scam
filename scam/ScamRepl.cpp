@@ -20,11 +20,11 @@ ScamRepl::ScamRepl()
 
 int ScamRepl::run()
 {
-    ReplHandler handler;
+    Handler * handler = standardMemoryManager.make<ReplHandler>();
 
     banner();
     engine.reset(true);
-    engine.pushHandler(&handler);
+    engine.pushHandler(handler);
     if ( ! load_prelude() ) {
         return 1;
     }
@@ -134,7 +134,7 @@ ScamValue ScamRepl::eval(ScamValue form)
         rv = makeError("Caught exception", temp);
     }
 
-    if ( isError(rv) ) {
+    if ( isUnhandledError(rv) ) {
         rv = engine.handleError(rv);
     }
 

@@ -33,7 +33,7 @@ void QQSpliceCont::handleValue(ScamValue value)
 {
     Continuation::handleValue(value);
 
-    if ( isError(value) ) {
+    if ( isUnhandledError(value) ) {
         engine->handleError(value);
     }
     else {

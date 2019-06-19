@@ -75,7 +75,7 @@ void ScamEngine::getStandardEnv()
     addPrimitive(env, "vref", applyVRef, this);
 
     addPrimitive(env, "null?", applyNullP, this);
-    addPrimitive(env, "error?", applyErrorP, this);
+    addPrimitive(env, "error-object?", applyErrorP, this);
     addPrimitive(env, "pair?", applyPairP, this);
     addPrimitive(env, "list?", applyListP, this);
     addPrimitive(env, "vector?", applyVectorP, this);
@@ -177,7 +177,11 @@ namespace
 
     void addErrorOps(Env * env, ScamEngine * engine)
     {
-        addPrimitive(env, "error", applyError, engine);
-        addPrimitive(env, "raise", applyRaise, engine);
+        addPrimitive(env, "make-error",             applyMakeError,     engine);
+        addPrimitive(env, "error",                  applyError,         engine);
+        addPrimitive(env, "raise",                  applyRaise,         engine);
+        addPrimitive(env, "with-exception-handler", applyWithHandler,   engine);
+        addPrimitive(env, "error-object-message",   applyErrorMessage,  engine);
+        addPrimitive(env, "error-object-irritants", applyErrorIrritant, engine);
     }
 }

@@ -21,6 +21,7 @@ namespace scam
 
         static IncludeCont * makeInstance(IncludeParser * parser,
                                           Continuation * cont,
+
                                           ScamEngine * engine,
                                           size_t nextIdx);
 

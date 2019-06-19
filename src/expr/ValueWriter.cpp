@@ -11,10 +11,6 @@
 
 #include <sstream>
 
-#include "util/GlobalId.hpp"
-#include "util/DebugTrace.hpp"
-#include "expr/ValueWriter.hpp"
-
 using namespace scam;
 using namespace std;
 
@@ -288,28 +284,20 @@ namespace
 
     void writeError(std::stringstream & s, ScamValue data)
     {
-        GlobalId id;
-
         vector<string> values;
 
         for ( const auto & v : data->errorIrritants() ) {
             auto s = writeValue(v);
-            scamTrace(id, __FILE__, __LINE__, __FUNCTION__, s);
             values.push_back(s);
         }
 
         int state = 0;
         size_t index = 0;
-        const string & msg = data->errorMsg();
-        scamTrace(id, __FILE__, __LINE__, __FUNCTION__, msg);
+        const string & msg = data->errorMessage();
         size_t size = msg.size();
-        scamTrace(id, __FILE__, __LINE__, __FUNCTION__, size);
 
         for ( size_t cur = 0 ; cur < size ; ++cur  ) {
             const char c = msg[cur];
-            scamTrace(id, __FILE__, __LINE__, __FUNCTION__,
-                      cur, c, state, index);
-
             switch ( state ) {
             case 0:
                 if ( '%' == c ) {

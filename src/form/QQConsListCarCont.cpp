@@ -45,7 +45,8 @@ void QQConsListCarCont::mark()
 void QQConsListCarCont::handleValue(ScamValue expr)
 {
     Continuation::handleValue(expr);
-    if ( isError(expr) ) {
+
+    if ( isUnhandledError(expr) ) {
         engine->handleError(expr);
     }
     else {

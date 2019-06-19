@@ -10,10 +10,6 @@
 #include "input/LambdaParser.hpp"
 #include "port/ScamPort.hpp"
 
-#include "util/GlobalId.hpp"
-#include "util/DebugTrace.hpp"
-#include "expr/ValueWriter.hpp"
-
 using namespace scam;
 using namespace std;
 
@@ -325,9 +321,6 @@ void ScamData::assertType(ValueType requiredType)
 
 bool & ScamData::exactFlag()
 {
-    GlobalId id;
-    scamTrace(id, __FILE__, __LINE__, __FUNCTION__);
-
     if ( 0 == (type & ScamData::Numeric) ) {
         assertType(ScamData::Numeric);
     }
@@ -384,25 +377,28 @@ char & ScamData::charValue()
 
 ScamData::StringData & ScamData::stringValue()
 {
-    GlobalId id;
-    scamTrace(id, __FILE__, __LINE__, __FUNCTION__);
-
     if ( 0 == (type & ScamData::StringLike) ) {
         assertType(ScamData::StringLike);
     }
     return *(value.strVal);
 }
 
-ScamData::StringData & ScamData:: errorMsg()
+ScamData::StringData & ScamData::errorMessage()
 {
     assertType(ScamData::Error);
     return value.errorData->msg;
 }
 
-ScamData::VectorData & ScamData:: errorIrritants()
+ScamData::VectorData & ScamData::errorIrritants()
 {
     assertType(ScamData::Error);
     return value.errorData->irritants;
+}
+
+bool & ScamData:: errorHandled()
+{
+    assertType(ScamData::Error);
+    return value.errorData->handled;
 }
 
 ScamValue & ScamData::carValue()

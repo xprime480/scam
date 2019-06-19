@@ -68,9 +68,7 @@ namespace
                 iter++;
             }
             if ( ns.end() != find(iter, ns.end(), zero) ) {
-                static const ScamValue db0 =
-                    makeStaticError("Division By Zero");
-                state = db0;
+                state = makeError("Division By Zero");
                 return zero;
             }
         }
@@ -104,8 +102,7 @@ namespace
             return zero;
         }
         if ( zero == ns[1] ) {
-            static const ScamValue mb0 = makeStaticError("Modulus By Zero");
-            state = mb0;
+            state = makeError("Modulus By Zero");
             return zero;
         }
 

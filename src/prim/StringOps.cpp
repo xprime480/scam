@@ -435,9 +435,9 @@ void scam::applyStringCopyX(ScamValue args,
 
     const unsigned int space = toStr.size() - at;
     if ( space < count ) {
-        static const ScamValue err =
-            makeStaticError("string-copy!: Insufficient room in destination"
-                            " to copy source");
+        ScamValue err =
+            makeError("string-copy!: "
+                      "Insufficient room in destination to copy source");
         engine->handleError(err);
         return;
     }

@@ -48,8 +48,8 @@ void scam::applyEqP(ScamValue args,
         cont->handleValue(makeBoolean(rv));
     }
     catch ( int ) {
-        static const ScamValue err =
-            makeStaticError("eq? not implemented for this type");
+        ScamValue err = makeError("eq? not implemented for this type",
+                                  makeInteger(obj1->type, true));
         engine->handleError(err);
     }
 }
@@ -69,8 +69,8 @@ void scam::applyEqvP(ScamValue args,
         cont->handleValue(makeBoolean(rv));
     }
     catch ( int ) {
-        static const ScamValue err =
-            makeStaticError("eqv? not implemented for this type");
+        ScamValue err = makeError("eqv? not implemented for this type",
+                                  makeInteger(obj1->type, true));
         engine->handleError(err);
     }
 }
@@ -90,8 +90,8 @@ void scam::applyEqualP(ScamValue args,
         cont->handleValue(makeBoolean(rv));
     }
     catch ( int ) {
-        static const ScamValue err =
-            makeStaticError("equal? not implemented for this type");
+        ScamValue err = makeError("equal? not implemented for this type",
+                                  makeInteger(obj1->type, true));
         engine->handleError(err);
     }
 }

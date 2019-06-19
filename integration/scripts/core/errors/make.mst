@@ -1,0 +1,24 @@
+Make errors
+
+;[skip] uncomment to skip this test
+
+[name]
+Make Error
+
+[input]
+
+(make-error)
+(make-error 1 2 3)
+(make-error "bagels are not doughnuts")
+(make-error "wanted a list, got %{0} %{2} %{1}" 2 4 3)
+
+;; this one needs more infrastructure to work
+;;
+;;(error? (error "wanted a list, got %{0} %{2} %{1}" 2 4 3))
+;;
+
+[result]
+make-error: parameter 1 missing
+make-error: wanted string for parameter 1 (1)
+bagels are not doughnuts
+wanted a list, got 2 3 4

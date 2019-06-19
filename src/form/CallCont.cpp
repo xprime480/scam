@@ -38,14 +38,14 @@ void CallCont::handleValue(ScamValue value)
 {
     Continuation::handleValue(value);
 
-    if ( isError(value) ) {
+    if ( isUnhandledError(value) ) {
         engine->handleError(value);
         return;
     }
 
     if ( ! isApplicable(value) ) {
-        ScamValue err = makeError("call/cc: form '%{0}' cannot be applied",
-                                  value);
+        ScamValue err =
+            makeError("call/cc: form '%{0}' cannot be applied", value);
         engine->handleError(err);
         return;
     }

@@ -14,27 +14,17 @@ using namespace std;
 
 namespace
 {
-    static unsigned counter { 0 };
-    static ScamValue nomore = makeStaticError("No more choices");
-    static bool init = (nomore->setMeta("amb-error", makeNull()), true);
+    extern ScamValue getNoMore();
 }
 
 Backtracker::Backtracker(char const * id, Backtracker * parent)
-    : name(makeName(id))
+    : name(GlobalId::makeName(id))
     , parent(parent)
 {
-  if ( ! init ) { id = nullptr; } // compiler pacifier
-#if defined(TRACE_BACKTRACKER)
-    cerr << "Creating backtracker " << name << "\n";
-    cerr << "\tParent is " << parent << "\n";
-#endif
 }
 
 Backtracker::~Backtracker()
 {
-#if defined(TRACE_BACKTRACKER)
-    cerr << "Deleting backtracker " << name << "\n";
-#endif
 };
 
 void Backtracker::mark()
@@ -73,7 +63,7 @@ void Backtracker::safeRun(Backtracker * bt, Continuation * cont)
         bt->run();
     }
     else {
-        cont->handleValue(nomore);
+        cont->handleValue(getNoMore());
     }
 }
 
@@ -97,16 +87,19 @@ Backtracker * Backtracker::getParent() const
 void Backtracker::runParent(Continuation * cont) const
 {
     if ( ! parent ) {
-        cont->handleValue(nomore);
+        cont->handleValue(getNoMore());
     }
     else {
         parent->run();
     }
 }
 
-string Backtracker::makeName(char const * id)
+namespace
 {
-    stringstream s;
-    s << (++counter) << " {" << id << "}";
-    return s.str();
+    ScamValue getNoMore()
+    {
+        ScamValue nomore = makeError("No more choices");
+        nomore->setMeta("amb-error", makeNull());
+        return nomore;
+    }
 }

@@ -27,7 +27,7 @@ TEST_F(ExpressionTest, NullExpression)
     expectNothing(expr);
 
     ScamValue evaled = evaluate(expr);
-    expectError(evaled, "The null type cannot be evaluated.", false);
+    expectError(evaled, "The null type cannot be evaluated.");
 }
 
 TEST_F(ExpressionTest, ErrorExpressionNoIrritants)

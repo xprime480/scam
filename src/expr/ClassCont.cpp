@@ -41,7 +41,7 @@ void ClassCont::handleValue(ScamValue value)
 {
     Continuation::handleValue(value);
 
-    if ( isError(value) ) {
+    if ( isUnhandledError(value) ) {
         engine->handleError(value);
     }
     else {
@@ -49,8 +49,8 @@ void ClassCont::handleValue(ScamValue value)
         ScamValue  result;
 
         result = build(cls, instances);
-        if ( isError(result) ) {
-            engine->handleError(result);
+        if ( isUnhandledError(result) ) {
+            engine->handleError(value);
         }
         else {
             ScamValue instance = connect(instances);

@@ -55,7 +55,7 @@ void ClosureBindCont::handleValue(ScamValue value)
 {
     Continuation::handleValue(value);
 
-    if ( isError(value) ) {
+    if ( isUnhandledError(value) ) {
         engine->handleError(value);
     }
     else if ( malformedActuals(value) ) {
@@ -72,7 +72,8 @@ bool ClosureBindCont::malformedActuals(ScamValue expr) const
         return false;
     }
 
-    ScamValue err = makeError("Expecting list or symbol for parameter list (%{0})", expr);
+    ScamValue err =
+        makeError("Expecting list or symbol for parameter list (%{0})", expr);
     engine->handleError(err);
 
     return true;

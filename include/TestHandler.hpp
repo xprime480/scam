@@ -9,8 +9,14 @@ namespace scam
 {
     class TestHandler : public Handler
     {
-    public:
+    private:
+        friend class MemoryManager;
         TestHandler(Continuation * cont);
+        static TestHandler * makeInstance(Continuation * cont);
+
+    public:
+        void mark() override;
+
         ScamValue handleError(ScamValue err) override;
 
     private:
@@ -19,4 +25,3 @@ namespace scam
 }
 
 #endif
-

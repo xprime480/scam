@@ -33,10 +33,11 @@ namespace scam
         ScamValue getInteger(int & value);
         ScamValue getNonNegativeInteger(int & value);
         ScamValue getString(std::string & value);
+        ScamValue getError(ScamValue & error);
         ScamValue getPair(ScamValue & value);
+        ScamValue getApplicable(ScamValue & value);
 
         ScamValue getIndex(int & index, int refParameter);
-
 
         ScamValue getZeroPlus(ScamValue & value, ValuePredicate pred);
 
@@ -138,6 +139,12 @@ namespace scam
                                   ScamEngine * engine,
                                   ScamValue & value);
 
+    extern bool wantError(const char * name,
+                          ArgListHelper & helper,
+                          Continuation * cont,
+                          ScamEngine * engine,
+                          ScamValue & value);
+
     extern bool wantPair(const char * name,
                          ArgListHelper & helper,
                          Continuation * cont,
@@ -149,6 +156,13 @@ namespace scam
                                 Continuation * cont,
                                 ScamEngine * engine,
                                 ScamValue & value);
+
+    extern bool wantApplicable(const char * name,
+                               ArgListHelper & helper,
+                               Continuation * cont,
+                               ScamEngine * engine,
+                               ScamValue & value,
+                               int paramCount);
 
     extern bool wantIndex(const char * name,
                           ArgListHelper & helper,

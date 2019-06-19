@@ -22,8 +22,8 @@ string call_scam(string const & input)
         standardMemoryManager.make<Accumulator>(&engine);
     engine.setCont(accumulator);
 
-    TestHandler handler(accumulator);
-    engine.pushHandler(&handler);
+    Handler * handler = standardMemoryManager.make<TestHandler>(accumulator);
+    engine.pushHandler(handler);
 
     ReadEvalString helper(&engine, input);
     helper.run();

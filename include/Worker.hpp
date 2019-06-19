@@ -32,9 +32,6 @@ namespace scam
 
     protected:
         ScamEngine * engine;
-
-    private:
-        static std::string makeName(char const * id);
     };
 }
 

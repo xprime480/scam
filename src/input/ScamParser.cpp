@@ -38,33 +38,15 @@ ScamValue ScamParser::parseSubExpr() const
 
 ScamValue ScamParser::tokenToExpr(Token const & token) const
 {
-    static const ScamValue noTokens =
-        makeStaticError("**Internal Error: No Tokens");
-
-    static const ScamValue misplacedDot =
-        makeStaticError("Dot (.) outside list");
-
-    static const ScamValue extraParen =
-        makeStaticError("Extra ')' in input");
-
-    static const ScamValue extraSquare =
-        makeStaticError("Extra ']' in input");
-
-    static const ScamValue extraCurly =
-        makeStaticError("Extra '}' in input");
-
-    static const ScamValue unknownTokenType =
-        makeStaticError("**Internal Error:  Unknown token type");
-
     ScamValue rv = makeNothing();
 
     switch ( token.getType() ) {
     case TokenType::TT_NONE:
-        rv = noTokens;
+        rv = makeError("**Internal Error: No Tokens");
         break;
 
     case TokenType::TT_DOT:
-        rv = misplacedDot;
+        rv = makeError("Dot (.) outside list");
         break;
 
     case TokenType::TT_OPEN_PAREN:
@@ -72,7 +54,7 @@ ScamValue ScamParser::tokenToExpr(Token const & token) const
         break;
 
     case TokenType::TT_CLOSE_PAREN:
-        rv = extraParen;
+        rv = makeError("Extra ')' in input");
         break;
 
     case TokenType::TT_OPEN_VECTOR:
@@ -84,7 +66,7 @@ ScamValue ScamParser::tokenToExpr(Token const & token) const
         break;
 
     case TokenType::TT_CLOSE_BRACKET:
-        rv = extraSquare;
+        rv = makeError("Extra ']' in input");
         break;
 
     case TokenType::TT_OPEN_CURLY:
@@ -92,7 +74,7 @@ ScamValue ScamParser::tokenToExpr(Token const & token) const
         break;
 
     case TokenType::TT_CLOSE_CURLY:
-        rv = extraCurly;
+        rv = makeError("Extra '}' in input");
         break;
 
     case TokenType::TT_BOOLEAN:
@@ -142,7 +124,7 @@ ScamValue ScamParser::tokenToExpr(Token const & token) const
         break;
 
     default:
-        rv = unknownTokenType;
+        rv = makeError("**Internal Error:  Unknown token type");
         break;
     }
 
@@ -151,13 +133,11 @@ ScamValue ScamParser::tokenToExpr(Token const & token) const
 
 ScamValue ScamParser::parseList() const
 {
-    static const ScamValue unterminated = makeStaticError("Unterminated List");
-
     Token token = tokenizer.next();
     TokenType type = token.getType();
 
     if ( TokenType::TT_END_OF_INPUT == type ) {
-        ScamValue err = unterminated;
+        ScamValue err = makeError("Unterminated List");
         tagPartial(err);
         return err;
     }
@@ -191,16 +171,11 @@ ScamValue ScamParser::parseList() const
 
 ScamValue ScamParser::parseDotContext() const
 {
-    static const ScamValue unterminated = makeStaticError("Unterminated List");
-    static const ScamValue nakedDot = makeStaticError("No form after '.'");
-    static const ScamValue extraForms =
-        makeStaticError("Too many forms after '.'");
-
     Token token = tokenizer.next();
     TokenType type = token.getType();
 
     if ( TokenType::TT_END_OF_INPUT == type ) {
-        ScamValue err = unterminated;
+        ScamValue err = makeError("Unterminated List");
         tagPartial(err);
         return err;
     }
@@ -210,7 +185,7 @@ ScamValue ScamParser::parseDotContext() const
     }
 
     if ( TokenType::TT_CLOSE_PAREN == type ) {
-        return nakedDot;
+        return makeError("No form after '.'");
     }
 
     ScamValue final = tokenToExpr(token);
@@ -219,8 +194,9 @@ ScamValue ScamParser::parseDotContext() const
     TokenType checkType = check.getType();
 
     if ( TokenType::TT_END_OF_INPUT == checkType ) {
-        tagPartial(unterminated);
-        return unterminated;
+        ScamValue err = makeError("Unterminated List");
+        tagPartial(err);
+        return err;
     }
 
     if ( TokenType::TT_SCAN_ERROR == checkType ) {
@@ -228,7 +204,7 @@ ScamValue ScamParser::parseDotContext() const
     }
 
     if ( TokenType::TT_CLOSE_PAREN != checkType ) {
-        return extraForms;
+        return makeError("Too many forms after '.'");
     }
 
     return final;
@@ -236,9 +212,6 @@ ScamValue ScamParser::parseDotContext() const
 
 ScamValue ScamParser::parseVector() const
 {
-    static const ScamValue unterminated =
-        makeStaticError("Unterminated Vector");
-
     ExprVec vec;
 
     while ( true ) {
@@ -246,8 +219,9 @@ ScamValue ScamParser::parseVector() const
         TokenType type = token.getType();
 
         if ( TokenType::TT_END_OF_INPUT == type ) {
-            tagPartial(unterminated);
-            return unterminated;
+            ScamValue err = makeError("Unterminated Vector");
+            tagPartial(err);
+            return err;
         }
 
         if ( TokenType::TT_SCAN_ERROR == type ) {
@@ -269,11 +243,6 @@ ScamValue ScamParser::parseVector() const
 
 ScamValue ScamParser::parseByteVector() const
 {
-    static const ScamValue unterminated =
-        makeStaticError("Unterminated Byte Vector");
-    static const ScamValue badValue =
-        makeStaticError("Bad value in Byte Vector");
-
     ByteVec vec;
 
     while ( true ) {
@@ -281,7 +250,7 @@ ScamValue ScamParser::parseByteVector() const
         TokenType type = token.getType();
 
         if ( TokenType::TT_END_OF_INPUT == type ) {
-            ScamValue err = unterminated;
+            ScamValue err = makeError("Unterminated Byte Vector");
             tagPartial(err);
             return err;
         }
@@ -300,12 +269,12 @@ ScamValue ScamParser::parseByteVector() const
         }
 
         if ( ! isInteger(expr) ) {
-            return badValue;
+            return makeError("Bad value in Byte Vector");
         }
 
         int i = asInteger(expr);
         if ( i < 0 || i > 255 || ! isExact(expr) ) {
-            return badValue;
+            return makeError("Bad value in Byte Vector");
         }
 
         vec.push_back((unsigned char)i);
@@ -314,9 +283,6 @@ ScamValue ScamParser::parseByteVector() const
 
 ScamValue ScamParser::parseDict() const
 {
-    static const ScamValue unterminated =
-        makeStaticError("Unterminated Dictionary");
-
     ExprVec vec;
 
     while ( true ) {
@@ -324,8 +290,9 @@ ScamValue ScamParser::parseDict() const
         TokenType type = token.getType();
 
         if ( TokenType::TT_END_OF_INPUT == type ) {
-            tagPartial(unterminated);
-            return unterminated;
+            ScamValue err = makeError("Unterminated Dictionary");
+            tagPartial(err);
+            return err;
         }
 
         if ( TokenType::TT_SCAN_ERROR == type ) {
