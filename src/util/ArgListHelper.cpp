@@ -102,6 +102,11 @@ ScamValue ArgListHelper::getApplicable(ScamValue & value)
     return getOneArg<ScamValue>(value, isApplicable, identity, "procedure");
 }
 
+ScamValue ArgListHelper::getPort(ScamValue & value)
+{
+    return getOneArg<ScamValue>(value, isPort, identity, "port");
+}
+
 ScamValue ArgListHelper::getIndex(int & index, int refParameter)
 {
     ScamValue refObj = nthcar(args, refParameter);
@@ -572,6 +577,19 @@ bool scam::wantApplicable(const char * name,
     {
         // figure out how to get parameter count
         return helper.getApplicable(value);
+    };
+    return wantOneValue(name, cont, engine, func);
+}
+
+bool scam::wantPort(const char * name,
+                    ArgListHelper & helper,
+                    Continuation * cont,
+                    ScamEngine * engine,
+                    ScamValue & value)
+{
+    auto func = [&] () -> ScamValue
+    {
+        return helper.getPort(value);
     };
     return wantOneValue(name, cont, engine, func);
 }

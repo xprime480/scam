@@ -20,6 +20,8 @@ namespace scam
         void putChar(char c) override;
         size_t put(const char * buf, size_t length) override;
 
+        void rollback() override;
+
         std::string describe() override;
         ScamValue getContents() const override;
 

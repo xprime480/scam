@@ -96,6 +96,11 @@ size_t FilePort::put(const char * buf, size_t length)
     return length;
 }
 
+void FilePort::rollback()
+{
+    throw ScamException("FilePort::rollback: not implemented");
+}
+
 string FilePort::describe()
 {
     stringstream s;
@@ -105,5 +110,6 @@ string FilePort::describe()
 
 ScamValue FilePort::getContents() const
 {
-    return makeString("?");
+    throw ScamException("FilePort::getContents: not implemented");
+    return makeNothing();
 }

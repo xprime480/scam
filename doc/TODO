@@ -55,3 +55,9 @@
   not need ClassInitCont.  See comments in the latter implementation file.
 
 * Rationalize error messages.  They are not consistent.
+
+* Do something about the boilerplate in ArgListHelper!!
+
+* Position control in ScamPort objects will probably not work correctly
+  if two+ views are created on one simultaneously.  Fix it.
+

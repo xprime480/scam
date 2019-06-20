@@ -51,7 +51,7 @@ TEST_F(CharStreamTest, StringCharStreamFull)
     PositionType end = stream.getPos();
     stream.advance(5);
 
-    EXPECT_EQ(string("he rain in spain"), stream.allInput(start));
+    EXPECT_EQ(string("he rain in spain"), stream.allTextStartingAt(start));
     EXPECT_EQ(string("he rain in"), stream.strBetween(start));
     EXPECT_EQ(string("he ra"), stream.strBetween(start, end));
 
@@ -89,7 +89,7 @@ TEST_F(CharStreamTest, StringPortCharStreamFull)
     PositionType end = stream.getPos();
     stream.advance(5);
 
-    EXPECT_EQ(string("he rain in spain"), stream.allInput(start));
+    EXPECT_EQ(string("he rain in spain"), stream.allTextStartingAt(start));
     EXPECT_EQ(string("he rain in"), stream.strBetween(start));
     EXPECT_EQ(string("he ra"), stream.strBetween(start, end));
 
@@ -128,7 +128,7 @@ TEST_F(CharStreamTest, FilePortCharStreamFull)
     PositionType end = stream.getPos();
     stream.advance(5);
 
-    EXPECT_EQ(string("he rain in spain\n\n"), stream.allInput(start));
+    EXPECT_EQ(string("he rain in spain\n\n"), stream.allTextStartingAt(start));
     EXPECT_EQ(string("he rain in"), stream.strBetween(start));
     EXPECT_EQ(string("he ra"), stream.strBetween(start, end));
 
@@ -153,7 +153,7 @@ TEST_F(CharStreamTest, StringPortCharStreamChanging)
     PositionType end = stream.getPos();
     stream.advance(5);
 
-    EXPECT_EQ(string("xabcdefghijklm"), stream.allInput(start));
+    EXPECT_EQ(string("xabcdefghijklm"), stream.allTextStartingAt(start));
     EXPECT_EQ(string("xabcdefghij"), stream.strBetween(start));
     EXPECT_EQ(string("xabcde"), stream.strBetween(start, end));
 

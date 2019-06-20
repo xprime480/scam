@@ -20,10 +20,14 @@ namespace
                              PrimFunction func,
                              ScamEngine * engine);
 
+    extern void addTypePredicates(Env * env, ScamEngine * engine);
+
     extern void addStringOps(Env * env, ScamEngine * engine);
     extern void addPairOps(Env * env, ScamEngine * engine);
     extern void addListOps(Env * env, ScamEngine * engine);
     extern void addErrorOps(Env * env, ScamEngine * engine);
+    extern void addPortOps(Env * env, ScamEngine * engine);
+    extern void addInputOps(Env * env, ScamEngine * engine);
 }
 
 void ScamEngine::getStandardEnv()
@@ -74,28 +78,7 @@ void ScamEngine::getStandardEnv()
     addPrimitive(env, "vlen", applyVLen, this);
     addPrimitive(env, "vref", applyVRef, this);
 
-    addPrimitive(env, "null?", applyNullP, this);
-    addPrimitive(env, "error-object?", applyErrorP, this);
-    addPrimitive(env, "pair?", applyPairP, this);
-    addPrimitive(env, "list?", applyListP, this);
-    addPrimitive(env, "vector?", applyVectorP, this);
-    addPrimitive(env, "boolean?", applyBoolP, this);
-    addPrimitive(env, "char?", applyCharP, this);
-    addPrimitive(env, "string?", applyStringP, this);
-    addPrimitive(env, "symbol?", applySymbolP, this);
-    addPrimitive(env, "keyword?", applyKeywordP, this);
-
-    addPrimitive(env, "numeric?", applyNumericP, this);
-    addPrimitive(env, "complex?", applyComplexP, this);
-    addPrimitive(env, "real?", applyRealP, this);
-    addPrimitive(env, "rational?", applyRationalP, this);
-    addPrimitive(env, "integer?", applyIntegerP, this);
-    addPrimitive(env, "exact?", applyExactP, this);
-
-    addPrimitive(env, "procedure?", applyProcedureP, this);
-    addPrimitive(env, "class?", applyClassP, this);
-    addPrimitive(env, "instance?", applyInstanceP, this);
-    addPrimitive(env, "dict?", applyDictP, this);
+    addTypePredicates(env, this);
 
     addPrimitive(env, "begin", applyBegin, this);
 
@@ -108,6 +91,8 @@ void ScamEngine::getStandardEnv()
     addPairOps(env, this);
     addListOps(env, this);
     addErrorOps(env, this);
+    addPortOps(env, this);
+    addInputOps(env, this);
 }
 
 namespace
@@ -130,6 +115,34 @@ namespace
         ScamValue key  = makeSymbol(name);
         ScamValue form = makePrimitive(name, func, engine, true);
         env->put(key, form);
+    }
+
+    void addTypePredicates(Env * env, ScamEngine * engine)
+    {
+        addPrimitive(env, "null?",         applyNullP,      engine);
+        addPrimitive(env, "error-object?", applyErrorP,     engine);
+        addPrimitive(env, "pair?",         applyPairP,      engine);
+        addPrimitive(env, "list?",         applyListP,      engine);
+        addPrimitive(env, "vector?",       applyVectorP,    engine);
+        addPrimitive(env, "boolean?",      applyBoolP,      engine);
+        addPrimitive(env, "char?",         applyCharP,      engine);
+        addPrimitive(env, "string?",       applyStringP,    engine);
+        addPrimitive(env, "symbol?",       applySymbolP,    engine);
+        addPrimitive(env, "keyword?",      applyKeywordP,   engine);
+
+        addPrimitive(env, "numeric?",      applyNumericP,   engine);
+        addPrimitive(env, "complex?",      applyComplexP,   engine);
+        addPrimitive(env, "real?",         applyRealP,      engine);
+        addPrimitive(env, "rational?",     applyRationalP,  engine);
+        addPrimitive(env, "integer?",      applyIntegerP,   engine);
+        addPrimitive(env, "exact?",        applyExactP,     engine);
+
+        addPrimitive(env, "procedure?",    applyProcedureP, engine);
+        addPrimitive(env, "class?",        applyClassP,     engine);
+        addPrimitive(env, "instance?",     applyInstanceP,  engine);
+        addPrimitive(env, "dict?",         applyDictP,      engine);
+
+        addPrimitive(env, "port?",         applyPortP,      engine);
     }
 
     void addStringOps(Env * env, ScamEngine * engine)
@@ -186,5 +199,15 @@ namespace
         addPrimitive(env, "read-error?",            applyReadErrorP,    engine);
         addPrimitive(env, "file-error?",            applyFileErrorP,    engine);
         addPrimitive(env, "error-category",         applyErrorCat,      engine);
+    }
+
+    void addPortOps(Env * env, ScamEngine * engine)
+    {
+        addPrimitive(env, "open-input-string",    applyOpenInStr,   engine);
+    }
+
+    void addInputOps(Env * env, ScamEngine * engine)
+    {
+        addPrimitive(env, "read",    applyRead,   engine);
     }
 }

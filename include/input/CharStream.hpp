@@ -26,7 +26,7 @@ namespace scam
         virtual void advance(size_t n = 1) = 0;
         virtual PositionType getPos() const = 0;
         virtual void setPos(PositionType newPos) = 0;
-        virtual std::string allInput(PositionType where) const = 0;
+        virtual std::string allTextStartingAt(PositionType where) const = 0;
 
         virtual std::string strBetween(PositionType from) const = 0;
 

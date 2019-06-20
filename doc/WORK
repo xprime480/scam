@@ -1,6 +1,14 @@
 Work stack:
 
-* Create procedure (open-input-string string) --> port
+* Make new EOF value and predicates
+
+* Integration tests (+ / -) for (read ...)
+
+* Add wantPort to ArgListHelper
+
+* Create port procedures
+  ** (open-input-string string) --> port
+  ** (port? obj)
 
 * Expose port functionality in order to implement r7rs port procedures
   ** this task only requires as much as necessary to test the
@@ -10,6 +18,8 @@ Work stack:
 
 * Implement error handling -->
   ** need to test for (read-error? ...)
+
+* Merge && push
 
 * Implement scam based testing framework
 

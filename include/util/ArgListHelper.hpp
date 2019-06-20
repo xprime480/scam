@@ -36,6 +36,7 @@ namespace scam
         ScamValue getError(ScamValue & error);
         ScamValue getPair(ScamValue & value);
         ScamValue getApplicable(ScamValue & value);
+        ScamValue getPort(ScamValue & value);
 
         ScamValue getIndex(int & index, int refParameter);
 
@@ -163,6 +164,12 @@ namespace scam
                                ScamEngine * engine,
                                ScamValue & value,
                                int paramCount);
+
+    extern bool wantPort(const char * name,
+                         ArgListHelper & helper,
+                         Continuation * cont,
+                         ScamEngine * engine,
+                         ScamValue & value);
 
     extern bool wantIndex(const char * name,
                           ArgListHelper & helper,

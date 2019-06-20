@@ -59,6 +59,7 @@ char PortCharStream::getCurrent()
 
 void PortCharStream::advance(size_t n)
 {
+    port->advance(n);
     offset += fillBuffer(n);
 }
 
@@ -73,7 +74,7 @@ void PortCharStream::setPos(PositionType newPos)
     offset = newPos.offset;
 }
 
-string PortCharStream::allInput(PositionType where) const
+string PortCharStream::allTextStartingAt(PositionType where) const
 {
     fillBuffer(0);
     // for now do not care about sequence

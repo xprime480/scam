@@ -18,4 +18,4 @@ namespace scam
                             ScamEngine * engine);
 }
 
-#endif // not defined EquivOps_h
+#endif

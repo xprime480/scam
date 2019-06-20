@@ -3,7 +3,8 @@
 using namespace scam;
 
 ScamPort::ScamPort(unsigned int rw)
-    : rw(rw)
+    : checkpoint(0)
+    , rw(rw)
 {
 }
 
@@ -20,3 +21,9 @@ bool ScamPort::isWriteable() const
 {
     return 0 != (rw & Writeable);
 }
+
+void ScamPort::advance(unsigned int count)
+{
+    checkpoint += count;
+}
+

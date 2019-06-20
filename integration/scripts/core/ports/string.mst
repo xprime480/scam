@@ -1,0 +1,16 @@
+String Port usage
+
+;[skip] uncomment to skip this test
+
+[name]
+String Port
+
+[input]
+
+(let ((data (open-input-string "(+ 1 1)")))
+  (list
+   (port? data)
+   (read data)))
+
+[result]
+(#t (+ 1 1))

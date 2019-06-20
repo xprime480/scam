@@ -55,7 +55,7 @@ void StringCharStream::setPos(PositionType newPos)
     offset = newPos.offset;
 }
 
-string StringCharStream::allInput(PositionType where) const
+string StringCharStream::allTextStartingAt(PositionType where) const
 {
     return string(base + where.offset, end - where.offset);
 }

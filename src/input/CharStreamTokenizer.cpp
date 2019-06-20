@@ -80,7 +80,7 @@ Token CharStreamTokenizer::next()
     }
 
     stringstream s;
-    s << "Unable to scan input: {" << stream.allInput(stream.getPos()) << "}";
+    s << "Unable to scan input: {" << stream.allTextStartingAt(stream.getPos()) << "}";
     Token err(TokenType::TT_SCAN_ERROR, s.str());
     ok = false;
     return err;
@@ -164,7 +164,7 @@ Token CharStreamTokenizer::skipNestedComments()
 
     stringstream s;
     s << "End of input in nested comment: {"
-      << stream.allInput(original)
+      << stream.allTextStartingAt(original)
       << "}";
     Token err(TokenType::TT_SCAN_ERROR, s.str());
     return err;
@@ -339,7 +339,7 @@ Token CharStreamTokenizer::scanString()
 
     if ( ! stream.peek() ) {
         stringstream s;
-        s << "End of input in string: {" << stream.allInput(original) << "}";
+        s << "End of input in string: {" << stream.allTextStartingAt(original) << "}";
 
         Token err(TokenType::TT_SCAN_ERROR, s.str());
         return err;

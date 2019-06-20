@@ -54,5 +54,6 @@ DEFINE_PREDICATE(ProcedureP, "procedure?", isScamProcedure)
 DEFINE_PREDICATE(ClassP, "class?", isClass)
 DEFINE_PREDICATE(InstanceP, "instance?", isInstance)
 DEFINE_PREDICATE(DictP, "dict?", isDict)
+DEFINE_PREDICATE(PortP, "port?", isPort)
 
 #endif

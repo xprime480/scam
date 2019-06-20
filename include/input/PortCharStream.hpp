@@ -23,7 +23,7 @@ namespace scam
         void advance(size_t n = 1) override;
         PositionType getPos() const override;
         void setPos(PositionType newPos) override;
-        std::string allInput(PositionType where) const override;
+        std::string allTextStartingAt(PositionType where) const override;
 
         std::string strBetween(PositionType from) const override;
         std::string strBetween(PositionType from,

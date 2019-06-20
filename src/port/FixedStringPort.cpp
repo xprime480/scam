@@ -61,6 +61,13 @@ size_t FixedStringPort::put(const char * buf, size_t length)
     throw ScamException("port is not writeable");
 }
 
+void FixedStringPort::rollback()
+{
+    if ( checkpoint < contents.size() ) {
+        nextRead = checkpoint;
+    }
+}
+
 string FixedStringPort::describe()
 {
     string tmp;
