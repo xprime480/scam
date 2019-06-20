@@ -34,9 +34,17 @@ using namespace scam;
 class ArgParserTest : public TestBase
 {
 protected:
-    void acceptParse(ArgParser * parser, const char * text)
+    ScamValue constructArgs(const char * text)
     {
         ScamValue value = readString(text);
+        if ( isEof(value) ) {
+            value = makeNothing();
+        }
+        return value;
+    }
+    void acceptParse(ArgParser * parser, const char * text)
+    {
+        ScamValue value = constructArgs(text);
         bool accept = parser->accept(value);
 
         ASSERT_TRUE(accept);
@@ -46,7 +54,7 @@ protected:
 
     void rejectParse(ArgParser * parser, const char * text)
     {
-        ScamValue value = readString(text);
+        ScamValue value = constructArgs(text);
 
         bool accept = parser->accept(value);
         EXPECT_FALSE(accept);

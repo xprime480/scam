@@ -118,6 +118,8 @@ namespace scam
         void expectPort(ScamValue expr,
                         const std::string & repr,
                         const std::string & contents);
+
+	void expectEof(ScamValue expr);
     };
 }
 

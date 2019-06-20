@@ -21,7 +21,7 @@ Error Category
               (error-category err)))))
 
 (define make-read-error
-  (lambda () (eval "bad input here-> )")))
+  (lambda () (read (open-input-string "(where is the rest of my list"))))
 
 (define make-file-error
   (lambda () (load "nobody-home.txt")))
@@ -29,13 +29,12 @@ Error Category
 (define make-user-error
   (lambda () (error "cake and %{0} ice cream" 'chocolate)))
 
+(with-exception-handler handler make-read-error)
 (with-exception-handler handler make-file-error)
-;;(with-exception-handler handler make-read-error)
 (with-exception-handler handler make-user-error)
 
-;;(#t #f :read)
-
 [result]
-[keep 2]
+[keep 3]
+(#t #f :read)
 (#f #t :file)
 (#f #f :user)

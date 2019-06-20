@@ -110,6 +110,5 @@ string FilePort::describe()
 
 ScamValue FilePort::getContents() const
 {
-    throw ScamException("FilePort::getContents: not implemented");
-    return makeNothing();
+    return makeString("?");
 }

@@ -102,6 +102,11 @@ size_t StringPort::put(const char * buf, size_t length)
     return length;
 }
 
+void StringPort::rollback()
+{
+    nextRead = checkpoint;
+}
+
 string StringPort::describe()
 {
     stringstream s;

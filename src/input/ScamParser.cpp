@@ -337,7 +337,7 @@ ScamValue ScamParser::expand_reader_macro(std::string const & text) const
     }
 
     ScamValue expr = parseSubExpr();
-    if ( isNothing(expr) ) {
+    if ( isEof(expr) ) {
         return makeError("Unterminated reader macro", makeString(name));
     }
     if ( isError(expr) ) {

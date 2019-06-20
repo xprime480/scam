@@ -1,0 +1,13 @@
+Read empty input
+
+;[skip] uncomment to skip this test
+
+[name]
+Read Empty
+
+[input]
+
+(eof-object? (read (open-input-string "")))
+
+[result]
+#t

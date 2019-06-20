@@ -1,16 +1,5 @@
 Work stack:
 
-* Integration tests (+ / -) for (read ...)
-
-* Expose port functionality in order to implement r7rs port procedures
-  ** this task only requires as much as necessary to test the
-     (read-error? err) below.
-
-* Implement (read port) operation
-
-* Implement error handling -->
-  ** need to test for (read-error? ...)
-
 * Merge && push
 
 * Implement scam based testing framework

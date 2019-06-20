@@ -55,7 +55,7 @@ TEST_F(ParserTest, EndOfInput)
     };
 
     ScamValue expr = runTest(tokens);
-    expectNothing(expr);
+    expectEof(expr);
 }
 
 TEST_F(ParserTest, ScanError)

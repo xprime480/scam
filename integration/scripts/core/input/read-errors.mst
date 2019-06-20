@@ -1,0 +1,22 @@
+Read bad input or bad syntax
+
+;[skip] uncomment to skip this test
+
+[name]
+Read Errors
+
+[input]
+
+(read)
+(read (open-input-string "") :nope)
+(read 2)
+(read (open-input-string "(2 3 4"))
+(read (open-input-string ")"))
+
+
+[result]
+read: parameter 1 missing
+read: Expected 1 values, got 2
+read: wanted port for parameter 1 (2)
+Unterminated List
+Extra ')' in input

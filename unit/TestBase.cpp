@@ -40,6 +40,7 @@ namespace
     static const unsigned long SELECT_KEYWORD    { 1 << 21 };
     static const unsigned long SELECT_DICT       { 1 << 22 };
     static const unsigned long SELECT_PORT       { 1 << 23 };
+    static const unsigned long SELECT_EOF        { 1 << 24 };
 
     static const unsigned long SELECT_MANAGED    { 1 << 30 };
 
@@ -200,6 +201,7 @@ string decodePredicate(unsigned exp, unsigned act)
 
         DECODER(DICT);
         DECODER(PORT);
+        DECODER(EOF);
 
         DECODER(MANAGED);
 
@@ -244,6 +246,7 @@ void TestBase::checkPredicates(ScamValue expr, unsigned exp)
 
     act |= (isDict(expr) ? SELECT_DICT : 0);
     act |= (isPort(expr) ? SELECT_PORT : 0);
+    act |= (isEof(expr) ? SELECT_EOF : 0);
 
     act |= (expr->isManaged() ? SELECT_MANAGED : 0);
 
@@ -534,3 +537,14 @@ void TestBase::expectPort(ScamValue expr,
     ScamValue test = port->getContents();
     expectString(test, contents);
 }
+
+
+void TestBase::expectEof(ScamValue expr)
+{
+    assertType(expr, "eof", isEof);
+    checkPredicates(expr, SELECT_TRUTH | SELECT_EOF);
+
+    EXPECT_EQ(string("eof"), writeValue(expr));
+}
+
+
