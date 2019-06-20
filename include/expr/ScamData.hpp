@@ -151,6 +151,7 @@ namespace scam
             StringData msg;
             VectorData irritants;
             bool       handled;
+            ScamValue  category;
         };
 
         struct PairData
@@ -247,6 +248,7 @@ namespace scam
         StringData & errorMessage();
         VectorData & errorIrritants();
         bool & errorHandled();
+        ScamValue & errorCategory();
 
         ScamValue & carValue();
         ScamValue & cdrValue();

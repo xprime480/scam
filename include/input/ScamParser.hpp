@@ -8,6 +8,8 @@
 
 namespace scam
 {
+    extern const ScamValue readErrorCategory;
+
     class Token;
 
     class ScamParser

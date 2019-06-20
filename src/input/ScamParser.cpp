@@ -14,6 +14,8 @@ namespace
     extern void tagPartial(ScamValue expr);
 }
 
+const ScamValue scam::readErrorCategory = makeSymbol(":read", false);
+
 ScamParser::ScamParser(Tokenizer & tokenizer)
     : tokenizer(tokenizer)
 {
@@ -27,6 +29,9 @@ void ScamParser::mark()
 ScamValue ScamParser::parseExpr() const
 {
     ScamValue expr = parseSubExpr();
+    if ( isError(expr) ) {
+        expr->errorCategory() = readErrorCategory;
+    }
     return expr;
 }
 

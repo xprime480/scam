@@ -17,7 +17,6 @@ Handler
           (error-object-message err)
           (error-object-irritants err))))
     (lambda ()
-      (trace "thunk")
       (error "Message %{0}" :baba)))))
 
 [result]

@@ -2,11 +2,13 @@
 
 #include "Continuation.hpp"
 #include "ScamEngine.hpp"
+#include "expr/EqualityOps.hpp"
 #include "expr/EvalOps.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/SequenceOps.hpp"
 #include "expr/ValueFactory.hpp"
-#include "input/ListParser.hpp"
+#include "input/ScamParser.hpp"
+#include "prim/Load.hpp"
 #include "prim/UserHandler.hpp"
 #include "prim/WithHandlerCont.hpp"
 #include "util/ArgListHelper.hpp"
@@ -29,6 +31,12 @@ namespace
                                       Continuation * cont,
                                       ScamEngine * engine,
                                       const char * name);
+
+    extern bool checkErrorCategory(ScamValue args,
+                                   Continuation * cont,
+                                   ScamEngine * engine,
+                                   const char * name,
+                                   ScamValue target);
 }
 
 void scam::applyMakeError(ScamValue args,
@@ -131,6 +139,35 @@ void scam::applyErrorIrritant(ScamValue args,
     }
 }
 
+void scam::applyReadErrorP(ScamValue args,
+                           Continuation * cont,
+                           ScamEngine * engine)
+{
+    static const char * name = "read-error?";
+    checkErrorCategory(args, cont, engine, name, readErrorCategory);
+}
+
+void scam::applyFileErrorP(ScamValue args,
+                           Continuation * cont,
+                           ScamEngine * engine)
+{
+    static const char * name = "file-error?";
+    checkErrorCategory(args, cont, engine, name, fileErrorCategory);
+}
+
+void scam::applyErrorCat(ScamValue args,
+                         Continuation * cont,
+                         ScamEngine * engine)
+{
+    static const char * name = "error-type";
+
+    ScamValue error = fetchErrorObject(args, cont, engine, name);
+    if ( isError(error) ) {
+        ScamValue rv = error->errorCategory();
+        cont->handleValue(rv);
+    }
+}
+
 namespace
 {
     ScamValue makeErrorObject(ScamValue args,
@@ -138,6 +175,7 @@ namespace
                               ScamEngine * engine,
                               const char * name)
     {
+        static const ScamValue userCategory = makeSymbol(":user", false);
         ArgListHelper helper(args);
         ScamValue rv = makeNothing();
 
@@ -160,6 +198,7 @@ namespace
         }
 
         rv = makeError(str.c_str(), irritants);
+        rv->errorCategory() = userCategory;
         return rv;
     }
 
@@ -180,5 +219,31 @@ namespace
         }
 
         return error;
+    }
+
+    bool checkErrorCategory(ScamValue args,
+                            Continuation * cont,
+                            ScamEngine * engine,
+                            const char * name,
+                            ScamValue target)
+    {
+        ArgListHelper helper(args);
+
+        ScamValue obj;
+        if ( ! wantObject(name, helper, cont, engine, obj) ) {
+            return false;
+        }
+        if ( ! finishArgs(name, helper, cont, engine) ) {
+            return false;
+        }
+
+        bool matched = false;
+        if ( isError(obj) ) {
+            ScamValue cat = obj->errorCategory();
+            matched = equals(cat, target);
+        }
+
+        cont->handleValue(makeBoolean(matched));
+        return true;
     }
 }

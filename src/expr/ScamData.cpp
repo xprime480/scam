@@ -51,6 +51,7 @@ ScamData::ScamData(ValueType type, bool managed)
 
     case ScamData::Error:
         value.errorData = new ErrorData;
+        value.errorData->category = new ScamData(ScamData::Nothing);
         break;
 
     case ScamData::Pair:
@@ -205,6 +206,7 @@ void ScamData::mark()
         for ( auto const & e : errorIrritants() ) {
             e->mark();
         }
+        errorCategory()->mark();
         break;
 
     case ScamData::Pair:
@@ -399,6 +401,12 @@ bool & ScamData:: errorHandled()
 {
     assertType(ScamData::Error);
     return value.errorData->handled;
+}
+
+ScamValue & ScamData::errorCategory()
+{
+    assertType(ScamData::Error);
+    return value.errorData->category;
 }
 
 ScamValue & ScamData::carValue()

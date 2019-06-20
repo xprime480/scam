@@ -28,6 +28,18 @@ namespace scam
     extern void applyErrorIrritant(ScamValue args,
                                    Continuation * cont,
                                    ScamEngine * engine);
+
+    extern void applyReadErrorP(ScamValue args,
+                                Continuation * cont,
+                                ScamEngine * engine);
+
+    extern void applyFileErrorP(ScamValue args,
+                                Continuation * cont,
+                                ScamEngine * engine);
+
+    extern void applyErrorCat(ScamValue args,
+                              Continuation * cont,
+                              ScamEngine * engine);
 }
 
 #endif

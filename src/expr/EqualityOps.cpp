@@ -51,10 +51,7 @@ bool scam::equals(ScamValue lhs, ScamValue rhs)
         rv = equalsDict(lhs, rhs);
     }
 
-    else if ( isError(lhs) ||
-              isKeyword(lhs) ||
-              isString(lhs) ||
-              isSymbol(lhs) ) {
+    else if ( isKeyword(lhs) || isString(lhs) || isSymbol(lhs) ) {
         rv = (lhs->stringValue() == rhs->stringValue());
     }
 

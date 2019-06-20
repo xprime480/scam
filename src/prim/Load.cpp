@@ -33,7 +33,10 @@ namespace
     extern ScamValue convertPath(char const * path);
     extern string getNextElement(char const *& path);
     extern string makePath(string dirname, string filename);
+    extern ScamValue makeFileError(const char * text, ScamValue irr0);
 }
+
+const ScamValue scam::fileErrorCategory = makeSymbol(":file", false);
 
 void scam::applyLoad(ScamValue args,
                      Continuation * cont,
@@ -51,7 +54,8 @@ void scam::applyLoad(ScamValue args,
 
     string filename = asString(parser->get());
     if ( engine->isLoaded(filename) ) {
-        ScamValue err = makeError("File %{0} already loaded", parser->get());
+        ScamValue err =
+            makeFileError("File %{0} already loaded", parser->get());
         engine->handleError(err);
         return;
     }
@@ -113,8 +117,8 @@ namespace
                       Continuation * cont,
                       ScamEngine * engine)
     {
-        ScamValue err = makeError("File Error, file not found (%{0})",
-                                  makeSymbol(filename));
+        ScamValue err = makeFileError("File Error, file not found (%{0})",
+                                      makeSymbol(filename));
         engine->handleError(err);
     }
 
@@ -172,4 +176,12 @@ namespace
         s << dirname << "/" << filename;
         return s.str();
     }
+
+    ScamValue makeFileError(const char * text, ScamValue irr0)
+    {
+        ScamValue rv = makeError(text, irr0);
+        rv->errorCategory() = fileErrorCategory;
+        return rv;
+    }
+
 }

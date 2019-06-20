@@ -1,0 +1,28 @@
+Work stack:
+
+* Create procedure (open-input-string string) --> port
+
+* Expose port functionality in order to implement r7rs port procedures
+  ** this task only requires as much as necessary to test the
+     (read-error? err) below.
+
+* Implement (read port) operation
+
+* Implement error handling -->
+  ** need to test for (read-error? ...)
+
+* Implement scam based testing framework
+
+* Move as many unit tests to integration tests as possible
+
+* Rewrite all integration tests in scam based testing framework
+
+* Eliminate current C++ integration test code
+
+* Implement define-syntax
+
+* Implement proper library syntax
+
+* Rewrite / eliminate prelude.scm
+
+* Implement all of r7rs

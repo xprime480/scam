@@ -183,5 +183,8 @@ namespace
         addPrimitive(env, "with-exception-handler", applyWithHandler,   engine);
         addPrimitive(env, "error-object-message",   applyErrorMessage,  engine);
         addPrimitive(env, "error-object-irritants", applyErrorIrritant, engine);
+        addPrimitive(env, "read-error?",            applyReadErrorP,    engine);
+        addPrimitive(env, "file-error?",            applyFileErrorP,    engine);
+        addPrimitive(env, "error-category",         applyErrorCat,      engine);
     }
 }
