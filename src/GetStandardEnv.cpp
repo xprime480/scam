@@ -143,6 +143,7 @@ namespace
         addPrimitive(env, "dict?",         applyDictP,      engine);
 
         addPrimitive(env, "port?",         applyPortP,      engine);
+        addPrimitive(env, "eof-object?",   applyEofP,       engine);
     }
 
     void addStringOps(Env * env, ScamEngine * engine)
@@ -208,6 +209,7 @@ namespace
 
     void addInputOps(Env * env, ScamEngine * engine)
     {
-        addPrimitive(env, "read",    applyRead,   engine);
+        addPrimitive(env, "read",       applyRead,      engine);
+        addPrimitive(env, "eof-object", applyEofObject, engine);
     }
 }

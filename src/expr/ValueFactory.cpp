@@ -357,3 +357,10 @@ ScamValue scam::makePort(ScamPort * port)
     v->portValue() = port;
     return v;
 }
+
+ScamValue scam::makeEof()
+{
+    static ScamData instance(ScamData::Eof, false);
+    return &instance;
+}
+

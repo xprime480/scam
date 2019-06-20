@@ -1,14 +1,6 @@
 Work stack:
 
-* Make new EOF value and predicates
-
 * Integration tests (+ / -) for (read ...)
-
-* Add wantPort to ArgListHelper
-
-* Create port procedures
-  ** (open-input-string string) --> port
-  ** (port? obj)
 
 * Expose port functionality in order to implement r7rs port procedures
   ** this task only requires as much as necessary to test the
@@ -36,3 +28,4 @@ Work stack:
 * Rewrite / eliminate prelude.scm
 
 * Implement all of r7rs
+

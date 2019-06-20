@@ -55,7 +55,7 @@ bool scam::equals(ScamValue lhs, ScamValue rhs)
         rv = (lhs->stringValue() == rhs->stringValue());
     }
 
-    else if ( isNull(lhs) ) {
+    else if ( isNull(lhs) || isEof(lhs) ) {
         rv = true;
     }
 

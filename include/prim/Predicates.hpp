@@ -33,6 +33,7 @@ namespace scam
     DECL_PREDICATE(InstanceP);
     DECL_PREDICATE(DictP);
     DECL_PREDICATE(PortP);
+    DECL_PREDICATE(EofP);
 
 #undef DECL_PREDICATE
 #endif

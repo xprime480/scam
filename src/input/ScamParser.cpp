@@ -121,7 +121,7 @@ ScamValue ScamParser::tokenToExpr(Token const & token) const
         break;
 
     case TokenType::TT_END_OF_INPUT:
-        rv = makeNothing();
+        rv = makeEof();
         break;
 
     case TokenType::TT_SCAN_ERROR:
@@ -193,7 +193,7 @@ ScamValue ScamParser::parseDotContext() const
         return makeError("No form after '.'");
     }
 
-    ScamValue final = tokenToExpr(token);
+    ScamValue last = tokenToExpr(token);
 
     Token check = tokenizer.next();
     TokenType checkType = check.getType();
@@ -212,7 +212,7 @@ ScamValue ScamParser::parseDotContext() const
         return makeError("Too many forms after '.'");
     }
 
-    return final;
+    return last;
 }
 
 ScamValue ScamParser::parseVector() const

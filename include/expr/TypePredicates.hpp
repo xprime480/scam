@@ -53,6 +53,7 @@ namespace scam
     extern bool isScamProcedure(ScamValue data);
 
     extern bool isPort(ScamValue data);
+    extern bool isEof(ScamValue data);
 }
 
 #endif

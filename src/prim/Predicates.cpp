@@ -35,7 +35,7 @@ using namespace std;
         }
 
 DEFINE_PREDICATE(NullP, "null?", isNull)
-DEFINE_PREDICATE(ErrorP, "error?", isError)
+DEFINE_PREDICATE(ErrorP, "error-object?", isError)
 DEFINE_PREDICATE(PairP, "pair?", isPair)
 DEFINE_PREDICATE(ListP, "list?", isList)
 DEFINE_PREDICATE(VectorP, "vector?", isVector)
@@ -55,5 +55,6 @@ DEFINE_PREDICATE(ClassP, "class?", isClass)
 DEFINE_PREDICATE(InstanceP, "instance?", isInstance)
 DEFINE_PREDICATE(DictP, "dict?", isDict)
 DEFINE_PREDICATE(PortP, "port?", isPort)
+DEFINE_PREDICATE(EofP, "eof-object?", isEof)
 
 #endif

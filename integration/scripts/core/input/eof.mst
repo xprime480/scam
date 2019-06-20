@@ -1,0 +1,17 @@
+End-of-File objects
+
+;[skip] uncomment to skip this test
+
+[name]
+EOF
+
+[input]
+
+(eof-object 2)
+(eof-object)
+(eof-object? (eof-object))
+
+[result]
+eof-object: Expected 0 values, got 1
+eof
+#t

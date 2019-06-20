@@ -8,6 +8,10 @@ namespace scam
     extern void applyRead(ScamValue args,
                           Continuation * cont,
                           ScamEngine * engine);
+
+    extern void applyEofObject(ScamValue args,
+                               Continuation * cont,
+                               ScamEngine * engine);
 }
 
 #endif

@@ -14,7 +14,8 @@ String Port
    (read data)
    (read data)
    (read data)
+   (read data)
    (read data)))
 
 [result]
-(1 2 3 4)
+(1 2 3 4 eof)

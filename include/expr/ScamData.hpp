@@ -108,6 +108,7 @@ namespace scam
         constexpr static ValueType Applicable = Dict | Procedure | Primitive | SpecialForm | Cont;
 
         constexpr static ValueType Port    { 1 << 25 };
+        constexpr static ValueType Eof     { 1 << 26 };
 
         /**
          * member data

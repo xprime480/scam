@@ -3,6 +3,7 @@
 #include "Continuation.hpp"
 #include "ScamEngine.hpp"
 #include "expr/ScamData.hpp"
+#include "expr/ValueFactory.hpp"
 #include "input/CharStreamTokenizer.hpp"
 #include "input/PortCharStream.hpp"
 #include "input/ScamParser.hpp"
@@ -40,3 +41,19 @@ void scam::applyRead(ScamValue args,
         cont->handleValue(rv);
     }
 }
+
+void scam::applyEofObject(ScamValue args,
+                          Continuation * cont,
+                          ScamEngine * engine)
+{
+    static const char * name { "eof-object" };
+    ArgListHelper helper(args);
+
+    if ( ! finishArgs(name, helper, cont, engine) ) {
+        return;
+    }
+
+    ScamValue rv = makeEof();
+    cont->handleValue(rv);
+}
+

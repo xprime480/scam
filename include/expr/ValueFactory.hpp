@@ -93,6 +93,7 @@ namespace scam
                                    bool managed = true);
 
     extern ScamValue makePort(ScamPort * port);
+    extern ScamValue makeEof();
 }
 
 #endif

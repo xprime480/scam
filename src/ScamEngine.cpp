@@ -140,6 +140,10 @@ ScamValue ScamEngine::readEvalCurrent()
         if ( isNothing(expr) ) {
             break;
         }
+        if ( isEof(expr) ) {
+            break;
+        }
+
         (void) eval(expr);
     }
 

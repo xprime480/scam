@@ -108,6 +108,10 @@ string scam::writeValue(ScamValue data)
             s << data->portValue()->describe();
             break;
 
+        case ScamData::Eof:
+            s << "eof";
+            break;
+
         default:
             s << "don't know how to represent this object, type = "
               << data->type;
@@ -471,6 +475,10 @@ namespace
 
             case ScamData::Port:
                 s << "Port ";
+                break;
+
+            case ScamData::Eof:
+                s << "EOF ";
                 break;
 
             default:

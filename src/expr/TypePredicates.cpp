@@ -219,3 +219,8 @@ bool scam::isPort(ScamValue data)
 {
     return data->type == ScamData::Port;
 }
+
+bool scam::isEof(ScamValue data)
+{
+    return data->type == ScamData::Eof;
+}
