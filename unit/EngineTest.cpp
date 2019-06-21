@@ -150,5 +150,5 @@ TEST_F(EngineTest, AmbOperator)
 TEST_F(EngineTest, LoadTwiceTest)
 {
     ScamValue expr = readEval("(load \"lib/prelude.scm\")");
-    expectError(expr,  "File \"lib/prelude.scm\" already loaded");
+    expectError(expr);
 }

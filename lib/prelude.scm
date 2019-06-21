@@ -238,4 +238,4 @@
   (lambda (b1 b2 . bs)
     (type-helper=? boolean? (cons b1 (cons b2 bs)))))
 
-1
+#t

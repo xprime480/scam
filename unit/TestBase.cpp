@@ -9,6 +9,7 @@
 #include "input/ScamParser.hpp"
 #include "input/StringTokenizer.hpp"
 #include "port/ScamPort.hpp"
+#include "util/FileUtils.hpp"
 #include "util/ReadEvalStream.hpp"
 
 using namespace scam;
@@ -66,7 +67,9 @@ TestBase::TestBase(bool loadPrelude)
     engine.pushHandler(handler);
     if ( loadPrelude ) {
         ScamValue result = readEvalFile("lib/prelude.scm");
-        expectInteger(result, 1, "1", true);
+        if ( isError(result) || (! truth(result)) ) {
+            expectInteger(result, 0, "0", true);
+        }
     }
 }
 
@@ -141,9 +144,12 @@ ScamValue TestBase::readEval(std::string const & input)
 
 ScamValue TestBase::readEvalFile(char const * filename)
 {
-    stringstream s;
-    s << "(load \"" << filename << "\")";
-    return readEval(s.str());
+    string fullpath = findFileOnPath(filename);
+    if ( fullpath.empty() ) {
+        return makeBoolean(false);
+    }
+
+    return loadEvalFile(fullpath, &engine);
 }
 
 void decodeBit(unsigned mismatch,
@@ -538,7 +544,6 @@ void TestBase::expectPort(ScamValue expr,
     expectString(test, contents);
 }
 
-
 void TestBase::expectEof(ScamValue expr)
 {
     assertType(expr, "eof", isEof);
@@ -546,5 +551,3 @@ void TestBase::expectEof(ScamValue expr)
 
     EXPECT_EQ(string("eof"), writeValue(expr));
 }
-
-

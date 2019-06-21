@@ -1,5 +1,9 @@
 Work stack:
 
+* Rename assign! to set!
+
+* Implement the define-syntax world
+
 * Improve scam based testing framework so that it actually tests
 
 * Move as many unit tests to integration tests as possible
