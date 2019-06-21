@@ -1,8 +1,5 @@
 Work stack:
 
-* Refactor code from Load.cpp to look up filenames on the current path.
-  Use that in the repl to find absolute path of command line parameters.
-
 * Treat all command line arguments that don't start with '-' as the name
   of a file to load
 
