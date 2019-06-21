@@ -4,6 +4,7 @@
 #include "expr/ScamToInternal.hpp"
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueFactory.hpp"
+#include "util/FileUtils.hpp"
 
 #include "ReplHandler.hpp"
 
@@ -12,26 +13,62 @@
 using namespace scam;
 using namespace std;
 
-ScamRepl::ScamRepl()
+ScamRepl::ScamRepl(int argc, char ** argv)
     : parser(tokenizer)
+    , testmode(false)
     , done(false)
 {
+    readArgs(argc, argv);
 }
 
 int ScamRepl::run()
 {
     Handler * handler = standardMemoryManager.make<ReplHandler>();
 
-    banner();
     engine.reset(true);
     engine.pushHandler(handler);
-    if ( ! load_prelude() ) {
-        return 1;
+
+    int status = load_preloads();
+    if ( ! testmode && (0 == status) ) {
+        status = repl();
     }
 
-    int rv = repl();
     engine.popHandler();
-    return rv;
+    return status;
+}
+
+void ScamRepl::readArgs(int argc, char ** argv)
+{
+    bool interactive = true;
+    while ( --argc ) {
+        const char * arg = *++argv;
+        if ( '-' == arg[0] ) {
+            switch ( arg[1] ) {
+            case 't':
+                testmode = true;
+                interactive = false;
+                break;
+
+            case 'q':
+                interactive = false;
+                break;
+
+            default:
+                cerr << "unknown flag: " << arg << "\n";
+                break;
+            }
+        }
+        else {
+            preloads.push_back(arg);
+        }
+    }
+
+    if ( interactive ) {
+        banner();
+    }
+    if ( ! testmode ) {
+        preloads.push_back("lib/prelude.scm");
+    }
 }
 
 void ScamRepl::banner() const
@@ -48,25 +85,67 @@ void ScamRepl::banner() const
     cout << "\n";
 }
 
-bool ScamRepl::load_prelude()
+int ScamRepl::load_preloads()
 {
-    tokenizer.bufferInput("(load \"lib/prelude.scm\")");
-    ScamValue expr = parser.parseExpr();
-    tokenizer.flush();
-
-    if ( isNothing(expr) || isError(expr) ) {
-        cerr << "Unable to read the prelude\n";
-
-        if ( isNothing(expr) ) {
-            return false;
+    for ( const auto & f : preloads ) {
+        ScamValue result = evaluateFile(f);
+        int check = checkResult(f, result);
+        if ( 0 != check ) {
+            return check;
         }
-
-        cerr << writeValue(expr) << "\n";
-        return false;
     }
 
-    ScamValue rv = eval(expr);
-    return isInteger(rv) && 1 == asInteger(rv);
+    return 0;
+}
+
+ScamValue ScamRepl::evaluateFile(const string & name)
+{
+    ScamValue rv = makeNothing();
+
+    try {
+        string fullpath = findFileOnPath(name);
+        if ( fullpath.empty() ) {
+            rv = makeError("File %{0} not found on path", makeString(name));
+        }
+        else {
+            rv = loadEvalFile(fullpath, &engine);
+        }
+    }
+    catch ( ScamException e )  {
+        rv = makeError("ScamException %{0} evaluating file %{1}",
+                       makeString(e.getMessage()),
+                       makeString(name));
+    }
+    catch ( exception e ) {
+        rv = makeError("exception %{0} evaluating file %{1}",
+                       makeString(e.what()),
+                       makeString(name));
+    }
+    catch ( ... ) {
+        rv = makeError("Unknown error evaluating file %{0}",
+                       makeString(name));
+    }
+
+    return rv;
+}
+
+int ScamRepl::checkResult(const string & file, ScamValue result)
+{
+    if ( isNothing(result) || isError(result) ) {
+        cerr << "Unable to read file " << file << "\n";
+        if ( isError(result) ) {
+            cerr << writeValue(result) << "\n";
+        }
+        return 1;
+    }
+    else if ( isInteger(result) ) {
+        return asInteger(result);
+    }
+    else {
+        return truth(result) ? 0 : 1;
+    }
+
+    return -1;
 }
 
 int ScamRepl::repl()

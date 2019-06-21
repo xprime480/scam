@@ -11,17 +11,25 @@ namespace scam
     class ScamRepl
     {
     public:
-        ScamRepl();
+        ScamRepl(int argc, char ** argv);
         int run();
 
     private:
+        std::vector<std::string> preloads;
+
         ScamEngine engine;
         ReplTokenizer tokenizer;
         ScamParser parser;
+
+        bool testmode;
         bool done;
 
+        void readArgs(int argc, char ** argv);
+
         void banner() const;
-        bool load_prelude();
+        int load_preloads();
+        ScamValue evaluateFile(const std::string & name);
+        int checkResult(const std::string & file, ScamValue result);
         int repl();
 
         ScamValue read();

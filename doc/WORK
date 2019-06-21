@@ -1,15 +1,5 @@
 Work stack:
 
-* Treat all command line arguments that don't start with '-' as the name
-  of a file to load
-
-* Add -t flag to report status of last command as program exit code
-  ** Integer reported directly
-  ** #f => 1
-  ** anything else => 0
-
-* Add ability to scam to run scripts in test mode
-
 * Implement scam based testing framework
 
 * Move as many unit tests to integration tests as possible

@@ -4,6 +4,6 @@ using namespace scam;
 
 int main(int argc, char ** argv)
 {
-    ScamRepl repl;
+    ScamRepl repl(argc, argv);
     return repl.run();
 }
