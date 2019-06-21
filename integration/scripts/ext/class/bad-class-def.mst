@@ -11,8 +11,8 @@ Malformed Class Definion
 (make-class
  Root
  (val)
- (init (v) (assign! val v))
+ (init (v) (set! val v))
  (foo))
 
 [result]
-make-class expected "(Base (vars*) methods*)"; got "(Root (val) (init (v) (assign! val v)) (foo))"
+make-class expected "(Base (vars*) methods*)"; got "(Root (val) (init (v) (set! val v)) (foo))"

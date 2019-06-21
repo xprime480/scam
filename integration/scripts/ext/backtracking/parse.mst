@@ -20,7 +20,7 @@ Parse
 (define parse
   (lambda (input)
     (begin
-      (assign! *unparsed* input)
+      (set! *unparsed* input)
       (let ((sentence (parse-sentence)))
         (begin
           (require (null? *unparsed*))
@@ -33,7 +33,7 @@ Parse
       (require (member? (car *unparsed*) (cdr words)))
       (let ((found-word (car *unparsed*)))
         (begin
-          (assign! *unparsed* (cdr *unparsed*))
+          (set! *unparsed* (cdr *unparsed*))
           (list (car words) found-word))))))
 
 (define parse-sentence

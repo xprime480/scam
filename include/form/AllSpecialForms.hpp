@@ -22,11 +22,6 @@ namespace scam
                            Env * env,
                            ScamEngine * engine);
 
-    extern void applyAssign(ScamValue args,
-                            Continuation * cont,
-                            Env * env,
-                            ScamEngine * engine);
-
     extern void applyCallCC(ScamValue args,
                             Continuation * cont,
                             Env * env,
@@ -96,6 +91,11 @@ namespace scam
                            Continuation * cont,
                            Env * env,
                            ScamEngine * engine);
+
+    extern void applySetX(ScamValue args,
+                          Continuation * cont,
+                          Env * env,
+                          ScamEngine * engine);
 
     extern void applyUndefine(ScamValue args,
                               Continuation * cont,

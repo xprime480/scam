@@ -33,7 +33,7 @@ namespace
 
 void ScamEngine::getStandardEnv()
 {
-    addSpecialForm(env, "assign!", applyAssign, this);
+    addSpecialForm(env, "set!", applySetX, this);
     addSpecialForm(env, "define", applyDefine, this);
     addSpecialForm(env, "undefine", applyUndefine, this);
     addSpecialForm(env, "lambda", applyLambda, this);

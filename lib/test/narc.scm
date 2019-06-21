@@ -5,7 +5,7 @@
 
 (define narc-label
   (lambda (name)
-    (assign! **narc-test-name** name)))
+    (set! **narc-test-name** name)))
 
 (define narc-expect
   (macro forms))

@@ -10,7 +10,7 @@ Class Init Error
 (let* ((Trivial (make-class
                  Root
                  (n)
-                 (init (v) (assign! n v)))))
+                 (init (v) (set! n v)))))
   (Trivial (/ 1 0)))
 
 [result]

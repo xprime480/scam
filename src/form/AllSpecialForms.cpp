@@ -83,22 +83,6 @@ void scam::applyApply(ScamValue args,
     eval(sym, newCont, env, engine);
 }
 
-void scam::applyAssign(ScamValue args,
-                       Continuation * cont,
-                       Env * env,
-                       ScamEngine * engine)
-{
-    static const char * myName = "assign!";
-    AssignParser * parser = standardMemoryManager.make<AssignParser>();
-
-    if ( ! parser->accept(args) ) {
-        failedArgParseMessage(myName, "(sym expr)", args, cont, engine);
-    }
-    else {
-        workQueueHelper<AssignWorker>(parser, cont, env, engine);
-    }
-}
-
 void scam::applyCallCC(ScamValue args,
                        Continuation * cont,
                        Env * env,
@@ -343,6 +327,22 @@ void scam::applyQuote(ScamValue args,
     }
     else {
         cont->handleValue(parser->get());
+    }
+}
+
+void scam::applySetX(ScamValue args,
+                     Continuation * cont,
+                     Env * env,
+                     ScamEngine * engine)
+{
+    static const char * myName = "set!";
+    AssignParser * parser = standardMemoryManager.make<AssignParser>();
+
+    if ( ! parser->accept(args) ) {
+        failedArgParseMessage(myName, "(sym expr)", args, cont, engine);
+    }
+    else {
+        workQueueHelper<AssignWorker>(parser, cont, env, engine);
     }
 }
 

@@ -4,9 +4,9 @@
 
 (if (spawn)
     (begin
-      (assign! x (+ x 1))
-      (assign! y (+ y 1)))
+      (set! x (+ x 1))
+      (set! y (+ y 1)))
     (begin
-      (assign! y (+ y 1))))
+      (set! y (+ y 1))))
 
 (list x y)

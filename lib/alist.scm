@@ -7,7 +7,7 @@
    (*data*)
 
    (init ()
-         (assign! *data* '()))
+         (set! *data* '()))
 
    (length ()
            (length *data*))
@@ -15,8 +15,8 @@
    (put (key value)
         (begin
           (self remove key)
-          (assign! *data*
-                   (cons (cons key value) *data*))))
+          (set! *data*
+                (cons (cons key value) *data*))))
 
    (get (key)
         (let ((item (filter (lambda (entry)
@@ -26,7 +26,7 @@
               (cdar item))))
 
    (remove (key)
-           (assign! *data*
-                    (filter (lambda (item)
-                              (not (equal? key (car item))))
-                            *data*)))))
+           (set! *data*
+                 (filter (lambda (item)
+                           (not (equal? key (car item))))
+                         *data*)))))

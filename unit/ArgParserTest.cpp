@@ -373,7 +373,7 @@ TEST_F(ArgParserTest, SmallClass)
   (a b) \
   (get-a () a) \
   (set-b (new-b) \
-      (assign! b new-b)))\
+      (set! b new-b)))\
 ");
 
     expectSymbol(parser->getBase(), "Jerry");

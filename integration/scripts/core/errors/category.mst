@@ -11,7 +11,7 @@ Error Category
 
 (call/cc
  (lambda (k)
-   (assign! **top** k)))
+   (set! **top** k)))
 
 (define handler
   (lambda (err)

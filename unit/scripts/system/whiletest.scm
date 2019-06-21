@@ -3,7 +3,7 @@
 
 (while (> x 0)
        (begin
-         (assign! y (+ x y))
-         (assign! x (- x 1))))
+         (set! y (+ x y))
+         (set! x (- x 1))))
 
 y

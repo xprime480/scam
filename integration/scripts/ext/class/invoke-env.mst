@@ -16,7 +16,7 @@ Captured Env in Class
           (make-class
            Root
            (q)
-           (init (n) (assign! q n))
+           (init (n) (set! q n))
            (get (n) (list q x n)))))
        (obj (Trivial x)))
   (let ((x 5))

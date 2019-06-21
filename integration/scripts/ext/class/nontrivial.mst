@@ -12,7 +12,7 @@ Nontrivial Class Method
 (let* ((Maxxer (make-class
                 Root
                 (val)
-                (init (v) (assign! val v))
+                (init (v) (set! val v))
                 (get (n) (max val n))))
        (obj (Maxxer 0)))
   (list (obj get -42)

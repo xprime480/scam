@@ -11,7 +11,7 @@ Simple Constant Class
         (make-class
          Root
          (val)
-         (init (v) (assign! val v))
+         (init (v) (set! val v))
          (get () val)))
        (k 21)
        (answer (SimpleConstant (* k 2))))
