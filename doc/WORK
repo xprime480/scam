@@ -1,7 +1,5 @@
 Work stack:
 
-* Merge && push
-
 * Implement scam based testing framework
 
 * Move as many unit tests to integration tests as possible
@@ -17,4 +15,9 @@ Work stack:
 * Rewrite / eliminate prelude.scm
 
 * Implement all of r7rs
+
+* Eliminate ArgParser concept
+
+* Eliminate Validator concept
+
 
