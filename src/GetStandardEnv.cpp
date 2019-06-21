@@ -28,6 +28,7 @@ namespace
     extern void addErrorOps(Env * env, ScamEngine * engine);
     extern void addPortOps(Env * env, ScamEngine * engine);
     extern void addInputOps(Env * env, ScamEngine * engine);
+    extern void addOutputOps(Env * env, ScamEngine * engine);
 }
 
 void ScamEngine::getStandardEnv()
@@ -85,7 +86,6 @@ void ScamEngine::getStandardEnv()
     addPrimitive(env, "load", applyLoad, this);
     addPrimitive(env, "spawn", applySpawn, this);
     addPrimitive(env, "backtrack", applyBacktrack, this);
-    addPrimitive(env, "trace", applyTrace, this);
 
     addStringOps(env, this);
     addPairOps(env, this);
@@ -93,6 +93,7 @@ void ScamEngine::getStandardEnv()
     addErrorOps(env, this);
     addPortOps(env, this);
     addInputOps(env, this);
+    addOutputOps(env, this);
 }
 
 namespace
@@ -211,5 +212,11 @@ namespace
     {
         addPrimitive(env, "read",       applyRead,      engine);
         addPrimitive(env, "eof-object", applyEofObject, engine);
+    }
+
+    void addOutputOps(Env * env, ScamEngine * engine)
+    {
+        addPrimitive(env, "display",       applyDisplay,      engine);
+        addPrimitive(env, "newline",       applyNewline,      engine);
     }
 }

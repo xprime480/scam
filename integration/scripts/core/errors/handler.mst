@@ -11,7 +11,6 @@ Handler
  (lambda (k)
    (with-exception-handler
     (lambda (err)
-      (trace "handler")
       (k (list
           (error-object? err)
           (error-object-message err)
