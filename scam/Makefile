@@ -21,8 +21,8 @@ $(DEP) : %.d : %.cpp
 lib :
 	make -C ../src all
 
-test : testscam
-	@./testscam `find . -name '*.mst'`
+test : scam
+	@for X in `find tests -name '*.scm'`; do ./scam -t lib/test/narc.scm $$X ; done
 
 clean :
 	-@rm -f *.o *.d scam

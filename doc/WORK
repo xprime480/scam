@@ -1,6 +1,6 @@
 Work stack:
 
-* Implement scam based testing framework
+* Improve scam based testing framework so that it actually tests
 
 * Move as many unit tests to integration tests as possible
 
