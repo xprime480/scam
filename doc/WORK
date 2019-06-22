@@ -1,8 +1,8 @@
 Work stack:
 
-* Rename assign! to set!
-
 * Implement the define-syntax world
+
+* Remove macro and replace with define-syntax
 
 * Improve scam based testing framework so that it actually tests
 
@@ -11,8 +11,6 @@ Work stack:
 * Rewrite all integration tests in scam based testing framework
 
 * Eliminate current C++ integration test code
-
-* Implement define-syntax
 
 * Implement proper library syntax
 
@@ -23,5 +21,3 @@ Work stack:
 * Eliminate ArgParser concept
 
 * Eliminate Validator concept
-
-

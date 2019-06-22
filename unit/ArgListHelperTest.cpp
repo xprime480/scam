@@ -220,6 +220,22 @@ TEST_F(ArgListHelperTest, GetStringFailure)
     expectError(status, "wanted string for parameter 1 (-1)");
 }
 
+TEST_F(ArgListHelperTest, GetSymbol)
+{
+    ScamValue args = readString("(bubby)");
+
+    ArgListHelper helper(args);
+    ScamValue status;
+
+    ScamValue arg1;
+    status = helper.getSymbol(arg1);
+    expectSymbol(arg1, "bubby");
+    expectNothing(status);
+
+    status = helper.finish();
+    expectNothing(status);
+}
+
 TEST_F(ArgListHelperTest, GetIndexInRange)
 {
     ScamValue args = readString("(\"help me\" 3)");

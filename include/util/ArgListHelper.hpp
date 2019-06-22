@@ -33,6 +33,7 @@ namespace scam
         ScamValue getInteger(int & value);
         ScamValue getNonNegativeInteger(int & value);
         ScamValue getString(std::string & value);
+        ScamValue getSymbol(ScamValue & value);
         ScamValue getError(ScamValue & error);
         ScamValue getPair(ScamValue & value);
         ScamValue getApplicable(ScamValue & value);
@@ -139,6 +140,12 @@ namespace scam
                                   Continuation * cont,
                                   ScamEngine * engine,
                                   ScamValue & value);
+
+    extern bool wantSymbol(const char * name,
+                           ArgListHelper & helper,
+                           Continuation * cont,
+                           ScamEngine * engine,
+                           ScamValue & str);
 
     extern bool wantError(const char * name,
                           ArgListHelper & helper,

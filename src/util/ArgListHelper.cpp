@@ -87,6 +87,11 @@ ScamValue ArgListHelper::getString(string & value)
     return getOneArg<string>(value, isString, asString, "string");
 }
 
+ScamValue ArgListHelper::getSymbol(ScamValue & value)
+{
+    return getOneArg<ScamValue>(value, isSymbol, identity, "symbol");
+}
+
 ScamValue ArgListHelper::getError(ScamValue & value)
 {
     return getOneArg<ScamValue>(value, isError, identity, "error-object");
@@ -511,6 +516,19 @@ bool scam::wantMutableString(const char * name,
         return makeNothing();
     };
 
+    return wantOneValue(name, cont, engine, func);
+}
+
+bool scam::wantSymbol(const char * name,
+                      ArgListHelper & helper,
+                      Continuation * cont,
+                      ScamEngine * engine,
+                      ScamValue & value)
+{
+    auto func = [&] () -> ScamValue
+    {
+        return helper.getSymbol(value);
+    };
     return wantOneValue(name, cont, engine, func);
 }
 
