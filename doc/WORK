@@ -1,5 +1,9 @@
 Work stack:
 
+* Change the way numerics types are tagged in ScamData.
+  The goal is to make it easier to discriminate subtypes of ScamNumeric
+  with only bit operations.
+
 * Implement the define-syntax world
 
 * Remove macro and replace with define-syntax

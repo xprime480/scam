@@ -10,6 +10,7 @@
 #include "expr/ValueWriter.hpp"
 #include "input/ListParser.hpp"
 #include "util/ArgListHelper.hpp"
+#include "util/Validator.hpp"
 
 #include <algorithm>
 #include <cctype>
@@ -48,6 +49,15 @@ namespace
                                 ScamEngine * engine,
                                 const char * name,
                                 Transformer transform);
+
+    void massageError(const char * prefix, ScamValue original)
+    {
+        if ( isError(original) ) {
+            stringstream s;
+            s << prefix << ": " << original->errorMessage();
+            original->errorMessage() = s.str();
+        }
+    }
 }
 
 void scam::applyString(ScamValue args,
@@ -105,17 +115,17 @@ void scam::applyStringLength(ScamValue args,
                              ScamEngine * engine)
 {
     static const char * name { "string-length" };
-    ArgListHelper helper(args);
 
-    string value;
-    if ( ! wantString(name, helper, cont, engine, value) ) {
-        return;
+    StringValidator v0;
+    ScamValue result = matchList(args, v0);
+    if ( isNothing(result) ) {
+        const string s = asString(v0.get());
+        cont->handleValue(makeInteger(s.size(), true));
     }
-    if ( ! finishArgs(name, helper, cont, engine) ) {
-        return;
+    else {
+        massageError(name, result);
+        engine->handleError(result);
     }
-
-    cont->handleValue(makeInteger(value.size(), true));
 }
 
 void scam::applyStringRef(ScamValue args,

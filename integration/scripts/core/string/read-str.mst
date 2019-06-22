@@ -7,9 +7,19 @@ Read operations on strings
 
 [input]
 
+(define **top** ())
+
+(call/cc
+ (lambda (k)
+   (set! **top** k)))
+
+(define handler
+  (lambda (err)
+    (**top** (error-category err))))
+
 (define test "hello, world")
 
-(string-length :i-am-no-string)
+(with-exception-handler handler (lambda () (string-length :i-am-no-string)))
 (string-length "")
 (string-length test)
 (string-ref "" 0)
@@ -21,7 +31,7 @@ Read operations on strings
 
 [result]
 [keep 8]
-string-length: wanted string for parameter 1 (:i-am-no-string)
+:args
 0
 12
 string-ref: wanted index into parameter 1 ('""') for parameter 2 (0)

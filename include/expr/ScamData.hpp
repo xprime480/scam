@@ -27,11 +27,11 @@ namespace scam
                            Continuation *,
                            ScamEngine *)>;
 
-    using ValueType = unsigned long;
-
     struct ScamData : public ManagedObject
     {
     public:
+        using ValueType = unsigned long;
+
         explicit ScamData(ValueType type, bool managed = true);
         ~ScamData();
 
