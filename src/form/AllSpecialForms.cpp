@@ -6,6 +6,7 @@
 #include "expr/EvalOps.hpp"
 #include "expr/ValueFactory.hpp"
 #include "form/Helpers.hpp"
+#include "form/SyntaxUtils.hpp"
 #include "input/ApplyParser.hpp"
 #include "input/ClassDefParser.hpp"
 #include "input/CountedListParser.hpp"
@@ -138,6 +139,29 @@ void scam::applyDefine(ScamValue args,
     }
 }
 
+void scam::applyDefineSyntax(ScamValue args,
+                             Continuation * cont,
+                             Env * env,
+                             ScamEngine * engine)
+{
+    static const char * name { "define-syntax" };
+    ArgListHelper helper(args);
+
+    ScamValue symbol, rules;
+    if ( ! wantSymbol(name, helper, cont, engine, symbol) ) {
+        return;
+    }
+    if ( ! wantPair(name, helper, cont, engine, rules) ) {
+        return;
+    }
+    if ( ! finishArgs(name, helper, cont, engine) ) {
+        return;
+    }
+
+    if ( installSyntax(env, engine, symbol, rules) ) {
+        cont->handleValue(makeNothing());
+    }
+}
 void scam::applyEval(ScamValue args,
                      Continuation * cont,
                      Env * env,

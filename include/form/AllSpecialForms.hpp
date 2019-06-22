@@ -37,6 +37,11 @@ namespace scam
                             Env * env,
                             ScamEngine * engine);
 
+    extern void applyDefineSyntax(ScamValue args,
+                                  Continuation * cont,
+                                  Env * env,
+                                  ScamEngine * engine);
+
     extern void applyEval(ScamValue args,
                           Continuation * cont,
                           Env * env,

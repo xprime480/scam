@@ -1,0 +1,18 @@
+test that define-syntax form parses
+
+In this case 'y' retains its value.
+
+;[skip] uncomment to skip this test
+
+[name]
+Define Syntax
+
+[input]
+
+(define-syntax two (syntax-rules () ((two) 2)))
+2
+
+[result]
+2
+
+
