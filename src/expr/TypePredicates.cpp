@@ -89,42 +89,42 @@ bool scam::isExact(ScamValue data)
 
 bool scam::isComplex(ScamValue data)
 {
-    return ScamData::ComplexBit == (data->type & ScamData::ComplexBit);
+    return 0 != (data->type & ScamData::ComplexTypes);
 }
 
 bool scam::isPureComplex(ScamValue data)
 {
-    return isComplex(data) && ! isReal(data);
+    return data->type == ScamData::Complex;
 }
 
 bool scam::isReal(ScamValue data)
 {
-    return ScamData::RealBit == (data->type & ScamData::RealBit);
+    return 0 != (data->type & ScamData::RealTypes);
 }
 
 bool scam::isRational(ScamValue data)
 {
-    return ScamData::RationalBit == (data->type & ScamData::RationalBit);
+    return 0 != (data->type & ScamData::RationalTypes);
 }
 
 bool scam::isInteger(ScamValue data)
 {
-    return ScamData::IntegerBit == (data->type & ScamData::IntegerBit);
+    return data->type == ScamData::Integer;
 }
 
 bool scam::isNaN(ScamValue data)
 {
-    return ScamData::NaNBit == (data->type & ScamData::NaNBit);
+    return data->type == ScamData::NaN;
 }
 
 bool scam::isNegInf(ScamValue data)
 {
-    return ScamData::NegInfBit == (data->type & ScamData::NegInfBit);
+    return data->type == ScamData::NegInf;
 }
 
 bool scam::isPosInf(ScamValue data)
 {
-    return ScamData::PosInfBit == (data->type & ScamData::PosInfBit);
+    return data->type == ScamData::PosInf;
 }
 
 bool scam::isSpecialNumeric(ScamValue data)
