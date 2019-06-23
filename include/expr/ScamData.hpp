@@ -58,25 +58,19 @@ namespace scam
         class NegInfType {};
         class PosInfType {};
 
-        constexpr static ValueType ComplexBit  { 1 << 0 };
-        constexpr static ValueType RealBit     { 1 << 1 };
-        constexpr static ValueType RationalBit { 1 << 2 };
-        constexpr static ValueType IntegerBit  { 1 << 3 };
-
-        constexpr static ValueType NaNBit      { 1 << 4 };
-        constexpr static ValueType NegInfBit   { 1 << 5 };
-        constexpr static ValueType PosInfBit   { 1 << 6 };
-
-        constexpr static ValueType Complex  = ComplexBit;
-        constexpr static ValueType Real     = Complex | RealBit;
-        constexpr static ValueType Rational = Real | RationalBit;
-        constexpr static ValueType Integer  = Rational | IntegerBit;
-        constexpr static ValueType NaN      = Real | NaNBit;
-        constexpr static ValueType NegInf   = Real | NegInfBit;
-        constexpr static ValueType PosInf   = Real | PosInfBit;
-
-        constexpr static ValueType SpecialNumeric = NaNBit | NegInfBit | PosInfBit;
-        constexpr static ValueType Numeric  = (1 << 7) - 1;
+        constexpr static ValueType Complex        { 1 << 0 };
+        constexpr static ValueType Real           { 1 << 1 };
+        constexpr static ValueType Rational       { 1 << 2 };
+        constexpr static ValueType Integer        { 1 << 3 };
+        constexpr static ValueType NaN            { 1 << 4 };
+        constexpr static ValueType NegInf         { 1 << 5 };
+        constexpr static ValueType PosInf         { 1 << 6 };
+        constexpr static ValueType SpecialNumeric { NaN | NegInf | PosInf };
+        constexpr static ValueType RationalTypes  { Rational | Integer };
+        constexpr static ValueType RealNumTypes   { Real | RationalTypes };
+        constexpr static ValueType RealTypes      { RealNumTypes | SpecialNumeric };
+        constexpr static ValueType ComplexTypes   { Complex | RealTypes };
+        constexpr static ValueType Numeric        { ComplexTypes | RealTypes };
 
         /*
          * tags and types for other atoms
@@ -98,14 +92,14 @@ namespace scam
         constexpr static ValueType Instance     { 1 << 21 };
         constexpr static ValueType Cont         { 1 << 22 };
 
-        constexpr static ValueType StringLike = Symbol | Keyword | String;
+        constexpr static ValueType StringLike   { Symbol | Keyword | String };
 
-        constexpr static ValueType Procedure = Closure | Class | Instance;
+        constexpr static ValueType Procedure    { Closure | Class | Instance };
 
         constexpr static ValueType Primitive   { 1 << 23 };
         constexpr static ValueType SpecialForm { 1 << 24 };
 
-        constexpr static ValueType Applicable = Dict | Procedure | Primitive | SpecialForm | Cont;
+        constexpr static ValueType Applicable  { Dict | Procedure | Primitive | SpecialForm | Cont };
 
         constexpr static ValueType Port    { 1 << 25 };
         constexpr static ValueType Eof     { 1 << 26 };
