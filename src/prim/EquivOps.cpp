@@ -1,15 +1,16 @@
 #include "prim/EquivOps.hpp"
 
 #include "Continuation.hpp"
+#include "ErrorCategory.hpp"
 #include "ScamEngine.hpp"
 #include "ScamException.hpp"
 #include "expr/EqualityOps.hpp"
+#include "expr/ExtendedNumeric.hpp"
 #include "expr/ScamToInternal.hpp"
 #include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueFactory.hpp"
-#include "input/ListParser.hpp"
-#include "util/ArgListHelper.hpp"
+#include "util/Parameter.hpp"
 
 using namespace scam;
 using namespace std;
@@ -31,26 +32,22 @@ void scam::applyEqP(ScamValue args,
                     Continuation * cont,
                     ScamEngine * engine)
 {
-    static const char * name = "eq?";
-    ScamValue obj1, obj2;
-    if ( ! getTwoObjs(args, cont, engine, name, obj1, obj2) ) {
-        return;
-    }
+    ObjectParameter p0, p1;
+    if ( argsToParms(args, engine, "eq?", p0, p1) ) {
+        ScamValue obj1 = p0.value;
+        ScamValue obj2 = p1.value;
+        ScamValue rv = makeNothing();
 
-    try {
-        bool rv = false;
+        bool match = false;
         if ( isNumeric(obj1) && isNumeric(obj2) ) {
-            rv = (obj1 == obj2) && (! isNaN(obj1));
+            match = (obj1 == obj2) && (! isNaN(obj1));
         }
         else {
-            rv = doEqv(obj1, obj2);
+            match = doEqv(obj1, obj2);
         }
-        cont->handleValue(makeBoolean(rv));
-    }
-    catch ( int ) {
-        ScamValue err = makeError("eq? not implemented for this type",
-                                  makeInteger(obj1->type, true));
-        engine->handleError(err);
+
+        rv = makeBoolean(match);
+        cont->handleValue(rv);
     }
 }
 
@@ -58,20 +55,14 @@ void scam::applyEqvP(ScamValue args,
                      Continuation * cont,
                      ScamEngine * engine)
 {
-    static const char * name = "eqv?";
-    ScamValue obj1, obj2;
-    if ( ! getTwoObjs(args, cont, engine, name, obj1, obj2) ) {
-        return;
-    }
+    ObjectParameter p0, p1;
+    if ( argsToParms(args, engine, "eqv?", p0, p1) ) {
+        ScamValue obj1 = p0.value;
+        ScamValue obj2 = p1.value;
 
-    try {
-        bool rv = doEqv(obj1, obj2);
-        cont->handleValue(makeBoolean(rv));
-    }
-    catch ( int ) {
-        ScamValue err = makeError("eqv? not implemented for this type",
-                                  makeInteger(obj1->type, true));
-        engine->handleError(err);
+        bool match = doEqv(obj1, obj2);
+        ScamValue rv = makeBoolean(match);
+        cont->handleValue(rv);
     }
 }
 
@@ -79,20 +70,14 @@ void scam::applyEqualP(ScamValue args,
                        Continuation * cont,
                        ScamEngine * engine)
 {
-    static const char * name = "equal?";
-    ScamValue obj1, obj2;
-    if ( ! getTwoObjs(args, cont, engine, name, obj1, obj2) ) {
-        return;
-    }
+    ObjectParameter p0, p1;
+    if ( argsToParms(args, engine, "equal?", p0, p1) ) {
+        ScamValue obj1 = p0.value;
+        ScamValue obj2 = p1.value;
 
-    try {
-        bool rv = doEqual(obj1, obj2);
-        cont->handleValue(makeBoolean(rv));
-    }
-    catch ( int ) {
-        ScamValue err = makeError("equal? not implemented for this type",
-                                  makeInteger(obj1->type, true));
-        engine->handleError(err);
+        bool match = doEqual(obj1, obj2);
+        ScamValue rv = makeBoolean(match);
+        cont->handleValue(rv);
     }
 }
 
@@ -211,11 +196,8 @@ namespace
             case ScamData::Primitive:
             case ScamData::SpecialForm:
             case ScamData::Port:
-                rv = obj1 == obj2;
-                break;
-
             default:
-                throw 0;
+                rv = obj1 == obj2;
                 break;
             }
         }

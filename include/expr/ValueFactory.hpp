@@ -12,8 +12,8 @@
 
 namespace scam
 {
-    class ClassDefParser;
-    class LambdaParser;
+    class ClassDef;
+    class LambdaDef;
 
     using ExprVec = std::vector<ScamValue>;
     using ByteVec = std::vector<unsigned char>;
@@ -73,11 +73,11 @@ namespace scam
     extern ScamValue makeDict();
     extern ScamValue makeDict(ExprVec const & args);
 
-    extern ScamValue makeClosure(LambdaParser * parser,
+    extern ScamValue makeClosure(const LambdaDef & lambda,
                                  Env * env,
                                  bool macrolike = false);
 
-    extern ScamValue makeClass(ClassDefParser * def, Env * env);
+    extern ScamValue makeClass(ClassDef & def, Env * env);
     extern ScamValue makeClassInstance(ScamValue value, Env * env);
 
     extern ScamValue makeContinuation(Continuation * cont);

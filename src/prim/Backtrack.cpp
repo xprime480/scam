@@ -5,7 +5,7 @@
 #include "ScamEngine.hpp"
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueFactory.hpp"
-#include "util/ArgListHelper.hpp"
+#include "util/Parameter.hpp"
 
 using namespace scam;
 using namespace std;
@@ -14,19 +14,15 @@ void scam::applyBacktrack(ScamValue args,
                           Continuation * cont,
                           ScamEngine * engine)
 {
-    static const char * myName = "backtrack";
-
-    if ( ! isNull(args) ) {
-        failedArgParseMessage(myName, "()", args, cont, engine);
-        return;
-    }
-
-    Backtracker * backtracker = engine->getBacktracker();
-    if ( ! backtracker ) {
-        ScamValue err = makeError("No current backtrack context");
-        engine->handleError(err);
-    }
-    else {
-        backtracker->run();
+    static const char * name = "backtrack";
+    if ( argsToParms(args, engine, name) ) {
+        Backtracker * backtracker = engine->getBacktracker();
+        if ( ! backtracker ) {
+            ScamValue err = makeError("No current backtrack context");
+            engine->handleError(err);
+        }
+        else {
+            backtracker->run();
+        }
     }
 }

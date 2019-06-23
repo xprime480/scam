@@ -8,6 +8,8 @@ This operator is not case sensitive
 
 [input]
 
+(load "lib/test/test-handler.scm")
+
 (define err :not-a-string)
 (define s1 "")
 (define s2 "boy")
@@ -15,9 +17,10 @@ This operator is not case sensitive
 (define s4 "girl")
 (define s5 "GIRL")
 
-(string-ci<? s1 s2 err)
-(string-ci<?)
-(string-ci<? s1)
+(test-err-cat (string-ci<? s1 s2 err))
+(test-err-cat (string-ci<?))
+(test-err-cat (string-ci<? s1))
+
 (string-ci<? s1 s2)
 (string-ci<? s2 s2)
 (string-ci<? s2 s4)
@@ -27,9 +30,9 @@ This operator is not case sensitive
 
 [result]
 [keep 9]
-string-ci<?: Expected 2 values, got 3
-string-ci<?: Too Few Values (0 of at least 2)
-string-ci<?: Too Few Values (1 of at least 2)
+:args
+:args
+:args
 #t
 #f
 #t

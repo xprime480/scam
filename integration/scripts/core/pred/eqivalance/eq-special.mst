@@ -7,11 +7,14 @@ Eq? Special
 
 [input]
 
-(eq?)
-(eq? #t)
-(eq? #t #t #t)
+(load "lib/test/test-handler.scm")
+
+(test-err-cat (eq?))
+(test-err-cat (eq? #t))
+(test-err-cat (eq? #t #t #t))
 
 [result]
-eq?: parameter 1 missing
-eq?: parameter 2 missing
-eq?: Expected 2 values, got 3
+[keep 3]
+:args
+:args
+:args

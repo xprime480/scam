@@ -4,11 +4,9 @@
 #include "ScamEngine.hpp"
 #include "expr/ScamToInternal.hpp"
 #include "expr/ValueFactory.hpp"
-#include "input/SingletonParser.hpp"
-#include "input/TypeParsers.hpp"
-#include "util/ArgListHelper.hpp"
 #include "util/FileUtils.hpp"
 #include "util/MemoryManager.hpp"
+#include "util/Parameter.hpp"
 
 using namespace scam;
 using namespace std;
@@ -28,33 +26,27 @@ void scam::applyLoad(ScamValue args,
                      Continuation * cont,
                      ScamEngine * engine)
 {
-    static const char * myName = "load";
+    static const char * name = "load";
+    StringParameter p0;
+    if ( argsToParms(args, engine, name, p0) ) {
+        string filename = asString(p0.value);
+        if ( engine->isLoaded(filename) ) {
+            ScamValue err =
+                makeFileError("File %{0} already loaded", p0.value);
+            engine->handleError(err);
+            return;
+        }
 
-    StringParser * str = standardMemoryManager.make<StringParser>();
-    SingletonParser * parser
-        = standardMemoryManager.make<SingletonParser>(str);
-    if ( ! parser->accept(args) ) {
-        failedArgParseMessage(myName, "(filename-string)", args, cont, engine);
-        return;
+        string fullpath = findFileOnPath(filename);
+        if ( fullpath.empty() ) {
+            fileNotFound(filename, cont, engine);
+            return;
+        }
+
+        ScamValue last = loadEvalFile(fullpath, engine);
+        engine->setLoaded(filename);
+        cont->handleValue(last);
     }
-
-    string filename = asString(parser->get());
-    if ( engine->isLoaded(filename) ) {
-        ScamValue err =
-            makeFileError("File %{0} already loaded", parser->get());
-        engine->handleError(err);
-        return;
-    }
-
-    string fullpath = findFileOnPath(filename);
-    if ( fullpath.empty() ) {
-        fileNotFound(filename, cont, engine);
-        return;
-    }
-
-    ScamValue last = loadEvalFile(fullpath, engine);
-    engine->setLoaded(filename);
-    cont->handleValue(last);
 }
 
 namespace

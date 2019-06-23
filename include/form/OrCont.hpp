@@ -7,34 +7,29 @@
 
 namespace scam
 {
-    class ListParser;
-
     class OrCont : public Continuation
     {
     private:
         friend class scam::MemoryManager;
 
-        OrCont(ListParser * parser,
+        OrCont(ScamValue args,
                Continuation * cont,
                Env * env,
-               ScamEngine * engine,
-               size_t n);
+               ScamEngine * engine);
 
-        static OrCont * makeInstance(ListParser * parser,
+        static OrCont * makeInstance(ScamValue args,
                                      Continuation * cont,
                                      Env * env,
-                                     ScamEngine * engine,
-                                     size_t n);
+                                     ScamEngine * engine);
 
     public:
         void mark() override;
         void handleValue(ScamValue value) override;
 
     private:
-        ListParser * parser;
+        ScamValue args;
         Continuation * cont;
         Env * env;
-        size_t n;
     };
 }
 

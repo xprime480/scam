@@ -8,8 +8,12 @@
 #include "expr/TypePredicates.hpp"
 #include "form/QQConsListCarCont.hpp"
 #include "form/QQSpliceCont.hpp"
-#include "util/ArgListHelper.hpp"
 #include "util/MemoryManager.hpp"
+#include "util/Parameter.hpp"
+
+#include "util/GlobalId.hpp"
+#include "util/DebugTrace.hpp"
+#include "expr/ValueWriter.hpp"
 
 using namespace scam;
 using namespace std;
@@ -52,11 +56,8 @@ void QuasiQuoteWorker::run()
 
 bool QuasiQuoteWorker::verify_single_form(ScamValue input, Continuation * cont)
 {
-    if ( ! isList(input) || 1 != length(input) ) {
-        failedArgParseMessage(myName, "form", input, cont, engine);
-        return false;
-    }
-    return true;
+    ObjectParameter p0;
+    return argsToParms(input, engine, myName, p0);
 }
 
 void QuasiQuoteWorker::unquote_form(ScamValue input, Continuation * cont)

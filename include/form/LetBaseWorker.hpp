@@ -4,16 +4,16 @@
 #include "Worker.hpp"
 
 #include "ScamFwd.hpp"
+#include "util/LetDef.hpp"
 
 namespace scam
 {
-    class LetParser;
 
     class LetBaseWorker : public Worker
     {
     protected:
         LetBaseWorker(char const * name,
-                      LetParser * parser,
+                      LetDef & def,
                       Continuation * cont,
                       Env * env,
                       ScamEngine * engine);
@@ -30,10 +30,7 @@ namespace scam
         do_next(ScamValue formals, ScamValue values, ScamValue forms) = 0;
 
     private:
-        LetParser * parser;
-
-        ScamValue parse_bindings();
-        ScamValue parse_args();
+        LetDef def;
     };
 }
 

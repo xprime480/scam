@@ -5,8 +5,6 @@
 #include "expr/ScamToInternal.hpp"
 #include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
-#include "input/LambdaParser.hpp"
-#include "input/ParameterListParser.hpp"
 #include "port/ScamPort.hpp"
 
 #include <sstream>
@@ -23,7 +21,6 @@ namespace
     extern void writeNumeric(std::stringstream & s, ScamValue data);
     extern void writeVector(std::stringstream & s, ScamValue data);
     extern void writeError(std::stringstream & s, ScamValue data);
-    extern void writeType(std::stringstream & s, ScamValue data);
 }
 
 string scam::writeValue(ScamValue data)
@@ -127,13 +124,167 @@ string scam::debugWriteValue(ScamValue data)
 {
     stringstream s;
 
-    s << "type = <";
-    writeType(s, data);
-    s << ">; value = <"
-      << writeValue(data)
-      << ">";
+    s << "type = <" << describe(data->type) << ">; ";
+    s <<"value = <" << writeValue(data) << ">";
 
     return s.str() ;
+}
+
+string scam::describe(ScamData::ValueType type)
+{
+    const char * text = "unknown";
+
+    switch ( type ) {
+
+    case ScamData::Complex:
+        text = "complex";
+        break;
+
+    case ScamData::Real:
+        text = "real";
+        break;
+
+    case ScamData::Rational:
+        text = "rational";
+        break;
+
+    case ScamData::Integer:
+        text = "integer";
+        break;
+
+    case ScamData::NaN:
+        text = "NaN";
+        break;
+
+    case ScamData::NegInf:
+        text = "-inf";
+        break;
+
+    case ScamData::PosInf:
+        text = "+inf";
+        break;
+
+    case ScamData::SpecialNumeric:
+        text = "special numeric";
+        break;
+
+    case ScamData::RationalTypes:
+        text = "as rational";
+        break;
+
+    case ScamData::RealNumTypes:
+        text = "non-special as real";
+        break;
+
+    case ScamData::RealTypes:
+        text = "as real";
+        break;
+
+    case ScamData::ComplexTypes:
+        text = "as complex";
+        break;
+
+    case ScamData::Numeric:
+        text = "numeric";
+        break;
+
+    case ScamData::Nothing:
+        text = "nothing";
+        break;
+
+    case ScamData::Null:
+        text = "null";
+        break;
+
+    case ScamData::Boolean:
+        text = "boolean";
+        break;
+
+    case ScamData::Character:
+        text = "character";
+        break;
+
+    case ScamData::Symbol:
+        text = "symbol";
+        break;
+
+    case ScamData::Keyword:
+        text = "keyword";
+        break;
+
+    case ScamData::String:
+        text = "string";
+        break;
+
+    case ScamData::Error:
+        text = "error";
+        break;
+
+    case ScamData::Pair:
+        text = "pair";
+        break;
+
+    case ScamData::Vector:
+        text = "vector";
+        break;
+
+    case ScamData::ByteVector:
+        text = "byte vector";
+        break;
+
+    case ScamData::Dict:
+        text = "dict";
+        break;
+
+    case ScamData::Closure:
+        text = "closure";
+        break;
+
+    case ScamData::Class:
+        text = "class";
+        break;
+
+    case ScamData::Instance:
+        text = "instance";
+        break;
+
+    case ScamData::Cont:
+        text = "continuation";
+        break;
+
+    case ScamData::StringLike:
+        text = "as string";
+        break;
+
+    case ScamData::Procedure:
+        text = "procedure";
+        break;
+
+    case ScamData::Primitive:
+        text = "primitive";
+        break;
+
+    case ScamData::SpecialForm:
+        text = "special form";
+        break;
+
+    case ScamData::Applicable:
+        text = "applicable";
+        break;
+
+    case ScamData::Port:
+        text = "port";
+        break;
+
+    case ScamData::Eof:
+        text = "eof";
+        break;
+
+    default:
+        break;
+    }
+
+    return text;
 }
 
 namespace
@@ -161,15 +312,33 @@ namespace
         else {
             s << "lambda ";
         }
-        s << writeValue(data->closureDef()->getArgs()->getValue());
+        const LambdaDef & lambda = data->closureDef();
+        if ( isNothing(lambda.rest) && isNull(lambda.formals)) {
+            s << "()";
+        }
+        else if ( isNothing(lambda.rest) ) {
+            s << writeValue(lambda.formals);
+        }
+        else if ( isNull(lambda.formals) ) {
+            s << writeValue(lambda.rest);
+        }
+        else {
+            s << "(";
+            ScamValue t = lambda.formals;
+            while ( ! isNull(t) ) {
+                s << writeValue(getCar(t)) << " ";
+                t = getCdr(t);
+            }
+            s << ". " << writeValue(lambda.rest) << ")";
+        }
         s << " ";
 
-        const size_t count = data->closureDef()->getFormCount();
+        const size_t count = length(data->closureDef().forms);
         for ( size_t idx = 0 ; idx < count ; ++ idx ) {
             if ( idx > 0 ) {
                 s << " ";
             }
-            s << writeValue(data->closureDef()->getForm(idx));
+            s << writeValue(nthcar(data->closureDef().forms, idx));
         }
 
         s << ")";
@@ -361,130 +530,6 @@ namespace
                 break;
             }
 
-        }
-    }
-
-    void writeType(std::stringstream & s, ScamValue data)
-    {
-        if ( isNumeric(data) ) {
-            if ( isExact(data) ) {
-                s << "exact ";
-            }
-            else {
-                s << "inexact ";
-            }
-
-            if ( isNaN(data) ) {
-                s << "NaN";
-            }
-            else if ( isNegInf(data) ) {
-                s << "-inf";
-            }
-            else if ( isPosInf(data) ) {
-                s << "+inf";
-            }
-            else if ( isInteger(data) ) {
-                s << "integer";
-            }
-            else if ( isRational(data) ) {
-                s << "rational";
-            }
-            else if ( isReal(data) ) {
-                s << "real";
-            }
-            else if ( isComplex(data) ) {
-                s << "complex";
-            }
-            else {
-                s << "unknown numeric";
-            }
-        }
-        else {
-            switch ( data->type ) {
-            case ScamData::Boolean:
-                s << "boolean";
-                break;
-
-            case ScamData::ByteVector:
-                s << "byte vector";
-                break;
-
-            case ScamData::Character:
-                s << "character";
-                break;
-
-            case ScamData::Class:
-                s << "class";
-                break;
-
-            case ScamData::Closure:
-                s << "closure";
-                break;
-
-            case ScamData::Pair:
-                s << "pair";
-                break;
-
-            case ScamData::Dict:
-                s << "dict";
-                break;
-
-            case ScamData::Cont:
-                s << "continuation";
-                break;
-
-            case ScamData::Error:
-                s << "error";
-                break;
-
-            case ScamData::Keyword:
-                s << "keyword";
-                break;
-
-            case ScamData::String:
-                s << "string";
-                break;
-
-            case ScamData::Symbol:
-                s << "symbol";
-                break;
-
-            case ScamData::Instance:
-                s << "instance";
-                break;
-
-            case ScamData::Null:
-                s << "nil";
-                break;
-
-            case ScamData::Nothing:
-                s << "null";
-                break;
-
-            case ScamData::Vector:
-                s << "vector";
-                break;
-
-            case ScamData::SpecialForm:
-                s << "special form ";
-                break;
-
-            case ScamData::Primitive:
-                s << "Primitive ";
-                break;
-
-            case ScamData::Port:
-                s << "Port ";
-                break;
-
-            case ScamData::Eof:
-                s << "EOF ";
-                break;
-
-            default:
-                s << "unknown with type" << data->type;
-                break;
-            }
         }
     }
 }

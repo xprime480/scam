@@ -5,13 +5,13 @@
 #include "expr/ClosureBindCont.hpp"
 #include "expr/EvalOps.hpp"
 #include "expr/ScamData.hpp"
-#include "input/LambdaParser.hpp"
+#include "util/LambdaDef.hpp"
 #include "util/MemoryManager.hpp"
 
 using namespace scam;
 using namespace std;
 
-ClosureWorker::ClosureWorker(LambdaParser * parser,
+ClosureWorker::ClosureWorker(LambdaDef & lambda,
                              Env * capture,
                              Continuation * cont,
                              ScamValue args,
@@ -19,7 +19,7 @@ ClosureWorker::ClosureWorker(LambdaParser * parser,
                              bool macrolike,
                              ScamEngine * engine)
     : Worker("proc", engine)
-    , parser(parser)
+    , lambda(lambda)
     , capture(capture)
     , cont(cont)
     , args(args)
@@ -28,7 +28,7 @@ ClosureWorker::ClosureWorker(LambdaParser * parser,
 {
 }
 
-ClosureWorker * ClosureWorker::makeInstance(LambdaParser * parser,
+ClosureWorker * ClosureWorker::makeInstance(LambdaDef & lambda,
                                             Env * capture,
                                             Continuation * cont,
                                             ScamValue args,
@@ -36,7 +36,7 @@ ClosureWorker * ClosureWorker::makeInstance(LambdaParser * parser,
                                             bool macrolike,
                                             ScamEngine * engine)
 {
-    return new ClosureWorker(parser,
+    return new ClosureWorker(lambda,
                              capture,
                              cont,
                              args,
@@ -49,7 +49,7 @@ void ClosureWorker::mark()
 {
     if ( ! isMarked() ) {
         Worker::mark();
-        parser->mark();
+        lambda.mark();
         capture->mark();
         cont->mark();
         args->mark();
@@ -62,7 +62,7 @@ void ClosureWorker::run()
     Worker::run();
 
     Continuation * newCont
-        = standardMemoryManager.make<ClosureBindCont>(parser,
+        = standardMemoryManager.make<ClosureBindCont>(lambda,
                                                       capture,
                                                       cont,
                                                       macrolike,

@@ -7,23 +7,23 @@
 using namespace scam;
 using namespace std;
 
-LetWorker::LetWorker(LetParser * parser,
+LetWorker::LetWorker(LetDef & def,
                      Continuation * cont,
                      Env * env,
                      ScamEngine * engine,
                      bool rebind)
-    : LetBaseWorker("Let", parser, cont, env, engine)
+    : LetBaseWorker("Let", def, cont, env, engine)
     , rebind(rebind)
 {
 }
 
-LetWorker * LetWorker::makeInstance(LetParser * parser,
+LetWorker * LetWorker::makeInstance(LetDef & def,
                                     Continuation * cont,
                                     Env * env,
                                     ScamEngine * engine,
                                     bool rebind)
 {
-    return new LetWorker(parser, cont, env, engine, rebind);
+    return new LetWorker(def, cont, env, engine, rebind);
 }
 
 void LetWorker::do_next(ScamValue formals,

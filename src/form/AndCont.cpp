@@ -6,38 +6,34 @@
 #include "expr/ScamData.hpp"
 #include "expr/TypePredicates.hpp"
 #include "form/AndWorker.hpp"
-#include "input/ListParser.hpp"
 
 using namespace scam;
 using namespace std;
 
-AndCont::AndCont(ListParser * parser,
+AndCont::AndCont(ScamValue args,
                  Continuation * cont,
                  Env * env,
-                 ScamEngine * engine,
-                 size_t n)
+                 ScamEngine * engine)
     : Continuation("And", engine)
-    , parser(parser)
+    , args(args)
     , cont(cont)
     , env(env)
-    , n(n)
 {
 }
 
-AndCont * AndCont::makeInstance(ListParser * parser,
+AndCont * AndCont::makeInstance(ScamValue args,
                                 Continuation * cont,
                                 Env * env,
-                                ScamEngine * engine,
-                                size_t n)
+                                ScamEngine * engine)
 {
-    return new AndCont(parser, cont, env, engine, n);
+    return new AndCont(args, cont, env, engine);
 }
 
 void AndCont::mark()
 {
     if ( ! isMarked() ) {
         Continuation::mark();
-        parser->mark();
+        args->mark();
         cont->mark();
         env->mark();
     }
@@ -50,10 +46,10 @@ void AndCont::handleValue(ScamValue value)
     if ( isUnhandledError(value) ) {
         engine->handleError(value);
     }
-    else if ( ! truth(value) ) {
+    else if ( (! truth(value)) || isNull(args) ) {
         cont->handleValue(value);
     }
     else {
-        workQueueHelper<AndWorker>(cont, env, parser, engine, n);
+        workQueueHelper<AndWorker>(cont, env, args, engine);
     }
 }

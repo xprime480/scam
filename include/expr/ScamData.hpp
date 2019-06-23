@@ -4,6 +4,8 @@
 #include "util/ManagedObject.hpp"
 
 #include "ScamFwd.hpp"
+#include "util/ClassDef.hpp"
+#include "util/LambdaDef.hpp"
 
 #include <functional>
 #include <string>
@@ -11,10 +13,8 @@
 
 namespace scam
 {
-    class ClassDefParser;
     class Continuation;
     class Env;
-    class LambdaParser;
     class ScamPort;
 
     using SfFunction =
@@ -69,7 +69,7 @@ namespace scam
         constexpr static ValueType RationalTypes  { Rational | Integer };
         constexpr static ValueType RealNumTypes   { Real | RationalTypes };
         constexpr static ValueType RealTypes      { RealNumTypes | SpecialNumeric };
-        constexpr static ValueType ComplexTypes   { Complex | RealTypes };
+        constexpr static ValueType ComplexTypes   { Complex | RealNumTypes };
         constexpr static ValueType Numeric        { ComplexTypes | RealTypes };
 
         /*
@@ -165,18 +165,18 @@ namespace scam
             DictValueData vals;
         };
 
-        using ClosureDefType = LambdaParser *;
+        using ClosureDefType = LambdaDef;
         struct ClosureData
         {
-            ClosureDefType parser;
-            Env * env;
-            bool macrolike;
+            ClosureDefType lambda;
+            Env          * env;
+            bool           macrolike;
         };
 
         struct ClassData
         {
-            ClassDefParser * def;
-            Env            * capture;
+            ClassDef def;
+            Env    * capture;
         };
 
         struct InstanceData
@@ -258,7 +258,7 @@ namespace scam
         Env *& closureEnv();
         bool & closureMacroLike();
 
-        ClassDefParser *& classDef();
+        ClassDef & classDef();
         Env *& classEnv();
 
         Env *& instancePrivate();

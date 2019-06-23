@@ -7,26 +7,22 @@ Read operations on strings
 
 [input]
 
-(define **top** ())
-
-(call/cc
- (lambda (k)
-   (set! **top** k)))
-
-(define handler
-  (lambda (err)
-    (**top** (error-category err))))
+(load "lib/test/test-handler.scm")
 
 (define test "hello, world")
 
-(with-exception-handler handler (lambda () (string-length :i-am-no-string)))
+(test-err-cat (string-length :i-am-no-string))
+
 (string-length "")
 (string-length test)
-(string-ref "" 0)
-(string-ref test -1)
-(string-ref test 99)
+
+(test-err-cat (string-ref "" 0))
+(test-err-cat (string-ref test -1))
+(test-err-cat (string-ref test 99))
+
 (string-ref test 0)
 (string-ref test 4)
+
 ;;(string-ref test 6) ;; want a better representation of a space
 
 [result]
@@ -34,8 +30,8 @@ Read operations on strings
 :args
 0
 12
-string-ref: wanted index into parameter 1 ('""') for parameter 2 (0)
-string-ref: wanted index into parameter 1 ('"hello, world"') for parameter 2 (-1)
-string-ref: wanted index into parameter 1 ('"hello, world"') for parameter 2 (99)
+:args
+:args
+:args
 #\h
 #\o

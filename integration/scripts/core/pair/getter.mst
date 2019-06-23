@@ -7,12 +7,14 @@ Car / Cdr
 
 [input]
 
+(load "lib/test/test-handler.scm")
+
 (define pair (cons 1 2))
 (define not-a-pair 2)
 (define list-val (list 1 2 3))
 
-(car not-a-pair)
-(cdr not-a-pair)
+(test-err-cat (car not-a-pair))
+(test-err-cat (cdr not-a-pair))
 
 (car pair)
 (cdr pair)
@@ -24,8 +26,8 @@ Car / Cdr
 
 [result]
 [keep 7]
-car: wanted pair for parameter 1 (2)
-cdr: wanted pair for parameter 1 (2)
+:args
+:args
 1
 2
 1

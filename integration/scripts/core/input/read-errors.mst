@@ -7,16 +7,19 @@ Read Errors
 
 [input]
 
-(read)
-(read (open-input-string "") :nope)
-(read 2)
-(read (open-input-string "(2 3 4"))
-(read (open-input-string ")"))
+(load "lib/test/test-handler.scm")
+
+(test-err-cat (read))
+(test-err-cat (read (open-input-string "") :nope))
+(test-err-cat (read 2))
+(test-err-cat (read (open-input-string "(2 3 4")))
+(test-err-cat (read (open-input-string ")")))
 
 
 [result]
-read: parameter 1 missing
-read: Expected 1 values, got 2
-read: wanted port for parameter 1 (2)
-Unterminated List
-Extra ')' in input
+[keep 5]
+:args
+:args
+:args
+:read
+:read

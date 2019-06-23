@@ -7,13 +7,16 @@ Error
 
 [input]
 
-(error)
-(error 1 2 3)
+(load "lib/test/test-handler.scm")
+
+(test-err-cat (error))
+(test-err-cat (error 1 2 3))
 (error "bagels are not doughnuts")
 (error "wanted a list, got %{0} %{2} %{1}" 2 4 3)
 
 [result]
-error: parameter 1 missing
-error: wanted string for parameter 1 (1)
+[keep 4]
+:args
+:args
 bagels are not doughnuts
 wanted a list, got 2 3 4

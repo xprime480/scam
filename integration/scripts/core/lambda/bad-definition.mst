@@ -7,17 +7,20 @@ Malformed Lambda Expressions
 
 [input]
 
-(lambda)
-(lambda 2 (+ 2 2))
-(lambda (:keyword) (+ 2 2))
-(lambda (x x) (* x 2))
-(lambda (x . x) (* x 2))
-(lambda (ok . :keyword) (+ 2 2))
+(load "lib/test/test-handler.scm")
+
+(test-err-cat (lambda))
+(test-err-cat (lambda 2 (+ 2 2)))
+(test-err-cat (lambda (:keyword) (+ 2 2)))
+(test-err-cat (lambda (x x) (* x 2)))
+(test-err-cat (lambda (x . x) (* x 2)))
+(test-err-cat (lambda (ok . :keyword) (+ 2 2)))
 
 [result]
-Expected (lambda args body*); got (lambda)
-Formals should be list or symbol (2)
-Formal parameter should be a symbol (:keyword)
-Symbol cannot appear twice in formals (x)
-Symbol cannot appear twice in formals (x)
-Formal parameter should be a symbol (:keyword)
+[keep 6]
+:args
+:args
+:args
+:args
+:args
+:args

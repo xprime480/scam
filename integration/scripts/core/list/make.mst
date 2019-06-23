@@ -7,7 +7,9 @@ Make Lists
 
 [input]
 
-(make-list -5 #\*)
+(load "lib/test/test-handler.scm")
+
+(test-err-cat (make-list -5 #\*))
 (make-list 0)
 (make-list 0 #\x)
 (make-list 3)
@@ -16,7 +18,8 @@ Make Lists
 (list)
 
 [result]
-make-list: wanted non-negative integer for parameter 1 (-5)
+[keep 7]
+:args
 ()
 ()
 (() () ())

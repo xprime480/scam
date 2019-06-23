@@ -3,24 +3,20 @@
 #include "Continuation.hpp"
 #include "WorkQueue.hpp"
 #include "prim/IncludeWorker.hpp"
-#include "input/IncludeParser.hpp"
-#include "util/ArgListHelper.hpp"
 #include "util/MemoryManager.hpp"
+#include "util/Parameter.hpp"
 
 using namespace scam;
 using namespace std;
-
-static const char * myName = "include";
 
 void scam::applyInclude(ScamValue args,
                         Continuation * cont,
                         ScamEngine * engine)
 {
-    IncludeParser * parser = standardMemoryManager.make<IncludeParser>();
-    if ( ! parser->accept(args) ) {
-        failedArgParseMessage(myName, "(string+)", args, cont, engine);
-    }
-    else {
-        workQueueHelper<IncludeWorker>(parser, cont, engine, 0);
+    static const char * name = "include";
+    StringParameter  pStr;
+    CountedParameter p0(pStr, 1);
+    if ( argsToParms(args, engine, name, p0) ) {
+        workQueueHelper<IncludeWorker>(p0.value, cont, engine);
     }
 }

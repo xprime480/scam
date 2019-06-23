@@ -7,8 +7,10 @@ Type Checker of Lists
 
 [input]
 
-(list?)
-(list? '(a . b) (list 1 2 3))
+(load "lib/test/test-handler.scm")
+
+(test-err-cat (list?))
+(test-err-cat (list? '(a . b) (list 1 2 3)))
 
 (list
  (list? (cons 1 2))
@@ -19,6 +21,6 @@ Type Checker of Lists
 
 [result]
 [keep 3]
-list?: parameter 1 missing
-list?: Expected 1 values, got 2
+:args
+:args
 (#f #t #f #t #f)

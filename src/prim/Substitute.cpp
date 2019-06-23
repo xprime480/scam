@@ -7,6 +7,7 @@
 #include "expr/ValueFactory.hpp"
 #include "expr/ValueWriter.hpp"
 #include "prim/Substitutor.hpp"
+#include "util/Parameter.hpp"
 
 using namespace std;
 using namespace scam;
@@ -15,23 +16,15 @@ void scam::applySubstitute(ScamValue args,
                            Continuation * cont,
                            ScamEngine * engine)
 {
-    if ( length(args) < 2 ) {
-        ScamValue err = makeError("Incorrect parameter count",
-                                  makeInteger(length(args), true));
-        cont->handleValue(err);
-        return;
-    }
+    ObjectParameter p0;
+    DictParameter p1;
+    if ( argsToParms(args, engine, "substitute", p0, p1) ) {
+        ScamValue form = p0.value;
+        ScamValue dict = p1.value;
 
-    ScamValue form = nthcar(args, 0);
-    ScamValue dict = nthcar(args, 1);
-    if ( ! dict ) {
-        ScamValue err = makeError("substitute requires dictionary", args);
-        engine->handleError(err);
-        return;
+        Substitutor resolver(dict);
+        ScamValue rv = resolver.resolve_value(form);
+        cont->handleValue(rv);
     }
-
-    Substitutor resolver(dict);
-    ScamValue rv = resolver.resolve_value(form);
-    cont->handleValue(rv);
 }
 

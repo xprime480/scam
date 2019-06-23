@@ -7,17 +7,10 @@
 #include "expr/ValueFactory.hpp"
 #include "form/Helpers.hpp"
 #include "form/SyntaxUtils.hpp"
-#include "input/ApplyParser.hpp"
-#include "input/ClassDefParser.hpp"
-#include "input/CountedListParser.hpp"
-#include "input/LambdaParser.hpp"
-#include "input/LetParser.hpp"
-#include "input/ListParser.hpp"
-#include "input/SingletonParser.hpp"
-#include "input/SymbolPlusParser.hpp"
-#include "input/UndefineParser.hpp"
-#include "util/ArgListHelper.hpp"
+#include "util/ClassDef.hpp"
+#include "util/LetDef.hpp"
 #include "util/MemoryManager.hpp"
+#include "util/Parameter.hpp"
 #include "util/Validations.hpp"
 
 using namespace scam;
@@ -30,22 +23,20 @@ void scam::applyAmb(ScamValue args,
                     Env * env,
                     ScamEngine * engine)
 {
-    static const char * myName = "amb";
+    static const char * name = "amb";
 
-    ListParser * parser = getListOfAnythingParser();
-    if ( ! parser->accept(args) ) {
-        failedArgParseMessage(myName, "(form*)", args, cont, engine);
-        return;
+    ObjectParameter  pObj;
+    CountedParameter p0(pObj);
+    if ( argsToParms(args, engine, name, p0) ) {
+        Backtracker * backtracker = engine->getBacktracker();
+        Backtracker * newBt =
+            standardMemoryManager.make<AmbBacktracker>(p0.value,
+                                                       cont,
+                                                       env,
+                                                       engine,
+                                                       backtracker);
+        newBt->run();
     }
-
-    Backtracker * backtracker = engine->getBacktracker();
-    Backtracker * newBt =
-        standardMemoryManager.make<AmbBacktracker>(args,
-                                                   cont,
-                                                   env,
-                                                   engine,
-                                                   backtracker);
-    newBt->run();
 }
 
 void scam::applyAnd(ScamValue args,
@@ -53,15 +44,13 @@ void scam::applyAnd(ScamValue args,
                     Env * env,
                     ScamEngine * engine)
 {
-    static const char * myName = "and";
-    ListParser * parser = getListOfAnythingParser();
-    if ( ! parser->accept(args) ) {
-        failedArgParseMessage(myName, "(form*)", args, cont, engine);
-        return;
-    }
+    static const char * name = "and";
 
-    unsigned pos { 0 };
-    workQueueHelper<AndWorker>(cont, env, parser, engine, pos);
+    ObjectParameter  pObj;
+    CountedParameter p0(pObj);
+    if ( argsToParms(args, engine, name, p0) ) {
+        workQueueHelper<AndWorker>(cont, env, p0.value, engine);
+    }
 }
 
 void scam::applyApply(ScamValue args,
@@ -69,19 +58,17 @@ void scam::applyApply(ScamValue args,
                       Env * env,
                       ScamEngine * engine)
 {
-    static const char * myName = "apply";
-    ApplyParser * parser = standardMemoryManager.make<ApplyParser>();
-    if ( ! parser->accept(args) ) {
-        failedArgParseMessage(myName, "(function (args*))", args, cont, engine);
-        return;
+    static const char * name = "apply";
+
+    ObjectParameter p0, p1;
+    if ( argsToParms(args, engine, name, p0, p1) ) {
+        ScamValue sym     = p0.value;
+        ScamValue arglist = p1.value;
+        Continuation * newCont =
+            standardMemoryManager.make<ApplyOpCont>(arglist, cont, env, engine);
+
+        eval(sym, newCont, env, engine);
     }
-
-    ScamValue sym     = parser->getParsedOp();
-    ScamValue arglist = parser->getArgs();
-    Continuation * newCont =
-        standardMemoryManager.make<ApplyOpCont>(arglist, cont, env, engine);
-
-    eval(sym, newCont, env, engine);
 }
 
 void scam::applyCallCC(ScamValue args,
@@ -89,13 +76,11 @@ void scam::applyCallCC(ScamValue args,
                        Env * env,
                        ScamEngine * engine)
 {
-    static const char * myName = "call/cc";
-    SingletonParser * parser = getSingletonOfAnythingParser();
-    if ( ! parser->accept(args) ) {
-        failedArgParseMessage(myName, "(form)", args, cont, engine);
-    }
-    else {
-        ScamValue body = parser->get();
+    static const char * name = "call/cc";
+
+    ObjectParameter p0;
+    if ( argsToParms(args, engine, name, p0) ) {
+        ScamValue body = p0.value;
         Continuation * newCont =
             standardMemoryManager.make<CallCont>(cont, env, engine);
         eval(body, newCont, env, engine);
@@ -107,18 +92,11 @@ void scam::applyClassMaker(ScamValue args,
                            Env * env,
                            ScamEngine * engine)
 {
-    static const char * myName = "make-class";
-    ClassDefParser * parser = standardMemoryManager.make<ClassDefParser>();
+    static const char * name = "make-class";
 
-    if ( ! parser->accept(args) ) {
-        failedArgParseMessage(myName,
-                              "(Base (vars*) methods*)",
-                              args,
-                              cont,
-                              engine);
-    }
-    else {
-        ScamValue cls = makeClass(parser, env);
+    ClassDef def;
+    if ( argsToParms(args, engine, name, def) ) {
+        ScamValue cls = makeClass(def, env);
         cont->handleValue(cls);
     }
 }
@@ -128,14 +106,12 @@ void scam::applyDefine(ScamValue args,
                        Env * env,
                        ScamEngine * engine)
 {
-    static const char * myName = "define";
-    DefineParser * parser = standardMemoryManager.make<DefineParser>();
+    static const char * name = "define";
 
-    if ( ! parser->accept(args) ) {
-        failedArgParseMessage(myName, "(sym expr)", args, cont, engine);
-    }
-    else {
-        workQueueHelper<DefineWorker>(parser, cont, env, engine);
+    SymbolParameter p0;
+    ObjectParameter p1;
+    if ( argsToParms(args, engine, name, p0, p1) ) {
+        workQueueHelper<DefineWorker>(p0.value, p1.value, cont, env, engine);
     }
 }
 
@@ -144,40 +120,28 @@ void scam::applyDefineSyntax(ScamValue args,
                              Env * env,
                              ScamEngine * engine)
 {
-    static const char * name { "define-syntax" };
-    ArgListHelper helper(args);
-
-    ScamValue symbol, rules;
-    if ( ! wantSymbol(name, helper, cont, engine, symbol) ) {
-        return;
-    }
-    if ( ! wantPair(name, helper, cont, engine, rules) ) {
-        return;
-    }
-    if ( ! finishArgs(name, helper, cont, engine) ) {
-        return;
-    }
-
-    if ( installSyntax(env, engine, symbol, rules) ) {
+    SymbolParameter p0;
+    PairParameter   p1;
+    if ( argsToParms(args, engine, "define-syntax", p0, p1) ) {
+        ScamValue symbol = p0.value;
+        ScamValue rules  = p1.value;
+        installSyntax(env, engine, symbol, rules);
         cont->handleValue(makeNothing());
     }
 }
+
 void scam::applyEval(ScamValue args,
                      Continuation * cont,
                      Env * env,
                      ScamEngine * engine)
 {
-    static const char * myName = "eval";
-    SingletonParser * parser = getSingletonOfAnythingParser();
+    static const char * name = "eval";
 
-    if ( ! parser->accept(args) ) {
-        failedArgParseMessage(myName, "(expr)", args, cont, engine);
-    }
-    else {
+    ObjectParameter p0;
+    if ( argsToParms(args, engine, name, p0) ) {
         Continuation * finisher =
             standardMemoryManager.make<EvalCont>(cont, env, engine);
-        ScamValue expr = const_cast<ScamValue>(parser->get());
-        eval(expr, finisher, env, engine);
+        eval(p0.value, finisher, env, engine);
     }
 }
 
@@ -186,18 +150,11 @@ void scam::applyIf(ScamValue args,
                    Env * env,
                    ScamEngine * engine)
 {
-    static const char * myName = "if";
-    CountedListParser * parser = getCountedListOfAnythingParser(2, 3);
-
-    if ( ! parser->accept(args) ) {
-        failedArgParseMessage(myName,
-                              "(test then-expr else-expr?)",
-                              args,
-                              cont,
-                              engine);
-    }
-    else {
-        workQueueHelper<IfWorker>(cont, env, engine, parser);
+    static const char * name = "if";
+    ObjectParameter  pObj;
+    CountedParameter p0(pObj, 2, 3);
+    if ( argsToParms(args, engine, name, p0) ) {
+        workQueueHelper<IfWorker>(cont, env, engine, p0.value);
     }
 }
 
@@ -206,17 +163,12 @@ void scam::applyLambda(ScamValue args,
                        Env * env,
                        ScamEngine * engine)
 {
-    LambdaParser * lambda = standardMemoryManager.make<LambdaParser>();
-
-    ScamValue expr = nullptr;
-    if ( ! lambda->accept(args) ) {
-        expr = validateClosureArgs(args, "lambda");
+    static const char * name = "lambda";
+    LambdaDef lambda;
+    if ( argsToParms(args, engine, name, lambda) ) {
+        ScamValue expr = makeClosure(lambda, env);
+        cont->handleValue(expr);
     }
-    else {
-        expr = makeClosure(lambda, env);
-    }
-
-    cont->handleValue(expr);
 }
 
 void scam::applyLet(ScamValue args,
@@ -224,17 +176,10 @@ void scam::applyLet(ScamValue args,
                     Env * env,
                     ScamEngine * engine)
 {
-    static const char * myName = "let";
-    LetParser * parser = standardMemoryManager.make<LetParser>();
-    if ( ! parser->accept(args) ) {
-        failedArgParseMessage(myName,
-                              "(((sym form)*) form*)",
-                              args,
-                              cont,
-                              engine);
-    }
-    else {
-        workQueueHelper<LetWorker>(parser, cont, env, engine, false);
+    static const char * name = "let";
+    LetDef def;
+    if ( argsToParms(args, engine, name, def) ) {
+        workQueueHelper<LetWorker>(def, cont, env, engine, false);
     }
 }
 
@@ -243,17 +188,10 @@ void scam::applyLetRec(ScamValue args,
                        Env * env,
                        ScamEngine * engine)
 {
-    static const char * myName = "letrec";
-    LetParser * parser = standardMemoryManager.make<LetParser>();
-    if ( ! parser->accept(args) ) {
-        failedArgParseMessage(myName,
-                              "(((sym form)*) form*)",
-                              args,
-                              cont,
-                              engine);
-    }
-    else {
-        workQueueHelper<LetWorker>(parser, cont, env, engine, true);
+    static const char * name = "letrec";
+    LetDef def;
+    if ( argsToParms(args, engine, name, def) ) {
+        workQueueHelper<LetWorker>(def, cont, env, engine, true);
     }
 }
 
@@ -262,17 +200,10 @@ void scam::applyLetStar(ScamValue args,
                         Env * env,
                         ScamEngine * engine)
 {
-    static const char * myName = "let*";
-    LetParser * parser = standardMemoryManager.make<LetParser>();
-    if ( ! parser->accept(args) ) {
-        failedArgParseMessage(myName,
-                              "(((sym form)*) form*)",
-                              args,
-                              cont,
-                              engine);
-    }
-    else {
-        workQueueHelper<LetStarWorker>(parser, cont, env, engine);
+    static const char * name = "let*";
+    LetDef def;
+    if ( argsToParms(args, engine, name, def) ) {
+        workQueueHelper<LetStarWorker>(def, cont, env, engine);
     }
 }
 
@@ -281,17 +212,12 @@ void scam::applyMacro(ScamValue args,
                       Env * env,
                       ScamEngine * engine)
 {
-    LambdaParser * lambda = standardMemoryManager.make<LambdaParser>();
-
-    ScamValue expr = nullptr;
-    if ( ! lambda->accept(args) ) {
-        expr = validateClosureArgs(args, "macro");
+    static const char * name = "macro";
+    LambdaDef lambda;
+    if ( argsToParms(args, engine, name, lambda) ) {
+        ScamValue expr = makeClosure(lambda, env, true);
+        cont->handleValue(expr);
     }
-    else {
-        expr = makeClosure(lambda, env, true);
-    }
-
-    cont->handleValue(expr);
 }
 
 void scam::applyNot(ScamValue args,
@@ -299,13 +225,11 @@ void scam::applyNot(ScamValue args,
                     Env * env,
                     ScamEngine * engine)
 {
-    static const char * myName { "not" };
-    SingletonParser * parser = getSingletonOfAnythingParser();
-    if ( ! parser->accept(args) ) {
-        failedArgParseMessage(myName, "(form)", args, cont, engine);
-    }
-    else {
-        workQueueHelper<NotWorker>(cont, env, engine, parser);
+    static const char * name { "not" };
+
+    ObjectParameter p0;
+    if ( argsToParms(args, engine, name, p0) ) {
+        workQueueHelper<NotWorker>(cont, env, engine, p0.value);
     }
 }
 
@@ -314,13 +238,12 @@ void scam::applyOr(ScamValue args,
                    Env * env,
                    ScamEngine * engine)
 {
-    static const char * myName = "or";
-    ListParser * parser = getListOfAnythingParser();
-    if ( ! parser->accept(args) ) {
-        failedArgParseMessage(myName, "(form*)", args, cont, engine);
-    }
-    else {
-        workQueueHelper<OrWorker>(cont, env, parser, engine, 0u);
+    static const char * name = "or";
+
+    ObjectParameter  pObj;
+    CountedParameter p0(pObj);
+    if ( argsToParms(args, engine, name, p0) ) {
+        workQueueHelper<OrWorker>(cont, env, p0.value, engine);
     }
 }
 
@@ -329,13 +252,11 @@ void scam::applyQuasiQuote(ScamValue args,
                            Env * env,
                            ScamEngine * engine)
 {
-    static const char * myName = "quasiquote";
-    SingletonParser * parser = getSingletonOfAnythingParser();
-    if ( ! parser->accept(args) ) {
-        failedArgParseMessage(myName, "(form)", args, cont, engine);
-    }
-    else {
-        workQueueHelper<QuasiQuoteWorker>(parser->get(), cont, env, engine);
+    static const char * name = "quasiquote";
+
+    ObjectParameter p0;
+    if ( argsToParms(args, engine, name, p0) ) {
+        workQueueHelper<QuasiQuoteWorker>(p0.value, cont, env, engine);
     }
 }
 
@@ -344,13 +265,11 @@ void scam::applyQuote(ScamValue args,
                       Env * env,
                       ScamEngine * engine)
 {
-    static const char * myName = "quote";
-    SingletonParser * parser = getSingletonOfAnythingParser();
-    if ( ! parser->accept(args) ) {
-        failedArgParseMessage(myName, "(expr)", args, cont, engine);
-    }
-    else {
-        cont->handleValue(parser->get());
+    static const char * name = "quote";
+
+    ObjectParameter p0;
+    if ( argsToParms(args, engine, name, p0) ) {
+        cont->handleValue(p0.value);
     }
 }
 
@@ -359,14 +278,12 @@ void scam::applySetX(ScamValue args,
                      Env * env,
                      ScamEngine * engine)
 {
-    static const char * myName = "set!";
-    AssignParser * parser = standardMemoryManager.make<AssignParser>();
+    static const char * name = "set!";
 
-    if ( ! parser->accept(args) ) {
-        failedArgParseMessage(myName, "(sym expr)", args, cont, engine);
-    }
-    else {
-        workQueueHelper<AssignWorker>(parser, cont, env, engine);
+    SymbolParameter p0;
+    ObjectParameter p1;
+    if ( argsToParms(args, engine, name, p0, p1) ) {
+        workQueueHelper<AssignWorker>(p0.value, p1.value, cont, env, engine);
     }
 }
 
@@ -375,13 +292,11 @@ void scam::applyUndefine(ScamValue args,
                          Env * env,
                          ScamEngine * engine)
 {
-    static const char * myName = "undefine";
-    UndefineParser * parser = standardMemoryManager.make<UndefineParser>();
-    if ( ! parser->accept(args) ) {
-        failedArgParseMessage(myName, "(sym)", args, cont, engine);
-    }
-    else {
-        workQueueHelper<UndefineWorker>(parser, cont, env, engine);
+    static const char * name = "undefine";
+
+    SymbolParameter p0;
+    if ( argsToParms(args, engine, name, p0) ) {
+        workQueueHelper<UndefineWorker>(p0.value, cont, env, engine);
     }
 }
 

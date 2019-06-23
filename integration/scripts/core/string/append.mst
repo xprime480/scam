@@ -7,17 +7,21 @@ Append string
 
 [input]
 
+(load "lib/test/test-handler.scm")
+
 (string-append)
 (string-append "")
 (string-append "Hello")
 (string-append "Hello" ", World")
 (string-append "a" "b" "c")
-(string-append 1 2 3)
+(test-err-cat (string-append 1 2 3))
 
 [result]
+[keep 6]
 ""
 ""
 "Hello"
 "Hello, World"
 "abc"
-string-append: Expected 0 values, got 3
+:args
+

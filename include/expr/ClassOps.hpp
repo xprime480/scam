@@ -7,13 +7,13 @@
 
 namespace scam
 {
-    class FunctionDefParser;
+    class FunctionDef;
 
     extern ScamValue getClassBase(ScamValue cls);
     extern size_t getClassVarCount(ScamValue cls);
     extern ScamValue getClassVar(ScamValue cls, size_t idx);
     extern size_t getClassMethodCount(ScamValue cls);
-    extern const FunctionDefParser * getClassMethod(ScamValue cls, size_t idx);
+    extern const FunctionDef & getClassMethod(ScamValue cls, size_t idx);
     extern Env * getClassCapture(ScamValue cls);
 
     extern Env * getInstanceFunctionMap(ScamValue inst);

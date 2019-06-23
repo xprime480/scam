@@ -4,7 +4,6 @@
 #include "Worker.hpp"
 
 #include "ScamFwd.hpp"
-#include "input/ArgParserFwd.hpp"
 
 namespace scam
 {
@@ -13,12 +12,14 @@ namespace scam
     private:
         friend class scam::MemoryManager;
 
-        DefineWorker(DefineParser * parser,
+        DefineWorker(ScamValue symbol,
+                     ScamValue form,
                      Continuation * cont,
                      Env * env,
                      ScamEngine * engine);
 
-        static DefineWorker * makeInstance(DefineParser * parser,
+        static DefineWorker * makeInstance(ScamValue symbol,
+                                           ScamValue form,
                                            Continuation * cont,
                                            Env * env,
                                            ScamEngine * engine);
@@ -28,7 +29,8 @@ namespace scam
         void run() override;
 
     private:
-        DefineParser * parser;
+        ScamValue      symbol;
+        ScamValue      form;
         Continuation * cont;
         Env          * env;
     };

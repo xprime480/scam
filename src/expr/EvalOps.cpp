@@ -8,6 +8,7 @@
 #include "expr/ClassWorker.hpp"
 #include "expr/ClosureWorker.hpp"
 #include "expr/ConsWorker.hpp"
+#include "expr/EqualityOps.hpp"
 #include "expr/InstanceCont.hpp"
 #include "expr/MapWorker.hpp"
 #include "expr/ScamData.hpp"
@@ -15,12 +16,10 @@
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueFactory.hpp"
 #include "expr/ValueWriter.hpp"
-#include "input/DictOpsParser.hpp"
-#include "input/FunctionDefParser.hpp"
-#include "input/SingletonParser.hpp"
-#include "input/SymbolPlusManyParser.hpp"
 #include "prim/PrimWorker.hpp"
 #include "util/ArgListHelper.hpp"
+#include "util/DictCommand.hpp"
+#include "util/InstanceDef.hpp"
 
 #include <sstream>
 
@@ -69,6 +68,7 @@ void scam::apply(ScamValue value,
                  Env * env,
                  ScamEngine * engine)
 {
+    static const char * name { "apply" };
     if ( isClass(value) ) {
         workQueueHelper<ClassWorker>(value, args, cont, env, engine);
     }
@@ -84,53 +84,38 @@ void scam::apply(ScamValue value,
     }
 
     else if ( isContinuation(value) ) {
-        SingletonParser * parser = getSingletonOfAnythingParser();
-        const bool accepted = parser->accept(args);
-
-        if ( accepted ) {
-            ScamValue arg = parser->get();
+        ObjectParameter p0;
+        if ( argsToParms(args, engine, name, p0) ) {
+            ScamValue arg = p0.value;
             eval(arg, value->contValue(), env, engine);
-        }
-        else {
-            failedArgParseMessage(writeValue(value).c_str(),
-                                  "(form)",
-                                  args,
-                                  cont,
-                                  engine);
         }
     }
 
     else if ( isDict(value) ) {
-        DictOpsParser * parser = standardMemoryManager.make<DictOpsParser>();
-
-        if ( ! parser->accept(args) ) {
-            failedArgParseMessage("dict",
-                                  "(:op args{0,2})",
-                                  args,
-                                  cont,
-                                  engine);
+        DictCommand cmd;
+        if ( ! argsToParms(args, engine, name, cmd) ) {
             return;
         }
 
-        ScamValue op = parser->getParsedOp();
+        ScamValue op = cmd.op;
         ScamValue rv = nullptr;
 
-        if ( equals(op, DictOpsParser::getOp) ) {
-            rv = dictGet(value, parser->getOpKey());
+        if ( equals(op, DictCommand::getOp) ) {
+            rv = dictGet(value, cmd.key);
         }
-        else if ( equals(op, DictOpsParser::putOp) ) {
-            ScamValue val = parser->getOpVal();
-            rv = dictPut(value, parser->getOpKey(), val);
+        else if ( equals(op, DictCommand::putOp) ) {
+            ScamValue val = cmd.val;
+            rv = dictPut(value, cmd.key, val);
         }
-        else if ( equals(op, DictOpsParser::lenOp) ) {
+        else if ( equals(op, DictCommand::lenOp) ) {
             rv = makeInteger(length(value), true);
         }
-        else if ( equals(op, DictOpsParser::hasOp) ) {
-            const bool b = dictHas(value, parser->getOpKey());
+        else if ( equals(op, DictCommand::hasOp) ) {
+            const bool b = dictHas(value, cmd.key);
             rv = makeBoolean(b);
         }
-        else if ( equals(op, DictOpsParser::remOp) ) {
-            rv = dictRemove(value, parser->getOpKey());
+        else if ( equals(op, DictCommand::remOp) ) {
+            rv = dictRemove(value, cmd.key);
         }
         else {
             rv = makeError("Unknown dictionary operator", op);
@@ -142,27 +127,22 @@ void scam::apply(ScamValue value,
     }
 
     else if ( isInstance(value) ) {
-        InstanceParser * parser = standardMemoryManager.make<InstanceParser>();
+        InstanceDef def;
+        if ( argsToParms(args, engine, name, def) ) {
+            ScamValue name    = def.name;
+            ScamValue funargs = def.forms;
 
-        if ( ! parser->accept(args) ) {
-            failedArgParseMessage("instance",
-                                  "(sym forms*)",
-                                  args,
-                                  cont,
-                                  engine);
-            return;
-        }
-
-        ScamValue name = parser->getSymbol();
-        ScamValue funargs = parser->getForms();
-
-        Continuation * newCont =
-            standardMemoryManager.make<InstanceCont>(value, name, cont, engine);
-        if ( isNull(funargs) ) {
-            newCont->handleValue(funargs);
-        }
-        else {
-            mapEval(funargs, newCont, env, engine);
+            Continuation * newCont =
+                standardMemoryManager.make<InstanceCont>(value,
+                                                         name,
+                                                         cont,
+                                                         engine);
+            if ( isNull(funargs) ) {
+                newCont->handleValue(funargs);
+            }
+            else {
+                mapEval(funargs, newCont, env, engine);
+            }
         }
     }
 

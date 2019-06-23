@@ -1,8 +1,9 @@
 #include "prim/OutputOps.hpp"
 
-#include "Continuation.hpp"
-#include "expr/ValueFactory.hpp"
-#include "util/ArgListHelper.hpp"
+#include "expr/ScamToInternal.hpp"
+#include "expr/TypePredicates.hpp"
+#include "expr/ValueWriter.hpp"
+#include "util/Parameter.hpp"
 
 #include <iostream>
 
@@ -13,38 +14,24 @@ void scam::applyDisplay(ScamValue args,
                         Continuation * cont,
                         ScamEngine * engine)
 {
-    static const char * name { "display" };
-    ArgListHelper helper(args);
+    ObjectParameter pObj;
+    if ( argsToParms(args, engine, "newline", pObj) ) {
+        ScamValue obj = pObj.value;
 
-    ScamValue value;
-    if ( ! wantObject(name, helper, cont, engine, value) ) {
-        return;
+        if ( isString(obj) ) {
+            cerr << asString(obj);
+        }
+        else {
+            cerr << writeValue(obj);
+        }
     }
-    if ( ! finishArgs(name, helper, cont, engine) ) {
-        return;
-    }
-
-    if ( isString(value) ) {
-        cerr << asString(value);
-    }
-    else {
-        cerr << writeValue(value);
-    }
-
-    cont->handleValue(makeNothing());
 }
 
 void scam::applyNewline(ScamValue args,
                          Continuation * cont,
                          ScamEngine * engine)
 {
-    static const char * name { "newline" };
-    ArgListHelper helper(args);
-
-    if ( ! finishArgs(name, helper, cont, engine) ) {
-        return;
+    if ( argsToParms(args, engine, "newline") ) {
+        cerr << "\n";
     }
-
-    cerr << "\n";
-    cont->handleValue(makeNothing());
 }

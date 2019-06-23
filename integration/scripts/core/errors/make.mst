@@ -7,13 +7,16 @@ Make Error
 
 [input]
 
-(make-error)
-(make-error 1 2 3)
+(load "lib/test/test-handler.scm")
+
+(test-err-cat (make-error))
+(test-err-cat (make-error 1 2 3))
 (make-error "bagels are not doughnuts")
 (make-error "wanted a list, got %{0} %{2} %{1}" 2 4 3)
 
 [result]
-make-error: parameter 1 missing
-make-error: wanted string for parameter 1 (1)
+[keep 4]
+:args
+:args
 bagels are not doughnuts
 wanted a list, got 2 3 4

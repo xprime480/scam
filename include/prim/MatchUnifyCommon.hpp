@@ -5,16 +5,21 @@
 
 namespace scam
 {
-    class MatchUnifyParser;
-
     class MatchUnifyCommon
     {
     public:
-        MatchUnifyCommon(MatchUnifyParser * parser, Continuation * cont);
+        MatchUnifyCommon(ScamValue lhs,
+                         ScamValue rhs,
+                         ScamValue dict,
+                         bool match,
+                         Continuation * cont);
         void solve();
 
     private:
-        MatchUnifyParser * parser;
+        ScamValue lhs;
+        ScamValue rhs;
+        ScamValue dict;
+        bool match;
         Continuation * cont;
 
         ScamValue check_ignore(ScamValue dict, ScamValue lhs, ScamValue rhs);

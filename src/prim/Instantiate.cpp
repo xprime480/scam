@@ -1,9 +1,8 @@
 #include "prim/Instantiate.hpp"
 
 #include "Continuation.hpp"
-#include "input/SingletonParser.hpp"
 #include "prim/Instantiator.hpp"
-#include "util/ArgListHelper.hpp"
+#include "util/Parameter.hpp"
 
 using namespace scam;
 using namespace std;
@@ -17,15 +16,11 @@ void scam::applyInstantiate(ScamValue args,
                             Continuation * cont,
                             ScamEngine * engine)
 {
-    static const char * myName = "instantiate";
-
-    SingletonParser * parser = getSingletonOfAnythingParser();
-    if ( ! parser->accept(args) ) {
-        failedArgParseMessage(myName, "(form)", args, cont, engine);
-        return;
+    static const char * name = "instantiate";
+    ObjectParameter p0;
+    if ( argsToParms(args, engine, name, p0) ) {
+        Instantiator inst(counter);
+        ScamValue rv = inst.exec(p0.value);
+        cont->handleValue(rv);
     }
-
-    Instantiator inst(counter);
-    ScamValue rv = inst.exec(parser);
-    cont->handleValue(rv);
 }

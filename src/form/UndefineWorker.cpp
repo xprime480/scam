@@ -2,41 +2,41 @@
 
 #include "Continuation.hpp"
 #include "Env.hpp"
+#include "ErrorCategory.hpp"
 #include "ScamEngine.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/ValueFactory.hpp"
 #include "expr/ValueWriter.hpp"
 #include "form/UndefineCont.hpp"
-#include "input/UndefineParser.hpp"
 #include "util/MemoryManager.hpp"
 
 using namespace scam;
 using namespace std;
 
-UndefineWorker::UndefineWorker(UndefineParser * parser,
+UndefineWorker::UndefineWorker(ScamValue value,
                                Continuation * cont,
                                Env * env,
                                ScamEngine * engine)
     : Worker("Undefine", engine)
-    , parser(parser)
+    , value(value)
     , cont(cont)
     , env(env)
 {
 }
 
-UndefineWorker * UndefineWorker::makeInstance(UndefineParser * parser,
+UndefineWorker * UndefineWorker::makeInstance(ScamValue value,
                                               Continuation * cont,
                                               Env * env,
                                               ScamEngine * engine)
 {
-    return new UndefineWorker(parser, cont, env, engine);
+    return new UndefineWorker(value, cont, env, engine);
 }
 
 void UndefineWorker::mark()
 {
     if ( ! isMarked() ) {
         Worker::mark();
-        parser->mark();
+        value->mark();
         cont->mark();
         env->mark();
     }
@@ -46,15 +46,14 @@ void UndefineWorker::run()
 {
     Worker::run();
 
-    ScamValue sym = parser->getSymbol();
-
-    if ( env->check(sym, false) ) {
+    if ( env->check(value, false) ) {
         Continuation * c =
-            standardMemoryManager.make<UndefineCont>(sym, cont, env, engine);
+            standardMemoryManager.make<UndefineCont>(value, cont, env, engine);
         c->handleValue(makeNull());
     }
     else {
-        static ScamValue err = makeError("Symbol not found (%{0})", sym);
+        ScamValue err = makeError("Symbol not found (%{0})", value);
+        err->errorCategory() = envCategory;
         engine->handleError(err);
     }
 }

@@ -7,8 +7,10 @@ Type Checker of Procedures
 
 [input]
 
-(procedure?)
-(procedure? car cdr)
+(load "lib/test/test-handler.scm")
+
+(test-err-cat (procedure?))
+(test-err-cat (procedure? car cdr))
 
 (list
  (procedure? car)
@@ -19,6 +21,6 @@ Type Checker of Procedures
 
 [result]
 [keep 3]
-procedure?: parameter 1 missing
-procedure?: Expected 1 values, got 2
+:args
+:args
 (#t #f #t #f #t)

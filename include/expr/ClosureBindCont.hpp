@@ -6,7 +6,7 @@
 namespace scam
 {
     class Env;
-    class LambdaParser;
+    class LambdaDef;
 
     class MemoryManager;
 
@@ -15,13 +15,13 @@ namespace scam
     private:
         friend class scam::MemoryManager;
 
-        ClosureBindCont(LambdaParser * lambda,
+        ClosureBindCont(LambdaDef & lambda,
                         Env * capture,
                         Continuation * cont,
                         bool macrolike,
                         ScamEngine * engine);
 
-        static ClosureBindCont * makeInstance(LambdaParser * lambda,
+        static ClosureBindCont * makeInstance(LambdaDef & lambda,
                                               Env * capture,
                                               Continuation * cont,
                                               bool macrolike,
@@ -32,7 +32,7 @@ namespace scam
         void handleValue(ScamValue value) override;
 
     private:
-        LambdaParser * lambda;
+        LambdaDef    & lambda;
         Env          * capture;
         Continuation * cont;
         bool           macrolike;

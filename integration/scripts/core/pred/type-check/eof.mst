@@ -7,8 +7,10 @@ Type Checker of EOF
 
 [input]
 
-(eof-object?)
-(eof-object? '(a . b) (list 1 2 3))
+(load "lib/test/test-handler.scm")
+
+(test-err-cat (eof-object?))
+(test-err-cat (eof-object? '(a . b) (list 1 2 3)))
 
 (list
  (eof-object? 2)
@@ -16,6 +18,6 @@ Type Checker of EOF
 
 [result]
 [keep 3]
-eof-object?: parameter 1 missing
-eof-object?: Expected 1 values, got 2
+:args
+:args
 (#f #t)

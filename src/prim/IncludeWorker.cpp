@@ -2,8 +2,9 @@
 
 #include "Continuation.hpp"
 #include "expr/ScamData.hpp"
+#include "expr/SequenceOps.hpp"
+#include "expr/TypePredicates.hpp"
 #include "expr/ValueFactory.hpp"
-#include "input/IncludeParser.hpp"
 #include "prim/IncludeCont.hpp"
 #include "prim/Load.hpp"
 #include "util/MemoryManager.hpp"
@@ -11,47 +12,40 @@
 using namespace scam;
 using namespace std;
 
-IncludeWorker::IncludeWorker(IncludeParser * parser,
+IncludeWorker::IncludeWorker(ScamValue args,
                              Continuation * cont,
-                             ScamEngine * engine,
-                             size_t idx)
+                             ScamEngine * engine)
     : Worker("Include", engine)
-    , parser(parser)
+    , args(args)
     , cont(cont)
-    , idx(idx)
 {
 }
 
-IncludeWorker * IncludeWorker::makeInstance(IncludeParser * parser,
+IncludeWorker * IncludeWorker::makeInstance(ScamValue args,
                                             Continuation * cont,
-                                            ScamEngine * engine,
-                                            size_t idx)
+                                            ScamEngine * engine)
 {
-    return new IncludeWorker(parser, cont, engine, idx);
+    return new IncludeWorker(args, cont, engine);
 }
 
 void IncludeWorker::mark()
 {
     if ( ! isMarked() ) {
         Worker::mark();
-        parser->mark();
+        args->mark();
         cont->mark();
     }
 }
 
 void IncludeWorker::run()
 {
-    const size_t count = parser->size();
-    ScamValue curr = parser->get(idx);
+    ScamValue curr = getCar(args);
     ScamValue newArg = makeList(curr);
 
-    size_t nextIdx = idx + 1;
     Continuation * nextCont = cont;
-    if ( nextIdx < count ) {
-        nextCont = standardMemoryManager.make<IncludeCont>(parser,
-                                                           cont,
-                                                           engine,
-                                                           nextIdx);
+    ScamValue rest = getCdr(args);
+    if ( ! isNull(rest) ) {
+        nextCont = standardMemoryManager.make<IncludeCont>(rest, cont, engine);
     }
 
     applyLoad(newArg, nextCont, engine);

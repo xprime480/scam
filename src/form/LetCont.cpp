@@ -6,6 +6,7 @@
 #include "expr/ScamData.hpp"
 #include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
+#include "expr/ValueFactory.hpp"
 
 using namespace scam;
 using namespace std;
@@ -45,7 +46,7 @@ void LetCont::do_let(ScamValue expr)
 {
     Binder binder(env);
     ScamValue ff = formals;
-    Env * extended = binder.bind(ff, expr);
+    Env * extended = binder.bind(ff, makeNothing(), expr);
 
     rebind_procs(extended);
     final_eval(extended);

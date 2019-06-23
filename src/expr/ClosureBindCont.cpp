@@ -12,14 +12,13 @@
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueFactory.hpp"
 #include "expr/ValueWriter.hpp"
-#include "input/LambdaParser.hpp"
-#include "input/ParameterListParser.hpp"
+#include "util/LambdaDef.hpp"
 #include "util/MemoryManager.hpp"
 
 using namespace scam;
 using namespace std;
 
-ClosureBindCont::ClosureBindCont(LambdaParser * lambda,
+ClosureBindCont::ClosureBindCont(LambdaDef & lambda,
                                  Env * capture,
                                  Continuation * cont,
                                  bool macrolike,
@@ -32,7 +31,7 @@ ClosureBindCont::ClosureBindCont(LambdaParser * lambda,
 {
 }
 
-ClosureBindCont * ClosureBindCont::makeInstance(LambdaParser * lambda,
+ClosureBindCont * ClosureBindCont::makeInstance(LambdaDef & lambda,
                                                 Env * capture,
                                                 Continuation * cont,
                                                 bool macrolike,
@@ -45,7 +44,7 @@ void ClosureBindCont::mark()
 {
     if ( ! isMarked() ) {
         Continuation::mark();
-        lambda->mark();
+        lambda.mark();
         capture->mark();
         cont->mark();
     }
@@ -81,16 +80,8 @@ bool ClosureBindCont::malformedActuals(ScamValue expr) const
 
 bool ClosureBindCont::describeFormals(unsigned & len) const
 {
-    const ParameterListParser * formals = lambda->getArgs();
-    ScamValue rest = formals->getRest();
-
-    len = formals->size();
-    if ( nullptr != rest ) {
-        --len;
-        return true;
-    }
-
-    return false;
+    len = length(lambda.formals);
+    return ! isNothing(lambda.rest);
 }
 
 void ClosureBindCont::wrongNumberOfParameters(unsigned formalsLen,
@@ -126,15 +117,14 @@ bool ClosureBindCont::checkArgLength(ScamValue expr) const
 
 void ClosureBindCont::finalize(ScamValue actuals)  const
 {
-    ScamValue formals = lambda->getArgs()->getValue();
+    ScamValue formals = lambda.formals;
     Binder binder(capture);
-    Env * extended = binder.bind(formals, actuals);
+    Env * extended = binder.bind(formals, lambda.rest, actuals);
 
     Continuation * c =
         ( macrolike
           ? standardMemoryManager.make<MacroEvalCont>(cont, capture, engine)
           : cont );
 
-    ScamValue forms = lambda->getFormList();
-    workQueueHelper<EvalWorker>(forms, extended, c, engine);
+    workQueueHelper<EvalWorker>(lambda.forms, extended, c, engine);
 }

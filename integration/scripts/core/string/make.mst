@@ -7,23 +7,29 @@ Make some strings
 
 [input]
 
-(make-string -5 #\*)
-(make-string 335 3)
+(load "lib/test/test-handler.scm")
+
+(test-err-cat (make-string -5 #\*))
+(test-err-cat (make-string 335 3))
+
 (make-string 0)
 (make-string 0 #\x)
 (make-string 3)
 (make-string 2 #\i)
-(string 1 2 3)
+
+(test-err-cat (string 1 2 3))
+
 (string)
 (string #\1 #\x #\*)
 
 [result]
-make-string: wanted non-negative integer for parameter 1 (-5)
-make-string: Expected 1 values, got 2
+[keep 9]
+:args
+:args
 ""
 ""
 "   "
 "ii"
-string: Expected 0 values, got 3
+:args
 ""
 "1x*"

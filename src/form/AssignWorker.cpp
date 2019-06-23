@@ -6,36 +6,39 @@
 #include "expr/EvalOps.hpp"
 #include "expr/ScamData.hpp"
 #include "form/AssignCont.hpp"
-#include "input/SymbolPlusParser.hpp"
 #include "util/MemoryManager.hpp"
 
 using namespace scam;
 using namespace std;
 
-AssignWorker::AssignWorker(AssignParser * parser,
+AssignWorker::AssignWorker(ScamValue sym,
+                           ScamValue value,
                            Continuation * cont,
                            Env * env,
                            ScamEngine * engine)
     : Worker("Assign", engine)
-    , parser(parser)
+    , sym(sym)
+    , value(value)
     , cont(cont)
     , env(env)
 {
 }
 
-AssignWorker * AssignWorker::makeInstance(AssignParser * parser,
-                                          Continuation * cont,
-                                          Env * env,
-                                          ScamEngine * engine)
+AssignWorker * AssignWorker::makeInstance(ScamValue sym,
+                                           ScamValue value,
+                                           Continuation * cont,
+                                           Env * env,
+                                           ScamEngine * engine)
 {
-    return new AssignWorker(parser, cont, env, engine);
+    return new AssignWorker(sym, value, cont, env, engine);
 }
 
 void AssignWorker::mark()
 {
     if ( ! isMarked() ) {
         Worker::mark();
-        parser->mark();
+        sym->mark();
+        value->mark();
         cont->mark();
         env->mark();
     }
@@ -45,12 +48,9 @@ void AssignWorker::run()
 {
     Worker::run();
 
-    ScamValue sym = parser->getSymbol();
     Continuation * c = standardMemoryManager.make<AssignCont>(sym,
                                                               cont,
                                                               env,
                                                               engine);
-
-    ScamValue expr = parser->getForm();
-    eval(expr, c, env, engine);
+    eval(value, c, env, engine);
 }

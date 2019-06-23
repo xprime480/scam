@@ -5,22 +5,20 @@
 
 namespace scam
 {
-    class CountedListParser;
     class Env;
     class MemoryManager;
-
 
     class IfCont : public Continuation
     {
     private:
         friend class scam::MemoryManager;
 
-        IfCont(CountedListParser * parser,
+        IfCont(ScamValue args,
                Continuation * cont,
                Env * env,
                ScamEngine * engine);
 
-        static IfCont * makeInstance(CountedListParser * parser,
+        static IfCont * makeInstance(ScamValue args,
                                      Continuation * cont,
                                      Env * env,
                                      ScamEngine * engine);
@@ -30,9 +28,9 @@ namespace scam
         void handleValue(ScamValue value) override;
 
     private:
-        CountedListParser * parser;
+        ScamValue      args;
         Continuation * cont;
-        Env * env;
+        Env          * env;
     };
 }
 

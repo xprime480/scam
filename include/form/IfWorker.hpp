@@ -9,8 +9,6 @@ namespace scam
     class Continuation;
     class Env;
 
-    class CountedListParser;
-
     class IfWorker : public Worker
     {
     private:
@@ -18,21 +16,21 @@ namespace scam
         IfWorker(Continuation * cont,
                  Env * env,
                  ScamEngine * engine,
-                 CountedListParser * parser);
+                 ScamValue args);
 
         static IfWorker * makeInstance(Continuation * cont,
                                        Env * env,
                                        ScamEngine * engine,
-                                       CountedListParser * parser);
+                                       ScamValue args);
 
     public:
         void mark() override;
         void run() override;
 
     private:
-        CountedListParser * parser;
+        ScamValue      args;
         Continuation * cont;
-        Env * env;
+        Env          * env;
     };
 }
 #endif

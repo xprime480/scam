@@ -3,10 +3,11 @@
 #include "Env.hpp"
 #include "ScamException.hpp"
 #include "expr/ScamData.hpp"
+#include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueFactory.hpp"
 #include "expr/ValueWriter.hpp"
-#include "input/ClassDefParser.hpp"
+#include "util/ClassDef.hpp"
 
 #include <sstream>
 
@@ -25,31 +26,31 @@ namespace
 ScamValue scam::getClassBase(ScamValue cls)
 {
     checkClass(cls, "getClassBase");
-    return cls->classDef()->getBase();
+    return cls->classDef().base;
 }
 
 size_t scam::getClassVarCount(ScamValue cls)
 {
     checkClass(cls, "getClassVarCount");
-    return cls->classDef()->getVarCount();
+    return length(cls->classDef().vars);
 }
 
 ScamValue scam::getClassVar(ScamValue cls, size_t idx)
 {
     checkClass(cls, "getClassVar");
-    return cls->classDef()->getVar(idx);
+    return nthcar(cls->classDef().vars, idx);
 }
 
 size_t scam::getClassMethodCount(ScamValue cls)
 {
     checkClass(cls, "getClassMethodCount");
-    return cls->classDef()->getMethodCount();
+    return cls->classDef().methods.size();
 }
 
-const FunctionDefParser * scam::getClassMethod(ScamValue cls, size_t idx)
+const FunctionDef & scam::getClassMethod(ScamValue cls, size_t idx)
 {
     checkClass(cls, "getClassMethod");
-    return cls->classDef()->getMethod(idx);
+    return cls->classDef().methods[idx];
 }
 
 Env * scam::getClassCapture(ScamValue cls)

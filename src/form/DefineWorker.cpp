@@ -4,36 +4,39 @@
 #include "expr/EvalOps.hpp"
 #include "expr/ScamData.hpp"
 #include "form/DefineCont.hpp"
-#include "input/SymbolPlusParser.hpp"
 #include "util/MemoryManager.hpp"
 
 using namespace scam;
 using namespace std;
 
-DefineWorker::DefineWorker(DefineParser * parser,
+DefineWorker::DefineWorker(ScamValue symbol,
+                           ScamValue form,
                            Continuation * cont,
                            Env * env,
                            ScamEngine * engine)
     : Worker("Define", engine)
-    , parser(parser)
+    , symbol(symbol)
+    , form(form)
     , cont(cont)
     , env(env)
 {
 }
 
-DefineWorker * DefineWorker::makeInstance(DefineParser * parser,
+DefineWorker * DefineWorker::makeInstance(ScamValue symbol,
+                                          ScamValue form,
                                           Continuation * cont,
                                           Env * env,
                                           ScamEngine * engine)
 {
-    return new DefineWorker(parser, cont, env, engine);
+    return new DefineWorker(symbol, form, cont, env, engine);
 }
 
 void DefineWorker::mark()
 {
     if ( ! isMarked() ) {
         Worker::mark();
-        parser->mark();
+        symbol->mark();
+        form->mark();
         cont->mark();
         env->mark();
     }
@@ -43,10 +46,7 @@ void DefineWorker::run()
 {
     Worker::run();
 
-    ScamValue sym = parser->getSymbol();
     Continuation * c =
-        standardMemoryManager.make<DefineCont>(sym, cont, env, engine);
-
-    ScamValue expr = parser->getForm();
-    eval(expr, c, env, engine);
+        standardMemoryManager.make<DefineCont>(symbol, cont, env, engine);
+    eval(form, c, env, engine);
 }

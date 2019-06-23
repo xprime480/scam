@@ -7,7 +7,6 @@
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueFactory.hpp"
 #include "expr/ValueWriter.hpp"
-#include "input/MatchUnifyParser.hpp"
 #include "prim/CommonError.hpp"
 #include "prim/Substitutor.hpp"
 
@@ -17,21 +16,23 @@
 using namespace scam;
 using namespace std;
 
-MatchUnifyCommon::MatchUnifyCommon(MatchUnifyParser * parser,
+MatchUnifyCommon::MatchUnifyCommon(ScamValue lhs,
+                                   ScamValue rhs,
+                                   ScamValue dict,
+                                   bool match,
                                    Continuation * cont)
-    : parser(parser)
+    : lhs(lhs)
+    , rhs(rhs)
+    , dict(dict)
+    , match(match)
     , cont(cont)
 {
 }
 
 void MatchUnifyCommon::solve()
 {
-    ScamValue lhs  = parser->getLhs();
-    ScamValue rhs  = parser->getRhs();
-    ScamValue dict = parser->getDict();
-
     ScamValue result = exec(dict, lhs, rhs);
-    if ( ! parser->isMatch() && isDict(result) ) {
+    if ( ! match && isDict(result) ) {
         result = resolve(result);
     }
 
@@ -87,7 +88,7 @@ ScamValue MatchUnifyCommon::check_keyword_reversed(ScamValue dict,
                                                    ScamValue lhs,
                                                    ScamValue rhs)
 {
-    if ( parser->isMatch() ) {
+    if ( match ) {
         return makeNull();
     }
     else {

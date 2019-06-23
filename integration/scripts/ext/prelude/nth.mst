@@ -8,11 +8,12 @@ Nth
 [input]
 
 (load "lib/prelude.scm")
+(load "lib/test/test-handler.scm")
 
 (nth 0 '(a b c))
 (nth 4 '(a b c))
 (nth 0 #(1 2 3))
-(nth -50 #(1 2 3))
+(test-err-cat (nth -50 #(1 2 3)))
 (nth 0 { :a 333.333 })
 
 [result]
@@ -20,7 +21,7 @@ Nth
 a
 Cannot index unknown type
 1
-vref expected "(index form)"; got "(-50 #(1 2 3))"
+:args
 Cannot index unknown type
 
 

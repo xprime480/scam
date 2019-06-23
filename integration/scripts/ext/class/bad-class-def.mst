@@ -8,11 +8,13 @@ Malformed Class Definion
 
 [input]
 
-(make-class
- Root
- (val)
- (init (v) (set! val v))
- (foo))
+(load "lib/test/test-handler.scm")
+(test-err-cat (make-class
+               Root
+               (val)
+               (init (v) (set! val v))
+               (foo)))
 
 [result]
-make-class expected "(Base (vars*) methods*)"; got "(Root (val) (init (v) (set! val v)) (foo))"
+[keep 1]
+:args

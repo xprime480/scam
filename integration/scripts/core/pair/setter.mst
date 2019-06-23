@@ -7,12 +7,14 @@ Set-Car / Set-Cdr
 
 [input]
 
+(load "lib/test/test-handler.scm")
+
 (define immutable '(1 . 2))
 (define mutable (cons 1 2))
 (define list-val (list 1 2 3))
 
-(set-car! immutable 3)
-(set-cdr! immutable 4)
+(test-err-cat (set-car! immutable 3))
+(test-err-cat (set-cdr! immutable 4))
 
 (begin
   (set-car! mutable 3)
@@ -32,8 +34,8 @@ Set-Car / Set-Cdr
 
 [result]
 [keep 6]
-set-car!: Cannot mutate constant pair (1 . 2)
-set-cdr!: Cannot mutate constant pair (1 . 2)
+:args
+:args
 (3 . 2)
 (3 5 5 5)
 (3 2 3)

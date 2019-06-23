@@ -6,8 +6,9 @@
 #include "expr/ScamData.hpp"
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueWriter.hpp"
-#include "input/FunctionDefParser.hpp"
 #include "input/StringCharStream.hpp"
+#include "util/FunctionDef.hpp"
+#include "util/LambdaDef.hpp"
 #include "util/MemoryManager.hpp"
 #include "util/NumericConverter.hpp"
 #include "util/NumericUtils.hpp"
@@ -255,19 +256,19 @@ ScamValue scam::makeDict(ExprVec const & args)
     return v;
 }
 
-ScamValue scam::makeClosure(LambdaParser * parser,
+ScamValue scam::makeClosure(const LambdaDef & lambda,
                             Env * env,
                             bool macrolike)
 {
     static constexpr auto myType = ScamData::Closure;
     ScamValue v = standardMemoryManager.make<ScamData>(myType);
-    v->closureDef() = parser;
+    v->closureDef() = lambda;
     v->closureEnv() = env;
     v->closureMacroLike() = macrolike;
     return v;
 }
 
-ScamValue scam::makeClass(ClassDefParser * def, Env * env)
+ScamValue scam::makeClass(ClassDef & def, Env * env)
 {
     static constexpr auto myType = ScamData::Class;
     ScamValue v = standardMemoryManager.make<ScamData>(myType);
@@ -302,12 +303,11 @@ ScamValue scam::makeClassInstance(ScamValue value, Env * env)
 
     size_t fun_count = getClassMethodCount(value);
     for ( size_t n = 0 ; n < fun_count ; ++n ) {
-        const FunctionDefParser * fun = getClassMethod(value, n);
+        const FunctionDef & fun = getClassMethod(value, n);
+        ScamValue name = fun.fname;
+        const LambdaDef & lambda = fun.lambda;
 
-        ScamValue name = fun->getName();
-        LambdaParser * lambda = fun->getLambda();
         ScamValue impl = makeClosure(lambda, local, false);
-
         priv->put(name, impl);
     }
 

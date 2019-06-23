@@ -7,8 +7,10 @@ Type Checker of Pairs
 
 [input]
 
-(pair?)
-(pair? '(a . b) (list 1 2 3))
+(load "lib/test/test-handler.scm")
+
+(test-err-cat (pair?))
+(test-err-cat (pair? '(a . b) (list 1 2 3)))
 
 (list
  (pair? (cons 1 2))
@@ -18,6 +20,6 @@ Type Checker of Pairs
 
 [result]
 [keep 3]
-pair?: parameter 1 missing
-pair?: Expected 1 values, got 2
+:args
+:args
 (#t #t #f #f)

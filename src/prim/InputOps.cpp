@@ -8,7 +8,7 @@
 #include "input/PortCharStream.hpp"
 #include "input/ScamParser.hpp"
 #include "port/ScamPort.hpp"
-#include "util/ArgListHelper.hpp"
+#include "util/Parameter.hpp"
 
 using namespace scam;
 using namespace std;
@@ -17,27 +17,16 @@ void scam::applyRead(ScamValue args,
                      Continuation * cont,
                      ScamEngine * engine)
 {
-    static const char * name { "read" };
-    ArgListHelper helper(args);
+    PortParameter p0;
+    if ( argsToParms(args, engine, "read", p0) ) {
+        ScamValue port = p0.value;
 
-    ScamValue value;
-    if ( ! wantPort(name, helper, cont, engine, value) ) {
-        return;
-    }
-    if ( ! finishArgs(name, helper, cont, engine) ) {
-        return;
-    }
+        port->portValue()->rollback();
+        PortCharStream stream(port);
+        CharStreamTokenizer tokenizer(stream);
+        ScamParser parser(tokenizer);
 
-    value->portValue()->rollback();
-    PortCharStream stream(value);
-    CharStreamTokenizer tokenizer(stream);
-    ScamParser parser(tokenizer);
-    ScamValue rv = parser.parseExpr();
-
-    if ( isError(rv) ) {
-        engine->handleError(rv);
-    }
-    else {
+        ScamValue rv = parser.parseExpr();
         cont->handleValue(rv);
     }
 }
@@ -46,14 +35,9 @@ void scam::applyEofObject(ScamValue args,
                           Continuation * cont,
                           ScamEngine * engine)
 {
-    static const char * name { "eof-object" };
-    ArgListHelper helper(args);
-
-    if ( ! finishArgs(name, helper, cont, engine) ) {
-        return;
-    }
-
-    ScamValue rv = makeEof();
-    cont->handleValue(rv);
+    if ( argsToParms(args, engine, "eof-object") ) {
+        cont->handleValue(makeEof());
+    };
 }
+
 

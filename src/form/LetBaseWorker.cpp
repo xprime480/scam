@@ -5,21 +5,20 @@
 #include "expr/ScamData.hpp"
 #include "expr/SequenceOps.hpp"
 #include "expr/ValueFactory.hpp"
-#include "input/BindFormParser.hpp"
-#include "input/LetParser.hpp"
+#include "util/LetDef.hpp"
 
 using namespace scam;
 using namespace std;
 
 LetBaseWorker::LetBaseWorker(char const * name,
-                             LetParser * parser,
+                             LetDef & def,
                              Continuation * cont,
                              Env * env,
                              ScamEngine * engine)
     : Worker(name, engine)
     , cont(cont)
     , env(env)
-    , parser(parser)
+    , def(def)
 {
 }
 
@@ -27,7 +26,7 @@ void LetBaseWorker::mark()
 {
     if ( ! isMarked() ) {
         Worker::mark();
-        parser->mark();
+        def.mark();
         cont->mark();
         env->mark();
     }
@@ -37,47 +36,5 @@ void LetBaseWorker::run()
 {
     Worker::run();
 
-    ScamValue parsed  = parse_args();
-    ScamValue formals = getCar(getCar(parsed));
-    ScamValue values  = getCdr(getCar(parsed));
-    ScamValue forms   = getCdr(parsed);
-
-    do_next(formals, values, forms);
-}
-
-ScamValue LetBaseWorker::parse_bindings()
-{
-    ScamValue nil = makeNull();
-    std::vector<ScamValue> syms;
-    std::vector<ScamValue> vals;
-
-    const size_t count = parser->getBindingCount();
-
-    for ( size_t idx = 0 ; idx < count ; ++idx ) {
-        BindFormParser * bf = parser->getBinding(idx);
-
-        ScamValue sym = bf->getSymbol();
-        syms.push_back(sym);
-
-        ScamValue valForm = bf->getForm();
-        if ( nullptr == valForm ) {
-            vals.push_back(nil);
-        }
-        else {
-            vals.push_back(valForm);
-        }
-    }
-
-    ScamValue symList = makeList(syms);
-    ScamValue valList = makeList(vals);
-
-    return makePair(symList, valList);
-}
-
-ScamValue LetBaseWorker::parse_args()
-{
-    ScamValue forms     = parser->getForms();
-    ScamValue separated = parse_bindings();
-
-    return makePair(separated, forms);
+    do_next(def.formals, def.values, def.forms);
 }

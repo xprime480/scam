@@ -6,9 +6,9 @@
 #include "expr/ScamNumeric.hpp"
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueFactory.hpp"
-#include "input/ClassDefParser.hpp"
-#include "input/LambdaParser.hpp"
 #include "port/ScamPort.hpp"
+#include "util/ClassDef.hpp"
+#include "util/LambdaDef.hpp"
 
 using namespace scam;
 using namespace std;
@@ -234,12 +234,12 @@ void ScamData::mark()
         break;
 
     case ScamData::Closure:
-        closureDef()->mark();
+        closureDef().mark();
         closureEnv()->mark();
         break;
 
     case ScamData::Class:
-        classDef()->mark();
+        classDef().mark();
         classEnv()->mark();
         break;
 
@@ -448,7 +448,7 @@ ScamData::DictValueData & ScamData::dictValues()
 ScamData::ClosureDefType & ScamData::closureDef()
 {
     assertType(ScamData::Closure);
-    return value.closureData->parser;
+    return value.closureData->lambda;
 }
 
 Env *& ScamData::closureEnv()
@@ -463,7 +463,7 @@ bool & ScamData::closureMacroLike()
     return value.closureData->macrolike;
 }
 
-ClassDefParser *& ScamData::classDef()
+ClassDef & ScamData::classDef()
 {
     assertType(ScamData::Class);
     return value.classValue->def;

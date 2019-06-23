@@ -7,8 +7,10 @@ Type Checker of Ports
 
 [input]
 
-(port?)
-(port? '(a . b) (list 1 2 3))
+(load "lib/test/test-handler.scm")
+
+(test-err-cat (port?))
+(test-err-cat (port? '(a . b) (list 1 2 3)))
 
 (list
  (port? 2)
@@ -16,6 +18,6 @@ Type Checker of Ports
 
 [result]
 [keep 3]
-port?: parameter 1 missing
-port?: Expected 1 values, got 2
+:args
+:args
 (#f #t)

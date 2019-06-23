@@ -7,8 +7,6 @@
 
 namespace scam
 {
-    class ListParser;
-
     class AndWorker : public Worker
     {
     private:
@@ -16,15 +14,13 @@ namespace scam
 
         AndWorker(Continuation * cont,
                   Env * env,
-                  ListParser * parser,
-                  ScamEngine * engine,
-                  size_t n);
+                  ScamValue args,
+                  ScamEngine * engine);
 
         static AndWorker * makeInstance(Continuation * cont,
                                         Env * env,
-                                        ListParser * parser,
-                                        ScamEngine * engine,
-                                        size_t n);
+                                        ScamValue args,
+                                        ScamEngine * engine);
 
     public:
         void mark() override;
@@ -32,9 +28,8 @@ namespace scam
 
     private:
         Continuation * cont;
-        Env * env;
-        ListParser * parser;
-        size_t n;
+        Env          * env;
+        ScamValue      args;
     };
 }
 

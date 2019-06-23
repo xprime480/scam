@@ -13,21 +13,24 @@ Binder::Binder(Env * capture)
 {
 }
 
-Env * Binder::bind(ScamValue formals, ScamValue actuals) const
+Env * Binder::bind(ScamValue formals, ScamValue rest, ScamValue actuals) const
 {
     Env * extended = capture->extend();
-    bindOne(extended, formals, actuals);
+    bindOne(extended, formals, rest, actuals);
     return extended;
 }
 
-void Binder::bindOne(Env * env, ScamValue syms, ScamValue vals) const
+void Binder::bindOne(Env * env,
+                     ScamValue syms,
+                     ScamValue rest,
+                     ScamValue vals) const
 {
     if ( isPair(syms) ) {
         ScamValue key = getCar(syms);
         env->put(key, getCar(vals));
-        bindOne(env, getCdr(syms), getCdr(vals));
+        bindOne(env, getCdr(syms), rest, getCdr(vals));
     }
-    else if ( ! isNull(syms) ) {
-        env->put(syms, vals);
+    else if ( isSymbol(rest) ) {
+        env->put(rest, vals);
     }
 }

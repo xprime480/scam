@@ -1,8 +1,6 @@
 Work stack:
 
-* Change the way numerics types are tagged in ScamData.
-  The goal is to make it easier to discriminate subtypes of ScamNumeric
-  with only bit operations.
+* Final arg parsing hoo ha
 
 * Implement the define-syntax world
 

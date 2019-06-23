@@ -1,17 +1,19 @@
 #include "prim/ErrorOps.hpp"
 
 #include "Continuation.hpp"
+#include "ErrorCategory.hpp"
 #include "ScamEngine.hpp"
 #include "expr/EqualityOps.hpp"
 #include "expr/EvalOps.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/SequenceOps.hpp"
+#include "expr/ScamToInternal.hpp"
 #include "expr/ValueFactory.hpp"
 #include "input/ScamParser.hpp"
 #include "prim/Load.hpp"
 #include "prim/UserHandler.hpp"
 #include "prim/WithHandlerCont.hpp"
-#include "util/ArgListHelper.hpp"
+#include "util/Parameter.hpp"
 
 #include "util/GlobalId.hpp"
 #include "util/DebugTrace.hpp"
@@ -32,7 +34,7 @@ namespace
                                       ScamEngine * engine,
                                       const char * name);
 
-    extern bool checkErrorCategory(ScamValue args,
+    extern void checkErrorCategory(ScamValue args,
                                    Continuation * cont,
                                    ScamEngine * engine,
                                    const char * name,
@@ -67,17 +69,11 @@ void scam::applyRaise(ScamValue args,
                       ScamEngine * engine)
 {
     static const char * name = "raise";
-    ArgListHelper helper(args);
 
-    ScamValue obj;
-    if ( ! wantObject(name, helper, cont, engine, obj) ) {
-        return;
+    ObjectParameter pObj;
+    if ( argsToParms(args, engine, name, pObj) ) {
+        engine->handleError(pObj.value);
     }
-    if ( ! finishArgs(name, helper, cont, engine) ) {
-        return;
-    }
-
-    engine->handleError(obj);
 }
 
 void scam::applyWithHandler(ScamValue args,
@@ -85,30 +81,25 @@ void scam::applyWithHandler(ScamValue args,
                             ScamEngine * engine)
 {
     static const char * name = "with-exception-handler";
-    ArgListHelper helper(args);
 
-    ScamValue handler, thunk;
-    if ( ! wantApplicable(name, helper, cont, engine, handler, 1) ) {
-        return;
+    ApplicableParameter pHandler;
+    ApplicableParameter pThunk;
+    if ( argsToParms(args, engine, name, pHandler, pThunk) ) {
+        ScamValue handler = pHandler.value;
+        ScamValue thunk   = pThunk.value;
+
+        Continuation * newCont =
+            standardMemoryManager.make<WithHandlerCont>(cont, engine);
+
+        Handler * wrapper =
+            standardMemoryManager.make<UserHandler>(handler,
+                                                    cont,
+                                                    env(handler),
+                                                    engine);
+
+        engine->pushHandler(wrapper);
+        apply(thunk, makeNull(), newCont, env(thunk), engine);
     }
-    if ( ! wantApplicable(name, helper, cont, engine, thunk, 0) ) {
-        return;
-    }
-    if ( ! finishArgs(name, helper, cont, engine) ) {
-        return;
-    }
-
-    Continuation * newCont =
-        standardMemoryManager.make<WithHandlerCont>(cont, engine);
-
-    Handler * wrapper =
-        standardMemoryManager.make<UserHandler>(handler,
-                                                cont,
-                                                env(handler),
-                                                engine);
-
-    engine->pushHandler(wrapper);
-    apply(thunk, makeNull(), newCont, env(thunk), engine);
 }
 
 void scam::applyErrorMessage(ScamValue args,
@@ -175,30 +166,25 @@ namespace
                               ScamEngine * engine,
                               const char * name)
     {
-        static const ScamValue userCategory = makeSymbol(":user", false);
-        ArgListHelper helper(args);
         ScamValue rv = makeNothing();
 
-        string str;
-        ScamValue objs;
-        if ( ! wantString(name, helper, cont, engine, str) ) {
-            return rv;
-        }
-        if ( ! wantZeroPlus(name, helper, cont, engine, objs, isAnything) ) {
-            return rv;
-        }
-        if ( ! finishArgs(name, helper, cont, engine) ) {
-            return rv;
+        StringParameter  p0;
+        ObjectParameter  pTemp;
+        CountedParameter p1(pTemp);
+        if ( argsToParms(args, engine, name, p0, p1) ) {
+            string str     = asString(p0.value);
+            ScamValue objs = p1.value;
+
+            ScamData::VectorData irritants;
+            unsigned len = length(objs);
+            for ( unsigned i = 0 ; i < len ; ++i ) {
+                irritants.push_back(nthcar(objs, i));
+            }
+
+            rv = makeError(str.c_str(), irritants);
+            rv->errorCategory() = userCategory;
         }
 
-        ScamData::VectorData irritants;
-        unsigned len = length(objs);
-        for ( unsigned i = 0 ; i < len ; ++i ) {
-            irritants.push_back(nthcar(objs, i));
-        }
-
-        rv = makeError(str.c_str(), irritants);
-        rv->errorCategory() = userCategory;
         return rv;
     }
 
@@ -207,43 +193,28 @@ namespace
                                ScamEngine * engine,
                                const char * name)
     {
-        ArgListHelper helper(args);
+        ScamValue rv = makeNothing();
 
-        ScamValue error = makeNothing();
-
-        if ( ! wantError(name, helper, cont, engine, error) ) {
-            return error;
-        }
-        if ( ! finishArgs(name, helper, cont, engine) ) {
-            return error;
+        ErrorParameter p0;
+        if ( argsToParms(args, engine, name, p0) ) {
+            rv = p0.value;
         }
 
-        return error;
+        return rv;
     }
 
-    bool checkErrorCategory(ScamValue args,
+    void checkErrorCategory(ScamValue args,
                             Continuation * cont,
                             ScamEngine * engine,
                             const char * name,
                             ScamValue target)
     {
-        ArgListHelper helper(args);
-
-        ScamValue obj;
-        if ( ! wantObject(name, helper, cont, engine, obj) ) {
-            return false;
-        }
-        if ( ! finishArgs(name, helper, cont, engine) ) {
-            return false;
-        }
-
-        bool matched = false;
-        if ( isError(obj) ) {
+        ErrorParameter p0;
+        if ( argsToParms(args, engine, name, p0) ) {
+            ScamValue obj = p0.value;
             ScamValue cat = obj->errorCategory();
-            matched = equals(cat, target);
+            bool matched = equals(cat, target);
+            cont->handleValue(makeBoolean(matched));
         }
-
-        cont->handleValue(makeBoolean(matched));
-        return true;
     }
 }

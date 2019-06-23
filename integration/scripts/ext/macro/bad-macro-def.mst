@@ -7,7 +7,9 @@ Malformed Macro
 
 [input]
 
-(macro)
+(load "lib/test/test-handler.scm")
+(test-err-cat (macro))
 
 [result]
-Expected (macro args body*); got (macro)
+[keep 1]
+:args

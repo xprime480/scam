@@ -3,7 +3,7 @@
 #include "Continuation.hpp"
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueFactory.hpp"
-#include "util/ArgListHelper.hpp"
+#include "util/Parameter.hpp"
 
 using namespace scam;
 using namespace std;
@@ -18,20 +18,11 @@ using namespace std;
                         ScamEngine * engine)                    \
         {                                                       \
             static const char * name { label };                 \
-            ArgListHelper helper(args);                         \
-                                                                \
-            ScamValue arg;                                      \
-            bool ok =                                           \
-                wantObject(name, helper, cont, engine, arg);    \
-            if ( ! ok ) {                                       \
-                return;                                         \
+            ObjectParameter p0;                                 \
+            if ( argsToParms(args, engine, name, p0) ) {        \
+                bool answer = pred(p0.value);                   \
+                cont->handleValue(makeBoolean(answer));         \
             }                                                   \
-            if ( ! finishArgs(name, helper, cont, engine) ) {   \
-                return;                                         \
-            }                                                   \
-            bool answer = pred(arg);                            \
-            ScamValue rv = makeBoolean(answer);                 \
-            cont->handleValue(rv);                              \
         }
 
 DEFINE_PREDICATE(NullP, "null?", isNull)

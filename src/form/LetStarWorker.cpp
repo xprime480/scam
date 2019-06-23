@@ -11,26 +11,27 @@
 using namespace scam;
 using namespace std;
 
-LetStarWorker::LetStarWorker(LetParser * parser,
+LetStarWorker::LetStarWorker(LetDef & def,
                              Continuation * cont,
                              Env * env,
                              ScamEngine * engine)
-    : LetBaseWorker("LetStar", parser, cont, env, engine)
+    : LetBaseWorker("LetStar", def, cont, env, engine)
 {
 }
 
-LetStarWorker * LetStarWorker::makeInstance(LetParser * parser,
+LetStarWorker * LetStarWorker::makeInstance(LetDef & def,
                                             Continuation * cont,
                                             Env * env,
                                             ScamEngine * engine)
 {
-    return new LetStarWorker(parser, cont, env, engine);
+    return new LetStarWorker(def, cont, env, engine);
 }
 
 void
 LetStarWorker::do_next(ScamValue formals, ScamValue values, ScamValue forms)
 {
     Env * extended = env->extend();
+    /* FIXME */
     ScamValue safe = safeCons(values);
 
     Continuation * ch =

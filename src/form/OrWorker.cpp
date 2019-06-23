@@ -4,9 +4,10 @@
 #include "Env.hpp"
 #include "expr/EvalOps.hpp"
 #include "expr/ScamData.hpp"
+#include "expr/SequenceOps.hpp"
+#include "expr/TypePredicates.hpp"
 #include "expr/ValueFactory.hpp"
 #include "form/OrCont.hpp"
-#include "input/ListParser.hpp"
 #include "util/MemoryManager.hpp"
 
 using namespace scam;
@@ -14,31 +15,28 @@ using namespace std;
 
 OrWorker::OrWorker(Continuation * cont,
                    Env * env,
-                   ListParser * parser,
-                   ScamEngine * engine,
-                   size_t n)
+                   ScamValue args,
+                   ScamEngine * engine)
     : Worker("Or", engine)
-    , parser(parser)
+    , args(args)
     , cont(cont)
     , env(env)
-    , n(n)
 {
 }
 
 OrWorker * OrWorker::makeInstance(Continuation * cont,
                                   Env * env,
-                                  ListParser * parser,
-                                  ScamEngine * engine,
-                                  size_t n)
+                                  ScamValue args,
+                                  ScamEngine * engine)
 {
-    return new OrWorker(cont, env, parser, engine, n);
+    return new OrWorker(cont, env, args, engine);
 }
 
 void OrWorker::mark()
 {
     if ( ! isMarked() ) {
         Worker::mark();
-        parser->mark();
+        args->mark();
         cont->mark();
         env->mark();
     }
@@ -48,18 +46,14 @@ void OrWorker::run()
 {
     Worker::run();
 
-    size_t const len = parser->size();
-    if ( 0 == len ) {
-        ScamValue rv = makeBoolean(false);
-        cont->handleValue(rv);
-    }
-    else if ( n == (len - 1) ) {
-        eval(parser->get(len-1), cont, env, engine);
+    if ( isNull(args) ) {
+        cont->handleValue(makeBoolean(false));
     }
     else {
-        ScamValue test = parser->get(n);
+        ScamValue test = getCar(args);
+        ScamValue rest = getCdr(args);
         Continuation * newCont =
-            standardMemoryManager.make<OrCont>(parser, cont, env, engine, n+1);
+            standardMemoryManager.make<OrCont>(rest, cont, env, engine);
         eval(test, newCont, env, engine);
     }
 }

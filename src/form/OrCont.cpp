@@ -6,38 +6,34 @@
 #include "expr/ScamData.hpp"
 #include "expr/TypePredicates.hpp"
 #include "form/OrWorker.hpp"
-#include "input/ListParser.hpp"
 
 using namespace scam;
 using namespace std;
 
-OrCont::OrCont(ListParser * parser,
+OrCont::OrCont(ScamValue args,
                Continuation * cont,
                Env * env,
-               ScamEngine * engine,
-               size_t n)
+               ScamEngine * engine)
     : Continuation("Or", engine)
-    , parser(parser)
+    , args(args)
     , cont(cont)
     , env(env)
-    , n(n)
 {
 }
 
-OrCont * OrCont::makeInstance(ListParser * parser,
+OrCont * OrCont::makeInstance(ScamValue args,
                               Continuation * cont,
                               Env * env,
-                              ScamEngine * engine,
-                              size_t n)
+                              ScamEngine * engine)
 {
-    return new OrCont(parser, cont, env, engine, n);
+    return new OrCont(args, cont, env, engine);
 }
 
 void OrCont::mark()
 {
     if ( ! isMarked() ) {
         Continuation::mark();
-        parser->mark();
+        args->mark();
         cont->mark();
         env->mark();
     }
@@ -50,10 +46,10 @@ void OrCont::handleValue(ScamValue value)
     if ( isUnhandledError(value) ) {
         engine->handleError(value);
     }
-    else if ( truth(value) ) {
+    else if ( truth(value) || isNull(args) ) {
         cont->handleValue(value);
     }
     else {
-        workQueueHelper<OrWorker>(cont, env, parser, engine, n);
+        workQueueHelper<OrWorker>(cont, env, args, engine);
     }
 }

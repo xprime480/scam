@@ -3,7 +3,6 @@
 #include "expr/ScamData.hpp"
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueFactory.hpp"
-#include "input/SingletonParser.hpp"
 
 #include <sstream>
 
@@ -16,10 +15,9 @@ Instantiator::Instantiator(size_t & counter)
 {
 }
 
-ScamValue Instantiator::exec(SingletonParser * parser)
+ScamValue Instantiator::exec(ScamValue value)
 {
-    ScamValue expr = parser->get();
-    return inst_value(expr);
+    return inst_value(value);
 }
 
 ScamValue Instantiator::map_value(ScamValue val)

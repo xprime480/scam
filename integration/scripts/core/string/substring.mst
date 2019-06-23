@@ -7,6 +7,8 @@ Substring functions
 
 [input]
 
+(load "lib/test/test-handler.scm")
+
 (load "lib/prelude.scm")
 
 (define empty "")
@@ -18,9 +20,9 @@ Substring functions
 (string-copy hello 2 4)
 (string-copy hello 7)
 (string-copy hello)
-(string-copy hello -1 555)
-(string-copy hello 0 555)
-(string-copy hello 5 0)
+(test-err-cat (string-copy hello -1 555))
+(test-err-cat (string-copy hello 0 555))
+(test-err-cat (string-copy hello 5 0))
 
 (substring hello 2 4)
 
@@ -33,7 +35,7 @@ Substring functions
 "ll"
 "World"
 "Hello, World"
-string-copy: Expected 1 values, got 3
-string-copy: Expected 2 values, got 3
-string-copy: Expected 2 values, got 3
+:args
+:args
+:args
 "ll"

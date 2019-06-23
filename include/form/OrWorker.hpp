@@ -7,8 +7,6 @@
 
 namespace scam
 {
-    class ListParser;
-
     class OrWorker : public Worker
     {
     private:
@@ -16,25 +14,22 @@ namespace scam
 
         OrWorker(Continuation * cont,
                  Env * env,
-                 ListParser * parser,
-                 ScamEngine * engine,
-                 size_t n);
+                 ScamValue args,
+                 ScamEngine * engine);
 
         static OrWorker * makeInstance(Continuation * cont,
                                        Env * env,
-                                       ListParser * parser,
-                                       ScamEngine * engine,
-                                       size_t n);
+                                       ScamValue args,
+                                       ScamEngine * engine);
 
     public:
         void mark() override;
         void run() override;
 
     private:
-        ListParser * parser;
+        ScamValue      args;
         Continuation * cont;
-        Env * env;
-        size_t n;
+        Env          * env;
     };
 }
 

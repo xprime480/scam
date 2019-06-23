@@ -7,15 +7,17 @@ Type Checker of Null
 
 [input]
 
-(null?)
-(null? '() '())
+(load "lib/test/test-handler.scm")
+
+(test-err-cat (null?))
+(test-err-cat (null? '() '()))
 
 (null? ())
 (null? 2)
 
 [result]
 [keep 4]
-null?: parameter 1 missing
-null?: Expected 1 values, got 2
+:args
+:args
 #t
 #f

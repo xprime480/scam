@@ -7,6 +7,8 @@ List-String conversions
 
 [input]
 
+(load "lib/test/test-handler.scm")
+
 (string->list "")
 (string->list "" 0 0)
 (string->list "abc")
@@ -16,10 +18,11 @@ List-String conversions
 (list->string '())
 (list->string '(#\f #\o #\o))
 
-(list->string 2)
-(list->string '(#\e 2 #\x))
+(test-err-cat (list->string 2))
+(test-err-cat (list->string '(#\e 2 #\x)))
 
 [result]
+[keep 9]
 ()
 ()
 (#\a #\b #\c)
@@ -27,5 +30,5 @@ List-String conversions
 (#\b)
 ""
 "foo"
-list->string: expected list (2)
-list->string: invalid value at position 2 (2)
+:args
+:args

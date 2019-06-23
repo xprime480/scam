@@ -7,19 +7,17 @@
 
 namespace scam
 {
-    class UndefineParser;
-
     class UndefineWorker : public Worker
     {
     private:
         friend class scam::MemoryManager;
 
-        UndefineWorker(UndefineParser * parser,
+        UndefineWorker(ScamValue value,
                        Continuation * cont,
                        Env * env,
                        ScamEngine * engine);
 
-        static UndefineWorker * makeInstance(UndefineParser * parser,
+        static UndefineWorker * makeInstance(ScamValue value,
                                              Continuation * cont,
                                              Env * env,
                                              ScamEngine * engine);
@@ -29,9 +27,9 @@ namespace scam
         void run() override;
 
     private:
-        UndefineParser * parser;
-        Continuation   * cont;
-        Env            * env;
+        ScamValue      value;
+        Continuation * cont;
+        Env          * env;
     };
 }
 

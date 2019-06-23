@@ -5,7 +5,7 @@
 #include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueFactory.hpp"
-#include "util/ArgListHelper.hpp"
+#include "util/Parameter.hpp"
 
 using namespace scam;
 using namespace std;
@@ -51,15 +51,10 @@ void scam::applyCons(ScamValue args,
                      Continuation * cont,
                      ScamEngine * engine)
 {
-    static const char * name = "cons";
-
-    ScamValue obj1, obj2;
-    if ( ! getTwoObjs(args, cont, engine, name, obj1, obj2) ) {
-        return;
+    ObjectParameter p0, p1;
+    if ( argsToParms(args, engine, "cons", p0, p1) ) {
+        cont->handleValue(makePair(p0.value, p1.value));
     }
-
-    ScamValue pair = makePair(obj1, obj2);
-    cont->handleValue(pair);
 }
 
 void scam::applySetCarX(ScamValue args,
@@ -95,16 +90,14 @@ namespace
                            ScamEngine * engine,
                            const char * name)
     {
-        ArgListHelper helper(args);
+        ScamValue rv = makeNothing();
 
-        ScamValue pair;
-        if ( ! wantPair(name, helper, cont, engine, pair) ) {
-            return makeNothing();
+        PairParameter p0;
+        if ( argsToParms(args, engine, name, p0) ) {
+            rv = p0.value;
         }
-        if ( ! finishArgs(name, helper, cont, engine) ) {
-            return makeNothing();
-        }
-        return pair;
+
+        return rv;
     }
 
     bool setCarCdrCommon(ScamValue args,
@@ -114,17 +107,17 @@ namespace
                          ScamValue & pair,
                          ScamValue & obj)
     {
-        ArgListHelper helper(args);
+        bool rv = false;
 
-        if ( ! wantMutablePair(name, helper, cont, engine, pair) ) {
-            return false;
+        PairParameter pPair;
+        MutableParameter p0(pPair);
+        ObjectParameter p1;
+        if ( argsToParms(args, engine, name, p0, p1) ) {
+            pair = p0.value;
+            obj  = p1.value;
+            rv = true;
         }
-        if ( ! wantObject(name, helper, cont, engine, obj) ) {
-            return false;
-        }
-        if ( ! finishArgs(name, helper, cont, engine) ) {
-            return false;
-        }
-        return true;
+
+        return rv;
     }
 }

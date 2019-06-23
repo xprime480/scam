@@ -7,8 +7,10 @@ Type Checker of Booleans
 
 [input]
 
-(boolean?)
-(boolean? #t #f)
+(load "lib/test/test-handler.scm")
+
+(test-err-cat (boolean?))
+(test-err-cat (boolean? #t #f))
 
 (list
  (boolean? #t)
@@ -18,6 +20,6 @@ Type Checker of Booleans
 
 [result]
 [keep 3]
-boolean?: parameter 1 missing
-boolean?: Expected 1 values, got 2
+:args
+:args
 (#t #t #f #t)

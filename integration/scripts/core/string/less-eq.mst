@@ -8,15 +8,18 @@ String Less Than or Equal
 
 [input]
 
+(load "lib/test/test-handler.scm")
+
 (define err :not-a-string)
 (define s1 "")
 (define s2 "boy")
 (define s3 "BoY")
 (define s4 "girl")
 
-(string<=? s1 s2 err)
-(string<=?)
-(string<=? s1)
+(test-err-cat (string<=? s1 s2 err))
+(test-err-cat (string<=?))
+(test-err-cat (string<=? s1))
+
 (string<=? s1 s2)
 (string<=? s2 s2)
 (string<=? s2 s4)
@@ -27,9 +30,9 @@ String Less Than or Equal
 
 [result]
 [keep 9]
-string<=?: Expected 2 values, got 3
-string<=?: Too Few Values (0 of at least 2)
-string<=?: Too Few Values (1 of at least 2)
+:args
+:args
+:args
 #t
 #t
 #t

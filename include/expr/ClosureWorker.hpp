@@ -7,14 +7,14 @@
 
 namespace scam
 {
-    class LambdaParser;
+    class LambdaDef;
 
     class ClosureWorker : public Worker
     {
     private:
         friend class scam::MemoryManager;
 
-        ClosureWorker(LambdaParser * parser,
+        ClosureWorker(LambdaDef & parser,
                       Env * capture,
                       Continuation * cont,
                       ScamValue args,
@@ -22,7 +22,7 @@ namespace scam
                       bool macrolike,
                       ScamEngine * engine);
 
-        static ClosureWorker * makeInstance(LambdaParser * parser,
+        static ClosureWorker * makeInstance(LambdaDef & parser,
                                             Env * capture,
                                             Continuation * cont,
                                             ScamValue args,
@@ -35,7 +35,7 @@ namespace scam
         void run() override;
 
     private:
-        LambdaParser * parser;
+        LambdaDef    & lambda;
         Env          * capture;
         Continuation * cont;
         ScamValue      args;

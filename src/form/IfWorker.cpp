@@ -5,8 +5,8 @@
 #include "ScamEngine.hpp"
 #include "expr/EvalOps.hpp"
 #include "expr/ScamData.hpp"
+#include "expr/SequenceOps.hpp"
 #include "form/IFCont.hpp"
-#include "input/CountedListParser.hpp"
 #include "util/MemoryManager.hpp"
 
 using namespace scam;
@@ -15,9 +15,9 @@ using namespace std;
 IfWorker::IfWorker(Continuation * cont,
                    Env * env,
                    ScamEngine * engine,
-                   CountedListParser * parser)
+                   ScamValue args)
     : Worker("If", engine)
-    , parser(parser)
+    , args(args)
     , cont(cont)
     , env(env)
 {
@@ -26,9 +26,9 @@ IfWorker::IfWorker(Continuation * cont,
 IfWorker * IfWorker::makeInstance(Continuation * cont,
                                   Env * env,
                                   ScamEngine * engine,
-                                  CountedListParser * parser)
+                                  ScamValue args)
 {
-    return new IfWorker(cont, env, engine, parser);
+    return new IfWorker(cont, env, engine, args);
 }
 
 void IfWorker::mark()
@@ -37,7 +37,7 @@ void IfWorker::mark()
         Worker::mark();
         cont->mark();
         env->mark();
-        parser->mark();
+        args->mark();
     }
 }
 
@@ -46,8 +46,7 @@ void IfWorker::run()
     Worker::run();
 
     Continuation * newCont =
-        standardMemoryManager.make<IfCont>(parser, cont, env, engine);
-    ScamValue test = parser->get(0u);
-
+        standardMemoryManager.make<IfCont>(args, cont, env, engine);
+    ScamValue test = nthcar(args, 0);
     eval(test, newCont, env, engine);
 }

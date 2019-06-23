@@ -8,6 +8,7 @@ Basic Logic
 [input]
 
 (load "lib/prelude.scm")
+(load "lib/test/test-handler.scm")
 
 (list (if #t +1 -1)
       (if #f +1 -1)
@@ -16,8 +17,8 @@ Basic Logic
 
 (if (/ 1 0) (* 2 3) (/ 1 0))
 (if "strings are true" (/ 1 0))
-(if #t)
-(if #t 1 2 3 4 5 ())
+(test-err-cat (if #t))
+(test-err-cat (if #t 1 2 3 4 5 ()))
 
 (list (and)
       (and 3)
@@ -37,8 +38,8 @@ Basic Logic
 
 (list (not 3)
       (not #f))
-(not)
-(not #t #t 3)
+(test-err-cat (not))
+(test-err-cat (not #t #t 3))
 
 (list (xor #t #f)
       (xor #f #t)
@@ -51,11 +52,11 @@ Basic Logic
 (1 -1 () 6)
 Division By Zero
 Division By Zero
-if expected "(test then-expr else-expr?)"; got "(#t)"
-if expected "(test then-expr else-expr?)"; got "(#t 1 2 3 4 5 ())"
+:args
+:args
 (#t 3 #f 3 #f 4 2)
 (#f 3 #f #t #t 3 2)
 (#f #t)
-not expected "(form)"; got "()"
-not expected "(form)"; got "(#t #t 3)"
+:args
+:args
 (#t #t #f #f)

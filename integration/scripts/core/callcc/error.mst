@@ -7,11 +7,14 @@ Bad Continuation Invocation
 
 [input]
 
+(load "lib/test/test-handler.scm")
+
 (call/cc 2)
-(+ 4 (call/cc (lambda (k) (k))))
-(+ 4 (call/cc (lambda (k) (k 1 2))))
+(test-err-cat (+ 4 (call/cc (lambda (k) (k)))))
+(test-err-cat (+ 4 (call/cc (lambda (k) (k 1 2)))))
 
 [result]
+[keep 3]
 call/cc: form '2' cannot be applied
-continuation expected "(form)"; got "()"
-continuation expected "(form)"; got "(1 2)"
+:args
+:args

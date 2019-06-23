@@ -152,6 +152,28 @@ ScamValue TestBase::readEvalFile(char const * filename)
     return loadEvalFile(fullpath, &engine);
 }
 
+void TestBase::runsafe(std::function<void()> thunk)
+{
+    ScamValue rv = makeNothing();
+    try {
+	thunk();
+	rv = makeSymbol("ok");
+    }
+    catch ( ScamException e ) {
+        rv = makeError(e.getMessage().c_str());
+    }
+    catch ( std::exception & e ) {
+        rv = makeError(e.what());
+    }
+    catch ( ... ) {
+        rv = makeError("Unknown exception");
+    }
+
+    cerr << writeValue(rv) << "\n";
+}
+
+
+
 void decodeBit(unsigned mismatch,
                unsigned exp,
                unsigned sel,

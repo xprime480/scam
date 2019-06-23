@@ -7,13 +7,16 @@ Raise
 
 [input]
 
-(raise)
-(raise 1 2 3)
+(load "lib/test/test-handler.scm")
+
+(test-err-cat (raise))
+(test-err-cat (raise 1 2 3))
 (raise "bagels are not doughnuts")
 (raise 2)
 
 [result]
-raise: parameter 1 missing
-raise: Expected 1 values, got 3
+[keep 4]
+:args
+:args
 "bagels are not doughnuts"
 2

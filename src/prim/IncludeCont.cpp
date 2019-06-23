@@ -4,35 +4,32 @@
 #include "WorkQueue.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/TypePredicates.hpp"
-#include "input/IncludeParser.hpp"
 #include "prim/IncludeWorker.hpp"
 
 using namespace scam;
 using namespace std;
 
-IncludeCont::IncludeCont(IncludeParser * parser,
+IncludeCont::IncludeCont(ScamValue args,
                          Continuation * cont,
-                         ScamEngine * engine,
-                         size_t nextIdx)
+                         ScamEngine * engine)
     : Continuation("Include", engine)
-    , parser(parser)
+    , args(args)
     , cont(cont)
 {
 }
 
-IncludeCont * IncludeCont::makeInstance(IncludeParser * parser,
+IncludeCont * IncludeCont::makeInstance(ScamValue args,
                                         Continuation * cont,
-                                        ScamEngine * engine,
-                                        size_t nextIdx)
+                                        ScamEngine * engine)
 {
-    return new IncludeCont(parser, cont, engine, nextIdx);
+    return new IncludeCont(args, cont, engine);
 }
 
 void IncludeCont::mark()
 {
     if ( ! isMarked() ) {
         Continuation::mark();
-        parser->mark();
+        args->mark();
         cont->mark();
     }
 }
@@ -43,8 +40,8 @@ void IncludeCont::handleValue(ScamValue value)
 
     if ( isUnhandledError(value) ) {
         engine->handleError(value);
-        return;
     }
-
-    workQueueHelper<IncludeWorker>(parser, cont, engine, nextIdx);
+    else {
+        workQueueHelper<IncludeWorker>(args, cont, engine);
+    }
 }

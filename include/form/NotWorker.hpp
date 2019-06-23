@@ -7,8 +7,6 @@
 
 namespace scam
 {
-    class SingletonParser;
-
     class NotWorker : public Worker
     {
     private:
@@ -17,21 +15,21 @@ namespace scam
         NotWorker(Continuation * cont,
                   Env * env,
                   ScamEngine * engine,
-                  SingletonParser * parser);
+                  ScamValue value);
 
         static NotWorker * makeInstance(Continuation * cont,
                                         Env * env,
                                         ScamEngine * engine,
-                                        SingletonParser * parser);
+                                        ScamValue value);
 
     public:
         void mark() override;
         void run() override;
 
     private:
-        SingletonParser * parser;
+        ScamValue      value;
         Continuation * cont;
-        Env * env;
+        Env          * env;
     };
 }
 

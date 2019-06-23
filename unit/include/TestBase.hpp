@@ -38,6 +38,8 @@ namespace scam
         ScamValue readEvalFile(char const * filename);
         ScamValue readString(char const * input);
 
+	void runsafe(std::function<void()> thunk);
+
         void doCheck(bool act, unsigned selector, unsigned which);
 
         void checkPredicates(ScamValue expr, unsigned selector);

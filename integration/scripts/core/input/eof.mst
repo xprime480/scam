@@ -7,11 +7,14 @@ EOF
 
 [input]
 
-(eof-object 2)
+(load "lib/test/test-handler.scm")
+
+(test-err-cat (eof-object 2))
 (eof-object)
 (eof-object? (eof-object))
 
 [result]
-eof-object: Expected 0 values, got 1
+[keep 3]
+:args
 eof
 #t

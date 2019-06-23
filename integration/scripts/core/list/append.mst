@@ -7,7 +7,9 @@ Append Lists
 
 [input]
 
-(append 2 3)
+(load "lib/test/test-handler.scm")
+
+(test-err-cat (append 2 3))
 (append)
 (append '(x) '(y))
 (append '(a) '(b c d))
@@ -19,7 +21,8 @@ Append Lists
 
 
 [result]
-append: Expected 1 values, got 2
+[keep 9]
+:args
 ()
 (x y)
 (a b c d)

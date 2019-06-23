@@ -7,14 +7,12 @@
 
 namespace scam
 {
-    class SingletonParser;
-
     class Instantiator : public ValueMapper
     {
     public:
         Instantiator(size_t & counter);
 
-        ScamValue exec(SingletonParser * parser);
+        ScamValue exec(ScamValue value);
 
     protected:
         ScamValue map_value(ScamValue val);

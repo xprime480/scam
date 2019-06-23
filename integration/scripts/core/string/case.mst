@@ -8,23 +8,24 @@ Change String Case
 [input]
 
 (load "lib/prelude.scm")
+(load "lib/test/test-handler.scm")
 
 (define err :not-a-string)
 (define empty "")
 (define num-string "123")
 (define aBcD "aBcD")
 
-(string-upcase err)
+(test-err-cat (string-upcase err))
 (string-upcase empty)
 (string-upcase num-string)
 (string-upcase aBcD)
 
-(string-downcase err)
+(test-err-cat (string-downcase err))
 (string-downcase empty)
 (string-downcase num-string)
 (string-downcase aBcD)
 
-(string-foldcase err)
+(test-err-cat (string-foldcase err))
 (string-foldcase empty)
 (string-foldcase num-string)
 (string-foldcase aBcD)
@@ -33,15 +34,15 @@ aBcD                       ;; original is unchanged
 
 [result]
 [keep 13]
-string-upcase: wanted string for parameter 1 (:not-a-string)
+:args
 ""
 "123"
 "ABCD"
-string-downcase: wanted string for parameter 1 (:not-a-string)
+:args
 ""
 "123"
 "abcd"
-string-downcase: wanted string for parameter 1 (:not-a-string)
+:args
 ""
 "123"
 "abcd"

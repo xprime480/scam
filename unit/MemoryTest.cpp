@@ -7,8 +7,7 @@
 #include "Extractor.hpp"
 #include "WorkQueue.hpp"
 #include "Worker.hpp"
-#include "input/ClassDefParser.hpp"
-#include "input/LambdaParser.hpp"
+#include "util/ClassDef.hpp"
 #include "util/MemoryManager.hpp"
 
 #include <iostream>
@@ -77,7 +76,8 @@ protected:
     template <typename... Ts>
     void expectMarked(bool value, ManagedObject * obj, Ts && ...rest)
     {
-        EXPECT_EQ(value, obj->isMarked());
+        ScamValue t = dynamic_cast<ScamValue>(obj);
+        EXPECT_EQ(value, obj->isMarked()) << (t ? writeValue(t) : "");
         expectMarked(value, rest...);
     }
 };
@@ -395,20 +395,15 @@ TEST_F(MemoryTest, TestClosure)
     ScamValue forms   = makeList(formals, aForm);
     Env * env = standardMemoryManager.make<Env>();
 
-    LambdaParser * lambda = mm.make<LambdaParser>();
-    ASSERT_TRUE(lambda->accept(forms));
+    LambdaDef lambda;
+    ScamValue rv = lambda.transform(forms);
+    ASSERT_TRUE(isNull(rv));
 
     ScamValue closure = makeClosure(lambda, env);
 
     closure->mark();
-    expectMarked(true, closure);
-    expectMarked(true, env);
-    expectMarked(true, forms);
-    expectMarked(true, aForm);
-    expectMarked(true, formals);
-    expectMarked(true, symB);
-    expectMarked(true, symA);
-    expectMarked(true, symPlus);
+    expectMarked(false, forms, formals);
+    expectMarked(true, closure, env, aForm, symB, symA, symPlus);
 }
 
 TEST_F(MemoryTest, TestClass)
@@ -425,19 +420,18 @@ TEST_F(MemoryTest, TestClass)
 
     ScamValue aForm   = makeList(symPlus, symA, symB);
     ScamValue func    = makeList(meth, formals, aForm);
-    ScamValue def     = makeList(base, vars, func);
+    ScamValue args    = makeList(base, vars, func);
 
     Env * env = mm.make<Env>();
 
-    ClassDefParser * parser = mm.make<ClassDefParser>();
-    ASSERT_TRUE(parser->accept(def));
+    ClassDef def;
+    expectNull(def.transform(args));
 
-    ScamValue cls = makeClass(parser, env);
+    ScamValue cls = makeClass(def, env);
 
     cls->mark();
-    expectMarked(true,
-                 cls, parser, env, base, vars,
-                 symB, symA, aForm, symPlus, def, func);
+    expectMarked(false, args, func);
+    expectMarked(true, cls, env, base, vars, symB, symA, aForm, symPlus);
 }
 
 TEST_F(MemoryTest, TestInstance)
@@ -456,16 +450,16 @@ TEST_F(MemoryTest, TestInstance)
 
     ScamValue classDef = makeList(nom, vars, fun1);
 
-    ClassDefParser * def = mm.make<ClassDefParser>();
-    ASSERT_TRUE(def->accept(classDef));
+    ClassDef def;
+    expectNull(def.transform(classDef));
 
     Env * env = standardMemoryManager.make<Env>();
     ScamValue cls = makeClass(def, env);
     ScamValue instance = makeClassInstance(cls, env);
 
     instance->mark();
-    expectMarked(false, fun1, vars, name, nom);
-    expectMarked(true, instance, env, symPlus, symA, symB, symQ, aForm, args);
+    expectMarked(false, fun1, vars, name, nom, args);
+    expectMarked(true, instance, env, symPlus, symA, symB, symQ, aForm);
 }
 
 TEST_F(MemoryTest, TestContinuation)

@@ -3,8 +3,8 @@
 #include "Continuation.hpp"
 #include "expr/ExtendedNumeric.hpp"
 #include "expr/ValueFactory.hpp"
-#include "input/NumericListParser.hpp"
 #include "util/ArgListHelper.hpp"
+#include "util/Parameter.hpp"
 
 #include <algorithm>
 #include <numeric>
@@ -111,25 +111,17 @@ namespace
 }
 
 #define MATH_OP_DEFINE(Name, Proc) \
-    void scam::apply##Name(ScamValue args,                        \
-                           Continuation * cont,                   \
-                           ScamEngine * engine)                   \
-        {                                                         \
-            static const string context { #Name };                \
-            NumericListParser * parser =                          \
-                standardMemoryManager.make<NumericListParser>();  \
-                                                                  \
-            if ( ! parser->accept(args) ) {                       \
-                failedArgParseMessage(context.c_str(),            \
-                "(num*)",                                         \
-                args,                                             \
-                cont,                                             \
-                engine);                                          \
-            }                                                     \
-            else {                                                \
-                ScamValue rv = numericAlgorithm(parser, context, Proc); \
-                cont->handleValue(rv);                            \
-            }                                                     \
+    void scam::apply##Name(ScamValue args,                                \
+                           Continuation * cont,                           \
+                           ScamEngine * engine)                           \
+        {                                                                 \
+            static const char * context { #Name };                        \
+            NumericParameter pNum;                                        \
+            CountedParameter p0(pNum);                                    \
+            if ( argsToParms(args, engine, context, p0) ) {               \
+                ScamValue rv = numericAlgorithm(p0.value, context, Proc); \
+                cont->handleValue(rv);                                    \
+            }                                                             \
         }
 
 

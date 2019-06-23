@@ -7,25 +7,27 @@ Mutation operations on strings
 
 [input]
 
+(load "lib/test/test-handler.scm")
+
 (define test-immutable "0123456789")
 (define test-mutable (string-copy test-immutable))
 
 ;;;;0
-(string-set! :not-a-string 1 #\.)
-(string-set! test-mutable -1 #\.)
-(string-set! test-mutable 1 :not-char)
-(string-set! test-immutable 1 #\.)
+(test-err-cat (string-set! :not-a-string 1 #\.))
+(test-err-cat (string-set! test-mutable -1 #\.))
+(test-err-cat (string-set! test-mutable 1 :not-char))
+(test-err-cat (string-set! test-immutable 1 #\.))
 (string-set! test-mutable 4 #\.)
 
 ;;;;;5
-(string-copy! test-immutable 0 "***")
+(test-err-cat (string-copy! test-immutable 0 "***"))
 (string-copy! test-mutable 0 "***")
 (string-copy! test-mutable 8 "abcdefgh" 0 1)
 (string-copy! test-mutable 0 "abcdefgh" 0 0)
-(string-copy! test-mutable 9 "abcdefgh" 3)
+(test-err-cat (string-copy! test-mutable 9 "abcdefgh" 3))
 
 ;;;;;10
-(string-fill! test-immutable #\_)
+(test-err-cat (string-fill! test-immutable #\_))
 (string-fill! test-mutable #\_ 8 10)
 (string-fill! test-mutable #\+ 7)
 (string-fill! test-mutable #\:)
@@ -38,17 +40,16 @@ test-mutable
 
 [result]
 [keep 16]
-string-set!: wanted string for parameter 1 (:not-a-string)
-string-set!: wanted index into parameter 1 ('"0123456789"') for parameter 2 (-1)
-string-set!: wanted character for parameter 3 (:not-char)
-string-set!: Cannot mutate constant string "0123456789"
+:args
+:args
+:args
+:args
 "0123.56789"
-string-copy!: Cannot mutate constant string "0123456789"
+:args
 "***3.56789"
 "***3.567a9"
 "***3.567a9"
-string-copy!: Insufficient room in destination to copy source
-string-fill!: Cannot mutate constant string "0123456789"
+:args
 "***3.567__"
 "***3.56+++"
 "::::::::::"

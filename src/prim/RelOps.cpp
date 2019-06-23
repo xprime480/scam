@@ -3,9 +3,9 @@
 #include "Continuation.hpp"
 #include "expr/ExtendedNumeric.hpp"
 #include "expr/TypePredicates.hpp"
-#include "input/RelopsListParser.hpp"
 #include "util/ArgListHelper.hpp"
 #include "util/MemoryManager.hpp"
+#include "util/Parameter.hpp"
 
 #include <functional>
 
@@ -101,25 +101,28 @@ namespace
     static const shared_ptr<OpImpl> geDef = make_shared<RelOp<greater_equal>>();
 }
 
-#define CMP_OP_DEFINE(Name, Impl)                                \
-    void scam::apply##Name(ScamValue args,                       \
-                           Continuation * cont,                  \
-                           ScamEngine * engine)                  \
-    {                                                            \
-        string const context = { #Name };                        \
-        RelopsListParser * parser =                              \
-            standardMemoryManager.make<RelopsListParser>();      \
-        if ( ! parser->accept(args) ) {                          \
-            failedArgParseMessage(context.c_str(),               \
-                                  "(num*)",                      \
-                                  args,                          \
-                                  cont,                          \
-                                  engine);                       \
-        }                                                        \
-        else {                                                   \
-            ScamValue rv = compareAlgorithm(parser, context, Impl);  \
-            cont->handleValue(rv);                               \
-        }                                                        \
+#define CMP_OP_DEFINE(Name, Impl)                                       \
+    void scam::apply##Name(ScamValue args,                              \
+                           Continuation * cont,                         \
+                           ScamEngine * engine)                         \
+    {                                                                   \
+        static const char * context = { #Name };                        \
+                                                                        \
+        if ( isNull(args) ) {                                           \
+            cont->handleValue(makeBoolean(true));                       \
+            return;                                                     \
+        }                                                               \
+                                                                        \
+        StringParameter pStr;                                           \
+        NumericParameter pNum;                                          \
+        CountedParameter pStrs(pStr, 1);                                \
+        CountedParameter pNums(pNum, 1);                                \
+        AlternativeParameter p0(pStrs, pNums);                          \
+                                                                        \
+        if ( argsToParms(args, engine, context, p0) ) {                 \
+            ScamValue rv = compareAlgorithm(p0.value, context, Impl);   \
+            cont->handleValue(rv);                                      \
+        }                                                               \
     }
 
 CMP_OP_DEFINE(Eq, eqDef);
