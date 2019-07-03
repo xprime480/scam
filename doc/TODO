@@ -4,14 +4,6 @@
 
 * Remove unneeded classes.
 
-* Make ArgParser classes return something other than nullptr for failed
-      parses.
-  ** partially done -- still needs to be done when the return value
-     is a parser.
-
-* Finish with the merge of branch arg-parse into arg-parse-2
-  ** Then implement define-syntax
-
 * Make ScamCharacter output be readable by reader for non-printable
   characters
 
@@ -33,31 +25,24 @@
 
 * Can validateClosureArgs be refactored or eliminated somehow?
 
-* "Parsers" should probably be renamed "Validators"
-
 * Think of a way to reduce the redundancy between Ports and CharStreams.
   Maybe CharStreams can be eliminated.
 
 * Fix the build process -- some files are recompiled even when it is not
   necessary to do so.
 
-* '{:a 1}' does not scan as a dictionary literal but '{ :a 1 }'.  Make
+* '{:a 1}' does not scan as a dictionary literal but '{ :a 1 }' does.  Make
   the former work.
 
 * Need a better unit test framework.  Current one is too much boilerplate.
   A pure scam framework would be ideal :).
 
-* Is it worth it to make the ScamInstance a global parameter, and make it
+* Is it worth it to make the ScamEngine a global parameter, and make it
   the only way.  Is it really ever going to be necessary to have more than
   one engine at once?
 
 * ClassInitWorker::run could probably use the original continuation and
   not need ClassInitCont.  See comments in the latter implementation file.
 
-* Rationalize error messages.  They are not consistent.
-
-* Do something about the boilerplate in ArgListHelper!!
-
 * Position control in ScamPort objects will probably not work correctly
   if two+ views are created on one simultaneously.  Fix it.
-

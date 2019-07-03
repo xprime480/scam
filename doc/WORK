@@ -1,7 +1,5 @@
 Work stack:
 
-* Final arg parsing hoo ha
-
 * Implement the define-syntax world
 
 * Remove macro and replace with define-syntax
@@ -19,7 +17,3 @@ Work stack:
 * Rewrite / eliminate prelude.scm
 
 * Implement all of r7rs
-
-* Eliminate ArgParser concept
-
-* Eliminate Validator concept
