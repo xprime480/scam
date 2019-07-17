@@ -6,13 +6,6 @@
 #include "port/FilePort.hpp"
 #include "util/ReadEvalStream.hpp"
 
-#if 0
-#include "util/FileUtils.hpp"
-
-#include <string>
-#include <fstream>
-#endif
-
 using namespace scam;
 using namespace std;
 
@@ -83,12 +76,15 @@ namespace
         else {
             rv = convertPath(path);
         }
+
         return rv;
     }
 
     ScamValue defaultPath()
     {
-        return convertPath(".:..");
+        static const char * path { ".:.." };
+        ScamValue rv = convertPath(path);
+        return rv;
     }
 
     ScamValue convertPath(char const * path)
@@ -105,19 +101,30 @@ namespace
         if ( dp.empty() ) {
             return defaultPath();
         }
+
         return makeVector(dp);
     }
 
     string getNextElement(char const *& path)
     {
         stringstream s;
+
         while ( true ) {
-            const char c = *path++;
-            if ( ':' == c || ! c  ) {
-                return s.str();
+            const char c = *path;
+            if ( ! c ) {
+                break;
             }
+
+            ++path;
+            if ( ':' == c ) {
+                break;
+            }
+
             s << c;
         }
+
+        string pe = s.str();
+        return pe;
     }
 
     string makePath(string dirname, string filename)
