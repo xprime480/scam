@@ -120,9 +120,10 @@ void scam::applyDefineSyntax(ScamValue args,
                              Env * env,
                              ScamEngine * engine)
 {
+    static const char * name = "define-syntax";
     SymbolParameter p0;
     PairParameter   p1;
-    if ( argsToParms(args, engine, "define-syntax", p0, p1) ) {
+    if ( argsToParms(args, engine, name, p0, p1) ) {
         ScamValue symbol = p0.value;
         ScamValue rules  = p1.value;
         installSyntax(env, engine, symbol, rules);

@@ -46,3 +46,5 @@
 
 * Position control in ScamPort objects will probably not work correctly
   if two+ views are created on one simultaneously.  Fix it.
+
+* Check that tail-calls are properly handled.

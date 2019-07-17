@@ -10,9 +10,10 @@ Define Syntax
 [input]
 
 (define-syntax two (syntax-rules () ((two) 2)))
-2
+(two)
 
 [result]
+[keep 1]
 2
 
 
