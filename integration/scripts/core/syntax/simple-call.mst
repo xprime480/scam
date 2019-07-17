@@ -1,0 +1,21 @@
+define-syntax operates like a macro in simple cases
+
+[skip]
+
+[name]
+Define Syntax Simple
+
+[input]
+
+(define-syntax sum-plus-one
+  (syntax-rules ()
+    ((_ a b)
+     (+ a b 1))))
+
+(sum-plus-one 2 (* 3 4))
+
+[result]
+[keep 1]
+15
+
+

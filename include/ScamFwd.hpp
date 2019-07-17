@@ -10,6 +10,7 @@ namespace scam
     class ScamData;
 
     using ScamValue = ScamData *;
+    using DataTagType = unsigned long;
 }
 
 #endif

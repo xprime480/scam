@@ -130,7 +130,7 @@ string scam::debugWriteValue(ScamValue data)
     return s.str() ;
 }
 
-string scam::describe(ScamData::ValueType type)
+string scam::describe(DataTagType type)
 {
     const char * text = "unknown";
 

@@ -115,7 +115,7 @@ bool ClosureBindCont::checkArgLength(ScamValue expr) const
     return true;
 }
 
-void ClosureBindCont::finalize(ScamValue actuals)  const
+void ClosureBindCont::finalize(ScamValue actuals) const
 {
     ScamValue formals = lambda.formals;
     Binder binder(capture);

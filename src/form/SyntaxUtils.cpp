@@ -16,7 +16,7 @@ bool scam::installSyntax(Env * env,
                          ScamValue rules)
 {
     GlobalId id;
-    ScamTraceScope _;
+    //ScamTraceScope _;
     scamTrace(id, __FILE__, __LINE__, __FUNCTION__,
               writeValue(symbol), writeValue(rules));
     const char * name = symbol->stringValue().c_str();
@@ -31,19 +31,21 @@ bool scam::installSyntax(Env * env,
 
         ScamValue def = p2.value;
         ListParameter    sp0;
-	ObjectParameter  spObj;
+        ObjectParameter  spObj;
         CountedParameter sp1(spObj);
         if ( argsToParms(def, engine, name, sp0, sp1) ) {
-	    scamTrace(id, __FILE__, __LINE__, __FUNCTION__,
-		      writeValue(sp0.value), writeValue(sp1.value));
+            scamTrace(id, __FILE__, __LINE__, __FUNCTION__,
+                      writeValue(sp0.value), writeValue(sp1.value));
 
-	    LambdaDef lambda;
-	    lambda.formals = getCdr(sp0.value);
-	    lambda.rest    = makeNull();
-	    lambda.forms   = sp1.value;
-	    
-	    ScamValue value = makeClosure(lambda, env, true);
-	    env->put(symbol, value);
+            LambdaDef lambda;
+            lambda.formals = getCdr(sp0.value);
+            lambda.rest    = makeNothing();
+            lambda.forms   = sp1.value;
+
+            ScamValue value = makeClosure(lambda, env, true);
+            scamTrace(id, __FILE__, __LINE__, __FUNCTION__, writeValue(value));
+            env->put(symbol, value);
+            return true;
         }
     }
 

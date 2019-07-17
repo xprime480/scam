@@ -1,15 +1,17 @@
-test that define-syntax form parses
-
-In this case 'y' retains its value.
+define-syntax form parses
 
 ;[skip] uncomment to skip this test
 
 [name]
-Define Syntax
+Define Syntax Trivial
 
 [input]
 
-(define-syntax two (syntax-rules () ((two) 2)))
+(define-syntax two
+  (syntax-rules ()
+    ((two)
+     2)))
+
 (two)
 
 [result]

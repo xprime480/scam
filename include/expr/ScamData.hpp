@@ -30,9 +30,7 @@ namespace scam
     struct ScamData : public ManagedObject
     {
     public:
-        using ValueType = unsigned long;
-
-        explicit ScamData(ValueType type, bool managed = true);
+        explicit ScamData(DataTagType type, bool managed = true);
         ~ScamData();
 
         ScamData(const ScamData &) = delete;
@@ -40,7 +38,7 @@ namespace scam
         ScamData(ScamData &&) = delete;
         ScamData operator=(ScamData &&) = delete;
 
-        static ScamData * makeInstance(ValueType type, bool managed = true);
+        static ScamData * makeInstance(DataTagType type, bool managed = true);
 
         void mark() override final;
 
@@ -58,56 +56,56 @@ namespace scam
         class NegInfType {};
         class PosInfType {};
 
-        constexpr static ValueType Complex        { 1 << 0 };
-        constexpr static ValueType Real           { 1 << 1 };
-        constexpr static ValueType Rational       { 1 << 2 };
-        constexpr static ValueType Integer        { 1 << 3 };
-        constexpr static ValueType NaN            { 1 << 4 };
-        constexpr static ValueType NegInf         { 1 << 5 };
-        constexpr static ValueType PosInf         { 1 << 6 };
-        constexpr static ValueType SpecialNumeric { NaN | NegInf | PosInf };
-        constexpr static ValueType RationalTypes  { Rational | Integer };
-        constexpr static ValueType RealNumTypes   { Real | RationalTypes };
-        constexpr static ValueType RealTypes      { RealNumTypes | SpecialNumeric };
-        constexpr static ValueType ComplexTypes   { Complex | RealNumTypes };
-        constexpr static ValueType Numeric        { ComplexTypes | RealTypes };
+        constexpr static DataTagType Complex        { 1 << 0 };
+        constexpr static DataTagType Real           { 1 << 1 };
+        constexpr static DataTagType Rational       { 1 << 2 };
+        constexpr static DataTagType Integer        { 1 << 3 };
+        constexpr static DataTagType NaN            { 1 << 4 };
+        constexpr static DataTagType NegInf         { 1 << 5 };
+        constexpr static DataTagType PosInf         { 1 << 6 };
+        constexpr static DataTagType SpecialNumeric { NaN | NegInf | PosInf };
+        constexpr static DataTagType RationalTypes  { Rational | Integer };
+        constexpr static DataTagType RealNumTypes   { Real | RationalTypes };
+        constexpr static DataTagType RealTypes      { RealNumTypes | SpecialNumeric };
+        constexpr static DataTagType ComplexTypes   { Complex | RealNumTypes };
+        constexpr static DataTagType Numeric        { ComplexTypes | RealTypes };
 
         /*
          * tags and types for other atoms
          */
-        constexpr static ValueType Nothing      { 1 << 7 };
-        constexpr static ValueType Null         { 1 << 8 };
-        constexpr static ValueType Boolean      { 1 << 9 };
-        constexpr static ValueType Character    { 1 << 10 };
-        constexpr static ValueType Symbol       { 1 << 11 };
-        constexpr static ValueType Keyword      { 1 << 12 };
-        constexpr static ValueType String       { 1 << 13 };
-        constexpr static ValueType Error        { 1 << 14 };
-        constexpr static ValueType Pair         { 1 << 15 };
-        constexpr static ValueType Vector       { 1 << 16 };
-        constexpr static ValueType ByteVector   { 1 << 17 };
-        constexpr static ValueType Dict         { 1 << 18 };
-        constexpr static ValueType Closure      { 1 << 19 };
-        constexpr static ValueType Class        { 1 << 20 };
-        constexpr static ValueType Instance     { 1 << 21 };
-        constexpr static ValueType Cont         { 1 << 22 };
+        constexpr static DataTagType Nothing      { 1 << 7 };
+        constexpr static DataTagType Null         { 1 << 8 };
+        constexpr static DataTagType Boolean      { 1 << 9 };
+        constexpr static DataTagType Character    { 1 << 10 };
+        constexpr static DataTagType Symbol       { 1 << 11 };
+        constexpr static DataTagType Keyword      { 1 << 12 };
+        constexpr static DataTagType String       { 1 << 13 };
+        constexpr static DataTagType Error        { 1 << 14 };
+        constexpr static DataTagType Pair         { 1 << 15 };
+        constexpr static DataTagType Vector       { 1 << 16 };
+        constexpr static DataTagType ByteVector   { 1 << 17 };
+        constexpr static DataTagType Dict         { 1 << 18 };
+        constexpr static DataTagType Closure      { 1 << 19 };
+        constexpr static DataTagType Class        { 1 << 20 };
+        constexpr static DataTagType Instance     { 1 << 21 };
+        constexpr static DataTagType Cont         { 1 << 22 };
 
-        constexpr static ValueType StringLike   { Symbol | Keyword | String };
+        constexpr static DataTagType StringLike   { Symbol | Keyword | String };
 
-        constexpr static ValueType Procedure    { Closure | Class | Instance };
+        constexpr static DataTagType Procedure    { Closure | Class | Instance };
 
-        constexpr static ValueType Primitive   { 1 << 23 };
-        constexpr static ValueType SpecialForm { 1 << 24 };
+        constexpr static DataTagType Primitive   { 1 << 23 };
+        constexpr static DataTagType SpecialForm { 1 << 24 };
 
-        constexpr static ValueType Applicable  { Dict | Procedure | Primitive | SpecialForm | Cont };
+        constexpr static DataTagType Applicable  { Dict | Procedure | Primitive | SpecialForm | Cont };
 
-        constexpr static ValueType Port    { 1 << 25 };
-        constexpr static ValueType Eof     { 1 << 26 };
+        constexpr static DataTagType Port    { 1 << 25 };
+        constexpr static DataTagType Eof     { 1 << 26 };
 
         /**
          * member data
          */
-        const ValueType type;
+        const DataTagType type;
 
     private:
         bool immutable;
@@ -224,7 +222,7 @@ namespace scam
         mutable Env * metadata;
 
     private:
-        void assertType(ValueType requiredType);
+        void assertType(DataTagType requiredType);
 
     public:
 

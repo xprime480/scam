@@ -13,7 +13,7 @@
 using namespace scam;
 using namespace std;
 
-ScamData::ScamData(ValueType type, bool managed)
+ScamData::ScamData(DataTagType type, bool managed)
     : ManagedObject(managed)
     , type(type)
     , immutable(true)
@@ -177,7 +177,7 @@ ScamData::~ScamData()
     }
 }
 
-ScamData * ScamData::makeInstance(ValueType type, bool managed)
+ScamData * ScamData::makeInstance(DataTagType type, bool managed)
 {
     return new ScamData(type, managed);
 }
@@ -308,7 +308,7 @@ ScamValue ScamData::getMeta(string const & key) const
     return rv;
 }
 
-void ScamData::assertType(ValueType requiredType)
+void ScamData::assertType(DataTagType requiredType)
 {
     if ( type != requiredType ) {
         stringstream s;
