@@ -95,6 +95,10 @@ ScamData::ScamData(DataTagType type, bool managed)
         value.portData = nullptr;
         break;
 
+    case ScamData::Syntax:
+        value.syntaxData = new SyntaxData;
+        break;
+
     default:
         break;
     }
@@ -170,6 +174,10 @@ ScamData::~ScamData()
 
     case ScamData::Port:
         delete value.portData;
+        break;
+
+    case ScamData::Syntax:
+        delete value.syntaxData;
         break;
 
     default:
@@ -533,4 +541,10 @@ ScamPort *& ScamData::portValue()
 {
     assertType(ScamData::Port);
     return value.portData;
+}
+
+std::string & ScamData::syntaxName()
+{
+    assertType(ScamData::Syntax);
+    return value.syntaxData->name;
 }

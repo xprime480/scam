@@ -54,6 +54,8 @@ namespace scam
 
     extern bool isPort(ScamValue data);
     extern bool isEof(ScamValue data);
+
+    extern bool isSyntax(ScamValue data);
 }
 
 #endif

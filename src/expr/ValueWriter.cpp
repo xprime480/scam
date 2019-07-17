@@ -109,6 +109,10 @@ string scam::writeValue(ScamValue data)
             s << "eof";
             break;
 
+        case ScamData::Syntax:
+            s << "syntax for " << data->syntaxName();
+            break;
+
         default:
             s << "don't know how to represent this object, type = "
               << data->type;
@@ -278,6 +282,10 @@ string scam::describe(DataTagType type)
 
     case ScamData::Eof:
         text = "eof";
+        break;
+
+    case ScamData::Syntax:
+        text = "syntax";
         break;
 
     default:

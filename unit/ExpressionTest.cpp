@@ -5,10 +5,6 @@
 #include "expr/ValueFactory.hpp"
 #include "form/AllSpecialForms.hpp"
 
-#include "util/GlobalId.hpp"
-#include "util/DebugTrace.hpp"
-#include "expr/ValueWriter.hpp"
-
 using namespace std;
 using namespace scam;
 
@@ -478,4 +474,13 @@ TEST_F(ExpressionTest, SpecialNumericPosInf)
 {
     ScamValue expr = makePosInf();
     expectSpecialNumeric(expr, "+inf.0");
+}
+
+TEST_F(ExpressionTest, SyntaxTest)
+{
+    ScamValue expr = makeSyntax("test");
+    expectSyntax(expr, "syntax for test");
+
+    ScamValue evaled = apply(expr, makeNull());
+    expectError(evaled);
 }

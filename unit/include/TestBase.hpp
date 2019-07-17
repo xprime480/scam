@@ -38,7 +38,7 @@ namespace scam
         ScamValue readEvalFile(char const * filename);
         ScamValue readString(char const * input);
 
-	void runsafe(std::function<void()> thunk);
+        void runsafe(std::function<void()> thunk);
 
         void doCheck(bool act, unsigned selector, unsigned which);
 
@@ -121,7 +121,9 @@ namespace scam
                         const std::string & repr,
                         const std::string & contents);
 
-	void expectEof(ScamValue expr);
+        void expectEof(ScamValue expr);
+
+        void expectSyntax(ScamValue expr, const std::string & repr);
     };
 }
 

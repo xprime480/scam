@@ -15,11 +15,15 @@ bool scam::installSyntax(Env * env,
                          ScamValue symbol,
                          ScamValue rules)
 {
+    const char * name = symbol->stringValue().c_str();
+    ScamValue value = makeSyntax(name);
+    env->put(symbol, value);
+    return true;
+
     GlobalId id;
     //ScamTraceScope _;
     scamTrace(id, __FILE__, __LINE__, __FUNCTION__,
               writeValue(symbol), writeValue(rules));
-    const char * name = symbol->stringValue().c_str();
 
     SymbolParameter p0;
     ListParameter   p1;

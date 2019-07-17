@@ -364,3 +364,11 @@ ScamValue scam::makeEof()
     return &instance;
 }
 
+ScamValue scam::makeSyntax(const std::string & name)
+{
+    static constexpr auto myType = ScamData::Syntax;
+    ScamValue v = standardMemoryManager.make<ScamData>(myType);
+    v->syntaxName() = name;
+    return v;
+}
+

@@ -154,6 +154,12 @@ void scam::apply(ScamValue value,
         workQueueHelper<PrimWorker>(cont, env, engine, args, value);
     }
 
+    else if ( isSyntax(value) ) {
+        static const char * msg{ "Syntax application is not implemented." };
+        ScamValue err = makeError(msg, value);
+        engine->handleError(err);
+    }
+
     else {
         // default case
         ScamValue err = makeError("Cannot apply", value, args);

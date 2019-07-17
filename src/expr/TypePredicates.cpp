@@ -224,3 +224,8 @@ bool scam::isEof(ScamValue data)
 {
     return data->type == ScamData::Eof;
 }
+
+bool scam::isSyntax(ScamValue data)
+{
+    return data->type == ScamData::Syntax;
+}

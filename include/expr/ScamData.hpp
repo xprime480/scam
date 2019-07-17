@@ -102,6 +102,8 @@ namespace scam
         constexpr static DataTagType Port    { 1 << 25 };
         constexpr static DataTagType Eof     { 1 << 26 };
 
+        constexpr static DataTagType Syntax  { 1 << 27 };
+
         /**
          * member data
          */
@@ -197,6 +199,11 @@ namespace scam
             ScamEngine  * engine;
         };
 
+        struct SyntaxData
+        {
+            std::string   name;
+        };
+
     private:
         union
         {
@@ -216,6 +223,7 @@ namespace scam
             PrimitiveData * primitiveData;
             SpecialFormData * specialFormData;
             ScamPort * portData;
+            SyntaxData * syntaxData;
         } value;
 
     public:
@@ -273,6 +281,8 @@ namespace scam
         ScamEngine *& sfEngine();
 
         ScamPort *& portValue();
+
+        std::string & syntaxName();
     };
 }
 

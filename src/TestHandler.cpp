@@ -27,6 +27,6 @@ void TestHandler::mark()
 
 ScamValue TestHandler::handleError(ScamValue err)
 {
-    cont->handleValue(err);     // give it to backstop continuation
-    return makeNothing();       // and terminate further processing.
+    cont->handleValue(err);
+    return makeNothing();
 }

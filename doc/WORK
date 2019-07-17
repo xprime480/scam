@@ -2,6 +2,16 @@ Work stack:
 
 * Implement the define-syntax world
 
+  ** Create a new type of ScamData:  SYNTAX
+     +++ Type itself
+     +++ Printer
+     +++ Factory function
+     +++ Predicate
+     *** Evaluator
+     +++ Test
+
+  ** Transform incoming syntax-rules into SYNTAX data.
+
 * Remove macro and replace with define-syntax
 
 * Improve scam based testing framework so that it actually tests

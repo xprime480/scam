@@ -42,6 +42,7 @@ namespace
     static const unsigned long SELECT_DICT       { 1 << 22 };
     static const unsigned long SELECT_PORT       { 1 << 23 };
     static const unsigned long SELECT_EOF        { 1 << 24 };
+    static const unsigned long SELECT_SYNTAX     { 1 << 25 };
 
     static const unsigned long SELECT_MANAGED    { 1 << 30 };
 
@@ -98,7 +99,11 @@ ScamValue TestBase::evaluate(ScamValue input)
 
 ScamValue TestBase::apply(ScamValue expr, ScamValue args)
 {
-    return engine.apply(expr, args);
+    ScamValue rv = engine.apply(expr, args);
+    if ( isNothing(rv) ) {
+        rv = extractor->getLastValue();
+    }
+    return rv;
 }
 
 ScamValue TestBase::readString(char const * input)
@@ -156,8 +161,8 @@ void TestBase::runsafe(std::function<void()> thunk)
 {
     ScamValue rv = makeNothing();
     try {
-	thunk();
-	rv = makeSymbol("ok");
+        thunk();
+        rv = makeSymbol("ok");
     }
     catch ( ScamException e ) {
         rv = makeError(e.getMessage().c_str());
@@ -275,6 +280,7 @@ void TestBase::checkPredicates(ScamValue expr, unsigned exp)
     act |= (isDict(expr) ? SELECT_DICT : 0);
     act |= (isPort(expr) ? SELECT_PORT : 0);
     act |= (isEof(expr) ? SELECT_EOF : 0);
+    act |= (isSyntax(expr) ? SELECT_SYNTAX : 0);
 
     act |= (expr->isManaged() ? SELECT_MANAGED : 0);
 
@@ -572,4 +578,12 @@ void TestBase::expectEof(ScamValue expr)
     checkPredicates(expr, SELECT_TRUTH | SELECT_EOF);
 
     EXPECT_EQ(string("eof"), writeValue(expr));
+}
+
+void TestBase::expectSyntax(ScamValue expr, const std::string & repr)
+{
+    assertType(expr, "syntax", isSyntax);
+    checkPredicates(expr, SELECT_TRUTH | SELECT_SYNTAX | SELECT_MANAGED);
+
+    EXPECT_EQ(repr, writeValue(expr));
 }

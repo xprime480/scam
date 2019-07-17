@@ -1,6 +1,6 @@
 define-syntax form parses
 
-;[skip] uncomment to skip this test
+[skip]
 
 [name]
 Define Syntax Trivial

@@ -230,7 +230,7 @@ ScamValue ScamEngine::handleError(ScamValue err)
         rv = h->handleError(err);
     }
 
-    if ( isError(rv) ) {
+    if ( isUnhandledError(rv) ) {
         reset(false);
         exit(1);                // unhandled errors kill the system
     }
