@@ -1,9 +1,9 @@
 define-syntax operates like a macro in simple cases
 
-[skip]
+;[skip]
 
 [name]
-Define Syntax Simple
+Define Syntax With Arguments
 
 [input]
 

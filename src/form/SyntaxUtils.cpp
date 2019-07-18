@@ -68,11 +68,8 @@ void scam::applySyntax(ScamValue value,
     const LambdaDef & def = value->syntaxDef();
     scamTrace(id, __FILE__, __LINE__, __FUNCTION__, writeValue(def.forms));
 
-    LambdaDef instance;
-    instance.forms = def.forms;
-
     // simplest thing that makes the test pass!
 
-    ScamValue closure = makeClosure(instance, env, false);
-    apply(closure, makeNull(), cont, env, engine);
+    ScamValue closure = makeClosure(def, env, false);
+    apply(closure, args, cont, env, engine);
 }
