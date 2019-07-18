@@ -1,10 +1,12 @@
 #include "form/SyntaxUtils.hpp"
 
 #include "Env.hpp"
-#include "expr/ValueFactory.hpp"
+#include "ScamEngine.hpp"
+#include "expr/EvalOps.hpp"
 #include "expr/SequenceOps.hpp"
-#include "util/Parameter.hpp"
+#include "expr/ValueFactory.hpp"
 #include "util/LambdaDef.hpp"
+#include "util/Parameter.hpp"
 
 #include "util/GlobalId.hpp"
 #include "util/DebugTrace.hpp"
@@ -16,9 +18,6 @@ bool scam::installSyntax(Env * env,
                          ScamValue rules)
 {
     const char * name = symbol->stringValue().c_str();
-    ScamValue value = makeSyntax(name);
-    env->put(symbol, value);
-    return true;
 
     GlobalId id;
     //ScamTraceScope _;
@@ -43,10 +42,9 @@ bool scam::installSyntax(Env * env,
 
             LambdaDef lambda;
             lambda.formals = getCdr(sp0.value);
-            lambda.rest    = makeNothing();
             lambda.forms   = sp1.value;
 
-            ScamValue value = makeClosure(lambda, env, true);
+            ScamValue value = makeSyntax(name, lambda);
             scamTrace(id, __FILE__, __LINE__, __FUNCTION__, writeValue(value));
             env->put(symbol, value);
             return true;
@@ -54,5 +52,27 @@ bool scam::installSyntax(Env * env,
     }
 
     return false;
+}
 
+void scam::applySyntax(ScamValue value,
+                       ScamValue args,
+                       Continuation * cont,
+                       Env * env,
+                       ScamEngine * engine)
+{
+    GlobalId id;
+    ScamTraceScope _;
+    scamTrace(id, __FILE__, __LINE__, __FUNCTION__,
+              writeValue(value), writeValue(args));
+
+    const LambdaDef & def = value->syntaxDef();
+    scamTrace(id, __FILE__, __LINE__, __FUNCTION__, writeValue(def.forms));
+
+    LambdaDef instance;
+    instance.forms = def.forms;
+
+    // simplest thing that makes the test pass!
+
+    ScamValue closure = makeClosure(instance, env, false);
+    apply(closure, makeNull(), cont, env, engine);
 }

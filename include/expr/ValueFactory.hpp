@@ -95,7 +95,8 @@ namespace scam
     extern ScamValue makePort(ScamPort * port);
     extern ScamValue makeEof();
 
-    extern ScamValue makeSyntax(const std::string & name);
+    extern ScamValue
+    makeSyntax(const std::string & name, const LambdaDef & lambda);
 }
 
 #endif

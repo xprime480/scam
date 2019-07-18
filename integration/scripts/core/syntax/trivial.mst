@@ -1,6 +1,6 @@
 define-syntax form parses
 
-[skip]
+;[skip]
 
 [name]
 Define Syntax Trivial

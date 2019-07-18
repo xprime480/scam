@@ -16,6 +16,7 @@
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueFactory.hpp"
 #include "expr/ValueWriter.hpp"
+#include "form/SyntaxUtils.hpp"
 #include "prim/PrimWorker.hpp"
 #include "util/ArgListHelper.hpp"
 #include "util/DictCommand.hpp"
@@ -155,9 +156,7 @@ void scam::apply(ScamValue value,
     }
 
     else if ( isSyntax(value) ) {
-        static const char * msg{ "Syntax application is not implemented." };
-        ScamValue err = makeError(msg, value);
-        engine->handleError(err);
+        applySyntax(value, args, cont, env, engine);
     }
 
     else {

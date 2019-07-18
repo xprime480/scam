@@ -478,9 +478,7 @@ TEST_F(ExpressionTest, SpecialNumericPosInf)
 
 TEST_F(ExpressionTest, SyntaxTest)
 {
-    ScamValue expr = makeSyntax("test");
+    LambdaDef def;
+    ScamValue expr = makeSyntax("test", def);
     expectSyntax(expr, "syntax for test");
-
-    ScamValue evaled = apply(expr, makeNull());
-    expectError(evaled);
 }

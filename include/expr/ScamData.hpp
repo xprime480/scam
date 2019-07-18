@@ -166,6 +166,7 @@ namespace scam
         };
 
         using ClosureDefType = LambdaDef;
+
         struct ClosureData
         {
             ClosureDefType lambda;
@@ -201,7 +202,8 @@ namespace scam
 
         struct SyntaxData
         {
-            std::string   name;
+            std::string    name;
+            ClosureDefType def;
         };
 
     private:
@@ -283,6 +285,7 @@ namespace scam
         ScamPort *& portValue();
 
         std::string & syntaxName();
+        ClosureDefType & syntaxDef();
     };
 }
 

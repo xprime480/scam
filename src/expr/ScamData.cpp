@@ -260,6 +260,10 @@ void ScamData::mark()
         contValue()->mark();
         break;
 
+    case ScamData::Syntax:
+        syntaxDef().mark();
+        break;
+
     default:
         break;
     }
@@ -547,4 +551,10 @@ std::string & ScamData::syntaxName()
 {
     assertType(ScamData::Syntax);
     return value.syntaxData->name;
+}
+
+ScamData::ClosureDefType & ScamData::syntaxDef()
+{
+    assertType(ScamData::Syntax);
+    return value.syntaxData->def;
 }
