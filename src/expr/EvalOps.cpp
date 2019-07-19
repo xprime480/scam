@@ -16,7 +16,7 @@
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueFactory.hpp"
 #include "expr/ValueWriter.hpp"
-#include "form/SyntaxUtils.hpp"
+#include "form/SyntaxRules.hpp"
 #include "prim/PrimWorker.hpp"
 #include "util/ArgListHelper.hpp"
 #include "util/DictCommand.hpp"
@@ -156,7 +156,7 @@ void scam::apply(ScamValue value,
     }
 
     else if ( isSyntax(value) ) {
-        applySyntax(value, args, cont, env, engine);
+        value->syntaxRules().applySyntax(args, cont, env, engine);
     }
 
     else {

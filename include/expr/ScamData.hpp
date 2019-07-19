@@ -16,6 +16,7 @@ namespace scam
     class Continuation;
     class Env;
     class ScamPort;
+    class SyntaxRules;
 
     using SfFunction =
         std::function<void(ScamValue,
@@ -200,12 +201,6 @@ namespace scam
             ScamEngine  * engine;
         };
 
-        struct SyntaxData
-        {
-            std::string    name;
-            ClosureDefType def;
-        };
-
     private:
         union
         {
@@ -225,7 +220,7 @@ namespace scam
             PrimitiveData * primitiveData;
             SpecialFormData * specialFormData;
             ScamPort * portData;
-            SyntaxData * syntaxData;
+            SyntaxRules * syntaxData;
         } value;
 
     public:
@@ -284,8 +279,7 @@ namespace scam
 
         ScamPort *& portValue();
 
-        std::string & syntaxName();
-        ClosureDefType & syntaxDef();
+        SyntaxRules & syntaxRules();
     };
 }
 

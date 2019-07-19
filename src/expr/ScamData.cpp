@@ -6,6 +6,7 @@
 #include "expr/ScamNumeric.hpp"
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueFactory.hpp"
+#include "form/SyntaxRules.hpp"
 #include "port/ScamPort.hpp"
 #include "util/ClassDef.hpp"
 #include "util/LambdaDef.hpp"
@@ -96,7 +97,7 @@ ScamData::ScamData(DataTagType type, bool managed)
         break;
 
     case ScamData::Syntax:
-        value.syntaxData = new SyntaxData;
+        value.syntaxData = new SyntaxRules;
         break;
 
     default:
@@ -261,7 +262,7 @@ void ScamData::mark()
         break;
 
     case ScamData::Syntax:
-        syntaxDef().mark();
+        syntaxRules().mark();
         break;
 
     default:
@@ -547,14 +548,8 @@ ScamPort *& ScamData::portValue()
     return value.portData;
 }
 
-std::string & ScamData::syntaxName()
+SyntaxRules & ScamData::syntaxRules()
 {
     assertType(ScamData::Syntax);
-    return value.syntaxData->name;
-}
-
-ScamData::ClosureDefType & ScamData::syntaxDef()
-{
-    assertType(ScamData::Syntax);
-    return value.syntaxData->def;
+    return * value.syntaxData;
 }

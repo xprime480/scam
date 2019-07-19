@@ -5,6 +5,7 @@
 #include "expr/ScamToInternal.hpp"
 #include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
+#include "form/SyntaxRules.hpp"
 #include "port/ScamPort.hpp"
 
 #include <sstream>
@@ -110,7 +111,7 @@ string scam::writeValue(ScamValue data)
             break;
 
         case ScamData::Syntax:
-            s << "syntax for " << data->syntaxName();
+            s << "syntax for " << writeValue(data->syntaxRules().getName());
             break;
 
         default:

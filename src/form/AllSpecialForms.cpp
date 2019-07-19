@@ -1,12 +1,13 @@
 #include "form/AllSpecialForms.hpp"
 
 #include "Backtracker.hpp"
+#include "Env.hpp"
 #include "ScamEngine.hpp"
 #include "WorkQueue.hpp"
 #include "expr/EvalOps.hpp"
 #include "expr/ValueFactory.hpp"
 #include "form/Helpers.hpp"
-#include "form/SyntaxUtils.hpp"
+#include "form/SyntaxRules.hpp"
 #include "util/ClassDef.hpp"
 #include "util/LetDef.hpp"
 #include "util/MemoryManager.hpp"
@@ -124,9 +125,11 @@ void scam::applyDefineSyntax(ScamValue args,
     SymbolParameter p0;
     PairParameter   p1;
     if ( argsToParms(args, engine, name, p0, p1) ) {
-        ScamValue symbol = p0.value;
-        ScamValue rules  = p1.value;
-        installSyntax(env, engine, symbol, rules);
+        ScamValue name  = p0.value;
+        ScamValue rules = p1.value;
+        SyntaxRules syntax(engine, name, rules);
+        ScamValue value = makeSyntax(syntax);
+        env->put(name, value);
         cont->handleValue(makeNothing());
     }
 }

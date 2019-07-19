@@ -475,10 +475,3 @@ TEST_F(ExpressionTest, SpecialNumericPosInf)
     ScamValue expr = makePosInf();
     expectSpecialNumeric(expr, "+inf.0");
 }
-
-TEST_F(ExpressionTest, SyntaxTest)
-{
-    LambdaDef def;
-    ScamValue expr = makeSyntax("test", def);
-    expectSyntax(expr, "syntax for test");
-}

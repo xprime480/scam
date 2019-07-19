@@ -6,6 +6,7 @@
 #include "expr/ScamData.hpp"
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueWriter.hpp"
+#include "form/SyntaxRules.hpp"
 #include "input/StringCharStream.hpp"
 #include "util/FunctionDef.hpp"
 #include "util/LambdaDef.hpp"
@@ -364,12 +365,11 @@ ScamValue scam::makeEof()
     return &instance;
 }
 
-ScamValue scam::makeSyntax(const std::string & name, const LambdaDef & lambda)
+ScamValue scam::makeSyntax(const SyntaxRules & def)
 {
     static constexpr auto myType = ScamData::Syntax;
     ScamValue v = standardMemoryManager.make<ScamData>(myType);
-    v->syntaxName() = name;
-    v->syntaxDef()  = lambda;
+    v->syntaxRules() = def;
     return v;
 }
 

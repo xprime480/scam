@@ -14,6 +14,7 @@ namespace scam
 {
     class ClassDef;
     class LambdaDef;
+    class SyntaxRules;
 
     using ExprVec = std::vector<ScamValue>;
     using ByteVec = std::vector<unsigned char>;
@@ -95,8 +96,7 @@ namespace scam
     extern ScamValue makePort(ScamPort * port);
     extern ScamValue makeEof();
 
-    extern ScamValue
-    makeSyntax(const std::string & name, const LambdaDef & lambda);
+    extern ScamValue makeSyntax(const SyntaxRules & def);
 }
 
 #endif

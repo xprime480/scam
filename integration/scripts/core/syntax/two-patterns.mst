@@ -1,0 +1,20 @@
+define-syntax operates like a macro in simple cases
+
+;[skip]
+
+[name]
+Define Syntax With Arguments
+
+[input]
+
+(let ()
+  (define-syntax foo
+    (syntax-rules ()
+      ((foo a)
+       (list a a))
+      ((foo)
+       "nada")))
+  (list (foo) (foo 1)))
+
+[result]
+("nada" (1 1))
