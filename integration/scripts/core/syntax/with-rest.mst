@@ -1,0 +1,18 @@
+define-syntax accepts rest symbol
+
+;[skip]
+
+[name]
+Define Syntax With Rest Formal
+
+[input]
+
+(let ()
+  (define-syntax rest-test
+    (syntax-rules ()
+      ((rest-test . vars)
+       'vars)))
+  (rest-test 1 2 3))
+
+[result]
+(1 2 3)
