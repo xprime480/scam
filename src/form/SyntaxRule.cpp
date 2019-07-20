@@ -11,6 +11,18 @@
 using namespace scam;
 using namespace std;
 
+namespace
+{
+    bool isLiteral(ScamValue pat)
+    {
+        return ( isString(pat) ||
+                 isChar(pat) ||
+                 isBoolean(pat) ||
+                 isNumeric(pat) ||
+                 isKeyword(pat) );
+    }
+}
+
 SyntaxRule::SyntaxRule(ScamValue rule, ScamEngine * engine, ScamValue name)
     : valid(false)
     , pattern(nullptr)
@@ -109,6 +121,10 @@ PatternData * SyntaxRule::parsePattern(ScamValue pat, ScamEngine * engine)
 
     else if ( isSymbol(pat) ) {
         rv = mm.make<PatternDataIdentifier>(pat);
+    }
+
+    else if ( isLiteral(pat) ) {
+        rv = mm.make<PatternDataLiteral>(pat);
     }
 
     else {

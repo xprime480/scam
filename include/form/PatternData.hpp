@@ -11,7 +11,7 @@
 namespace scam
 {
     class SyntaxMatchData;
-    
+
     struct PatternData : public ManagedObject
     {
         virtual ~PatternData();
@@ -62,6 +62,20 @@ namespace scam
         std::vector<PatternData *> patterns;
     };
 
+    struct PatternDataLiteral : public PatternData
+    {
+    private:
+        friend class scam::MemoryManager;
+        PatternDataLiteral(ScamValue value);
+        static PatternDataLiteral * makeInstance(ScamValue value);
+
+    public:
+        void mark() override;
+        bool match(ScamValue & args, SyntaxMatchData & data) override;
+
+    private:
+        ScamValue value;
+    };
 }
 
 #endif

@@ -1,5 +1,6 @@
 #include "form/PatternData.hpp"
 
+#include "expr/EqualityOps.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
@@ -74,4 +75,36 @@ bool PatternDataSequence::match(ScamValue & args, SyntaxMatchData & data)
     }
 
     return true;
+}
+
+PatternDataLiteral::PatternDataLiteral(ScamValue value)
+    : value(value)
+{
+}
+
+PatternDataLiteral * PatternDataLiteral::makeInstance(ScamValue value)
+{
+    return new PatternDataLiteral(value);
+}
+
+void PatternDataLiteral::mark()
+{
+    if ( ! isMarked() ) {
+        PatternData::mark();
+        value->mark();
+    }
+}
+
+bool PatternDataLiteral::match(ScamValue & args, SyntaxMatchData & data)
+{
+    if ( ! isPair(args) ) {
+        return false;
+    }
+
+    if ( equals(value, getCar(args)) ) {
+        args = getCdr(args);
+        return true;
+    }
+
+    return false;
 }

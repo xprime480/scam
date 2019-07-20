@@ -1,6 +1,6 @@
 define-syntax accepts literals in pattern
 
-[skip]
+;[skip]
 
 [name]
 Define Syntax With Literals
