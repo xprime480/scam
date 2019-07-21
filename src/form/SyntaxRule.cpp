@@ -35,7 +35,6 @@ SyntaxRule::SyntaxRule(ScamValue rule, ScamEngine * engine, ScamValue name)
     ObjectParameter  spObj;
     CountedParameter sp1(spObj);
 
-
     if ( argsToParms(rule, engine, chName, sp0, sp1) ) {
         templat = sp1.value;
         ScamValue pat = makePair(makeNothing(), getCdr(sp0.value));

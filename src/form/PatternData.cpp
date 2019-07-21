@@ -19,9 +19,9 @@ PatternDataNothing * PatternDataNothing::makeInstance()
     return new PatternDataNothing;
 }
 
-bool PatternDataNothing::match(ScamValue & args, SyntaxMatchData & data)
+bool PatternDataNothing::match(ScamValue arg, SyntaxMatchData & data)
 {
-    return true;
+    return false;
 }
 
 PatternDataIdentifier::PatternDataIdentifier(ScamValue identifier, bool rest)
@@ -36,22 +36,15 @@ PatternDataIdentifier::makeInstance(ScamValue identifier, bool rest)
     return new PatternDataIdentifier(identifier, rest);
 }
 
-bool PatternDataIdentifier::match(ScamValue & args, SyntaxMatchData & data)
+bool PatternDataIdentifier::match(ScamValue arg, SyntaxMatchData & data)
 {
-    if ( rest ) {
-        data.data[identifier] = args;
-        args = makeNull();
-    }
-    else {
-        if ( isNull(args) ) {
-            return false;
-        }
-
-        data.data[identifier] = getCar(args);
-        args                  = getCdr(args);
-    }
-
+    data.data[identifier] = arg;
     return true;
+}
+
+bool PatternDataIdentifier::isRest() const
+{
+    return rest;
 }
 
 PatternDataSequence::
@@ -66,12 +59,37 @@ PatternDataSequence::makeInstance(const std::vector<PatternData *> & patterns)
     return new PatternDataSequence(patterns);
 }
 
-bool PatternDataSequence::match(ScamValue & args, SyntaxMatchData & data)
+bool PatternDataSequence::match(ScamValue arg, SyntaxMatchData & data)
 {
     for ( auto p : patterns ) {
-        if ( ! p->match(args, data) ) {
+        PatternDataNothing * nothing = dynamic_cast<PatternDataNothing *>(p);
+        if ( nothing ) {
+            continue;
+        }
+
+        PatternDataIdentifier * id = dynamic_cast<PatternDataIdentifier *>(p);
+        if ( id && id->isRest() ) {
+            if ( ! id->match(arg, data) ) {
+                return false;
+            }
+            arg = makeNull();
+            continue;
+        }
+
+        if ( ! isPair(arg) ) {
             return false;
         }
+
+        ScamValue head = getCar(arg);
+        arg            = getCdr(arg);
+
+        if ( ! p->match(head, data) ) {
+            return false;
+        }
+    }
+
+    if ( ! isNull(arg) ) {
+        return false;
     }
 
     return true;
@@ -95,16 +113,7 @@ void PatternDataLiteral::mark()
     }
 }
 
-bool PatternDataLiteral::match(ScamValue & args, SyntaxMatchData & data)
+bool PatternDataLiteral::match(ScamValue arg, SyntaxMatchData & data)
 {
-    if ( ! isPair(args) ) {
-        return false;
-    }
-
-    if ( equals(value, getCar(args)) ) {
-        args = getCdr(args);
-        return true;
-    }
-
-    return false;
+    return equals(value, arg);
 }

@@ -10,7 +10,7 @@ Define Syntax With Arguments
 (let ()
   (define-syntax sum-plus-one
     (syntax-rules ()
-      ((_ a b)
+      ((sum-plus-one a b)
        (+ a b 1))))
   (sum-plus-one 2 (* 3 4)))
 

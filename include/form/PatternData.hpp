@@ -15,7 +15,7 @@ namespace scam
     struct PatternData : public ManagedObject
     {
         virtual ~PatternData();
-        virtual bool match(ScamValue & args, SyntaxMatchData & data) = 0;
+        virtual bool match(ScamValue arg, SyntaxMatchData & data) = 0;
     };
 
     struct PatternDataNothing : public PatternData
@@ -26,7 +26,7 @@ namespace scam
         static PatternDataNothing * makeInstance();
 
     public:
-        bool match(ScamValue & args, SyntaxMatchData & data) override;
+        bool match(ScamValue arg, SyntaxMatchData & data) override;
     };
 
     struct PatternDataIdentifier : public PatternData
@@ -39,7 +39,8 @@ namespace scam
         makeInstance(ScamValue identifier, bool rest = false);
 
     public:
-        bool match(ScamValue & args, SyntaxMatchData & data) override;
+        bool match(ScamValue arg, SyntaxMatchData & data) override;
+        bool isRest() const;
 
     private:
         std::string identifier;
@@ -56,7 +57,7 @@ namespace scam
         makeInstance(const std::vector<PatternData *> & patterns);
 
     public:
-        bool match(ScamValue & args, SyntaxMatchData & data) override;
+        bool match(ScamValue arg, SyntaxMatchData & data) override;
 
     private:
         std::vector<PatternData *> patterns;
@@ -71,7 +72,7 @@ namespace scam
 
     public:
         void mark() override;
-        bool match(ScamValue & args, SyntaxMatchData & data) override;
+        bool match(ScamValue arg, SyntaxMatchData & data) override;
 
     private:
         ScamValue value;
