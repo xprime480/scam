@@ -12,12 +12,18 @@ namespace scam
 {
     class SyntaxMatchData;
 
+    /*
+     * Base class for describing syntax patterns
+     */
     struct PatternData : public ManagedObject
     {
         virtual ~PatternData();
         virtual bool match(ScamValue arg, SyntaxMatchData & data) = 0;
     };
 
+    /*
+     * Class for internal pattern data which matches nothing.
+     */
     struct PatternDataNothing : public PatternData
     {
     private:
@@ -29,6 +35,9 @@ namespace scam
         bool match(ScamValue arg, SyntaxMatchData & data) override;
     };
 
+    /*
+     * Class for pattern identifiers.
+     */
     struct PatternDataIdentifier : public PatternData
     {
     private:
@@ -47,6 +56,9 @@ namespace scam
         bool        rest;
     };
 
+    /*
+     * Class for pattern sequences.
+     */
     struct PatternDataSequence : public PatternData
     {
     private:
@@ -63,6 +75,9 @@ namespace scam
         std::vector<PatternData *> patterns;
     };
 
+    /*
+     * Class for literal values in patterns.
+     */
     struct PatternDataLiteral : public PatternData
     {
     private:

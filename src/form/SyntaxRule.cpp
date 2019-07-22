@@ -6,6 +6,7 @@
 #include "expr/ValueFactory.hpp"
 #include "form/PatternData.hpp"
 #include "form/SyntaxMatchData.hpp"
+#include "form/TemplateData.hpp"
 #include "util/Parameter.hpp"
 
 using namespace scam;
@@ -26,7 +27,7 @@ namespace
 SyntaxRule::SyntaxRule(ScamValue rule, ScamEngine * engine, ScamValue name)
     : valid(false)
     , pattern(nullptr)
-    , templat(makeNothing())
+    , templat(nullptr)
     , name(name)
 {
     const char * chName = name->stringValue().c_str();
@@ -36,10 +37,12 @@ SyntaxRule::SyntaxRule(ScamValue rule, ScamEngine * engine, ScamValue name)
     CountedParameter sp1(spObj);
 
     if ( argsToParms(rule, engine, chName, sp0, sp1) ) {
-        templat = sp1.value;
         ScamValue pat = makePair(makeNothing(), getCdr(sp0.value));
         pattern = parsePattern(pat, engine);
-        if ( pattern ) {
+
+        templat = parseTemplate(sp1.value);
+
+        if ( pattern && templat ) {
             valid = true;
         }
     }
@@ -50,7 +53,9 @@ void SyntaxRule::mark() const
     if ( pattern ) {
         pattern->mark();
     }
-    templat->mark();
+    if ( templat ) {
+        templat->mark();
+    }
     name->mark();
 }
 
@@ -68,10 +73,15 @@ bool SyntaxRule::match(ScamValue args, SyntaxMatchData & data)
     return pattern->match(args, data);
 }
 
-ScamValue SyntaxRule::substitute(const SyntaxMatchData & data)
+ScamValue SyntaxRule::expand(const SyntaxMatchData & data)
 {
-    ScamValue rv = substituteForm(templat, data);
-    return rv;
+    if ( templat ) {
+        return templat->expand(data);
+
+    }
+    else {
+        return makeNothing();
+    }
 }
 
 PatternData * SyntaxRule::parsePattern(ScamValue pat, ScamEngine * engine)
@@ -134,34 +144,30 @@ PatternData * SyntaxRule::parsePattern(ScamValue pat, ScamEngine * engine)
     return rv;
 }
 
-ScamValue
-SyntaxRule::substituteForm(ScamValue form, const SyntaxMatchData & data)
+TemplateData * SyntaxRule::parseTemplate(ScamValue tem)
 {
-    if ( data.data.empty() ) {
-        return form;
-    }
+    MemoryManager & mm = standardMemoryManager;
+    TemplateData * rv = nullptr;
 
-    ScamValue rv = form;
+    if ( isList(tem) ) {
+        vector<TemplateData *> subs;
 
-    if ( isList(form) ) {
-        vector<ScamValue> newForms;
-
-        while ( ! isNull(form) ) {
-            ScamValue head = getCar(form);
-            form           = getCdr(form);
-            ScamValue newValue = substituteForm(head, data);
-            newForms.push_back(newValue);
+        while ( ! isNull(tem) ) {
+            ScamValue head = getCar(tem);
+            tem            = getCdr(tem);
+            TemplateData * t = parseTemplate(head);
+            subs.push_back(t);
         }
 
-        rv = makeList(newForms);
+        rv = mm.make<TemplateDataList>(subs);
     }
 
-    else if ( isSymbol(form) ) {
-        const string & name = form->stringValue();
-        const auto iter = data.data.find(name);
-        if ( data.data.end() != iter ) {
-            rv = iter->second;
-        }
+    else if ( isSymbol(tem) ) {
+        rv = mm.make<TemplateDataIdentifier>(tem);
+    }
+
+    else {
+        rv = mm.make<TemplateDataLiteral>(tem);
     }
 
     return rv;

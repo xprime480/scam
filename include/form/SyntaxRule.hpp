@@ -9,6 +9,7 @@ namespace scam
 {
     class PatternData;
     class SyntaxMatchData;
+    class TemplateData;
 
     class SyntaxRule
     {
@@ -19,17 +20,17 @@ namespace scam
         bool isValid() const;
 
         bool match(ScamValue args, SyntaxMatchData & data);
-        ScamValue substitute(const SyntaxMatchData & data);
+        ScamValue expand(const SyntaxMatchData & data);
 
     private:
 
         bool valid;
-        PatternData * pattern;
-        ScamValue     templat;
-        ScamValue     name;
+        PatternData  * pattern;
+        TemplateData * templat;
+        ScamValue      name;
 
         PatternData * parsePattern(ScamValue pat, ScamEngine * engine);
-        ScamValue substituteForm(ScamValue form, const SyntaxMatchData & data);
+        TemplateData * parseTemplate(ScamValue tem);
 
         ScamValue invalidPattern(ScamValue pat);
     };

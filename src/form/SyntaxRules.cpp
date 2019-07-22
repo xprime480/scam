@@ -106,7 +106,7 @@ ScamValue SyntaxRules::expand(ScamValue args, Env * env, ScamEngine * engine)
     ScamValue rv = makeNothing();
 
     if ( match ) {
-        rv = match->substitute(data);
+        rv = match->expand(data);
     }
     else {
         ScamValue err = invalidExpansion(args);
