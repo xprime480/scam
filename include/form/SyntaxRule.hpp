@@ -3,7 +3,8 @@
 
 #include "ScamFwd.hpp"
 
-#include <map>
+#include <set>
+#include <string>
 
 namespace scam
 {
@@ -28,6 +29,8 @@ namespace scam
         PatternData  * pattern;
         TemplateData * templat;
         ScamValue      name;
+
+        std::set<std::string> patternIdentifiers;
 
         PatternData * parsePattern(ScamValue pat, ScamEngine * engine);
         TemplateData * parseTemplate(ScamValue tem);

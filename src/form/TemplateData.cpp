@@ -48,15 +48,7 @@ TemplateDataIdentifier * TemplateDataIdentifier::makeInstance(ScamValue value)
 
 ScamValue TemplateDataIdentifier::expand(const SyntaxMatchData & data)
 {
-    ScamValue rv = makeNothing();
-
-    const auto iter = data.data.find(identifier);
-    if ( data.data.end() != iter ) {
-        rv = iter->second;
-    } else {
-        rv = makeSymbol(identifier);
-    }
-
+    ScamValue rv = data.get(identifier, 0);
     return rv;
 }
 
@@ -77,7 +69,6 @@ void TemplateDataList::mark()
         t->mark();
     }
 }
-
 
 ScamValue TemplateDataList::expand(const SyntaxMatchData & data)
 {

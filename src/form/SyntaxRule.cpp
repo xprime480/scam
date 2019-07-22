@@ -87,7 +87,6 @@ ScamValue SyntaxRule::expand(const SyntaxMatchData & data)
 PatternData * SyntaxRule::parsePattern(ScamValue pat, ScamEngine * engine)
 {
     MemoryManager & mm = standardMemoryManager;
-
     PatternData * rv = nullptr;
 
     if ( isNothing(pat) ) {
@@ -118,6 +117,7 @@ PatternData * SyntaxRule::parsePattern(ScamValue pat, ScamEngine * engine)
         if ( isSymbol(pat) ) {
             PatternData * temp = mm.make<PatternDataIdentifier>(pat, true);
             vec.push_back(temp);
+            patternIdentifiers.insert(pat->stringValue());
         }
         else if ( ! isNull(pat) ) {
             ScamValue err = invalidPattern(orig);
@@ -130,6 +130,7 @@ PatternData * SyntaxRule::parsePattern(ScamValue pat, ScamEngine * engine)
 
     else if ( isSymbol(pat) ) {
         rv = mm.make<PatternDataIdentifier>(pat);
+        patternIdentifiers.insert(pat->stringValue());
     }
 
     else if ( isLiteral(pat) ) {
@@ -163,7 +164,13 @@ TemplateData * SyntaxRule::parseTemplate(ScamValue tem)
     }
 
     else if ( isSymbol(tem) ) {
-        rv = mm.make<TemplateDataIdentifier>(tem);
+        if ( patternIdentifiers.end() ==
+             patternIdentifiers.find(tem->stringValue()) ) {
+            rv = mm.make<TemplateDataLiteral>(tem);
+        }
+        else {
+            rv = mm.make<TemplateDataIdentifier>(tem);
+        }
     }
 
     else {

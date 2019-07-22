@@ -38,7 +38,7 @@ PatternDataIdentifier::makeInstance(ScamValue identifier, bool rest)
 
 bool PatternDataIdentifier::match(ScamValue arg, SyntaxMatchData & data)
 {
-    data.data[identifier] = arg;
+    data.add(identifier, false, arg);
     return true;
 }
 
