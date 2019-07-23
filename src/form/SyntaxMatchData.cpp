@@ -1,6 +1,9 @@
 #include "form/SyntaxMatchData.hpp"
 
 #include "ScamException.hpp"
+#include "expr/ValueWriter.hpp"
+
+#include <sstream>
 
 using namespace scam;
 using namespace std;
@@ -16,11 +19,28 @@ void SyntaxMatchVariable::add(ScamValue value)
         data.push_back(value);
     }
     else {
-        static const char * text
-        { "internal error: adding second value to simple syntax variable" };
-
-        throw ScamException(text);
+        overflow();
     }
+}
+
+void SyntaxMatchVariable::append(const SyntaxMatchVariable & newData)
+{
+    if ( ellipsis ) {
+        data.insert(data.end(), newData.data.begin(), newData.data.end());
+    }
+    else {
+        overflow();
+    }
+}
+
+bool SyntaxMatchVariable::isEllipsis() const
+{
+    return ellipsis;
+}
+
+int SyntaxMatchVariable::count() const
+{
+    return data.size();
 }
 
 ScamValue SyntaxMatchVariable::get(unsigned n) const
@@ -39,9 +59,31 @@ ScamValue SyntaxMatchVariable::get(unsigned n) const
     return data.at(n);
 }
 
-void SyntaxMatchData::add(std::string identifier,
-                          bool ellipsis,
-                          ScamValue value)
+string SyntaxMatchVariable::identify() const
+{
+    stringstream s;
+    string sep = "";
+
+    s << "[";
+    for ( const auto item : data ) {
+        s << sep;
+        s << writeValue(item);
+        sep = ", ";
+    }
+    s << "]";
+
+    return s.str();
+}
+
+void SyntaxMatchVariable::overflow()
+{
+    static const char * text
+    { "internal error: adding multiple values to simple syntax variable" };
+
+    throw ScamException(text);
+}
+
+void SyntaxMatchData::add(string identifier, bool ellipsis, ScamValue value)
 {
     auto iter = data.find(identifier);
 
@@ -55,7 +97,46 @@ void SyntaxMatchData::add(std::string identifier,
     iter->second.add(value);
 }
 
-ScamValue SyntaxMatchData::get(std::string identifier, unsigned n) const
+void SyntaxMatchData::append(const SyntaxMatchData & newData)
+{
+    for ( const auto that : newData.data ) {
+        const auto & identifier = that.first;
+        const auto iter = data.find(identifier);
+        if ( data.end() == iter ) {
+            auto value = make_pair(identifier, that.second);
+            data.insert(value);
+        }
+        else {
+            iter->second.append(that.second);
+        }
+    }
+}
+
+bool SyntaxMatchData::hasEllipsisId(const string & identifier) const
+{
+    bool rv = false;
+
+    auto iter = data.find(identifier);
+    if ( data.end() != iter ) {
+        rv = iter->second.isEllipsis();
+    }
+
+    return rv;
+}
+
+int SyntaxMatchData::count(const string & identifier) const
+{
+    int rv = 0;
+
+    auto iter = data.find(identifier);
+    if ( data.end() != iter ) {
+        rv = iter->second.count();
+    }
+
+    return rv;
+}
+
+ScamValue SyntaxMatchData::get(string identifier, unsigned n) const
 {
     auto iter = data.find(identifier);
 
@@ -68,4 +149,26 @@ ScamValue SyntaxMatchData::get(std::string identifier, unsigned n) const
 
     ScamValue rv = iter->second.get(n);;
     return rv;
+}
+
+string SyntaxMatchData::identify() const
+{
+    stringstream s;
+    string sep = "";
+
+    s << "{";
+    for ( const auto item : data ) {
+        s << sep;
+        s << item.first;
+        const auto & var = item.second;
+        if ( var.isEllipsis() ) {
+            s << "...";
+        }
+        s << " ";
+        s << var.identify();
+        sep = ", ";
+    }
+    s << "}";
+
+    return s.str();
 }

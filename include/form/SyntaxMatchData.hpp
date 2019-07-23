@@ -17,12 +17,22 @@ namespace scam
     {
     public:
         SyntaxMatchVariable(bool ellipsis);
+
         void add(ScamValue value);
+        void append(const SyntaxMatchVariable & newData);
+
+        bool isEllipsis() const;
+        int count() const;
+
         ScamValue get(unsigned n) const;
+
+        std::string identify() const;
 
     private:
         bool ellipsis;
         std::vector<ScamValue> data;
+
+        void overflow();
     };
 
     /*
@@ -33,7 +43,14 @@ namespace scam
     {
     public:
         void add(std::string identifier, bool ellipsis, ScamValue value);
+        void append(const SyntaxMatchData & newData);
+
+        bool hasEllipsisId(const std::string & identifier) const;
+        int count(const std::string & identifier) const;
+
         ScamValue get(std::string identifier, unsigned n) const;
+
+        std::string identify() const;
 
     private:
         std::map<std::string, SyntaxMatchVariable> data;

@@ -5,12 +5,34 @@
 #include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueFactory.hpp"
+#include "expr/ValueWriter.hpp"
 #include "form/SyntaxMatchData.hpp"
+
+#include <sstream>
 
 using namespace scam;
 using namespace std;
 
+PatternData::PatternData()
+    : ellipsis(false)
+{
+}
+
 PatternData::~PatternData()
+{
+}
+
+void PatternData::tagAsEllipsis()
+{
+    ellipsis = true;
+}
+
+bool PatternData::isEllipsis() const
+{
+    return ellipsis;
+}
+
+void PatternData::getPatternIds(PatIDSet & patternIds)
 {
 }
 
@@ -22,6 +44,11 @@ PatternDataNothing * PatternDataNothing::makeInstance()
 bool PatternDataNothing::match(ScamValue arg, SyntaxMatchData & data)
 {
     return false;
+}
+
+string PatternDataNothing::identify() const
+{
+    return "_";
 }
 
 PatternDataIdentifier::PatternDataIdentifier(ScamValue identifier, bool rest)
@@ -38,13 +65,31 @@ PatternDataIdentifier::makeInstance(ScamValue identifier, bool rest)
 
 bool PatternDataIdentifier::match(ScamValue arg, SyntaxMatchData & data)
 {
-    data.add(identifier, false, arg);
+    data.add(identifier, isEllipsis(), arg);
     return true;
 }
 
 bool PatternDataIdentifier::isRest() const
 {
     return rest;
+}
+
+void PatternDataIdentifier::getPatternIds(PatIDSet & patternIds)
+{
+    patternIds.insert(this);
+}
+
+string PatternDataIdentifier::identify() const
+{
+    stringstream s;
+    if ( rest ) {
+        s << ". ";
+    }
+    s << identifier;
+    if ( isEllipsis() ) {
+        s << "...";
+    }
+    return s.str();
 }
 
 PatternDataSequence::
@@ -80,11 +125,27 @@ bool PatternDataSequence::match(ScamValue arg, SyntaxMatchData & data)
             return false;
         }
 
-        ScamValue head = getCar(arg);
-        arg            = getCdr(arg);
+        if ( p->isEllipsis() ) {
+            while ( ! isNull(arg) ) {
+                ScamValue head = getCar(arg);
+                SyntaxMatchData subData;
+                bool matched = p->match(head, subData);
+                if ( matched ) {
+                    data.append(subData);
+                    arg  = getCdr(arg);
+                }
+                else {
+                    break;
+                }
+            }
+        }
+        else {
+            ScamValue head = getCar(arg);
+            arg            = getCdr(arg);
 
-        if ( ! p->match(head, data) ) {
-            return false;
+            if ( ! p->match(head, data) ) {
+                return false;
+            }
         }
     }
 
@@ -93,6 +154,38 @@ bool PatternDataSequence::match(ScamValue arg, SyntaxMatchData & data)
     }
 
     return true;
+}
+
+void PatternDataSequence::tagAsEllipsis()
+{
+    PatternData::tagAsEllipsis();
+
+    PatIDSet patternIds;
+    getPatternIds(patternIds);
+    for ( auto id : patternIds ) {
+        id->tagAsEllipsis();
+    }
+}
+
+void PatternDataSequence::getPatternIds(PatIDSet & patternIds)
+{
+    for ( auto p : patterns ) {
+        p->getPatternIds(patternIds);
+    }
+}
+
+string PatternDataSequence::identify() const
+{
+    stringstream s;
+    s << "(";
+    string sep = "";
+    for ( auto p : patterns ) {
+        s << sep << p->identify();
+        sep = " ";
+    }
+    s << ")";
+
+    return s.str();
 }
 
 PatternDataLiteral::PatternDataLiteral(ScamValue value)
@@ -116,4 +209,9 @@ void PatternDataLiteral::mark()
 bool PatternDataLiteral::match(ScamValue arg, SyntaxMatchData & data)
 {
     return equals(value, arg);
+}
+
+string PatternDataLiteral::identify() const
+{
+    return writeValue(value);
 }

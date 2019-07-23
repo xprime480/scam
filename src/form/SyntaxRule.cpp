@@ -1,6 +1,7 @@
 #include "form/SyntaxRule.hpp"
 
 #include "ScamEngine.hpp"
+#include "expr/EqualityOps.hpp"
 #include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueFactory.hpp"
@@ -9,11 +10,17 @@
 #include "form/TemplateData.hpp"
 #include "util/Parameter.hpp"
 
+#include "util/GlobalId.hpp"
+#include "util/DebugTrace.hpp"
+#include "expr/ValueWriter.hpp"
+
 using namespace scam;
 using namespace std;
 
 namespace
 {
+    static const ScamValue dots = makeSymbol("...", false);
+
     bool isLiteral(ScamValue pat)
     {
         return ( isString(pat) ||
@@ -40,7 +47,8 @@ SyntaxRule::SyntaxRule(ScamValue rule, ScamEngine * engine, ScamValue name)
         ScamValue pat = makePair(makeNothing(), getCdr(sp0.value));
         pattern = parsePattern(pat, engine);
 
-        templat = parseTemplate(sp1.value);
+        ScamValue tem = sp1.value;
+        templat = parseTemplate(tem);
 
         if ( pattern && templat ) {
             valid = true;
@@ -70,18 +78,19 @@ bool SyntaxRule::match(ScamValue args, SyntaxMatchData & data)
         return false;
     }
 
-    return pattern->match(args, data);
+    bool rv = pattern->match(args, data);
+    return rv;
 }
 
 ScamValue SyntaxRule::expand(const SyntaxMatchData & data)
 {
-    if ( templat ) {
-        return templat->expand(data);
+    ScamValue rv = makeNothing();
 
+    if ( templat ) {
+        rv = templat->expand(data);
     }
-    else {
-        return makeNothing();
-    }
+
+    return rv;
 }
 
 PatternData * SyntaxRule::parsePattern(ScamValue pat, ScamEngine * engine)
@@ -105,6 +114,16 @@ PatternData * SyntaxRule::parsePattern(ScamValue pat, ScamEngine * engine)
         while ( isPair(pat) ) {
             ScamValue head = getCar(pat);
             pat            = getCdr(pat);
+
+            if ( equals(dots, head) ) {
+                if ( vec.empty() ) {
+                    invalidPattern(orig);
+                    return nullptr;
+                }
+
+                vec.back()->tagAsEllipsis();
+                continue;
+            }
 
             PatternData * temp = parsePattern(head, engine);
             if ( nullptr == temp ) {
@@ -151,12 +170,35 @@ TemplateData * SyntaxRule::parseTemplate(ScamValue tem)
     TemplateData * rv = nullptr;
 
     if ( isList(tem) ) {
+        ScamValue orig = tem;
         vector<TemplateData *> subs;
 
         while ( ! isNull(tem) ) {
             ScamValue head = getCar(tem);
             tem            = getCdr(tem);
+
+            if ( equals(dots, head) ) {
+                if ( subs.empty() ) {
+                    invalidTemplate(orig);
+                    return nullptr;
+                }
+
+                TemplateData * t = subs.back();
+                if ( dynamic_cast<TemplateDataLiteral *>(t) ) {
+                    invalidTemplate(orig);
+                    return nullptr;
+                }
+
+                subs.pop_back();
+                t = mm.make<TemplateDataEllipsis>(t);
+                subs.push_back(t);
+                continue;
+            }
+
             TemplateData * t = parseTemplate(head);
+            if ( ! t ) {
+                return t;
+            }
             subs.push_back(t);
         }
 
@@ -184,4 +226,10 @@ ScamValue SyntaxRule::invalidPattern(ScamValue pat)
 {
     static const char * msg { "invalid pattern: %{0} in syntax %{1}" };
     return makeError(msg, pat, name);
+}
+
+ScamValue SyntaxRule::invalidTemplate(ScamValue tem)
+{
+    static const char * msg { "invalid template: %{0} in syntax %{1}" };
+    return makeError(msg, tem, name);
 }

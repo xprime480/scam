@@ -5,20 +5,38 @@
 
 #include "ScamFwd.hpp"
 
+#include <set>
 #include <string>
 #include <vector>
 
 namespace scam
 {
+    class PatternDataIdentifier;
     class SyntaxMatchData;
+
+    using PatIDSet = std::set<PatternDataIdentifier *>;
 
     /*
      * Base class for describing syntax patterns
      */
-    struct PatternData : public ManagedObject
+    class PatternData : public ManagedObject
     {
+    protected:
+        PatternData();
+
+    public:
         virtual ~PatternData();
         virtual bool match(ScamValue arg, SyntaxMatchData & data) = 0;
+
+        virtual void tagAsEllipsis();
+        bool isEllipsis() const;
+
+        virtual void getPatternIds(PatIDSet & patternIds);
+
+        virtual std::string identify() const = 0;
+
+    private:
+        bool ellipsis;
     };
 
     /*
@@ -33,6 +51,8 @@ namespace scam
 
     public:
         bool match(ScamValue arg, SyntaxMatchData & data) override;
+
+        std::string identify() const override;
     };
 
     /*
@@ -50,6 +70,9 @@ namespace scam
     public:
         bool match(ScamValue arg, SyntaxMatchData & data) override;
         bool isRest() const;
+        void getPatternIds(PatIDSet & patternIds) override;
+
+        std::string identify() const override;
 
     private:
         std::string identifier;
@@ -70,6 +93,10 @@ namespace scam
 
     public:
         bool match(ScamValue arg, SyntaxMatchData & data) override;
+        void tagAsEllipsis() override;
+        void getPatternIds(PatIDSet & patternIds) override;
+
+        std::string identify() const override;
 
     private:
         std::vector<PatternData *> patterns;
@@ -88,6 +115,8 @@ namespace scam
     public:
         void mark() override;
         bool match(ScamValue arg, SyntaxMatchData & data) override;
+
+        std::string identify() const override;
 
     private:
         ScamValue value;

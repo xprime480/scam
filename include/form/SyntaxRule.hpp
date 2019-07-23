@@ -36,6 +36,7 @@ namespace scam
         TemplateData * parseTemplate(ScamValue tem);
 
         ScamValue invalidPattern(ScamValue pat);
+        ScamValue invalidTemplate(ScamValue tem);
     };
 }
 

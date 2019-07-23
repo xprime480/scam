@@ -1,16 +1,6 @@
 Work stack:
 
-* Implement the define-syntax world
-
-  ** Create a new type of ScamData:  SYNTAX
-     +++ Type itself
-     +++ Printer
-     +++ Factory function
-     +++ Predicate
-     *** Evaluator
-     +++ Test
-
-  ** Transform incoming syntax-rules into SYNTAX data.
+* create PatternDataEllipsis
 
 * Remove macro and replace with define-syntax
 

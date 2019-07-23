@@ -6,13 +6,16 @@
 #include "ScamFwd.hpp"
 #include "form/SyntaxMatchData.hpp"
 
+#include <set>
 #include <string>
 #include <vector>
 
 namespace scam
 {
+    using IDSet = std::set<std::string>;
+
     /*
-     * Base class for describing parts of templates
+     * Base class describing parts of templates
      */
     class TemplateData : public ManagedObject
     {
@@ -20,6 +23,10 @@ namespace scam
         virtual ~TemplateData();
 
         virtual ScamValue expand(const SyntaxMatchData & data) = 0;
+        virtual ScamValue expandCount(const SyntaxMatchData & data, int n) = 0;
+        virtual void getIdentifiers(IDSet & identifiers) const;
+
+        virtual std::string identify() const = 0;
     };
 
     /*
@@ -36,6 +43,9 @@ namespace scam
         void mark() override;
 
         ScamValue expand(const SyntaxMatchData & data) override;
+        ScamValue expandCount(const SyntaxMatchData & data, int n) override;
+
+        std::string identify() const override;
 
     private:
         ScamValue value;
@@ -53,6 +63,10 @@ namespace scam
 
     public:
         ScamValue expand(const SyntaxMatchData & data) override;
+        ScamValue expandCount(const SyntaxMatchData & data, int n) override;
+        void getIdentifiers(IDSet & identifiers) const override;
+
+        std::string identify() const override;
 
     private:
         std::string identifier;
@@ -74,9 +88,39 @@ namespace scam
         void mark() override;
 
         ScamValue expand(const SyntaxMatchData & data) override;
+        ScamValue expandCount(const SyntaxMatchData & data, int n) override;
+        void getIdentifiers(IDSet & identifiers) const override;
+
+        std::string identify() const override;
 
     private:
         std::vector<TemplateData *> templates;
+    };
+
+    /*
+     * Class for ellipsis pattern, which may be expanded 0+ times
+     */
+    class TemplateDataEllipsis : public TemplateData
+    {
+    private:
+        friend class scam::MemoryManager;
+        TemplateDataEllipsis(TemplateData * subTemplate);
+
+        static TemplateDataEllipsis * makeInstance(TemplateData * subTemplate);
+
+    public:
+        void mark() override;
+
+        ScamValue expand(const SyntaxMatchData & data) override;
+        ScamValue expandCount(const SyntaxMatchData & data, int n) override;
+        void getIdentifiers(IDSet & identifiers) const override;
+
+        std::string identify() const override;
+
+    private:
+        TemplateData * subTemplate;
+
+        ScamValue noIdentifiers() const;
     };
 }
 

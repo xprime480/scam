@@ -1,7 +1,7 @@
 define-syntax accepts ellipsis
 Affects patterns and templates
 
-[skip]
+;[skip]
 
 [name]
 Define Syntax With Ellipsis
