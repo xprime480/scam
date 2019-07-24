@@ -4,7 +4,6 @@
 #include "Worker.hpp"
 
 #include "ScamFwd.hpp"
-#include "prim/PrimWorkerData.hpp"
 
 namespace scam
 {
@@ -12,24 +11,26 @@ namespace scam
     {
     private:
         friend class scam::MemoryManager;
-        PrimWorker(Continuation * cont,
-                   Env * env,
-                   ScamEngine * engine,
+        PrimWorker(ScamValue caller,
                    ScamValue args,
-                   ScamValue caller);
+                   Continuation * original,
+                   Env * env,
+                   ScamEngine * engine);
 
-        static PrimWorker * makeInstance(Continuation * cont,
-                                         Env * env,
-                                         ScamEngine * engine,
+        static PrimWorker * makeInstance(ScamValue caller,
                                          ScamValue args,
-                                         ScamValue caller);
+                                         Continuation * original,
+                                         Env * env,
+                                         ScamEngine * engine);
 
     public:
         void mark() override;
         void run() override;
 
     private:
-        PrimWorkerData data;
+        ScamValue      args;
+        Continuation * cont;
+        Env          * env;
     };
 }
 

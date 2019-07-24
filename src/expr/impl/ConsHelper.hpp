@@ -19,41 +19,6 @@ namespace scam
                                ScamValue cdr,
                                Continuation * cont,
                                Env * env);
-
-        struct WorkerData
-        {
-            WorkerData(ScamValue car,
-                       ScamValue cdr,
-                       Continuation * original,
-                       Env * env,
-                       ScamEngine * engine)
-                : car(car)
-                , cdr(cdr)
-                , original(original)
-                , env(env)
-                , engine(engine)
-            {
-            }
-
-            WorkerData(const WorkerData &) = default;
-            WorkerData & operator=(const WorkerData &) = default;
-
-            void mark()
-            {
-               car->mark();
-               cdr->mark();
-               original->mark();
-               cont->mark();
-               env->mark();
-            }
-
-            ScamValue car;
-            ScamValue cdr;
-            Continuation * original;
-            Continuation * cont;
-            Env * env;
-            ScamEngine * engine;
-        };
     }
 }
 

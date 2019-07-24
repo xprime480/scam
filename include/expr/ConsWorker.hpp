@@ -4,38 +4,34 @@
 #include "Worker.hpp"
 
 #include "ScamFwd.hpp"
-#include "expr/WorkerData.hpp"
 
 namespace scam
 {
-    class  ConsWorker : public Worker
+    class ConsWorker : public Worker
     {
     private:
         friend class scam::MemoryManager;
 
-        ConsWorker(Continuation * cont,
-                   Env * env,
-                   ScamValue car,
+        ConsWorker(ScamValue car,
                    ScamValue cdr,
+                   Continuation * original,
+                   Env * env,
                    ScamEngine * engine);
 
-        ConsWorker(WorkerData const & data, ScamEngine * engine);
-
-        static ConsWorker * makeInstance(Continuation * cont,
-                                         Env * env,
-                                         ScamValue car,
+        static ConsWorker * makeInstance(ScamValue car,
                                          ScamValue cdr,
+                                         Continuation * original,
+                                         Env * env,
                                          ScamEngine * engine);
-
-        static ConsWorker *
-        makeInstance(WorkerData const & data, ScamEngine * engine);
 
     public:
         void mark() override;
         void run() override;
 
     private:
-        WorkerData data;
+        ScamValue car;
+        Continuation * cont;
+        Env * env;
     };
 }
 

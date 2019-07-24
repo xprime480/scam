@@ -3,8 +3,6 @@
 
 #include "Continuation.hpp"
 
-#include "prim/PrimWorkerData.hpp"
-
 namespace scam
 {
     class MemoryManager;
@@ -14,17 +12,21 @@ namespace scam
     private:
         friend class scam::MemoryManager;
 
-        PrimEvalCont(PrimWorkerData const & data, ScamEngine * engine);
+        PrimEvalCont(ScamValue caller,
+                     Continuation * cont,
+                     ScamEngine * engine);
 
-        static PrimEvalCont *
-        makeInstance(PrimWorkerData const & data, ScamEngine * engine);
+        static PrimEvalCont * makeInstance(ScamValue caller,
+                                           Continuation * cont,
+                                           ScamEngine * engine);
 
     public:
         void mark() override;
         void handleValue(ScamValue value) override;
 
     private:
-        PrimWorkerData data;
+        ScamValue      caller;
+        Continuation * cont;
     };
 }
 

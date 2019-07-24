@@ -1,5 +1,6 @@
 #include "expr/CarContinuation.hpp"
 
+#include "Env.hpp"
 #include "ScamEngine.hpp"
 #include "WorkQueue.hpp"
 #include "expr/MapCdr.hpp"
@@ -9,23 +10,32 @@
 using namespace scam;
 using namespace std;
 
-CarContinuation::CarContinuation(WorkerData const & data, ScamEngine * engine)
+CarContinuation::CarContinuation(ScamValue cdr,
+                                 Continuation * cont,
+                                 Env * env,
+                                 ScamEngine * engine)
     : Continuation("Cons Map Car", engine)
-    , data(data)
+    , cdr(cdr)
+    , cont(cont)
+    , env(env)
 {
 }
 
-CarContinuation *
-CarContinuation::makeInstance(WorkerData const & data, ScamEngine * engine)
+CarContinuation * CarContinuation::makeInstance(ScamValue cdr,
+                                                Continuation * cont,
+                                                Env * env,
+                                                ScamEngine * engine)
 {
-  return new CarContinuation(data, engine);
+    return new CarContinuation(cdr, cont, env, engine);
 }
 
 void CarContinuation::mark()
 {
   if ( ! isMarked() ) {
       Continuation::mark();
-      data.mark();
+      cdr->mark();
+      cont->mark();
+      env->mark();
   }
 }
 
@@ -37,7 +47,6 @@ void CarContinuation::handleValue(ScamValue value)
         engine->handleError(value);
     }
     else {
-        ScamValue e = data.cdr;
-        workQueueHelper<MapCdr>(value, e, data.original, data.env, engine);
+        workQueueHelper<MapCdr>(value, cdr, cont, env, engine);
     }
 }

@@ -4,7 +4,6 @@
 #include "Worker.hpp"
 
 #include "ScamFwd.hpp"
-#include "expr/WorkerData.hpp"
 
 namespace scam
 {
@@ -15,22 +14,24 @@ namespace scam
 
         MapCdr(ScamValue car,
                ScamValue cdr,
-               Continuation * cont,
+               Continuation * original,
                Env * env,
                ScamEngine * engine);
 
         static MapCdr * makeInstance(ScamValue car,
-                                     ScamValue cdr,
-                                     Continuation * cont,
-                                     Env * env,
-                                     ScamEngine * engine);
+               ScamValue cdr,
+               Continuation * original,
+               Env * env,
+               ScamEngine * engine);
 
     public:
         void mark() override;
         void run() override;
 
     private:
-        WorkerData data;
+        ScamValue      cdr;
+        Continuation * cont;
+        Env          * env;
     };
 }
 

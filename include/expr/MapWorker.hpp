@@ -4,7 +4,6 @@
 #include "Worker.hpp"
 
 #include "ScamFwd.hpp"
-#include "expr/WorkerData.hpp"
 
 namespace scam
 {
@@ -12,16 +11,17 @@ namespace scam
     {
     private:
         friend class scam::MemoryManager;
-        MapWorker(Continuation * cont,
-                  Env * env,
-                  ScamValue car,
+
+        MapWorker(ScamValue car,
                   ScamValue cdr,
+                  Continuation * original,
+                  Env * env,
                   ScamEngine * engine);
 
-        static MapWorker * makeInstance(Continuation * cont,
-                                        Env * env,
-                                        ScamValue car,
+        static MapWorker * makeInstance(ScamValue car,
                                         ScamValue cdr,
+                                        Continuation * original,
+                                        Env * env,
                                         ScamEngine * engine);
 
     public:
@@ -29,7 +29,9 @@ namespace scam
         void run() override;
 
     private:
-        WorkerData data;
+        ScamValue      car;
+        Continuation * cont;
+        Env          * env;
     };
 }
 

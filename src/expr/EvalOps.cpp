@@ -33,10 +33,10 @@ void scam::eval(ScamValue value,
                 ScamEngine * engine)
 {
     if ( isPair(value) ) {
-        workQueueHelper<ConsWorker>(cont,
-                                    env,
-                                    value->carValue(),
+        workQueueHelper<ConsWorker>(value->carValue(),
                                     value->cdrValue(),
+                                    cont,
+                                    env,
                                     engine);
     }
 
@@ -152,7 +152,7 @@ void scam::apply(ScamValue value,
     }
 
     else if ( isPrimitive(value) ) {
-        workQueueHelper<PrimWorker>(cont, env, engine, args, value);
+        workQueueHelper<PrimWorker>(value, args, cont, env, engine);
     }
 
     else if ( isSyntax(value) ) {
@@ -177,10 +177,10 @@ void scam::mapEval(ScamValue value,
                    ScamEngine * engine)
 {
     if ( isPair(value) ) {
-        workQueueHelper<MapWorker>(cont,
-                                   env,
-                                   value->carValue(),
+        workQueueHelper<MapWorker>(value->carValue(),
                                    value->cdrValue(),
+                                   cont,
+                                   env,
                                    engine);
     }
 

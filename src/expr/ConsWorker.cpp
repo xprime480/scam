@@ -1,47 +1,49 @@
-#include "prim/PrimWorker.hpp"
+#include "expr/ConsWorker.hpp"
 
 #include "Env.hpp"
 #include "expr/EvalOps.hpp"
+#include "expr/ExprEvalCont.hpp"
 #include "expr/ScamData.hpp"
-#include "prim/PrimEvalCont.hpp"
 #include "util/MemoryManager.hpp"
 
 using namespace scam;
 using namespace std;
 
-PrimWorker::PrimWorker(ScamValue caller,
-                       ScamValue args,
+ConsWorker::ConsWorker(ScamValue car,
+                       ScamValue cdr,
                        Continuation * original,
                        Env * env,
                        ScamEngine * engine)
-    : Worker("Primitive", engine)
-    , args(args)
+
+    : Worker("Cons Eval", engine)
+    , car(car)
     , env(env)
 {
-    cont = standardMemoryManager.make<PrimEvalCont>(caller, original, engine);
+    cont =
+        standardMemoryManager.make<ExprEvalCont>(cdr, original, env, engine);
 }
 
-PrimWorker * PrimWorker::makeInstance(ScamValue caller,
-                                      ScamValue args,
+ConsWorker * ConsWorker::makeInstance(ScamValue car,
+                                      ScamValue cdr,
                                       Continuation * original,
                                       Env * env,
                                       ScamEngine * engine)
 {
-    return new PrimWorker(caller, args, original, env, engine);
+    return new ConsWorker(car, cdr, original, env, engine);
 }
 
-void PrimWorker::mark()
+void ConsWorker::mark()
 {
     if ( ! isMarked() ) {
         Worker::mark();
-        args->mark();
+        car->mark();
         cont->mark();
         env->mark();
     }
 }
 
-void PrimWorker::run()
+void ConsWorker::run()
 {
     Worker::run();
-    scam::mapEval(args, cont, env, engine);
+    eval(car, cont, env, engine);
 }

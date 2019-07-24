@@ -1,5 +1,6 @@
 #include "expr/ExprEvalCont.hpp"
 
+#include "Env.hpp"
 #include "ScamEngine.hpp"
 #include "expr/EvalOps.hpp"
 #include "expr/ScamData.hpp"
@@ -8,23 +9,32 @@
 using namespace scam;
 using namespace std;
 
-ExprEvalCont::ExprEvalCont(WorkerData const & data, ScamEngine * engine)
+ExprEvalCont::ExprEvalCont(ScamValue cdr,
+                           Continuation * cont,
+                           Env * env,
+                           ScamEngine * engine)
     : Continuation("Cons Eval Eval", engine)
-    , data(data)
+    , cdr(cdr)
+    , cont(cont)
+    , env(env)
 {
 }
 
-ExprEvalCont *
-ExprEvalCont::makeInstance(WorkerData const & data, ScamEngine * engine)
+ExprEvalCont * ExprEvalCont::makeInstance(ScamValue cdr,
+                                          Continuation * cont,
+                                          Env * env,
+                                          ScamEngine * engine)
 {
-    return new ExprEvalCont(data, engine);
+    return new ExprEvalCont(cdr, cont, env, engine);
 }
 
 void ExprEvalCont::mark()
 {
     if ( ! isMarked() ) {
         Continuation::mark();
-        data.mark();
+        cdr->mark();
+        cont->mark();
+        env->mark();
     }
 }
 
@@ -36,6 +46,6 @@ void ExprEvalCont::handleValue(ScamValue value)
         engine->handleError(value);
     }
     else {
-        apply(value, data.cdr, data.original, data.env, engine);
+        apply(value, cdr, cont, env, engine);
     }
 }

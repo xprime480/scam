@@ -1,5 +1,6 @@
 #include "expr/MapCdr.hpp"
 
+#include "Env.hpp"
 #include "expr/CdrContinuation.hpp"
 #include "expr/EvalOps.hpp"
 #include "expr/ScamData.hpp"
@@ -10,34 +11,37 @@ using namespace std;
 
 MapCdr::MapCdr(ScamValue car,
                ScamValue cdr,
-               Continuation * cont,
+               Continuation * original,
                Env * env,
                ScamEngine * engine)
     : Worker("Cons Map Cdr", engine)
-    , data(car, cdr, cont, env)
+    , cdr(cdr)
+    , env(env)
 {
-    data.cont = standardMemoryManager.make<CdrContinuation>(data, engine);
+    cont = standardMemoryManager.make<CdrContinuation>(car, original, engine);
 }
 
 MapCdr * MapCdr::makeInstance(ScamValue car,
                               ScamValue cdr,
-                              Continuation * cont,
+                              Continuation * original,
                               Env * env,
                               ScamEngine * engine)
 {
-    return new MapCdr(car, cdr, cont, env, engine);
+    return new MapCdr(car, cdr, original, env, engine);
 }
 
 void MapCdr::mark()
 {
     if ( ! isMarked() ) {
         Worker::mark();
-        data.mark();
+        cdr->mark();
+        cont->mark();
+        env->mark();
     }
 }
 
 void MapCdr::run()
 {
     Worker::run();
-    mapEval(data.cdr, data.cont, data.env, engine);
+    mapEval(cdr, cont, env, engine);
 }

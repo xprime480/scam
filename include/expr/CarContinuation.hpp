@@ -4,7 +4,6 @@
 #include "Continuation.hpp"
 
 #include "ScamFwd.hpp"
-#include "expr/WorkerData.hpp"
 
 namespace scam
 {
@@ -12,17 +11,24 @@ namespace scam
     {
     private:
         friend class scam::MemoryManager;
-        CarContinuation(WorkerData const & data, ScamEngine * engine);
+        CarContinuation(ScamValue cdr,
+                        Continuation * cont,
+                        Env * env,
+                        ScamEngine * engine);
 
-        static CarContinuation *
-        makeInstance(WorkerData const & data, ScamEngine * engine);
+        static CarContinuation * makeInstance(ScamValue cdr,
+                                              Continuation * cont,
+                                              Env * env,
+                                              ScamEngine * engine);
 
     public:
         void mark() override;
         void handleValue(ScamValue value) override;
 
     private:
-        WorkerData data;
+        ScamValue      cdr;
+        Continuation * cont;
+        Env          * env;
     };
 }
 
