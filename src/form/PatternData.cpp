@@ -104,6 +104,16 @@ PatternDataSequence::makeInstance(const std::vector<PatternData *> & patterns)
     return new PatternDataSequence(patterns);
 }
 
+void PatternDataSequence::mark()
+{
+    if ( ! isMarked() ) {
+        PatternData::mark();
+        for ( auto p : patterns ) {
+            p->mark();
+        }
+    }
+}
+
 bool PatternDataSequence::match(ScamValue arg, SyntaxMatchData & data)
 {
     for ( auto p : patterns ) {
@@ -180,7 +190,8 @@ string PatternDataSequence::identify() const
     s << "(";
     string sep = "";
     for ( auto p : patterns ) {
-        s << sep << p->identify();
+        string i = p->identify();
+        s << sep << i;
         sep = " ";
     }
     s << ")";

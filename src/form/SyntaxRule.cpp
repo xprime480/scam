@@ -10,10 +10,6 @@
 #include "form/TemplateData.hpp"
 #include "util/Parameter.hpp"
 
-#include "util/GlobalId.hpp"
-#include "util/DebugTrace.hpp"
-#include "expr/ValueWriter.hpp"
-
 using namespace scam;
 using namespace std;
 
@@ -56,15 +52,25 @@ SyntaxRule::SyntaxRule(ScamValue rule, ScamEngine * engine, ScamValue name)
     }
 }
 
-void SyntaxRule::mark() const
+SyntaxRule *
+SyntaxRule::makeInstance(ScamValue rule, ScamEngine * engine, ScamValue name)
 {
-    if ( pattern ) {
-        pattern->mark();
+    return new SyntaxRule(rule, engine, name);
+}
+
+void SyntaxRule::mark()
+{
+    if ( ! isMarked() ) {
+        ManagedObject::mark();
+
+        if ( pattern ) {
+            pattern->mark();
+        }
+        if ( templat ) {
+            templat->mark();
+        }
+        name->mark();
     }
-    if ( templat ) {
-        templat->mark();
-    }
-    name->mark();
 }
 
 bool SyntaxRule::isValid() const
@@ -91,6 +97,14 @@ ScamValue SyntaxRule::expand(const SyntaxMatchData & data)
     }
 
     return rv;
+}
+
+string SyntaxRule::identify() const
+{
+    stringstream s;
+    s << "(" << pattern->identify();
+    s << " " << templat->identify() << ")";
+    return s.str();
 }
 
 PatternData * SyntaxRule::parsePattern(ScamValue pat, ScamEngine * engine)

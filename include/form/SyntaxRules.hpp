@@ -19,6 +19,7 @@ namespace scam
         void mark() const;
 
         ScamValue getName() const;
+        bool isValid() const;
 
         void applySyntax(ScamValue args,
                          Continuation * cont,
@@ -28,7 +29,7 @@ namespace scam
     private:
         bool valid;
         ScamValue name;
-        std::vector<SyntaxRule> rules;
+        std::vector<SyntaxRule *> rules;
 
         ScamValue extractRules(ScamValue spec, ScamEngine * engine);
         bool decodeRule(ScamValue rule, ScamEngine * engine);

@@ -7,11 +7,17 @@
   (lambda (name)
     (set! **narc-test-name** name)))
 
-(define narc-expect
-  (macro forms))
+(define-syntax narc-expect
+  (syntax-rules
+      ((narc-expect value forms ...)
+       (let ((temp (begin forms ...)))
+         (equal? value temp)))))
 
-(define narc-catch
-  (macro forms))
+(define-syntax narc-catch
+  (syntax-rules
+      ((narc-catch form forms ...)
+       (let ((temp (begin form forms ...)))
+         temp))))
 
 (define narc-report
   (lambda ()

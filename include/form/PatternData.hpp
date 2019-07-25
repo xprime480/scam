@@ -92,6 +92,8 @@ namespace scam
         makeInstance(const std::vector<PatternData *> & patterns);
 
     public:
+        void mark() override;
+
         bool match(ScamValue arg, SyntaxMatchData & data) override;
         void tagAsEllipsis() override;
         void getPatternIds(PatIDSet & patternIds) override;
@@ -114,6 +116,7 @@ namespace scam
 
     public:
         void mark() override;
+
         bool match(ScamValue arg, SyntaxMatchData & data) override;
 
         std::string identify() const override;

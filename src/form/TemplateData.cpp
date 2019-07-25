@@ -99,8 +99,11 @@ TemplateDataList::makeInstance(std::vector<TemplateData *> templates)
 
 void TemplateDataList::mark()
 {
-    for ( const auto t : templates ) {
-        t->mark();
+    if ( ! isMarked() ) {
+        TemplateData::mark();
+        for ( const auto t : templates ) {
+            t->mark();
+        }
     }
 }
 

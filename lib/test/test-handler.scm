@@ -4,12 +4,11 @@
  (lambda (k)
    (set! **top** k)))
 
-(define handler
-  (lambda (err)
-    (**top** (error-category err))))
-
-(define test-err-cat
-  (macro (form)
-    `(with-exception-handler
-      handler
-      (lambda () ,form))))
+(define-syntax test-err-cat
+  (syntax-rules ()
+      ((_ form)
+       (with-exception-handler
+        (lambda (err)
+          (**top** (error-category err)))
+        (lambda ()
+          form)))))

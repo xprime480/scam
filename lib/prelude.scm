@@ -36,17 +36,17 @@
         x
         y)))
 
-(define while
-  (macro (test body)
-    `(letrec
-         ((loop
-           (lambda ()
-             (if ,test
-                 (begin
-                   ,body
-                   (loop))
-                 ()))))
-       (loop))))
+(define-syntax while
+  (syntax-rules ()
+    ((while2 test body)
+     (letrec
+         ((loop (lambda ()
+                  (if test
+                      (begin
+                        body
+                        (loop))
+                      ()))))
+       (loop)))))
 
 (define old-length
   (lambda (some)

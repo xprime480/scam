@@ -45,13 +45,18 @@ void SyntaxRules::mark() const
 {
     name->mark();
     for ( const auto & r : rules ) {
-        r.mark();
+        r->mark();
     }
 }
 
 ScamValue SyntaxRules::getName() const
 {
     return name;
+}
+
+bool SyntaxRules::isValid() const
+{
+    return valid;
 }
 
 void SyntaxRules::applySyntax(ScamValue args,
@@ -80,21 +85,22 @@ ScamValue SyntaxRules::extractRules(ScamValue spec, ScamEngine * engine)
     ListOfParameter  pList(pObj);
     CountedParameter p2(pList);
 
+    ScamValue rv = makeNothing();
     if ( argsToParms(spec, engine, chName, p0, p1, p2) ) {
-        return p2.value;
+        rv = p2.value;
     }
-    else {
-        return makeNothing();
-    }
+
+    return rv;
 }
 
 bool SyntaxRules::decodeRule(ScamValue rule, ScamEngine * engine)
 {
-    SyntaxRule sr(rule, engine, name);
-    bool rv = sr.isValid();
+    SyntaxRule * sr = standardMemoryManager.make<SyntaxRule>(rule, engine, name);
+    bool rv = sr->isValid();
     if ( rv ) {
         rules.push_back(sr);
     }
+
     return rv;
 }
 
@@ -118,9 +124,9 @@ ScamValue SyntaxRules::expand(ScamValue args, Env * env, ScamEngine * engine)
 
 SyntaxRule * SyntaxRules::findSyntaxRule(ScamValue args, SyntaxMatchData & data)
 {
-    for ( SyntaxRule & rule : rules ) {
-        if ( rule.match(args, data) ) {
-            return &rule;
+    for ( SyntaxRule * rule : rules ) {
+        if ( rule->match(args, data) ) {
+            return rule;
         }
     }
 

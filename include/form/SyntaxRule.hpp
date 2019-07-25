@@ -1,6 +1,8 @@
 #if ! defined(SYNTAXRULE_HPP)
 #define SYNTAXRULE_HPP 1
 
+#include "util/ManagedObject.hpp"
+
 #include "ScamFwd.hpp"
 
 #include <set>
@@ -12,19 +14,26 @@ namespace scam
     class SyntaxMatchData;
     class TemplateData;
 
-    class SyntaxRule
+    class SyntaxRule : public ManagedObject
     {
-    public:
+    private:
+        friend class scam::MemoryManager;
         SyntaxRule(ScamValue rule, ScamEngine * engine, ScamValue name);
 
-        void mark() const;
+        static SyntaxRule *
+        makeInstance(ScamValue rule, ScamEngine * engine, ScamValue name);
+
+    public:
+        void mark() override;
+
         bool isValid() const;
 
         bool match(ScamValue args, SyntaxMatchData & data);
         ScamValue expand(const SyntaxMatchData & data);
 
-    private:
+        std::string identify() const;
 
+    private:
         bool valid;
         PatternData  * pattern;
         TemplateData * templat;

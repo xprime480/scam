@@ -13,9 +13,6 @@
 * Remove class unit/TestHook.  Update:  Not sure how I imagined this
   to be done.  Tests still require it.
 
-* The various WorkerData structures are probably an anti-pattern.
-  Look at removing them.
-
 * I think Undefine will be incorrect in the event of backtracking.
   Should the form be redefined when backtracking?
 
@@ -48,3 +45,6 @@
   if two+ views are created on one simultaneously.  Fix it.
 
 * Check that tail-calls are properly handled.
+
+* When an error is reported, the REPL displays the last non-error result.
+  It should not display anything additional.
