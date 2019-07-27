@@ -83,6 +83,11 @@ void SyntaxMatchVariable::overflow()
     throw ScamException(text);
 }
 
+void SyntaxMatchData::clear()
+{
+    data.clear();
+}
+
 void SyntaxMatchData::add(string identifier, bool ellipsis, ScamValue value)
 {
     auto iter = data.find(identifier);

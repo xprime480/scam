@@ -1,0 +1,25 @@
+define-syntax recognized reserved symbols in patterns
+
+;[skip]
+
+[name]
+Define Syntax With Reserved Symbols
+
+[input]
+
+(load "lib/test/test-handler.scm")
+
+(define-syntax sym-test
+  (syntax-rules (=> foo)
+    ((sym-test => x xs ...) (list x x))
+    ((sym-test x) x)))
+
+(sym-test 1)
+(sym-test => 1 2 3)
+(test-err-cat (sym-test 1 2 3))
+
+[result]
+[keep 3]
+1
+(1 1)
+:syntax

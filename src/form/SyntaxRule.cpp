@@ -1,5 +1,6 @@
 #include "form/SyntaxRule.hpp"
 
+#include "ErrorCategory.hpp"
 #include "ScamEngine.hpp"
 #include "expr/EqualityOps.hpp"
 #include "expr/SequenceOps.hpp"
@@ -27,7 +28,10 @@ namespace
     }
 }
 
-SyntaxRule::SyntaxRule(ScamValue rule, ScamEngine * engine, ScamValue name)
+SyntaxRule::SyntaxRule(ScamValue rule,
+                       ScamEngine * engine,
+                       ScamValue name,
+                       const set<string> & reserved)
     : valid(false)
     , pattern(nullptr)
     , templat(nullptr)
@@ -41,7 +45,7 @@ SyntaxRule::SyntaxRule(ScamValue rule, ScamEngine * engine, ScamValue name)
 
     if ( argsToParms(rule, engine, chName, sp0, sp1) ) {
         ScamValue pat = makePair(makeNothing(), getCdr(sp0.value));
-        pattern = parsePattern(pat, engine);
+        pattern = parsePattern(pat, engine, reserved);
 
         ScamValue tem = sp1.value;
         templat = parseTemplate(tem);
@@ -52,10 +56,12 @@ SyntaxRule::SyntaxRule(ScamValue rule, ScamEngine * engine, ScamValue name)
     }
 }
 
-SyntaxRule *
-SyntaxRule::makeInstance(ScamValue rule, ScamEngine * engine, ScamValue name)
+SyntaxRule * SyntaxRule::makeInstance(ScamValue rule,
+                                      ScamEngine * engine,
+                                      ScamValue name,
+                                      const set<string> & reserved)
 {
-    return new SyntaxRule(rule, engine, name);
+    return new SyntaxRule(rule, engine, name, reserved);
 }
 
 void SyntaxRule::mark()
@@ -107,7 +113,9 @@ string SyntaxRule::identify() const
     return s.str();
 }
 
-PatternData * SyntaxRule::parsePattern(ScamValue pat, ScamEngine * engine)
+PatternData * SyntaxRule::parsePattern(ScamValue pat,
+                                       ScamEngine * engine,
+                                       const set<string> & reserved)
 {
     MemoryManager & mm = standardMemoryManager;
     PatternData * rv = nullptr;
@@ -139,7 +147,7 @@ PatternData * SyntaxRule::parsePattern(ScamValue pat, ScamEngine * engine)
                 continue;
             }
 
-            PatternData * temp = parsePattern(head, engine);
+            PatternData * temp = parsePattern(head, engine, reserved);
             if ( nullptr == temp ) {
                 return nullptr;
             }
@@ -162,8 +170,14 @@ PatternData * SyntaxRule::parsePattern(ScamValue pat, ScamEngine * engine)
     }
 
     else if ( isSymbol(pat) ) {
-        rv = mm.make<PatternDataIdentifier>(pat);
-        patternIdentifiers.insert(pat->stringValue());
+        const auto iter = reserved.find(pat->stringValue());
+        if ( reserved.end() == iter ) {
+            rv = mm.make<PatternDataIdentifier>(pat);
+            patternIdentifiers.insert(pat->stringValue());
+        }
+        else {
+            rv = mm.make<PatternDataLiteral>(pat);
+        }
     }
 
     else if ( isLiteral(pat) ) {
@@ -239,11 +253,15 @@ TemplateData * SyntaxRule::parseTemplate(ScamValue tem)
 ScamValue SyntaxRule::invalidPattern(ScamValue pat)
 {
     static const char * msg { "invalid pattern: %{0} in syntax %{1}" };
-    return makeError(msg, pat, name);
+    ScamValue err = makeError(msg, pat, name);
+    err->errorCategory() = envCategory;
+    return err;
 }
 
 ScamValue SyntaxRule::invalidTemplate(ScamValue tem)
 {
     static const char * msg { "invalid template: %{0} in syntax %{1}" };
-    return makeError(msg, tem, name);
+    ScamValue err = makeError(msg, tem, name);
+    err->errorCategory() = envCategory;
+    return err;
 }

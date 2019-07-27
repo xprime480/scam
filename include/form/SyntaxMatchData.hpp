@@ -42,6 +42,8 @@ namespace scam
     class SyntaxMatchData
     {
     public:
+	void clear();
+	
         void add(std::string identifier, bool ellipsis, ScamValue value);
         void append(const SyntaxMatchData & newData);
 

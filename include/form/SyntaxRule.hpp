@@ -18,10 +18,16 @@ namespace scam
     {
     private:
         friend class scam::MemoryManager;
-        SyntaxRule(ScamValue rule, ScamEngine * engine, ScamValue name);
 
-        static SyntaxRule *
-        makeInstance(ScamValue rule, ScamEngine * engine, ScamValue name);
+        SyntaxRule(ScamValue rule,
+                   ScamEngine * engine,
+                   ScamValue name,
+                   const std::set<std::string> & reserved);
+
+        static SyntaxRule * makeInstance(ScamValue rule,
+                                         ScamEngine * engine,
+                                         ScamValue name,
+                                         const std::set<std::string> & reserved);
 
     public:
         void mark() override;
@@ -41,7 +47,9 @@ namespace scam
 
         std::set<std::string> patternIdentifiers;
 
-        PatternData * parsePattern(ScamValue pat, ScamEngine * engine);
+        PatternData * parsePattern(ScamValue pat,
+				   ScamEngine * engine,
+				   const std::set<std::string> & reserved);
         TemplateData * parseTemplate(ScamValue tem);
 
         ScamValue invalidPattern(ScamValue pat);

@@ -1,5 +1,6 @@
 #include "form/TemplateData.hpp"
 
+#include "ErrorCategory.hpp"
 #include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueFactory.hpp"
@@ -228,6 +229,7 @@ ScamValue TemplateDataEllipsis::expandCount(const SyntaxMatchData & data, int n)
 {
     const char * text { "Error: recursive ellipsis template not supported" };
     ScamValue err = makeError(text);
+    err->errorCategory() = envCategory;
     return err;
 }
 
@@ -247,5 +249,6 @@ ScamValue TemplateDataEllipsis::noIdentifiers() const
 {
     const char * text { "Error: ellipsis template with no identifiers" };
     ScamValue err = makeError(text);
+    err->errorCategory() = envCategory;
     return err;
 }

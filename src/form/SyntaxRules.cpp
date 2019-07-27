@@ -1,6 +1,7 @@
 #include "form/SyntaxRules.hpp"
 
 #include "Env.hpp"
+#include "ErrorCategory.hpp"
 #include "ScamEngine.hpp"
 #include "expr/EvalOps.hpp"
 #include "expr/SequenceOps.hpp"
@@ -87,15 +88,39 @@ ScamValue SyntaxRules::extractRules(ScamValue spec, ScamEngine * engine)
 
     ScamValue rv = makeNothing();
     if ( argsToParms(spec, engine, chName, p0, p1, p2) ) {
-        rv = p2.value;
+        if ( extractReserved(p1.value, engine) ) {
+            rv = p2.value;
+        }
     }
 
     return rv;
 }
 
+bool SyntaxRules::extractReserved(ScamValue syms, ScamEngine * engine)
+{
+    reserved.clear();
+
+    while ( ! isNull(syms) ) {
+        ScamValue sym = getCar(syms);
+        syms          = getCdr(syms);
+
+        if ( ! isSymbol(sym) ) {
+            ScamValue err = badReserved(sym);
+            engine->handleError(err);
+            return false;
+        }
+
+        reserved.insert(sym->stringValue());
+    }
+
+    return true;
+}
+
 bool SyntaxRules::decodeRule(ScamValue rule, ScamEngine * engine)
 {
-    SyntaxRule * sr = standardMemoryManager.make<SyntaxRule>(rule, engine, name);
+    SyntaxRule * sr =
+        standardMemoryManager.make<SyntaxRule>(rule, engine, name, reserved);
+
     bool rv = sr->isValid();
     if ( rv ) {
         rules.push_back(sr);
@@ -125,6 +150,7 @@ ScamValue SyntaxRules::expand(ScamValue args, Env * env, ScamEngine * engine)
 SyntaxRule * SyntaxRules::findSyntaxRule(ScamValue args, SyntaxMatchData & data)
 {
     for ( SyntaxRule * rule : rules ) {
+        data.clear();
         if ( rule->match(args, data) ) {
             return rule;
         }
@@ -133,16 +159,27 @@ SyntaxRule * SyntaxRules::findSyntaxRule(ScamValue args, SyntaxMatchData & data)
     return nullptr;
 }
 
+ScamValue SyntaxRules::badReserved(ScamValue value)
+{
+    static const char * msg { "only symbols allowed in reserved words (%{0})" };
+    ScamValue err = makeError(msg, value);
+    err->errorCategory() = syntaxCategory;
+    return err;
+}
+
 ScamValue SyntaxRules::invalidSyntax(ScamValue rule)
 {
     static const char * msg { "invalid pattern: %{0} for syntax %{1}" };
-    return makeError(msg, rule, name);
-    return nullptr;
+    ScamValue err = makeError(msg, rule, name);
+    err->errorCategory() = syntaxCategory;
+    return err;
 }
 
 ScamValue SyntaxRules::invalidExpansion(ScamValue args)
 {
     static const char * msg
     { "no pattern matches for syntax %{0} given args %{1}" };
-    return makeError(msg, name, args);
+    ScamValue err = makeError(msg, name, args);
+    err->errorCategory() = syntaxCategory;
+    return err;
 }
