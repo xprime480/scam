@@ -56,6 +56,10 @@ SyntaxRule::SyntaxRule(ScamValue rule,
     }
 }
 
+SyntaxRule::~SyntaxRule()
+{
+}
+
 SyntaxRule * SyntaxRule::makeInstance(ScamValue rule,
                                       ScamEngine * engine,
                                       ScamValue name,

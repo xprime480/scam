@@ -48,3 +48,8 @@
 
 * When an error is reported, the REPL displays the last non-error result.
   It should not display anything additional.
+
+* Find the cause of SEGV when many tests are run in one instance of test
+  driver.  Hunch: May have something to do with garbage collection & static
+  objects.
+

@@ -74,6 +74,7 @@ void SyntaxRules::applySyntax(ScamValue args,
         ScamValue closure = makeClosure(expanded, env, false);
         apply(closure, makeNull(), cont, env, engine);
     }
+
 }
 
 ScamValue SyntaxRules::extractRules(ScamValue spec, ScamEngine * engine)
@@ -136,7 +137,7 @@ ScamValue SyntaxRules::expand(ScamValue args, Env * env, ScamEngine * engine)
 
     ScamValue rv = makeNothing();
 
-    if ( match ) {
+    if ( match && match->isValid() ) {
         rv = match->expand(data);
     }
     else {

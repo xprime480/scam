@@ -1,4 +1,4 @@
-Cond function
+Cond syntax
 
 This is not the r7rs member function
 
@@ -10,35 +10,40 @@ Cond
 [input]
 
 (load "lib/prelude.scm")
+(load "lib/test/test-handler.scm")
+
 (define inc (lambda (x) (+ x 1)))
 
-(cond ())
+(test-err-cat (cond ()))
 
 (cond
- ((#t "One")))
+ (#t "One"))
 
 (cond
- ((#f "One")))
+ (#f "One"))
 
 (cond
- ((#f "One")
-  ((< 2 1) "Two")
-  ((= 2 3) "Three")
-  (#t "Last")))
+ (#f "One")
+ ((< 2 1) "Two")
+ ((= 2 3) "Three")
+ (#t "Last"))
 
 (cond
- ((#f "One")
-  (else "Else Evaluated")))
+ (#f "One")
+ (else "Else Evaluated"))
 
-(cond ((#t 1 2 3)))
+(cond
+ (#t 1 2 3))
 
-(cond ((3)))
+(cond
+ (3))
 
-(cond ((1 => inc)))
+(cond
+ (1 => inc))
 
 [result]
 [keep 8]
-()
+:syntax
 "One"
 ()
 "Last"

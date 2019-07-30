@@ -4,16 +4,17 @@ that is not a procedure definition.
 ;[skip] uncomment to skip this test
 
 [name]
-Malformed Class Definion
+Malformed Class Definition
 
 [input]
 
 (load "lib/test/test-handler.scm")
-(test-err-cat (make-class
-               Root
-               (val)
-               (init (v) (set! val v))
-               (foo)))
+
+(test-err-cat
+ (make-class Root
+	     (val)
+	     (init (v) (set! val v))
+	     (foo)))
 
 [result]
 [keep 1]

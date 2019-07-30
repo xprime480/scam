@@ -30,6 +30,8 @@ namespace scam
                                          const std::set<std::string> & reserved);
 
     public:
+	~SyntaxRule();
+	
         void mark() override;
 
         bool isValid() const;

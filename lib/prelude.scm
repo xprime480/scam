@@ -155,49 +155,34 @@
               (exclude vals tail)
               (cons item (exclude vals tail)))))))
 
-(define cond
-  (macro (clauses)
+;;; taken directly from the R7RS specification p. 68
+;;
+(define-syntax cond
+  (syntax-rules (else =>)
+    ((cond (else result1 result2 ...))
+     (begin result1 result2 ...))
+    ((cond (test => result))
+     (let ((temp test))
+       (if temp (result temp))))
+    ((cond (test => result) clause1 clause2 ...)
+     (let ((temp test))
+       (if temp
+	   (result temp)
+	   (cond clause1 clause2 ...))))
+    ((cond (test)) test)
+    ((cond (test) clause1 clause2 ...)
+     (let ((temp test))
+       (if temp
+	   temp
+	   (cond clause1 clause2 ...))))
+    ((cond (test result1 result2 ...))
+     (if test (begin result1 result2 ...)))
+    ((cond (test result1 result2 ...)
+	   clause1 clause2 ...)
+     (if test
+	 (begin result1 result2 ...)
+	 (cond clause1 clause2 ...)))))
 
-    ;; if there are no clauses return empty list (implementation defined)
-    ;;
-    (if (null? clauses)
-        '()
-        (begin
-          (let* ((clause (car clauses))
-                 (test (car clause))
-                 (forms (cdr clause)))
-
-            ;; check for the "else" keyword
-            ;;
-            (if (equal? test 'else)
-                (if (null? forms)
-                    ''else
-                    `(begin ,@forms))
-
-                ;; check for a test with no forms; return test
-                ;; value if truthy
-                ;;
-                (if (null? forms)
-                    `(let ((testval ,test))
-                       (if testval
-                           testval
-                           (cond ,(cdr clauses))))
-
-                    ;; check for the "=>" form
-                    ;;
-                    (if (equal? (car forms) '=>)
-                        `(let ((testval ,test))
-                           (if testval
-                               (apply ,@(cadr forms)
-                                      (list testval))
-                               (cond ,(cdr clauses))))
-
-                        ;; normal case: if test is true, eval forms
-                        ;; else recurse
-                        ;;
-                        `(if ,test
-                             (begin ,@forms)
-                             (cond ,(cdr clauses)))))))))))
 
 (define include
   (lambda files

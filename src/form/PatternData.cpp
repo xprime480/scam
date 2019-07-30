@@ -132,6 +132,9 @@ bool PatternDataSequence::match(ScamValue arg, SyntaxMatchData & data)
         }
 
         if ( ! isPair(arg) ) {
+            if ( p->isEllipsis() ) {
+                break;
+            }
             return false;
         }
 
