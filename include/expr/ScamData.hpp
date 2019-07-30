@@ -172,7 +172,6 @@ namespace scam
         {
             ClosureDefType lambda;
             Env          * env;
-            bool           macrolike;
         };
 
         struct ClassData
@@ -259,7 +258,6 @@ namespace scam
 
         ClosureDefType & closureDef();
         Env *& closureEnv();
-        bool & closureMacroLike();
 
         ClassDef & classDef();
         Env *& classEnv();

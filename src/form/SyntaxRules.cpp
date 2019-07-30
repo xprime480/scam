@@ -71,7 +71,7 @@ void SyntaxRules::applySyntax(ScamValue args,
         LambdaDef expanded;
         expanded.valid = true;
         expanded.forms = expansion;
-        ScamValue closure = makeClosure(expanded, env, false);
+        ScamValue closure = makeClosure(expanded, env);
         apply(closure, makeNull(), cont, env, engine);
     }
 

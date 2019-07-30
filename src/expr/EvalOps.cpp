@@ -80,7 +80,6 @@ void scam::apply(ScamValue value,
                                        cont,
                                        args,
                                        env,
-                                       value->closureMacroLike(),
                                        engine);
     }
 
@@ -198,5 +197,5 @@ ScamValue scam::withEnvUpdate(ScamValue value, Env * updated)
         throw ScamException(s.str());
     }
 
-    return makeClosure(value->closureDef(), updated, value->closureMacroLike());
+    return makeClosure(value->closureDef(), updated);
 }

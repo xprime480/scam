@@ -19,7 +19,6 @@ namespace scam
                       Continuation * cont,
                       ScamValue args,
                       Env * argEnv,
-                      bool macrolike,
                       ScamEngine * engine);
 
         static ClosureWorker * makeInstance(LambdaDef & parser,
@@ -27,7 +26,6 @@ namespace scam
                                             Continuation * cont,
                                             ScamValue args,
                                             Env * argEnv,
-                                            bool macrolike,
                                             ScamEngine * engine);
 
     public:
@@ -40,7 +38,6 @@ namespace scam
         Continuation * cont;
         ScamValue      args;
         Env          * argEnv;
-        bool           macrolike;
     };
 }
 

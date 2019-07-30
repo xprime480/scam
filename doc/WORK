@@ -1,7 +1,5 @@
 Work stack:
 
-* Remove macro and replace with define-syntax
-
 * Improve scam based testing framework so that it actually tests
 
 * Move as many unit tests to integration tests as possible

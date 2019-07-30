@@ -257,15 +257,12 @@ ScamValue scam::makeDict(ExprVec const & args)
     return v;
 }
 
-ScamValue scam::makeClosure(const LambdaDef & lambda,
-                            Env * env,
-                            bool macrolike)
+ScamValue scam::makeClosure(const LambdaDef & lambda, Env * env)
 {
     static constexpr auto myType = ScamData::Closure;
     ScamValue v = standardMemoryManager.make<ScamData>(myType);
     v->closureDef() = lambda;
     v->closureEnv() = env;
-    v->closureMacroLike() = macrolike;
     return v;
 }
 
@@ -308,7 +305,7 @@ ScamValue scam::makeClassInstance(ScamValue value, Env * env)
         ScamValue name = fun.fname;
         const LambdaDef & lambda = fun.lambda;
 
-        ScamValue impl = makeClosure(lambda, local, false);
+        ScamValue impl = makeClosure(lambda, local);
         priv->put(name, impl);
     }
 

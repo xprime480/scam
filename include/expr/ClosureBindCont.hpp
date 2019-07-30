@@ -18,13 +18,11 @@ namespace scam
         ClosureBindCont(LambdaDef & lambda,
                         Env * capture,
                         Continuation * cont,
-                        bool macrolike,
                         ScamEngine * engine);
 
         static ClosureBindCont * makeInstance(LambdaDef & lambda,
                                               Env * capture,
                                               Continuation * cont,
-                                              bool macrolike,
                                               ScamEngine * engine);
 
     public:
@@ -35,7 +33,6 @@ namespace scam
         LambdaDef    & lambda;
         Env          * capture;
         Continuation * cont;
-        bool           macrolike;
 
         bool malformedActuals(ScamValue expr) const;
         bool describeFormals(unsigned & len) const;

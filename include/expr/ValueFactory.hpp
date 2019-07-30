@@ -74,10 +74,7 @@ namespace scam
     extern ScamValue makeDict();
     extern ScamValue makeDict(ExprVec const & args);
 
-    extern ScamValue makeClosure(const LambdaDef & lambda,
-                                 Env * env,
-                                 bool macrolike = false);
-
+    extern ScamValue makeClosure(const LambdaDef & lambda, Env * env);
     extern ScamValue makeClass(ClassDef & def, Env * env);
     extern ScamValue makeClassInstance(ScamValue value, Env * env);
 

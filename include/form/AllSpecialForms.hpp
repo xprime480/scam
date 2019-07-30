@@ -72,11 +72,6 @@ namespace scam
                              Env * env,
                              ScamEngine * engine);
 
-    extern void applyMacro(ScamValue args,
-                           Continuation * cont,
-                           Env * env,
-                           ScamEngine * engine);
-
     extern void applyNot(ScamValue args,
                          Continuation * cont,
                          Env * env,

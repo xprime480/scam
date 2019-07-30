@@ -39,7 +39,6 @@ void ScamEngine::getStandardEnv()
     addSpecialForm(env, "lambda", applyLambda, this);
     addSpecialForm(env, "quasiquote", applyQuasiQuote, this);
     addSpecialForm(env, "quote", applyQuote, this);
-    addSpecialForm(env, "macro", applyMacro, this);
     addSpecialForm(env, "define-syntax", applyDefineSyntax, this);
     addSpecialForm(env, "let", applyLet, this);
     addSpecialForm(env, "let*", applyLetStar, this);

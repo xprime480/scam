@@ -21,23 +21,20 @@ using namespace std;
 ClosureBindCont::ClosureBindCont(LambdaDef & lambda,
                                  Env * capture,
                                  Continuation * cont,
-                                 bool macrolike,
                                  ScamEngine * engine)
     : Continuation("proc - bind", engine)
     , lambda(lambda)
     , capture(capture)
     , cont(cont)
-    , macrolike(macrolike)
 {
 }
 
 ClosureBindCont * ClosureBindCont::makeInstance(LambdaDef & lambda,
                                                 Env * capture,
                                                 Continuation * cont,
-                                                bool macrolike,
                                                 ScamEngine * engine)
 {
-    return new ClosureBindCont(lambda, capture, cont, macrolike, engine);
+    return new ClosureBindCont(lambda, capture, cont, engine);
 }
 
 void ClosureBindCont::mark()
@@ -121,10 +118,5 @@ void ClosureBindCont::finalize(ScamValue actuals) const
     Binder binder(capture);
     Env * extended = binder.bind(formals, lambda.rest, actuals);
 
-    Continuation * c =
-        ( macrolike
-          ? standardMemoryManager.make<MacroEvalCont>(cont, capture, engine)
-          : cont );
-
-    workQueueHelper<EvalWorker>(lambda.forms, extended, c, engine);
+    workQueueHelper<EvalWorker>(lambda.forms, extended, cont, engine);
 }

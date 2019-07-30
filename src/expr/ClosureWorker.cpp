@@ -16,7 +16,6 @@ ClosureWorker::ClosureWorker(LambdaDef & lambda,
                              Continuation * cont,
                              ScamValue args,
                              Env * argEnv,
-                             bool macrolike,
                              ScamEngine * engine)
     : Worker("proc", engine)
     , lambda(lambda)
@@ -24,7 +23,6 @@ ClosureWorker::ClosureWorker(LambdaDef & lambda,
     , cont(cont)
     , args(args)
     , argEnv(argEnv)
-    , macrolike(macrolike)
 {
 }
 
@@ -33,16 +31,9 @@ ClosureWorker * ClosureWorker::makeInstance(LambdaDef & lambda,
                                             Continuation * cont,
                                             ScamValue args,
                                             Env * argEnv,
-                                            bool macrolike,
                                             ScamEngine * engine)
 {
-    return new ClosureWorker(lambda,
-                             capture,
-                             cont,
-                             args,
-                             argEnv,
-                             macrolike,
-                             engine);
+    return new ClosureWorker(lambda, capture, cont, args, argEnv, engine);
 }
 
 void ClosureWorker::mark()
@@ -65,12 +56,6 @@ void ClosureWorker::run()
         = standardMemoryManager.make<ClosureBindCont>(lambda,
                                                       capture,
                                                       cont,
-                                                      macrolike,
                                                       engine);
-    if ( macrolike ) {
-        newCont->handleValue(args);
-    }
-    else {
-        mapEval(args, newCont, argEnv, engine);
-    }
+    mapEval(args, newCont, argEnv, engine);
 }

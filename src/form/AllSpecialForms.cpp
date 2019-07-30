@@ -211,19 +211,6 @@ void scam::applyLetStar(ScamValue args,
     }
 }
 
-void scam::applyMacro(ScamValue args,
-                      Continuation * cont,
-                      Env * env,
-                      ScamEngine * engine)
-{
-    static const char * name = "macro";
-    LambdaDef lambda;
-    if ( argsToParms(args, engine, name, lambda) ) {
-        ScamValue expr = makeClosure(lambda, env, true);
-        cont->handleValue(expr);
-    }
-}
-
 void scam::applyNot(ScamValue args,
                     Continuation * cont,
                     Env * env,

@@ -313,14 +313,7 @@ namespace
 
     void writeClosure(stringstream & s, ScamValue data)
     {
-        s << "(";
-
-        if ( data->closureMacroLike() ) {
-            s << "macro ";
-        }
-        else {
-            s << "lambda ";
-        }
+        s << "(lambda ";
         const LambdaDef & lambda = data->closureDef();
         if ( isNothing(lambda.rest) && isNull(lambda.formals)) {
             s << "()";

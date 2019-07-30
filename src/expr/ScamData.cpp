@@ -470,12 +470,6 @@ Env *& ScamData::closureEnv()
     return value.closureData->env;
 }
 
-bool & ScamData::closureMacroLike()
-{
-    assertType(ScamData::Closure);
-    return value.closureData->macrolike;
-}
-
 ClassDef & ScamData::classDef()
 {
     assertType(ScamData::Class);
