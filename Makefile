@@ -5,9 +5,13 @@ clean :
 	make -C src clean
 	make -C integration clean
 	make -C unit clean
+	make -C scam clean
 
 int :
 	make -C integration test
+
+sint :
+	make -C scam test
 
 unit :
 	make -C unit test
@@ -17,4 +21,4 @@ scam :
 
 include $(DEP)
 
-.PHONY : clean int unit scam
+.PHONY : clean int sint unit scam

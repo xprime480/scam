@@ -69,7 +69,11 @@ namespace scam
 
     public:
         bool match(ScamValue arg, SyntaxMatchData & data) override;
+        void tagAsEllipsis() override;
+	
         bool isRest() const;
+
+        void setMultiple();
         void getPatternIds(PatIDSet & patternIds) override;
 
         std::string identify() const override;
@@ -77,6 +81,7 @@ namespace scam
     private:
         std::string identifier;
         bool        rest;
+        bool        multiple;
     };
 
     /*

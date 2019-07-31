@@ -54,6 +54,7 @@ string PatternDataNothing::identify() const
 PatternDataIdentifier::PatternDataIdentifier(ScamValue identifier, bool rest)
     : identifier(identifier->stringValue())
     , rest(rest)
+    , multiple(false)
 {
 }
 
@@ -65,13 +66,24 @@ PatternDataIdentifier::makeInstance(ScamValue identifier, bool rest)
 
 bool PatternDataIdentifier::match(ScamValue arg, SyntaxMatchData & data)
 {
-    data.add(identifier, isEllipsis(), arg);
+    data.add(identifier, multiple, arg);
     return true;
+}
+
+void PatternDataIdentifier::tagAsEllipsis()
+{
+    PatternData::tagAsEllipsis();
+    setMultiple();
 }
 
 bool PatternDataIdentifier::isRest() const
 {
     return rest;
+}
+
+void PatternDataIdentifier::setMultiple()
+{
+    multiple = true;
 }
 
 void PatternDataIdentifier::getPatternIds(PatIDSet & patternIds)
@@ -87,7 +99,7 @@ string PatternDataIdentifier::identify() const
     }
     s << identifier;
     if ( isEllipsis() ) {
-        s << "...";
+        s << " ...";
     }
     return s.str();
 }
@@ -176,7 +188,7 @@ void PatternDataSequence::tagAsEllipsis()
     PatIDSet patternIds;
     getPatternIds(patternIds);
     for ( auto id : patternIds ) {
-        id->tagAsEllipsis();
+        id->setMultiple();
     }
 }
 
@@ -198,6 +210,9 @@ string PatternDataSequence::identify() const
         sep = " ";
     }
     s << ")";
+    if ( isEllipsis() ) {
+        s << " ... ";
+    }
 
     return s.str();
 }
