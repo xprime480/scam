@@ -56,6 +56,7 @@ namespace scam
     extern bool isEof(ScamValue data);
 
     extern bool isSyntax(ScamValue data);
+    extern bool isEnv(ScamValue data);
 }
 
 #endif

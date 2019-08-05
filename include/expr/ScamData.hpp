@@ -13,8 +13,6 @@
 
 namespace scam
 {
-    class Continuation;
-    class Env;
     class ScamPort;
     class SyntaxRules;
 
@@ -104,6 +102,7 @@ namespace scam
         constexpr static DataTagType Eof     { 1 << 26 };
 
         constexpr static DataTagType Syntax  { 1 << 27 };
+        constexpr static DataTagType ScamEnv { 1 << 28 };
 
         /**
          * member data
@@ -220,6 +219,7 @@ namespace scam
             SpecialFormData * specialFormData;
             ScamPort * portData;
             SyntaxRules * syntaxData;
+            Env * envData;
         } value;
 
     public:
@@ -278,6 +278,8 @@ namespace scam
         ScamPort *& portValue();
 
         SyntaxRules & syntaxRules();
+
+        Env *& envValue();
     };
 }
 

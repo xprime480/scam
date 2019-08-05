@@ -22,6 +22,7 @@ namespace scam
     extern RationalPair asRational(ScamValue data);
     extern int asInteger(ScamValue data);
     extern ScamPort * asPort(ScamValue data);
+    extern Env * asEnv(ScamValue data);
 }
 
 

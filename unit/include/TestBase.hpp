@@ -124,6 +124,7 @@ namespace scam
         void expectEof(ScamValue expr);
 
         void expectSyntax(ScamValue expr, const std::string & repr);
+        void expectEnv(ScamValue expr);
     };
 }
 

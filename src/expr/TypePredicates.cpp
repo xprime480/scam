@@ -229,3 +229,8 @@ bool scam::isSyntax(ScamValue data)
 {
     return data->type == ScamData::Syntax;
 }
+
+bool scam::isEnv(ScamValue data)
+{
+    return data->type == ScamData::ScamEnv;
+}

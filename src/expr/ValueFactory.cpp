@@ -369,3 +369,11 @@ ScamValue scam::makeSyntax(const SyntaxRules & def)
     v->syntaxRules() = def;
     return v;
 }
+
+ScamValue scam::makeEnv(Env * env)
+{
+    static constexpr auto myType = ScamData::Syntax;
+    ScamValue v = standardMemoryManager.make<ScamData>(myType);
+    v->envValue() = env;
+    return v;
+}

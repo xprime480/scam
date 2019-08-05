@@ -100,6 +100,10 @@ ScamData::ScamData(DataTagType type, bool managed)
         value.syntaxData = new SyntaxRules;
         break;
 
+    case ScamData::ScamEnv:
+        value.envData = nullptr;
+        break;
+
     default:
         break;
     }
@@ -263,6 +267,12 @@ void ScamData::mark()
 
     case ScamData::Syntax:
         syntaxRules().mark();
+        break;
+
+    case ScamData::ScamEnv:
+        if ( auto temp = envValue() ) {
+            temp->mark();
+        }
         break;
 
     default:
@@ -546,4 +556,10 @@ SyntaxRules & ScamData::syntaxRules()
 {
     assertType(ScamData::Syntax);
     return * value.syntaxData;
+}
+
+Env *& ScamData::envValue()
+{
+    assertType(ScamData::ScamEnv);
+    return value.envData;
 }

@@ -1,5 +1,6 @@
 #include "TestBase.hpp"
 
+#include "Env.hpp"
 #include "ScamException.hpp"
 #include "expr/SequenceOps.hpp"
 #include "expr/ValueFactory.hpp"
@@ -474,4 +475,34 @@ TEST_F(ExpressionTest, SpecialNumericPosInf)
 {
     ScamValue expr = makePosInf();
     expectSpecialNumeric(expr, "+inf.0");
+}
+
+TEST_F(ExpressionTest, EnvTest)
+{
+    ScamValue rv = makeNothing();
+    try {
+	Env * env = mm.make<Env>();
+	ScamValue key = makeSymbol("x");
+	env->put(key, makeInteger(2, true));
+
+	ScamValue expr = makeEnv(env);
+	expectEnv(expr);
+
+	Env * env2 = asEnv(expr);
+	EXPECT_EQ(env, env2);
+	expectInteger(env2->get(key), 2, "2", true);
+
+        rv = makeSymbol("ok");
+    }
+    catch ( ScamException e ) {
+        rv = makeError(e.getMessage().c_str());
+    }
+    catch ( std::exception & e ) {
+        rv = makeError(e.what());
+    }
+    catch ( ... ) {
+        rv = makeError("Unknown exception");
+    }
+
+    cerr << writeValue(rv) << "\n";
 }

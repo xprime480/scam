@@ -3,8 +3,6 @@
 
 #include "Handler.hpp"
 
-#include "ScamFwd.hpp"
-
 namespace scam
 {
     class ReplHandler : public Handler

@@ -110,3 +110,14 @@ ScamPort * scam::asPort(ScamValue data)
     return data->portValue();
 }
 
+Env * scam::asEnv(ScamValue data)
+{
+    if ( ! isEnv(data) ) {
+        stringstream s;
+        s << "Cannot convert <" << writeValue(data) << "> to env";
+        throw ScamException(s.str());
+    }
+
+    return data->envValue();
+}
+

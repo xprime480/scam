@@ -114,6 +114,10 @@ string scam::writeValue(ScamValue data)
             s << "syntax for " << writeValue(data->syntaxRules().getName());
             break;
 
+        case ScamData::ScamEnv:
+            s << "env";
+            break;
+
         default:
             s << "don't know how to represent this object, type = "
               << data->type;
@@ -130,7 +134,7 @@ string scam::debugWriteValue(ScamValue data)
     stringstream s;
 
     s << "type = <" << describe(data->type) << ">; ";
-    s <<"value = <" << writeValue(data) << ">";
+    s << "value = <" << writeValue(data) << ">";
 
     return s.str() ;
 }
@@ -287,6 +291,10 @@ string scam::describe(DataTagType type)
 
     case ScamData::Syntax:
         text = "syntax";
+        break;
+
+    case ScamData::ScamEnv:
+        text = "env";
         break;
 
     default:

@@ -43,6 +43,7 @@ namespace
     static const unsigned long SELECT_PORT       { 1 << 23 };
     static const unsigned long SELECT_EOF        { 1 << 24 };
     static const unsigned long SELECT_SYNTAX     { 1 << 25 };
+    static const unsigned long SELECT_ENV        { 1 << 26 };
 
     static const unsigned long SELECT_MANAGED    { 1 << 30 };
 
@@ -281,6 +282,7 @@ void TestBase::checkPredicates(ScamValue expr, unsigned exp)
     act |= (isPort(expr) ? SELECT_PORT : 0);
     act |= (isEof(expr) ? SELECT_EOF : 0);
     act |= (isSyntax(expr) ? SELECT_SYNTAX : 0);
+    act |= (isEnv(expr) ? SELECT_ENV : 0);
 
     act |= (expr->isManaged() ? SELECT_MANAGED : 0);
 
@@ -586,4 +588,10 @@ void TestBase::expectSyntax(ScamValue expr, const std::string & repr)
     checkPredicates(expr, SELECT_TRUTH | SELECT_SYNTAX | SELECT_MANAGED);
 
     EXPECT_EQ(repr, writeValue(expr));
+}
+
+void TestBase::expectEnv(ScamValue expr)
+{
+    assertType(expr, "env", isEnv);
+    checkPredicates(expr, SELECT_TRUTH | SELECT_ENV | SELECT_MANAGED);
 }

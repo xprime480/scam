@@ -1,8 +1,8 @@
 #if ! defined(VALUEFACTORY_HPP)
 #define VALUEFACTORY_HPP 1
 
-#include "expr/ScamData.hpp"
 #include "ScamFwd.hpp"
+#include "expr/ScamData.hpp"
 #include "expr/DictOps.hpp"
 #include "util/MemoryManager.hpp"
 
@@ -94,6 +94,7 @@ namespace scam
     extern ScamValue makeEof();
 
     extern ScamValue makeSyntax(const SyntaxRules & def);
+    extern ScamValue makeEnv(Env * env);
 }
 
 #endif
