@@ -97,6 +97,11 @@ namespace scam
                           Env * env,
                           ScamEngine * engine);
 
+    extern void applySyntaxExpand(ScamValue args,
+                                  Continuation * cont,
+                                  Env * env,
+                                  ScamEngine * engine);
+
     extern void applyUndefine(ScamValue args,
                               Continuation * cont,
                               Env * env,

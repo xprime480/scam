@@ -74,7 +74,12 @@ void SyntaxRules::applySyntax(ScamValue args,
         ScamValue closure = makeClosure(expanded, env);
         apply(closure, makeNull(), cont, env, engine);
     }
+}
 
+ScamValue
+SyntaxRules::expandSyntax(ScamValue args, Env * env, ScamEngine * engine)
+{
+    return expand(args, env, engine);
 }
 
 ScamValue SyntaxRules::extractRules(ScamValue spec, ScamEngine * engine)

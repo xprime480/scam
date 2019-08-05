@@ -15,10 +15,6 @@
 #include "prim/WithHandlerCont.hpp"
 #include "util/Parameter.hpp"
 
-#include "util/GlobalId.hpp"
-#include "util/DebugTrace.hpp"
-#include "expr/ValueWriter.hpp"
-
 using namespace scam;
 using namespace std;
 
@@ -150,17 +146,11 @@ void scam::applyErrorCat(ScamValue args,
                          Continuation * cont,
                          ScamEngine * engine)
 {
-    GlobalId id;
-    ScamTraceScope _;
-    scamTrace(id, __FILE__, __LINE__, __FUNCTION__, writeValue(args));
-
     static const char * name = "error-type";
 
     ScamValue error = fetchErrorObject(args, cont, engine, name);
     if ( isError(error) ) {
         ScamValue rv = error->errorCategory();
-        scamTrace(id, __FILE__, __LINE__, __FUNCTION__,
-                  isSymbol(rv), writeValue(rv));
         cont->handleValue(rv);
     }
 }

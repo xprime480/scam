@@ -2,6 +2,7 @@
 
 #include "Backtracker.hpp"
 #include "Env.hpp"
+#include "ErrorCategory.hpp"
 #include "ScamEngine.hpp"
 #include "WorkQueue.hpp"
 #include "expr/EvalOps.hpp"
@@ -275,6 +276,33 @@ void scam::applySetX(ScamValue args,
     ObjectParameter p1;
     if ( argsToParms(args, engine, name, p0, p1) ) {
         workQueueHelper<AssignWorker>(p0.value, p1.value, cont, env, engine);
+    }
+}
+
+void scam::applySyntaxExpand(ScamValue args,
+                             Continuation * cont,
+                             Env * env,
+                             ScamEngine * engine)
+{
+    static const char * name = "syntax-expand";
+
+    ObjectParameter  p0;
+    ObjectParameter  pObj;
+    CountedParameter p1(pObj);
+    if ( argsToParms(args, engine, name, p0, p1) ) {
+        ScamValue value = engine->eval(p0.value);
+        if ( isSyntax(value) ) {
+            SyntaxRules & syntax = value->syntaxRules();
+            ScamValue result = syntax.expandSyntax(p1.value, env, engine);
+            if ( ! isNothing(result) ) {
+                cont->handleValue(result);
+            }
+        }
+        else {
+            ScamValue err = makeError("expecting syntax got %{0}", p0.value);
+            err->errorCategory() = syntaxCategory;
+            engine->handleError(err);
+        }
     }
 }
 

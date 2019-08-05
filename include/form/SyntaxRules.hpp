@@ -27,6 +27,10 @@ namespace scam
                          Env * env,
                          ScamEngine * engine);
 
+        ScamValue expandSyntax(ScamValue args,
+                               Env * env,
+                               ScamEngine * engine);
+
     private:
         bool valid;
         ScamValue name;
