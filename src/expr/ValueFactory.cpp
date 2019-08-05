@@ -58,10 +58,10 @@ ScamValue scam::makeCharacter(const char c)
     return v;
 }
 
-ScamValue scam::makeString(string const & value)
+ScamValue scam::makeString(string const & value, bool managed)
 {
     static constexpr auto myType = ScamData::String;
-    ScamValue v = standardMemoryManager.make<ScamData>(myType);
+    ScamValue v = standardMemoryManager.make<ScamData>(myType, managed);
     v->stringValue() = value;
     return v;
 }
@@ -369,4 +369,3 @@ ScamValue scam::makeSyntax(const SyntaxRules & def)
     v->syntaxRules() = def;
     return v;
 }
-

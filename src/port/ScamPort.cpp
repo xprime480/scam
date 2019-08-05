@@ -22,6 +22,10 @@ bool ScamPort::isWriteable() const
     return 0 != (rw & Writeable);
 }
 
+void ScamPort::rollback()
+{
+}
+
 void ScamPort::advance(unsigned int count)
 {
     checkpoint += count;

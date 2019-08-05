@@ -1,5 +1,5 @@
-#if ! defined(FILEPORT_HPP)
-#define FILEPORT_HPP 1
+#if ! defined(COUTPORT_HPP)
+#define COUTPORT_HPP 1
 
 #include "port/ScamPort.hpp"
 

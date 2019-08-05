@@ -30,7 +30,7 @@ namespace scam
         virtual void putChar(char c) = 0;
         virtual size_t put(const char * buf, size_t length) = 0;
 
-        virtual void rollback() = 0;
+        virtual void rollback();
         virtual void advance(unsigned int count);
 
         virtual std::string describe() = 0;
