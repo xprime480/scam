@@ -16,6 +16,7 @@ namespace scam
     extern const ScamValue userCategory;
     extern const ScamValue envCategory;
     extern const ScamValue syntaxCategory;
+    extern const ScamValue evalCategory;
 }
 
 #endif

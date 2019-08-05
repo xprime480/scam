@@ -2,6 +2,7 @@
 
 #include "Continuation.hpp"
 #include "Env.hpp"
+#include "ErrorCategory.hpp"
 #include "ScamEngine.hpp"
 #include "ScamException.hpp"
 #include "WorkQueue.hpp"
@@ -47,6 +48,7 @@ void scam::eval(ScamValue value,
         }
         else {
             ScamValue err = makeError("Symbol not found (%{0})", value);
+            err->errorCategory() = evalCategory;
             engine->handleError(err);
         }
     }
@@ -54,6 +56,7 @@ void scam::eval(ScamValue value,
     else if ( isNothing(value) ) {
         static const char * msg{ "The null type cannot be evaluated." };
         ScamValue err = makeError(msg);
+        err->errorCategory() = evalCategory;
         engine->handleError(err);
     }
 
@@ -119,6 +122,7 @@ void scam::apply(ScamValue value,
         }
         else {
             rv = makeError("Unknown dictionary operator", op);
+            rv->errorCategory() = evalCategory;
             engine->handleError(rv);
             return;
         }
@@ -161,6 +165,7 @@ void scam::apply(ScamValue value,
     else {
         // default case
         ScamValue err = makeError("Cannot apply", value, args);
+        err->errorCategory() = evalCategory;
         engine->handleError(err);
     }
 }

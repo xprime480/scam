@@ -9,3 +9,4 @@ const ScamValue scam::argsCategory   = makeKeyword(":args", false);
 const ScamValue scam::userCategory   = makeKeyword(":user", false);
 const ScamValue scam::envCategory    = makeKeyword(":env", false);
 const ScamValue scam::syntaxCategory = makeKeyword(":syntax", false);
+const ScamValue scam::evalCategory   = makeKeyword(":eval", false);

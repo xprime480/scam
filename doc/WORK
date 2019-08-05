@@ -1,12 +1,10 @@
 Work stack:
 
-* Improve scam based testing framework so that it actually tests
-
-* Move as many unit tests to integration tests as possible
-
 * Rewrite all integration tests in scam based testing framework
 
 * Eliminate current C++ integration test code
+
+* Move as many unit tests to integration tests as possible
 
 * Implement proper library syntax
 

@@ -2,6 +2,7 @@
 
 #include "Continuation.hpp"
 #include "Env.hpp"
+#include "ErrorCategory.hpp"
 #include "ScamEngine.hpp"
 #include "expr/EvalOps.hpp"
 #include "expr/ScamData.hpp"
@@ -46,6 +47,7 @@ void CallCont::handleValue(ScamValue value)
     if ( ! isApplicable(value) ) {
         ScamValue err =
             makeError("call/cc: form '%{0}' cannot be applied", value);
+        err->errorCategory() = evalCategory;
         engine->handleError(err);
         return;
     }
