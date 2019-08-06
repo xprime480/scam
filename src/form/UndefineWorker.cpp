@@ -4,6 +4,7 @@
 #include "Env.hpp"
 #include "ErrorCategory.hpp"
 #include "ScamEngine.hpp"
+#include "ScamException.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/ValueFactory.hpp"
 #include "expr/ValueWriter.hpp"
@@ -46,7 +47,11 @@ void UndefineWorker::run()
 {
     Worker::run();
 
-    if ( env->check(value, false) ) {
+    ScamValue test = env->check(value, false);
+    if ( isError(test) ) {
+        engine->handleError(test);
+    }
+    else if ( truth(test) ) {
         Continuation * c =
             standardMemoryManager.make<UndefineCont>(value, cont, env, engine);
         c->handleValue(makeNull());

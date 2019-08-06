@@ -1,6 +1,7 @@
-#include "Env.hpp"
-
 #include "TestBase.hpp"
+
+#include "Env.hpp"
+#include "ErrorCategory.hpp"
 #include "ScamException.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/ScamToInternal.hpp"
@@ -37,7 +38,7 @@ protected:
         key = makeSymbol("key");
         exp = makeInteger(1, true);
 
-        engine.addBinding(key, exp);
+        expectNothing(engine.addBinding(key, exp));
     }
 };
 
@@ -61,7 +62,10 @@ TEST_F(EnvTest, FetchTraversesFrames)
 TEST_F(EnvTest, DuplicateKeys)
 {
     ScamValue val2 = makeInteger(2, true);
-    EXPECT_THROW(engine.addBinding(key, val2), ScamException);
+    ScamValue expr = engine.addBinding(key, val2);
+    expectError(expr);
+    ASSERT_TRUE(isUnhandledError(expr));
+    EXPECT_EQ(envCategory, expr->errorCategory());
 
     ScamValue act = engine.getBinding(key);
     EXPECT_EQ(asInteger(exp), asInteger(act));
@@ -71,7 +75,7 @@ TEST_F(EnvTest, ExtensionTest)
 {
     engine.pushFrame();
     ScamValue exp2 = makeInteger(2, true);
-    engine.addBinding(key, exp2);
+    expectNothing(engine.addBinding(key, exp2));
 
     ScamValue act2 = engine.getBinding(key);
     EXPECT_EQ(asInteger(exp2), asInteger(act2));
@@ -86,7 +90,7 @@ TEST_F(EnvTest, ExtensionTest)
 TEST_F(EnvTest, Assign)
 {
     ScamValue newExp = makeInteger(33, true);
-    engine.rebind(key, newExp);
+    expectNothing(engine.rebind(key, newExp));
     ScamValue act = engine.getBinding(key);
     EXPECT_EQ(asInteger(newExp), asInteger(act));
 }
@@ -95,14 +99,16 @@ TEST_F(EnvTest, AssignToNonexistentKey)
 {
     ScamValue newKey = makeSymbol("*bad*");
     ScamValue newExp = makeInteger(33, true);
-    EXPECT_THROW(engine.rebind(newKey, newExp), ScamException);
+    ScamValue test = engine.rebind(newKey, newExp);
+    ASSERT_TRUE(isError(test));
+    EXPECT_EQ(envCategory, test->errorCategory());
 }
 
 TEST_F(EnvTest, AssignTraversesFrames)
 {
     engine.pushFrame();
     ScamValue newExp = makeInteger(33, true);
-    engine.rebind(key, newExp);
+    expectNothing(engine.rebind(key, newExp));
     ScamValue act = engine.getBinding(key);
     EXPECT_EQ(asInteger(newExp), asInteger(act));
 
@@ -117,23 +123,34 @@ TEST_F(EnvTest, Check)
 {
     ScamValue key2 = makeSymbol("bad");
 
-    EXPECT_TRUE (engine.hasBinding(key));
-    EXPECT_FALSE(engine.hasBinding(key2));
+    expectBoolean(engine.hasBinding(key),  true,  "#t");
+    expectBoolean(engine.hasBinding(key2), false, "#f");
 }
 
 TEST_F(EnvTest, CheckCurrentOnly)
 {
-    EXPECT_TRUE(engine.hasBinding(key, false));
+    expectBoolean(engine.hasBinding(key, false), true, "#t");
     engine.pushFrame();
-    EXPECT_FALSE(engine.hasBinding(key, false));
+    expectBoolean(engine.hasBinding(key, false), false, "#f");
 }
 
 TEST_F(EnvTest, NullKey)
 {
-    EXPECT_THROW(engine.addBinding(nullptr, exp), ScamException);
-    EXPECT_THROW(engine.hasBinding(nullptr), ScamException);
-    EXPECT_THROW(engine.getBinding(nullptr), ScamException);
-    EXPECT_THROW(engine.rebind(nullptr, exp), ScamException);
+    ScamValue expr = engine.addBinding(nullptr, exp);
+    ASSERT_TRUE(isUnhandledError(expr));
+    EXPECT_EQ(envCategory, expr->errorCategory());
+
+    expr = engine.hasBinding(nullptr);
+    ASSERT_TRUE(isUnhandledError(expr));
+    EXPECT_EQ(envCategory, expr->errorCategory());
+
+    expr = engine.getBinding(nullptr);
+    ASSERT_TRUE(isUnhandledError(expr));
+    EXPECT_EQ(envCategory, expr->errorCategory());
+
+    expr = engine.rebind(nullptr, exp);
+    ASSERT_TRUE(isUnhandledError(expr));
+    EXPECT_EQ(envCategory, expr->errorCategory());
 }
 
 TEST_F(EnvTest, GetTopLevel)

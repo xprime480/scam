@@ -19,8 +19,8 @@ namespace scam
     extern Env * getInstanceFunctionMap(ScamValue inst);
     extern Env * getInstanceEnv(ScamValue inst);
     extern ScamValue getInstanceParent(ScamValue inst);
-    extern void setInstanceSelf(ScamValue inst, ScamValue expr);
-    extern void setInstanceParent(ScamValue inst, ScamValue expr);
+    extern ScamValue setInstanceSelf(ScamValue inst, ScamValue expr);
+    extern ScamValue setInstanceParent(ScamValue inst, ScamValue expr);
 }
 
 #endif

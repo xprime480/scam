@@ -164,7 +164,7 @@ TEST_F(ExpressionTest, SymbolTest)
     expectError(evaled);
 
     ScamValue value = makeInteger(1899, true);
-    engine.addBinding(sym, value);
+    expectNothing(engine.addBinding(sym, value));
     evaled = evaluate(sym);
     expectInteger(evaled, 1899, "1899", true);
 }
@@ -481,16 +481,18 @@ TEST_F(ExpressionTest, EnvTest)
 {
     ScamValue rv = makeNothing();
     try {
-	Env * env = mm.make<Env>();
-	ScamValue key = makeSymbol("x");
-	env->put(key, makeInteger(2, true));
+        Env * env = mm.make<Env>();
+        ScamValue key = makeSymbol("x");
 
-	ScamValue expr = makeEnv(env);
-	expectEnv(expr);
+        ScamValue test = env->put(key, makeInteger(2, true));
+        ASSERT_TRUE(isNothing(test));
 
-	Env * env2 = asEnv(expr);
-	EXPECT_EQ(env, env2);
-	expectInteger(env2->get(key), 2, "2", true);
+        ScamValue expr = makeEnv(env);
+        expectEnv(expr);
+
+        Env * env2 = asEnv(expr);
+        EXPECT_EQ(env, env2);
+        expectInteger(env2->get(key), 2, "2", true);
 
         rv = makeSymbol("ok");
     }

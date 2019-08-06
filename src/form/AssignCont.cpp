@@ -4,6 +4,7 @@
 #include "ScamEngine.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/TypePredicates.hpp"
+#include "expr/ValueFactory.hpp"
 #include "form/AssignBacktracker.hpp"
 #include "util/MemoryManager.hpp"
 
@@ -26,18 +27,28 @@ AssignCont * AssignCont::makeInstance(ScamValue sym,
     return new AssignCont(sym, cont, env, engine);
 }
 
-void AssignCont::finish(ScamValue expr) const
+ScamValue AssignCont::finish(ScamValue expr) const
 {
-    if ( isError(expr) && expr->hasMeta("amb-error") ) {
-        return;
+    if ( isError(expr) ) {
+        ScamValue test = expr->hasMeta("amb-error");
+        if ( isError(test) ) {
+            return test;
+        }
+        else if ( truth(test) ) {
+            return makeNothing();
+        }
     }
 
     ScamValue old = env->get(sym);
-    env->assign(sym, expr);
+    if ( isUnhandledError(old) ) {
+        return old;
+    }
+
+    (void) env->assign(sym, expr);
 
     Backtracker * backtracker = engine->getBacktracker();
     if ( ! backtracker ) {
-        return;
+        return makeNothing();
     }
 
     Backtracker * bt =
@@ -47,4 +58,6 @@ void AssignCont::finish(ScamValue expr) const
                                                       backtracker,
                                                       engine);
     engine->setBacktracker(bt);
+
+    return makeNothing();
 }

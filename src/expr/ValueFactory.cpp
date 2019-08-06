@@ -1,6 +1,7 @@
 #include "expr/ValueFactory.hpp"
 
 #include "Env.hpp"
+#include "ErrorCategory.hpp"
 #include "ScamException.hpp"
 #include "expr/ClassOps.hpp"
 #include "expr/ScamData.hpp"
@@ -13,8 +14,6 @@
 #include "util/MemoryManager.hpp"
 #include "util/NumericConverter.hpp"
 #include "util/NumericUtils.hpp"
-
-#include <sstream>
 
 using namespace scam;
 using namespace std;
@@ -278,10 +277,10 @@ ScamValue scam::makeClass(ClassDef & def, Env * env)
 ScamValue scam::makeClassInstance(ScamValue value, Env * env)
 {
     if ( ! isClass(value) ) {
-        stringstream s;
-        s << "Cannot make instance from non-class <"
-          << writeValue(value) << ">";
-        throw ScamException(s.str());
+        ScamValue err =
+            makeError("Cannot make instance from non-class <%{0}>", value);
+        err->errorCategory() = evalCategory;
+        return err;
     }
 
     static constexpr auto myType = ScamData::Instance;
@@ -296,7 +295,10 @@ ScamValue scam::makeClassInstance(ScamValue value, Env * env)
     size_t var_count = getClassVarCount(value);
     for ( size_t n = 0 ; n < var_count ; ++n ) {
         ScamValue var = getClassVar(value, n);
-        local->put(var, makeNull());
+        ScamValue test = local->put(var, makeNull());
+        if ( isError(test) ) {
+            return test;
+        }
     }
 
     size_t fun_count = getClassMethodCount(value);
@@ -306,7 +308,10 @@ ScamValue scam::makeClassInstance(ScamValue value, Env * env)
         const LambdaDef & lambda = fun.lambda;
 
         ScamValue impl = makeClosure(lambda, local);
-        priv->put(name, impl);
+        ScamValue test = priv->put(name, impl);
+        if ( isError(test) ) {
+            return test;
+        }
     }
 
     return v;
@@ -372,7 +377,7 @@ ScamValue scam::makeSyntax(const SyntaxRules & def)
 
 ScamValue scam::makeEnv(Env * env)
 {
-    static constexpr auto myType = ScamData::Syntax;
+    static constexpr auto myType = ScamData::ScamEnv;
     ScamValue v = standardMemoryManager.make<ScamData>(myType);
     v->envValue() = env;
     return v;

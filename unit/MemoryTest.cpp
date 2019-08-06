@@ -456,6 +456,7 @@ TEST_F(MemoryTest, TestInstance)
     Env * env = standardMemoryManager.make<Env>();
     ScamValue cls = makeClass(def, env);
     ScamValue instance = makeClassInstance(cls, env);
+    expectInstance(instance);
 
     instance->mark();
     expectMarked(false, fun1, vars, name, nom, args);
@@ -488,7 +489,8 @@ TEST_F(MemoryTest, TestEnv)
     ScamValue key = makeSymbol("f");
     ScamValue val = makeInteger(333, true);
 
-    top->put(key, val);
+    ScamValue test = top->put(key, val);
+    ASSERT_TRUE(isNothing(test));
     env->mark();
     expectMarked(true, top, env, val);
     expectMarked(false, key);

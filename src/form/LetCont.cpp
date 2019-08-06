@@ -42,29 +42,49 @@ void LetCont::mark()
     }
 }
 
-void LetCont::do_let(ScamValue expr)
+ScamValue LetCont::do_let(ScamValue expr)
 {
     Binder binder(env);
     ScamValue ff = formals;
-    Env * extended = binder.bind(ff, makeNothing(), expr);
 
-    rebind_procs(extended);
+    ScamValue test = binder.bind(ff, makeNothing(), expr);
+    if ( isError(test) ) {
+        return test;
+    }
+
+    Env * extended = test->envValue();
+
+    test = rebind_procs(extended);
+    if ( isError(test) ) {
+        return test;
+    }
+
     final_eval(extended);
+
+    return makeNothing();
 }
 
-void LetCont::rebind_procs(Env * extended)
+ScamValue LetCont::rebind_procs(Env * extended)
 {
     if ( ! rebind ) {
-        return;
+        return makeNothing();
     }
 
     const size_t len = length(formals);
     for ( size_t n = 0 ; n < len ; ++n ) {
         ScamValue k = nthcar(formals, n);
         ScamValue v = extended->get(k);
-        if ( isProcedure(v) ) {
+        if ( isUnhandledError(v) ) {
+            return v;
+        }
+        else if ( isProcedure(v) ) {
             ScamValue newV = withEnvUpdate(v, extended);
-            extended->assign(k, newV);
+            ScamValue test = extended->assign(k, newV);
+            if ( isError(test) ) {
+                return test;
+            }
         }
     }
+
+    return makeNothing();
 }

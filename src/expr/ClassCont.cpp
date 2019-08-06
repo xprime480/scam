@@ -2,6 +2,7 @@
 
 #include "Env.hpp"
 #include "ScamEngine.hpp"
+#include "ScamException.hpp"
 #include "WorkQueue.hpp"
 #include "expr/ClassInitWorker.hpp"
 #include "expr/ClassOps.hpp"
@@ -54,7 +55,12 @@ void ClassCont::handleValue(ScamValue value)
         }
         else {
             ScamValue instance = connect(instances);
-            init(instance, value);
+            if ( isError(instance) ) {
+                engine->handleError(instance);
+            }
+            else {
+                init(instance, value);
+            }
         }
     }
 }
@@ -65,6 +71,10 @@ ScamValue ClassCont::build(ScamValue cls, InstanceVec & instances) const
 
     for ( ;; ) {
         ScamValue instance = makeClassInstance(cls, env);
+        if ( isUnhandledError(instance) ) {
+            return instance;
+        }
+
         instances.push_back(instance);
 
         temp = get_parent(cls);
@@ -85,14 +95,20 @@ ScamValue ClassCont::connect(InstanceVec & instances) const
 {
     ScamValue self = instances[0];
     for ( auto instance : instances ) {
-        setInstanceSelf(instance, self);
+        ScamValue test = setInstanceSelf(instance, self);
+        if ( isUnhandledError(test) ) {
+            return test;
+        }
     }
 
     size_t len = instances.size();
     for ( size_t idx = 0 ; idx < (len - 1) ; ++idx ) {
         ScamValue child = instances[idx];
         ScamValue parent = instances[idx+1];
-        setInstanceParent(child, parent);
+        ScamValue test = setInstanceParent(child, parent);
+        if ( isUnhandledError(test) ) {
+            return test;
+        }
     }
 
     return self;
@@ -105,7 +121,11 @@ ScamValue ClassCont::get_parent(ScamValue value) const
         return makeNull();
     }
 
-    if ( ! env->check(base) ) {
+    ScamValue test = env->check(base);
+    if ( isError(test) ) {
+        return test;
+    }
+    else if ( ! truth(test) ) {
         return base_class_not_found(base);
     }
 

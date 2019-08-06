@@ -11,7 +11,6 @@
 #include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueFactory.hpp"
-#include "expr/ValueWriter.hpp"
 #include "util/LambdaDef.hpp"
 #include "util/MemoryManager.hpp"
 
@@ -58,7 +57,10 @@ void ClosureBindCont::handleValue(ScamValue value)
         /* do nothing */
     }
     else if ( checkArgLength(value) ) {
-        finalize(value);
+        ScamValue test = finalize(value);
+        if ( isError(test) ) {
+            engine->handleError(test);
+        }
     }
 }
 
@@ -112,11 +114,18 @@ bool ClosureBindCont::checkArgLength(ScamValue expr) const
     return true;
 }
 
-void ClosureBindCont::finalize(ScamValue actuals) const
+ScamValue ClosureBindCont::finalize(ScamValue actuals) const
 {
     ScamValue formals = lambda.formals;
     Binder binder(capture);
-    Env * extended = binder.bind(formals, lambda.rest, actuals);
 
+    ScamValue test = binder.bind(formals, lambda.rest, actuals);
+    if ( isError(test) ) {
+        return test;
+    }
+
+    Env * extended = test->envValue();
     workQueueHelper<EvalWorker>(lambda.forms, extended, cont, engine);
+
+    return makeNothing();
 }

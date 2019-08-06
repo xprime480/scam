@@ -146,8 +146,12 @@ ScamValue SyntaxRules::expand(ScamValue args, Env * env, ScamEngine * engine)
         rv = match->expand(data);
     }
     else {
-        ScamValue err = invalidExpansion(args);
-        engine->handleError(err);
+        rv = invalidExpansion(args);
+    }
+
+    if ( isUnhandledError(rv) ) {
+        engine->handleError(rv);
+        rv = makeNothing();
     }
 
     return rv;

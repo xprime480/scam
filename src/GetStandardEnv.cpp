@@ -1,7 +1,9 @@
 #include "ScamEngine.hpp"
 
 #include "Env.hpp"
+#include "ScamException.hpp"
 #include "expr/ValueFactory.hpp"
+#include "expr/ValueWriter.hpp"
 #include "form/AllSpecialForms.hpp"
 #include "port/CerrPort.hpp"
 #include "port/CinPort.hpp"
@@ -34,6 +36,8 @@ namespace
     extern void addOutputOps(Env * env, ScamEngine * engine);
 
     extern void addPorts(Env * env, ScamEngine * engine);
+
+    extern void doPut(Env * env, ScamValue key, ScamValue value);
 }
 
 void ScamEngine::getStandardEnv()
@@ -113,7 +117,7 @@ namespace
     {
         ScamValue key  = makeSymbol(name);
         ScamValue form = makeSpecialForm(name, func, engine, true);
-        env->put(key, form);
+        doPut(env, key, form);
     }
 
     void addPrimitive(Env * env,
@@ -123,7 +127,7 @@ namespace
     {
         ScamValue key  = makeSymbol(name);
         ScamValue form = makePrimitive(name, func, engine, true);
-        env->put(key, form);
+        doPut(env, key, form);
     }
 
     void addTypePredicates(Env * env, ScamEngine * engine)
@@ -234,8 +238,17 @@ namespace
         ScamPort * coutPort = new CoutPort;
         ScamPort * cerrPort = new CerrPort;
 
-        env->put(makeSymbol("**cin**"),  makePort(cinPort));
-        env->put(makeSymbol("**cout**"), makePort(coutPort));
-        env->put(makeSymbol("**cerr**"), makePort(cerrPort));
+        doPut(env, makeSymbol("**cin**"),  makePort(cinPort));
+        doPut(env, makeSymbol("**cout**"), makePort(coutPort));
+        doPut(env, makeSymbol("**cerr**"), makePort(cerrPort));
     }
+
+    void doPut(Env * env, ScamValue key, ScamValue value)
+    {
+        ScamValue test = env->put(key, value);
+        if ( isError(test) ) {
+            throw ScamException(writeValue(test));
+        }
+    }
+
 }

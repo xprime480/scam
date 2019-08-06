@@ -3,6 +3,7 @@ Work stack:
 * Rewrite all integration tests in scam based testing framework
 
 * Eliminate current C++ integration test code
+  ** when this is done, parameter can be removed from ReadEval::run
 
 * Move as many unit tests to integration tests as possible
 

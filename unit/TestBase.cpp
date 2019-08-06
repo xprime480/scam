@@ -129,7 +129,7 @@ ScamValue TestBase::readEval(std::string const & input)
     try {
         StringCharStream stream(input);
         ReadEvalStream helper(&engine, stream);
-        ScamValue rv = helper.run();
+        ScamValue rv = helper.run(false);
         if ( isNothing(rv) ) {
             rv = extractor->getLastValue();
         }

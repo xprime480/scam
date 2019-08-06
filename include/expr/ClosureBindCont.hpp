@@ -41,7 +41,7 @@ namespace scam
                                      unsigned actualsLen) const;
 
         bool checkArgLength(ScamValue expr) const;
-        void finalize(ScamValue actuals)  const;
+        ScamValue finalize(ScamValue actuals)  const;
     };
 }
 

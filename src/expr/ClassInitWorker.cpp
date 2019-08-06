@@ -2,10 +2,12 @@
 
 #include "Continuation.hpp"
 #include "Env.hpp"
+#include "ScamEngine.hpp"
 #include "expr/ClassInitCont.hpp"
 #include "expr/ClassOps.hpp"
 #include "expr/EvalOps.hpp"
 #include "expr/ScamData.hpp"
+#include "expr/TypePredicates.hpp"
 #include "expr/ValueFactory.hpp"
 #include "util/MemoryManager.hpp"
 
@@ -54,7 +56,13 @@ void ClassInitWorker::run()
     Worker::run();
 
     Env * env = getInstanceFunctionMap(instance);
-    if ( ! env->check(initSym) ) {
+
+    ScamValue test = env->check(initSym);
+    if ( isUnhandledError(test) ) {
+        engine->handleError(test);
+        return;
+    }
+    else if ( ! truth(test) ) {
         cont->handleValue(instance);
         return;
     }

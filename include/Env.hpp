@@ -23,8 +23,8 @@ namespace scam
     public:
         void mark() override;
 
-        void put(ScamValue key, ScamValue val);
-        bool check(ScamValue key, bool checkParent = true) const;
+        ScamValue put(ScamValue key, ScamValue val);
+        ScamValue check(ScamValue key, bool checkParent = true) const;
         ScamValue get(ScamValue key) const;
 
         void reset();
@@ -32,8 +32,8 @@ namespace scam
         Env * getParent() const;
         Env * getTop() const;
 
-        void assign(ScamValue key, ScamValue val);
-        void remove(ScamValue key);
+        ScamValue assign(ScamValue key, ScamValue val);
+        ScamValue remove(ScamValue key);
 
         void dump(size_t max, bool full = false) const;
 

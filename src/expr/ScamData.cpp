@@ -6,6 +6,7 @@
 #include "expr/ScamNumeric.hpp"
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueFactory.hpp"
+#include "expr/ValueWriter.hpp"
 #include "form/SyntaxRules.hpp"
 #include "port/ScamPort.hpp"
 #include "util/ClassDef.hpp"
@@ -290,26 +291,31 @@ bool ScamData::isImmutable() const
     return immutable;
 }
 
-void ScamData::setMeta(string const & key, ScamValue value) const
+ScamValue ScamData::setMeta(string const & key, ScamValue value) const
 {
     if ( ! metadata ) {
         metadata = standardMemoryManager.make<Env>();
     }
 
     ScamValue k = makeSymbol(key);
-
-    if ( metadata->check(k) ) {
-        metadata->assign(k, value);
+    ScamValue test = metadata->check(k);
+    if ( isUnhandledError(test) ) {
+        return test;
+    }
+    else if ( truth(test) ) {
+        (void) metadata->assign(k, value);
     }
     else {
-        metadata->put(k, value);
+        (void) metadata->put(k, value);
     }
+
+    return makeNothing();
 }
 
-bool ScamData::hasMeta(string const & key) const
+ScamValue ScamData::hasMeta(string const & key) const
 {
     if ( ! metadata ) {
-        return false;
+        return makeBoolean(false);
     }
 
     ScamValue k = makeSymbol(key);
@@ -324,7 +330,11 @@ ScamValue ScamData::getMeta(string const & key) const
     }
 
     ScamValue k  = makeSymbol(key);
-    if ( metadata->check(k) ) {
+    ScamValue test = metadata->check(k);
+    if ( isError(test) ) {
+        rv = test;
+    }
+    else if ( truth(test) ) {
         rv = metadata->get(k);
     }
 
@@ -336,9 +346,9 @@ void ScamData::assertType(DataTagType requiredType)
     if ( type != requiredType ) {
         stringstream s;
         s << "InternalError, type assertion in ScamData: expected: "
-          << hex << requiredType
+          << describe(requiredType)
           << "; operating on "
-          << hex << type;
+          << describe(type);
 
         throw ScamException(s.str());
     }

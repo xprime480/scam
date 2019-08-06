@@ -37,7 +37,10 @@ void LetCommonCont::handleValue(ScamValue value)
         engine->handleError(value);
     }
     else {
-        do_let(value);
+        ScamValue test = do_let(value);
+        if ( isUnhandledError(test) ) {
+            engine->handleError(value);
+        }
     }
 }
 

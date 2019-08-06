@@ -16,7 +16,7 @@ namespace scam
         ReadEval(ScamEngine * engine, Tokenizer & tokenizer);
         virtual ~ReadEval();
 
-        ScamValue run();
+        ScamValue run(bool errorsAreValues);
         ScamValue read();
 
     private:

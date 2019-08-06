@@ -23,7 +23,7 @@ namespace scam
         ScamValue forms;
         Continuation * cont;
 
-        virtual void do_let(ScamValue expr) = 0;
+        virtual ScamValue do_let(ScamValue expr) = 0;
         void final_eval(Env * env);
     };
 }

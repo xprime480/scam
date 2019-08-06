@@ -30,8 +30,8 @@ namespace scam
                                          const std::set<std::string> & reserved);
 
     public:
-	~SyntaxRule();
-	
+        ~SyntaxRule();
+
         void mark() override;
 
         bool isValid() const;
@@ -50,8 +50,8 @@ namespace scam
         std::set<std::string> patternIdentifiers;
 
         PatternData * parsePattern(ScamValue pat,
-				   ScamEngine * engine,
-				   const std::set<std::string> & reserved);
+                                   ScamEngine * engine,
+                                   const std::set<std::string> & reserved);
         TemplateData * parseTemplate(ScamValue tem);
 
         ScamValue invalidPattern(ScamValue pat);

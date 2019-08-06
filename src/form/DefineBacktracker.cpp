@@ -2,7 +2,10 @@
 
 #include "Continuation.hpp"
 #include "Env.hpp"
+#include "ScamException.hpp"
 #include "expr/ScamData.hpp"
+#include "expr/TypePredicates.hpp"
+#include "expr/ValueWriter.hpp"
 #include "util/MemoryManager.hpp"
 
 using namespace scam;
@@ -40,7 +43,11 @@ void DefineBacktracker::mark()
 void DefineBacktracker::run()
 {
     Backtracker::run();
-    env->remove(sym);
+    ScamValue test = env->remove(sym);
+    if ( isError(test) ) {
+        throw ScamException(writeValue(test));
+    }
+
     Continuation * cont
         = standardMemoryManager.make<Continuation>("Define Backtrack", engine);
     runParent(cont);

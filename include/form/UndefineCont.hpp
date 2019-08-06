@@ -23,7 +23,7 @@ namespace scam
                                            ScamEngine * engine);
 
     protected:
-        void finish(ScamValue expr) const override;
+        ScamValue finish(ScamValue expr) const override;
     };
 }
 

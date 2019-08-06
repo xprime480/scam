@@ -2,7 +2,10 @@
 
 #include "Continuation.hpp"
 #include "Env.hpp"
+#include "ScamException.hpp"
 #include "expr/ScamData.hpp"
+#include "expr/TypePredicates.hpp"
+#include "expr/ValueWriter.hpp"
 #include "util/MemoryManager.hpp"
 
 using namespace scam;
@@ -43,7 +46,11 @@ void AssignBacktracker::mark()
 void AssignBacktracker::run()
 {
     Backtracker::run();
-    env->assign(sym, old);
+
+    ScamValue test = env->assign(sym, old);
+    if ( isError(test) ) {
+        throw ScamException(writeValue(test));
+    }
     Continuation * cont
         = standardMemoryManager.make<Continuation>("Assign Backtrack", engine);
     runParent(cont);

@@ -6,6 +6,7 @@
 #include "expr/ScamData.hpp"
 #include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
+#include "expr/ValueFactory.hpp"
 #include "form/AllSpecialForms.hpp"
 #include "form/LetStarBacktracker.hpp"
 #include "form/LetStarCont.hpp"
@@ -47,14 +48,17 @@ void LetStarCont::mark()
     }
 }
 
-void LetStarCont::do_let(ScamValue expr)
+ScamValue LetStarCont::do_let(ScamValue expr)
 {
     if ( isNull(formals) ) {
         final_eval(env);
     }
     else {
         ScamValue sym = getCar(formals);
-        env->put(sym, expr);
+        ScamValue test = env->put(sym, expr);
+        if ( isError(test) ) {
+            return test;
+        }
 
         makeBacktracker(sym);
 
@@ -68,6 +72,8 @@ void LetStarCont::do_let(ScamValue expr)
                                                     engine);
         eval(getCar(safe), ch, env, engine);
     }
+
+    return makeNothing();
 }
 
 void LetStarCont::makeBacktracker(ScamValue sym) const

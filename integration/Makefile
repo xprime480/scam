@@ -22,9 +22,6 @@ lib :
 	make -C ../src all
 
 test : testscam
-	@for X in `find . -name '*.mst'`; do ./testscam $$X; done
-
-testu : testscam
 	@./testscam `find . -name '*.mst'`
 
 current : testscam

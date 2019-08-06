@@ -10,15 +10,16 @@ namespace scam
     public:
         Binder(Env * capture);
 
-        Env * bind(ScamValue formals, ScamValue rest, ScamValue actuals) const;
+        ScamValue
+        bind(ScamValue formals, ScamValue rest, ScamValue actuals) const;
 
     private:
         Env * capture;
 
-        void bindOne(Env * env,
-                     ScamValue syms,
-                     ScamValue rest,
-                     ScamValue vals) const;
+        ScamValue bindOne(Env * env,
+                          ScamValue syms,
+                          ScamValue rest,
+                          ScamValue vals) const;
     };
 }
 

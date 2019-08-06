@@ -30,7 +30,7 @@ namespace scam
         void mark() override;
 
     protected:
-        void do_let(ScamValue expr) override;
+        ScamValue do_let(ScamValue expr) override;
 
     private:
         ScamValue formals;

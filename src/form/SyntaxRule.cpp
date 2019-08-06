@@ -101,7 +101,6 @@ bool SyntaxRule::match(ScamValue args, SyntaxMatchData & data)
 ScamValue SyntaxRule::expand(const SyntaxMatchData & data)
 {
     ScamValue rv = makeNothing();
-
     if ( templat ) {
         rv = templat->expand(data);
     }

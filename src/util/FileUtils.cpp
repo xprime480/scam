@@ -47,7 +47,7 @@ ScamValue scam::loadEvalFile(const string & fullpath, ScamEngine * engine)
     ScamValue value = makePort(port);
     PortCharStream stream(value);
     ReadEvalStream helper(engine, stream);
-    ScamValue last = helper.run();
+    ScamValue last = helper.run(false);
     return last;
 }
 

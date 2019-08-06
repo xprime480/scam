@@ -1,8 +1,10 @@
 #include "Env.hpp"
 
+#include "ErrorCategory.hpp"
 #include "ScamException.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/TypePredicates.hpp"
+#include "expr/ValueFactory.hpp"
 #include "expr/ValueWriter.hpp"
 #include "util/MemoryManager.hpp"
 
@@ -15,14 +17,19 @@ using namespace std;
 
 namespace
 {
-    string checkKey(ScamValue key)
+    ScamValue checkKey(ScamValue key)
     {
         if ( nullptr == key || ! isSymbol(key) ) {
-            stringstream s;
-            s << "Null Environment key not allowed";
-            throw ScamException(s.str());
+            if ( nullptr == key ) {
+                key = makeString("<null pointer>");
+            }
+            ScamValue err =
+                makeError("Non-symbol environment key not allowed %{0}", key);
+            err->errorCategory() = envCategory;
+            return err;
         }
-        return  writeValue(key);
+
+        return makeNothing();
     }
 }
 
@@ -49,36 +56,54 @@ void Env::mark()
     }
 }
 
-void Env::put(ScamValue key, ScamValue val)
+ScamValue Env::put(ScamValue key, ScamValue val)
 {
-    const string keyStr = checkKey(key);
+    ScamValue test = checkKey(key);
+    if ( isError(test) ) {
+        return test;
+    }
+
+    const string keyStr = key->stringValue();
     auto const iter = table.find(keyStr);
     if ( iter != table.end() ) {
-        stringstream s;
-        s << "Key: '" << keyStr << "' already exists in current frame";
-        throw ScamException(s.str());
+        ScamValue err =
+            makeError("Key: '%{0}' already exists in current frame", key);
+        err->errorCategory() = envCategory;
+        return err;
     }
 
     table[keyStr] = val;
+
+    return makeNothing();
 }
 
-bool Env::check(ScamValue key, bool checkParent) const
+ScamValue Env::check(ScamValue key, bool checkParent) const
 {
-    const string keyStr = checkKey(key);
+    ScamValue test = checkKey(key);
+    if ( isError(test) ) {
+        return test;
+    }
+
+    const string keyStr = key->stringValue();
     auto const iter = table.find(keyStr);
     if ( iter != table.end() ) {
-        return true;
+        return makeBoolean(true);
     }
     if ( checkParent && parent ) {
         return parent->check(key, checkParent);
     }
 
-    return false;
+    return makeBoolean(false);
 }
 
 ScamValue Env::get(ScamValue key) const
 {
-    const string keyStr = checkKey(key);
+    ScamValue test = checkKey(key);
+    if ( isError(test) ) {
+        return test;
+    }
+
+    const string keyStr = key->stringValue();
     auto const iter = table.find(keyStr);
     if ( iter != table.end() ) {
         return iter->second;
@@ -87,9 +112,9 @@ ScamValue Env::get(ScamValue key) const
         return parent->get(key);
     }
 
-    stringstream s;
-    s << "Key: " << keyStr << " does not exist for reading";
-    throw ScamException(s.str());
+    ScamValue err = makeError("Key: %{0} does not exist for reading", key);
+    err->errorCategory() = envCategory;
+    return err;
 }
 
 void Env::reset()
@@ -123,32 +148,47 @@ Env * Env::getTop() const
     return parent->getTop();
 }
 
-void Env::assign(ScamValue key, ScamValue val)
+ScamValue Env::assign(ScamValue key, ScamValue val)
 {
-    const string keyStr = checkKey(key);
+    ScamValue test = checkKey(key);
+    if ( isError(test) ) {
+        return test;
+    }
+
+    const string keyStr = key->stringValue();
     auto const iter = table.find(keyStr);
     if ( iter == table.end() ) {
         if ( parent ) {
-            parent->assign(key, val);
+            return parent->assign(key, val);
         }
         else {
-            stringstream s;
-            s << "Key: " << keyStr << " does not exist for assignment";
-            throw ScamException(s.str());
+            ScamValue err =
+                makeError("Key: %{0} does not exist for assignment", key);
+            err->errorCategory() = envCategory;
+            return err;
         }
     }
     else {
         table[keyStr] = val;
     }
+
+    return makeNothing();
 }
 
-void Env::remove(ScamValue key)
+ScamValue Env::remove(ScamValue key)
 {
-    const string keyStr = checkKey(key);
+    ScamValue test = checkKey(key);
+    if ( isError(test) ) {
+        return test;
+    }
+
+    const string keyStr = key->stringValue();
     auto const iter = table.find(keyStr);
     if ( iter != table.end() ) {
         table.erase(iter);
     }
+
+    return makeNothing();
 }
 
 void Env::dump(size_t max, bool full) const

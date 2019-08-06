@@ -176,10 +176,16 @@ ScamValue ScamRepl::read()
                 tokenizer.flush();
                 return form;
             }
-            if ( isError(form) && ! form->hasMeta("partial") ) {
-                form = engine.handleError(form);
-                tokenizer.flush();
-                return form;
+            if ( isError(form) ) {
+                ScamValue test = form->hasMeta("partial");
+                if ( isError(test) ) {
+                    throw ScamException(writeValue(test));
+                }
+                if ( ! truth(test) ) {
+                    form = engine.handleError(form);
+                    tokenizer.flush();
+                    return form;
+                }
             }
 
             tokenizer.restart();

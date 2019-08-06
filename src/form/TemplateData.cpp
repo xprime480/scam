@@ -117,14 +117,20 @@ ScamValue TemplateDataList::expand(const SyntaxMatchData & data)
         if ( isUnhandledError(part) ) {
             return part;
         }
-        if ( part->hasMeta("splice") ) {
-            while ( isPair(part) ) {
-                parts.push_back(getCar(part));
-                part = getCdr(part);
-            }
-        }
         else {
-            parts.push_back(part);
+            ScamValue test = part->hasMeta("splice");
+            if ( isUnhandledError(test) ) {
+                return test;
+            }
+            else if ( truth(test) ) {
+                while ( isPair(part) ) {
+                    parts.push_back(getCar(part));
+                    part = getCdr(part);
+                }
+            }
+            else {
+                parts.push_back(part);
+            }
         }
     }
 
@@ -221,7 +227,10 @@ ScamValue TemplateDataEllipsis::expand(const SyntaxMatchData & data)
     }
 
     ScamValue rv = makeList(parts);
-    rv->setMeta("splice", makeNothing());
+    ScamValue test = rv->setMeta("splice", makeNothing());
+    if ( isUnhandledError(test) ) {
+        return test;
+    }
     return rv;
 }
 

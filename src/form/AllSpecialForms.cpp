@@ -130,8 +130,14 @@ void scam::applyDefineSyntax(ScamValue args,
         ScamValue rules = p1.value;
         SyntaxRules syntax(engine, name, rules);
         ScamValue value = makeSyntax(syntax);
-        env->put(name, value);
-        cont->handleValue(makeNothing());
+
+        ScamValue test = env->put(name, value);
+        if ( isError(test) ) {
+            engine->handleError(test);
+        }
+        else {
+            cont->handleValue(makeNothing());
+        }
     }
 }
 

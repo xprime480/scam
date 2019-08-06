@@ -42,7 +42,11 @@ void scam::eval(ScamValue value,
     }
 
     else if ( isSymbol(value) ) {
-        if ( env->check(value) ) {
+        ScamValue test = env->check(value);
+        if ( isError(test) ) {
+            engine->handleError(test);
+        }
+        else if ( truth(test) ) {
             ScamValue evaluated = env->get(value);
             cont->handleValue(evaluated);
         }

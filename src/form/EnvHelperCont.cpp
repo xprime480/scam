@@ -2,8 +2,9 @@
 
 #include "Continuation.hpp"
 #include "Env.hpp"
+#include "ScamEngine.hpp"
 #include "expr/ScamData.hpp"
-#include "expr/ValueFactory.hpp"
+#include "expr/TypePredicates.hpp"
 
 using namespace scam;
 using namespace std;
@@ -33,6 +34,11 @@ void EnvHelperCont::mark()
 void EnvHelperCont::handleValue(ScamValue value)
 {
     Continuation::handleValue(value);
-    finish(value);
-    cont->handleValue(makeNothing());
+    ScamValue test = finish(value);
+    if ( isUnhandledError(test) ) {
+        engine->handleError(test);
+    }
+    else {
+        cont->handleValue(test);
+    }
 }

@@ -28,10 +28,10 @@ namespace scam
         Env * getFrame();
         void popFrame();
 
-        void addBinding(ScamValue key, ScamValue val);
-        bool hasBinding(ScamValue key, bool checkParent = true);
+        ScamValue addBinding(ScamValue key, ScamValue val);
+        ScamValue hasBinding(ScamValue key, bool checkParent = true);
         ScamValue getBinding(ScamValue key, bool top = false);
-        void rebind(ScamValue key, ScamValue val);
+        ScamValue rebind(ScamValue key, ScamValue val);
 
         /*** functions to manage the input buffer ***/
 
@@ -44,7 +44,7 @@ namespace scam
 
         /*** functions to read, eval, and apply ***/
 
-        ScamValue readEvalCurrent();
+        ScamValue readEvalCurrent(bool errorsAreValues);
         ScamValue read();
         ScamValue eval(ScamValue expr);
         ScamValue apply(ScamValue expr, ScamValue args);

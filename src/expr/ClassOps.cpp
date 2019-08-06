@@ -76,23 +76,27 @@ ScamValue scam::getInstanceParent(ScamValue inst)
     checkInstance(inst, "getInstanceParent");
     Env *& local = inst->instanceLocal();
 
-    if ( local->check(parentKey) ) {
+    ScamValue test = local->check(parentKey);
+    if ( isUnhandledError(test) ) {
+        return test;
+    }
+    else if ( truth(test) ) {
         return local->get(parentKey);
     }
 
     return makeNull();
 }
 
-void scam::setInstanceSelf(ScamValue inst, ScamValue expr)
+ScamValue scam::setInstanceSelf(ScamValue inst, ScamValue expr)
 {
     checkInstance(inst, "setInstanceSelf");
-    inst->instanceLocal()->put(self, expr);
+    return inst->instanceLocal()->put(self, expr);
 }
 
-void scam::setInstanceParent(ScamValue inst, ScamValue expr)
+ScamValue scam::setInstanceParent(ScamValue inst, ScamValue expr)
 {
     checkInstance(inst, "setInstanceParent");
-    inst->instanceLocal()->put(parentKey, expr);
+    return inst->instanceLocal()->put(parentKey, expr);
 }
 
 namespace

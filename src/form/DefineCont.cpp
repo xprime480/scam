@@ -4,6 +4,7 @@
 #include "ScamEngine.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/TypePredicates.hpp"
+#include "expr/ValueFactory.hpp"
 #include "form/DefineBacktracker.hpp"
 #include "util/MemoryManager.hpp"
 
@@ -27,17 +28,26 @@ DefineCont * DefineCont::makeInstance(ScamValue sym,
 }
 
 
-void DefineCont::finish(ScamValue expr) const
+ScamValue DefineCont::finish(ScamValue expr) const
 {
-    if ( isError(expr) && expr->hasMeta("amb-error") ) {
-        return;
+    if ( isError(expr) ) {
+        ScamValue test = expr->hasMeta("amb-error");
+        if ( isError(test) ) {
+            return test;
+        }
+        else if ( truth(test) ) {
+            return makeNothing();
+        }
     }
 
-    env->put(sym, expr);
+    ScamValue test = env->put(sym, expr);
+    if ( isError(test) ) {
+        return test;
+    }
 
     Backtracker * backtracker = engine->getBacktracker();
     if ( ! backtracker ) {
-        return;
+        return makeNothing();
     }
 
     Backtracker * bt =
@@ -46,4 +56,6 @@ void DefineCont::finish(ScamValue expr) const
                                                       backtracker,
                                                       engine);
     engine->setBacktracker(bt);
+
+    return makeNothing();
 }

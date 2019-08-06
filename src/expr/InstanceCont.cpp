@@ -2,13 +2,13 @@
 
 #include "Continuation.hpp"
 #include "Env.hpp"
+#include "ErrorCategory.hpp"
 #include "ScamEngine.hpp"
 #include "expr/ClassOps.hpp"
 #include "expr/EvalOps.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueFactory.hpp"
-#include "expr/ValueWriter.hpp"
 
 using namespace scam;
 using namespace std;
@@ -52,7 +52,8 @@ void InstanceCont::handleValue(ScamValue value)
     }
 
     ScamValue func = find_func(obj);
-    if ( isNothing(func) ) {
+    if ( isUnhandledError(func) ) {
+        engine->handleError(func);
         return;
     }
 
@@ -64,11 +65,18 @@ ScamValue InstanceCont::find_func(ScamValue o) const
 {
     while ( isInstance(o) ) {
         Env * env = getInstanceFunctionMap(o);
-        if ( env->check(name) ) {
+        ScamValue test = env->check(name);
+        if ( isUnhandledError(test) ) {
+            return test;
+        }
+        else if ( truth(test) ) {
             return env->get(name);
         }
 
         o = getInstanceParent(o);
+        if ( isUnhandledError(o) ) {
+            return o;
+        }
     }
 
     return function_not_found();
@@ -77,6 +85,6 @@ ScamValue InstanceCont::find_func(ScamValue o) const
 ScamValue InstanceCont::function_not_found() const
 {
     ScamValue err = makeError("Instance method not found", name);
-    engine->handleError(err);
-    return makeNothing();
+    err->errorCategory() = evalCategory;
+    return err;
 }

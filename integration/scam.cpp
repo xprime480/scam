@@ -26,7 +26,7 @@ string call_scam(string const & input)
     engine.pushHandler(handler);
 
     ReadEvalString helper(&engine, input);
-    helper.run();
+    (void) helper.run(true);
 
     engine.popHandler();
 

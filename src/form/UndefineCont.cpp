@@ -1,6 +1,9 @@
 #include "form/UndefineCont.hpp"
 
 #include "Env.hpp"
+#include "expr/TypePredicates.hpp"
+#include "expr/ValueFactory.hpp"
+#include "expr/ValueWriter.hpp"
 
 using namespace scam;
 using namespace std;
@@ -21,7 +24,11 @@ UndefineCont * UndefineCont::makeInstance(ScamValue sym,
     return new UndefineCont(sym, cont, env, engine);
 }
 
-void UndefineCont::finish(ScamValue expr) const
+ScamValue UndefineCont::finish(ScamValue expr) const
 {
-    env->remove(sym);
+    ScamValue test = env->remove(sym);
+    if ( isError(test) ) {
+        return test;
+    }
+    return makeNothing();
 }

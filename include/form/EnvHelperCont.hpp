@@ -23,7 +23,7 @@ namespace scam
         ScamValue     sym;
         mutable Env * env;
 
-        virtual void finish(ScamValue expr) const = 0;
+        virtual ScamValue finish(ScamValue expr) const = 0;
 
     private:
         Continuation * cont;

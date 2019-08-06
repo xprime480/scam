@@ -167,21 +167,21 @@
     ((cond (test => result) clause1 clause2 ...)
      (let ((temp test))
        (if temp
-	   (result temp)
-	   (cond clause1 clause2 ...))))
+           (result temp)
+           (cond clause1 clause2 ...))))
     ((cond (test)) test)
     ((cond (test) clause1 clause2 ...)
      (let ((temp test))
        (if temp
-	   temp
-	   (cond clause1 clause2 ...))))
+           temp
+           (cond clause1 clause2 ...))))
     ((cond (test result1 result2 ...))
      (if test (begin result1 result2 ...)))
     ((cond (test result1 result2 ...)
-	   clause1 clause2 ...)
+           clause1 clause2 ...)
      (if test
-	 (begin result1 result2 ...)
-	 (cond clause1 clause2 ...)))))
+         (begin result1 result2 ...)
+         (cond clause1 clause2 ...)))))
 
 
 (define include
@@ -193,7 +193,7 @@
                     (let* ((file (car files))
                            (rest (cdr files))
                            (val (load file)))
-                      (if (or (error? val) (null? rest))
+                      (if (or (error-object? val) (null? rest))
                           val
                           (include-files rest))))))
           (include-files files)))))

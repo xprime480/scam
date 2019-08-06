@@ -2,6 +2,7 @@
 
 #include "Continuation.hpp"
 #include "Env.hpp"
+#include "ScamException.hpp"
 #include "Trampoline.hpp"
 #include "WorkQueue.hpp"
 #include "Worker.hpp"
@@ -40,6 +41,26 @@ namespace
         vector<ScamValue> history;
         Continuation * cont;
         size_t serial;
+    };
+
+    class EngineHandler : public Handler
+    {
+    private:
+        friend class scam::MemoryManager;
+        EngineHandler();
+        static EngineHandler * makeInstance();
+
+    public:
+        void mark() override;
+
+        ScamValue handleError(ScamValue err) override;
+
+        bool called() const;
+        ScamValue get() const;
+        void reset();
+
+    private:
+        ScamValue value;
     };
 }
 
@@ -89,12 +110,12 @@ void ScamEngine::popFrame()
     }
 }
 
-void ScamEngine::addBinding(ScamValue key, ScamValue val)
+ScamValue ScamEngine::addBinding(ScamValue key, ScamValue val)
 {
-    env->put(key, val);
+    return env->put(key, val);
 }
 
-bool ScamEngine::hasBinding(ScamValue key, bool checkParent)
+ScamValue ScamEngine::hasBinding(ScamValue key, bool checkParent)
 {
     return env->check(key, checkParent);
 }
@@ -105,9 +126,9 @@ ScamValue ScamEngine::getBinding(ScamValue key, bool top)
     return temp->get(key);
 }
 
-void ScamEngine::rebind(ScamValue key, ScamValue val)
+ScamValue ScamEngine::rebind(ScamValue key, ScamValue val)
 {
-    env->assign(key, val);
+    return env->assign(key, val);
 }
 
 void ScamEngine::pushInput(Tokenizer & tokenizer)
@@ -130,10 +151,12 @@ void ScamEngine::setCont(Continuation * c)
     }
 }
 
-ScamValue ScamEngine::readEvalCurrent()
+ScamValue ScamEngine::readEvalCurrent(bool errorsAreValues)
 {
     HistoryCont const * hc = dynamic_cast<HistoryCont const *>(cont);
     size_t const mark = hc ? hc->current() : 0;
+
+    EngineHandler * eh = standardMemoryManager.make<EngineHandler>();
 
     while ( true ) {
         ScamValue expr = read();
@@ -144,16 +167,31 @@ ScamValue ScamEngine::readEvalCurrent()
             break;
         }
 
+        pushHandler(eh);
         (void) eval(expr);
+        popHandler();
+        if ( eh->called() ) {
+            if ( errorsAreValues ) {
+                cont->handleValue(eh->get());
+                eh->reset();
+            }
+            else {
+                break;
+            }
+        }
     }
 
     ScamValue rv;
-    if ( ! hc || hc->current() == mark ) {
+    if ( eh->called() ) {
+        rv = eh->get();
+    }
+    else if ( ! hc || hc->current() == mark ) {
         rv = makeNothing();
     }
     else {
         rv = hc->get();
     }
+
     return rv;
 }
 
@@ -322,4 +360,46 @@ namespace
     {
         return serial;
     }
+
+    EngineHandler::EngineHandler()
+        : Handler("EngineHandler")
+    {
+        reset();
+    }
+
+    EngineHandler * EngineHandler::makeInstance()
+    {
+        return new EngineHandler;
+    }
+
+    void EngineHandler::mark()
+    {
+        if ( ! isMarked() ) {
+            Handler::mark();
+            value->mark();
+        }
+    }
+
+    ScamValue EngineHandler::handleError(ScamValue err)
+    {
+        Handler::handleError(err);
+        value = err;
+        return makeNothing();
+    }
+
+    bool EngineHandler::called() const
+    {
+        return ! isNothing(value);
+    }
+
+    ScamValue EngineHandler::get() const
+    {
+        return value;
+    }
+
+    void EngineHandler::reset()
+    {
+        value = makeNothing();
+    }
+
 }

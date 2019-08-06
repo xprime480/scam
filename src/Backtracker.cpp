@@ -1,8 +1,11 @@
 #include "Backtracker.hpp"
 
 #include "Continuation.hpp"
+#include "ScamException.hpp"
 #include "expr/ScamData.hpp"
+#include "expr/TypePredicates.hpp"
 #include "expr/ValueFactory.hpp"
+#include "expr/ValueWriter.hpp"
 
 #include <iostream>
 #include <sstream>
@@ -99,7 +102,10 @@ namespace
     ScamValue getNoMore()
     {
         ScamValue nomore = makeError("No more choices");
-        nomore->setMeta("amb-error", makeNull());
+        ScamValue test = nomore->setMeta("amb-error", makeNull());
+        if ( isUnhandledError(test) ) {
+            throw ScamException(writeValue(test));
+        }
         return nomore;
     }
 }

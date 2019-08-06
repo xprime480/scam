@@ -1,5 +1,6 @@
 #include "input/ScamParser.hpp"
 
+#include "ScamException.hpp"
 #include "expr/ScamToInternal.hpp"
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueFactory.hpp"
@@ -358,7 +359,10 @@ namespace
     {
         static string tag = "partial";
         if ( expr ) {
-            expr->setMeta(tag, makeNull());
+            ScamValue test = expr->setMeta(tag, makeNull());
+            if ( isError(test) ) {
+                throw ScamException(writeValue(test));
+            }
         }
     }
 }

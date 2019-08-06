@@ -44,8 +44,8 @@ namespace scam
         void makeImmutable();
         bool isImmutable() const;
 
-        void setMeta(std::string const & key, ScamValue value) const;
-        bool hasMeta(std::string const & key) const;
+        ScamValue setMeta(std::string const & key, ScamValue value) const;
+        ScamValue hasMeta(std::string const & key) const;
         ScamValue getMeta(std::string const & key) const;
 
         /*

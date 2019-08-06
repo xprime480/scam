@@ -33,14 +33,14 @@ namespace scam
         void mark() override;
 
     protected:
-        void do_let(ScamValue expr) override;
+        ScamValue do_let(ScamValue expr) override;
 
     private:
         ScamValue formals;
-        Env *        env;
-        bool       rebind;
+        Env     * env;
+        bool      rebind;
 
-        void rebind_procs(Env * extended);
+        ScamValue rebind_procs(Env * extended);
     };
 }
 
