@@ -3,6 +3,7 @@
 #include "Binder.hpp"
 #include "Continuation.hpp"
 #include "Env.hpp"
+#include "ErrorCategory.hpp"
 #include "EvalWorker.hpp"
 #include "ScamEngine.hpp"
 #include "WorkQueue.hpp"
@@ -72,6 +73,7 @@ bool ClosureBindCont::malformedActuals(ScamValue expr) const
 
     ScamValue err =
         makeError("Expecting list or symbol for parameter list (%{0})", expr);
+    err->errorCategory() = argsCategory;
     engine->handleError(err);
 
     return true;
@@ -97,6 +99,7 @@ void ClosureBindCont::wrongNumberOfParameters(unsigned formalsLen,
     ScamValue err = makeError(cause,
                               makeInteger(formalsLen, true),
                               makeInteger(actualsLen, true));
+    err->errorCategory() = argsCategory;
     engine->handleError(err);
 }
 

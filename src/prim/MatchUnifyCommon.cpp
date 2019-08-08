@@ -67,7 +67,10 @@ MatchUnifyCommon::check_keyword(ScamValue dict, ScamValue lhs, ScamValue rhs)
     if ( isKeyword(lhs) && ! isNull(rhs) ) {
         ScamValue old = dictGet(dict, lhs);
         if ( isError(old) ) {
-            dictPut(dict, lhs, rhs);
+            ScamValue test = dictPut(dict, lhs, rhs);
+            if ( isError(test) ) {
+                return test;
+            }
         }
         else if ( ! equals(old, rhs) ) {
             stringstream s;
@@ -153,7 +156,13 @@ MatchUnifyCommon::check_dict(ScamValue dict, ScamValue lhs, ScamValue rhs)
             return make_common_error(s.str().c_str());
         }
 
-        KeyVec const & keys = getDictKeys(lhs);
+        KeyVec const * pKeys { nullptr };
+        ScamValue test = getDictKeys(lhs, pKeys);
+        if ( isError(test) ) {
+            return test;
+        }
+        KeyVec const & keys = *pKeys;
+
         for ( auto key : keys ) {
             ScamValue d = dictGet(rhs, key);
             if ( isError(d) ) {

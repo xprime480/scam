@@ -22,7 +22,10 @@ lib :
 	make -C ../src all
 
 test : scam
-	@for X in `find tests -name '*.scm'`; do ./scam -t lib/test/narc.scm $$X ; done
+	@./scamtest.sh
+
+qtest :
+	@./scamtest.sh
 
 clean :
 	-@rm -f *.o *.d scam

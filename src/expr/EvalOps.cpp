@@ -118,8 +118,7 @@ void scam::apply(ScamValue value,
             rv = makeInteger(length(value), true);
         }
         else if ( equals(op, DictCommand::hasOp) ) {
-            const bool b = dictHas(value, cmd.key);
-            rv = makeBoolean(b);
+            rv = dictHas(value, cmd.key);
         }
         else if ( equals(op, DictCommand::remOp) ) {
             rv = dictRemove(value, cmd.key);
@@ -127,11 +126,14 @@ void scam::apply(ScamValue value,
         else {
             rv = makeError("Unknown dictionary operator", op);
             rv->errorCategory() = evalCategory;
-            engine->handleError(rv);
-            return;
         }
 
-        cont->handleValue(rv);
+        if ( isUnhandledError(rv) ) {
+            engine->handleError(rv);
+        }
+        else {
+            cont->handleValue(rv);
+        }
     }
 
     else if ( isInstance(value) ) {

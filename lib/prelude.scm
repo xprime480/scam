@@ -48,18 +48,6 @@
                       ()))))
        (loop)))))
 
-(define old-length
-  (lambda (some)
-    (if (null? some)
-        0
-        (if (pair? some)
-            (+ 1 (old-length (cdr some)))
-            (if (vector? some)
-                (vlen some)
-                (if (dict? some)
-                    (some :length)
-                    (error "Cannot take length of unknown type")))))))
-
 (define nth
   (lambda (idx some)
     (if (pair? some)
@@ -68,7 +56,7 @@
             (nth (- idx 1) (cdr some)))
         (if (vector? some)
             (vref idx some)
-            (error "Cannot index unknown type")))))
+            (error :args "Cannot index unknown type")))))
 
 (define even?
   (lambda (x)
@@ -210,7 +198,7 @@
   (lambda (pred bs)
     (if (null? bs)
         #t
-        (if (= 1 (old-length bs))
+        (if (= 1 (length bs))
             (pred (car bs))
             (let ((fst (car bs))
                   (snd (cadr bs))

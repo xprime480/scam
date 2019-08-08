@@ -1,6 +1,8 @@
 #include "prim/MathOps.hpp"
 
 #include "Continuation.hpp"
+#include "ErrorCategory.hpp"
+#include "ScamEngine.hpp"
 #include "expr/ExtendedNumeric.hpp"
 #include "expr/ValueFactory.hpp"
 #include "util/ArgListHelper.hpp"
@@ -69,6 +71,7 @@ namespace
             }
             if ( ns.end() != find(iter, ns.end(), zero) ) {
                 state = makeError("Division By Zero");
+                state->errorCategory() = argsCategory;
                 return zero;
             }
         }
@@ -103,6 +106,7 @@ namespace
         }
         if ( zero == ns[1] ) {
             state = makeError("Modulus By Zero");
+            state->errorCategory() = argsCategory;
             return zero;
         }
 
@@ -120,7 +124,12 @@ namespace
             CountedParameter p0(pNum);                                    \
             if ( argsToParms(args, engine, context, p0) ) {               \
                 ScamValue rv = numericAlgorithm(p0.value, context, Proc); \
-                cont->handleValue(rv);                                    \
+                if ( isUnhandledError(rv) ) {                             \
+                    engine->handleError(rv);                              \
+                }                                                         \
+                else {                                                    \
+                    cont->handleValue(rv);                                \
+                }                                                         \
             }                                                             \
         }
 

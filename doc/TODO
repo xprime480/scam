@@ -53,3 +53,5 @@
   driver.  Hunch: May have something to do with garbage collection & static
   objects.
 
+* Look at refactoring the composite test cases in
+  .../scam/tests/core/pred/eqivalance/

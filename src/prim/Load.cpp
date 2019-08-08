@@ -1,6 +1,7 @@
 #include "prim/Load.hpp"
 
 #include "Continuation.hpp"
+#include "ErrorCategory.hpp"
 #include "ScamEngine.hpp"
 #include "expr/ScamToInternal.hpp"
 #include "expr/ValueFactory.hpp"
@@ -19,8 +20,6 @@ namespace
 
     extern ScamValue makeFileError(const char * text, ScamValue irr0);
 }
-
-const ScamValue scam::fileErrorCategory = makeSymbol(":file", false);
 
 void scam::applyLoad(ScamValue args,
                      Continuation * cont,
@@ -57,13 +56,14 @@ namespace
     {
         ScamValue err = makeFileError("File Error, file not found (%{0})",
                                       makeSymbol(filename));
+        err->errorCategory() = fileCategory;
         engine->handleError(err);
     }
 
     ScamValue makeFileError(const char * text, ScamValue irr0)
     {
         ScamValue rv = makeError(text, irr0);
-        rv->errorCategory() = fileErrorCategory;
+        rv->errorCategory() = fileCategory;
         return rv;
     }
 }

@@ -80,6 +80,9 @@ ScamValue Substitutor::resolve_keyword(ScamValue expr)
 
     helper = makePair(expr, helper);
     ScamValue val = dictGet(answers, expr);
+    if ( isUnhandledError(val) ) {
+        return val;
+    }
     ScamValue rv  = resolve_value(val);
     helper = nthcdr(helper, 0);
     return rv;

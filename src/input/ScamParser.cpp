@@ -1,5 +1,6 @@
 #include "input/ScamParser.hpp"
 
+#include "ErrorCategory.hpp"
 #include "ScamException.hpp"
 #include "expr/ScamToInternal.hpp"
 #include "expr/TypePredicates.hpp"
@@ -15,8 +16,6 @@ namespace
     extern void tagPartial(ScamValue expr);
 }
 
-const ScamValue scam::readErrorCategory = makeSymbol(":read", false);
-
 ScamParser::ScamParser(Tokenizer & tokenizer)
     : tokenizer(tokenizer)
 {
@@ -31,7 +30,7 @@ ScamValue ScamParser::parseExpr() const
 {
     ScamValue expr = parseSubExpr();
     if ( isError(expr) ) {
-        expr->errorCategory() = readErrorCategory;
+        expr->errorCategory() = readCategory;
     }
     return expr;
 }
@@ -130,7 +129,8 @@ ScamValue ScamParser::tokenToExpr(Token const & token) const
         break;
 
     default:
-        rv = makeError("**Internal Error:  Unknown token type");
+        rv = makeError("**Internal Error:  Unknown token type (%{0})",
+                       makeString(token.getText().c_str()));
         break;
     }
 

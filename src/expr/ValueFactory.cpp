@@ -250,7 +250,10 @@ ScamValue scam::makeDict(ExprVec const & args)
     for ( size_t idx = 0 ; idx < input.size() ; idx += 2 ) {
         ScamValue key = input[idx];
         ScamValue val = input[idx+1];
-        dictPut(v, key, val);
+        ScamValue rv = dictPut(v, key, val);
+        if ( isUnhandledError(rv) ) {
+            return rv;
+        }
     }
 
     return v;

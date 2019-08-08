@@ -11,12 +11,15 @@ namespace scam
      *
      *        (error-category error-object)
      */
-    extern const ScamValue implCategory;
     extern const ScamValue argsCategory;
-    extern const ScamValue userCategory;
+    extern const ScamValue dictCategory;
     extern const ScamValue envCategory;
-    extern const ScamValue syntaxCategory;
     extern const ScamValue evalCategory;
+    extern const ScamValue fileCategory;
+    extern const ScamValue implCategory;
+    extern const ScamValue readCategory;
+    extern const ScamValue syntaxCategory;
+    extern const ScamValue userCategory;
 }
 
 #endif

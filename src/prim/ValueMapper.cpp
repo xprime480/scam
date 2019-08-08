@@ -17,14 +17,26 @@ ScamValue ValueMapper::map_dict(ScamValue expr)
     ScamValue rv   = makeDict();
     ScamValue dict = expr;
 
-    KeyVec const & keys = getDictKeys(dict);
+    KeyVec const * pKeys { nullptr };
+    ScamValue test = getDictKeys(dict, pKeys);
+    if ( isError(test) ) {
+        return test;
+    }
+
+    KeyVec const & keys = *pKeys;
     for ( auto key : keys ) {
         ScamValue val = dictGet(dict, key);
+        if ( isError(val) ) {
+            return val;
+        }
         ScamValue newVal = map_value(val);
         if ( isError(newVal) ) {
             return newVal;
         }
-        dictPut(rv, key, newVal);
+        ScamValue test = dictPut(rv, key, newVal);
+        if ( isError(test) ) {
+            return test;
+        }
     }
 
     return rv;

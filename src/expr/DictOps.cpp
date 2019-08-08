@@ -1,39 +1,45 @@
 #include "expr/DictOps.hpp"
 
-#include "ScamException.hpp"
+#include "ErrorCategory.hpp"
 #include "expr/EqualityOps.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueFactory.hpp"
 #include "expr/ValueWriter.hpp"
 
-#include <sstream>
-
 using namespace scam;
 using namespace std;
 
 namespace
 {
-    extern void checkDict(ScamValue value, const char * op);
+    extern ScamValue checkDict(ScamValue value, const char * op);
 }
 
-bool scam::dictHas(ScamValue value, ScamValue key)
+ScamValue scam::dictHas(ScamValue value, ScamValue key)
 {
-    checkDict(value, "dictHas");
+    ScamValue test = checkDict(value, "dictHas");
+    if ( isError(test) ) {
+        return test;
+    }
+
     const ScamData::DictKeyData & keys = value->dictKeys();
 
     for ( size_t jdx = 0 ; jdx < keys.size() ; ++jdx ) {
         if ( equals(keys[jdx], key) ) {
-            return true;
+            return makeBoolean(true);
         }
     }
 
-    return false;
+    return makeBoolean(false);
 }
 
 ScamValue scam::dictGet(ScamValue value, ScamValue key)
 {
-    checkDict(value, "dictGet");
+    ScamValue test = checkDict(value, "dictGet");
+    if ( isError(test) ) {
+        return test;
+    }
+
     const ScamData::DictKeyData & keys = value->dictKeys();
 
     for ( size_t jdx = 0 ; jdx < keys.size() ; ++jdx ) {
@@ -42,12 +48,17 @@ ScamValue scam::dictGet(ScamValue value, ScamValue key)
         }
     }
 
-    return makeError("Key not found (%{0})", key);
+    ScamValue rv = makeError("Key not found (%{0})", key);
+    rv->errorCategory() = dictCategory;
+    return rv;
 }
 
 ScamValue scam::dictPut(ScamValue value, ScamValue key, ScamValue val)
 {
-    checkDict(value, "dictPut");
+    ScamValue test = checkDict(value, "dictPut");
+    if ( isError(test) ) {
+        return test;
+    }
 
     ScamData::DictKeyData   & keys = value->dictKeys();
     ScamData::DictValueData & vals = value->dictValues();
@@ -73,7 +84,10 @@ ScamValue scam::dictPut(ScamValue value, ScamValue key, ScamValue val)
 
 ScamValue scam::dictRemove(ScamValue value, ScamValue key)
 {
-    checkDict(value, "dictRemove");
+    ScamValue test = checkDict(value, "dictRemove");
+    if ( isError(test) ) {
+        return test;
+    }
 
     ScamData::DictKeyData   & keys = value->dictKeys();
     ScamData::DictValueData & vals = value->dictValues();
@@ -91,22 +105,31 @@ ScamValue scam::dictRemove(ScamValue value, ScamValue key)
     return rv;
 }
 
-const KeyVec & scam::getDictKeys(ScamValue value)
+ScamValue scam::getDictKeys(ScamValue value, const KeyVec *& result)
 {
-    checkDict(value, "getDictKeys");
+    ScamValue test = checkDict(value, "getDictKeys");
+    if ( isError(test) ) {
+        return test;
+    }
 
-    return value->dictKeys();
+    result = &value->dictKeys();
+    return makeNothing();
 }
 
 namespace
 {
-    void checkDict(ScamValue value, const char * op)
+    ScamValue checkDict(ScamValue value, const char * op)
     {
         if ( ! isDict(value) ) {
-            stringstream s;
-            s << "cannot perform dictionary operation " << op
-              << "on non-dict value " << writeValue(value);
-            throw ScamException(s.str());
+            static const char * msg
+            { "cannot perform dictionary operation %{0} "
+                 "on non-dict value %{1}" };
+
+            ScamValue err = makeError(msg , makeString(op), value);
+            err->errorCategory() = dictCategory;
+            return err;
         }
+
+        return makeNothing();
     }
 }

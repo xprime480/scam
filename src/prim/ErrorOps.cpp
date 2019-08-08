@@ -131,7 +131,7 @@ void scam::applyReadErrorP(ScamValue args,
                            ScamEngine * engine)
 {
     static const char * name = "read-error?";
-    checkErrorCategory(args, cont, engine, name, readErrorCategory);
+    checkErrorCategory(args, cont, engine, name, readCategory);
 }
 
 void scam::applyFileErrorP(ScamValue args,
@@ -139,7 +139,7 @@ void scam::applyFileErrorP(ScamValue args,
                            ScamEngine * engine)
 {
     static const char * name = "file-error?";
-    checkErrorCategory(args, cont, engine, name, fileErrorCategory);
+    checkErrorCategory(args, cont, engine, name, fileCategory);
 }
 
 void scam::applyErrorCat(ScamValue args,
@@ -164,12 +164,18 @@ namespace
     {
         ScamValue rv = makeNothing();
 
-        StringParameter  p0;
-        ObjectParameter  pTemp;
-        CountedParameter p1(pTemp);
-        if ( argsToParms(args, engine, name, p0, p1) ) {
-            string str     = asString(p0.value);
-            ScamValue objs = p1.value;
+        KeywordParameter  pCat;
+        OptionalParameter p0(pCat);
+        StringParameter   p1;
+        ObjectParameter   pTemp;
+        CountedParameter  p2(pTemp);
+        if ( argsToParms(args, engine, name, p0, p1, p2) ) {
+            ScamValue cat = userCategory;
+            if ( p0.found ) {
+                cat = p0.value;
+            }
+            string str     = asString(p1.value);
+            ScamValue objs = p2.value;
 
             ScamData::VectorData irritants;
             unsigned len = length(objs);
@@ -178,7 +184,7 @@ namespace
             }
 
             rv = makeError(str.c_str(), irritants);
-            rv->errorCategory() = userCategory;
+            rv->errorCategory() = cat;
         }
 
         return rv;

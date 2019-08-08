@@ -4,19 +4,16 @@
 #include "ScamFwd.hpp"
 #include "expr/ScamData.hpp"
 
-#include <vector>
-
 namespace scam
 {
     using KeyVec = ScamData::DictKeyData;
     using ValVec = ScamData::DictValueData;
 
-    extern bool dictHas(ScamValue value, ScamValue key);
+    extern ScamValue dictHas(ScamValue value, ScamValue key);
     extern ScamValue dictGet(ScamValue value, ScamValue key);
     extern ScamValue dictPut(ScamValue value, ScamValue key, ScamValue val);
     extern ScamValue dictRemove(ScamValue value, ScamValue key);
-    extern const KeyVec & getDictKeys(ScamValue value);
+    extern ScamValue getDictKeys(ScamValue value, const KeyVec *& result);
 }
-
 
 #endif

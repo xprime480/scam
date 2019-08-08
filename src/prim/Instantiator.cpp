@@ -49,13 +49,20 @@ ScamValue Instantiator::new_mapping(ScamValue expr)
     stringstream s;
     s << ":kw" << ++counter;
     ScamValue value = makeKeyword(s.str());
-    dictPut(dict, expr, value);
+    ScamValue test = dictPut(dict, expr, value);
+    if ( isError(test) ) {
+        return test;
+    }
     return value;
 }
 
 ScamValue Instantiator::inst_keyword(ScamValue expr)
 {
-    if ( dictHas(dict, expr) ) {
+    ScamValue test = dictHas(dict, expr);
+    if ( isError(test) ) {
+        return test;
+    }
+    else if ( truth(test) ) {
         return dictGet(dict, expr);
     }
 
