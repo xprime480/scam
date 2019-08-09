@@ -57,7 +57,6 @@ namespace
 
         bool called() const;
         ScamValue get() const;
-        void reset();
 
     private:
         ScamValue value;
@@ -151,7 +150,7 @@ void ScamEngine::setCont(Continuation * c)
     }
 }
 
-ScamValue ScamEngine::readEvalCurrent(bool errorsAreValues)
+ScamValue ScamEngine::readEvalCurrent()
 {
     HistoryCont const * hc = dynamic_cast<HistoryCont const *>(cont);
     size_t const mark = hc ? hc->current() : 0;
@@ -171,13 +170,7 @@ ScamValue ScamEngine::readEvalCurrent(bool errorsAreValues)
         (void) eval(expr);
         popHandler();
         if ( eh->called() ) {
-            if ( errorsAreValues ) {
-                cont->handleValue(eh->get());
-                eh->reset();
-            }
-            else {
-                break;
-            }
+            break;
         }
     }
 
@@ -364,7 +357,7 @@ namespace
     EngineHandler::EngineHandler()
         : Handler("EngineHandler")
     {
-        reset();
+        value = makeNothing();
     }
 
     EngineHandler * EngineHandler::makeInstance()
@@ -396,10 +389,4 @@ namespace
     {
         return value;
     }
-
-    void EngineHandler::reset()
-    {
-        value = makeNothing();
-    }
-
 }

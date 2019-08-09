@@ -17,9 +17,9 @@ ReadEval::~ReadEval()
     engine->popInput();
 }
 
-ScamValue ReadEval::run(bool errorsAreValues)
+ScamValue ReadEval::run()
 {
-    return engine->readEvalCurrent(errorsAreValues);
+    return engine->readEvalCurrent();
 }
 
 ScamValue ReadEval::read()

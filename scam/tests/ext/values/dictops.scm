@@ -16,7 +16,7 @@
     (aDict :put fun "hello")
     aDict))
 
- ({ :key -1.5 "hello" }
+ ({ :key -1.5 fun "hello" }
   (begin
     (aDict :put :key -1.5)
     aDict))

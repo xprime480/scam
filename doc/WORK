@@ -1,9 +1,10 @@
 Work stack:
 
-* Rewrite all integration tests in scam based testing framework
+* Fix tests that depend on backtracking.  If the backtracking happens
+  at a low level in the test (directly invoking ?), the control flow
+  is broken.
 
-* Eliminate current C++ integration test code
-  ** when this is done, parameter can be removed from ReadEval::run
+* Rewrite all integration tests in scam based testing framework
 
 * Move as many unit tests to integration tests as possible
 
