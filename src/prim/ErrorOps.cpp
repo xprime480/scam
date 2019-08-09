@@ -146,11 +146,24 @@ void scam::applyErrorCat(ScamValue args,
                          Continuation * cont,
                          ScamEngine * engine)
 {
-    static const char * name = "error-type";
+    static const char * name = "error-category";
 
     ScamValue error = fetchErrorObject(args, cont, engine, name);
     if ( isError(error) ) {
         ScamValue rv = error->errorCategory();
+        cont->handleValue(rv);
+    }
+}
+
+void scam::applyError2String(ScamValue args,
+                             Continuation * cont,
+                             ScamEngine * engine)
+{
+    static const char * name = "error->string";
+
+    ScamValue error = fetchErrorObject(args, cont, engine, name);
+    if ( isError(error) ) {
+        ScamValue rv = makeString(writeValue(error));
         cont->handleValue(rv);
     }
 }

@@ -4,7 +4,6 @@
 (narc-label "Nth")
 
 (load "lib/prelude.scm")
-(load "lib/test/test-handler.scm")
 
 (narc-expect
  ('a (nth 0 '(a b c)))

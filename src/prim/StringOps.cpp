@@ -1,6 +1,7 @@
 #include "prim/StringOps.hpp"
 
 #include "Continuation.hpp"
+#include "ErrorCategory.hpp"
 #include "ScamEngine.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/ScamToInternal.hpp"
@@ -384,6 +385,7 @@ void scam::applyStringCopyX(ScamValue args,
         if ( space < count ) {
             ScamValue err =
                 makeError("Insufficient room in destination to copy source");
+            err->errorCategory() = evalCategory;
             engine->handleError(err);
             return;
         }

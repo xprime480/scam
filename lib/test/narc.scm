@@ -38,15 +38,28 @@
     ((narc-catch (value form) ...)
      (narc-expect (value (with-exception-handler
                           (lambda (err)
-                            (error-category err))
+                            (if (error-object? err)
+                                (begin
+                                  ;;(display (error->string err))
+				  ;;(display " ")
+				  ;;(display (error-category err))
+                                  ;;(newline)
+                                  (error-category err))
+                                err))
                           (lambda ()
                             form)))) ... )))
 
 (define narc-report
   (lambda ()
-    (let ((pass (equal? **narc-test-count** **narc-test-pass**)))
+    (let ((pass (and
+                 (> **narc-test-count** 0)
+                 (equal? **narc-test-count** **narc-test-pass**))))
       (display (if pass "[PASS]" "[FAIL]"))
-      (display " ")
+      (display " [")
+      (display **narc-test-pass**)
+      (display "/")
+      (display **narc-test-count**)
+      (display "] ")
       (display **narc-test-name**)
       (newline)
       pass)))

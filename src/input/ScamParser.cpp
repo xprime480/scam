@@ -48,10 +48,12 @@ ScamValue ScamParser::tokenToExpr(Token const & token) const
     switch ( token.getType() ) {
     case TokenType::TT_NONE:
         rv = makeError("**Internal Error: No Tokens");
+        rv->errorCategory() = scanCategory;
         break;
 
     case TokenType::TT_DOT:
         rv = makeError("Dot (.) outside list");
+        rv->errorCategory() = scanCategory;
         break;
 
     case TokenType::TT_OPEN_PAREN:
@@ -60,6 +62,7 @@ ScamValue ScamParser::tokenToExpr(Token const & token) const
 
     case TokenType::TT_CLOSE_PAREN:
         rv = makeError("Extra ')' in input");
+        rv->errorCategory() = scanCategory;
         break;
 
     case TokenType::TT_OPEN_VECTOR:
@@ -72,6 +75,7 @@ ScamValue ScamParser::tokenToExpr(Token const & token) const
 
     case TokenType::TT_CLOSE_BRACKET:
         rv = makeError("Extra ']' in input");
+        rv->errorCategory() = scanCategory;
         break;
 
     case TokenType::TT_OPEN_CURLY:
@@ -80,6 +84,7 @@ ScamValue ScamParser::tokenToExpr(Token const & token) const
 
     case TokenType::TT_CLOSE_CURLY:
         rv = makeError("Extra '}' in input");
+        rv->errorCategory() = scanCategory;
         break;
 
     case TokenType::TT_BOOLEAN:
@@ -126,11 +131,13 @@ ScamValue ScamParser::tokenToExpr(Token const & token) const
 
     case TokenType::TT_SCAN_ERROR:
         rv = makeError(token.getText().c_str());
+        rv->errorCategory() = scanCategory;
         break;
 
     default:
         rv = makeError("**Internal Error:  Unknown token type (%{0})",
                        makeString(token.getText().c_str()));
+        rv->errorCategory() = scanCategory;
         break;
     }
 
@@ -149,7 +156,9 @@ ScamValue ScamParser::parseList() const
     }
 
     if ( TokenType::TT_SCAN_ERROR == type ) {
-        return makeError(token.getText().c_str());
+        ScamValue rv = makeError(token.getText().c_str());
+        rv->errorCategory() = scanCategory;
+        return rv;
     }
 
     if ( TokenType::TT_CLOSE_PAREN == type ) {
@@ -187,11 +196,15 @@ ScamValue ScamParser::parseDotContext() const
     }
 
     if ( TokenType::TT_SCAN_ERROR == type ) {
-        return makeError(token.getText().c_str());
+        ScamValue rv = makeError(token.getText().c_str());
+        rv->errorCategory() = scanCategory;
+        return rv;
     }
 
     if ( TokenType::TT_CLOSE_PAREN == type ) {
-        return makeError("No form after '.'");
+        ScamValue rv = makeError("No form after '.'");
+        rv->errorCategory() = scanCategory;
+        return rv;
     }
 
     ScamValue last = tokenToExpr(token);
@@ -201,16 +214,21 @@ ScamValue ScamParser::parseDotContext() const
 
     if ( TokenType::TT_END_OF_INPUT == checkType ) {
         ScamValue err = makeError("Unterminated List");
+        err->errorCategory() = scanCategory;
         tagPartial(err);
         return err;
     }
 
     if ( TokenType::TT_SCAN_ERROR == checkType ) {
-        return makeError(token.getText().c_str());
+        ScamValue rv = makeError(token.getText().c_str());
+        rv->errorCategory() = scanCategory;
+        return rv;
     }
 
     if ( TokenType::TT_CLOSE_PAREN != checkType ) {
-        return makeError("Too many forms after '.'");
+        ScamValue rv = makeError("Too many forms after '.'");
+        rv->errorCategory() = scanCategory;
+        return rv;
     }
 
     return last;
@@ -231,7 +249,9 @@ ScamValue ScamParser::parseVector() const
         }
 
         if ( TokenType::TT_SCAN_ERROR == type ) {
-            return makeError(token.getText().c_str());
+            ScamValue rv = makeError(token.getText().c_str());
+            rv->errorCategory() = scanCategory;
+            return rv;
         }
 
         if ( TokenType::TT_CLOSE_PAREN == type ) {
@@ -262,7 +282,9 @@ ScamValue ScamParser::parseByteVector() const
         }
 
         if ( TokenType::TT_SCAN_ERROR == type ) {
-            return makeError(token.getText().c_str());
+            ScamValue rv = makeError(token.getText().c_str());
+            rv->errorCategory() = scanCategory;
+            return rv;
         }
 
         if ( TokenType::TT_CLOSE_PAREN == type ) {
@@ -275,12 +297,16 @@ ScamValue ScamParser::parseByteVector() const
         }
 
         if ( ! isInteger(expr) ) {
-            return makeError("Bad value in Byte Vector");
+            ScamValue rv = makeError("Bad value in Byte Vector");
+            rv->errorCategory() = scanCategory;
+            return rv;
         }
 
         int i = asInteger(expr);
         if ( i < 0 || i > 255 || ! isExact(expr) ) {
-            return makeError("Bad value in Byte Vector");
+            ScamValue rv = makeError("Bad value in Byte Vector");
+            rv->errorCategory() = scanCategory;
+            return rv;
         }
 
         vec.push_back((unsigned char)i);
@@ -302,7 +328,9 @@ ScamValue ScamParser::parseDict() const
         }
 
         if ( TokenType::TT_SCAN_ERROR == type ) {
-            return makeError(token.getText().c_str());
+            ScamValue rv = makeError(token.getText().c_str());
+            rv->errorCategory() = scanCategory;
+            return rv;
         }
 
         if ( TokenType::TT_CLOSE_CURLY == type ) {
@@ -334,15 +362,21 @@ ScamValue ScamParser::expand_reader_macro(std::string const & text) const
         name = "splice";
     }
     else {
-        return makeError("Unknown reader macro", makeString(text));
+        ScamValue rv = makeError("Unknown reader macro", makeString(text));
+        rv->errorCategory() = scanCategory;
+        return rv;
     }
 
     ScamValue expr = parseSubExpr();
     if ( isEof(expr) ) {
-        return makeError("Unterminated reader macro", makeString(name));
+        ScamValue rv = makeError("Unterminated reader macro", makeString(name));
+        rv->errorCategory() = scanCategory;
+        return rv;
     }
     if ( isError(expr) ) {
-        return makeError("Error getting form", makeString(name), expr);
+        ScamValue rv = makeError("Error getting form", makeString(name), expr);
+        rv->errorCategory() = scanCategory;
+        return rv;
     }
 
     ScamValue sym    = makeSymbol(name);
@@ -362,6 +396,9 @@ namespace
             ScamValue test = expr->setMeta(tag, makeNull());
             if ( isError(test) ) {
                 throw ScamException(writeValue(test));
+            }
+            if ( isError(expr) ) {
+                expr->errorCategory() = scanCategory;
             }
         }
     }

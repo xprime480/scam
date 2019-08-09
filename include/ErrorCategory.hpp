@@ -18,6 +18,7 @@ namespace scam
     extern const ScamValue fileCategory;
     extern const ScamValue implCategory;
     extern const ScamValue readCategory;
+    extern const ScamValue scanCategory;
     extern const ScamValue syntaxCategory;
     extern const ScamValue userCategory;
 }

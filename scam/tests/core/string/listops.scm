@@ -3,9 +3,6 @@
 
 (narc-label "List-String conversions")
 
-
-(load "lib/test/test-handler.scm")
-
 (narc-expect
  ('()            (string->list ""))
  ('()            (string->list "" 0 0))
@@ -14,9 +11,10 @@
  ('(#\b)         (string->list "abc" 1 2))
 
  (""             (list->string '()))
- ("foo"          (list->string '(#\f #\o #\o)))
+ ("foo"          (list->string '(#\f #\o #\o))))
 
- (:args          (test-err-cat (list->string 2)))
- (:args          (test-err-cat (list->string '(#\e 2 #\x)))))
+(narc-catch
+ (:args (list->string 2))
+ (:args (list->string '(#\e 2 #\x))))
 
 (narc-report)

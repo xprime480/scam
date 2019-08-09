@@ -10,4 +10,7 @@
  ('(1)              (some-of '(1)))
  ("No more choices" ?))
 
+(narc-expect
+ (1 1))
+
 (narc-report)

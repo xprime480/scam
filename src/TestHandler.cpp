@@ -27,6 +27,7 @@ void TestHandler::mark()
 
 ScamValue TestHandler::handleError(ScamValue err)
 {
+    Handler::handleError(err);
     cont->handleValue(err);
     return makeNothing();
 }

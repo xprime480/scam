@@ -216,6 +216,7 @@ namespace
         addPrimitive(env, "read-error?",            applyReadErrorP,    engine);
         addPrimitive(env, "file-error?",            applyFileErrorP,    engine);
         addPrimitive(env, "error-category",         applyErrorCat,      engine);
+        addPrimitive(env, "error->string",          applyError2String,  engine);
     }
 
     void addPortOps(Env * env, ScamEngine * engine)

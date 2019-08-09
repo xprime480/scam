@@ -3,8 +3,6 @@
 
 (narc-label "Substring functions")
 
-(load "lib/test/test-handler.scm")
-
 (load "lib/prelude.scm")
 
 (define empty "")
@@ -18,10 +16,11 @@
  ("World"         (string-copy hello 7))
  ("Hello, World"  (string-copy hello))
 
- (:args           (test-err-cat (string-copy hello -1 555)))
- (:args           (test-err-cat (string-copy hello 0 555)))
- (:args           (test-err-cat (string-copy hello 5 0)))
-
  ("ll"            (substring hello 2 4)))
+
+(narc-catch
+ (:args (string-copy hello -1 555))
+ (:args (string-copy hello 0 555))
+ (:args (string-copy hello 5 0)))
 
 (narc-report)

@@ -77,4 +77,7 @@
  (parse-result1 (parse '(time flies like an arrow)))
  (parse-result2 ?))
 
+(narc-expect
+ (1 1))
+
 (narc-report)

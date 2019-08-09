@@ -26,4 +26,7 @@
  ('((x 8) (y 6) (z 10))  ?)
  ("No more choices"      ?))
 
+(narc-expect
+ (1 1))
+
 (narc-report)

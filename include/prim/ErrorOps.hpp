@@ -40,6 +40,11 @@ namespace scam
     extern void applyErrorCat(ScamValue args,
                               Continuation * cont,
                               ScamEngine * engine);
+
+    extern void applyError2String(ScamValue args,
+                                  Continuation * cont,
+                                  ScamEngine * engine);
+
 }
 
 #endif

@@ -3,13 +3,12 @@
 
 (narc-label "Type Checker of Null")
 
-(load "lib/test/test-handler.scm")
-
 (narc-expect
- (:args (test-err-cat (null?)))
- (:args (test-err-cat (null? '() '())))
+ (#t (null? ()))
+ (#f (null? 2)))
 
- (#f (null? ()))
- (#t (null? 2)))
+(narc-catch
+ (:args (null?))
+ (:args (null? '() '())))
 
 (narc-report)

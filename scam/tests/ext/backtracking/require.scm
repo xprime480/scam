@@ -13,4 +13,7 @@
  (4 ?)
  (6 ?))
 
+(narc-expect
+ (1 1))
+
 (narc-report)

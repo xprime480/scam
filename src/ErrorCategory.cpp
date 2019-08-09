@@ -11,5 +11,6 @@ const ScamValue scam::evalCategory   = makeKeyword(":eval", false);
 const ScamValue scam::fileCategory   = makeKeyword(":file", false);
 const ScamValue scam::implCategory   = makeKeyword(":not-implemented", false);
 const ScamValue scam::readCategory   = makeKeyword(":read", false);
+const ScamValue scam::scanCategory   = makeKeyword(":scan", false);
 const ScamValue scam::syntaxCategory = makeKeyword(":syntax", false);
 const ScamValue scam::userCategory   = makeKeyword(":user", false);

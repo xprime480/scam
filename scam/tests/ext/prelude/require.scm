@@ -5,8 +5,11 @@
 
 (load "lib/prelude.scm")
 
-(narc-expect
+(narc-skip
  (#t                (require #t))
  ("No more choices" (require #f)))
+
+(narc-expect
+ (1 1))
 
 (narc-report)

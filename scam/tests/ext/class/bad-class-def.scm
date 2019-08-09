@@ -4,13 +4,10 @@
 
 (narc-label "Malformed Class Definition")
 
-(load "lib/test/test-handler.scm")
-
-(narc-expect
- (:args (test-err-cat
-         (make-class Root
-                     (val)
-                     (init (v) (set! val v))
-                     (foo)))))
+(narc-catch
+ (:args (make-class Root
+                    (val)
+                    (init (v) (set! val v))
+                    (foo))))
 
 (narc-report)

@@ -4,8 +4,6 @@
 
 (narc-label "(CI) String Greater Than")
 
-(load "lib/test/test-handler.scm")
-
 (define err :not-a-string)
 (define s1 "")
 (define s2 "boy")
@@ -13,14 +11,16 @@
 (define s4 "girl")
 
 (narc-expect
- (:args  (test-err-cat (string-ci>? s1 s2 err)))
- (:args  (test-err-cat (string-ci>?)))
- (:args  (test-err-cat (string-ci>? s1)))
  (#f     (string-ci>? s1 s2))
  (#f     (string-ci>? s2 s2))
  (#t     (string-ci>? s4 s2))
  (#f     (string-ci>? s2 s3))
  (#f     (string-ci>? s3 s2))
  (#t     (string-ci>? s4 s3 s1)))
+
+(narc-catch
+ (:args  (string-ci>? s1 s2 err))
+ (:args  (string-ci>?))
+ (:args  (string-ci>? s1)))
 
 (narc-report)

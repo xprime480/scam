@@ -3,12 +3,11 @@
 
 (narc-label "Raise")
 
-(load "lib/test/test-handler.scm")
+(narc-catch
+ (:args (raise))
+ (:args (raise 1 2 3))
 
-(narc-expect
- (:args (test-err-cat (raise)))
- (:args (test-err-cat (raise 1 2 3)))
- ("bagels are not doughnuts" (raise "bagels are not doughnuts"))
- (2 (raise 2)))
+ ("Error" (raise "Error"))
+ (2       (raise 2)))
 
 (narc-report)
