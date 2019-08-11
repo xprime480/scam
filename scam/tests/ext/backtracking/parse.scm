@@ -4,6 +4,7 @@
 (narc-label "Parse")
 
 (load "lib/prelude.scm")
+(load "lib/test/value_helper.scm")
 
 (define verbs '(verb flies like))
 (define nouns '(noun time fruit flies bannanna arrow))
@@ -73,25 +74,20 @@
                           (noun-phrase (det an)
                                        (noun arrow)))))
 
-(define expected (let ((p (open-output-string)))
-		   (display parse-result1 p)
-		   (display " " p)
-		   (display parse-result2 p)
-		   (display " " p)
-		   (get-output-string p)))
+(define expected (let ((p (ValueHelper)))
+                   (p update parse-result1)
+                   (p update parse-result2)
+                   (p get)))
 
-(define port (open-output-string))
-(define foo (lambda (x)
-              (display x port)
-              (display " " port)))
+(define helper (ValueHelper))
 
-(foo (parse '(time flies like an arrow)))
+(helper update (parse '(time flies like an arrow)))
 (backtrack)
 
 (narc-catch
  (:values (backtrack)))
 
 (narc-expect
- (expected (get-output-string port)))
+ (expected (helper get)))
 
 (narc-report)

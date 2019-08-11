@@ -1,6 +1,7 @@
 #include "expr/ClassOps.hpp"
 
 #include "Env.hpp"
+#include "ErrorCategory.hpp"
 #include "ScamException.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/SequenceOps.hpp"
@@ -99,9 +100,32 @@ ScamValue scam::setInstanceParent(ScamValue inst, ScamValue expr)
     return inst->instanceLocal()->put(parentKey, expr);
 }
 
+ScamValue scam::getInstanceMethod(ScamValue value, ScamValue name)
+{
+    while ( isInstance(value) ) {
+        Env * env = getInstanceFunctionMap(value);
+        ScamValue test = env->check(name);
+        if ( isUnhandledError(test) ) {
+            return test;
+        }
+        else if ( truth(test) ) {
+            return env->get(name);
+        }
+
+        value = getInstanceParent(value);
+        if ( isUnhandledError(value) ) {
+            return value;
+        }
+    }
+
+    ScamValue err = makeError("Instance method not found", name);
+    err->errorCategory() = evalCategory;
+    return err;
+}
+
 namespace
 {
-    extern void checkClass(ScamValue cls, const char * op)
+    void checkClass(ScamValue cls, const char * op)
     {
         if ( ! isClass(cls) ) {
             stringstream s;
@@ -111,7 +135,7 @@ namespace
         }
     }
 
-    extern void checkInstance(ScamValue inst, const char * op)
+    void checkInstance(ScamValue inst, const char * op)
     {
         if ( ! isInstance(inst) ) {
             stringstream s;

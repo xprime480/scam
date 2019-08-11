@@ -7,6 +7,7 @@
 
 (load "lib/prelude.scm")
 (load "lib/numeric.scm")
+(load "lib/test/value_helper.scm")
 
 (define pythagorean-triples
   (lambda ()
@@ -19,12 +20,9 @@
                     (square z)))
         `((x ,x) (y ,y) (z ,z))))))
 
-(define port (open-output-string))
-(define foo (lambda (x)
-              (display x port)
-              (display " " port)))
+(define helper (ValueHelper))
 
-(foo (pythagorean-triples))
+(helper update (pythagorean-triples))
 (backtrack)
 (backtrack)
 (backtrack)
@@ -32,10 +30,14 @@
 (narc-catch
  (:values (backtrack)))
 
-(define expected
-  "((x 3) (y 4) (z 5)) ((x 4) (y 3) (z 5)) ((x 6) (y 8) (z 10)) ((x 8) (y 6) (z 10)) ")
+(define expected (let ((p (ValueHelper)))
+                   (p update '((x 3) (y 4) (z 5)))
+                   (p update '((x 4) (y 3) (z 5)))
+                   (p update '((x 6) (y 8) (z 10)))
+                   (p update '((x 8) (y 6) (z 10)))
+                   (p get)))
 
 (narc-expect
- (expected (get-output-string port)))
+ (expected (helper get)))
 
 (narc-report)

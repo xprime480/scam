@@ -21,6 +21,8 @@ namespace scam
     extern ScamValue getInstanceParent(ScamValue inst);
     extern ScamValue setInstanceSelf(ScamValue inst, ScamValue expr);
     extern ScamValue setInstanceParent(ScamValue inst, ScamValue expr);
+
+    extern ScamValue getInstanceMethod(ScamValue value, ScamValue name);
 }
 
 #endif

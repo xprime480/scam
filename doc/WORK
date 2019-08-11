@@ -1,11 +1,5 @@
 Work stack:
 
-* Fix tests that depend on backtracking.  If the backtracking happens
-  at a low level in the test (directly invoking ?), the control flow
-  is broken.
-
-* Rewrite all integration tests in scam based testing framework
-
 * Move as many unit tests to integration tests as possible
 
 * Implement proper library syntax

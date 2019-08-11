@@ -4,16 +4,14 @@
 (narc-label "Require")
 
 (load "lib/prelude.scm")
+(load "lib/test/value_helper.scm")
 
-(define port (open-output-string))
-(define foo (lambda (x)
-              (display x port)
-              (display " " port)))
+(define helper (ValueHelper))
 
-(foo (let ((x (amb 1 2 3 4 5 6)))
-       (begin
-         (require (even? x))
-         x)))
+(helper update (let ((x (amb 1 2 3 4 5 6)))
+                 (begin
+                   (require (even? x))
+                   x)))
 (backtrack)
 (backtrack)
 
@@ -21,6 +19,6 @@
  (:values (backtrack)))
 
 (narc-expect
- ("2 4 6 " (get-output-string port)))
+ ("2 4 6 " (helper get)))
 
 (narc-report)

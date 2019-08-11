@@ -5,18 +5,16 @@
 
 (load "lib/prelude.scm")
 (load "lib/numeric.scm")
+(load "lib/test/value_helper.scm")
 
-(define port (open-output-string))
-(define foo (lambda (x)
-              (display x port)
-              (display " " port)))
+(define helper (ValueHelper))
 
-(foo (integers-from 2))
+(helper update (integers-from 2))
 (backtrack)
-(foo :cat)
+(helper update :cat)
 (backtrack)
 
 (narc-expect
- ("2 3 :cat 4 " (get-output-string port)))
+ ("2 3 :cat 4 " (helper get)))
 
 (narc-report)

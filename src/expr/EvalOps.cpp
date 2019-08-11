@@ -6,11 +6,11 @@
 #include "ScamEngine.hpp"
 #include "ScamException.hpp"
 #include "WorkQueue.hpp"
+#include "expr/ClassOps.hpp"
 #include "expr/ClassWorker.hpp"
 #include "expr/ClosureWorker.hpp"
 #include "expr/ConsWorker.hpp"
 #include "expr/EqualityOps.hpp"
-#include "expr/InstanceCont.hpp"
 #include "expr/MapWorker.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/SequenceOps.hpp"
@@ -82,12 +82,7 @@ void scam::apply(ScamValue value,
     }
 
     else if ( isClosure(value) ) {
-        workQueueHelper<ClosureWorker>(value->closureDef(),
-                                       value->closureEnv(),
-                                       cont,
-                                       args,
-                                       env,
-                                       engine);
+        workQueueHelper<ClosureWorker>(value, cont, args, env, engine);
     }
 
     else if ( isContinuation(value) ) {
@@ -142,16 +137,12 @@ void scam::apply(ScamValue value,
             ScamValue name    = def.name;
             ScamValue funargs = def.forms;
 
-            Continuation * newCont =
-                standardMemoryManager.make<InstanceCont>(value,
-                                                         name,
-                                                         cont,
-                                                         engine);
-            if ( isNull(funargs) ) {
-                newCont->handleValue(funargs);
+            ScamValue method = getInstanceMethod(value, name);
+            if ( isUnhandledError(method) ) {
+                engine->handleError(method);
             }
             else {
-                mapEval(funargs, newCont, env, engine);
+                apply(method, funargs, cont, env, engine);
             }
         }
     }
