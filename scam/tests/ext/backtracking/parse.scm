@@ -73,11 +73,25 @@
                           (noun-phrase (det an)
                                        (noun arrow)))))
 
-(narc-skip
- (parse-result1 (parse '(time flies like an arrow)))
- (parse-result2 ?))
+(define expected (let ((p (open-output-string)))
+		   (display parse-result1 p)
+		   (display " " p)
+		   (display parse-result2 p)
+		   (display " " p)
+		   (get-output-string p)))
+
+(define port (open-output-string))
+(define foo (lambda (x)
+              (display x port)
+              (display " " port)))
+
+(foo (parse '(time flies like an arrow)))
+(backtrack)
+
+(narc-catch
+ (:values (backtrack)))
 
 (narc-expect
- (1 1))
+ (expected (get-output-string port)))
 
 (narc-report)

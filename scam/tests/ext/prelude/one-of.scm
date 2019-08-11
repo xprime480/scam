@@ -5,8 +5,10 @@
 
 (load "lib/prelude.scm")
 
+(narc-catch
+ (:values (one-of (list))))
+
 (narc-skip
- ("No more choices" (one-of (list)))
  (2                 (one-of (list 2)))
  (2                 (one-of (list 2 8 22)))
  (8                 ?))

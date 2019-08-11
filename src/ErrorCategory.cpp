@@ -14,3 +14,4 @@ const ScamValue scam::readCategory   = makeKeyword(":read", false);
 const ScamValue scam::scanCategory   = makeKeyword(":scan", false);
 const ScamValue scam::syntaxCategory = makeKeyword(":syntax", false);
 const ScamValue scam::userCategory   = makeKeyword(":user", false);
+const ScamValue scam::valuesCategory = makeKeyword(":values", false);

@@ -8,6 +8,14 @@ namespace scam
     extern void applyOpenInStr(ScamValue args,
                                Continuation * cont,
                                ScamEngine * engine);
+
+    extern void applyOpenOutStr(ScamValue args,
+                                Continuation * cont,
+                                ScamEngine * engine);
+    
+    extern void applyGetOutStr(ScamValue args,
+			       Continuation * cont,
+			       ScamEngine * engine);
 }
 
 #endif

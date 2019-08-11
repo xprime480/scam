@@ -2,7 +2,9 @@
 
 #include "Backtracker.hpp"
 #include "Continuation.hpp"
+#include "ErrorCategory.hpp"
 #include "ScamEngine.hpp"
+#include "expr/ScamData.hpp"
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueFactory.hpp"
 #include "util/Parameter.hpp"
@@ -19,6 +21,7 @@ void scam::applyBacktrack(ScamValue args,
         Backtracker * backtracker = engine->getBacktracker();
         if ( ! backtracker ) {
             ScamValue err = makeError("No current backtrack context");
+            err->errorCategory() = valuesCategory;
             engine->handleError(err);
         }
         else {

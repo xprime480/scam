@@ -1,7 +1,7 @@
-;;; String Port usage
+;;; String Input Port usage
 ;;;
 
-(narc-label "String Port")
+(narc-label "String Input Port")
 
 (narc-expect
  ('(#t (+ 1 1)) (let ((data (open-input-string "(+ 1 1)")))

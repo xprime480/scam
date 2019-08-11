@@ -222,6 +222,8 @@ namespace
     void addPortOps(Env * env, ScamEngine * engine)
     {
         addPrimitive(env, "open-input-string",    applyOpenInStr,   engine);
+        addPrimitive(env, "open-output-string",   applyOpenOutStr,  engine);
+        addPrimitive(env, "get-output-string",    applyGetOutStr,   engine);
     }
 
     void addInputOps(Env * env, ScamEngine * engine)

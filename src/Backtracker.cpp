@@ -1,6 +1,7 @@
 #include "Backtracker.hpp"
 
 #include "Continuation.hpp"
+#include "ErrorCategory.hpp"
 #include "ScamException.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/TypePredicates.hpp"
@@ -102,6 +103,7 @@ namespace
     ScamValue getNoMore()
     {
         ScamValue nomore = makeError("No more choices");
+        nomore->errorCategory() = valuesCategory;
         ScamValue test = nomore->setMeta("amb-error", makeNull());
         if ( isUnhandledError(test) ) {
             throw ScamException(writeValue(test));

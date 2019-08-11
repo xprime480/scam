@@ -6,17 +6,17 @@
 (load "lib/prelude.scm")
 (load "lib/numeric.scm")
 
-(define *v* (integers-from 23))
+(define port (open-output-string))
+(define foo (lambda (x)
+              (display x port)
+              (display " " port)))
+
+(foo (integers-from 2))
+(backtrack)
+(foo :cat)
+(backtrack)
 
 (narc-expect
- (1 1))
-
-(narc-skip
- (23 *v*)
- (24 (begin ? *v*))
- (25 (begin ? *v*))
- (0 0)
- (26 (begin ? *v*))
- (27 (begin ? *v*)))
+ ("2 3 :cat 4 " (get-output-string port)))
 
 (narc-report)

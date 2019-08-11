@@ -20,14 +20,21 @@
                     (square z)))
         `((x ,x) (y ,y) (z ,z))))))
 
-(narc-skip
- ('((x 3) (y 4) (z 5))   (pythagorean-triples))
- ('((x 6) (y 8) (z 10))  ?)
- ('((x 5) (y 12) (z 13)) ?)
- ('((x 9) (y 12) (z 15)) ?)
- ('((x 8) (y 15) (z 17)) ?))
+(define port (open-output-string))
+(define foo (lambda (x)
+              (display x port)
+              (display " " port)))
+
+(foo (pythagorean-triples))
+(backtrack)
+(backtrack)
+(backtrack)
+(backtrack)
+
+(define expected
+  "((x 3) (y 4) (z 5)) ((x 6) (y 8) (z 10)) ((x 5) (y 12) (z 13)) ((x 9) (y 12) (z 15)) ((x 8) (y 15) (z 17)) ")
 
 (narc-expect
- (1 1))
+ (expected (get-output-string port)))
 
 (narc-report)

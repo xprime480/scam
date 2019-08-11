@@ -6,23 +6,20 @@
 (load "lib/prelude.scm")
 (load "lib/numeric.scm")
 
-(define v (lambda ()
-            (integers-between 1 3)))
-(define f (lambda ()
-            (backtrack)
-            v))
+(define port (open-output-string))
+(define foo (lambda (x)
+              (display x port)
+              (display " " port)))
+
+(foo (integers-between 1 3))
+(backtrack)
+(foo :cat)
+(backtrack)
+
+(narc-catch
+ (:values (backtrack)))
 
 (narc-expect
- (1 1))
-
-(narc-skip
- (1 *v*)
- (2 (f))
- (#t (begin
-       (display "hi")
-       (newline)
-       #t))
- (3 (f))
- ("No more choices" ?))
+ ("1 2 :cat 3 " (get-output-string port)))
 
 (narc-report)
