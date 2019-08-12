@@ -1,3 +1,4 @@
+(narc-label "Spawn")
 
 (define x 0)
 (define y 0)
@@ -9,4 +10,7 @@
     (begin
       (set! y (+ y 1))))
 
-(list x y)
+(narc-expect
+ ('(1 2) (list x y)))
+
+(narc-report)

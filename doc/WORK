@@ -1,7 +1,5 @@
 Work stack:
 
-* Move as many unit tests to integration tests as possible
-
 * Implement proper library syntax
 
 * Rewrite / eliminate prelude.scm
