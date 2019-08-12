@@ -17,6 +17,9 @@ namespace
     extern ScamValue convertPath(char const * path);
     extern string getNextElement(char const *& path);
     extern string makePath(string dirname, string filename);
+
+    extern ScamValue pushPath(string filename);
+    static ScamValue dynamicPath = makeNothing();
 }
 
 string scam::findFileOnPath(const string & filename)
@@ -27,7 +30,10 @@ string scam::findFileOnPath(const string & filename)
         }
     }
     else {
-        ScamValue path = getPath();
+        ScamValue path = dynamicPath;
+        if ( isNothing(path) ) {
+            path = getPath();
+        }
 
         size_t n = length(path);
         for ( size_t i = 0 ; i < n ; ++i ) {
@@ -47,7 +53,13 @@ ScamValue scam::loadEvalFile(const string & fullpath, ScamEngine * engine)
     ScamValue value = makePort(port);
     PortCharStream stream(value);
     ReadEvalStream helper(engine, stream);
+    ScamValue save = dynamicPath;
+    if ( isNothing(dynamicPath) ) {
+	dynamicPath = getPath();
+    }
+    dynamicPath = pushPath(fullpath);
     ScamValue last = helper.run();
+    dynamicPath = save;
     return last;
 }
 
@@ -133,4 +145,24 @@ namespace
         s << dirname << "/" << filename;
         return s.str();
     }
+
+    ScamValue pushPath(string filename)
+    {
+        ScamValue rv = dynamicPath;
+
+        auto iter = filename.find_last_of("/");
+        if ( string::npos != iter ) {
+            ScamValue newElement = makeString(filename.substr(0, iter));
+            ExprVec dp;
+            if ( isVector(dynamicPath) ) {
+                dp = dynamicPath->vectorData();
+            }
+
+            dp.push_back(newElement);
+            rv = makeVector(dp);
+        }
+
+        return rv;
+    }
+
 }
