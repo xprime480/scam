@@ -87,6 +87,11 @@ bool scam::isExact(ScamValue data)
     return data->exactFlag();
 }
 
+bool scam::isInexact(ScamValue data)
+{
+    return ! isExact(data);
+}
+
 bool scam::isComplex(ScamValue data)
 {
     return 0 != (data->type & ScamData::ComplexTypes);

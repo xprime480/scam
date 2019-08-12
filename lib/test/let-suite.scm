@@ -11,5 +11,3 @@
 
     ((let-suite-expect all bindings forms ...)
      (let-suite-expect (all all all) bindings forms ...))))
-
-#t

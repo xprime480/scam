@@ -1,6 +1,3 @@
-;;; Test the eof-object? function
-;;;
-
 (narc-label "Type Checker of EOF")
 
 (narc-expect

@@ -1,6 +1,3 @@
-;;; nan? finite? and infinite?
-;;;
-
 (narc-label "Special Numeric Predicates")
 
 (narc-expect

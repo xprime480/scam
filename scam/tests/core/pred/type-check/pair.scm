@@ -1,6 +1,3 @@
-;;; Test the pair? function
-;;;
-
 (narc-label "Type Checker of Pairs")
 
 (narc-expect

@@ -1,6 +1,3 @@
-;;; Test the port? function
-;;;
-
 (narc-label "Type Checker of Ports")
 
 (narc-expect

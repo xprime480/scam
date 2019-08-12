@@ -1,6 +1,3 @@
-;;; Test the null? function
-;;;
-
 (narc-label "Type Checker of Null")
 
 (narc-expect

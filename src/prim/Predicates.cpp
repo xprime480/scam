@@ -48,6 +48,7 @@ DEFINE_PREDICATE(RealP, "real?", isReal)
 DEFINE_PREDICATE(RationalP, "rational?", isRational)
 DEFINE_PREDICATE(IntegerP, "integer?", isInteger)
 DEFINE_PREDICATE(ExactP, "exact?", isExact)
+DEFINE_PREDICATE(InexactP, "inexact?", isInexact)
 DEFINE_PREDICATE(NanP, "nan?", isScamNaN);
 DEFINE_PREDICATE(InfiniteP, "infinite?", isScamInfinite);
 DEFINE_PREDICATE(FiniteP, "finite?", isScamFinite);
