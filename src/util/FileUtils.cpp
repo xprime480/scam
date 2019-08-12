@@ -12,11 +12,14 @@ using namespace std;
 namespace
 {
     extern bool fileExists(string fullpath);
-    extern ScamValue getPath();
-    extern ScamValue defaultPath();
-    extern ScamValue convertPath(char const * path);
-    extern string getNextElement(char const *& path);
     extern string makePath(string dirname, string filename);
+
+    extern ScamValue initPath();
+    extern ScamValue convertPath(char const * path);
+    extern ScamValue defaultPath();
+    extern string getNextElement(char const *& path);
+    extern ScamValue pushPath(string filename);
+    static ScamValue dynamicPath = initPath();
 }
 
 string scam::findFileOnPath(const string & filename)
@@ -27,11 +30,11 @@ string scam::findFileOnPath(const string & filename)
         }
     }
     else {
-        ScamValue path = getPath();
-
-        size_t n = length(path);
+        size_t n = length(dynamicPath);
         for ( size_t i = 0 ; i < n ; ++i ) {
-            string fullpath = makePath(asString(nthcar(path, i)), filename);
+            string fullpath =
+                makePath(asString(nthcar(dynamicPath, i)), filename);
+
             if ( fileExists(fullpath) ) {
                 return fullpath;
             }
@@ -47,7 +50,10 @@ ScamValue scam::loadEvalFile(const string & fullpath, ScamEngine * engine)
     ScamValue value = makePort(port);
     PortCharStream stream(value);
     ReadEvalStream helper(engine, stream);
+    ScamValue save = dynamicPath;
+    dynamicPath = pushPath(fullpath);
     ScamValue last = helper.run();
+    dynamicPath = save;
     return last;
 }
 
@@ -65,7 +71,14 @@ namespace
         return false;
     }
 
-    ScamValue getPath()
+    string makePath(string dirname, string filename)
+    {
+        stringstream s;
+        s << dirname << "/" << filename;
+        return s.str();
+    }
+
+    ScamValue initPath()
     {
         ScamValue rv = makeNothing();
 
@@ -127,10 +140,22 @@ namespace
         return pe;
     }
 
-    string makePath(string dirname, string filename)
+    ScamValue pushPath(string filename)
     {
-        stringstream s;
-        s << dirname << "/" << filename;
-        return s.str();
+        ScamValue rv = dynamicPath;
+
+        auto iter = filename.find_last_of("/");
+        if ( string::npos != iter ) {
+            ScamValue newElement = makeString(filename.substr(0, iter));
+            ExprVec dp;
+            if ( isVector(dynamicPath) ) {
+                dp = dynamicPath->vectorData();
+            }
+
+            dp.push_back(newElement);
+            rv = makeVector(dp);
+        }
+
+        return rv;
     }
 }

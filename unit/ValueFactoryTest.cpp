@@ -9,16 +9,16 @@
 using namespace std;
 using namespace scam;
 
-class ExpressionTest : public TestBase
+class ValueFactoryTest : public TestBase
 {
 protected:
-    ExpressionTest()
+    ValueFactoryTest()
         : TestBase(false)
     {
     }
 };
 
-TEST_F(ExpressionTest, NullExpression)
+TEST_F(ValueFactoryTest, NullExpression)
 {
     ScamValue expr = makeNothing();
     expectNothing(expr);
@@ -27,7 +27,7 @@ TEST_F(ExpressionTest, NullExpression)
     expectError(evaled, "The null type cannot be evaluated.");
 }
 
-TEST_F(ExpressionTest, ErrorExpressionNoIrritants)
+TEST_F(ValueFactoryTest, ErrorExpressionNoIrritants)
 {
     const char * msg { "Test message" };
 
@@ -38,7 +38,7 @@ TEST_F(ExpressionTest, ErrorExpressionNoIrritants)
     expectError(evaled, msg);
 }
 
-TEST_F(ExpressionTest, ErrorExpressionOneIrritant)
+TEST_F(ValueFactoryTest, ErrorExpressionOneIrritant)
 {
     const char * msg { "Test message %{0}" };
     const char * out { "Test message 99" };
@@ -48,7 +48,7 @@ TEST_F(ExpressionTest, ErrorExpressionOneIrritant)
     expectError(expr, out);
 }
 
-TEST_F(ExpressionTest, ErrorExpressionNotEnoughIrritants)
+TEST_F(ValueFactoryTest, ErrorExpressionNotEnoughIrritants)
 {
     const char * msg { "Test message %{0} %{1}" };
     const char * out { "Test message 99 ?" };
@@ -58,7 +58,7 @@ TEST_F(ExpressionTest, ErrorExpressionNotEnoughIrritants)
     expectError(expr, out);
 }
 
-TEST_F(ExpressionTest, ErrorExpressionBadFormatter)
+TEST_F(ValueFactoryTest, ErrorExpressionBadFormatter)
 {
     const char * msg { "Test message %{only-digits}" };
     const char * out { "Test message " };
@@ -68,19 +68,19 @@ TEST_F(ExpressionTest, ErrorExpressionBadFormatter)
     expectError(expr, out);
 }
 
-TEST_F(ExpressionTest, BooleanTrue)
+TEST_F(ValueFactoryTest, BooleanTrue)
 {
     ScamValue expr = makeBoolean(true);
     booleanTest(expr, true, "#t");
 }
 
-TEST_F(ExpressionTest, BooleanFalse)
+TEST_F(ValueFactoryTest, BooleanFalse)
 {
     ScamValue expr = makeBoolean(false);
     booleanTest(expr, false, "#f");
 }
 
-TEST_F(ExpressionTest, ComplexTest)
+TEST_F(ValueFactoryTest, ComplexTest)
 {
     string const repr{ "6-i" };
 
@@ -93,7 +93,7 @@ TEST_F(ExpressionTest, ComplexTest)
     expectComplex(evaled, real, imag, repr, true);
 }
 
-TEST_F(ExpressionTest, RealTest)
+TEST_F(ValueFactoryTest, RealTest)
 {
     double value { 33.2 };
     string const repr{ "33.2" };
@@ -105,7 +105,7 @@ TEST_F(ExpressionTest, RealTest)
     expectReal(evaled, value, repr, false);
 }
 
-TEST_F(ExpressionTest, RationalTest)
+TEST_F(ValueFactoryTest, RationalTest)
 {
     RationalPair value { 8, 3 };
     string const repr{ "8/3" };
@@ -117,7 +117,7 @@ TEST_F(ExpressionTest, RationalTest)
     expectRational(evaled, value, repr, true);
 }
 
-TEST_F(ExpressionTest, IntegerTest)
+TEST_F(ValueFactoryTest, IntegerTest)
 {
     int value { 42 };
     string const repr{ "42" };
@@ -129,7 +129,7 @@ TEST_F(ExpressionTest, IntegerTest)
     expectInteger(evaled, value, repr, true);
 }
 
-TEST_F(ExpressionTest, CharacterTest)
+TEST_F(ValueFactoryTest, CharacterTest)
 {
     string const repr { "#\\Q" };
     char value { 'Q' };
@@ -141,7 +141,7 @@ TEST_F(ExpressionTest, CharacterTest)
     expectChar(evaled, value, repr);
 }
 
-TEST_F(ExpressionTest, StringTest)
+TEST_F(ValueFactoryTest, StringTest)
 {
     string const value { "Fnord!" };
     string const repr { "\"Fnord!\"" };
@@ -153,7 +153,7 @@ TEST_F(ExpressionTest, StringTest)
     expectString(evaled, repr);
 }
 
-TEST_F(ExpressionTest, SymbolTest)
+TEST_F(ValueFactoryTest, SymbolTest)
 {
     string const name { "Fnord!" };
 
@@ -169,7 +169,7 @@ TEST_F(ExpressionTest, SymbolTest)
     expectInteger(evaled, 1899, "1899", true);
 }
 
-TEST_F(ExpressionTest, NilTest)
+TEST_F(ValueFactoryTest, NilTest)
 {
     ScamValue expr = makeNull();
     expectNull(expr);
@@ -178,7 +178,7 @@ TEST_F(ExpressionTest, NilTest)
     expectNull(evaled);
 }
 
-TEST_F(ExpressionTest, PairSingletonTest)
+TEST_F(ValueFactoryTest, PairSingletonTest)
 {
     string const value { "(works)" };
 
@@ -192,7 +192,7 @@ TEST_F(ExpressionTest, PairSingletonTest)
     expectSymbol(first, "works");
 }
 
-TEST_F(ExpressionTest, ConsDoubletonTest)
+TEST_F(ValueFactoryTest, ConsDoubletonTest)
 {
     string const value { "(works also)" };
 
@@ -223,7 +223,7 @@ TEST_F(ExpressionTest, ConsDoubletonTest)
     expectNull(cdr3);
 }
 
-TEST_F(ExpressionTest, ListEmptyTest)
+TEST_F(ValueFactoryTest, ListEmptyTest)
 {
     ScamValue expr = makeList();
     expectNull(expr);
@@ -232,7 +232,7 @@ TEST_F(ExpressionTest, ListEmptyTest)
     expectNull(evaled);
 }
 
-TEST_F(ExpressionTest, ListSingletonTest)
+TEST_F(ValueFactoryTest, ListSingletonTest)
 {
     string const value { "(works)" };
 
@@ -245,7 +245,7 @@ TEST_F(ExpressionTest, ListSingletonTest)
     expectSymbol(first, "works");
 }
 
-TEST_F(ExpressionTest, ListDoubletonTest)
+TEST_F(ValueFactoryTest, ListDoubletonTest)
 {
     string const value { "(works also)" };
 
@@ -271,7 +271,7 @@ TEST_F(ExpressionTest, ListDoubletonTest)
     expectList(cdr2, "(also)", 1);
 }
 
-TEST_F(ExpressionTest, ConsDottedPair)
+TEST_F(ValueFactoryTest, ConsDottedPair)
 {
     string const value { "(1 . 2)" };
 
@@ -285,7 +285,7 @@ TEST_F(ExpressionTest, ConsDottedPair)
     expectInteger(getCdr(expr), 2, "2", true);
 }
 
-TEST_F(ExpressionTest, ConsEvalTest)
+TEST_F(ValueFactoryTest, ConsEvalTest)
 {
     string const value { "(quote 2)" };
 
@@ -302,7 +302,7 @@ TEST_F(ExpressionTest, ConsEvalTest)
     expectInteger(evaled, 2, "2", true);
 }
 
-TEST_F(ExpressionTest, ListCdrTest)
+TEST_F(ValueFactoryTest, ListCdrTest)
 {
     ScamValue one = makeInteger(1, true);
     ScamValue two = makeInteger(2, true);
@@ -323,7 +323,7 @@ TEST_F(ExpressionTest, ListCdrTest)
     expectError(cdr5);
 }
 
-TEST_F(ExpressionTest, PseudoListCdrTest)
+TEST_F(ValueFactoryTest, PseudoListCdrTest)
 {
     ScamValue one   = makeInteger(1, true);
     ScamValue two   = makeInteger(2, true);
@@ -344,7 +344,7 @@ TEST_F(ExpressionTest, PseudoListCdrTest)
     expectError(cdr2);
 }
 
-TEST_F(ExpressionTest, SpecialFormQuote)
+TEST_F(ValueFactoryTest, SpecialFormQuote)
 {
     string const value { "Special Form quote" };
 
@@ -355,7 +355,7 @@ TEST_F(ExpressionTest, SpecialFormQuote)
     expectApplicable(evaled, value, true);
 }
 
-TEST_F(ExpressionTest, SpecialFormQuasiQuote)
+TEST_F(ValueFactoryTest, SpecialFormQuasiQuote)
 {
     string const value { "Special Form quasiquote" };
 
@@ -366,7 +366,7 @@ TEST_F(ExpressionTest, SpecialFormQuasiQuote)
     expectApplicable(evaled, value, true);
 }
 
-TEST_F(ExpressionTest, VectorEmpty)
+TEST_F(ValueFactoryTest, VectorEmpty)
 {
     string const value { "#()" };
     ExprVec vec;
@@ -377,7 +377,7 @@ TEST_F(ExpressionTest, VectorEmpty)
     expectVector(evaled, value, 0);
 }
 
-TEST_F(ExpressionTest, VectorNonEmpty)
+TEST_F(ValueFactoryTest, VectorNonEmpty)
 {
     string const value { "#(1 \"2\" 3)" };
     ExprVec vec;
@@ -400,7 +400,7 @@ TEST_F(ExpressionTest, VectorNonEmpty)
     f(evaled);
 }
 
-TEST_F(ExpressionTest, ByteVectorEmpty)
+TEST_F(ValueFactoryTest, ByteVectorEmpty)
 {
     string const value { "#u8()" };
     ByteVec vec;
@@ -411,7 +411,7 @@ TEST_F(ExpressionTest, ByteVectorEmpty)
     expectByteVector(evaled, value, 0);
 }
 
-TEST_F(ExpressionTest, ByteVectorNonEmpty)
+TEST_F(ValueFactoryTest, ByteVectorNonEmpty)
 {
     string const value { "#u8(1 2 3)" };
     ByteVec vec { 1, 2, 3 };
@@ -431,13 +431,13 @@ TEST_F(ExpressionTest, ByteVectorNonEmpty)
     f(evaled);
 }
 
-TEST_F(ExpressionTest, DictNewEmpty)
+TEST_F(ValueFactoryTest, DictNewEmpty)
 {
     ScamValue expr = makeDict();
     expectDict(expr, 0u, "{}");
 }
 
-TEST_F(ExpressionTest, DictNewSingleton)
+TEST_F(ValueFactoryTest, DictNewSingleton)
 {
     ExprVec vec;
     vec.push_back(makeInteger(1, true));
@@ -447,7 +447,7 @@ TEST_F(ExpressionTest, DictNewSingleton)
     expectDict(expr, 1u, "{ 1 \"one\" }");
 }
 
-TEST_F(ExpressionTest, DictNewSingletonDupKeys)
+TEST_F(ValueFactoryTest, DictNewSingletonDupKeys)
 {
     ExprVec vec;
     vec.push_back(makeInteger(1, true));
@@ -459,25 +459,25 @@ TEST_F(ExpressionTest, DictNewSingletonDupKeys)
     expectDict(expr, 1u, "{ 1 \"ein\" }");
 }
 
-TEST_F(ExpressionTest, SpecialNumericNaN)
+TEST_F(ValueFactoryTest, SpecialNumericNaN)
 {
     ScamValue expr = makeNaN();
     expectSpecialNumeric(expr, "+nan.0");
 }
 
-TEST_F(ExpressionTest, SpecialNumericNegInf)
+TEST_F(ValueFactoryTest, SpecialNumericNegInf)
 {
     ScamValue expr = makeNegInf();
     expectSpecialNumeric(expr, "-inf.0");
 }
 
-TEST_F(ExpressionTest, SpecialNumericPosInf)
+TEST_F(ValueFactoryTest, SpecialNumericPosInf)
 {
     ScamValue expr = makePosInf();
     expectSpecialNumeric(expr, "+inf.0");
 }
 
-TEST_F(ExpressionTest, EnvTest)
+TEST_F(ValueFactoryTest, EnvTest)
 {
     ScamValue rv = makeNothing();
     try {

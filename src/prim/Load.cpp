@@ -30,8 +30,7 @@ void scam::applyLoad(ScamValue args,
     if ( argsToParms(args, engine, name, p0) ) {
         string filename = asString(p0.value);
         if ( engine->isLoaded(filename) ) {
-            ScamValue err =
-                makeFileError("File %{0} already loaded", p0.value);
+            ScamValue err = makeFileError("File %{0} already loaded", p0.value);
             engine->handleError(err);
             return;
         }
