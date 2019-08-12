@@ -12,14 +12,14 @@ using namespace std;
 namespace
 {
     extern bool fileExists(string fullpath);
+    extern ScamValue getPath();
+    extern ScamValue defaultPath();
+    extern ScamValue convertPath(char const * path);
+    extern string getNextElement(char const *& path);
     extern string makePath(string dirname, string filename);
 
-    extern ScamValue initPath();
-    extern ScamValue convertPath(char const * path);
-    extern ScamValue defaultPath();
-    extern string getNextElement(char const *& path);
     extern ScamValue pushPath(string filename);
-    static ScamValue dynamicPath = initPath();
+    static ScamValue dynamicPath = makeNothing();
 }
 
 string scam::findFileOnPath(const string & filename)
@@ -30,11 +30,14 @@ string scam::findFileOnPath(const string & filename)
         }
     }
     else {
-        size_t n = length(dynamicPath);
-        for ( size_t i = 0 ; i < n ; ++i ) {
-            string fullpath =
-                makePath(asString(nthcar(dynamicPath, i)), filename);
+        ScamValue path = dynamicPath;
+        if ( isNothing(path) ) {
+            path = getPath();
+        }
 
+        size_t n = length(path);
+        for ( size_t i = 0 ; i < n ; ++i ) {
+            string fullpath = makePath(asString(nthcar(path, i)), filename);
             if ( fileExists(fullpath) ) {
                 return fullpath;
             }
@@ -51,6 +54,9 @@ ScamValue scam::loadEvalFile(const string & fullpath, ScamEngine * engine)
     PortCharStream stream(value);
     ReadEvalStream helper(engine, stream);
     ScamValue save = dynamicPath;
+    if ( isNothing(dynamicPath) ) {
+	dynamicPath = getPath();
+    }
     dynamicPath = pushPath(fullpath);
     ScamValue last = helper.run();
     dynamicPath = save;
@@ -71,14 +77,7 @@ namespace
         return false;
     }
 
-    string makePath(string dirname, string filename)
-    {
-        stringstream s;
-        s << dirname << "/" << filename;
-        return s.str();
-    }
-
-    ScamValue initPath()
+    ScamValue getPath()
     {
         ScamValue rv = makeNothing();
 
@@ -140,6 +139,13 @@ namespace
         return pe;
     }
 
+    string makePath(string dirname, string filename)
+    {
+        stringstream s;
+        s << dirname << "/" << filename;
+        return s.str();
+    }
+
     ScamValue pushPath(string filename)
     {
         ScamValue rv = dynamicPath;
@@ -158,4 +164,5 @@ namespace
 
         return rv;
     }
+
 }

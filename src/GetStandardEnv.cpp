@@ -149,6 +149,7 @@ namespace
         addPrimitive(env, "rational?",     applyRationalP,  engine);
         addPrimitive(env, "integer?",      applyIntegerP,   engine);
         addPrimitive(env, "exact?",        applyExactP,     engine);
+        addPrimitive(env, "inexact?",      applyInexactP,   engine);
         addPrimitive(env, "nan?",          applyNanP,       engine);
         addPrimitive(env, "finite?",       applyFiniteP,    engine);
         addPrimitive(env, "infinite?",     applyInfiniteP,  engine);

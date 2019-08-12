@@ -28,6 +28,7 @@ namespace scam
     DECL_PREDICATE(RationalP);
     DECL_PREDICATE(IntegerP);
     DECL_PREDICATE(ExactP);
+    DECL_PREDICATE(InexactP);
     DECL_PREDICATE(NanP);
     DECL_PREDICATE(InfiniteP);
     DECL_PREDICATE(FiniteP);

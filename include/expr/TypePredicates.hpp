@@ -21,6 +21,7 @@ namespace scam
 
     extern bool isNumeric(ScamValue data);
     extern bool isExact(ScamValue data);
+    extern bool isInexact(ScamValue data);
     extern bool isComplex(ScamValue data);
     extern bool isPureComplex(ScamValue data);
     extern bool isReal(ScamValue data);
