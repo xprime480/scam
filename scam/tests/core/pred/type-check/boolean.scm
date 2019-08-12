@@ -1,6 +1,3 @@
-;;; Test the boolean? function
-;;;
-
 (narc-label "Type Checker of Booleans")
 
 (narc-expect

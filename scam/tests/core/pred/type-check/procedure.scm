@@ -1,6 +1,3 @@
-;;; Test the procedure? function
-;;;
-
 (narc-label "Type Checker of Procedures")
 
 (narc-expect

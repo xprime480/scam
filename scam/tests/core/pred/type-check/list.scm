@@ -1,6 +1,3 @@
-;;; Test the list? function
-;;;
-
 (narc-label "Type Checker of Lists")
 
 (narc-expect
