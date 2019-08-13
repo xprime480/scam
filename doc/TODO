@@ -11,23 +11,15 @@
 * I think Undefine will be incorrect in the event of backtracking.
   Should the form be redefined when backtracking?
 
-* Can validateClosureArgs be refactored or eliminated somehow?
-
 * Think of a way to reduce the redundancy between Ports and CharStreams.
   Maybe CharStreams can be eliminated.
 
 * Fix the build process -- some files are recompiled even when it is not
   necessary to do so.
 
-* '{:a 1}' does not scan as a dictionary literal but '{ :a 1 }' does.  Make
-  the former work.
-
-* Need a better unit test framework.  Current one is too much boilerplate.
-  A pure scam framework would be ideal :).
-
 * Is it worth it to make the ScamEngine a global parameter, and make it
   the only way.  Is it really ever going to be necessary to have more than
-  one engine at once?
+  one engine at a time?
 
 * ClassInitWorker::run could probably use the original continuation and
   not need ClassInitCont.  See comments in the latter implementation file.
@@ -39,10 +31,6 @@
 
 * When an error is reported, the REPL displays the last non-error result.
   It should not display anything additional.
-
-* Find the cause of SEGV when many tests are run in one instance of test
-  driver.  Hunch: May have something to do with garbage collection & static
-  objects.
 
 * Look at refactoring the composite test cases in
   .../scam/tests/core/pred/eqivalance/
