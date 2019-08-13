@@ -7,7 +7,6 @@
 #include "ScamEngine.hpp"
 #include "WorkQueue.hpp"
 #include "env/Env.hpp"
-#include "expr/MacroEvalCont.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"

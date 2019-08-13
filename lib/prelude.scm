@@ -131,7 +131,8 @@
                  (not (null? item))))
           (mfn (lambda (item)
                  `(quote ,item))))
-      (eval `(amb ,@(map mfn (filter ffn (power-set lst))))))))
+      (eval `(amb ,@(map mfn (filter ffn (power-set lst))))
+	    (interaction-environment)))))
 
 (define exclude
   (lambda (vals lst)

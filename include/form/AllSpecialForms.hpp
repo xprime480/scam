@@ -42,11 +42,6 @@ namespace scam
                                   Env * env,
                                   ScamEngine * engine);
 
-    extern void applyEval(ScamValue args,
-                          Continuation * cont,
-                          Env * env,
-                          ScamEngine * engine);
-
     extern void applyIf(ScamValue args,
                         Continuation * cont,
                         Env * env,

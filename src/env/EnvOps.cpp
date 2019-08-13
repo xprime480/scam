@@ -1,7 +1,11 @@
 #include "env/EnvOps.hpp"
 
-#include "env/Env.hpp"
+#include "Continuation.hpp"
+#include "ScamEngine.hpp"
 #include "ScamException.hpp"
+#include "env/Env.hpp"
+#include "expr/EvalOps.hpp"
+#include "expr/ScamToInternal.hpp"
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueFactory.hpp"
 #include "expr/ValueWriter.hpp"
@@ -51,11 +55,37 @@ Env * scam::getConfigurationEnv(ScamEngine * engine)
     return env;
 }
 
-Env * scam::getInteractionEnv(ScamEngine * engine, Env * base)
+Env * scam::makeInteractionEnv(ScamEngine * engine, Env * base)
 {
     Env * env = base->extend();
     addForms(engine, env);
     return env;
+}
+
+void scam::applyInteractionEnv(ScamValue args,
+                               Continuation * cont,
+                               ScamEngine * engine)
+{
+    static const char * name = "interaction-environment";
+
+    if ( argsToParms(args, engine, name) ) {
+        ScamValue iEnv = makeEnv(engine->getInteractionFrame());
+        cont->handleValue(iEnv);
+    }
+}
+
+void scam::applyEval(ScamValue args,
+                     Continuation * cont,
+                     ScamEngine * engine)
+{
+    static const char * name = "eval";
+
+    ObjectParameter p0;
+    EnvParameter    p1;
+    if ( argsToParms(args, engine, name, p0, p1) ) {
+        Env * env = asEnv(p1.value);
+        eval(p0.value, cont, env, engine);
+    }
 }
 
 namespace
@@ -73,7 +103,13 @@ namespace
         addSpecialForm(env, "let", applyLet, engine);
         addSpecialForm(env, "let*", applyLetStar, engine);
         addSpecialForm(env, "letrec", applyLetRec, engine);
-        addSpecialForm(env, "eval", applyEval, engine);
+
+        addPrimitive(env, "eval", applyEval, engine);
+        addPrimitive(env,
+                     "interaction-environment",
+                     applyInteractionEnv,
+                     engine);
+
         addSpecialForm(env, "apply", applyApply, engine);
         addSpecialForm(env, "make-class", applyClassMaker, engine);
         addSpecialForm(env, "call/cc", applyCallCC, engine);
@@ -148,35 +184,36 @@ namespace
 
     void addTypePredicates(Env * env, ScamEngine * engine)
     {
-        addPrimitive(env, "null?",         applyNullP,      engine);
-        addPrimitive(env, "error-object?", applyErrorP,     engine);
-        addPrimitive(env, "pair?",         applyPairP,      engine);
-        addPrimitive(env, "list?",         applyListP,      engine);
-        addPrimitive(env, "vector?",       applyVectorP,    engine);
-        addPrimitive(env, "boolean?",      applyBoolP,      engine);
-        addPrimitive(env, "char?",         applyCharP,      engine);
-        addPrimitive(env, "string?",       applyStringP,    engine);
-        addPrimitive(env, "symbol?",       applySymbolP,    engine);
-        addPrimitive(env, "keyword?",      applyKeywordP,   engine);
+        addPrimitive(env, "null?",         applyNullP,        engine);
+        addPrimitive(env, "error-object?", applyErrorP,       engine);
+        addPrimitive(env, "pair?",         applyPairP,        engine);
+        addPrimitive(env, "list?",         applyListP,        engine);
+        addPrimitive(env, "vector?",       applyVectorP,      engine);
+        addPrimitive(env, "boolean?",      applyBoolP,        engine);
+        addPrimitive(env, "char?",         applyCharP,        engine);
+        addPrimitive(env, "string?",       applyStringP,      engine);
+        addPrimitive(env, "symbol?",       applySymbolP,      engine);
+        addPrimitive(env, "keyword?",      applyKeywordP,     engine);
 
-        addPrimitive(env, "numeric?",      applyNumericP,   engine);
-        addPrimitive(env, "complex?",      applyComplexP,   engine);
-        addPrimitive(env, "real?",         applyRealP,      engine);
-        addPrimitive(env, "rational?",     applyRationalP,  engine);
-        addPrimitive(env, "integer?",      applyIntegerP,   engine);
-        addPrimitive(env, "exact?",        applyExactP,     engine);
-        addPrimitive(env, "inexact?",      applyInexactP,   engine);
-        addPrimitive(env, "nan?",          applyNanP,       engine);
-        addPrimitive(env, "finite?",       applyFiniteP,    engine);
-        addPrimitive(env, "infinite?",     applyInfiniteP,  engine);
+        addPrimitive(env, "numeric?",      applyNumericP,     engine);
+        addPrimitive(env, "complex?",      applyComplexP,     engine);
+        addPrimitive(env, "real?",         applyRealP,        engine);
+        addPrimitive(env, "rational?",     applyRationalP,    engine);
+        addPrimitive(env, "integer?",      applyIntegerP,     engine);
+        addPrimitive(env, "exact?",        applyExactP,       engine);
+        addPrimitive(env, "inexact?",      applyInexactP,     engine);
+        addPrimitive(env, "nan?",          applyNanP,         engine);
+        addPrimitive(env, "finite?",       applyFiniteP,      engine);
+        addPrimitive(env, "infinite?",     applyInfiniteP,    engine);
 
-        addPrimitive(env, "procedure?",    applyProcedureP, engine);
-        addPrimitive(env, "class?",        applyClassP,     engine);
-        addPrimitive(env, "instance?",     applyInstanceP,  engine);
-        addPrimitive(env, "dict?",         applyDictP,      engine);
+        addPrimitive(env, "procedure?",    applyProcedureP,   engine);
+        addPrimitive(env, "class?",        applyClassP,       engine);
+        addPrimitive(env, "instance?",     applyInstanceP,    engine);
+        addPrimitive(env, "dict?",         applyDictP,        engine);
 
-        addPrimitive(env, "port?",         applyPortP,      engine);
-        addPrimitive(env, "eof-object?",   applyEofP,       engine);
+        addPrimitive(env, "port?",         applyPortP,        engine);
+        addPrimitive(env, "eof-object?",   applyEofP,         engine);
+        addPrimitive(env, "environment?",  applyEnvironmentP, engine);
     }
 
     void addStringOps(Env * env, ScamEngine * engine)

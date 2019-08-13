@@ -7,7 +7,6 @@
 #include "form/AssignWorker.hpp"
 #include "form/CallCont.hpp"
 #include "form/DefineWorker.hpp"
-#include "form/EvalCont.hpp"
 #include "form/IfWorker.hpp"
 #include "form/LetStarWorker.hpp"
 #include "form/LetWorker.hpp"

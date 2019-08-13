@@ -26,14 +26,16 @@
 (define barrels-of-fun
   (lambda ()
     (let* ((barrels (list 30 32 36 38 40 62))
-           (beer (eval `(amb ,@barrels)))
+           (beer (eval `(amb ,@barrels) (interaction-environment)))
            (wine (exclude (list beer) barrels))
-           (barrel-1 (eval `(amb ,@wine)))
-           (barrel-2 (eval `(amb ,@(exclude (list barrel-1) wine))))
+           (barrel-1 (eval `(amb ,@wine)
+                           (interaction-environment)))
+           (barrel-2 (eval `(amb ,@(exclude (list barrel-1) wine))
+                           (interaction-environment)))
            (purchase (some-of (exclude (list barrel-1 barrel-2) wine))))
       (begin
         (require (= (* 2 (+ barrel-1 barrel-2))
-                          (sum purchase)))
+                    (sum purchase)))
         beer))))
 
 (narc-expect

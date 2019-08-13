@@ -140,21 +140,6 @@ void scam::applyDefineSyntax(ScamValue args,
     }
 }
 
-void scam::applyEval(ScamValue args,
-                     Continuation * cont,
-                     Env * env,
-                     ScamEngine * engine)
-{
-    static const char * name = "eval";
-
-    ObjectParameter p0;
-    if ( argsToParms(args, engine, name, p0) ) {
-        Continuation * finisher =
-            standardMemoryManager.make<EvalCont>(cont, env, engine);
-        eval(p0.value, finisher, env, engine);
-    }
-}
-
 void scam::applyIf(ScamValue args,
                    Continuation * cont,
                    Env * env,

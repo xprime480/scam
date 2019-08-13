@@ -58,6 +58,7 @@ DEFINE_PREDICATE(InstanceP, "instance?", isInstance)
 DEFINE_PREDICATE(DictP, "dict?", isDict)
 DEFINE_PREDICATE(PortP, "port?", isPort)
 DEFINE_PREDICATE(EofP, "eof-object?", isEof)
+DEFINE_PREDICATE(EnvironmentP, "environment?", isEnv)
 
 #endif
 

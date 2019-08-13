@@ -13,19 +13,19 @@ using namespace std;
 
 namespace
 {
-    class EvalCont : public Continuation
+    class LocalEvalCont : public Continuation
     {
     private:
         friend class scam::MemoryManager;
-        EvalCont(Continuation * cont, ScamEngine * engine)
+        LocalEvalCont(Continuation * cont, ScamEngine * engine)
             : Continuation("eval", engine)
             , cont(cont)
         {
         }
 
-        static EvalCont * makeInstance(Continuation * cont, ScamEngine * engine)
+        static LocalEvalCont * makeInstance(Continuation * cont, ScamEngine * engine)
         {
-            return new EvalCont(cont, engine);
+            return new LocalEvalCont(cont, engine);
         }
 
     public:
@@ -89,6 +89,8 @@ void EvalWorker::run()
 {
     Worker::run();
 
-    EvalCont * newCont = standardMemoryManager.make<EvalCont>(cont, engine);
+    LocalEvalCont * newCont =
+	standardMemoryManager.make<LocalEvalCont>(cont, engine);
+    
     mapEval(forms, newCont, extended, engine);
 }

@@ -104,6 +104,12 @@ namespace scam
         ScamValue check() override;
     };
 
+    struct EnvParameter : public FilteredParameter
+    {
+    protected:
+        ScamValue check() override;
+    };
+
     struct CountParameter : public FilteredParameter
     {
     protected:

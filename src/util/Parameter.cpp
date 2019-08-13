@@ -166,6 +166,11 @@ ScamValue PortParameter::check()
     return checker(value, isPort, "port");
 }
 
+ScamValue EnvParameter::check()
+{
+    return checker(value, isEnv, "environment");
+}
+
 ScamValue CountParameter::check()
 {
     ScamValue rv = checker(value, isInteger, "non-negative integer");

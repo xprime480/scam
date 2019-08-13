@@ -89,7 +89,7 @@ void ScamEngine::reset(bool initEnv)
 
     topEnv = env = getConfigurationEnv(this);
     if ( initEnv ) {
-        env = getInteractionEnv(this, env);
+        env = makeInteractionEnv(this, env);
         topEnv = env = env->extend();
     }
 }
