@@ -13,7 +13,6 @@
 #include "util/LetDef.hpp"
 #include "util/MemoryManager.hpp"
 #include "util/Parameter.hpp"
-#include "util/Validations.hpp"
 
 using namespace scam;
 using namespace std;
