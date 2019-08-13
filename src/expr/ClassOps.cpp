@@ -1,8 +1,8 @@
 #include "expr/ClassOps.hpp"
 
-#include "Env.hpp"
 #include "ErrorCategory.hpp"
 #include "ScamException.hpp"
+#include "env/Env.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"

@@ -26,6 +26,7 @@ namespace scam
 
         void pushFrame();
         Env * getFrame();
+        Env * getInteractionFrame();
         void popFrame();
 
         ScamValue addBinding(ScamValue key, ScamValue val);
@@ -71,14 +72,13 @@ namespace scam
 
     private:
         Env * env;
+        Env * topEnv;
         std::vector<ScamParser> input;
         Backtracker * backtracker;
         Continuation * cont;
         std::set<std::string> loaded;
         std::vector<Handler *> handlers;
         EngineMarker marker;
-
-        void getStandardEnv();
     };
 }
 

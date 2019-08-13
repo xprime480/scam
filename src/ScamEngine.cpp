@@ -1,11 +1,12 @@
 #include "ScamEngine.hpp"
 
 #include "Continuation.hpp"
-#include "Env.hpp"
 #include "ScamException.hpp"
 #include "Trampoline.hpp"
 #include "WorkQueue.hpp"
 #include "Worker.hpp"
+#include "env/Env.hpp"
+#include "env/EnvOps.hpp"
 #include "expr/EvalOps.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/TypePredicates.hpp"
@@ -86,9 +87,10 @@ void ScamEngine::reset(bool initEnv)
     loaded.clear();
     handlers.clear();
 
-    env = standardMemoryManager.make<Env>();
+    topEnv = env = getConfigurationEnv(this);
     if ( initEnv ) {
-        getStandardEnv();
+        env = getInteractionEnv(this, env);
+        topEnv = env = env->extend();
     }
 }
 
@@ -102,9 +104,14 @@ Env * ScamEngine::getFrame()
     return env;
 }
 
+Env * ScamEngine::getInteractionFrame()
+{
+    return topEnv;
+}
+
 void ScamEngine::popFrame()
 {
-    if ( env != env->getTop() ) {
+    if ( env != topEnv ) {
         env = env->getParent();
     }
 }
@@ -121,7 +128,7 @@ ScamValue ScamEngine::hasBinding(ScamValue key, bool checkParent)
 
 ScamValue ScamEngine::getBinding(ScamValue key, bool top)
 {
-    Env * temp = top ? env->getTop() : env;
+    Env * temp = top ? topEnv : env;
     return temp->get(key);
 }
 

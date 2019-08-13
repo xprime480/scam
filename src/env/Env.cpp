@@ -1,4 +1,4 @@
-#include "Env.hpp"
+#include "env/Env.hpp"
 
 #include "ErrorCategory.hpp"
 #include "ScamException.hpp"
@@ -137,15 +137,6 @@ Env * Env::extend() const
 Env * Env::getParent() const
 {
     return parent;
-}
-
-Env * Env::getTop() const
-{
-    if ( ! parent ) {
-        return const_cast<Env *>(this);
-    }
-
-    return parent->getTop();
 }
 
 ScamValue Env::assign(ScamValue key, ScamValue val)

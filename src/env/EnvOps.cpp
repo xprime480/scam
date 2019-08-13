@@ -1,7 +1,8 @@
-#include "ScamEngine.hpp"
+#include "env/EnvOps.hpp"
 
-#include "Env.hpp"
+#include "env/Env.hpp"
 #include "ScamException.hpp"
+#include "expr/TypePredicates.hpp"
 #include "expr/ValueFactory.hpp"
 #include "expr/ValueWriter.hpp"
 #include "form/AllSpecialForms.hpp"
@@ -9,12 +10,15 @@
 #include "port/CinPort.hpp"
 #include "port/CoutPort.hpp"
 #include "prim/AllPrimitives.hpp"
+#include "util/MemoryManager.hpp"
 
 using namespace scam;
 using namespace std;
 
 namespace
 {
+    extern void addForms(ScamEngine * engine, Env * env);
+
     extern void addSpecialForm(Env * env,
                                const char * name,
                                SfFunction func,
@@ -40,76 +44,88 @@ namespace
     extern void doPut(Env * env, ScamValue key, ScamValue value);
 }
 
-void ScamEngine::getStandardEnv()
+Env * scam::getConfigurationEnv(ScamEngine * engine)
 {
-    addSpecialForm(env, "set!", applySetX, this);
-    addSpecialForm(env, "define", applyDefine, this);
-    addSpecialForm(env, "undefine", applyUndefine, this);
-    addSpecialForm(env, "lambda", applyLambda, this);
-    addSpecialForm(env, "quasiquote", applyQuasiQuote, this);
-    addSpecialForm(env, "quote", applyQuote, this);
-    addSpecialForm(env, "define-syntax", applyDefineSyntax, this);
-    addSpecialForm(env, "syntax-expand", applySyntaxExpand, this);
-    addSpecialForm(env, "let", applyLet, this);
-    addSpecialForm(env, "let*", applyLetStar, this);
-    addSpecialForm(env, "letrec", applyLetRec, this);
-    addSpecialForm(env, "eval", applyEval, this);
-    addSpecialForm(env, "apply", applyApply, this);
-    addSpecialForm(env, "make-class", applyClassMaker, this);
-    addSpecialForm(env, "call/cc", applyCallCC, this);
-    addSpecialForm(env, "amb", applyAmb, this);
+    Env * env = standardMemoryManager.make<Env>();
+    addPorts(env, engine);
+    return env;
+}
 
-    addSpecialForm(env, "if", applyIf, this);
-    addSpecialForm(env, "and", applyAnd, this);
-    addSpecialForm(env, "or", applyOr, this);
-    addSpecialForm(env, "not", applyNot, this);
-
-    addPrimitive(env, "match", applyMatch, this);
-    addPrimitive(env, "unify", applyUnify, this);
-    addPrimitive(env, "substitute", applySubstitute, this);
-    addPrimitive(env, "instantiate", applyInstantiate, this);
-
-    addPrimitive(env, "+", applyAdd, this);
-    addPrimitive(env, "-", applySub, this);
-    addPrimitive(env, "*", applyMul, this);
-    addPrimitive(env, "/", applyDiv, this);
-    addPrimitive(env, "%", applyMod, this);
-
-    addPrimitive(env, "=", applyEq, this);
-    addPrimitive(env, "<>", applyNe, this);
-    addPrimitive(env, "<", applyLt, this);
-    addPrimitive(env, "<=", applyLe, this);
-    addPrimitive(env, ">", applyGt, this);
-    addPrimitive(env, ">=", applyGe, this);
-
-    addPrimitive(env, "eq?",    applyEqP,    this);
-    addPrimitive(env, "eqv?",   applyEqvP,   this);
-    addPrimitive(env, "equal?", applyEqualP, this);
-
-    addPrimitive(env, "vlen", applyVLen, this);
-    addPrimitive(env, "vref", applyVRef, this);
-
-    addTypePredicates(env, this);
-
-    addPrimitive(env, "begin", applyBegin, this);
-
-    addPrimitive(env, "load", applyLoad, this);
-    addPrimitive(env, "spawn", applySpawn, this);
-    addPrimitive(env, "backtrack", applyBacktrack, this);
-
-    addStringOps(env, this);
-    addPairOps(env, this);
-    addListOps(env, this);
-    addErrorOps(env, this);
-    addPortOps(env, this);
-    addInputOps(env, this);
-    addOutputOps(env, this);
-
-    addPorts(env, this);
+Env * scam::getInteractionEnv(ScamEngine * engine, Env * base)
+{
+    Env * env = base->extend();
+    addForms(engine, env);
+    return env;
 }
 
 namespace
 {
+    void addForms(ScamEngine * engine, Env * env)
+    {
+        addSpecialForm(env, "set!", applySetX, engine);
+        addSpecialForm(env, "define", applyDefine, engine);
+        addSpecialForm(env, "undefine", applyUndefine, engine);
+        addSpecialForm(env, "lambda", applyLambda, engine);
+        addSpecialForm(env, "quasiquote", applyQuasiQuote, engine);
+        addSpecialForm(env, "quote", applyQuote, engine);
+        addSpecialForm(env, "define-syntax", applyDefineSyntax, engine);
+        addSpecialForm(env, "syntax-expand", applySyntaxExpand, engine);
+        addSpecialForm(env, "let", applyLet, engine);
+        addSpecialForm(env, "let*", applyLetStar, engine);
+        addSpecialForm(env, "letrec", applyLetRec, engine);
+        addSpecialForm(env, "eval", applyEval, engine);
+        addSpecialForm(env, "apply", applyApply, engine);
+        addSpecialForm(env, "make-class", applyClassMaker, engine);
+        addSpecialForm(env, "call/cc", applyCallCC, engine);
+        addSpecialForm(env, "amb", applyAmb, engine);
+
+        addSpecialForm(env, "if", applyIf, engine);
+        addSpecialForm(env, "and", applyAnd, engine);
+        addSpecialForm(env, "or", applyOr, engine);
+        addSpecialForm(env, "not", applyNot, engine);
+
+        addPrimitive(env, "match", applyMatch, engine);
+        addPrimitive(env, "unify", applyUnify, engine);
+        addPrimitive(env, "substitute", applySubstitute, engine);
+        addPrimitive(env, "instantiate", applyInstantiate, engine);
+
+        addPrimitive(env, "+", applyAdd, engine);
+        addPrimitive(env, "-", applySub, engine);
+        addPrimitive(env, "*", applyMul, engine);
+        addPrimitive(env, "/", applyDiv, engine);
+        addPrimitive(env, "%", applyMod, engine);
+
+        addPrimitive(env, "=", applyEq, engine);
+        addPrimitive(env, "<>", applyNe, engine);
+        addPrimitive(env, "<", applyLt, engine);
+        addPrimitive(env, "<=", applyLe, engine);
+        addPrimitive(env, ">", applyGt, engine);
+        addPrimitive(env, ">=", applyGe, engine);
+
+        addPrimitive(env, "eq?",    applyEqP,    engine);
+        addPrimitive(env, "eqv?",   applyEqvP,   engine);
+        addPrimitive(env, "equal?", applyEqualP, engine);
+
+        addPrimitive(env, "vlen", applyVLen, engine);
+        addPrimitive(env, "vref", applyVRef, engine);
+
+        addTypePredicates(env, engine);
+
+        addPrimitive(env, "begin", applyBegin, engine);
+
+        addPrimitive(env, "load", applyLoad, engine);
+        addPrimitive(env, "spawn", applySpawn, engine);
+        addPrimitive(env, "backtrack", applyBacktrack, engine);
+
+        addStringOps(env, engine);
+        addPairOps(env, engine);
+        addListOps(env, engine);
+        addErrorOps(env, engine);
+        addPortOps(env, engine);
+        addInputOps(env, engine);
+        addOutputOps(env, engine);
+    }
+
     void addSpecialForm(Env * env,
                         const char * name,
                         SfFunction func,
@@ -257,5 +273,4 @@ namespace
             throw ScamException(writeValue(test));
         }
     }
-
 }

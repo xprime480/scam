@@ -1,8 +1,8 @@
 #include "form/EvalCont.hpp"
 
 #include "Continuation.hpp"
-#include "Env.hpp"
 #include "ScamEngine.hpp"
+#include "env/Env.hpp"
 #include "expr/EvalOps.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/TypePredicates.hpp"
@@ -40,6 +40,6 @@ void EvalCont::handleValue(ScamValue value)
         engine->handleError(value);
     }
     else {
-        eval(value, cont, env->getTop(), engine);
+        eval(value, cont, engine->getInteractionFrame(), engine);
     }
 }

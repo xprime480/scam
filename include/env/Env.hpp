@@ -30,7 +30,6 @@ namespace scam
         void reset();
         Env * extend() const;
         Env * getParent() const;
-        Env * getTop() const;
 
         ScamValue assign(ScamValue key, ScamValue val);
         ScamValue remove(ScamValue key);

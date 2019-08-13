@@ -3,10 +3,10 @@
 #include "SampleManagedObject.hpp"
 #include "TestHook.hpp"
 
-#include "Env.hpp"
 #include "Extractor.hpp"
 #include "WorkQueue.hpp"
 #include "Worker.hpp"
+#include "env/Env.hpp"
 #include "util/ClassDef.hpp"
 #include "util/MemoryManager.hpp"
 

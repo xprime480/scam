@@ -1,9 +1,9 @@
 #include "expr/ClassCont.hpp"
 
-#include "Env.hpp"
 #include "ScamEngine.hpp"
 #include "ScamException.hpp"
 #include "WorkQueue.hpp"
+#include "env/Env.hpp"
 #include "expr/ClassInitWorker.hpp"
 #include "expr/ClassOps.hpp"
 #include "expr/ScamData.hpp"

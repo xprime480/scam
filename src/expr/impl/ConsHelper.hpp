@@ -1,9 +1,8 @@
 #if ! defined(CONS_HELPER_HPP)
 # define CONS_HELPER_HPP 1
 
-#include "Env.hpp"
 #include "Continuation.hpp"
-
+#include "env/Env.hpp"
 #include "expr/ScamData.hpp"
 
 namespace scam

@@ -1,8 +1,8 @@
 #include "expr/ClassInitWorker.hpp"
 
 #include "Continuation.hpp"
-#include "Env.hpp"
 #include "ScamEngine.hpp"
+#include "env/Env.hpp"
 #include "expr/ClassInitCont.hpp"
 #include "expr/ClassOps.hpp"
 #include "expr/EvalOps.hpp"
