@@ -1,38 +1,12 @@
-;;; Test the eq? function on composite types (lists, vectors, ...)
-;;;
+(load "checks.def")
 
 (narc-label "Eq for Composites")
 
-(define test
-  (lambda (t1 t2 t3)
-    (list (eq? t1 t1)
-          (eq? t1 t2)
-          (eq? t1 t3))))
-
 (narc-expect
- ('(#t #f #f) (let ((test1 "bunny")
-                    (test2 "bunny")
-                    (test3 "carlos"))
-                (test test1 test2 test3)))
-
- ('(#t #f #f) (let ((test1 '(1 2 3))
-                    (test2 '(1 2 3))
-                    (test3 '(5 4 3)))
-                (test test1 test2 test3)))
-
- ('(#t #f #f) (let ((test1 #(1 2 3))
-                    (test2 #(1 2 3))
-                    (test3 #(5 4 3)))
-                (test test1 test2 test3)))
-
- ('(#t #f #f) (let ((test1 #u8(1 2 3))
-                    (test2 #u8(1 2 3))
-                    (test3 #u8(5 4 3)))
-                (test test1 test2 test3)))
-
- ('(#t #f #f) (let ((test1 { :a 1 :b 2 })
-                    (test2 { :a 1 :b 2 })
-                    (test3 { :x 99 :u 98 }))
-                (test test1 test2 test3))))
+ ('(#t #f #f) (check-3 test-eq "bunny" "bunny" "carlos"))
+ ('(#t #f #f) (check-3 test-eq '(1 2 3) '(1 2 3) '(5 4 3)))
+ ('(#t #f #f) (check-3 test-eq #(1 2 3) #(1 2 3) #(5 4 3)))
+ ('(#t #f #f) (check-3 test-eq #u8(1 2 3) #u8(1 2 3) #u8(5 4 3)))
+ ('(#t #f #f) (check-3 test-eq { :a 1 :b 2 } { :a 1 :b 2 } { :x 99 :u 98 })))
 
 (narc-report)

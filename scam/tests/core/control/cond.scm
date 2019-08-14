@@ -2,7 +2,8 @@
 ;;;
 
 (load "lib/prelude.scm")
-(define inc (lambda (x) (+ x 1)))
+(define (inc x)
+  (+ x 1))
 
 (narc-label "Cond")
 

@@ -1,20 +1,12 @@
-;;; Test operator % on integers
-;;;
+(load "checks.def")
 
 (narc-label "Integer Modulus")
 
-(define check
-  (lambda (val)
-    (list val
-          (rational? val)
-          (integer? val)
-          (exact? val))))
-
 (narc-expect
- ('(0 #t #t #t)   (check (%)))
- ('(0 #t #t #t)   (check (% 2)))
- ('(1 #t #t #t)   (check (% 7 2)))
- ('(1.0 #t #t #f) (check (% 7 2.0)))
- ('(33 #t #t #t)  (check (% 77 44 0 0))))  ;; this is an error in proper scheme!
+ ('(0 #t #t #t)   (q-check (%)))
+ ('(0 #t #t #t)   (q-check (% 2)))
+ ('(1 #t #t #t)   (q-check (% 7 2)))
+ ('(1.0 #t #t #f) (q-check (% 7 2.0)))
+ ('(33 #t #t #t)  (q-check (% 77 44 0 0)))) ; this is an error in proper scheme!
 
 (narc-report)

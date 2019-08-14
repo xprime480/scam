@@ -3,9 +3,8 @@
 (define **narc-test-count** 0)
 (define **narc-test-pass** 0)
 
-(define narc-label
-  (lambda (name)
-    (set! **narc-test-name** name)))
+(define (narc-label name)
+  (set! **narc-test-name** name))
 
 (define-syntax narc-skip
   (syntax-rules ()
@@ -41,27 +40,26 @@
                             (if (error-object? err)
                                 (begin
                                   ;;(display (error->string err))
-				  ;;(display " ")
-				  ;;(display (error-category err))
+                                  ;;(display " ")
+                                  ;;(display (error-category err))
                                   ;;(newline)
                                   (error-category err))
                                 err))
                           (lambda ()
                             form)))) ... )))
 
-(define narc-report
-  (lambda ()
-    (let ((pass (and
-                 (> **narc-test-count** 0)
-                 (equal? **narc-test-count** **narc-test-pass**))))
-      (display (if pass "[PASS]" "[FAIL]"))
-      (display " [")
-      (display **narc-test-pass**)
-      (display "/")
-      (display **narc-test-count**)
-      (display "] ")
-      (display **narc-test-name**)
-      (newline)
-      pass)))
+(define (narc-report)
+  (let ((pass (and
+               (> **narc-test-count** 0)
+               (equal? **narc-test-count** **narc-test-pass**))))
+    (display (if pass "[PASS]" "[FAIL]"))
+    (display " [")
+    (display **narc-test-pass**)
+    (display "/")
+    (display **narc-test-count**)
+    (display "] ")
+    (display **narc-test-name**)
+    (newline)
+    pass))
 
 0

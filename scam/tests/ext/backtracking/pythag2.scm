@@ -10,16 +10,15 @@
 (load "lib/numeric.scm")
 (load "lib/test/value_helper.scm")
 
-(define pythagorean-triples
-  (lambda ()
-    (let* ((z (integers-from 1))
-           (x (integers-between 1 z))
-           (y (integers-between x z)))
-      (begin
-        (require (= (+ (square x)
-                       (square y))
-                    (square z)))
-        `((x ,x) (y ,y) (z ,z))))))
+(define (pythagorean-triples)
+  (let* ((z (integers-from 1))
+         (x (integers-between 1 z))
+         (y (integers-between x z)))
+    (begin
+      (require (= (+ (square x)
+                     (square y))
+                  (square z)))
+      `((x ,x) (y ,y) (z ,z)))))
 
 (define helper (ValueHelper))
 

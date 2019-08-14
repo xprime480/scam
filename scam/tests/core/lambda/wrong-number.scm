@@ -3,8 +3,8 @@
 
 (narc-label "Lambda Wrong Arg Count")
 
-(define f (lambda (x)
-            (/ 1.0 x)))
+(define (f x)
+  (/ 1.0 x))
 
 (narc-catch
  (:args (f))

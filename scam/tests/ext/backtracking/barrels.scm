@@ -20,20 +20,19 @@
 (load "lib/prelude.scm")
 (load "lib/numeric.scm")
 
-(define barrels-of-fun
-  (lambda ()
-    (let* ((barrels (list 30 32 36 38 40 62))
-           (beer (one-of barrels))
-           (wine (exclude (list beer) barrels))
-           (barrel-1 (one-of wine))
-           (barrel-2 (one-of (exclude (list barrel-1) wine)))
-           (purchase (some-of (exclude (list barrel-1 barrel-2) wine))))
-      (begin
-        ;;(trace (list barrel-1 barrel-2 (sum purchase)))
-        (require (= (* 2 (+ barrel-1 barrel-2))
-                    (sum purchase)))
-        ;;(trace (list "solution: " beer))
-        beer))))
+(define (barrels-of-fun)
+  (let* ((barrels (list 30 32 36 38 40 62))
+         (beer (one-of barrels))
+         (wine (exclude (list beer) barrels))
+         (barrel-1 (one-of wine))
+         (barrel-2 (one-of (exclude (list barrel-1) wine)))
+         (purchase (some-of (exclude (list barrel-1 barrel-2) wine))))
+    (begin
+      ;;(trace (list barrel-1 barrel-2 (sum purchase)))
+      (require (= (* 2 (+ barrel-1 barrel-2))
+                  (sum purchase)))
+      ;;(trace (list "solution: " beer))
+      beer)))
 
 (narc-expect
  (40 (barrels-of-fun)))

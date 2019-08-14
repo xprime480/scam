@@ -6,7 +6,9 @@
 #include "WorkQueue.hpp"
 #include "env/Env.hpp"
 #include "expr/EvalOps.hpp"
+#include "expr/SequenceOps.hpp"
 #include "expr/ValueFactory.hpp"
+#include "form/DefineCont.hpp"
 #include "form/Helpers.hpp"
 #include "form/SyntaxRules.hpp"
 #include "util/ClassDef.hpp"
@@ -109,11 +111,41 @@ void scam::applyDefine(ScamValue args,
 {
     static const char * name = "define";
 
-    SymbolParameter p0;
-    ObjectParameter p1;
-    if ( argsToParms(args, engine, name, p0, p1) ) {
-        workQueueHelper<DefineWorker>(p0.value, p1.value, cont, env, engine);
+    ScamValue err = makeError("Bad Argument list for define (%{})", args);
+    err->errorCategory() = argsCategory;
+
+    if ( length(args) < 1 ) {
+        engine->handleError(err);
+        return;
     }
+
+    ScamValue arg0 = getCar(args);
+    if ( isSymbol(arg0) ) {
+        SymbolParameter p0;
+        ObjectParameter p1;
+
+        if ( argsToParms(args, engine, name, p0, p1) ) {
+            workQueueHelper<DefineWorker>(p0.value,
+                                          p1.value,
+                                          cont,
+                                          env,
+                                          engine);
+        }
+        return;
+    }
+
+    else if ( isPair(arg0) ) {
+        ScamValue symbol  = getCar(arg0);
+        ScamValue formals = getCdr(arg0);
+        ScamValue forms   = getCdr(args);
+        ScamValue def     = makePair(formals, forms);
+        Continuation * c =
+	    standardMemoryManager.make<DefineCont>(symbol, cont, env, engine);
+        applyLambda(def, c, env, engine);
+        return;
+    }
+
+    engine->handleError(err);
 }
 
 void scam::applyDefineSyntax(ScamValue args,

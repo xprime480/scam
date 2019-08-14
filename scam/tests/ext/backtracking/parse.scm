@@ -14,51 +14,45 @@
 
 (define *unparsed* ())
 
-(define parse
-  (lambda (input)
-    (begin
-      (set! *unparsed* input)
-      (let ((sentence (parse-sentence)))
-        (begin
-          (require (null? *unparsed*))
-          sentence)))))
+(define (parse input)
+  (begin
+    (set! *unparsed* input)
+    (let ((sentence (parse-sentence)))
+      (begin
+        (require (null? *unparsed*))
+        sentence))))
 
-(define parse-word
-  (lambda (words)
-    (begin
-      (require (pair? *unparsed*))
-      (require (member? (car *unparsed*) (cdr words)))
-      (let ((found-word (car *unparsed*)))
-        (begin
-          (set! *unparsed* (cdr *unparsed*))
-          (list (car words) found-word))))))
+(define (parse-word words)
+  (begin
+    (require (pair? *unparsed*))
+    (require (member? (car *unparsed*) (cdr words)))
+    (let ((found-word (car *unparsed*)))
+      (begin
+        (set! *unparsed* (cdr *unparsed*))
+        (list (car words) found-word)))))
 
-(define parse-sentence
-  (lambda ()
-    (list 'sentence
-          (amb (parse-word nouns)
-               (parse-noun-phrase))
-          (parse-verb-phrase))))
+(define (parse-sentence)
+  (list 'sentence
+        (amb (parse-word nouns)
+             (parse-noun-phrase))
+        (parse-verb-phrase)))
 
-(define parse-verb-phrase
-  (lambda ()
-    (list 'verb-phrase
-          (parse-word verbs)
-          (amb (parse-prep-phrase)
-               (parse-noun-phrase)))))
+(define (parse-verb-phrase)
+  (list 'verb-phrase
+        (parse-word verbs)
+        (amb (parse-prep-phrase)
+             (parse-noun-phrase))))
 
-(define parse-noun-phrase
-  (lambda ()
-    (list 'noun-phrase
-          (amb (parse-word adjectives)
-               (parse-word determinants))
-          (parse-word nouns))))
+(define (parse-noun-phrase)
+  (list 'noun-phrase
+        (amb (parse-word adjectives)
+             (parse-word determinants))
+        (parse-word nouns)))
 
-(define parse-prep-phrase
-  (lambda ()
-    (list 'prep-phrase
-          (parse-word prepositions)
-          (parse-noun-phrase))))
+(define (parse-prep-phrase)
+  (list 'prep-phrase
+        (parse-word prepositions)
+        (parse-noun-phrase)))
 
 (define parse-result1
   '(sentence (noun time)

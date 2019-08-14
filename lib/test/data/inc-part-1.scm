@@ -1,1 +1,2 @@
-(define include-func (lambda (x) (* x 3)))
+(define (include-func x)
+  (* x 3))

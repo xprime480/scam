@@ -1,6 +1,3 @@
-;;; Map a pattern over several data structures
-;;;
-
 (narc-label "Match Mapping")
 
 (load "lib/prelude.scm")
@@ -13,12 +10,11 @@
     #("Morgan" 24)
     #("Connor" 21)))
 
-(define doit
-  (lambda ()
-    (let ((age21 (lambda (dat)
-                   (match the-pattern dat))))
-      (car (filter dict?
-                   (map age21 the-data))))))
+(define (doit)
+  (let ((age21 (lambda (dat)
+                 (match the-pattern dat))))
+    (car (filter dict?
+                 (map age21 the-data)))))
 
 (narc-expect
  ({ :name "Connor" } (doit)))

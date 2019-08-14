@@ -1,11 +1,9 @@
-;;; Reduce function
-;;;
-
 (narc-label "Reduce")
 
 (load "lib/prelude.scm")
 
-(define local-sum (lambda (a b) (+ a b)))
+(define (local-sum a b)
+  (+ a b))
 
 (narc-expect
  (0  (reduce local-sum 0 '()))

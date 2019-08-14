@@ -1,17 +1,12 @@
-;;; Test operator + on integers
-;;;
+(load "checks.def")
 
 (narc-label "Integer Plus")
 
-(define check
-  (lambda (val)
-    (list val (integer? val) (exact? val))))
-
 (narc-expect
- ('(0 #t #t)    (check (+)))
- ('(2 #t #t)    (check (+ 2)))
- ('(4 #t #t)    (check (+ 2 2)))
- ('(4 #t #t)    (check (+ 2 2 -1 -3 4)))
- ('(4.0 #t #f)  (check (+ 2 2 -1 -3 4.0))))
+ ('(0 #t #t)    (z-check (+)))
+ ('(2 #t #t)    (z-check (+ 2)))
+ ('(4 #t #t)    (z-check (+ 2 2)))
+ ('(4 #t #t)    (z-check (+ 2 2 -1 -3 4)))
+ ('(4.0 #t #f)  (z-check (+ 2 2 -1 -3 4.0))))
 
 (narc-report)

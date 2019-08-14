@@ -1,7 +1,9 @@
 (narc-label "Equal? Proc")
 
-(define proc1 (lambda (a) a))
-(define proc2 (lambda (a) a))
+(define (proc1 a)
+  a)
+(define (proc2 a)
+  a)
 
 (narc-expect
  (#t (equal? proc1 proc1))

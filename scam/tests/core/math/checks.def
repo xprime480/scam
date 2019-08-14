@@ -1,0 +1,18 @@
+(define (c-check val)
+  (list val
+        (complex? val)
+        (real? val)
+        (rational? val)
+        (integer? val)
+        (exact? val)))
+
+(define (q-check val)
+  (list val
+        (rational? val)
+        (integer? val)
+        (exact? val)))
+
+(define (z-check val)
+  (list val
+	(integer? val)
+	(exact? val)))
