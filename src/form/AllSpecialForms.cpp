@@ -140,7 +140,7 @@ void scam::applyDefine(ScamValue args,
         ScamValue forms   = getCdr(args);
         ScamValue def     = makePair(formals, forms);
         Continuation * c =
-	    standardMemoryManager.make<DefineCont>(symbol, cont, env, engine);
+            standardMemoryManager.make<DefineCont>(symbol, cont, env, engine);
         applyLambda(def, c, env, engine);
         return;
     }

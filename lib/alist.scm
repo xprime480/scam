@@ -1,5 +1,6 @@
 
-(load "lib/prelude.scm")
+(import (only lib/prelude length filter)
+	(only lib/listops cdar))
 
 (define AssocList
   (make-class

@@ -1,9 +1,6 @@
-;;; Test the basic logic functions if, and, or, xor, not
-;;;
-
 (narc-label "Basic Logic")
 
-(load "lib/prelude.scm")
+(import (only lib/prelude xor))
 
 (narc-expect
  ('(1 -1 () 6) (list (if #t +1 -1)

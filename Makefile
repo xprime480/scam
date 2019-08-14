@@ -15,6 +15,9 @@ unit :
 scam :
 	make -C scam
 
+current : scam
+	make -C scam current
+
 include $(DEP)
 
 .PHONY : clean int unit scam

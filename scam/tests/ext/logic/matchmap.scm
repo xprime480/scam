@@ -1,6 +1,6 @@
-(narc-label "Match Mapping")
+(import lib/prelude)
 
-(load "lib/prelude.scm")
+(narc-label "Match Mapping")
 
 (define the-pattern #(:name 21))
 

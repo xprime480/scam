@@ -1,9 +1,4 @@
-;;; Raise errors
-;;;
-
 (narc-label "Raise")
-
-(load "lib/test/test-handler.scm")
 
 (narc-catch
  (:args (error))

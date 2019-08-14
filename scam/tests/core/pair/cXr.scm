@@ -1,10 +1,6 @@
-;;; Test access to components of pair values via caar, etc
-;;;
+(import lib/listops)
 
 (narc-label "Car / Cdr combinations")
-
-
-(load "lib/listops.scm")
 
 (define l1 '((a b) c))
 (define l2 '(((x y) b) (q r) z))

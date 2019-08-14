@@ -1,9 +1,6 @@
-;;; Class with nontrivial computation
-;;;
+(import lib/prelude)
 
 (narc-label "Nontrivial Class Method")
-
-(load "lib/prelude.scm")
 
 (define Maxxer (make-class
                 Root

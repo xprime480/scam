@@ -1,9 +1,6 @@
-;;; Some-of function
-;;;
+(import lib/prelude)
 
 (narc-label "Some-Of")
-
-(load "lib/prelude.scm")
 
 (narc-skip
  ("No more choices" (some-of '()))

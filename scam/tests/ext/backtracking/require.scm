@@ -1,10 +1,6 @@
-;;; Test the require function in the prelude
-;;;
+(import lib/prelude lib/test/value_helper)
 
 (narc-label "Require")
-
-(load "lib/prelude.scm")
-(load "lib/test/value_helper.scm")
 
 (define helper (ValueHelper))
 

@@ -15,10 +15,9 @@
 ;;; wine as the first customer. Which barrel contains beer?
 ;;;
 
-(narc-label "Barrels")
+(import lib/prelude lib/numeric)
 
-(load "lib/prelude.scm")
-(load "lib/numeric.scm")
+(narc-label "Barrels")
 
 (define (barrels-of-fun)
   (let* ((barrels (list 30 32 36 38 40 62))

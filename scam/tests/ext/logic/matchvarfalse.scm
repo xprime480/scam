@@ -1,9 +1,6 @@
-;;; Match non-empty pattern to empty data
-;;;
+(import lib/listops)
 
 (narc-label "Match Var False")
-
-(load "lib/listops.scm")
 
 (define match-data (match '(:X) '()))
 

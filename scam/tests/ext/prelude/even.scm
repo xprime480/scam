@@ -1,9 +1,6 @@
-;;; Even? function
-;;;
+(import (only lib/prelude even?))
 
 (narc-label "Even?")
-
-(load "lib/prelude.scm")
 
 (narc-expect
  (#t (even? -2))

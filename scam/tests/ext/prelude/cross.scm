@@ -1,9 +1,6 @@
-;;; Cross function
-;;;
+(import lib/prelude)
 
 (narc-label "Cross")
-
-(load "lib/prelude.scm")
 
 (narc-expect
  ('() (cross cons '() '()))

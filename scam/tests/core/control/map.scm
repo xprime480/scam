@@ -1,7 +1,4 @@
-;;; Simple map usage
-;;;
-
-(load "lib/prelude.scm")
+(import lib/prelude)
 
 (narc-label "Map")
 

@@ -164,3 +164,37 @@ TEST_F(EnvTest, GetTopLevel)
     ScamValue val = engine.getBinding(sym, true);
     expectInteger(val, 1, "1", true);
 }
+
+TEST_F(EnvTest, MergeTest)
+{
+    Env * env1 = mm.make<Env>();
+    Env * env2 = mm.make<Env>();
+
+    ScamValue sym = makeSymbol("x");
+    ScamValue val = makeInteger(1, true);
+
+    env2->put(sym, val);
+    env1->merge(env2);
+    ScamValue rv = env1->get(sym);
+    expectInteger(rv, 1, "1", true);
+}
+
+TEST_F(EnvTest, GetKeys)
+{
+    Env * env = mm.make<Env>();
+
+    ScamValue symX = makeSymbol("x");
+    ScamValue symY = makeSymbol("y");
+    ScamValue val = makeInteger(1, true);
+
+    env->put(symX, val);
+    env->put(symY, val);
+
+    set<string> keys;
+    env->getKeys(keys);
+
+    EXPECT_EQ(2, keys.size());
+    EXPECT_FALSE(keys.find("x") == keys.end());
+    EXPECT_FALSE(keys.find("y") == keys.end());
+    EXPECT_TRUE(keys.find("z") == keys.end());
+}

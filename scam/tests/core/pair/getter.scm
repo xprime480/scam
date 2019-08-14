@@ -1,9 +1,4 @@
-;;; Test access to components of pair values
-;;;
-
 (narc-label "Car / Cdr")
-
-(load "lib/test/test-handler.scm")
 
 (define pair (cons 1 2))
 (define not-a-pair 2)

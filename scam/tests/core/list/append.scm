@@ -1,9 +1,4 @@
-;;; Append lists
-;;;
-
 (narc-label "Append Lists")
-
-(load "lib/test/test-handler.scm")
 
 (narc-expect
  ('()          (append))

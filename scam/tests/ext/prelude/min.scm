@@ -1,9 +1,6 @@
-;;; Minimum function
-;;;
+(import (only lib/prelude min))
 
 (narc-label "Min")
-
-(load "lib/prelude.scm")
 
 (narc-expect
  (-123   (min 123 -123))

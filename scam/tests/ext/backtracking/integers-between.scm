@@ -1,11 +1,6 @@
-;;; Generate integers between lower and upper bounds.
-;;;
+(import lib/prelude lib/numeric lib/test/value_helper)
 
 (narc-label "Integers Between")
-
-(load "lib/prelude.scm")
-(load "lib/numeric.scm")
-(load "lib/test/value_helper.scm")
 
 (define helper (ValueHelper))
 

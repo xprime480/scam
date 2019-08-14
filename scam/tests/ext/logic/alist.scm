@@ -1,9 +1,6 @@
-;;; Test the AssocList class
-;;;
+(import lib/alist)
 
 (narc-label "AList")
-
-(load "lib/alist.scm")
 
 (define alist (AssocList))
 

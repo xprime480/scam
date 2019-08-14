@@ -1,6 +1,6 @@
-(narc-label "AMB Nested Let*")
+(import lib/test/value_helper)
 
-(load "lib/test/value_helper.scm")
+(narc-label "AMB Nested Let*")
 
 (define helper (ValueHelper))
 

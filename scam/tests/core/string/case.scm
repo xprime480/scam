@@ -1,9 +1,6 @@
-;;; Test string-upcase, string-downcase, string-foldcase
-;;;
+(import (only lib/prelude string-foldcase))
 
 (narc-label "Change String Case")
-
-(load "lib/prelude.scm")
 
 (define err :not-a-string)
 (define empty "")

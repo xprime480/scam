@@ -1,4 +1,4 @@
-(load "checks.def")
+(import (only checks c-check))
 
 (narc-label "Complex Minus")
 

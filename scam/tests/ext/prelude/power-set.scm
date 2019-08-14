@@ -1,12 +1,8 @@
-;;; Power-set function
-;;;
+(import lib/prelude)
 
 (narc-label "Power-Set")
 
-(load "lib/prelude.scm")
-
 (narc-expect
-
  ('(())     (power-set '()))
  ('(() (1)) (power-set '(1)))
 

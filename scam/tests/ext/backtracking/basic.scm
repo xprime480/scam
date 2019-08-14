@@ -1,6 +1,6 @@
-(narc-label "AMB basic")
+(import lib/test/value_helper)
 
-(load "lib/test/value_helper.scm")
+(narc-label "AMB basic")
 
 (define helper (ValueHelper))
 

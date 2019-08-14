@@ -1,6 +1,6 @@
-(narc-label "Reduce")
+(import lib/prelude)
 
-(load "lib/prelude.scm")
+(narc-label "Reduce")
 
 (define (local-sum a b)
   (+ a b))

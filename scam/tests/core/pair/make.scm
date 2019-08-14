@@ -1,9 +1,4 @@
-;;; Test creation of pair values
-;;;
-
 (narc-label "Create Pairs")
-
-(load "lib/test/test-handler.scm")
 
 (narc-expect
  ('(1 . 2)  (cons 1 2))

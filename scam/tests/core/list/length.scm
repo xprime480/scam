@@ -1,9 +1,6 @@
-;;; Take the length of some lists
-;;;
-
 (narc-label "List Length")
 
-(load "lib/listops.scm")
+(import lib/listops)
 
 (narc-expect
  (0  (length ()))

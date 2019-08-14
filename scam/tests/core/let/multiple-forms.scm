@@ -1,6 +1,6 @@
 (narc-label "Let Multiple Forms")
 
-(load "lib/test/let-suite.scm")
+(import lib/test/let-suite)
 
 (let-suite-expect 9 () 3 5 9)
 

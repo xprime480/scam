@@ -4,11 +4,9 @@
 ;;; The algorithm allows an infinite number of them
 ;;;
 
-(narc-label "Pythag")
+(import lib/prelude lib/numeric lib/test/value_helper)
 
-(load "lib/prelude.scm")
-(load "lib/numeric.scm")
-(load "lib/test/value_helper.scm")
+(narc-label "Pythag")
 
 (define (pythagorean-triples)
   (let* ((z (integers-from 1))

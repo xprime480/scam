@@ -1,9 +1,6 @@
-;;; Odd? function
-;;;
+(import (only lib/prelude odd?))
 
 (narc-label "Odd?")
-
-(load "lib/prelude.scm")
 
 (narc-expect
  (#t (odd? -3))

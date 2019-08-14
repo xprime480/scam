@@ -1,6 +1,6 @@
-(narc-label "While")
+(import lib/prelude)
 
-(load "lib/prelude.scm")
+(narc-label "While")
 
 (narc-expect
  (15   (begin

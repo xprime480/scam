@@ -6,6 +6,7 @@
 #include "ScamFwd.hpp"
 
 #include <map>
+#include <set>
 #include <string>
 
 namespace scam
@@ -34,6 +35,10 @@ namespace scam
         ScamValue assign(ScamValue key, ScamValue val);
         ScamValue remove(ScamValue key);
 
+        ScamValue merge(Env * other);
+
+	void getKeys(std::set<std::string> & keys);
+	
         void dump(size_t max, bool full = false) const;
 
     private:

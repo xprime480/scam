@@ -1,9 +1,6 @@
-;;; Match recurrent pattern to mismatching data
-;;;
+(import lib/listops)
 
 (narc-label "Match Var Dup False")
-
-(load "lib/listops.scm")
 
 (define match-data (match '(:X :X) '(a b)))
 

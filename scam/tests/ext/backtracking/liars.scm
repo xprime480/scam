@@ -17,9 +17,9 @@
 ;;; What in fact was the order in which the the girls were placed?
 ;;;
 
-(narc-label "Liars")
+(import lib/prelude)
 
-(load "lib/prelude.scm")
+(narc-label "Liars")
 
 (define (liars)
   (let ((betty (amb 1 2 3 4 5))

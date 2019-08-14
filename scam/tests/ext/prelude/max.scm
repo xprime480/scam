@@ -1,9 +1,6 @@
-;;; Maximum function
-;;;
+(import (only lib/prelude max))
 
 (narc-label "Max")
-
-(load "lib/prelude.scm")
 
 (narc-expect
  (123   (max 123 -123))

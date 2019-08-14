@@ -3,9 +3,9 @@
 ;;; See liars.scm for description
 ;;;
 
-(narc-label "Liars Optimized")
+(import lib/prelude)
 
-(load "lib/prelude.scm")
+(narc-label "Liars Optimized")
 
 (define (liar3)
   (let* ((betty (amb 1 2 3 4 5))

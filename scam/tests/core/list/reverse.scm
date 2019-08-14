@@ -1,9 +1,7 @@
-;;; Reverse lists
-;;;
 
 (narc-label "Reverse Lists")
 
-(load "lib/listops.scm")
+(import lib/listops)
 
 (narc-expect
  ('()           (reverse '()))

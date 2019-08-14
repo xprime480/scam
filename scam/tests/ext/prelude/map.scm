@@ -1,6 +1,6 @@
-(narc-label "Map")
+(import lib/prelude)
 
-(load "lib/prelude.scm")
+(narc-label "Map")
 
 (narc-expect
  ('(2 4 6)   (map (lambda (x) (+ x 1))

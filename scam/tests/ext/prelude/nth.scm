@@ -1,9 +1,6 @@
-;;; Nth function
-;;;
+(import (only lib/prelude nth))
 
 (narc-label "Nth")
-
-(load "lib/prelude.scm")
 
 (narc-expect
  ('a (nth 0 '(a b c)))

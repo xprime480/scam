@@ -1,9 +1,6 @@
-;;; Test substring
-;;;
+(import (only lib/prelude substring))
 
 (narc-label "Substring functions")
-
-(load "lib/prelude.scm")
 
 (define empty "")
 (define hello "Hello, World")

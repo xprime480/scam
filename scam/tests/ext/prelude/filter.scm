@@ -1,9 +1,6 @@
-;;; Filter function
-;;;
+(import (only lib/prelude filter even?))
 
 (narc-label "Filter")
-
-(load "lib/prelude.scm")
 
 (narc-expect
  ('()    (filter even? '()))

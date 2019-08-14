@@ -1,10 +1,6 @@
-;;; member function
-;;; This is not the member function defined in r7rs
-;;;
-
 (narc-label "Member")
 
-(load "lib/prelude.scm")
+(import lib/prelude)
 
 (narc-expect
  (#f (member? 1 (list)))

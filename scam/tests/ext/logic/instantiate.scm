@@ -1,9 +1,6 @@
-;;; Test the instantiate function
-;;;
+(import lib/prelude)
 
 (narc-label "Instantiate")
-
-(load "lib/prelude.scm")
 
 (narc-expect
  ('() (instantiate '()))

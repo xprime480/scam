@@ -27,6 +27,9 @@ test : scam
 qtest :
 	@./scamtest.sh
 
+current :
+	./scam -t lib/test/narc.scm $(CURRENT_TEST)
+
 clean :
 	-@rm -f *.o *.d scam
 

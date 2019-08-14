@@ -1,4 +1,4 @@
-(load "checks.def")
+(import (only checks z-check))
 
 (narc-label "Integer Minus")
 

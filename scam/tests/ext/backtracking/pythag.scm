@@ -3,11 +3,9 @@
 ;;; Find Some set of pythagorean triples.
 ;;;
 
-(narc-label "Pythag")
+(import lib/prelude lib/numeric lib/test/value_helper)
 
-(load "lib/prelude.scm")
-(load "lib/numeric.scm")
-(load "lib/test/value_helper.scm")
+(narc-label "Pythag")
 
 (define (pythagorean-triples)
   (let ((x (amb 1 2 3 4 5 6 7 8))

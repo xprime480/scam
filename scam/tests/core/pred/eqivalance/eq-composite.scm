@@ -1,4 +1,4 @@
-(load "checks.def")
+(import checks)
 
 (narc-label "Eq for Composites")
 

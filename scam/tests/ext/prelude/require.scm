@@ -1,9 +1,6 @@
-;;; Require function
-;;;
+(import lib/prelude)
 
 (narc-label "Require")
-
-(load "lib/prelude.scm")
 
 (narc-skip
  (#t                (require #t))

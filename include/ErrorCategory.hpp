@@ -17,6 +17,7 @@ namespace scam
     extern const ScamValue evalCategory;
     extern const ScamValue fileCategory;
     extern const ScamValue implCategory;
+    extern const ScamValue importCategory;
     extern const ScamValue readCategory;
     extern const ScamValue scanCategory;
     extern const ScamValue syntaxCategory;

@@ -1,9 +1,6 @@
-;;; Exclude function
-;;;
+(import lib/prelude)
 
 (narc-label "Exclude")
-
-(load "lib/prelude.scm")
 
 (define x (list 1 2 3))
 

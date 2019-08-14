@@ -92,6 +92,8 @@ namespace
 {
     void addForms(ScamEngine * engine, Env * env)
     {
+        addSpecialForm(env, "import", applyImport, engine);
+	
         addSpecialForm(env, "set!", applySetX, engine);
         addSpecialForm(env, "define", applyDefine, engine);
         addSpecialForm(env, "undefine", applyUndefine, engine);

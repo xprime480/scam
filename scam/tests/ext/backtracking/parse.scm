@@ -1,10 +1,9 @@
 ;;; Natural language processing example from Bill Hails.
 ;;;
 
-(narc-label "Parse")
+(import lib/prelude lib/test/value_helper)
 
-(load "lib/prelude.scm")
-(load "lib/test/value_helper.scm")
+(narc-label "Parse")
 
 (define verbs '(verb flies like))
 (define nouns '(noun time fruit flies bannanna arrow))

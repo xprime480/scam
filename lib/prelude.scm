@@ -1,4 +1,4 @@
-(load "lib/listops.scm")
+(import lib/listops)
 
 (define (map fn seq)
   (if (null? seq)

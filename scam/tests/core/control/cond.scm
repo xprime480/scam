@@ -1,7 +1,5 @@
-;;; test cond syntax
-;;;
+(import lib/prelude)
 
-(load "lib/prelude.scm")
 (define (inc x)
   (+ x 1))
 

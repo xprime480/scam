@@ -1,4 +1,4 @@
-(load "checks.def")
+(import (only checks q-check))
 
 (narc-label "Rational Times")
 

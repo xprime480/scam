@@ -1,6 +1,6 @@
 (narc-label "Let Env")
 
-(load "lib/test/let-suite.scm")
+(import lib/test/let-suite)
 
 (define x 2)
 (define y 0)

@@ -1,6 +1,6 @@
 (narc-label "Let No Bindings")
 
-(load "lib/test/let-suite.scm")
+(import lib/test/let-suite)
 
 (let-suite-expect 2 () 2)
 

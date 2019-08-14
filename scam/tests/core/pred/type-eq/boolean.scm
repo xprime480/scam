@@ -1,9 +1,6 @@
-;;; Test the boolean=? function
-;;;
+(import lib/prelude)
 
 (narc-label "Equality of Booleans")
-
-(load "lib/prelude.scm")
 
 (narc-catch
  (:args (boolean=?))

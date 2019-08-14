@@ -15,9 +15,9 @@
 ;;; wine as the first customer. Which barrel contains beer?
 ;;;
 
-(narc-label "Barrels")
+(import lib/prelude)
 
-(load "lib/prelude.scm")
+(narc-label "Barrels")
 
 (define (sum lst)
   (apply + lst))

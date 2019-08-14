@@ -182,6 +182,32 @@ ScamValue Env::remove(ScamValue key)
     return makeNothing();
 }
 
+ScamValue Env::merge(Env * other)
+{
+    if ( other ) {
+        for ( const auto kv : other->table ) {
+            ScamValue key = makeSymbol(kv.first);
+            ScamValue val = kv.second;
+            ScamValue test = check(key, false);
+            if ( truth(test) ) {
+                (void) assign(key, val);
+            }
+            else {
+                (void) put(key, val);
+            }
+        }
+    }
+
+    return makeNothing();
+}
+
+void Env::getKeys(set<string> & keys)
+{
+    for ( const auto kv : table ) {
+        keys.insert(kv.first);
+    }
+}
+
 void Env::dump(size_t max, bool full) const
 {
     if ( 0 == max ) {
