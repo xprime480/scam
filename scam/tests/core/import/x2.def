@@ -1,0 +1,5 @@
+
+(import sample)
+
+(define (x2 n)
+  (+ n (sample)))

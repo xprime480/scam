@@ -1,9 +1,5 @@
 Work stack:
 
-* Implement (import ...)
-
-* Implement proper program structure.
-
 * Implement proper library syntax
 
 * Rewrite / eliminate prelude.scm
