@@ -164,7 +164,7 @@ TEST_F(ValueFactoryTest, SymbolTest)
     expectError(evaled);
 
     ScamValue value = makeInteger(1899, true);
-    expectNothing(engine.addBinding(sym, value));
+    expectNothing(engine.getFrame()->put(sym, value));
     evaled = evaluate(sym);
     expectInteger(evaled, 1899, "1899", true);
 }

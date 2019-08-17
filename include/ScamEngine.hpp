@@ -24,15 +24,9 @@ namespace scam
 
         void reset(bool initEnv);
 
-        void pushFrame();
         Env * getFrame();
         Env * getInteractionFrame();
-        void popFrame();
-
-        ScamValue addBinding(ScamValue key, ScamValue val);
-        ScamValue hasBinding(ScamValue key, bool checkParent = true);
-        ScamValue getBinding(ScamValue key, bool top = false);
-        ScamValue rebind(ScamValue key, ScamValue val);
+        void setFrame(Env * env);
 
         /*** functions to manage the input buffer ***/
 

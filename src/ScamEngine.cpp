@@ -94,11 +94,6 @@ void ScamEngine::reset(bool initEnv)
     }
 }
 
-void ScamEngine::pushFrame()
-{
-    env = env->extend();
-}
-
 Env * ScamEngine::getFrame()
 {
     return env;
@@ -109,32 +104,9 @@ Env * ScamEngine::getInteractionFrame()
     return topEnv;
 }
 
-void ScamEngine::popFrame()
+void ScamEngine::setFrame(Env * newEnv)
 {
-    if ( env != topEnv ) {
-        env = env->getParent();
-    }
-}
-
-ScamValue ScamEngine::addBinding(ScamValue key, ScamValue val)
-{
-    return env->put(key, val);
-}
-
-ScamValue ScamEngine::hasBinding(ScamValue key, bool checkParent)
-{
-    return env->check(key, checkParent);
-}
-
-ScamValue ScamEngine::getBinding(ScamValue key, bool top)
-{
-    Env * temp = top ? topEnv : env;
-    return temp->get(key);
-}
-
-ScamValue ScamEngine::rebind(ScamValue key, ScamValue val)
-{
-    return env->assign(key, val);
+    env = newEnv;
 }
 
 void ScamEngine::pushInput(Tokenizer & tokenizer)

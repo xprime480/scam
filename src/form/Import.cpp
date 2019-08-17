@@ -3,6 +3,7 @@
 #include "ErrorCategory.hpp"
 #include "ScamEngine.hpp"
 #include "env/Env.hpp"
+#include "expr/ScamToInternal.hpp"
 #include "expr/SequenceOps.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/TypePredicates.hpp"
@@ -16,43 +17,29 @@ using namespace std;
 
 namespace
 {
-    extern Env * importImportSet(ScamValue arg, ScamEngine * engine);
+    extern ScamValue importImportSet(ScamValue arg, ScamEngine * engine);
 
-    extern Env * importLib(ScamValue symbol, ScamEngine * engine);
-    extern Env * importOnly(ScamValue args, ScamEngine * engine);
-    extern Env * importExcept(ScamValue args, ScamEngine * engine);
-    extern Env * importPrefix(ScamValue args, ScamEngine * engine);
-    extern Env * importRename(ScamValue args, ScamEngine * engine);
+    extern ScamValue importLib(ScamValue symbol, ScamEngine * engine);
+    extern ScamValue importOnly(ScamValue args, ScamEngine * engine);
+    extern ScamValue importExcept(ScamValue args, ScamEngine * engine);
+    extern ScamValue importPrefix(ScamValue args, ScamEngine * engine);
+    extern ScamValue importRename(ScamValue args, ScamEngine * engine);
 
-    extern Env *
+    extern ScamValue
     importCommon(ScamValue args, ScamEngine * engine, const char * name);
 
-    extern Env * validateKey(Env * env,
-                             ScamValue key,
-                             ScamEngine * engine,
-                             const char * name);
-
+    extern ScamValue validateKey(Env * env, ScamValue key, const char * name);
     extern string findImportLib(ScamValue lib);
 
-    extern void libraryNotFound(ScamValue symbol, ScamEngine * engine);
-    extern void unknownImportDirective(ScamValue arg, ScamEngine * engine);
+    /*** error messages ***/
 
-    extern void
-    importError(ScamValue lib, ScamValue error, ScamEngine * engine);
-
-    extern void badPrefix(ScamValue args, ScamEngine * engine);
-
-    extern void insufficientParameters(ScamValue args,
-                                       ScamEngine * engine,
-                                       const char * where);
-
-    extern void
-    badSymbol(ScamValue arg, ScamEngine * engine, const char * where);
-
-    extern void
-    missingSymbol(ScamValue arg, ScamEngine * engine, const char * where);
-
-    extern void finishError(ScamValue err, ScamEngine * engine);
+    extern ScamValue libraryNotFound(ScamValue symbol);
+    extern ScamValue unknownImportDirective(ScamValue arg);
+    extern ScamValue importError(ScamValue lib, ScamValue error);
+    extern ScamValue badPrefix(ScamValue args);
+    extern ScamValue insufficientParameters(ScamValue args, const char * where);
+    extern ScamValue badSymbol(ScamValue arg, const char * where);
+    extern ScamValue missingSymbol(ScamValue arg, const char * where);
 }
 
 void scam::applyImport(ScamValue args,
@@ -60,32 +47,36 @@ void scam::applyImport(ScamValue args,
                        Env * env,
                        ScamEngine * engine)
 {
-    engine->pushFrame();
+    engine->setFrame(engine->getFrame()->extend());
 
     while ( ! isNull(args) ) {
         ScamValue arg0 = getCar(args);
         args = getCdr(args);
 
-        Env * env = importImportSet(arg0, engine);
-        if ( env ) {
+        ScamValue result = importImportSet(arg0, engine);
+        if ( isEnv(result) ) {
+            Env * env = asEnv(result);
             engine->getFrame()->merge(env);
         }
         else {
-            engine->popFrame();
-            break;
+            engine->setFrame(engine->getFrame()->getParent());
+            if ( isUnhandledError(result) ) {
+                engine->handleError(result);
+            }
+            return;
         }
     }
 }
 
 namespace
 {
-    Env * importImportSet(ScamValue arg, ScamEngine * engine)
+    ScamValue importImportSet(ScamValue arg, ScamEngine * engine)
     {
-        Env * temp;
-        engine->pushFrame();
+        engine->setFrame(engine->getFrame()->extend());
+        ScamValue rv;
 
         if ( isSymbol(arg) ) {
-            temp = importLib(arg, engine);
+            rv = importLib(arg, engine);
         }
 
         else if ( isPair(arg) ) {
@@ -95,69 +86,66 @@ namespace
             if ( isSymbol(directive) ) {
                 const string & name = directive->stringValue();
                 if ( name == "only" ) {
-                    temp = importOnly(rest, engine);
+                    rv = importOnly(rest, engine);
                 }
 
                 else if ( name == "except" ) {
-                    temp = importExcept(rest, engine);
+                    rv = importExcept(rest, engine);
                 }
 
                 else if ( name == "prefix" ) {
-                    temp = importPrefix(rest, engine);
+                    rv = importPrefix(rest, engine);
                 }
 
                 else if ( name == "rename" ) {
-                    temp = importRename(rest, engine);
+                    rv = importRename(rest, engine);
                 }
 
                 else {
-                    unknownImportDirective(arg, engine);
-                    return nullptr;
+                    rv = unknownImportDirective(arg);
                 }
             }
             else {
-                unknownImportDirective(arg, engine);
-                temp = nullptr;
+                rv = unknownImportDirective(arg);
             }
         }
 
         else {
-            unknownImportDirective(arg, engine);
-            temp = nullptr;
+            rv = unknownImportDirective(arg);
         }
 
-        engine->popFrame();
-        if ( temp ) {
+        engine->setFrame(engine->getFrame()->getParent());
+        if ( isEnv(rv) ) {
             Env * env = engine->getFrame();
-            env->merge(temp);
+            env->merge(asEnv(rv));
+            rv = makeEnv(env);
         }
 
-        return temp;
+        return rv;
     }
 
-    Env * importLib(ScamValue symbol, ScamEngine * engine)
+    ScamValue importLib(ScamValue symbol, ScamEngine * engine)
     {
         string fileToLoad = findImportLib(symbol);
         if ( fileToLoad.empty() ) {
-            libraryNotFound(symbol, engine);
-            return nullptr;
+            return libraryNotFound(symbol);
         }
 
         ScamValue rv = loadEvalFile(fileToLoad, engine);
         if ( isUnhandledError(rv) ) {
-            importError(symbol, rv, engine);
-            return nullptr;
+            return importError(symbol, rv);
         }
 
-        return engine->getFrame();
+        return makeEnv(engine->getFrame());
     }
 
-    Env * importOnly(ScamValue args, ScamEngine * engine)
+    ScamValue importOnly(ScamValue args, ScamEngine * engine)
     {
-        Env * temp = importCommon(args, engine, "only");
-        if ( ! temp ) {
-            return nullptr;
+        ScamValue result = importCommon(args, engine, "only");
+        if ( ! isEnv(result) ) {
+            return result;
         }
+        Env * temp = asEnv(result);
 
         ScamValue rest = getCdr(args);
         Env * base = engine->getFrame();
@@ -165,22 +153,24 @@ namespace
             ScamValue arg0 = getCar(rest);
             rest           = getCdr(rest);
 
-            if ( ! validateKey(temp, arg0, engine, "only") ) {
-                return nullptr;
+            ScamValue result = validateKey(temp, arg0, "only");
+            if ( isUnhandledError(result)  ) {
+                return result;
             }
 
             base->put(arg0, temp->get(arg0));
         }
 
-        return base;
+        return makeEnv(base);
     }
 
-    Env * importExcept(ScamValue args, ScamEngine * engine)
+    ScamValue importExcept(ScamValue args, ScamEngine * engine)
     {
-        Env * temp = importCommon(args, engine, "except");
-        if ( ! temp ) {
-            return nullptr;
+        ScamValue result = importCommon(args, engine, "except");
+        if ( ! isEnv(result) ) {
+            return result;
         }
+        Env * temp = asEnv(result);
 
         ScamValue rest = getCdr(args);
         Env * base = engine->getFrame();
@@ -188,8 +178,9 @@ namespace
             ScamValue arg0 = getCar(rest);
             rest           = getCdr(rest);
 
-            if ( ! validateKey(temp, arg0, engine, "except") ) {
-                return nullptr;
+            ScamValue result = validateKey(temp, arg0, "except");
+            if ( isUnhandledError(result)  ) {
+                return result;
             }
 
             temp->remove(arg0);
@@ -197,33 +188,30 @@ namespace
 
         ScamValue rv = base->merge(temp);
         if ( isUnhandledError(rv) ) {
-            engine->popFrame();
-            engine->handleError(rv);
-            return nullptr;
+            return rv;
         }
 
-        return base;
+        return makeEnv(base);
     }
 
-    Env * importPrefix(ScamValue args, ScamEngine * engine)
+    ScamValue importPrefix(ScamValue args, ScamEngine * engine)
     {
         ScamValue rest = getCdr(args);
         ScamValue p    = getCar(rest);
         if ( ( ! isSymbol(p)) || ( ! isNull(getCdr(rest))) ) {
-            badPrefix(args, engine);
-            return nullptr;
+            return badPrefix(args);
         }
         const string & prefix = p->stringValue();
 
-        Env * temp = importCommon(args, engine, "prefix");
-        if ( ! temp ) {
-            return nullptr;
+        ScamValue result = importCommon(args, engine, "prefix");
+        if ( ! isEnv(result) ) {
+            return result;
         }
 
+        Env * temp = asEnv(result);
         Env * base = engine->getFrame();
         set<string> keys;
         temp->getKeys(keys);
-
         for ( const auto k : keys ) {
             stringstream s;
             s << prefix << k;
@@ -231,15 +219,16 @@ namespace
             base->put(key, temp->get(makeSymbol(k)));
         }
 
-        return base;
+        return makeEnv(base);
     }
 
-    Env * importRename(ScamValue args, ScamEngine * engine)
+    ScamValue importRename(ScamValue args, ScamEngine * engine)
     {
-        Env * temp = importCommon(args, engine, "rename");
-        if ( ! temp ) {
-            return nullptr;
+        ScamValue result = importCommon(args, engine, "rename");
+        if ( ! isEnv(result) ) {
+            return result;
         }
+        Env * temp = asEnv(result);
 
         ScamValue rest = getCdr(args);
         Env * base = engine->getFrame();
@@ -251,14 +240,13 @@ namespace
             SymbolParameter p1;
             ScamValue test = argsToParmsMsg(arg0, p0, p1);
             if ( isUnhandledError(test)  ) {
-                engine->handleError(test);
-                engine->popFrame();
-                return nullptr;
+                return test;
             }
 
             ScamValue oldName = p0.value;
-            if ( ! validateKey(temp, oldName, engine, "rename") ) {
-                return nullptr;
+            ScamValue result = validateKey(temp, oldName, "rename");
+            if ( isUnhandledError(result)  ) {
+                return result;
             }
 
             ScamValue newName = p1.value;
@@ -268,41 +256,38 @@ namespace
         }
 
         base->merge(temp);
-        return base;
+        return makeEnv(base);
     }
 
-    Env * importCommon(ScamValue args, ScamEngine * engine, const char * name)
+    ScamValue
+    importCommon(ScamValue args, ScamEngine * engine, const char * name)
     {
-        engine->pushFrame();
-        Env * temp;
+        engine->setFrame(engine->getFrame()->extend());
+        ScamValue rv = makeNothing();
 
         if ( ! isPair(args) ) {
-            insufficientParameters(args, engine, name);
-            temp = nullptr;
+            rv = insufficientParameters(args, name);
+        }
+        else {
+            ScamValue arg = getCar(args);
+            rv = importImportSet(arg, engine);
+            engine->setFrame(engine->getFrame()->getParent());
         }
 
-        ScamValue arg = getCar(args);
-        temp = importImportSet(arg, engine);
-        engine->popFrame();
-        return temp;
+        return rv;
     }
 
-    Env * validateKey(Env * env,
-                      ScamValue key,
-                      ScamEngine * engine,
-                      const char * name)
+    ScamValue validateKey(Env * env, ScamValue key, const char * name)
     {
         if ( ! isSymbol(key) ) {
-            badSymbol(key, engine, name);
-            return nullptr;
+            return badSymbol(key, name);
         }
 
         if ( ! truth(env->check(key, false)) ) {
-            missingSymbol(key, engine, name);
-            return nullptr;
+            return missingSymbol(key, name);
         }
 
-        return env;
+        return makeEnv(env);
     }
 
     string findImportLib(ScamValue lib)
@@ -321,65 +306,62 @@ namespace
         return findFileOnPath(s.str());
     }
 
-    void unknownImportDirective(ScamValue arg, ScamEngine * engine)
+    ScamValue unknownImportDirective(ScamValue arg)
     {
         ScamValue err = makeError("Unknown import directive: %{0}", arg);
-        finishError(err, engine);
+        err->errorCategory() = importCategory;
+        return err;
     }
 
-    void libraryNotFound(ScamValue symbol, ScamEngine * engine)
+    ScamValue libraryNotFound(ScamValue symbol)
     {
         ScamValue err = makeError("Library not found: %{0}", symbol);
-        finishError(err, engine);
+        err->errorCategory() = importCategory;
+        return err;
     }
 
-    void importError(ScamValue lib, ScamValue error, ScamEngine * engine)
+    ScamValue importError(ScamValue lib, ScamValue error)
     {
         ScamValue err =
             makeError("Error during import of library %{0}: %{1}", lib, error);
-        finishError(err, engine);
+        err->errorCategory() = importCategory;
+        return err;
     }
 
-    void badPrefix(ScamValue args, ScamEngine * engine)
+    ScamValue badPrefix(ScamValue args)
     {
         ScamValue err = makeError("Cannot process prefix, got %{0}", args);
-        finishError(err, engine);
+        err->errorCategory() = importCategory;
+        return err;
     }
 
-
-    void insufficientParameters(ScamValue args,
-                                ScamEngine * engine,
-                                const char * where)
+    ScamValue insufficientParameters(ScamValue args, const char * where)
     {
         ScamValue err =
             makeError("Insufficient parameters for %{0}: %{1}",
                       makeString(where),
                       args);
-        finishError(err, engine);
+        err->errorCategory() = importCategory;
+        return err;
     }
 
-    void badSymbol(ScamValue arg, ScamEngine * engine, const char * where)
+    ScamValue badSymbol(ScamValue arg, const char * where)
     {
         ScamValue err =
             makeError("Directive %{0} expects symbol name: %{1}",
                       makeString(where),
                       arg);
-        finishError(err, engine);
+        err->errorCategory() = importCategory;
+        return err;
     }
 
-    void missingSymbol(ScamValue arg, ScamEngine * engine, const char * where)
+    ScamValue missingSymbol(ScamValue arg, const char * where)
     {
         ScamValue err =
             makeError("Directive %{0} does not have symbol available: %{1}",
                       makeString(where),
                       arg);
-        finishError(err, engine);
-    }
-
-    void finishError(ScamValue err, ScamEngine * engine)
-    {
         err->errorCategory() = importCategory;
-        engine->popFrame();
-        engine->handleError(err);
+        return err;
     }
 }
