@@ -541,26 +541,44 @@ ScamValue AlternativeParameter::noMatch()
     return err;
 }
 
-bool scam::errorCheck(ScamEngine * engine, const char * name, ScamValue value)
+ScamValue scam::errorCheckMsg(const char * name, ScamValue value)
 {
     if ( isUnhandledError(value) ) {
         massageError(name, value);
         value->errorCategory() = argsCategory;
+    }
+
+    return value;
+}
+
+bool scam::errorCheck(ScamEngine * engine, const char * name, ScamValue value)
+{
+    errorCheckMsg(name, value);
+    if ( isUnhandledError(value) ) {
         engine->handleError(value);
         return false;
     }
     return true;
 }
 
-bool scam::argsToParms(ScamValue args, ScamEngine * engine, const char * name)
+ScamValue scam::argsToParmsMsg(ScamValue args)
 {
     if ( isNull(args) ) {
-        return true;
+        return makeNull();
     }
 
     ScamValue err = makeError("Extra args at end of list");
     err->errorCategory() = argsCategory;
-    engine->handleError(err);
-    return false;
+    return err;
+}
+
+bool scam::argsToParms(ScamValue args, ScamEngine * engine, const char * name)
+{
+    ScamValue rv = argsToParmsMsg(args);
+    if ( isUnhandledError(rv) ) {
+        engine->handleError(rv);
+        return false;
+    }
+    return true;
 }
 

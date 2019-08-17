@@ -2,6 +2,7 @@
 #define PARAMETER_HPP 1
 
 #include "ScamFwd.hpp"
+#include "expr/TypePredicates.hpp"
 
 #include <functional>
 
@@ -244,8 +245,20 @@ namespace scam
         ScamValue noMatch();
     };
 
+    extern ScamValue errorCheckMsg(const char * name, ScamValue value);
+
     extern bool
     errorCheck(ScamEngine * engine, const char * name, ScamValue value);
+
+    template <typename... PS>
+    ScamValue argsToParmsMsg(ScamValue args, Parameter & parm, PS & ... ps)
+    {
+        ScamValue result = parm.transform(args);
+        if ( isUnhandledError(result) ) {
+            return result;
+        }
+        return argsToParmsMsg(result, ps...);
+    }
 
     template <typename... PS>
     bool argsToParms(ScamValue args,
@@ -254,13 +267,11 @@ namespace scam
                      Parameter & parm,
                      PS & ... ps)
     {
-        ScamValue result = parm.transform(args);
-        if ( ! errorCheck(engine, name, result) ) {
-            return false;
-        }
-
-        return argsToParms(result, engine, name, ps...);
+        ScamValue result = argsToParmsMsg(args, parm, ps...);
+        return errorCheck(engine, name, result);
     }
+
+    ScamValue argsToParmsMsg(ScamValue args);
 
     bool argsToParms(ScamValue args, ScamEngine * engine, const char * name);
 }

@@ -249,7 +249,9 @@ namespace
 
             SymbolParameter p0;
             SymbolParameter p1;
-            if ( ! argsToParms(arg0, engine, "rename", p0, p1) ) {
+            ScamValue test = argsToParmsMsg(arg0, p0, p1);
+            if ( isUnhandledError(test)  ) {
+                engine->handleError(test);
                 engine->popFrame();
                 return nullptr;
             }
