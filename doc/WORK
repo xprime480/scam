@@ -1,5 +1,10 @@
 Work stack:
 
+* Implement requirement that a program start with an empty environment.
+  (import (scheme base)) will fetch the basic definitions.  The REPL
+  implicitly has executed (import (scheme base)).  Preloads may be specified
+  on the command line.
+
 * Implement proper library syntax
 
 * Rewrite / eliminate prelude.scm
