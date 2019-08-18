@@ -4,6 +4,7 @@
 #include "expr/ScamToInternal.hpp"
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueFactory.hpp"
+#include "form/Import.hpp"
 #include "util/FileUtils.hpp"
 
 #include "ReplHandler.hpp"
@@ -27,6 +28,15 @@ int ScamRepl::run()
 
     engine.reset(true);
     engine.pushHandler(handler);
+
+    if ( ! testmode ) {
+        ScamValue spec = makeList(makeSymbol("lib/prelude"));
+        ScamValue result = importFromSpec(spec, &engine);
+        if ( isUnhandledError(result) ) {
+            engine.handleError(result);
+            return 1;
+        }
+    }
 
     int status = load_preloads();
     if ( ! testmode && (0 == status) ) {
@@ -65,9 +75,6 @@ void ScamRepl::readArgs(int argc, char ** argv)
 
     if ( interactive ) {
         banner();
-    }
-    if ( ! testmode ) {
-        preloads.push_back("lib/prelude.scm");
     }
 }
 

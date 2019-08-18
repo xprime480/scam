@@ -19,6 +19,7 @@ namespace scam
         friend class scam::MemoryManager;
 
         Env();
+        ~Env();
         static Env * makeInstance();
 
     public:
@@ -37,9 +38,9 @@ namespace scam
 
         ScamValue merge(Env * other);
 
-	void getKeys(std::set<std::string> & keys);
-	
-        void dump(size_t max, bool full = false) const;
+        void getKeys(std::set<std::string> & keys);
+
+        void dump(size_t max, bool full, bool defs) const;
 
     private:
         std::map<std::string, ScamValue> table;

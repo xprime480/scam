@@ -1,7 +1,8 @@
 #if ! defined(DEBUGTRACE_H)
 #define DEBUGTRACE_H 1
 
-#include <iostream>
+#include <sstream>
+#include <string>
 
 namespace scam
 {
@@ -12,13 +13,17 @@ namespace scam
         ~ScamTraceScope();
     };
 
+    void scamLog(const std::string & msg);
+
     template <typename ... Ts>
     int scamTrace(Ts && ... args)
     {
         if ( scam::scamIsTracing && sizeof...(Ts) > 0 ) {
-            int dummy[sizeof...(Ts)] = { (std::cerr << '<' << args << '>' << "\t", 0)... };
-            std::cerr << "\n";
-          return dummy[0];
+            std::stringstream s;
+            int dummy[sizeof...(Ts)] = { (s << '<' << args << '>' << "\t", 0)... };
+            s << "\n";
+            scamLog(s.str());
+            return dummy[0];
         }
         return 0;
     }

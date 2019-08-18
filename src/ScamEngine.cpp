@@ -14,6 +14,10 @@
 #include "input/ScamParser.hpp"
 #include "util/MemoryManager.hpp"
 
+// #include "util/GlobalId.hpp"
+// #include "util/DebugTrace.hpp"
+// #include "expr/ValueWriter.hpp"
+
 using namespace std;
 using namespace scam;
 
@@ -64,6 +68,8 @@ namespace
     };
 }
 
+Env * scam::configEnv  = nullptr;
+
 ScamEngine::ScamEngine()
     : env(nullptr)
     , backtracker(nullptr)
@@ -87,11 +93,12 @@ void ScamEngine::reset(bool initEnv)
     loaded.clear();
     handlers.clear();
 
-    topEnv = env = getConfigurationEnv(this);
+    configEnv = getConfigurationEnv(this);
+    topEnv = env = configEnv;
     if ( initEnv ) {
         env = makeInteractionEnv(this, env);
-        topEnv = env = env->extend();
     }
+    topEnv = env = env->extend();
 }
 
 Env * ScamEngine::getFrame()
@@ -145,9 +152,7 @@ ScamValue ScamEngine::readEvalCurrent()
             break;
         }
 
-        pushHandler(eh);
-        (void) eval(expr);
-        popHandler();
+        (void) eval(expr, eh);
         if ( eh->called() ) {
             break;
         }
@@ -179,12 +184,34 @@ ScamValue ScamEngine::read()
 
 ScamValue ScamEngine::eval(ScamValue expr)
 {
-    scam::eval(expr, cont, env, this);
+    // GlobalId id;
+    // ScamTraceScope _;
+    // scamTrace(id, __FILE__, __LINE__, __FUNCTION__, writeValue(expr));
 
+    EngineHandler * eh = standardMemoryManager.make<EngineHandler>();
+    ScamValue rv = eval(expr, eh);
+    if ( eh->called() ) {
+        rv = eh->get();
+    }
+
+    // scamTrace(id, __FILE__, __LINE__, __FUNCTION__, writeValue(rv));
+    return rv;
+}
+
+ScamValue ScamEngine::eval(ScamValue expr, Handler * handler)
+{
+    // GlobalId id;
+    // ScamTraceScope _;
+    // scamTrace(id, __FILE__, __LINE__, __FUNCTION__, writeValue(expr));
+
+    pushHandler(handler);
+    scam::eval(expr, cont, env, this);
     Trampoline(GlobalWorkQueue);
+    popHandler();
 
     HistoryCont const * hc = dynamic_cast<HistoryCont const *>(cont);
     ScamValue rv = hc->get();
+    // scamTrace(id, __FILE__, __LINE__, __FUNCTION__, writeValue(rv));
     return rv;
 }
 
@@ -257,18 +284,22 @@ void ScamEngine::popHandler()
 
 void ScamEngine::mark()
 {
+    configEnv->mark();
     env->mark();
+    cont->mark();
+    GlobalWorkQueue.mark();
+
     if ( backtracker ) {
         backtracker->mark();
     }
-    cont->mark();
+
     for ( auto & i : input ) {
         i.mark();
     }
+
     for ( auto & h : handlers ) {
         h->mark();
     }
-    GlobalWorkQueue.mark();
 }
 
 namespace

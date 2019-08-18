@@ -6,11 +6,16 @@
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueFactory.hpp"
 #include "expr/ValueWriter.hpp"
+#include "util/DebugTrace.hpp"
 #include "util/MemoryManager.hpp"
 
 #include <iostream>
 #include <map>
 #include <sstream>
+
+// #include "util/GlobalId.hpp"
+// #include "util/DebugTrace.hpp"
+// #include "expr/ValueWriter.hpp"
 
 using namespace scam;
 using namespace std;
@@ -36,6 +41,16 @@ namespace
 Env::Env()
     : parent(nullptr)
 {
+    // GlobalId id;
+    // ScamTraceScope _;
+    // scamTrace(id, __FILE__, __LINE__, __FUNCTION__, this, parent);
+}
+
+Env::~Env()
+{
+    // GlobalId id;
+    // ScamTraceScope _;
+    // scamTrace(id, __FILE__, __LINE__, __FUNCTION__, this, parent);
 }
 
 Env * Env::makeInstance()
@@ -208,22 +223,29 @@ void Env::getKeys(set<string> & keys)
     }
 }
 
-void Env::dump(size_t max, bool full) const
+void Env::dump(size_t max, bool full, bool defs) const
 {
     if ( 0 == max ) {
         return;
     }
 
-    cerr << "[" << max << "]: " << this
-         << "\t" << parent << "\n";
+    stringstream s;
+    s << "[" << max << "]: " << this
+      << "\t" << parent << "\n";
 
     if ( full ) {
         for ( const auto kv : table ) {
-            cerr << "\t" << kv.first << "\t" << writeValue(kv.second) << "\n";
+            s << "\t" << kv.first;
+            if ( defs ) {
+                s << "\t" << writeValue(kv.second);
+            }
+            s << "\n";
         }
     }
 
+    scamLog(s.str());
+
     if ( parent ) {
-        parent->dump(max - 1, full);
+        parent->dump(max - 1, full, defs);
     }
 }

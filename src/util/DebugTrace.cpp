@@ -1,5 +1,16 @@
-
 #include "util/DebugTrace.hpp"
+
+#include "ScamEngine.hpp"
+#include "env/Env.hpp"
+#include "expr/ScamToInternal.hpp"
+#include "expr/TypePredicates.hpp"
+#include "expr/ValueFactory.hpp"
+#include "port/ScamPort.hpp"
+
+#include <sstream>
+
+using namespace scam;
+using namespace std;
 
 bool scam::scamIsTracing = false;
 
@@ -19,3 +30,25 @@ scam::ScamTraceScope::~ScamTraceScope()
     }
 }
 
+void scam::scamLog(const std::string & msg)
+{
+    ScamPort * port = nullptr;
+    ScamValue portName = makeSymbol("**log-port**");
+
+    if ( configEnv && truth(configEnv->check(portName)) ) {
+        ScamValue p = configEnv->get(portName);
+        if ( isPort(p) ) {
+            port = asPort(p);
+            if ( port->isWriteable() ) {
+                port->put(msg.c_str(), msg.size());
+            }
+            else {
+                port = nullptr;
+            }
+        }
+    }
+
+    if ( ! port ) {
+        cerr << msg;
+    }
+}

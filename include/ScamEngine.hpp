@@ -14,6 +14,8 @@ namespace scam
 {
     class Tokenizer;
 
+    extern Env * configEnv;
+    
     class ScamEngine
     {
     public:
@@ -42,6 +44,7 @@ namespace scam
         ScamValue readEvalCurrent();
         ScamValue read();
         ScamValue eval(ScamValue expr);
+	ScamValue eval(ScamValue expr, Handler * handler);
         ScamValue apply(ScamValue expr, ScamValue args);
 
         /*** functions to manage backtracking */

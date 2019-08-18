@@ -3,6 +3,8 @@
 
 #include "ScamFwd.hpp"
 
+#include "form/Import.hpp"
+
 namespace scam
 {
     extern const ScamValue spliceTag;
@@ -51,6 +53,8 @@ namespace scam
                             Continuation * cont,
                             Env * env,
                             ScamEngine * engine);
+
+    extern ScamValue importFromSpec(ScamValue args, ScamEngine * engine);
 
     extern void applyLambda(ScamValue args,
                             Continuation * cont,

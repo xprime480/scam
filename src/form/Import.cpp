@@ -47,7 +47,16 @@ void scam::applyImport(ScamValue args,
                        Env * env,
                        ScamEngine * engine)
 {
+    ScamValue result = importFromSpec(args, engine);
+    if ( isUnhandledError(result) ) {
+        engine->handleError(result);
+    }
+}
+
+ScamValue scam::importFromSpec(ScamValue args, ScamEngine * engine)
+{
     engine->setFrame(engine->getFrame()->extend());
+    ScamValue rv = makeEnv(engine->getFrame());
 
     while ( ! isNull(args) ) {
         ScamValue arg0 = getCar(args);
@@ -60,12 +69,11 @@ void scam::applyImport(ScamValue args,
         }
         else {
             engine->setFrame(engine->getFrame()->getParent());
-            if ( isUnhandledError(result) ) {
-                engine->handleError(result);
-            }
-            return;
+            rv = result;
         }
     }
+
+    return rv;
 }
 
 namespace
