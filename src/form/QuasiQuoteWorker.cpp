@@ -6,14 +6,12 @@
 #include "expr/ScamData.hpp"
 #include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
+#include "expr/ValueWriter.hpp"
 #include "form/QQConsListCarCont.hpp"
 #include "form/QQSpliceCont.hpp"
 #include "util/MemoryManager.hpp"
 #include "util/Parameter.hpp"
 
-#include "util/GlobalId.hpp"
-#include "util/DebugTrace.hpp"
-#include "expr/ValueWriter.hpp"
 
 using namespace scam;
 using namespace std;

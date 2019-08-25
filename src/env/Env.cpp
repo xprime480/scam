@@ -13,10 +13,6 @@
 #include <map>
 #include <sstream>
 
-// #include "util/GlobalId.hpp"
-// #include "util/DebugTrace.hpp"
-// #include "expr/ValueWriter.hpp"
-
 using namespace scam;
 using namespace std;
 
@@ -41,16 +37,10 @@ namespace
 Env::Env()
     : parent(nullptr)
 {
-    // GlobalId id;
-    // ScamTraceScope _;
-    // scamTrace(id, __FILE__, __LINE__, __FUNCTION__, this, parent);
 }
 
 Env::~Env()
 {
-    // GlobalId id;
-    // ScamTraceScope _;
-    // scamTrace(id, __FILE__, __LINE__, __FUNCTION__, this, parent);
 }
 
 Env * Env::makeInstance()

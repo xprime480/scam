@@ -13,6 +13,10 @@
 
 #include <sstream>
 
+// #include "util/GlobalId.hpp"
+// #include "util/DebugTrace.hpp"
+// #include "expr/ValueWriter.hpp"
+
 using namespace scam;
 using namespace std;
 
@@ -59,6 +63,10 @@ void scam::applyImport(ScamValue args,
 
 ScamValue scam::importToEnv(ScamValue args, ScamEngine * engine)
 {
+    // GlobalId id;
+    // ScamTraceScope _;
+    // scamTrace(id, __FILE__, __LINE__, __FUNCTION__, writeValue(args));
+
     Env * original = engine->getFrame();
     engine->setFrame(original->extend());
     Env * target = standardMemoryManager.make<Env>();
@@ -69,6 +77,7 @@ ScamValue scam::importToEnv(ScamValue args, ScamEngine * engine)
         args = getCdr(args);
 
         ScamValue result = importImportSet(arg0, engine);
+        // scamTrace(id, __FILE__, __LINE__, __FUNCTION__, writeValue(result));
         if ( isEnv(result) ) {
             target->merge(asEnv(result));
         }
@@ -86,10 +95,14 @@ namespace
 {
     ScamValue importImportSet(ScamValue arg, ScamEngine * engine)
     {
+        GlobalId id;
+        ScamTraceScope _;
+        scamTrace(id, __FILE__, __LINE__, __FUNCTION__, writeValue(arg));
         ScamValue rv = makeNothing();
 
         if ( isSymbol(arg) ) {
             rv = importLib(arg, engine);
+            scamTrace(id, __FILE__, __LINE__, __FUNCTION__, writeValue(rv));
         }
 
         else if ( isPair(arg) ) {
@@ -132,6 +145,10 @@ namespace
 
     ScamValue importLib(ScamValue symbol, ScamEngine * engine)
     {
+        // GlobalId id;
+        // ScamTraceScope _;
+        // scamTrace(id, __FILE__, __LINE__, __FUNCTION__, writeValue(symbol));
+
         string fileToLoad = findImportLib(symbol);
         if ( fileToLoad.empty() ) {
             return libraryNotFound(symbol);
@@ -140,14 +157,15 @@ namespace
         Env * original = engine->getFrame();
         Env * extended = original->extend();
         engine->setFrame(extended);
-
         ScamValue rv = loadEvalFile(fileToLoad, engine);
-        if ( isUnhandledError(rv) ) {
+        // scamTrace(id, __FILE__, __LINE__, __FUNCTION__, debugWriteValue(rv));
+        engine->setFrame(original);
+
+        if ( isError(rv) ) {
             return importError(symbol, rv);
         }
 
         rv = makeEnv(extended);
-        engine->setFrame(original);
         return rv;
     }
 
@@ -273,6 +291,9 @@ namespace
     ScamValue
     importCommon(ScamValue args, ScamEngine * engine, const char * name)
     {
+        // GlobalId id;
+        // ScamTraceScope _;
+        // scamTrace(id, __FILE__, __LINE__, __FUNCTION__, writeValue(args));
         ScamValue rv = makeNothing();
 
         if ( ! isPair(args) ) {
@@ -283,6 +304,7 @@ namespace
             rv = importImportSet(arg, engine);
         }
 
+        // scamTrace(id, __FILE__, __LINE__, __FUNCTION__, writeValue(rv));
         return rv;
     }
 

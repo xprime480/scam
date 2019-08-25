@@ -3,8 +3,6 @@
 
 #include "util/ManagedObject.hpp"
 
-#include "util/GlobalId.hpp"
-
 #include <string>
 
 namespace scam

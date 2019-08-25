@@ -7,6 +7,7 @@
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueFactory.hpp"
 #include "expr/ValueWriter.hpp"
+#include "util/GlobalId.hpp"
 
 #include <iostream>
 #include <sstream>

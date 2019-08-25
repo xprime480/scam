@@ -25,10 +25,6 @@
 
 #include <sstream>
 
-// #include "util/GlobalId.hpp"
-// #include "util/DebugTrace.hpp"
-// #include "expr/ValueWriter.hpp"
-
 using namespace scam;
 using namespace std;
 
@@ -46,9 +42,6 @@ void scam::eval(ScamValue value,
     }
 
     else if ( isSymbol(value) ) {
-	// GlobalId id;
-	// ScamTraceScope _;
-	// scamTrace(id, __FILE__, __LINE__, __FUNCTION__, env, writeValue(value));
         ScamValue test = env->check(value);
         if ( isError(test) ) {
             engine->handleError(test);

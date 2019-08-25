@@ -37,3 +37,33 @@ TEST_F(ImportTest, NestedImport)
     ScamValue xval = asEnv(result)->get(makeSymbol("x"));
     expectInteger(xval, 4, "4", true);
 }
+
+TEST_F(ImportTest, ImportLibrary)
+{
+    ScamValue spec = makeList(makeSymbol("scripts/lib1"));
+    ScamValue result = importToEnv(spec, &engine);
+    ASSERT_TRUE(isEnv(result));
+
+    Env * env = asEnv(result);
+    ScamValue xval = env->get(makeSymbol("x"));
+    expectInteger(xval, 4, "4", true);
+
+    set<string> keys;
+    env->getKeys(keys);
+    EXPECT_EQ(2, keys.size());
+}
+
+TEST_F(ImportTest, ImportLibraryWithExport)
+{
+    ScamValue spec = makeList(makeSymbol("scripts/lib2"));
+    ScamValue result = importToEnv(spec, &engine);
+    ASSERT_TRUE(isEnv(result));
+
+    Env * env = asEnv(result);
+    ScamValue xval = env->get(makeSymbol("x"));
+    expectInteger(xval, 4, "4", true);
+
+    set<string> keys;
+    env->getKeys(keys);
+    EXPECT_EQ(1, keys.size());
+}

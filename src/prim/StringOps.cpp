@@ -15,10 +15,6 @@
 #include <cctype>
 #include <cstring>
 
-#include "util/GlobalId.hpp"
-#include "util/DebugTrace.hpp"
-#include "expr/ValueWriter.hpp"
-
 using namespace scam;
 using namespace std;
 
@@ -317,9 +313,6 @@ void scam::applyStringCopy(ScamValue args,
                            Continuation * cont,
                            ScamEngine * engine)
 {
-    GlobalId id;
-    ScamTraceScope _;
-
     StringParameter p0;
     StartIndexParameter pStart(p0);
     OptionalParameter p1(pStart);
