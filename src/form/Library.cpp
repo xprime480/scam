@@ -3,6 +3,7 @@
 #include "ErrorCategory.hpp"
 #include "ScamEngine.hpp"
 #include "env/Env.hpp"
+#include "expr/EqualityOps.hpp"
 #include "expr/ScamToInternal.hpp"
 #include "expr/SequenceOps.hpp"
 #include "expr/ScamData.hpp"
@@ -13,15 +14,14 @@
 
 #include <sstream>
 
-// #include "util/GlobalId.hpp"
-// #include "util/DebugTrace.hpp"
-// #include "expr/ValueWriter.hpp"
-
 using namespace scam;
 using namespace std;
 
 namespace
 {
+    extern ScamValue getLibraryName(ScamValue & args);
+    extern ScamValue getDirectiveName(ScamValue arg0);
+
     extern ScamValue importImportSet(ScamValue arg, ScamEngine * engine);
 
     extern ScamValue importLib(ScamValue symbol, ScamEngine * engine);
@@ -38,6 +38,9 @@ namespace
 
     /*** error messages ***/
 
+    extern ScamValue missingLibraryName();
+    extern ScamValue unknownLibraryDirective(ScamValue arg);
+
     extern ScamValue libraryNotFound(ScamValue symbol);
     extern ScamValue unknownImportDirective(ScamValue arg);
     extern ScamValue importError(ScamValue lib, ScamValue error);
@@ -46,6 +49,21 @@ namespace
     extern ScamValue badSymbol(ScamValue arg, const char * where);
     extern ScamValue missingSymbol(ScamValue arg, const char * where);
 }
+
+void scam::applyDefineLibrary(ScamValue args,
+                              Continuation * cont,
+                              Env * env,
+                              ScamEngine * engine)
+{
+    ScamValue result = defineLibrary(args, engine);
+    if ( isUnhandledError(result) ) {
+        engine->handleError(result);
+    }
+    else if ( isEnv(result) ) {
+        engine->getFrame()->merge(asEnv(result));
+    }
+}
+
 
 void scam::applyImport(ScamValue args,
                        Continuation * cont,
@@ -61,12 +79,56 @@ void scam::applyImport(ScamValue args,
     }
 }
 
+ScamValue scam::defineLibrary(ScamValue args, ScamEngine * engine)
+{
+    ScamValue name = getLibraryName(args);
+    if ( isUnhandledError(name) ) {
+        return name;
+    }
+
+    vector<ScamValue> defines;
+
+    while ( ! isNull(args) ) {
+        ScamValue arg0 = getCar(args);
+        args           = getCdr(args);
+
+        ScamValue result = getDirectiveName(arg0);
+        if ( isUnhandledError(result) ) {
+            return result;
+        }
+
+        if ( equals(result, makeSymbol("begin")) ) {
+            defines.push_back(arg0);
+        }
+        else {
+            ScamValue err =
+                makeError("Internal Error: unknown directive", arg0);
+            err->errorCategory() = argsCategory;
+            return err;
+        }
+    }
+
+    Env * original = engine->getFrame();
+    Env * extended = original->extend();
+    engine->setFrame(extended);
+
+    for ( const auto d : defines ) {
+        ScamValue result = engine->eval(d);
+        if ( isUnhandledError(result) ) {
+            return result;
+        }
+    }
+
+    engine->setFrame(original);
+
+    Env * lib = standardMemoryManager.make<Env>();
+    lib->merge(extended);
+    ScamValue rv = makeEnv(lib);
+    return rv;
+}
+
 ScamValue scam::importToEnv(ScamValue args, ScamEngine * engine)
 {
-    // GlobalId id;
-    // ScamTraceScope _;
-    // scamTrace(id, __FILE__, __LINE__, __FUNCTION__, writeValue(args));
-
     Env * original = engine->getFrame();
     engine->setFrame(original->extend());
     Env * target = standardMemoryManager.make<Env>();
@@ -77,7 +139,6 @@ ScamValue scam::importToEnv(ScamValue args, ScamEngine * engine)
         args = getCdr(args);
 
         ScamValue result = importImportSet(arg0, engine);
-        // scamTrace(id, __FILE__, __LINE__, __FUNCTION__, writeValue(result));
         if ( isEnv(result) ) {
             target->merge(asEnv(result));
         }
@@ -93,16 +154,48 @@ ScamValue scam::importToEnv(ScamValue args, ScamEngine * engine)
 
 namespace
 {
+    ScamValue getLibraryName(ScamValue & args)
+    {
+        if ( isNull(args) ) {
+            return missingLibraryName();
+        }
+
+        ScamValue nameArg = getCar(args);
+        args              = getCdr(args);
+
+        SymbolParameter  symParm;
+        CountedParameter p0(symParm, 1);
+        CountParameter   countParm;
+        CountedParameter p1(countParm);
+
+        ScamValue rv = argsToParmsMsg(nameArg, p0, p1);
+        if ( ! isUnhandledError(rv) ) {
+            rv   = p0.value;
+        }
+
+        return rv;
+    }
+
+    ScamValue getDirectiveName(ScamValue arg)
+    {
+        if ( ! isList(arg) ) {
+            return unknownLibraryDirective(arg);
+        }
+
+        ScamValue type = getCar(arg);
+        if ( equals(type, makeSymbol("begin")) ) {
+            return type;
+        }
+
+        return unknownLibraryDirective(type);
+    }
+
     ScamValue importImportSet(ScamValue arg, ScamEngine * engine)
     {
-        GlobalId id;
-        ScamTraceScope _;
-        scamTrace(id, __FILE__, __LINE__, __FUNCTION__, writeValue(arg));
         ScamValue rv = makeNothing();
 
         if ( isSymbol(arg) ) {
             rv = importLib(arg, engine);
-            scamTrace(id, __FILE__, __LINE__, __FUNCTION__, writeValue(rv));
         }
 
         else if ( isPair(arg) ) {
@@ -145,10 +238,6 @@ namespace
 
     ScamValue importLib(ScamValue symbol, ScamEngine * engine)
     {
-        // GlobalId id;
-        // ScamTraceScope _;
-        // scamTrace(id, __FILE__, __LINE__, __FUNCTION__, writeValue(symbol));
-
         string fileToLoad = findImportLib(symbol);
         if ( fileToLoad.empty() ) {
             return libraryNotFound(symbol);
@@ -158,7 +247,6 @@ namespace
         Env * extended = original->extend();
         engine->setFrame(extended);
         ScamValue rv = loadEvalFile(fileToLoad, engine);
-        // scamTrace(id, __FILE__, __LINE__, __FUNCTION__, debugWriteValue(rv));
         engine->setFrame(original);
 
         if ( isError(rv) ) {
@@ -259,7 +347,6 @@ namespace
         }
 
         Env * temp = asEnv(result);
-        // Env * base = standardMemoryManager.make<Env>();
         ScamValue rest = getCdr(args);
 
         while ( isPair(rest) ) {
@@ -291,9 +378,6 @@ namespace
     ScamValue
     importCommon(ScamValue args, ScamEngine * engine, const char * name)
     {
-        // GlobalId id;
-        // ScamTraceScope _;
-        // scamTrace(id, __FILE__, __LINE__, __FUNCTION__, writeValue(args));
         ScamValue rv = makeNothing();
 
         if ( ! isPair(args) ) {
@@ -304,7 +388,6 @@ namespace
             rv = importImportSet(arg, engine);
         }
 
-        // scamTrace(id, __FILE__, __LINE__, __FUNCTION__, writeValue(rv));
         return rv;
     }
 
@@ -341,6 +424,21 @@ namespace
     {
         ScamValue err = makeError("Unknown import directive: %{0}", arg);
         err->errorCategory() = importCategory;
+        return err;
+    }
+
+    ScamValue missingLibraryName()
+    {
+        ScamValue err = makeError("define-library: Missing library name");
+        err->errorCategory() = argsCategory;
+        return err;
+    }
+
+    ScamValue unknownLibraryDirective(ScamValue arg)
+    {
+        ScamValue err =
+	    makeError("define-library: Unknown directive: %{0}", arg);
+        err->errorCategory() = argsCategory;
         return err;
     }
 

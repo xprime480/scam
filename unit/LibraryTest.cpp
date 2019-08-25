@@ -12,10 +12,10 @@
 using namespace std;
 using namespace scam;
 
-class ImportTest : public TestBase
+class LibraryTest : public TestBase
 {
 protected:
-    ImportTest()
+    LibraryTest()
     {
     }
 
@@ -28,7 +28,7 @@ protected:
     }
 };
 
-TEST_F(ImportTest, NestedImport)
+TEST_F(LibraryTest, NestedImport)
 {
     ScamValue spec = makeList(makeSymbol("scripts/i1"));
     ScamValue result = importToEnv(spec, &engine);
@@ -38,7 +38,7 @@ TEST_F(ImportTest, NestedImport)
     expectInteger(xval, 4, "4", true);
 }
 
-TEST_F(ImportTest, ImportLibrary)
+TEST_F(LibraryTest, ImportPlainCode)
 {
     ScamValue spec = makeList(makeSymbol("scripts/lib1"));
     ScamValue result = importToEnv(spec, &engine);
@@ -53,17 +53,20 @@ TEST_F(ImportTest, ImportLibrary)
     EXPECT_EQ(2, keys.size());
 }
 
-TEST_F(ImportTest, ImportLibraryWithExport)
+TEST_F(LibraryTest, ImportLibraryWithoutExport)
 {
     ScamValue spec = makeList(makeSymbol("scripts/lib2"));
     ScamValue result = importToEnv(spec, &engine);
-    ASSERT_TRUE(isEnv(result));
+    ASSERT_TRUE(isEnv(result)) << writeValue(result);
 
     Env * env = asEnv(result);
     ScamValue xval = env->get(makeSymbol("x"));
-    expectInteger(xval, 4, "4", true);
+    expectProcedure(xval, "(lambda () (y))");
+
+    ScamValue finalValue = apply(xval, makeNull());
+    expectInteger(finalValue, 4, "4", true);
 
     set<string> keys;
     env->getKeys(keys);
-    EXPECT_EQ(1, keys.size());
+    EXPECT_EQ(2, keys.size());
 }
