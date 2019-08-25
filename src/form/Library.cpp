@@ -37,7 +37,7 @@ namespace
     extern string findImportLib(ScamValue lib);
 
     ScamValue
-    copyOnly(Env * dst, Env * src, ScamValue symbols, const char * name);
+    copyOnlyRename(Env * dst, Env * src, ScamValue symbols, const char * name);
 
     /*** error messages ***/
 
@@ -136,7 +136,7 @@ ScamValue scam::defineLibrary(ScamValue args, ScamEngine * engine)
         for ( auto e : exports ) {
             ScamValue symbols = getCdr(e);
             ScamValue result =
-                copyOnly(lib, extended, symbols, "define-library");
+                copyOnlyRename(lib, extended, symbols, "define-library");
             if ( isUnhandledError(result)  ) {
                 return result;
             }
@@ -289,7 +289,7 @@ namespace
         Env * base = standardMemoryManager.make<Env>();
         ScamValue rest = getCdr(args);
 
-        return copyOnly(base, temp, rest, "only");
+        return copyOnlyRename(base, temp, rest, "only");
     }
 
     ScamValue importExcept(ScamValue args, ScamEngine * engine)
@@ -306,9 +306,9 @@ namespace
             ScamValue arg0 = getCar(rest);
             rest           = getCdr(rest);
 
-            ScamValue result = validateKey(temp, arg0, "except");
-            if ( isUnhandledError(result)  ) {
-                return result;
+            ScamValue inner = validateKey(temp, arg0, "except");
+            if ( isUnhandledError(inner)  ) {
+                return inner;
             }
 
             temp->remove(arg0);
@@ -357,31 +357,8 @@ namespace
 
         Env * temp = asEnv(result);
         ScamValue rest = getCdr(args);
-
-        while ( isPair(rest) ) {
-            ScamValue arg0 = getCar(rest);
-            rest           = getCdr(rest);
-
-            SymbolParameter p0;
-            SymbolParameter p1;
-            ScamValue test = argsToParmsMsg(arg0, p0, p1);
-            if ( isUnhandledError(test)  ) {
-                return test;
-            }
-
-            ScamValue oldName = p0.value;
-            ScamValue result = validateKey(temp, oldName, "rename");
-            if ( isUnhandledError(result)  ) {
-                return result;
-            }
-
-            ScamValue newName = p1.value;
-            ScamValue value   = temp->get(oldName);
-            temp->remove(oldName);
-            temp->put(newName, value);
-        }
-
-        return result;
+	
+        return copyOnlyRename(temp, temp, rest, "rename");
     }
 
     ScamValue
@@ -402,15 +379,25 @@ namespace
 
     ScamValue validateKey(Env * env, ScamValue key, const char * name)
     {
+        ScamValue rv = makePair(key, key);
+
         if ( ! isSymbol(key) ) {
-            return badSymbol(key, name);
+            SymbolParameter p0;
+            SymbolParameter p1;
+            ScamValue test = argsToParmsMsg(key, p0, p1);
+            if ( isUnhandledError(test)  ) {
+                return badSymbol(key, name);
+            }
+
+            rv = makePair(p1.value, p0.value);
+            key = p0.value;
         }
 
         if ( ! truth(env->check(key, false)) ) {
             return missingSymbol(key, name);
         }
 
-        return makeEnv(env);
+        return rv;
     }
 
     string findImportLib(ScamValue lib)
@@ -430,7 +417,7 @@ namespace
     }
 
     ScamValue
-    copyOnly(Env * dst, Env * src, ScamValue symbols, const char * name)
+    copyOnlyRename(Env * dst, Env * src, ScamValue symbols, const char * name)
     {
         while ( isPair(symbols) ) {
             ScamValue arg0 = getCar(symbols);
@@ -441,7 +428,13 @@ namespace
                 return result;
             }
 
-            dst->put(arg0, src->get(arg0));
+            ScamValue newName = getCar(result);
+            ScamValue oldName = getCdr(result);
+            ScamValue value   = src->get(oldName);
+            if ( dst->check(oldName) ) {
+		dst->remove(oldName);
+	    }
+            dst->put(newName, value);
         }
 
         return makeEnv(dst);
