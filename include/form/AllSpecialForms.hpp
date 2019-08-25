@@ -49,13 +49,6 @@ namespace scam
                         Env * env,
                         ScamEngine * engine);
 
-    extern void applyImport(ScamValue args,
-                            Continuation * cont,
-                            Env * env,
-                            ScamEngine * engine);
-
-    extern ScamValue importFromSpec(ScamValue args, ScamEngine * engine);
-
     extern void applyLambda(ScamValue args,
                             Continuation * cont,
                             Env * env,

@@ -10,7 +10,7 @@ namespace scam
                             Env * env,
                             ScamEngine * engine);
 
-    extern ScamValue importFromSpec(ScamValue args, ScamEngine * engine);
+    extern ScamValue importToEnv(ScamValue args, ScamEngine * engine);
 }
 
 #endif

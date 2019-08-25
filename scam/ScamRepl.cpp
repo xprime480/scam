@@ -31,7 +31,7 @@ int ScamRepl::run()
 
     if ( ! testmode ) {
         ScamValue spec = makeList(makeSymbol("lib/prelude"));
-        ScamValue result = importFromSpec(spec, &engine);
+        ScamValue result = importToEnv(spec, &engine);
         if ( isUnhandledError(result) ) {
             engine.handleError(result);
             return 1;

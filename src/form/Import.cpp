@@ -9,6 +9,7 @@
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueFactory.hpp"
 #include "util/FileUtils.hpp"
+#include "util/MemoryManager.hpp"
 
 #include <sstream>
 
@@ -47,16 +48,21 @@ void scam::applyImport(ScamValue args,
                        Env * env,
                        ScamEngine * engine)
 {
-    ScamValue result = importFromSpec(args, engine);
+    ScamValue result = importToEnv(args, engine);
     if ( isUnhandledError(result) ) {
         engine->handleError(result);
     }
+    else if ( isEnv(result) ) {
+        engine->getFrame()->merge(asEnv(result));
+    }
 }
 
-ScamValue scam::importFromSpec(ScamValue args, ScamEngine * engine)
+ScamValue scam::importToEnv(ScamValue args, ScamEngine * engine)
 {
-    engine->setFrame(engine->getFrame()->extend());
-    ScamValue rv = makeEnv(engine->getFrame());
+    Env * original = engine->getFrame();
+    engine->setFrame(original->extend());
+    Env * target = standardMemoryManager.make<Env>();
+    ScamValue rv = makeEnv(target);
 
     while ( ! isNull(args) ) {
         ScamValue arg0 = getCar(args);
@@ -64,15 +70,15 @@ ScamValue scam::importFromSpec(ScamValue args, ScamEngine * engine)
 
         ScamValue result = importImportSet(arg0, engine);
         if ( isEnv(result) ) {
-            Env * env = asEnv(result);
-            engine->getFrame()->merge(env);
+            target->merge(asEnv(result));
         }
         else {
-            engine->setFrame(engine->getFrame()->getParent());
             rv = result;
+            break;
         }
     }
 
+    engine->setFrame(original);
     return rv;
 }
 
@@ -80,8 +86,7 @@ namespace
 {
     ScamValue importImportSet(ScamValue arg, ScamEngine * engine)
     {
-        engine->setFrame(engine->getFrame()->extend());
-        ScamValue rv;
+        ScamValue rv = makeNothing();
 
         if ( isSymbol(arg) ) {
             rv = importLib(arg, engine);
@@ -122,13 +127,6 @@ namespace
             rv = unknownImportDirective(arg);
         }
 
-        engine->setFrame(engine->getFrame()->getParent());
-        if ( isEnv(rv) ) {
-            Env * env = engine->getFrame();
-            env->merge(asEnv(rv));
-            rv = makeEnv(env);
-        }
-
         return rv;
     }
 
@@ -139,12 +137,18 @@ namespace
             return libraryNotFound(symbol);
         }
 
+        Env * original = engine->getFrame();
+        Env * extended = original->extend();
+        engine->setFrame(extended);
+
         ScamValue rv = loadEvalFile(fileToLoad, engine);
         if ( isUnhandledError(rv) ) {
             return importError(symbol, rv);
         }
 
-        return makeEnv(engine->getFrame());
+        rv = makeEnv(extended);
+        engine->setFrame(original);
+        return rv;
     }
 
     ScamValue importOnly(ScamValue args, ScamEngine * engine)
@@ -153,10 +157,11 @@ namespace
         if ( ! isEnv(result) ) {
             return result;
         }
-        Env * temp = asEnv(result);
 
+        Env * temp = asEnv(result);
+        Env * base = standardMemoryManager.make<Env>();
         ScamValue rest = getCdr(args);
-        Env * base = engine->getFrame();
+
         while ( isPair(rest) ) {
             ScamValue arg0 = getCar(rest);
             rest           = getCdr(rest);
@@ -178,10 +183,10 @@ namespace
         if ( ! isEnv(result) ) {
             return result;
         }
-        Env * temp = asEnv(result);
 
+        Env * temp = asEnv(result);
         ScamValue rest = getCdr(args);
-        Env * base = engine->getFrame();
+
         while ( isPair(rest) ) {
             ScamValue arg0 = getCar(rest);
             rest           = getCdr(rest);
@@ -194,12 +199,7 @@ namespace
             temp->remove(arg0);
         }
 
-        ScamValue rv = base->merge(temp);
-        if ( isUnhandledError(rv) ) {
-            return rv;
-        }
-
-        return makeEnv(base);
+        return result;
     }
 
     ScamValue importPrefix(ScamValue args, ScamEngine * engine)
@@ -217,17 +217,20 @@ namespace
         }
 
         Env * temp = asEnv(result);
-        Env * base = engine->getFrame();
+
         set<string> keys;
         temp->getKeys(keys);
         for ( const auto k : keys ) {
             stringstream s;
             s << prefix << k;
             ScamValue key = makeSymbol(s.str());
-            base->put(key, temp->get(makeSymbol(k)));
+            ScamValue oldKey = makeSymbol(k);
+            ScamValue val = temp->get(oldKey);
+            temp->remove(oldKey);
+            temp->put(key, val);
         }
 
-        return makeEnv(base);
+        return result;
     }
 
     ScamValue importRename(ScamValue args, ScamEngine * engine)
@@ -236,10 +239,11 @@ namespace
         if ( ! isEnv(result) ) {
             return result;
         }
-        Env * temp = asEnv(result);
 
+        Env * temp = asEnv(result);
+        // Env * base = standardMemoryManager.make<Env>();
         ScamValue rest = getCdr(args);
-        Env * base = engine->getFrame();
+
         while ( isPair(rest) ) {
             ScamValue arg0 = getCar(rest);
             rest           = getCdr(rest);
@@ -263,14 +267,12 @@ namespace
             temp->put(newName, value);
         }
 
-        base->merge(temp);
-        return makeEnv(base);
+        return result;
     }
 
     ScamValue
     importCommon(ScamValue args, ScamEngine * engine, const char * name)
     {
-        engine->setFrame(engine->getFrame()->extend());
         ScamValue rv = makeNothing();
 
         if ( ! isPair(args) ) {
@@ -279,7 +281,6 @@ namespace
         else {
             ScamValue arg = getCar(args);
             rv = importImportSet(arg, engine);
-            engine->setFrame(engine->getFrame()->getParent());
         }
 
         return rv;
