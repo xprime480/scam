@@ -30,9 +30,6 @@ protected:
 
 TEST_F(ImportTest, NestedImport)
 {
-    GlobalId id;
-    ScamTraceScope _;
-
     ScamValue spec = makeList(makeSymbol("scripts/i1"));
     ScamValue result = importToEnv(spec, &engine);
     ASSERT_TRUE(isEnv(result));
