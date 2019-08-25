@@ -36,6 +36,9 @@ namespace
     extern ScamValue validateKey(Env * env, ScamValue key, const char * name);
     extern string findImportLib(ScamValue lib);
 
+    ScamValue
+    copyOnly(Env * dst, Env * src, ScamValue symbols, const char * name);
+
     /*** error messages ***/
 
     extern ScamValue missingLibraryName();
@@ -86,6 +89,7 @@ ScamValue scam::defineLibrary(ScamValue args, ScamEngine * engine)
         return name;
     }
 
+    vector<ScamValue> exports;
     vector<ScamValue> defines;
 
     while ( ! isNull(args) ) {
@@ -99,6 +103,9 @@ ScamValue scam::defineLibrary(ScamValue args, ScamEngine * engine)
 
         if ( equals(result, makeSymbol("begin")) ) {
             defines.push_back(arg0);
+        }
+        else if ( equals(result, makeSymbol("export")) ) {
+            exports.push_back(arg0);
         }
         else {
             ScamValue err =
@@ -122,7 +129,20 @@ ScamValue scam::defineLibrary(ScamValue args, ScamEngine * engine)
     engine->setFrame(original);
 
     Env * lib = standardMemoryManager.make<Env>();
-    lib->merge(extended);
+    if ( exports.empty() ) {
+        lib->merge(extended);
+    }
+    else {
+        for ( auto e : exports ) {
+            ScamValue symbols = getCdr(e);
+            ScamValue result =
+                copyOnly(lib, extended, symbols, "define-library");
+            if ( isUnhandledError(result)  ) {
+                return result;
+            }
+        }
+    }
+
     ScamValue rv = makeEnv(lib);
     return rv;
 }
@@ -183,7 +203,8 @@ namespace
         }
 
         ScamValue type = getCar(arg);
-        if ( equals(type, makeSymbol("begin")) ) {
+        if ( equals(type, makeSymbol("begin")) ||
+             equals(type, makeSymbol("export")) ) {
             return type;
         }
 
@@ -268,19 +289,7 @@ namespace
         Env * base = standardMemoryManager.make<Env>();
         ScamValue rest = getCdr(args);
 
-        while ( isPair(rest) ) {
-            ScamValue arg0 = getCar(rest);
-            rest           = getCdr(rest);
-
-            ScamValue result = validateKey(temp, arg0, "only");
-            if ( isUnhandledError(result)  ) {
-                return result;
-            }
-
-            base->put(arg0, temp->get(arg0));
-        }
-
-        return makeEnv(base);
+        return copyOnly(base, temp, rest, "only");
     }
 
     ScamValue importExcept(ScamValue args, ScamEngine * engine)
@@ -420,6 +429,24 @@ namespace
         return findFileOnPath(s.str());
     }
 
+    ScamValue
+    copyOnly(Env * dst, Env * src, ScamValue symbols, const char * name)
+    {
+        while ( isPair(symbols) ) {
+            ScamValue arg0 = getCar(symbols);
+            symbols        = getCdr(symbols);
+
+            ScamValue result = validateKey(src, arg0, name);
+            if ( isUnhandledError(result)  ) {
+                return result;
+            }
+
+            dst->put(arg0, src->get(arg0));
+        }
+
+        return makeEnv(dst);
+    }
+
     ScamValue unknownImportDirective(ScamValue arg)
     {
         ScamValue err = makeError("Unknown import directive: %{0}", arg);
@@ -437,7 +464,7 @@ namespace
     ScamValue unknownLibraryDirective(ScamValue arg)
     {
         ScamValue err =
-	    makeError("define-library: Unknown directive: %{0}", arg);
+            makeError("define-library: Unknown directive: %{0}", arg);
         err->errorCategory() = argsCategory;
         return err;
     }

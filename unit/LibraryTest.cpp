@@ -70,3 +70,21 @@ TEST_F(LibraryTest, ImportLibraryWithoutExport)
     env->getKeys(keys);
     EXPECT_EQ(2, keys.size());
 }
+
+TEST_F(LibraryTest, ImportLibraryWithSimpleExport)
+{
+    ScamValue spec = makeList(makeSymbol("scripts/lib3"));
+    ScamValue result = importToEnv(spec, &engine);
+    ASSERT_TRUE(isEnv(result)) << writeValue(result);
+
+    Env * env = asEnv(result);
+    ScamValue xval = env->get(makeSymbol("x"));
+    expectProcedure(xval, "(lambda () (y))");
+
+    ScamValue finalValue = apply(xval, makeNull());
+    expectInteger(finalValue, 4, "4", true);
+
+    set<string> keys;
+    env->getKeys(keys);
+    EXPECT_EQ(1, keys.size());
+}
