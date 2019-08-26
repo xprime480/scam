@@ -119,9 +119,9 @@ void ScamEngine::setFrame(Env * newEnv)
 ScamValue ScamEngine::findLibrary(ScamValue name)
 {
     if ( dictHas(libs, name) ) {
-	return dictGet(libs, name);
+        return dictGet(libs, name);
     }
-    
+
     return makeNothing();
 }
 

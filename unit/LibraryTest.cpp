@@ -106,3 +106,9 @@ TEST_F(LibraryTest, ImportLibraryWithRenameExport)
     env->getKeys(keys);
     EXPECT_EQ(1, keys.size());
 }
+
+TEST_F(LibraryTest, ImportLoadsOnDemand)
+{
+    ScamValue result = readEvalFile("scripts/test-demand.scm");
+    expectInteger(result, 25, "25", true);
+}

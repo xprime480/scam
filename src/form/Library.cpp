@@ -29,6 +29,7 @@ namespace
     extern ScamValue importExcept(ScamValue args, ScamEngine * engine);
     extern ScamValue importPrefix(ScamValue args, ScamEngine * engine);
     extern ScamValue importRename(ScamValue args, ScamEngine * engine);
+    extern ScamValue loadLibraryFromFile(ScamValue arg, ScamEngine * engine);
 
     extern ScamValue
     importCommon(ScamValue args, ScamEngine * engine, const char * name);
@@ -217,11 +218,6 @@ namespace
         }
 
         else if ( isPair(arg) ) {
-            ScamValue lib = engine->findLibrary(arg);
-            if ( isEnv(lib) ) {
-                return lib;
-            }
-
             ScamValue directive = getCar(arg);
             ScamValue rest      = getCdr(arg);
 
@@ -244,7 +240,7 @@ namespace
                 }
 
                 else {
-                    rv = unknownImportDirective(arg);
+                    rv = loadLibraryFromFile(arg, engine);
                 }
             }
             else {
@@ -361,6 +357,40 @@ namespace
         ScamValue rest = getCdr(args);
 
         return copyOnlyRename(temp, temp, rest, "rename");
+    }
+
+    ScamValue loadLibraryFromFile(ScamValue arg, ScamEngine * engine)
+    {
+        ScamValue originalArg = arg;
+
+        ScamValue lib = engine->findLibrary(arg);
+        if ( isEnv(lib) ) {
+            return lib;
+        }
+
+        stringstream s;
+        while ( ! isNull(arg) ) {
+            ScamValue element = getCar(arg);
+            arg = getCdr(arg);
+            s << element->stringValue();
+            if ( ! (isNull(arg)) ) {
+                s << "/";
+            }
+        }
+
+        ScamValue name = makeSymbol(s.str());
+
+        const string path = findImportLib(name);
+        if ( ! path.empty() ) {
+            loadEvalFile(path, engine);
+            lib = engine->findLibrary(originalArg);
+            if ( isEnv(lib) ) {
+                return lib;
+            }
+        }
+
+	ScamValue error = unknownImportDirective(originalArg);
+	return error;
     }
 
     ScamValue
