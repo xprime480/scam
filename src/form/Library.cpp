@@ -62,11 +62,7 @@ void scam::applyDefineLibrary(ScamValue args,
     if ( isUnhandledError(result) ) {
         engine->handleError(result);
     }
-    else if ( isEnv(result) ) {
-        engine->getFrame()->merge(asEnv(result));
-    }
 }
-
 
 void scam::applyImport(ScamValue args,
                        Continuation * cont,
@@ -144,6 +140,7 @@ ScamValue scam::defineLibrary(ScamValue args, ScamEngine * engine)
     }
 
     ScamValue rv = makeEnv(lib);
+    engine->saveLibrary(name, lib);
     return rv;
 }
 
@@ -220,6 +217,11 @@ namespace
         }
 
         else if ( isPair(arg) ) {
+            ScamValue lib = engine->findLibrary(arg);
+            if ( isEnv(lib) ) {
+                return lib;
+            }
+
             ScamValue directive = getCar(arg);
             ScamValue rest      = getCdr(arg);
 
@@ -357,7 +359,7 @@ namespace
 
         Env * temp = asEnv(result);
         ScamValue rest = getCdr(args);
-	
+
         return copyOnlyRename(temp, temp, rest, "rename");
     }
 
@@ -432,8 +434,8 @@ namespace
             ScamValue oldName = getCdr(result);
             ScamValue value   = src->get(oldName);
             if ( dst->check(oldName) ) {
-		dst->remove(oldName);
-	    }
+                dst->remove(oldName);
+            }
             dst->put(newName, value);
         }
 

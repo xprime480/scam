@@ -55,8 +55,8 @@ TEST_F(LibraryTest, ImportPlainCode)
 
 TEST_F(LibraryTest, ImportLibraryWithoutExport)
 {
-    ScamValue spec = makeList(makeSymbol("scripts/lib2"));
-    ScamValue result = importToEnv(spec, &engine);
+    readEvalFile("scripts/lib2.scm");
+    ScamValue result = engine.findLibrary(makeList(makeSymbol("lib2")));
     ASSERT_TRUE(isEnv(result)) << writeValue(result);
 
     Env * env = asEnv(result);
@@ -73,8 +73,8 @@ TEST_F(LibraryTest, ImportLibraryWithoutExport)
 
 TEST_F(LibraryTest, ImportLibraryWithSimpleExport)
 {
-    ScamValue spec = makeList(makeSymbol("scripts/lib3"));
-    ScamValue result = importToEnv(spec, &engine);
+    readEvalFile("scripts/lib3.scm");
+    ScamValue result = engine.findLibrary(makeList(makeSymbol("lib3")));
     ASSERT_TRUE(isEnv(result)) << writeValue(result);
 
     Env * env = asEnv(result);
@@ -91,8 +91,8 @@ TEST_F(LibraryTest, ImportLibraryWithSimpleExport)
 
 TEST_F(LibraryTest, ImportLibraryWithRenameExport)
 {
-    ScamValue spec = makeList(makeSymbol("scripts/lib4"));
-    ScamValue result = importToEnv(spec, &engine);
+    readEvalFile("scripts/lib4.scm");
+    ScamValue result = engine.findLibrary(makeList(makeSymbol("lib4")));
     ASSERT_TRUE(isEnv(result)) << writeValue(result);
 
     Env * env = asEnv(result);

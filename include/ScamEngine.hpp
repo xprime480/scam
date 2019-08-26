@@ -30,6 +30,11 @@ namespace scam
         Env * getInteractionFrame();
         void setFrame(Env * env);
 
+	/*** functions to manage libraries ***/
+
+	ScamValue findLibrary(ScamValue name);
+	void saveLibrary(ScamValue name, Env * env);
+
         /*** functions to manage the input buffer ***/
 
         void pushInput(Tokenizer & tokenizer);
@@ -70,6 +75,7 @@ namespace scam
     private:
         Env * env;
         Env * topEnv;
+	ScamValue libs;
         std::vector<ScamParser> input;
         Backtracker * backtracker;
         Continuation * cont;

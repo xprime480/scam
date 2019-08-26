@@ -68,6 +68,8 @@ Env * scam::configEnv  = nullptr;
 
 ScamEngine::ScamEngine()
     : env(nullptr)
+    , topEnv(nullptr)
+    , libs(nullptr)
     , backtracker(nullptr)
     , cont(nullptr)
     , marker(this)
@@ -95,6 +97,8 @@ void ScamEngine::reset(bool initEnv)
         env = makeInteractionEnv(this, env);
     }
     topEnv = env = env->extend();
+
+    libs = makeDict();
 }
 
 Env * ScamEngine::getFrame()
@@ -110,6 +114,20 @@ Env * ScamEngine::getInteractionFrame()
 void ScamEngine::setFrame(Env * newEnv)
 {
     env = newEnv;
+}
+
+ScamValue ScamEngine::findLibrary(ScamValue name)
+{
+    if ( dictHas(libs, name) ) {
+	return dictGet(libs, name);
+    }
+    
+    return makeNothing();
+}
+
+void ScamEngine::saveLibrary(ScamValue name, Env * env)
+{
+    dictPut(libs, name, makeEnv(env));
 }
 
 void ScamEngine::pushInput(Tokenizer & tokenizer)
@@ -286,6 +304,8 @@ void ScamEngine::mark()
     for ( auto & h : handlers ) {
         h->mark();
     }
+
+    libs->mark();
 }
 
 namespace

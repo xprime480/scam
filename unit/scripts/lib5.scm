@@ -1,8 +1,11 @@
 
 (define-library
-    (lib4 0 1)
-  (export (x xray))
+    (lib5 0 1)
   (begin
     (define y (lambda () 4))
     (define x (lambda () (y)))))
+
+(import (lib5))
+
+(x)
 
