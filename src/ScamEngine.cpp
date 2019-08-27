@@ -91,14 +91,15 @@ void ScamEngine::reset(bool initEnv)
     loaded.clear();
     handlers.clear();
 
+    libs = makeDict();
     configEnv = getConfigurationEnv(this);
-    topEnv = env = configEnv;
+    topEnv = env = getSyntaxEnv(this, configEnv);
+    initalizeLibraries(this, env);
     if ( initEnv ) {
         env = makeInteractionEnv(this, env);
     }
     topEnv = env = env->extend();
 
-    libs = makeDict();
 }
 
 Env * ScamEngine::getFrame()

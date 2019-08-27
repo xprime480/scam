@@ -6,6 +6,8 @@
 namespace scam
 {
     extern Env * getConfigurationEnv(ScamEngine * engine);
+    extern Env * getSyntaxEnv(ScamEngine * engine, Env * base);
+    extern void initalizeLibraries(ScamEngine * engine, Env * base);
     extern Env * makeInteractionEnv(ScamEngine * engine, Env * base);
 
     extern void applyInteractionEnv(ScamValue args,

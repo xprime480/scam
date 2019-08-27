@@ -389,8 +389,8 @@ namespace
             }
         }
 
-	ScamValue error = unknownImportDirective(originalArg);
-	return error;
+        ScamValue error = unknownImportDirective(originalArg);
+        return error;
     }
 
     ScamValue
