@@ -3,6 +3,7 @@
 #include "ErrorCategory.hpp"
 #include "ScamException.hpp"
 #include "expr/ScamData.hpp"
+#include "expr/ScamToInternal.hpp"
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueFactory.hpp"
 #include "expr/ValueWriter.hpp"
@@ -68,18 +69,20 @@ ScamValue Env::put(ScamValue key, ScamValue val)
         return test;
     }
 
+    ScamValue rv = makeNothing();
+
     const string keyStr = key->stringValue();
     auto const iter = table.find(keyStr);
-    if ( iter != table.end() ) {
-        ScamValue err =
-            makeError("Key: '%{0}' already exists in current frame", key);
-        err->errorCategory() = envCategory;
-        return err;
+
+    if ( iter == table.end() ) {
+        table[keyStr] = val;
+    }
+    else {
+        rv = makeError("Key: '%{0}' already exists in current frame", key);
+        rv->errorCategory() = envCategory;
     }
 
-    table[keyStr] = val;
-
-    return makeNothing();
+    return rv;
 }
 
 ScamValue Env::check(ScamValue key, bool checkParent) const
@@ -89,16 +92,27 @@ ScamValue Env::check(ScamValue key, bool checkParent) const
         return test;
     }
 
+    ScamValue rv = makeBoolean(false);
+
     const string keyStr = key->stringValue();
     auto const iter = table.find(keyStr);
-    if ( iter != table.end() ) {
-        return makeBoolean(true);
+
+    if ( iter == table.end() ) {
+        if ( checkParent && parent ) {
+            rv = parent->check(key, checkParent);
+        }
     }
-    if ( checkParent && parent ) {
-        return parent->check(key, checkParent);
+    else {
+        ScamValue val = iter->second;
+        if ( isForwarder(val) ) {
+            rv = asEnv(val)->check(key, checkParent);
+        }
+        else {
+            rv = makeBoolean(true);
+        }
     }
 
-    return makeBoolean(false);
+    return rv;
 }
 
 ScamValue Env::get(ScamValue key) const
@@ -108,18 +122,28 @@ ScamValue Env::get(ScamValue key) const
         return test;
     }
 
+    ScamValue rv = makeNothing();
+
     const string keyStr = key->stringValue();
     auto const iter = table.find(keyStr);
-    if ( iter != table.end() ) {
-        return iter->second;
+
+    if ( iter == table.end() ) {
+        if ( parent ) {
+            return parent->get(key);
+        }
+        else {
+            rv = makeError("Key: %{0} does not exist for reading", key);
+            rv->errorCategory() = envCategory;
+        }
     }
-    if ( parent ) {
-        return parent->get(key);
+    else {
+        rv = iter->second;
+        if ( isForwarder(rv) ) {
+            rv = asEnv(rv)->get(key);
+        }
     }
 
-    ScamValue err = makeError("Key: %{0} does not exist for reading", key);
-    err->errorCategory() = envCategory;
-    return err;
+    return rv;
 }
 
 void Env::reset()
@@ -151,24 +175,31 @@ ScamValue Env::assign(ScamValue key, ScamValue val)
         return test;
     }
 
+    ScamValue rv = makeNothing();
+
     const string keyStr = key->stringValue();
     auto const iter = table.find(keyStr);
+
     if ( iter == table.end() ) {
         if ( parent ) {
-            return parent->assign(key, val);
+            rv = parent->assign(key, val);
         }
         else {
-            ScamValue err =
-                makeError("Key: %{0} does not exist for assignment", key);
-            err->errorCategory() = envCategory;
-            return err;
+            rv = makeError("Key: %{0} does not exist for assignment", key);
+            rv->errorCategory() = envCategory;
         }
     }
     else {
-        table[keyStr] = val;
+        ScamValue old = table[keyStr];
+        if ( isForwarder(old) ) {
+            rv = asEnv(old)->assign(key, val);
+        }
+        else {
+            table[keyStr] = val;
+        }
     }
 
-    return makeNothing();
+    return rv;
 }
 
 ScamValue Env::remove(ScamValue key)
@@ -178,13 +209,20 @@ ScamValue Env::remove(ScamValue key)
         return test;
     }
 
+    ScamValue rv = makeNothing();
+
     const string keyStr = key->stringValue();
     auto const iter = table.find(keyStr);
+
     if ( iter != table.end() ) {
+        ScamValue val = iter->second;
+        if ( isForwarder(val) ) {
+            rv = asEnv(val)->remove(key);
+        }
         table.erase(iter);
     }
 
-    return makeNothing();
+    return rv;
 }
 
 ScamValue Env::merge(Env * other)

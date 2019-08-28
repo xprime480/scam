@@ -172,3 +172,27 @@ TEST_F(EnvTest, GetKeys)
     EXPECT_FALSE(keys.find("y") == keys.end());
     EXPECT_TRUE(keys.find("z") == keys.end());
 }
+
+TEST_F(EnvTest, Forwarding)
+{
+    Env * env = mm.make<Env>();
+    Env * proxy = mm.make<Env>();
+
+    ScamValue symX = makeSymbol("x");
+    ScamValue val1 = makeInteger(1, true);
+    ScamValue val2 = makeInteger(2, true);
+    ScamValue fwd  = makeForwarder(env);
+
+    env->put(symX, val1);
+    proxy->put(symX, fwd);
+    expectBoolean(env->check(symX), true, "#t");
+    expectBoolean(proxy->check(symX), true, "#t");
+    expectInteger(proxy->get(symX), 1, "1", true);
+
+    proxy->assign(symX, val2);
+    expectInteger(env->get(symX), 2, "2", true);
+
+    env->remove(symX);
+    expectBoolean(env->check(symX), false, "#f");
+    expectBoolean(proxy->check(symX), false, "#f");
+}

@@ -385,3 +385,10 @@ ScamValue scam::makeEnv(Env * env)
     v->envValue() = env;
     return v;
 }
+
+ScamValue scam::makeForwarder(Env * env)
+{
+    ScamValue v = makeEnv(env);
+    v->setMeta("forward-address", makeNothing());
+    return v;
+}
