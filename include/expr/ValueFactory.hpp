@@ -95,6 +95,7 @@ namespace scam
 
     extern ScamValue makeSyntax(const SyntaxRules & def);
     extern ScamValue makeEnv(Env * env);
+    extern ScamValue makeForwarder(Env * env);
 }
 
 #endif
