@@ -52,6 +52,7 @@ SyntaxRule::SyntaxRule(ScamValue rule,
 
         if ( pattern && templat ) {
             valid = true;
+	    freeSymbols = templat->getFreeSymbols();
         }
     }
 }
@@ -106,6 +107,11 @@ ScamValue SyntaxRule::expand(const SyntaxMatchData & data)
     }
 
     return rv;
+}
+
+set<ScamValue> SyntaxRule::getFreeSymbols() const
+{
+    return freeSymbols;
 }
 
 string SyntaxRule::identify() const

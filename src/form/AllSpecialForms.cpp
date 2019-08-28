@@ -159,7 +159,7 @@ void scam::applyDefineSyntax(ScamValue args,
     if ( argsToParms(args, engine, name, p0, p1) ) {
         ScamValue name  = p0.value;
         ScamValue rules = p1.value;
-        SyntaxRules syntax(engine, name, rules);
+        SyntaxRules syntax(engine, name, rules, env);
         ScamValue value = makeSyntax(syntax);
 
         ScamValue test = env->put(name, value);
@@ -315,7 +315,7 @@ void scam::applySyntaxExpand(ScamValue args,
         ScamValue value = engine->eval(p0.value);
         if ( isSyntax(value) ) {
             SyntaxRules & syntax = value->syntaxRules();
-            ScamValue result = syntax.expandSyntax(p1.value, env, engine);
+            ScamValue result = syntax.expandSyntax(p1.value, engine);
             if ( ! isNothing(result) ) {
                 cont->handleValue(result);
             }

@@ -8,6 +8,10 @@
 
 #include <sstream>
 
+#include "util/GlobalId.hpp"
+#include "util/DebugTrace.hpp"
+#include "expr/ValueWriter.hpp"
+
 using namespace scam;
 using namespace std;
 
@@ -15,7 +19,24 @@ TemplateData::~TemplateData()
 {
 }
 
-void TemplateData::getIdentifiers(IDSet & identifiers) const
+set<ScamValue> TemplateData::getFreeSymbols() const
+{
+    set<ScamValue> freeSymbols;
+
+    IDSet freeIds;
+    this->getTemplateIds(freeIds);
+    for ( const auto & i : freeIds ) {
+        freeSymbols.insert(makeSymbol(i));
+    }
+
+    return freeSymbols;
+}
+
+void TemplateData::getPatternIds(IDSet & identifiers) const
+{
+}
+
+void TemplateData::getTemplateIds(IDSet & identifiers) const
 {
 }
 
@@ -45,6 +66,13 @@ ScamValue TemplateDataLiteral::expand(const SyntaxMatchData & data)
 ScamValue TemplateDataLiteral::expandCount(const SyntaxMatchData & data, int n)
 {
     return value;
+}
+
+void TemplateDataLiteral::getTemplateIds(IDSet & identifiers) const
+{
+    if ( isSymbol(value) ) {
+        identifiers.insert(value->stringValue());
+    }
 }
 
 string TemplateDataLiteral::identify() const
@@ -77,7 +105,7 @@ TemplateDataIdentifier::expandCount(const SyntaxMatchData & data, int n)
     return rv;
 }
 
-void TemplateDataIdentifier::getIdentifiers(IDSet & identifiers) const
+void TemplateDataIdentifier::getPatternIds(IDSet & identifiers) const
 {
     identifiers.insert(identifier);
 }
@@ -152,10 +180,17 @@ ScamValue TemplateDataList::expandCount(const SyntaxMatchData & data, int n)
     return makeList(parts);
 }
 
-void TemplateDataList::getIdentifiers(IDSet & identifiers) const
+void TemplateDataList::getPatternIds(IDSet & identifiers) const
 {
     for ( const auto t : templates ) {
-        t->getIdentifiers(identifiers);
+        t->getPatternIds(identifiers);
+    }
+}
+
+void TemplateDataList::getTemplateIds(IDSet & identifiers) const
+{
+    for ( const auto t : templates ) {
+        t->getTemplateIds(identifiers);
     }
 }
 
@@ -197,7 +232,7 @@ void TemplateDataEllipsis::mark()
 ScamValue TemplateDataEllipsis::expand(const SyntaxMatchData & data)
 {
     set<string> identifiers;
-    subTemplate->getIdentifiers(identifiers);
+    subTemplate->getPatternIds(identifiers);
 
     if ( identifiers.empty() ) {
         return noIdentifiers();
@@ -242,9 +277,14 @@ ScamValue TemplateDataEllipsis::expandCount(const SyntaxMatchData & data, int n)
     return err;
 }
 
-void TemplateDataEllipsis::getIdentifiers(IDSet & identifiers) const
+void TemplateDataEllipsis::getPatternIds(IDSet & identifiers) const
 {
-    subTemplate->getIdentifiers(identifiers);
+    subTemplate->getPatternIds(identifiers);
+}
+
+void TemplateDataEllipsis::getTemplateIds(IDSet & identifiers) const
+{
+    subTemplate->getTemplateIds(identifiers);
 }
 
 string TemplateDataEllipsis::identify() const

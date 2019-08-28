@@ -10,18 +10,27 @@
 #include "util/LambdaDef.hpp"
 #include "util/Parameter.hpp"
 
+#include "util/GlobalId.hpp"
+#include "util/DebugTrace.hpp"
+#include "expr/ValueWriter.hpp"
+
 using namespace scam;
 using namespace std;
 
 SyntaxRules::SyntaxRules()
     : valid(false)
     , name(makeNothing())
+    , defined(nullptr)
 {
 }
 
-SyntaxRules::SyntaxRules(ScamEngine * engine, ScamValue name, ScamValue spec)
+SyntaxRules::SyntaxRules(ScamEngine * engine,
+                         ScamValue name,
+                         ScamValue spec,
+                         Env * env)
     : valid(false)
     , name(name)
+    , defined(env)
 {
     ScamValue rules = extractRules(spec, engine);
     if ( isNothing(rules) ) {
@@ -45,9 +54,12 @@ SyntaxRules::SyntaxRules(ScamEngine * engine, ScamValue name, ScamValue spec)
 void SyntaxRules::mark() const
 {
     name->mark();
+    defined->mark();
+
     for ( const auto & r : rules ) {
         r->mark();
     }
+
 }
 
 ScamValue SyntaxRules::getName() const
@@ -65,21 +77,24 @@ void SyntaxRules::applySyntax(ScamValue args,
                               Env * env,
                               ScamEngine * engine)
 {
-    ScamValue expansion = expand(args, env, engine);
+    SyntaxMatchData data;
+    SyntaxRule * match = findSyntaxRule(args, data);
+    ScamValue expansion = expandWith(args, engine, data, match);
 
     if ( ! isNothing(expansion) ) {
+        Env * applicationEnv = extendDefinition(env, match);
+
         LambdaDef expanded;
         expanded.valid = true;
         expanded.forms = expansion;
-        ScamValue closure = makeClosure(expanded, env);
-        apply(closure, makeNull(), cont, env, engine);
+        ScamValue closure = makeClosure(expanded, applicationEnv);
+        apply(closure, makeNull(), cont, applicationEnv, engine);
     }
 }
 
-ScamValue
-SyntaxRules::expandSyntax(ScamValue args, Env * env, ScamEngine * engine)
+ScamValue SyntaxRules::expandSyntax(ScamValue args, ScamEngine * engine)
 {
-    return expand(args, env, engine);
+    return expand(args, engine);
 }
 
 ScamValue SyntaxRules::extractRules(ScamValue spec, ScamEngine * engine)
@@ -135,13 +150,56 @@ bool SyntaxRules::decodeRule(ScamValue rule, ScamEngine * engine)
     return rv;
 }
 
-ScamValue SyntaxRules::expand(ScamValue args, Env * env, ScamEngine * engine)
+ScamValue SyntaxRules::expand(ScamValue args, ScamEngine * engine)
 {
     SyntaxMatchData data;
     SyntaxRule * match = findSyntaxRule(args, data);
+    return expandWith(args, engine, data, match);
+}
 
+Env * SyntaxRules::extendDefinition(Env * base, SyntaxRule * match)
+{
+    GlobalId id;
+    ScamTraceScope _;
+    scamTrace(id, __FILE__, __LINE__, __FUNCTION__);
+
+    Env * env = base->extend();
+
+    set<ScamValue> syms = match->getFreeSymbols();
+    for ( auto & s : syms ) {
+        scamTrace(id, __FILE__, __LINE__, __FUNCTION__, writeValue(s));
+        if ( truth(defined->check(s)) ) {
+	    ScamValue v = defined->get(s);
+	    scamTrace(id, __FILE__, __LINE__, __FUNCTION__, writeValue(v), v->isImmutable());
+            env->put(s, v);
+        }
+        else {
+            scamTrace(id, __FILE__, __LINE__, __FUNCTION__);
+        }
+    }
+
+    env->dump(1, true, false);
+    return env;
+}
+
+SyntaxRule * SyntaxRules::findSyntaxRule(ScamValue args, SyntaxMatchData & data)
+{
+    for ( SyntaxRule * rule : rules ) {
+        data.clear();
+        if ( rule->match(args, data) ) {
+            return rule;
+        }
+    }
+
+    return nullptr;
+}
+
+ScamValue SyntaxRules::expandWith(ScamValue args,
+                                  ScamEngine * engine,
+                                  SyntaxMatchData & data,
+                                  SyntaxRule * match)
+{
     ScamValue rv = makeNothing();
-
     if ( match && match->isValid() ) {
         rv = match->expand(data);
     }
@@ -155,18 +213,6 @@ ScamValue SyntaxRules::expand(ScamValue args, Env * env, ScamEngine * engine)
     }
 
     return rv;
-}
-
-SyntaxRule * SyntaxRules::findSyntaxRule(ScamValue args, SyntaxMatchData & data)
-{
-    for ( SyntaxRule * rule : rules ) {
-        data.clear();
-        if ( rule->match(args, data) ) {
-            return rule;
-        }
-    }
-
-    return nullptr;
 }
 
 ScamValue SyntaxRules::badReserved(ScamValue value)

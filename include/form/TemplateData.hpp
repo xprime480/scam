@@ -24,8 +24,11 @@ namespace scam
 
         virtual ScamValue expand(const SyntaxMatchData & data) = 0;
         virtual ScamValue expandCount(const SyntaxMatchData & data, int n) = 0;
-        virtual void getIdentifiers(IDSet & identifiers) const;
-
+        virtual void getPatternIds(IDSet & identifiers) const;
+        virtual void getTemplateIds(IDSet & identifiers) const;
+	
+        virtual std::set<ScamValue> getFreeSymbols() const;
+	
         virtual std::string identify() const = 0;
     };
 
@@ -45,6 +48,8 @@ namespace scam
         ScamValue expand(const SyntaxMatchData & data) override;
         ScamValue expandCount(const SyntaxMatchData & data, int n) override;
 
+        void getTemplateIds(IDSet & identifiers) const override;
+	
         std::string identify() const override;
 
     private:
@@ -64,7 +69,7 @@ namespace scam
     public:
         ScamValue expand(const SyntaxMatchData & data) override;
         ScamValue expandCount(const SyntaxMatchData & data, int n) override;
-        void getIdentifiers(IDSet & identifiers) const override;
+        void getPatternIds(IDSet & identifiers) const override;
 
         std::string identify() const override;
 
@@ -89,7 +94,8 @@ namespace scam
 
         ScamValue expand(const SyntaxMatchData & data) override;
         ScamValue expandCount(const SyntaxMatchData & data, int n) override;
-        void getIdentifiers(IDSet & identifiers) const override;
+        void getPatternIds(IDSet & identifiers) const override;
+        void getTemplateIds(IDSet & identifiers) const override;
 
         std::string identify() const override;
 
@@ -113,7 +119,8 @@ namespace scam
 
         ScamValue expand(const SyntaxMatchData & data) override;
         ScamValue expandCount(const SyntaxMatchData & data, int n) override;
-        void getIdentifiers(IDSet & identifiers) const override;
+        void getPatternIds(IDSet & identifiers) const override;
+        void getTemplateIds(IDSet & identifiers) const override;
 
         std::string identify() const override;
 

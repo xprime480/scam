@@ -39,6 +39,8 @@ namespace scam
         bool match(ScamValue args, SyntaxMatchData & data);
         ScamValue expand(const SyntaxMatchData & data);
 
+	std::set<ScamValue> getFreeSymbols() const;
+	
         std::string identify() const;
 
     private:
@@ -46,6 +48,7 @@ namespace scam
         PatternData  * pattern;
         TemplateData * templat;
         ScamValue      name;
+	std::set<ScamValue> freeSymbols;
 
         std::set<std::string> patternIdentifiers;
 
