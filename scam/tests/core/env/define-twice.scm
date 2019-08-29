@@ -1,5 +1,4 @@
-;;; Define symbol twice
-;;;
+(import (lib test narc))
 
 (narc-label "Symbol Defined Twice")
 

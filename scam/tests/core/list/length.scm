@@ -1,6 +1,7 @@
-(narc-label "List Length")
+(import lib/listops
+        (lib test narc))
 
-(import lib/listops)
+(narc-label "List Length")
 
 (narc-expect
  (0  (length ()))

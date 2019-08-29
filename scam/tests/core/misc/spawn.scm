@@ -1,3 +1,5 @@
+(import (lib test narc))
+
 (narc-label "Spawn")
 
 (define x 0)

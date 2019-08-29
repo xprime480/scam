@@ -1,5 +1,4 @@
-;;; String Output Port usage
-;;;
+(import (lib test narc))
 
 (narc-label "String Output Port")
 

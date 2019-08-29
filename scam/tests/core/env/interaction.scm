@@ -1,3 +1,5 @@
+(import (lib test narc))
+
 (narc-label "Interaction Environment")
 
 (narc-expect

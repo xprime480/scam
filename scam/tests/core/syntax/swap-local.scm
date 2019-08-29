@@ -1,3 +1,5 @@
+(import (lib test narc))
+
 (narc-label "Define Syntax For Swap")
 
 (define (foo)

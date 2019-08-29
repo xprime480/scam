@@ -1,4 +1,5 @@
-(import checks)
+(import checks
+	(lib test narc))
 
 (narc-label "Eq for Composites")
 

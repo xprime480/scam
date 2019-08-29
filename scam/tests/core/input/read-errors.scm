@@ -1,5 +1,4 @@
-;;; Read bad input or bad syntax
-;;;
+(import (lib test narc))
 
 (narc-label "Read Errors")
 

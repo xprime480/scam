@@ -1,5 +1,4 @@
-;;; Match recurrent pattern to conforming data
-;;;
+(import (lib test narc))
 
 (narc-label "Match Var Dup True")
 

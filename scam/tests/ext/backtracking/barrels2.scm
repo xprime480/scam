@@ -15,7 +15,8 @@
 ;;; wine as the first customer. Which barrel contains beer?
 ;;;
 
-(import lib/prelude)
+(import lib/prelude
+        (lib test narc))
 
 (narc-label "Barrels")
 

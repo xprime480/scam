@@ -1,5 +1,4 @@
-;;; Error categories
-;;;
+(import (lib test narc))
 
 (narc-label "Error Category")
 

@@ -1,5 +1,4 @@
-;;; define-syntax accepts literals in pattern
-;;;
+(import (lib test narc))
 
 (narc-label "Define Syntax With Literals")
 

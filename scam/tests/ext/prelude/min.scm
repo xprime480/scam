@@ -1,4 +1,5 @@
-(import (only lib/prelude min))
+(import (only lib/prelude min)
+        (lib test narc))
 
 (narc-label "Min")
 

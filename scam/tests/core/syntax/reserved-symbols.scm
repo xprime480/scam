@@ -1,5 +1,4 @@
-;;; define-syntax recognized reserved symbols in patterns
-;;;
+(import (lib test narc))
 
 (narc-label "Define Syntax With Reserved Symbols")
 

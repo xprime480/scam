@@ -3,7 +3,8 @@
 ;;; See liars.scm for description
 ;;;
 
-(import lib/prelude)
+(import lib/prelude
+        (lib test narc))
 
 (narc-label "Liars Optimized")
 

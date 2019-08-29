@@ -1,5 +1,4 @@
-;;; Test string->list and list->string
-;;;
+(import (lib test narc))
 
 (narc-label "List-String conversions")
 

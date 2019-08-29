@@ -1,5 +1,4 @@
-;;; Read dictionary literals
-;;;
+(import (lib test narc))
 
 (narc-label "Dictionary Operations")
 

@@ -1,5 +1,4 @@
-;;; Read boolean literals
-;;;
+(import (lib test narc))
 
 (narc-label "Boolean Literals")
 

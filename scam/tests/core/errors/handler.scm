@@ -1,5 +1,4 @@
-;;; Handle Errors
-;;;
+(import (lib test narc))
 
 (narc-label "Handler")
 

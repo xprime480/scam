@@ -1,5 +1,4 @@
-;;; Handler is not called
-;;;
+(import (lib test narc))
 
 (narc-label "Handler Not Used")
 

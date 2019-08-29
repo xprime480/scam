@@ -1,5 +1,4 @@
-;;; End-of-File objects
-;;;
+(import (lib test narc))
 
 (narc-label "EOF")
 

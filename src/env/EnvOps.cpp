@@ -247,6 +247,8 @@ namespace
 
         addPrimitive(env, "with-exception-handler", applyWithHandler, engine);
 
+	ScamValue name = makeList(makeSymbol("scheme"), makeSymbol("base"));
+	engine->saveLibrary(name, env);
         return env;
     }
 
@@ -262,6 +264,8 @@ namespace
         addPrimitive(env, "string-downcase", applyStringDowncase, engine);
         addPrimitive(env, "string-upcase", applyStringUpcase, engine);
 
+	ScamValue name = makeList(makeSymbol("scheme"), makeSymbol("char"));
+	engine->saveLibrary(name, env);
         return env;
     }
 
@@ -271,6 +275,8 @@ namespace
 
         addPrimitive(env, "eval", applyEval, engine);
 
+	ScamValue name = makeList(makeSymbol("scheme"), makeSymbol("eval"));
+	engine->saveLibrary(name, env);
         return env;
     }
 
@@ -282,6 +288,8 @@ namespace
         addPrimitive(env, "infinite?", applyInfiniteP, engine);
         addPrimitive(env, "nan?", applyNanP, engine);
 
+	ScamValue name = makeList(makeSymbol("scheme"), makeSymbol("inexact"));
+	engine->saveLibrary(name, env);
         return env;
     }
 
@@ -291,6 +299,8 @@ namespace
 
         addPrimitive(env, "load", applyLoad, engine);
 
+	ScamValue name = makeList(makeSymbol("scheme"), makeSymbol("load"));
+	engine->saveLibrary(name, env);
         return env;
     }
 
@@ -300,6 +310,8 @@ namespace
 
         addPrimitive(env, "read", applyRead, engine);
 
+	ScamValue name = makeList(makeSymbol("scheme"), makeSymbol("read"));
+	engine->saveLibrary(name, env);
         return env;
     }
 
@@ -312,6 +324,8 @@ namespace
                      applyInteractionEnv,
                      engine);
 
+	ScamValue name = makeList(makeSymbol("scheme"), makeSymbol("repl"));
+	engine->saveLibrary(name, env);
         return env;
     }
 
@@ -321,6 +335,8 @@ namespace
 
         addPrimitive(env, "display", applyDisplay, engine);
 
+	ScamValue name = makeList(makeSymbol("scheme"), makeSymbol("write"));
+	engine->saveLibrary(name, env);
         return env;
     }
 
@@ -334,6 +350,8 @@ namespace
         addPrimitive(env, "vlen", applyVLen, engine);
         addPrimitive(env, "vref", applyVRef, engine);
 
+	ScamValue name = makeList(makeSymbol("scam"), makeSymbol("base"));
+	engine->saveLibrary(name, env);
         return env;
     }
 
@@ -344,6 +362,8 @@ namespace
         addSpecialForm(env, "amb", applyAmb, engine);
         addPrimitive(env, "backtrack", applyBacktrack, engine);
 
+	ScamValue name = makeList(makeSymbol("scam"), makeSymbol("backtrack"));
+	engine->saveLibrary(name, env);
         return env;
     }
 
@@ -355,6 +375,8 @@ namespace
         addPrimitive(env, "class?", applyClassP, engine);
         addPrimitive(env, "instance?", applyInstanceP, engine);
 
+	ScamValue name = makeList(makeSymbol("scam"), makeSymbol("class"));
+	engine->saveLibrary(name, env);
         return env;
     }
 
@@ -366,6 +388,8 @@ namespace
         addPrimitive(env, "error-category", applyErrorCat, engine);
         addPrimitive(env, "error->string", applyError2String, engine);
 
+	ScamValue name = makeList(makeSymbol("scam"), makeSymbol("error"));
+	engine->saveLibrary(name, env);
         return env;
     }
 
@@ -378,6 +402,8 @@ namespace
         addPrimitive(env, "substitute", applySubstitute, engine);
         addPrimitive(env, "instantiate", applyInstantiate, engine);
 
+	ScamValue name = makeList(makeSymbol("scam"), makeSymbol("unify"));
+	engine->saveLibrary(name, env);
         return env;
     }
 
@@ -390,6 +416,8 @@ namespace
         addPrimitive(env, "environment?",  applyEnvironmentP, engine);
         addPrimitive(env, "spawn", applySpawn, engine);
 
+	ScamValue name = makeList(makeSymbol("scam"), makeSymbol("misc"));
+	engine->saveLibrary(name, env);
         return env;
     }
 

@@ -1,5 +1,4 @@
-;;; Make some strings
-;;;
+(import (lib test narc))
 
 (narc-label "Make some strings")
 

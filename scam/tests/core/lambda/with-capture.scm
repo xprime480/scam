@@ -1,6 +1,4 @@
-;;; Lambda captures it definition environment.
-;;; In this case 'y' retains its value.
-;;;
+(import (lib test narc))
 
 (narc-label "Lambda With Capture")
 

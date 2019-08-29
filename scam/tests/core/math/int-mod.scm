@@ -1,4 +1,5 @@
-(import (only checks q-check))
+(import (only checks q-check)
+        (lib test narc))
 
 (narc-label "Integer Modulus")
 

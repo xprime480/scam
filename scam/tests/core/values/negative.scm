@@ -1,5 +1,4 @@
-;;; Ensure bad values are reported
-;;;
+(import (lib test narc))
 
 (narc-label "Negative Tests for Tokenizing")
 

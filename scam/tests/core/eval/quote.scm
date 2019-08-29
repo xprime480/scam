@@ -1,5 +1,4 @@
-;;; Basic quote usage
-;;;
+(import (lib test narc))
 
 (narc-label "Quote")
 

@@ -1,5 +1,4 @@
-;;; Unify two patterns with mutual (nonterminating) recursion
-;;;
+(import (lib test narc))
 
 (narc-label "Unify Malformed")
 

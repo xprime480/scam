@@ -1,5 +1,4 @@
-;;; Match literal pattern to literal data
-;;;
+(import (lib test narc))
 
 (narc-label "Match Literal")
 

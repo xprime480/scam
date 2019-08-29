@@ -1,5 +1,4 @@
-;;; Test the eqv? function on numbers
-;;;
+(import (lib test narc))
 
 (narc-label "Eqv for numbers")
 

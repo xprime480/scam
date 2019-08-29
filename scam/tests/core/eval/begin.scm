@@ -1,5 +1,4 @@
-;;; Begin
-;;;
+(import (lib test narc))
 
 (narc-label "Begin")
 

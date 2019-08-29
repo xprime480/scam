@@ -1,6 +1,4 @@
-;;; Test string greater than or equal with string-ci>=?
-;;; This operator is not case sensitive
-;;;
+(import (lib test narc))
 
 (narc-label "(CI) String Greater Than or Equal")
 

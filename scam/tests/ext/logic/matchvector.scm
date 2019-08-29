@@ -1,5 +1,4 @@
-;;; Match vector pattern to conforming vector data
-;;;
+(import (lib test narc))
 
 (narc-label "Match Vector")
 

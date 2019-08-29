@@ -1,5 +1,4 @@
-;;; Match non-empty pattern to conforming data
-;;;
+(import (lib test narc))
 
 (narc-label "Match Var True")
 

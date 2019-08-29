@@ -1,7 +1,7 @@
+(import lib/listops
+        (lib test narc))
 
 (narc-label "Reverse Lists")
-
-(import lib/listops)
 
 (narc-expect
  ('()           (reverse '()))

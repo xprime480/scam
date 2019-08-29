@@ -1,5 +1,4 @@
-;;; Mutation operations via string-set! or string-copy!
-;;;
+(import (lib test narc))
 
 (narc-label "Mutation operations on strings")
 

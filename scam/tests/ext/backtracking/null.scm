@@ -1,3 +1,5 @@
+(import (lib test narc))
+
 (narc-label "Backtrack without AMB")
 
 (narc-catch

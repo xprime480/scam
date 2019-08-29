@@ -1,5 +1,4 @@
-;;; Test operator that produce errors
-;;;
+(import (lib test narc))
 
 (narc-label "Math Errors")
 

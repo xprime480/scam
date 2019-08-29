@@ -1,5 +1,4 @@
-;;; define persists a value
-;;;
+(import (lib test narc))
 
 (narc-label "Define")
 

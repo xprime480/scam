@@ -1,4 +1,5 @@
-(import lib/alist)
+(import lib/alist
+        (lib test narc))
 
 (narc-label "AList")
 

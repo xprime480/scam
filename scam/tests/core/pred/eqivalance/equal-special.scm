@@ -1,5 +1,4 @@
-;;; Test the equal? function for special cases
-;;;
+(import (lib test narc))
 
 (narc-label "Equal? Special")
 

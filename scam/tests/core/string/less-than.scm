@@ -1,6 +1,4 @@
-;;; Test string less than with string<?
-;;; This operator is case sensitive
-;;;
+(import (lib test narc))
 
 (narc-label "String Less Than")
 

@@ -1,6 +1,7 @@
-(narc-label "Basic Logic")
+(import (only lib/prelude xor)
+        (lib test narc))
 
-(import (only lib/prelude xor))
+(narc-label "Basic Logic")
 
 (narc-expect
  ('(1 -1 () 6) (list (if #t +1 -1)

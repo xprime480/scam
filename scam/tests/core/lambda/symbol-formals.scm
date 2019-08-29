@@ -1,5 +1,4 @@
-;;; Closure with symbol for parameter list
-;;;
+(import (lib test narc))
 
 (narc-label "Lambda With Symbol Formals")
 

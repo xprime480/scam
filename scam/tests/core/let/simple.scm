@@ -1,6 +1,7 @@
-(narc-label "Let")
+(import lib/test/let-suite
+        (lib test narc))
 
-(import lib/test/let-suite)
+(narc-label "Let")
 
 (let-suite-expect 2 ((x 1)) (* x 2))
 

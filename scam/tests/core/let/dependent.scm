@@ -1,6 +1,7 @@
-(narc-label "Let Dependent Bindings")
+(import lib/test/let-suite
+	(lib test narc))
 
-(import lib/test/let-suite)
+(narc-label "Let Dependent Bindings")
 
 (define x 2)
 (define y 0)

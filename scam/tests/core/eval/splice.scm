@@ -1,5 +1,4 @@
-;;; Quasiquote with splicing
-;;;
+(import (lib test narc))
 
 (narc-label "Splice")
 

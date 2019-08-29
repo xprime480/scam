@@ -1,5 +1,4 @@
-;;; Undefine only affects current scope
-;;;
+(import (lib test narc))
 
 (narc-label "Undefine Scope")
 

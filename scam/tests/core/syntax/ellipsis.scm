@@ -1,6 +1,4 @@
-;;; define-syntax accepts ellipsis
-;;; Affects patterns and templates
-;;;
+(import (lib test narc))
 
 (narc-label "Define Syntax With Ellipsis")
 

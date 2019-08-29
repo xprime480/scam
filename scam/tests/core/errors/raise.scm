@@ -1,5 +1,4 @@
-;;; Raise errors of different objects
-;;;
+(import (lib test narc))
 
 (narc-label "Raise")
 

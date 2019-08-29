@@ -1,4 +1,5 @@
-(import (only checks c-check))
+(import (only checks c-check)
+        (lib test narc))
 
 (narc-label "Complex Plus")
 

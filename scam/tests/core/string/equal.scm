@@ -1,6 +1,4 @@
-;;; Test string equality with string=?.
-;;; This operator is case sensitive
-;;;
+(import (lib test narc))
 
 (narc-label "String equality")
 

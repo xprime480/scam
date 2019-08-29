@@ -1,5 +1,4 @@
-;;; Test modification of components of pair values
-;;;
+(import (lib test narc))
 
 (narc-label "Set-Car / Set-Cdr")
 

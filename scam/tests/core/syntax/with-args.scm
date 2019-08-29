@@ -1,5 +1,4 @@
-;;; define-syntax operates like a macro in simple cases
-;;;
+(import (lib test narc))
 
 (narc-label "Define Syntax With Arguments")
 

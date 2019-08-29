@@ -1,5 +1,4 @@
-;;; Test the eqv? function on atoms
-;;;
+(import (lib test narc))
 
 (narc-label "Eqv for atoms")
 

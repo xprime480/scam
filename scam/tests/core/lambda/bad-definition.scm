@@ -1,5 +1,4 @@
-;;; Malformed lambda expressions
-;;;
+(import (lib test narc))
 
 (narc-label "Malformed Lambda Expressions")
 

@@ -1,5 +1,4 @@
-;;; Test string-append
-;;;
+(import (lib test narc))
 
 (narc-label "Append string")
 

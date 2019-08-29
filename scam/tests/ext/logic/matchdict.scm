@@ -1,5 +1,4 @@
-;;; Match dictionary pattern to conforming dictionary data
-;;;
+(import (lib test narc))
 
 (narc-label "Match Dictionary")
 

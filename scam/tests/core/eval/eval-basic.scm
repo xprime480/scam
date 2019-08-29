@@ -1,5 +1,4 @@
-;;; Eval self-evaluating forms
-;;;
+(import (lib test narc))
 
 (narc-label "Basic Eval")
 

@@ -1,5 +1,4 @@
-;;; Read operations
-;;;
+(import (lib test narc))
 
 (narc-label "Read operations on strings")
 

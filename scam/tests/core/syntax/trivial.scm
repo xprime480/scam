@@ -1,5 +1,4 @@
-;;; define-syntax form parses
-;;;
+(import (lib test narc))
 
 (narc-label "Define Syntax Trivial")
 

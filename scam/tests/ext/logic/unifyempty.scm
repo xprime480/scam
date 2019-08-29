@@ -1,5 +1,4 @@
-;;; Unify two empty patterns
-;;;
+(import (lib test narc))
 
 (narc-label "Unify Empty")
 

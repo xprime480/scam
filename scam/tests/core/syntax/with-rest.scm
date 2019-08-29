@@ -1,5 +1,4 @@
-;;; define-syntax accepts rest symbol
-;;;
+(import (lib test narc))
 
 (narc-label "Define Syntax With Rest Formal")
 

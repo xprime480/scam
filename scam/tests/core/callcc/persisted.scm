@@ -1,5 +1,4 @@
-;;; Call/CC saved in a variable
-;;;
+(import (lib test narc))
 
 (narc-label "Persisted Continuation")
 

@@ -1,3 +1,5 @@
+(import (lib test narc))
+
 (narc-label "Equal? Proc")
 
 (define (proc1 a)

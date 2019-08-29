@@ -1,5 +1,4 @@
-;;; Basic quasiquote usage
-;;;
+(import (lib test narc))
 
 (narc-label "Quasiquote")
 

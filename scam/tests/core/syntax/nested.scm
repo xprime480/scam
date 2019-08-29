@@ -1,5 +1,4 @@
-;;; define-syntax validates nested patterns
-;;;
+(import (lib test narc))
 
 (narc-label "Define Syntax With Nested Pattern")
 

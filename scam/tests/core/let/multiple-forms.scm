@@ -1,6 +1,7 @@
-(narc-label "Let Multiple Forms")
+(import lib/test/let-suite
+	(lib test narc))
 
-(import lib/test/let-suite)
+(narc-label "Let Multiple Forms")
 
 (let-suite-expect 9 () 3 5 9)
 

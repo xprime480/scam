@@ -1,5 +1,4 @@
-;;; Call parent function directly
-;;;
+(import (lib test narc))
 
 (narc-label "Call Parent Function Parent Directly")
 

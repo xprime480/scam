@@ -1,6 +1,7 @@
-(narc-label "Let Multiple Bindings")
+(import lib/test/let-suite
+	(lib test narc))
 
-(import lib/test/let-suite)
+(narc-label "Let Multiple Bindings")
 
 (let-suite-expect 15 ((a 3) (b 5)) (* a b))
 

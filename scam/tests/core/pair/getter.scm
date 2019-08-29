@@ -1,3 +1,5 @@
+(import (lib test narc))
+
 (narc-label "Car / Cdr")
 
 (define pair (cons 1 2))

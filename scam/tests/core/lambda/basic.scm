@@ -1,5 +1,4 @@
-;;; Create Basic Lambda Values
-;;;
+(import (lib test narc))
 
 (narc-label "Basic Lambda Expressions")
 

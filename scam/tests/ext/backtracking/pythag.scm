@@ -3,7 +3,10 @@
 ;;; Find Some set of pythagorean triples.
 ;;;
 
-(import lib/prelude lib/numeric lib/test/value_helper)
+(import lib/prelude
+        lib/numeric
+        lib/test/value_helper
+        (lib test narc))
 
 (narc-label "Pythag")
 

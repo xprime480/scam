@@ -1,5 +1,4 @@
-;;; Call closure with the wrong number of parameters.
-;;;
+(import (lib test narc))
 
 (narc-label "Lambda Wrong Arg Count")
 

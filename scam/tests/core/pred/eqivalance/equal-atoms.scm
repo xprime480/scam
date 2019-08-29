@@ -1,5 +1,4 @@
-;;; Test the equal? function on atoms
-;;;
+(import (lib test narc))
 
 (narc-label "Equal for atoms")
 

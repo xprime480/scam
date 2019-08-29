@@ -1,6 +1,7 @@
-(narc-label "Member")
+(import lib/prelude
+	(lib test narc))
 
-(import lib/prelude)
+(narc-label "Member")
 
 (narc-expect
  (#f (member? 1 (list)))

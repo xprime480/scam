@@ -1,6 +1,4 @@
-;;; Malformed class definition due to an expected functional form
-;;; that is not a procedure definition.
-;;;
+(import (lib test narc))
 
 (narc-label "Malformed Class Definition")
 

@@ -1,4 +1,5 @@
-(import lib/test/value_helper)
+(import lib/test/value_helper
+        (lib test narc))
 
 (narc-label "AMB Nested Let")
 

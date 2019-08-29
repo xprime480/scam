@@ -1,5 +1,4 @@
-;;; Class with runtime initialization error
-;;;
+(import (lib test narc))
 
 (narc-label "Class Init Error")
 

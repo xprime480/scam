@@ -1,5 +1,4 @@
-;;; Read empty input
-;;;
+(import (lib test narc))
 
 (narc-label "Read Empty")
 

@@ -1,6 +1,4 @@
-;;; Test string greater than or equal with string>=?
-;;; This operator is case sensitive
-;;;
+(import (lib test narc))
 
 (narc-label "String Greater Than or Equal")
 

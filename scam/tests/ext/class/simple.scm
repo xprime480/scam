@@ -1,5 +1,4 @@
-;;; Class which simply stores a constant
-;;;
+(import (lib test narc))
 
 (narc-label "Simple Constant Class")
 

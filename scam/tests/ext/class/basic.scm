@@ -1,5 +1,4 @@
-;;; Class and instance predicates
-;;;
+(import (lib test narc))
 
 (narc-label "Class Predicates")
 

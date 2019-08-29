@@ -1,5 +1,4 @@
-;;; Simple Apply
-;;;
+(import (lib test narc))
 
 (narc-label "Apply")
 

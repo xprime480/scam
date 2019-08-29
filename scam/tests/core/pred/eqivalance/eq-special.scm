@@ -1,5 +1,4 @@
-;;; Test the eq? function for special cases
-;;;
+(import (lib test narc))
 
 (narc-label "Eq? Special")
 

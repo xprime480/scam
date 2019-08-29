@@ -1,5 +1,4 @@
-;;; Call a member function
-;;;
+(import (lib test narc))
 
 (narc-label "Class Member")
 

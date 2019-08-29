@@ -1,5 +1,4 @@
-;;; Make errors
-;;;
+(import (lib test narc))
 
 (narc-label "Make Error")
 

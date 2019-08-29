@@ -1,5 +1,4 @@
-;;; Basic unquote usage
-;;;
+(import (lib test narc))
 
 (narc-label "Unquote")
 

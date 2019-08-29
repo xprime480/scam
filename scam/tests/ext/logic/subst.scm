@@ -1,5 +1,4 @@
-;;; Test the substitute function
-;;;
+(import (lib test narc))
 
 (narc-label "Substitute")
 

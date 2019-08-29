@@ -1,5 +1,4 @@
-;;; Miscellaneous tests
-;;;
+(import (lib test narc))
 
 (narc-label "Math Miscellaneous")
 

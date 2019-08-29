@@ -1,5 +1,4 @@
-;;; Call a parent function of derived class
-;;;
+(import (lib test narc))
 
 (narc-label "Call Function in Parent")
 

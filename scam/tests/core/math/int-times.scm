@@ -1,4 +1,5 @@
-(import (only checks z-check))
+(import (only checks z-check)
+        (lib test narc))
 
 (narc-label "Integer Times")
 

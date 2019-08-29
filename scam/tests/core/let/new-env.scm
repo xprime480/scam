@@ -1,6 +1,7 @@
-(narc-label "Let Env")
+(import lib/test/let-suite
+	(lib test narc))
 
-(import lib/test/let-suite)
+(narc-label "Let Env")
 
 (define x 2)
 (define y 0)

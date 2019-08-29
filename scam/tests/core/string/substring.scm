@@ -1,4 +1,5 @@
-(import (only lib/prelude substring))
+(import (only lib/prelude substring)
+        (lib test narc))
 
 (narc-label "Substring functions")
 

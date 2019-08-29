@@ -1,4 +1,6 @@
-(import lib/prelude lib/test/value_helper)
+(import lib/prelude
+        lib/test/value_helper
+        (lib test narc))
 
 (narc-label "Require")
 

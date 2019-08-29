@@ -1,5 +1,4 @@
-;;; Unify with an initial dictionary
-;;;
+(import (lib test narc))
 
 (narc-label "Unify With Initial Dictionary")
 

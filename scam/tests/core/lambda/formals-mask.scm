@@ -1,6 +1,4 @@
-;;; Formal parameters mask symbols of the same name in
-;;; defining environment.
-;;;
+(import (lib test narc))
 
 (narc-label "Lambda Formals Override Env")
 

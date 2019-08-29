@@ -1,4 +1,5 @@
-(import (only lib/prelude filter even?))
+(import (only lib/prelude filter even?)
+        (lib test narc))
 
 (narc-label "Filter")
 

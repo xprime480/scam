@@ -1,3 +1,5 @@
+(import (lib test narc))
+
 (narc-label "Equality")
 
 (define Class1 (make-class

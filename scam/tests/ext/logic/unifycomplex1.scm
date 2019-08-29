@@ -1,5 +1,4 @@
-;;; Unify complex patterns patterns which both have placeholders
-;;;
+(import (lib test narc))
 
 (narc-label "Unify Complex Pattern (1)")
 

@@ -1,5 +1,4 @@
-;;; Make some lists
-;;;
+(import (lib test narc))
 
 (narc-label "Make Lists")
 

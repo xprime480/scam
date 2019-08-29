@@ -1,5 +1,4 @@
-;;; Assign to symbol
-;;;
+(import (lib test narc))
 
 (narc-label "Assign")
 

@@ -1,5 +1,4 @@
-;;; Test operator * on infinity and NaN
-;;;
+(import (lib test narc))
 
 (narc-label "Special Times")
 

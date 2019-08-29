@@ -1,5 +1,4 @@
-;;; Match empty pattern to empty data
-;;;
+(import (lib test narc))
 
 (narc-label "Match Empty")
 

@@ -1,8 +1,4 @@
-;;; Class with no initialization functions
-;;;
-;;; Not sure if this is really a good test -- if you reference an
-;;; unitialized variable, anything (almost) goes.
-;;;
+(import (lib test narc))
 
 (narc-label "Class Without Init")
 

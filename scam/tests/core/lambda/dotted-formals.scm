@@ -1,5 +1,4 @@
-;;; Closure with dotted parameter list
-;;;
+(import (lib test narc))
 
 (narc-label "Lambda With Dotted Formals")
 

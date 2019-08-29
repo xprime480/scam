@@ -1,5 +1,4 @@
-;;; Call own function via self in parent
-;;;
+(import (lib test narc))
 
 (narc-label "Parent Calls Self Function")
 

@@ -1,5 +1,4 @@
-;;; Call/CC invoked in various incorrect ways
-;;;
+(import (lib test narc))
 
 (narc-label "Bad Continuation Invocation")
 

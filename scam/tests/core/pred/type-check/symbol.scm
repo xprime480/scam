@@ -1,3 +1,5 @@
+(import (lib test narc))
+
 (narc-label "Type Checker of Symbols")
 
 (narc-expect

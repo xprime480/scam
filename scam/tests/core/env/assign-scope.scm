@@ -1,5 +1,4 @@
-;;; Assign to symbol in enclosing scope
-;;;
+(import (lib test narc))
 
 (narc-label "Assign Outer Scope")
 

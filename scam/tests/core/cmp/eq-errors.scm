@@ -1,3 +1,5 @@
+(import (lib test narc))
+
 (narc-label "CMP = Bad Args")
 
 (narc-catch

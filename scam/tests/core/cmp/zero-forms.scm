@@ -1,5 +1,4 @@
-;;; Test comparison operations with zero forms
-;;;
+(import (lib test narc))
 
 (narc-label "CMP Zero Forms")
 

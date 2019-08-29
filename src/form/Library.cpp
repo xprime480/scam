@@ -86,6 +86,7 @@ ScamValue scam::defineLibrary(ScamValue args, ScamEngine * engine)
         return name;
     }
 
+    vector<ScamValue> imports;
     vector<ScamValue> exports;
     vector<ScamValue> defines;
 
@@ -101,6 +102,9 @@ ScamValue scam::defineLibrary(ScamValue args, ScamEngine * engine)
         if ( equals(result, makeSymbol("begin")) ) {
             defines.push_back(arg0);
         }
+        else if ( equals(result, makeSymbol("import")) ) {
+            imports.push_back(arg0);
+        }
         else if ( equals(result, makeSymbol("export")) ) {
             exports.push_back(arg0);
         }
@@ -115,6 +119,21 @@ ScamValue scam::defineLibrary(ScamValue args, ScamEngine * engine)
     Env * original = engine->getFrame();
     Env * extended = original->extend();
     engine->setFrame(extended);
+
+    for ( const auto i : imports ) {
+	ScamValue specs = getCdr(i);
+	while ( ! isNull(specs) ) {
+	    ScamValue spec = getCar(specs);
+	    specs = getCdr(specs);
+	    ScamValue result = importImportSet(spec, engine);
+	    if ( isEnv(result) ) {
+		extended->merge(asEnv(result));
+	    }
+	    else {
+		return result;
+	    }
+	}
+    }
 
     for ( const auto d : defines ) {
         ScamValue result = engine->eval(d);
@@ -202,6 +221,7 @@ namespace
 
         ScamValue type = getCar(arg);
         if ( equals(type, makeSymbol("begin")) ||
+             equals(type, makeSymbol("import")) ||
              equals(type, makeSymbol("export")) ) {
             return type;
         }
@@ -382,7 +402,7 @@ namespace
 
         const string path = findImportLib(name);
         if ( ! path.empty() ) {
-            loadEvalFile(path, engine);
+            (void) loadEvalFile(path, engine);
             lib = engine->findLibrary(originalArg);
             if ( isEnv(lib) ) {
                 return lib;

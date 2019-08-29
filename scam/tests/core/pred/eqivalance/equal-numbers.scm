@@ -1,5 +1,4 @@
-;;; Test the equal? function on numbers
-;;;
+(import (lib test narc))
 
 (narc-label "Equal for numbers")
 

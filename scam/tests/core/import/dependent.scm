@@ -1,4 +1,5 @@
-(import x2)
+(import x2
+	(lib test narc))
 
 (narc-label "Import Library Recursively")
 

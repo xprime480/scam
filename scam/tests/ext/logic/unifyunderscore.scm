@@ -1,5 +1,4 @@
-;;; Unify patterns containing '::'
-;;;
+(import (lib test narc))
 
 (narc-label "Unify Underscore")
 

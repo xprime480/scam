@@ -1,7 +1,7 @@
-
 (load "lib2.def")
 
-(import (lib2))
+(import (lib2)
+        (lib test narc))
 
 (narc-label "Library Import")
 

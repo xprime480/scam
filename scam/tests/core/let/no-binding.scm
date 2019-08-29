@@ -1,6 +1,7 @@
-(narc-label "Let No Bindings")
+(import lib/test/let-suite
+	(lib test narc))
 
-(import lib/test/let-suite)
+(narc-label "Let No Bindings")
 
 (let-suite-expect 2 () 2)
 

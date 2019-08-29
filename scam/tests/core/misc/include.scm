@@ -1,4 +1,5 @@
-(load "lib/prelude.scm")
+(import lib/prelude
+        (lib test narc))
 
 (narc-label "Include")
 

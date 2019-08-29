@@ -1,4 +1,5 @@
-(import (only lib/prelude nth))
+(import (only lib/prelude nth)
+        (lib test narc))
 
 (narc-label "Nth")
 

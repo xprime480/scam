@@ -1,5 +1,4 @@
-;;; Define in an inner scope does not affect outer scope
-;;;
+(import (lib test narc))
 
 (narc-label "Define Scope")
 

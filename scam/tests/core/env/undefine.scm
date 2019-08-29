@@ -1,5 +1,4 @@
-;;; Undefine
-;;;
+(import (lib test narc))
 
 (narc-label "Undefine")
 
