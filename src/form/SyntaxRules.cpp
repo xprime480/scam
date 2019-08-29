@@ -10,10 +10,6 @@
 #include "util/LambdaDef.hpp"
 #include "util/Parameter.hpp"
 
-#include "util/GlobalId.hpp"
-#include "util/DebugTrace.hpp"
-#include "expr/ValueWriter.hpp"
-
 using namespace scam;
 using namespace std;
 
@@ -59,7 +55,6 @@ void SyntaxRules::mark() const
     for ( const auto & r : rules ) {
         r->mark();
     }
-
 }
 
 ScamValue SyntaxRules::getName() const
@@ -159,26 +154,16 @@ ScamValue SyntaxRules::expand(ScamValue args, ScamEngine * engine)
 
 Env * SyntaxRules::extendDefinition(Env * base, SyntaxRule * match)
 {
-    GlobalId id;
-    ScamTraceScope _;
-    scamTrace(id, __FILE__, __LINE__, __FUNCTION__);
-
     Env * env = base->extend();
 
     set<ScamValue> syms = match->getFreeSymbols();
-    for ( auto & s : syms ) {
-        scamTrace(id, __FILE__, __LINE__, __FUNCTION__, writeValue(s));
+    ScamValue forwarder = makeForwarder(defined);
+    for ( const auto & s : syms ) {
         if ( truth(defined->check(s)) ) {
-	    ScamValue v = defined->get(s);
-	    scamTrace(id, __FILE__, __LINE__, __FUNCTION__, writeValue(v), v->isImmutable());
-            env->put(s, v);
-        }
-        else {
-            scamTrace(id, __FILE__, __LINE__, __FUNCTION__);
+            env->put(s, forwarder);
         }
     }
 
-    env->dump(1, true, false);
     return env;
 }
 

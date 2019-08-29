@@ -80,6 +80,9 @@ void SyntaxRule::mark()
         if ( templat ) {
             templat->mark();
         }
+	for ( auto s : freeSymbols ) {
+	    s->mark();
+	}
         name->mark();
     }
 }

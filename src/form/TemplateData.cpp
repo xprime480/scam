@@ -8,10 +8,6 @@
 
 #include <sstream>
 
-#include "util/GlobalId.hpp"
-#include "util/DebugTrace.hpp"
-#include "expr/ValueWriter.hpp"
-
 using namespace scam;
 using namespace std;
 
@@ -26,7 +22,8 @@ set<ScamValue> TemplateData::getFreeSymbols() const
     IDSet freeIds;
     this->getTemplateIds(freeIds);
     for ( const auto & i : freeIds ) {
-        freeSymbols.insert(makeSymbol(i));
+	ScamValue sym = makeSymbol(i);
+        freeSymbols.insert(sym);
     }
 
     return freeSymbols;
