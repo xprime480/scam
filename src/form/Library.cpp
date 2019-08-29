@@ -121,18 +121,18 @@ ScamValue scam::defineLibrary(ScamValue args, ScamEngine * engine)
     engine->setFrame(extended);
 
     for ( const auto i : imports ) {
-	ScamValue specs = getCdr(i);
-	while ( ! isNull(specs) ) {
-	    ScamValue spec = getCar(specs);
-	    specs = getCdr(specs);
-	    ScamValue result = importImportSet(spec, engine);
-	    if ( isEnv(result) ) {
-		extended->merge(asEnv(result));
-	    }
-	    else {
-		return result;
-	    }
-	}
+        ScamValue specs = getCdr(i);
+        while ( ! isNull(specs) ) {
+            ScamValue spec = getCar(specs);
+            specs = getCdr(specs);
+            ScamValue result = importImportSet(spec, engine);
+            if ( isEnv(result) ) {
+                extended->merge(asEnv(result));
+            }
+            else {
+                return result;
+            }
+        }
     }
 
     for ( const auto d : defines ) {
@@ -464,7 +464,7 @@ namespace
         }
 
         s.str("");
-        s << lib->stringValue() << ".def";
+        s << lib->stringValue() << ".lib";
         return findFileOnPath(s.str());
     }
 

@@ -1,4 +1,3 @@
-
 (define-library
     (lib2 0 1)
   (begin

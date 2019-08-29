@@ -1,5 +1,3 @@
-(load "lib2.def")
-
 (import (lib2)
         (lib test narc))
 
