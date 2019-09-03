@@ -19,7 +19,7 @@ namespace
 
 TEST(TrampolineTest, SimpleTest)
 {
-    MemoryManager & mm = scam::standardMemoryManager;
+    MemoryManager & mm = ScamEngine::getEngine().getMemoryManager();
 
     size_t exec1{ 0 };
     Worker * count = mm.make<CountdownWorker>(3, &exec1, queue);

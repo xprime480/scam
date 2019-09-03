@@ -1,6 +1,7 @@
 #include "form/OrWorker.hpp"
 
 #include "Continuation.hpp"
+#include "ScamEngine.hpp"
 #include "env/Env.hpp"
 #include "expr/EvalOps.hpp"
 #include "expr/ScamData.hpp"
@@ -47,8 +48,8 @@ void OrWorker::run()
     else {
         ScamValue test = getCar(args);
         ScamValue rest = getCdr(args);
-        Continuation * newCont =
-            standardMemoryManager.make<OrCont>(rest, cont, env);
+        MemoryManager & mm = ScamEngine::getEngine().getMemoryManager();
+        Continuation * newCont = mm.make<OrCont>(rest, cont, env);
         eval(test, newCont, env);
     }
 }

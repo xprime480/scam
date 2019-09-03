@@ -25,7 +25,7 @@ ScamRepl::ScamRepl(int argc, char ** argv)
 
 int ScamRepl::run()
 {
-    Handler * handler = standardMemoryManager.make<ReplHandler>();
+    Handler * handler = engine.getMemoryManager().make<ReplHandler>();
 
     engine.reset(true);
     engine.pushHandler(handler);

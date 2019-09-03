@@ -1,6 +1,7 @@
 #include "form/NotWorker.hpp"
 
 #include "Continuation.hpp"
+#include "ScamEngine.hpp"
 #include "env/Env.hpp"
 #include "expr/EvalOps.hpp"
 #include "expr/ScamData.hpp"
@@ -38,6 +39,7 @@ void NotWorker::run()
 {
     Worker::run();
 
-    Continuation * newCont = standardMemoryManager.make<NotCont>(cont);
+    MemoryManager & mm = ScamEngine::getEngine().getMemoryManager();
+    Continuation * newCont = mm.make<NotCont>(cont);
     eval(value, newCont, env);
 }

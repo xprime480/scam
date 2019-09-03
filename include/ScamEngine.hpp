@@ -6,6 +6,7 @@
 #include "Handler.hpp"
 #include "ScamFwd.hpp"
 #include "input/ScamParser.hpp"
+#include "util/MemoryManager.hpp"
 
 #include <set>
 #include <vector>
@@ -74,6 +75,7 @@ namespace scam
 
         /*** function to manage garbage collection ***/
 
+        MemoryManager & getMemoryManager();
         void mark();
 
     private:
@@ -86,6 +88,7 @@ namespace scam
         std::set<std::string> loaded;
         std::vector<Handler *> handlers;
         EngineMarker marker;
+        MemoryManager mm;
     };
 }
 

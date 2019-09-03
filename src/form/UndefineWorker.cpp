@@ -47,8 +47,8 @@ void UndefineWorker::run()
         ScamEngine::getEngine().handleError(test);
     }
     else if ( truth(test) ) {
-        Continuation * c =
-            standardMemoryManager.make<UndefineCont>(value, cont, env);
+        MemoryManager & mm = ScamEngine::getEngine().getMemoryManager();
+        Continuation * c = mm.make<UndefineCont>(value, cont, env);
         c->handleValue(makeNull());
     }
     else {

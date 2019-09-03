@@ -162,7 +162,8 @@ scam::apply(ScamValue value, ScamValue args, Continuation * cont, Env * env)
 
 Env * scam::env(ScamValue value)
 {
-    return standardMemoryManager.make<Env>();
+    MemoryManager & mm = ScamEngine::getEngine().getMemoryManager();
+    return mm.make<Env>();
 }
 
 void scam::mapEval(ScamValue value, Continuation * cont, Env * env)

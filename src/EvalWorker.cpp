@@ -1,6 +1,7 @@
 #include "EvalWorker.hpp"
 
 #include "Continuation.hpp"
+#include "ScamEngine.hpp"
 #include "env/Env.hpp"
 #include "expr/EvalOps.hpp"
 #include "expr/ScamData.hpp"
@@ -84,6 +85,7 @@ void EvalWorker::run()
 {
     Worker::run();
 
-    LocalEvalCont * newCont = standardMemoryManager.make<LocalEvalCont>(cont);
+    MemoryManager & mm = ScamEngine::getEngine().getMemoryManager();
+    LocalEvalCont * newCont = mm.make<LocalEvalCont>(cont);
     mapEval(forms, newCont, extended);
 }

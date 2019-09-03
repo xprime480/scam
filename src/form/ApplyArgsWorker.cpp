@@ -1,6 +1,7 @@
 #include "form/ApplyArgsWorker.hpp"
 
 #include "Continuation.hpp"
+#include "ScamEngine.hpp"
 #include "env/Env.hpp"
 #include "expr/EvalOps.hpp"
 #include "expr/ScamData.hpp"
@@ -43,7 +44,9 @@ void ApplyArgsWorker::mark()
 
 void ApplyArgsWorker::run()
 {
-    Continuation * newCont =
-        standardMemoryManager.make<ApplyArgsCont>(op, cont, env);
+    Worker::run();
+
+    MemoryManager & mm = ScamEngine::getEngine().getMemoryManager();
+    Continuation * newCont = mm.make<ApplyArgsCont>(op, cont, env);
     eval(args, newCont, env);
 }

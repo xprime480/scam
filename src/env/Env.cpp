@@ -1,6 +1,7 @@
 #include "env/Env.hpp"
 
 #include "ErrorCategory.hpp"
+#include "ScamEngine.hpp"
 #include "ScamException.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/ScamToInternal.hpp"
@@ -158,7 +159,8 @@ void Env::reset()
 
 Env * Env::extend() const
 {
-    Env * temp = standardMemoryManager.make<Env>();
+    MemoryManager & mm = ScamEngine::getEngine().getMemoryManager();
+    Env * temp = mm.make<Env>();
     temp->parent = const_cast<Env *>(this);
     return temp;
 }

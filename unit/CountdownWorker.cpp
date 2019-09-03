@@ -28,8 +28,8 @@ void CountdownWorker::run()
     else {
         //            cout << n << "... ";
 
-      Worker * next =
-          standardMemoryManager.make<CountdownWorker>(n-1, counter, queue);
-      queue.put(next);
+        MemoryManager & mm = ScamEngine::getEngine().getMemoryManager();
+        Worker * next = mm.make<CountdownWorker>(n-1, counter, queue);
+        queue.put(next);
     }
 }

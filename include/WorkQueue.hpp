@@ -1,7 +1,7 @@
 #if ! defined(SCAM_WORKQUEUE_H)
 #define SCAM_WORKQUEUE_H
 
-#include "util/MemoryManager.hpp"
+#include "ScamEngine.hpp"
 
 #include <deque>
 
@@ -26,7 +26,8 @@ namespace scam
     template <typename T, typename... Args>
     T * workQueueHelper(Args &&... args)
     {
-        T * worker = standardMemoryManager.make<T>(args...);
+        MemoryManager & mm = ScamEngine::getEngine().getMemoryManager();
+        T * worker = mm.make<T>(args...);
         GlobalWorkQueue.put(worker);
         return worker;
     }

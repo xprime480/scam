@@ -1,6 +1,7 @@
 #include "form/AssignBacktracker.hpp"
 
 #include "Continuation.hpp"
+#include "ScamEngine.hpp"
 #include "ScamException.hpp"
 #include "env/Env.hpp"
 #include "expr/ScamData.hpp"
@@ -48,7 +49,7 @@ void AssignBacktracker::run()
     if ( isError(test) ) {
         throw ScamException(writeValue(test));
     }
-    Continuation * cont
-        = standardMemoryManager.make<Continuation>("Assign Backtrack");
+    MemoryManager & mm = ScamEngine::getEngine().getMemoryManager();
+    Continuation * cont = mm.make<Continuation>("Assign Backtrack");
     runParent(cont);
 }

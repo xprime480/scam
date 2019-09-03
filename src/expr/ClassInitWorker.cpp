@@ -58,15 +58,14 @@ void ClassInitWorker::run()
     ScamValue test = env->check(initSym);
     if ( isUnhandledError(test) ) {
         ScamEngine::getEngine().handleError(test);
-        return;
     }
     else if ( ! truth(test) ) {
         cont->handleValue(instance);
-        return;
     }
-
-    Continuation * newCont
-        = standardMemoryManager.make<ClassInitCont>(instance, cont);
-    ScamValue newArgs = makePair(initSym, args);
-    apply(instance, newArgs, newCont, env);
+    else {
+        MemoryManager & mm = ScamEngine::getEngine().getMemoryManager();
+        Continuation * newCont = mm.make<ClassInitCont>(instance, cont);
+        ScamValue newArgs = makePair(initSym, args);
+        apply(instance, newArgs, newCont, env);
+    }
 }

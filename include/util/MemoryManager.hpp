@@ -55,10 +55,6 @@ namespace scam
       void sweep();
       void unmark();
     };
-
-    // for now, a global variable!
-    //
-    extern MemoryManager standardMemoryManager;
 }
 
 #endif

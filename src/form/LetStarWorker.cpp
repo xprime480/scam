@@ -1,5 +1,6 @@
 #include "form/LetStarWorker.hpp"
 
+#include "ScamEngine.hpp"
 #include "env/Env.hpp"
 #include "expr/EvalOps.hpp"
 #include "expr/ScamData.hpp"
@@ -29,12 +30,9 @@ LetStarWorker::do_next(ScamValue formals, ScamValue values, ScamValue forms)
     /* FIXME */
     ScamValue safe = safeCons(values);
 
+    MemoryManager & mm = ScamEngine::getEngine().getMemoryManager();
     Continuation * ch =
-        standardMemoryManager.make<LetStarCont>(formals,
-                                                getCdr(safe),
-                                                forms,
-                                                cont,
-                                                extended);
+        mm.make<LetStarCont>(formals, getCdr(safe), forms, cont, extended);
     eval(getCar(safe), ch, env);
 }
 

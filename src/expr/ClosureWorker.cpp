@@ -1,6 +1,7 @@
 #include "expr/ClosureWorker.hpp"
 
 #include "Continuation.hpp"
+#include "ScamEngine.hpp"
 #include "env/Env.hpp"
 #include "expr/ClosureBindCont.hpp"
 #include "expr/EvalOps.hpp"
@@ -46,10 +47,9 @@ void ClosureWorker::run()
 {
     Worker::run();
 
-    Continuation * newCont
-        = standardMemoryManager.make<ClosureBindCont>(closure->closureDef(),
+    MemoryManager & mm = ScamEngine::getEngine().getMemoryManager();
+    Continuation * newCont = mm.make<ClosureBindCont>(closure->closureDef(),
                                                       closure->closureEnv(),
                                                       cont);
-
     mapEval(args, newCont, argEnv);
 }

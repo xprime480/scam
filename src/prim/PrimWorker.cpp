@@ -1,5 +1,6 @@
 #include "prim/PrimWorker.hpp"
 
+#include "ScamEngine.hpp"
 #include "env/Env.hpp"
 #include "expr/EvalOps.hpp"
 #include "expr/ScamData.hpp"
@@ -17,7 +18,8 @@ PrimWorker::PrimWorker(ScamValue caller,
     , args(args)
     , env(env)
 {
-    cont = standardMemoryManager.make<PrimEvalCont>(caller, original);
+    MemoryManager & mm = ScamEngine::getEngine().getMemoryManager();
+    cont = mm.make<PrimEvalCont>(caller, original);
 }
 
 PrimWorker * PrimWorker::makeInstance(ScamValue caller,

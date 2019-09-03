@@ -8,7 +8,7 @@ using namespace scam;
 
 void scam::Trampoline(WorkQueue & queue)
 {
-    static MemoryManager & mm = standardMemoryManager;
+    static MemoryManager & mm = ScamEngine::getEngine().getMemoryManager();
     static size_t count { 100 };
 
     while ( ! queue.empty() ) {

@@ -1,5 +1,6 @@
 #include "expr/MapWorker.hpp"
 
+#include "ScamEngine.hpp"
 #include "env/Env.hpp"
 #include "expr/CarContinuation.hpp"
 #include "expr/EvalOps.hpp"
@@ -17,7 +18,8 @@ MapWorker::MapWorker(ScamValue car,
     , car(car)
     , env(env)
 {
-    cont = standardMemoryManager.make<CarContinuation>(cdr, original, env);
+    MemoryManager & mm = ScamEngine::getEngine().getMemoryManager();
+    cont = mm.make<CarContinuation>(cdr, original, env);
 }
 
 MapWorker *

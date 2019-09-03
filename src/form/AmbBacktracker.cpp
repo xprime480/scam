@@ -48,16 +48,16 @@ void AmbBacktracker::run()
         runParent(cont);
     }
     else {
+        ScamEngine & engine = ScamEngine::getEngine();
+
         ScamValue head = nthcar(args, 0);
         ScamValue tail = nthcdr(args, 0);
 
-        (void) ScamEngine::getEngine().getBacktracker();
+        (void) engine.getBacktracker();
+        MemoryManager & mm = engine.getMemoryManager();
         Backtracker * newBt =
-            standardMemoryManager.make<AmbBacktracker>(tail,
-                                                       cont,
-                                                       env,
-                                                       getParent());
-        ScamEngine::getEngine().setBacktracker(newBt);
+            mm.make<AmbBacktracker>(tail, cont, env, getParent());
+        engine.setBacktracker(newBt);
 
         eval(head, cont, env);
     }

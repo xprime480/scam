@@ -1,5 +1,6 @@
 #include "expr/ConsWorker.hpp"
 
+#include "ScamEngine.hpp"
 #include "env/Env.hpp"
 #include "expr/EvalOps.hpp"
 #include "expr/ExprEvalCont.hpp"
@@ -18,7 +19,8 @@ ConsWorker::ConsWorker(ScamValue car,
     , car(car)
     , env(env)
 {
-    cont = standardMemoryManager.make<ExprEvalCont>(cdr, original, env);
+    MemoryManager & mm = ScamEngine::getEngine().getMemoryManager();
+    cont = mm.make<ExprEvalCont>(cdr, original, env);
 }
 
 ConsWorker * ConsWorker::makeInstance(ScamValue car,

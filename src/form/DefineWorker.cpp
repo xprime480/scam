@@ -1,5 +1,6 @@
 #include "form/DefineWorker.hpp"
 
+#include "ScamEngine.hpp"
 #include "env/Env.hpp"
 #include "expr/EvalOps.hpp"
 #include "expr/ScamData.hpp"
@@ -44,7 +45,7 @@ void DefineWorker::run()
 {
     Worker::run();
 
-    Continuation * c =
-        standardMemoryManager.make<DefineCont>(symbol, cont, env);
+    MemoryManager & mm = ScamEngine::getEngine().getMemoryManager();
+    Continuation * c = mm.make<DefineCont>(symbol, cont, env);
     eval(form, c, env);
 }

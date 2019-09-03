@@ -128,8 +128,8 @@ bool SyntaxRules::extractReserved(ScamValue syms)
 
 bool SyntaxRules::decodeRule(ScamValue rule)
 {
-    SyntaxRule * sr =
-        standardMemoryManager.make<SyntaxRule>(rule, name, reserved);
+    MemoryManager & mm = ScamEngine::getEngine().getMemoryManager();
+    SyntaxRule * sr = mm.make<SyntaxRule>(rule, name, reserved);
 
     bool rv = sr->isValid();
     if ( rv ) {

@@ -73,12 +73,12 @@ ScamEngine::ScamEngine()
     , backtracker(nullptr)
     , cont(nullptr)
 {
-    standardMemoryManager.addHook(&marker);
+    mm.addHook(&marker);
 }
 
 ScamEngine::~ScamEngine()
 {
-    standardMemoryManager.removeHook(&marker);
+    mm.removeHook(&marker);
 }
 
 ScamEngine & ScamEngine::getEngine()
@@ -90,7 +90,7 @@ ScamEngine & ScamEngine::getEngine()
 void ScamEngine::reset(bool initEnv)
 {
     backtracker = nullptr;
-    cont = standardMemoryManager.make<HistoryCont>(1);
+    cont = mm.make<HistoryCont>(1);
 
     input.clear();
     loaded.clear();
@@ -161,7 +161,7 @@ ScamValue ScamEngine::readEvalCurrent()
     HistoryCont const * hc = dynamic_cast<HistoryCont const *>(cont);
     size_t const mark = hc ? hc->current() : 0;
 
-    EngineHandler * eh = standardMemoryManager.make<EngineHandler>();
+    EngineHandler * eh = mm.make<EngineHandler>();
 
     while ( true ) {
         ScamValue expr = read();
@@ -204,7 +204,7 @@ ScamValue ScamEngine::read()
 
 ScamValue ScamEngine::eval(ScamValue expr)
 {
-    EngineHandler * eh = standardMemoryManager.make<EngineHandler>();
+    EngineHandler * eh = mm.make<EngineHandler>();
     ScamValue rv = eval(expr, eh);
     if ( eh->called() ) {
         rv = eh->get();
@@ -268,7 +268,7 @@ ScamValue ScamEngine::handleError(ScamValue err)
 
     ScamValue rv = err;
     if ( handlers.empty() ) {
-        Handler * handler = standardMemoryManager.make<Handler>();
+        Handler * handler = mm.make<Handler>();
         pushHandler(handler);
         rv = handler->handleError(err);
     }
@@ -290,6 +290,11 @@ void ScamEngine::popHandler()
     if ( ! handlers.empty() ) {
         handlers.pop_back();
     }
+}
+
+MemoryManager & ScamEngine::getMemoryManager()
+{
+    return mm;
 }
 
 void ScamEngine::mark()
@@ -319,9 +324,11 @@ namespace
     HistoryCont::HistoryCont(size_t size)
         : Continuation("History")
         , size(size)
-        , cont(standardMemoryManager.make<Continuation>("Default"))
+        , cont(nullptr)
         , serial(0u)
     {
+        ScamEngine & engine = ScamEngine::getEngine();
+        cont = engine.getMemoryManager().make<Continuation>("Default");
     }
 
     HistoryCont * HistoryCont::makeInstance(size_t size)

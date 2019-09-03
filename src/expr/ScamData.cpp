@@ -1,6 +1,7 @@
 #include "expr/ScamData.hpp"
 
 #include "Continuation.hpp"
+#include "ScamEngine.hpp"
 #include "ScamException.hpp"
 #include "env/Env.hpp"
 #include "expr/ScamNumeric.hpp"
@@ -294,7 +295,8 @@ bool ScamData::isImmutable() const
 ScamValue ScamData::setMeta(string const & key, ScamValue value) const
 {
     if ( ! metadata ) {
-        metadata = standardMemoryManager.make<Env>();
+        MemoryManager & mm = ScamEngine::getEngine().getMemoryManager();
+        metadata = mm.make<Env>();
     }
 
     ScamValue k = makeSymbol(key);

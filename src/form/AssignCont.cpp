@@ -41,17 +41,16 @@ ScamValue AssignCont::finish(ScamValue expr) const
 
     (void) env->assign(sym, expr);
 
-    Backtracker * backtracker = ScamEngine::getEngine().getBacktracker();
+    ScamEngine & engine = ScamEngine::getEngine();
+    Backtracker * backtracker = engine.getBacktracker();
     if ( ! backtracker ) {
         return makeNothing();
     }
 
+    MemoryManager & mm = engine.getMemoryManager();
     Backtracker * bt =
-        standardMemoryManager.make<AssignBacktracker>(sym,
-                                                      old,
-                                                      env,
-                                                      backtracker);
-    ScamEngine::getEngine().setBacktracker(bt);
+        mm.make<AssignBacktracker>(sym, old, env, backtracker);
+    engine.setBacktracker(bt);
 
     return makeNothing();
 }

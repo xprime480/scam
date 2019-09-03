@@ -1,6 +1,7 @@
 #include "form/LetEvalWorker.hpp"
 
 #include "Continuation.hpp"
+#include "ScamEngine.hpp"
 #include "env/Env.hpp"
 #include "expr/EvalOps.hpp"
 #include "expr/ScamData.hpp"
@@ -58,27 +59,24 @@ void LetEvalWorker::run()
 {
     Worker::run();
 
+    MemoryManager & mm = ScamEngine::getEngine().getMemoryManager();
+
     if ( length(args) > 0 ) {
         ScamValue car = nthcar(args, 0);
         ScamValue cdr = nthcdr(args, 0);
 
         Continuation * ch
-            = standardMemoryManager.make<LetStepCont>(formals,
-                                                      forms,
-                                                      evaled,
-                                                      cdr,
-                                                      cont,
-                                                      env,
-                                                      rebind);
+            = mm.make<LetStepCont>(formals,
+                                   forms,
+                                   evaled,
+                                   cdr,
+                                   cont,
+                                   env,
+                                   rebind);
         eval(car, ch, env);
     }
     else {
-        Continuation * ch
-            = standardMemoryManager.make<LetCont>(formals,
-                                                  forms,
-                                                  cont,
-                                                  env,
-                                                  rebind);
+        Continuation * ch = mm.make<LetCont>(formals, forms, cont, env, rebind);
         ch->handleValue(evaled);
     }
 }

@@ -47,7 +47,7 @@ namespace
 
 Env * scam::getConfigurationEnv()
 {
-    Env * env = standardMemoryManager.make<Env>();
+    Env * env = ScamEngine::getEngine().getMemoryManager().make<Env>();
     addPorts(env);
     return env;
 }

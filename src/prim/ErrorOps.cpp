@@ -72,13 +72,9 @@ void scam::applyWithHandler(ScamValue args, Continuation * cont)
         ScamValue handler = pHandler.value;
         ScamValue thunk   = pThunk.value;
 
-        Continuation * newCont =
-            standardMemoryManager.make<WithHandlerCont>(cont);
-
-        Handler * wrapper =
-            standardMemoryManager.make<UserHandler>(handler,
-                                                    cont,
-                                                    env(handler));
+        MemoryManager & mm = ScamEngine::getEngine().getMemoryManager();
+        Continuation * newCont = mm.make<WithHandlerCont>(cont);
+        Handler * wrapper = mm.make<UserHandler>(handler, cont, env(handler));
 
         ScamEngine::getEngine().pushHandler(wrapper);
         apply(thunk, makeNull(), newCont, env(thunk));

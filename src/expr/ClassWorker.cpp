@@ -1,6 +1,7 @@
 #include "expr/ClassWorker.hpp"
 
 #include "Continuation.hpp"
+#include "ScamEngine.hpp"
 #include "env/Env.hpp"
 #include "expr/ClassCont.hpp"
 #include "expr/EvalOps.hpp"
@@ -44,7 +45,8 @@ void ClassWorker::mark()
 void ClassWorker::run()
 {
     Worker::run();
-    Continuation * newCont =
-        standardMemoryManager.make<ClassCont>(cls, cont);
+
+    MemoryManager & mm = ScamEngine::getEngine().getMemoryManager();
+    Continuation * newCont = mm.make<ClassCont>(cls, cont);
     mapEval(args, newCont, env);
 }

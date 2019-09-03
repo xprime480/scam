@@ -48,8 +48,8 @@ void QQConsListCarCont::handleValue(ScamValue expr)
         ScamEngine::getEngine().handleError(expr);
     }
     else {
-        Continuation * h =
-            standardMemoryManager.make<QQConsListCdrCont>(expr, cont, env);
+        MemoryManager & mm = ScamEngine::getEngine().getMemoryManager();
+        Continuation * h = mm.make<QQConsListCdrCont>(expr, cont, env);
         workQueueHelper<QuasiQuoteWorker>(cdr, h, env);
     }
 }

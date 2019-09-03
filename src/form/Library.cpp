@@ -139,7 +139,8 @@ ScamValue scam::defineLibrary(ScamValue args)
 
     engine.setFrame(original);
 
-    Env * lib = standardMemoryManager.make<Env>();
+    MemoryManager & mm = engine.getMemoryManager();
+    Env * lib = mm.make<Env>();
     if ( exports.empty() ) {
         lib->merge(extended);
     }
@@ -164,7 +165,7 @@ ScamValue scam::importToEnv(ScamValue args)
     ScamEngine & engine = ScamEngine::getEngine();
     Env * original = engine.getFrame();
     engine.setFrame(original->extend());
-    Env * target = standardMemoryManager.make<Env>();
+    Env * target = engine.getMemoryManager().make<Env>();
     ScamValue rv = makeEnv(target);
 
     while ( ! isNull(args) ) {
@@ -300,8 +301,9 @@ namespace
             return result;
         }
 
+        MemoryManager & mm = ScamEngine::getEngine().getMemoryManager();
         Env * temp = asEnv(result);
-        Env * base = standardMemoryManager.make<Env>();
+        Env * base = mm.make<Env>();
         ScamValue rest = getCdr(args);
 
         return copyOnlyRename(base, temp, rest, "only");

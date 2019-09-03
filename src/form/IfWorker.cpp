@@ -1,6 +1,7 @@
 #include "form/IfWorker.hpp"
 
 #include "Continuation.hpp"
+#include "ScamEngine.hpp"
 #include "env/Env.hpp"
 #include "expr/EvalOps.hpp"
 #include "expr/ScamData.hpp"
@@ -39,7 +40,8 @@ void IfWorker::run()
 {
     Worker::run();
 
-    Continuation * c = standardMemoryManager.make<IfCont>(args, cont, env);
+    MemoryManager & mm = ScamEngine::getEngine().getMemoryManager();
+    Continuation * c = mm.make<IfCont>(args, cont, env);
     ScamValue test = nthcar(args, 0);
     eval(test, c, env);
 }

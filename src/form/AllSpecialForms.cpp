@@ -29,11 +29,9 @@ void scam::applyAmb(ScamValue args, Continuation * cont, Env * env)
     CountedParameter p0(pObj);
     if ( argsToParms(args, name, p0) ) {
         Backtracker * backtracker = ScamEngine::getEngine().getBacktracker();
+        MemoryManager & mm = ScamEngine::getEngine().getMemoryManager();
         Backtracker * newBt =
-            standardMemoryManager.make<AmbBacktracker>(p0.value,
-                                                       cont,
-                                                       env,
-                                                       backtracker);
+            mm.make<AmbBacktracker>(p0.value, cont, env, backtracker);
         newBt->run();
     }
 }
@@ -57,8 +55,8 @@ void scam::applyApply(ScamValue args, Continuation * cont, Env * env)
     if ( argsToParms(args, name, p0, p1) ) {
         ScamValue sym     = p0.value;
         ScamValue arglist = p1.value;
-        Continuation * newCont =
-            standardMemoryManager.make<ApplyOpCont>(arglist, cont, env);
+        MemoryManager & mm = ScamEngine::getEngine().getMemoryManager();
+        Continuation * newCont = mm.make<ApplyOpCont>(arglist, cont, env);
 
         eval(sym, newCont, env);
     }
@@ -71,8 +69,8 @@ void scam::applyCallCC(ScamValue args, Continuation * cont, Env * env)
     ObjectParameter p0;
     if ( argsToParms(args, name, p0) ) {
         ScamValue body = p0.value;
-        Continuation * newCont =
-            standardMemoryManager.make<CallCont>(cont, env);
+        MemoryManager & mm = ScamEngine::getEngine().getMemoryManager();
+        Continuation * newCont = mm.make<CallCont>(cont, env);
         eval(body, newCont, env);
     }
 }
@@ -116,8 +114,8 @@ void scam::applyDefine(ScamValue args, Continuation * cont, Env * env)
         ScamValue formals = getCdr(arg0);
         ScamValue forms   = getCdr(args);
         ScamValue def     = makePair(formals, forms);
-        Continuation * c =
-            standardMemoryManager.make<DefineCont>(symbol, cont, env);
+        MemoryManager & mm = ScamEngine::getEngine().getMemoryManager();
+        Continuation * c = mm.make<DefineCont>(symbol, cont, env);
         applyLambda(def, c, env);
         return;
     }

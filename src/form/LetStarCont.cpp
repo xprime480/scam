@@ -61,12 +61,12 @@ ScamValue LetStarCont::do_let(ScamValue expr)
         makeBacktracker(sym);
 
         ScamValue safe = safeCons(rest);
-        Continuation * ch =
-            standardMemoryManager.make<LetStarCont>(getCdr(formals),
-                                                    getCdr(safe),
-                                                    forms,
-                                                    cont,
-                                                    env);
+        MemoryManager & mm = ScamEngine::getEngine().getMemoryManager();
+        Continuation * ch = mm.make<LetStarCont>(getCdr(formals),
+                                                 getCdr(safe),
+                                                 forms,
+                                                 cont,
+                                                 env);
         eval(getCar(safe), ch, env);
     }
 
@@ -75,8 +75,10 @@ ScamValue LetStarCont::do_let(ScamValue expr)
 
 void LetStarCont::makeBacktracker(ScamValue sym) const
 {
-    Backtracker * backtracker = ScamEngine::getEngine().getBacktracker();
-    Backtracker * newBT =
-        standardMemoryManager.make<LetStarBacktracker>(env, sym, backtracker);
-    ScamEngine::getEngine().setBacktracker(newBT);
+    ScamEngine & engine = ScamEngine::getEngine();
+    MemoryManager & mm = engine.getMemoryManager();
+
+    Backtracker * backtracker = engine.getBacktracker();
+    Backtracker * newBT = mm.make<LetStarBacktracker>(env, sym, backtracker);
+    engine.setBacktracker(newBT);
 }

@@ -60,7 +60,7 @@ namespace
 
 TestBase::TestBase(bool loadPrelude)
     : engine(ScamEngine::getEngine())
-    , mm(standardMemoryManager)
+    , mm(engine.getMemoryManager())
 {
     mm.reset();
     engine.reset(true);

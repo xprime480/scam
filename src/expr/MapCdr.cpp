@@ -1,5 +1,6 @@
 #include "expr/MapCdr.hpp"
 
+#include "ScamEngine.hpp"
 #include "env/Env.hpp"
 #include "expr/CdrContinuation.hpp"
 #include "expr/EvalOps.hpp"
@@ -14,7 +15,8 @@ MapCdr::MapCdr(ScamValue car, ScamValue cdr, Continuation * original, Env * env)
     , cdr(cdr)
     , env(env)
 {
-    cont = standardMemoryManager.make<CdrContinuation>(car, original);
+    MemoryManager & mm = ScamEngine::getEngine().getMemoryManager();
+    cont = mm.make<CdrContinuation>(car, original);
 }
 
 MapCdr *

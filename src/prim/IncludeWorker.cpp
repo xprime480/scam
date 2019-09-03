@@ -1,6 +1,7 @@
 #include "prim/IncludeWorker.hpp"
 
 #include "Continuation.hpp"
+#include "ScamEngine.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
@@ -41,7 +42,8 @@ void IncludeWorker::run()
     Continuation * nextCont = cont;
     ScamValue rest = getCdr(args);
     if ( ! isNull(rest) ) {
-        nextCont = standardMemoryManager.make<IncludeCont>(rest, cont);
+        MemoryManager & mm = ScamEngine::getEngine().getMemoryManager();
+        nextCont = mm.make<IncludeCont>(rest, cont);
     }
 
     applyLoad(newArg, nextCont);

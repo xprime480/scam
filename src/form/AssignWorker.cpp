@@ -46,6 +46,7 @@ void AssignWorker::run()
 {
     Worker::run();
 
-    Continuation * c = standardMemoryManager.make<AssignCont>(sym, cont, env);
+    MemoryManager & mm = ScamEngine::getEngine().getMemoryManager();
+    Continuation * c = mm.make<AssignCont>(sym, cont, env);
     eval(value, c, env);
 }

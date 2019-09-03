@@ -126,7 +126,7 @@ string SyntaxRule::identify() const
 PatternData *
 SyntaxRule::parsePattern(ScamValue pat, const set<string> & reserved)
 {
-    MemoryManager & mm = standardMemoryManager;
+    MemoryManager & mm = ScamEngine::getEngine().getMemoryManager();
     PatternData * rv = nullptr;
 
     if ( isNothing(pat) ) {
@@ -203,7 +203,7 @@ SyntaxRule::parsePattern(ScamValue pat, const set<string> & reserved)
 
 TemplateData * SyntaxRule::parseTemplate(ScamValue tem)
 {
-    MemoryManager & mm = standardMemoryManager;
+    MemoryManager & mm = ScamEngine::getEngine().getMemoryManager();
     TemplateData * rv = nullptr;
 
     if ( isList(tem) ) {

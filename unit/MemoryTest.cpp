@@ -393,7 +393,7 @@ TEST_F(MemoryTest, TestClosure)
     ScamValue formals = makeList(symA, symB);
     ScamValue aForm   = makeList(symPlus, symA, symB);
     ScamValue forms   = makeList(formals, aForm);
-    Env * env = standardMemoryManager.make<Env>();
+    Env * env = mm.make<Env>();
 
     LambdaDef lambda;
     ScamValue rv = lambda.transform(forms);
@@ -453,7 +453,7 @@ TEST_F(MemoryTest, TestInstance)
     ClassDef def;
     expectNull(def.transform(classDef));
 
-    Env * env = standardMemoryManager.make<Env>();
+    Env * env = mm.make<Env>();
     ScamValue cls = makeClass(def, env);
     ScamValue instance = makeClassInstance(cls, env);
     expectInstance(instance);
@@ -484,7 +484,7 @@ TEST_F(MemoryTest, TestExtractor)
 
 TEST_F(MemoryTest, TestEnv)
 {
-    Env * top = standardMemoryManager.make<Env>();
+    Env * top = mm.make<Env>();
     Env * env = top->extend();
     ScamValue key = makeSymbol("f");
     ScamValue val = makeInteger(333, true);
@@ -498,7 +498,7 @@ TEST_F(MemoryTest, TestEnv)
 
 TEST_F(MemoryTest, TestWorkQueue)
 {
-    Worker * worker = standardMemoryManager.make<Worker>("Test");
+    Worker * worker = mm.make<Worker>("Test");
     WorkQueue queue;
 
     queue.put(worker);

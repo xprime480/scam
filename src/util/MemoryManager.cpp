@@ -5,8 +5,6 @@
 using namespace scam;
 using namespace std;
 
-MemoryManager scam::standardMemoryManager(MemoryManager::DEFAULT_SIZE);
-
 MemoryManager::MemoryManager(size_t size)
     : arena_size(size)
     , createCount(0)

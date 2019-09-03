@@ -1,6 +1,7 @@
 #include "form/DefineBacktracker.hpp"
 
 #include "Continuation.hpp"
+#include "ScamEngine.hpp"
 #include "ScamException.hpp"
 #include "env/Env.hpp"
 #include "expr/ScamData.hpp"
@@ -45,7 +46,7 @@ void DefineBacktracker::run()
         throw ScamException(writeValue(test));
     }
 
-    Continuation * cont
-        = standardMemoryManager.make<Continuation>("Define Backtrack");
+    MemoryManager & mm = ScamEngine::getEngine().getMemoryManager();
+    Continuation * cont = mm.make<Continuation>("Define Backtrack");
     runParent(cont);
 }
