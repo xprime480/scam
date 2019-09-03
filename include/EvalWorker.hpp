@@ -18,8 +18,8 @@ namespace scam
         makeInstance(ScamValue forms, Env * env, Continuation * cont);
 
     public:
-       void mark() override;
-       void run() override;
+        void mark() override;
+        void run() override;
 
     private:
         ScamValue forms;

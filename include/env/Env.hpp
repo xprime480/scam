@@ -11,8 +11,6 @@
 
 namespace scam
 {
-    struct EnvData;
-
     class Env : public ManagedObject
     {
     private:

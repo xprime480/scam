@@ -34,7 +34,6 @@ protected:
     {
         TestBase::SetUp();
         mm.reset();
-        mm.setSize(2u);
         mm.addHook(&hook);
     }
 
@@ -144,7 +143,7 @@ TEST_F(MemoryTest, GCTestGCNoRoots)
     EXPECT_EQ(7, cut->getValue());
 
     EXPECT_EQ(4, mm.getCurrentCount());
-    mm.gc();
+    mm.gc(true);
     EXPECT_EQ(0, mm.getCurrentCount());
 }
 
@@ -158,7 +157,7 @@ TEST_F(MemoryTest, GCTestOneRoot)
     EXPECT_EQ(4, mm.getCurrentCount());
 
     hook.addRoot(cut);
-    mm.gc();
+    mm.gc(true);
 
     EXPECT_EQ(1, mm.getCurrentCount());
     expectMarked(false, cut);
@@ -178,7 +177,7 @@ TEST_F(MemoryTest, GCTestWithProxy)
     EXPECT_EQ(4, mm.getCurrentCount());
 
     hook.addRoot(cut);
-    mm.gc();
+    mm.gc(true);
 
     EXPECT_EQ(2, mm.getCurrentCount());
     expectMarked(false, cut, proxy);

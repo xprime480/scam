@@ -9,7 +9,6 @@
 
 namespace scam
 {
-
     class ClassCont : public Continuation
     {
     private:

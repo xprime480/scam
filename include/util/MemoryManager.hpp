@@ -5,6 +5,7 @@
 
 #include <functional>
 #include <memory>
+#include <set>
 #include <vector>
 
 namespace scam
@@ -14,7 +15,8 @@ namespace scam
     public:
         struct Hook
         {
-            virtual void operator()() const = 0;
+            virtual void markRoots() const = 0;
+            virtual void releaseRoots() = 0;
         };
 
         static constexpr size_t DEFAULT_SIZE = 2 << 16;
@@ -33,27 +35,31 @@ namespace scam
             return raw;
         }
 
-        void setSize(size_t size);
         void addHook(Hook * hook);
         void removeHook(Hook * hook);
 
-        void gc();
+        void gc(bool force = false);
         void reset();
 
         size_t getCreateCount() const;
         size_t getCurrentCount() const;
 
+        bool isSuppressed() const;
+        void setSuppressed(bool value);
+
     private:
-      size_t arena_size;
-      std::vector<std::unique_ptr<ManagedObject>> arena;
+        const size_t arena_size;
+        std::vector<std::unique_ptr<ManagedObject>> arena;
 
-      std::vector<Hook *> hooks;
+        std::set<Hook *> hooks;
 
-      size_t createCount;
+        size_t createCount;
 
-      void mark();
-      void sweep();
-      void unmark();
+        bool suppressed;
+
+        void mark();
+        void sweep();
+        void unmark();
     };
 }
 

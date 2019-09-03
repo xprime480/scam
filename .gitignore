@@ -6,3 +6,4 @@ tags
 *~
 *.exe
 commit-msg
+*.stackdump

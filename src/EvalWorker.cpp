@@ -19,7 +19,7 @@ namespace
     private:
         friend class scam::MemoryManager;
         LocalEvalCont(Continuation * cont)
-            : Continuation("eval")
+            : Continuation("Local Eval")
             , cont(cont)
         {
         }

@@ -26,12 +26,12 @@ CarContinuation::makeInstance(ScamValue cdr, Continuation * cont, Env * env)
 
 void CarContinuation::mark()
 {
-  if ( ! isMarked() ) {
-      Continuation::mark();
-      cdr->mark();
-      cont->mark();
-      env->mark();
-  }
+    if ( ! isMarked() ) {
+        Continuation::mark();
+        cdr->mark();
+        cont->mark();
+        env->mark();
+    }
 }
 
 void CarContinuation::handleValue(ScamValue value)

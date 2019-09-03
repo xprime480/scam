@@ -2,16 +2,21 @@
 
 using namespace scam;
 
-/* This class is obsolete and can be removed */
-
 void TestHook::addRoot(ManagedObject * root)
 {
     roots.push_back(root);
 }
 
-void TestHook::operator()() const
+void TestHook::markRoots() const
 {
     for ( auto root : roots ) {
         root->mark();
     }
 }
+
+void TestHook::releaseRoots()
+{
+    roots.clear();
+}
+
+

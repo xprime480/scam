@@ -21,10 +21,10 @@ NotCont * NotCont::makeInstance(Continuation * cont)
 
 void NotCont::mark()
 {
-  if ( ! isMarked() ) {
-      Continuation::mark();
-      cont->mark();
-  }
+    if ( ! isMarked() ) {
+        Continuation::mark();
+        cont->mark();
+    }
 }
 
 void NotCont::handleValue(ScamValue value)

@@ -1,4 +1,3 @@
-
 #include "util/ManagedObject.hpp"
 
 using namespace scam;

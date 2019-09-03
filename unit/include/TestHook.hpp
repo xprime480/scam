@@ -12,7 +12,8 @@ namespace scam
     {
     public:
         void addRoot(ManagedObject * root);
-        void operator()() const override;
+	void markRoots() const override;
+	void releaseRoots() override;
 
     private:
         std::vector<ManagedObject *> roots;

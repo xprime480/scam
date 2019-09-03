@@ -70,7 +70,7 @@ namespace scam
     public:
         bool match(ScamValue arg, SyntaxMatchData & data) override;
         void tagAsEllipsis() override;
-	
+
         bool isRest() const;
 
         void setMultiple();

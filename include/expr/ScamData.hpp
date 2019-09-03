@@ -220,7 +220,6 @@ namespace scam
         void assertType(DataTagType requiredType);
 
     public:
-
         bool & exactFlag();
         ScamValue & realPart();
         ScamValue & imagPart();

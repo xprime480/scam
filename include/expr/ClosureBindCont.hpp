@@ -7,7 +7,6 @@ namespace scam
 {
     class Env;
     class LambdaDef;
-
     class MemoryManager;
 
     class ClosureBindCont : public Continuation

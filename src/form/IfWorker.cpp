@@ -30,9 +30,9 @@ void IfWorker::mark()
 {
     if ( ! isMarked() ) {
         Worker::mark();
+        args->mark();
         cont->mark();
         env->mark();
-        args->mark();
     }
 }
 

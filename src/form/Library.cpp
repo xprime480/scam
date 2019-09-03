@@ -19,6 +19,9 @@ using namespace std;
 
 namespace
 {
+    extern Env * newEnv();
+    extern Env * extendEnv(Env * env);
+
     extern ScamValue getLibraryName(ScamValue & args);
     extern ScamValue getDirectiveName(ScamValue arg0);
 
@@ -68,12 +71,19 @@ void scam::applyImport(ScamValue args, Continuation * cont, Env * env)
         ScamEngine::getEngine().handleError(result);
     }
     else if ( isEnv(result) ) {
-        ScamEngine::getEngine().getFrame()->merge(asEnv(result));
+        Env * dst = ScamEngine::getEngine().getFrame();
+        Env * src = asEnv(result);
+        dst->merge(src);
     }
 }
 
 ScamValue scam::defineLibrary(ScamValue args)
 {
+    ScamEngine & engine = ScamEngine::getEngine();
+    MemoryManager & mm = engine.getMemoryManager();
+    bool suppressed = mm.isSuppressed();
+    mm.setSuppressed(true);
+
     ScamValue name = getLibraryName(args);
     if ( isUnhandledError(name) ) {
         return name;
@@ -109,10 +119,8 @@ ScamValue scam::defineLibrary(ScamValue args)
         }
     }
 
-    ScamEngine & engine = ScamEngine::getEngine();
-
     Env * original = engine.getFrame();
-    Env * extended = original->extend();
+    Env * extended = extendEnv(original);
     engine.setFrame(extended);
 
     for ( const auto i : imports ) {
@@ -122,7 +130,9 @@ ScamValue scam::defineLibrary(ScamValue args)
             specs = getCdr(specs);
             ScamValue result = importImportSet(spec);
             if ( isEnv(result) ) {
-                extended->merge(asEnv(result));
+                Env * dst = extended;
+                Env * src = asEnv(result);
+                dst->merge(src);
             }
             else {
                 return result;
@@ -139,10 +149,11 @@ ScamValue scam::defineLibrary(ScamValue args)
 
     engine.setFrame(original);
 
-    MemoryManager & mm = engine.getMemoryManager();
-    Env * lib = mm.make<Env>();
+    Env * lib = newEnv();
     if ( exports.empty() ) {
-        lib->merge(extended);
+        Env * dst = lib;
+        Env * src = extended;
+        dst->merge(src);
     }
     else {
         for ( auto e : exports ) {
@@ -157,15 +168,21 @@ ScamValue scam::defineLibrary(ScamValue args)
 
     ScamValue rv = makeEnv(lib);
     engine.saveLibrary(name, lib);
+    mm.setSuppressed(suppressed);
     return rv;
 }
 
 ScamValue scam::importToEnv(ScamValue args)
 {
     ScamEngine & engine = ScamEngine::getEngine();
+    MemoryManager & mm = engine.getMemoryManager();
+    bool suppressed = mm.isSuppressed();
+    mm.setSuppressed(true);
+
     Env * original = engine.getFrame();
-    engine.setFrame(original->extend());
-    Env * target = engine.getMemoryManager().make<Env>();
+    Env * local    = extendEnv(original);
+    engine.setFrame(local);
+    Env * target = newEnv();
     ScamValue rv = makeEnv(target);
 
     while ( ! isNull(args) ) {
@@ -174,7 +191,9 @@ ScamValue scam::importToEnv(ScamValue args)
 
         ScamValue result = importImportSet(arg0);
         if ( isEnv(result) ) {
-            target->merge(asEnv(result));
+            Env * dst = target;
+            Env * src = asEnv(result);
+            dst->merge(src);
         }
         else {
             rv = result;
@@ -183,11 +202,24 @@ ScamValue scam::importToEnv(ScamValue args)
     }
 
     engine.setFrame(original);
+    mm.setSuppressed(suppressed);
     return rv;
 }
 
 namespace
 {
+    Env * newEnv()
+    {
+        Env * e = ScamEngine::getEngine().getMemoryManager().make<Env>();
+        return e;
+    }
+
+    Env * extendEnv(Env * env)
+    {
+        Env * e = env->extend();
+        return e;
+    }
+
     ScamValue getLibraryName(ScamValue & args)
     {
         if ( isNull(args) ) {
@@ -281,7 +313,7 @@ namespace
 
         ScamEngine & engine = ScamEngine::getEngine();
         Env * original = engine.getFrame();
-        Env * extended = original->extend();
+        Env * extended = extendEnv(original);
         engine.setFrame(extended);
         ScamValue rv = loadEvalFile(fileToLoad);
         engine.setFrame(original);
@@ -301,9 +333,8 @@ namespace
             return result;
         }
 
-        MemoryManager & mm = ScamEngine::getEngine().getMemoryManager();
         Env * temp = asEnv(result);
-        Env * base = mm.make<Env>();
+        Env * base = newEnv();
         ScamValue rest = getCdr(args);
 
         return copyOnlyRename(base, temp, rest, "only");

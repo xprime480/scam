@@ -25,9 +25,9 @@ void LetBaseWorker::mark()
 {
     if ( ! isMarked() ) {
         Worker::mark();
-        def.mark();
         cont->mark();
         env->mark();
+        def.mark();
     }
 }
 

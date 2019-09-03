@@ -22,7 +22,7 @@ set<ScamValue> TemplateData::getFreeSymbols() const
     IDSet freeIds;
     this->getTemplateIds(freeIds);
     for ( const auto & i : freeIds ) {
-	ScamValue sym = makeSymbol(i);
+        ScamValue sym = makeSymbol(i);
         freeSymbols.insert(sym);
     }
 
@@ -205,7 +205,6 @@ string TemplateDataList::identify() const
 
     return s.str();
 }
-
 
 TemplateDataEllipsis::TemplateDataEllipsis(TemplateData * subTemplate)
     : subTemplate(subTemplate)

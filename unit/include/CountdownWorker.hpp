@@ -24,6 +24,7 @@ namespace scam
             size_t n;
             WorkQueue & queue;
 
+            // void mark() override; fixme?
             void run() override;
         };
     }

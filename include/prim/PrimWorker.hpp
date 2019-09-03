@@ -7,7 +7,7 @@
 
 namespace scam
 {
-    class  PrimWorker : public Worker
+    class PrimWorker : public Worker
     {
     private:
         friend class scam::MemoryManager;

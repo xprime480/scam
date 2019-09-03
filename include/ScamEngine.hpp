@@ -15,8 +15,6 @@ namespace scam
 {
     class Tokenizer;
 
-    extern Env * configEnv;
-
     class ScamEngine
     {
     private:
@@ -29,9 +27,11 @@ namespace scam
 
         /***  functions to manage the frame stack ***/
 
+        void release();
         void reset(bool initEnv);
 
         Env * getFrame();
+        Env * getConfigFrame();
         Env * getInteractionFrame();
         void setFrame(Env * env);
 
@@ -79,6 +79,7 @@ namespace scam
         void mark();
 
     private:
+        Env * configEnv;
         Env * env;
         Env * topEnv;
         ScamValue libs;

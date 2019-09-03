@@ -43,6 +43,7 @@ void ClassInitWorker::mark()
 {
     if ( ! isMarked() ) {
         Worker::mark();
+        instance->mark();
         args->mark();
         cont->mark();
         env->mark();

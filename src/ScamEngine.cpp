@@ -64,10 +64,9 @@ namespace
     };
 }
 
-Env * scam::configEnv  = nullptr;
-
 ScamEngine::ScamEngine()
-    : env(nullptr)
+    : configEnv(nullptr)
+    , env(nullptr)
     , topEnv(nullptr)
     , libs(nullptr)
     , backtracker(nullptr)
@@ -89,6 +88,7 @@ ScamEngine & ScamEngine::getEngine()
 
 void ScamEngine::reset(bool initEnv)
 {
+    mm.addHook(&marker);
     backtracker = nullptr;
     cont = mm.make<HistoryCont>(1);
 
@@ -104,12 +104,16 @@ void ScamEngine::reset(bool initEnv)
         env = makeInteractionEnv(env);
     }
     topEnv = env = env->extend();
-
 }
 
 Env * ScamEngine::getFrame()
 {
     return env;
+}
+
+Env * ScamEngine::getConfigFrame()
+{
+    return configEnv;
 }
 
 Env * ScamEngine::getInteractionFrame()
@@ -215,10 +219,16 @@ ScamValue ScamEngine::eval(ScamValue expr)
 
 ScamValue ScamEngine::eval(ScamValue expr, Handler * handler)
 {
+    bool suppressed = mm.isSuppressed();
+    mm.setSuppressed(true);
+
     pushHandler(handler);
     scam::eval(expr, cont, env);
     Trampoline(GlobalWorkQueue);
     popHandler();
+
+    mm.setSuppressed(suppressed);
+    mm.gc();
 
     HistoryCont const * hc = dynamic_cast<HistoryCont const *>(cont);
     ScamValue rv = hc->get();
@@ -297,26 +307,44 @@ MemoryManager & ScamEngine::getMemoryManager()
     return mm;
 }
 
+void ScamEngine::release()
+{
+    configEnv = nullptr;
+    // GlobalWorkQueue.clear();
+
+    env = nullptr;
+    topEnv = nullptr;
+    libs = nullptr;
+
+    input.clear();
+    backtracker = nullptr;
+    cont = nullptr;
+
+    handlers.clear();
+}
+
 void ScamEngine::mark()
 {
     configEnv->mark();
-    env->mark();
-    cont->mark();
     GlobalWorkQueue.mark();
 
-    if ( backtracker ) {
-        backtracker->mark();
-    }
+    env->mark();
+    topEnv->mark();
+    libs->mark();
 
     for ( auto & i : input ) {
         i.mark();
     }
 
+    if ( backtracker ) {
+        backtracker->mark();
+    }
+
+    cont->mark();
+
     for ( auto & h : handlers ) {
         h->mark();
     }
-
-    libs->mark();
 }
 
 namespace

@@ -4,7 +4,12 @@
 
 using namespace scam;
 
-void EngineMarker::operator()() const
+void EngineMarker::markRoots() const
 {
     ScamEngine::getEngine().mark();
+}
+
+void EngineMarker::releaseRoots()
+{
+    ScamEngine::getEngine().release();
 }

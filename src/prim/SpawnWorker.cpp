@@ -28,6 +28,8 @@ void SpawnWorker::mark()
 
 void SpawnWorker::run()
 {
+    Worker::run();
+
     ScamValue flag = makeBoolean(value);
     cont->handleValue(flag);
 }

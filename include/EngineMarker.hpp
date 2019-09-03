@@ -10,7 +10,8 @@ namespace scam
     class EngineMarker : public MemoryManager::Hook
     {
     public:
-        void operator()() const override;
+        void markRoots() const override;
+        void releaseRoots() override;
     };
 }
 

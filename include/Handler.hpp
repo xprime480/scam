@@ -19,7 +19,7 @@ namespace scam
 
     private:
         static Handler * makeInstance();
-	
+
     public:
         virtual ~Handler() {}
 

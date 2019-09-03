@@ -33,7 +33,8 @@ scam::ScamTraceScope::~ScamTraceScope()
 void scam::scamLog(const std::string & msg)
 {
     ScamPort * port = nullptr;
-    ScamValue portName = makeSymbol("**log-port**");
+    static const ScamValue portName = makeSymbol("**log-port**", false);
+    Env * configEnv = ScamEngine::getEngine().getConfigFrame();
 
     if ( configEnv && truth(configEnv->check(portName)) ) {
         ScamValue p = configEnv->get(portName);

@@ -36,6 +36,8 @@ void IncludeWorker::mark()
 
 void IncludeWorker::run()
 {
+    Worker::run();
+
     ScamValue curr = getCar(args);
     ScamValue newArg = makeList(curr);
 

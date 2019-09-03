@@ -8,6 +8,7 @@ using namespace std;
 MemoryManager::MemoryManager(size_t size)
     : arena_size(size)
     , createCount(0)
+    , suppressed(false)
 {
 }
 
@@ -15,14 +16,9 @@ MemoryManager::~MemoryManager()
 {
 }
 
-void MemoryManager::setSize(size_t size)
-{
-    arena_size = size;
-}
-
 void MemoryManager::addHook(Hook * hook)
 {
-    hooks.push_back(hook);
+    hooks.insert(hook);
 }
 
 void MemoryManager::removeHook(Hook * hook)
@@ -33,23 +29,28 @@ void MemoryManager::removeHook(Hook * hook)
     }
 }
 
-void MemoryManager::gc()
+void MemoryManager::gc(bool force)
 {
-    const size_t count { getCurrentCount() };
-    if ( count < arena_size ) {
+    if ( suppressed ) {
         return;
     }
 
-    mark();
-    sweep();
-    unmark();
+    const size_t count { getCurrentCount() };
+    if ( force || (count >= arena_size) ) {
+        mark();
+        sweep();
+        unmark();
+    }
 }
 
 void MemoryManager::reset()
 {
+    for ( const auto & hook : hooks ) {
+        hook->releaseRoots();
+    }
+
     arena.clear();
     hooks.clear();
-    setSize(DEFAULT_SIZE);
     createCount = 0u;
 }
 
@@ -63,10 +64,20 @@ size_t MemoryManager::getCurrentCount() const
     return arena.size();
 }
 
+bool MemoryManager::isSuppressed() const
+{
+    return suppressed;
+}
+
+void MemoryManager::setSuppressed(bool value)
+{
+    suppressed = value;
+}
+
 void MemoryManager::mark()
 {
     for ( const auto & hook : hooks ) {
-        (*hook)();
+        hook->markRoots();
     }
 }
 
