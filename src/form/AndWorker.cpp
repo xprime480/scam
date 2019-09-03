@@ -13,23 +13,18 @@
 using namespace scam;
 using namespace std;
 
-AndWorker::AndWorker(Continuation * cont,
-                     Env * env,
-                     ScamValue args,
-                     ScamEngine * engine)
-    : Worker("And", engine)
+AndWorker::AndWorker(Continuation * cont, Env * env, ScamValue args)
+    : Worker("And")
     , cont(cont)
     , env(env)
     , args(args)
 {
 }
 
-AndWorker * AndWorker::makeInstance(Continuation * cont,
-                                    Env * env,
-                                    ScamValue args,
-                                    ScamEngine * engine)
+AndWorker *
+AndWorker::makeInstance(Continuation * cont, Env * env, ScamValue args)
 {
-    return new AndWorker(cont, env, args, engine);
+    return new AndWorker(cont, env, args);
 }
 
 void AndWorker::mark()
@@ -53,7 +48,7 @@ void AndWorker::run()
         ScamValue test = getCar(args);
         ScamValue rest = getCdr(args);
         Continuation * newCont =
-            standardMemoryManager.make<AndCont>(rest, cont, env, engine);
-        eval(test, newCont, env, engine);
+            standardMemoryManager.make<AndCont>(rest, cont, env);
+        eval(test, newCont, env);
     }
 }

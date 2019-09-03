@@ -13,10 +13,8 @@ namespace scam
         {
         private:
             friend class scam::MemoryManager;
-            OneShotWorker(ScamEngine * engine, size_t * counter);
-
-            static OneShotWorker *
-            makeInstance(ScamEngine * engine, size_t * counter);
+            OneShotWorker(size_t * counter);
+            static OneShotWorker * makeInstance(size_t * counter);
 
         public:
             void run() override;

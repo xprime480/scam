@@ -15,7 +15,8 @@ using namespace scam;
 using namespace std;
 
 ScamRepl::ScamRepl(int argc, char ** argv)
-    : parser(tokenizer)
+    : engine(ScamEngine::getEngine())
+    , parser(tokenizer)
     , testmode(false)
     , done(false)
 {
@@ -31,7 +32,7 @@ int ScamRepl::run()
 
     if ( ! testmode ) {
         ScamValue spec = makeList(makeSymbol("lib/prelude"));
-        ScamValue result = importToEnv(spec, &engine);
+        ScamValue result = importToEnv(spec);
         if ( isUnhandledError(result) ) {
             engine.handleError(result);
             return 1;
@@ -115,7 +116,7 @@ ScamValue ScamRepl::evaluateFile(const string & name)
             rv = makeError("File %{0} not found on path", makeString(name));
         }
         else {
-            rv = loadEvalFile(fullpath, &engine);
+            rv = loadEvalFile(fullpath);
         }
     }
     catch ( ScamException e )  {

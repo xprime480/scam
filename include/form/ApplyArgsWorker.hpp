@@ -15,14 +15,12 @@ namespace scam
         ApplyArgsWorker(ScamValue op,
                         ScamValue args,
                         Continuation * cont,
-                        Env * env,
-                        ScamEngine * engine);
+                        Env * env);
 
         static ApplyArgsWorker * makeInstance(ScamValue op,
                                               ScamValue args,
                                               Continuation * cont,
-                                              Env * env,
-                                              ScamEngine * engine);
+                                              Env * env);
 
     public:
         void mark() override;

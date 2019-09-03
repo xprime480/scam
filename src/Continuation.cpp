@@ -1,6 +1,5 @@
 #include "Continuation.hpp"
 
-#include "ScamEngine.hpp"
 #include "expr/ScamData.hpp"
 #include "util/GlobalId.hpp"
 
@@ -9,16 +8,15 @@
 using namespace scam;
 using namespace std;
 
-Continuation::Continuation(char const * id, ScamEngine * engine)
+Continuation::Continuation(char const * id)
     : name(GlobalId::makeName(id))
-    , engine(engine)
 {
 }
 
 Continuation *
-Continuation::makeInstance(char const * name, ScamEngine * engine)
+Continuation::makeInstance(char const * name)
 {
-    return new Continuation(name, engine);
+    return new Continuation(name);
 }
 
 Continuation::~Continuation()

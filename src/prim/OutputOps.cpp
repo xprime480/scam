@@ -18,34 +18,30 @@ using namespace std;
 namespace
 {
     void writeToPort(ScamValue value, ScamValue port);
-    ScamValue paramToPort(const OptionalParameter & p, ScamEngine * engine);
+    ScamValue paramToPort(const OptionalParameter & p);
 }
 
-void scam::applyDisplay(ScamValue args,
-                        Continuation * cont,
-                        ScamEngine * engine)
+void scam::applyDisplay(ScamValue args, Continuation * cont)
 {
     ObjectParameter   p0;
     PortParameter     pPort;
     OptionalParameter p1(pPort);
 
-    if ( argsToParms(args, engine, "display", p0, p1) ) {
+    if ( argsToParms(args, "display", p0, p1) ) {
         ScamValue obj = p0.value;
-        ScamValue port = paramToPort(p1, engine);
+        ScamValue port = paramToPort(p1);
         writeToPort(obj, port);
         cont->handleValue(makeNothing());
     }
 }
 
-void scam::applyNewline(ScamValue args,
-                        Continuation * cont,
-                        ScamEngine * engine)
+void scam::applyNewline(ScamValue args, Continuation * cont)
 {
     PortParameter     pPort;
     OptionalParameter p0(pPort);
-    if ( argsToParms(args, engine, "newline", p0) ) {
+    if ( argsToParms(args, "newline", p0) ) {
         static const ScamValue newline = makeString("\n", false);
-        ScamValue port = paramToPort(p0, engine);
+        ScamValue port = paramToPort(p0);
         writeToPort(newline, port);
         cont->handleValue(makeNothing());
     }
@@ -68,10 +64,10 @@ namespace
         asPort(port)->put(text.c_str(), text.size());
     }
 
-    ScamValue paramToPort(const OptionalParameter & p, ScamEngine * engine)
+    ScamValue paramToPort(const OptionalParameter & p)
     {
-        ScamValue port =
-            p.found ? p.value : engine->eval(makeSymbol("**cerr**"));
+        ScamEngine & e = ScamEngine::getEngine();
+        ScamValue port = p.found ? p.value : e.eval(makeSymbol("**cerr**"));
         return port;
     }
 }

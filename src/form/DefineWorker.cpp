@@ -12,9 +12,8 @@ using namespace std;
 DefineWorker::DefineWorker(ScamValue symbol,
                            ScamValue form,
                            Continuation * cont,
-                           Env * env,
-                           ScamEngine * engine)
-    : Worker("Define", engine)
+                           Env * env)
+    : Worker("Define")
     , symbol(symbol)
     , form(form)
     , cont(cont)
@@ -25,10 +24,9 @@ DefineWorker::DefineWorker(ScamValue symbol,
 DefineWorker * DefineWorker::makeInstance(ScamValue symbol,
                                           ScamValue form,
                                           Continuation * cont,
-                                          Env * env,
-                                          ScamEngine * engine)
+                                          Env * env)
 {
-    return new DefineWorker(symbol, form, cont, env, engine);
+    return new DefineWorker(symbol, form, cont, env);
 }
 
 void DefineWorker::mark()
@@ -47,6 +45,6 @@ void DefineWorker::run()
     Worker::run();
 
     Continuation * c =
-        standardMemoryManager.make<DefineCont>(symbol, cont, env, engine);
-    eval(form, c, env, engine);
+        standardMemoryManager.make<DefineCont>(symbol, cont, env);
+    eval(form, c, env);
 }

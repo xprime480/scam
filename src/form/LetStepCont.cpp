@@ -17,9 +17,8 @@ LetStepCont::LetStepCont(ScamValue formals,
                          ScamValue args,
                          Continuation * cont,
                          Env * env,
-                         ScamEngine * engine,
                          bool rebind)
-    : Continuation("LetStepCont", engine)
+    : Continuation("LetStepCont")
     , formals(formals)
     , forms(forms)
     , evaled(evaled)
@@ -36,17 +35,9 @@ LetStepCont * LetStepCont::makeInstance(ScamValue formals,
                                         ScamValue args,
                                         Continuation * cont,
                                         Env * env,
-                                        ScamEngine * engine,
                                         bool rebind)
 {
-    return new LetStepCont(formals,
-                           forms,
-                           evaled,
-                           args,
-                           cont,
-                           env,
-                           engine,
-                           rebind);
+    return new LetStepCont(formals, forms, evaled, args, cont, env, rebind);
 }
 
 void LetStepCont::mark()
@@ -67,7 +58,7 @@ void LetStepCont::handleValue(ScamValue value)
     Continuation::handleValue(value);
 
     if ( isUnhandledError(value) ) {
-        engine->handleError(value);
+        ScamEngine::getEngine().handleError(value);
     }
     else {
         ScamValue extend = append(evaled, value);
@@ -77,7 +68,6 @@ void LetStepCont::handleValue(ScamValue value)
                                        forms,
                                        cont,
                                        env,
-                                       engine,
                                        rebind);
     }
 }

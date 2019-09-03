@@ -5,9 +5,7 @@
 
 namespace scam
 {
-    extern void applyUnify(ScamValue args,
-                           Continuation * cont,
-                           ScamEngine * engine);
+    extern void applyUnify(ScamValue args, Continuation * cont);
 }
 
 #endif

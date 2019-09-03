@@ -7,9 +7,7 @@ namespace scam
 {
     extern const ScamValue fileErrorCategory;
 
-    extern void applyLoad(ScamValue args,
-                          Continuation * cont,
-                          ScamEngine * engine);
+    extern void applyLoad(ScamValue args, Continuation * cont);
 }
 
 #endif

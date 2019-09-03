@@ -15,14 +15,13 @@ namespace scam
         ClosureWorker(ScamValue closure,
                       Continuation * cont,
                       ScamValue args,
-                      Env * argEnv,
-                      ScamEngine * engine);
+                      Env * argEnv);
 
-        static ClosureWorker * makeInstance(ScamValue closure,
-                                            Continuation * cont,
-                                            ScamValue args,
-                                            Env * argEnv,
-                                            ScamEngine * engine);
+        static ClosureWorker *
+        makeInstance(ScamValue closure,
+                     Continuation * cont,
+                     ScamValue args,
+                     Env * argEnv);
 
     public:
         void mark() override;

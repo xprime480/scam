@@ -9,20 +9,16 @@
 using namespace scam;
 using namespace std;
 
-IncludeCont::IncludeCont(ScamValue args,
-                         Continuation * cont,
-                         ScamEngine * engine)
-    : Continuation("Include", engine)
+IncludeCont::IncludeCont(ScamValue args, Continuation * cont)
+    : Continuation("Include")
     , args(args)
     , cont(cont)
 {
 }
 
-IncludeCont * IncludeCont::makeInstance(ScamValue args,
-                                        Continuation * cont,
-                                        ScamEngine * engine)
+IncludeCont * IncludeCont::makeInstance(ScamValue args, Continuation * cont)
 {
-    return new IncludeCont(args, cont, engine);
+    return new IncludeCont(args, cont);
 }
 
 void IncludeCont::mark()
@@ -39,9 +35,9 @@ void IncludeCont::handleValue(ScamValue value)
     Continuation::handleValue(value);
 
     if ( isUnhandledError(value) ) {
-        engine->handleError(value);
+        ScamEngine::getEngine().handleError(value);
     }
     else {
-        workQueueHelper<IncludeWorker>(args, cont, engine);
+        workQueueHelper<IncludeWorker>(args, cont);
     }
 }

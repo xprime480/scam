@@ -15,14 +15,12 @@ namespace scam
         AssignWorker(ScamValue sym,
                      ScamValue value,
                      Continuation * cont,
-                     Env * env,
-                     ScamEngine * engine);
+                     Env * env);
 
         static AssignWorker * makeInstance(ScamValue sym,
                                            ScamValue value,
                                            Continuation * cont,
-                                           Env * env,
-                                           ScamEngine * engine);
+                                           Env * env);
 
     public:
         void mark() override;

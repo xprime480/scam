@@ -750,7 +750,7 @@ TEST_F(ParameterTest, LetNonTrivial)
 TEST_F(ParameterTest, ArgToParmsEndOfInput)
 {
     ScamValue args = readString("()");
-    bool result = argsToParms(args, &engine, "test");
+    bool result = argsToParms(args, "test");
     EXPECT_TRUE(result);
 }
 
@@ -760,7 +760,7 @@ TEST_F(ParameterTest, ArgToParmsTooFew)
     ObjectParameter parm2;
 
     ScamValue args = readString("(1)");
-    bool result = argsToParms(args, &engine, "test", parm1, parm2);
+    bool result = argsToParms(args, "test", parm1, parm2);
     EXPECT_FALSE(result);
 
     EXPECT_TRUE(parm1.valid);
@@ -775,7 +775,7 @@ TEST_F(ParameterTest, ArgToParmsTooMany)
     ObjectParameter parm2;
 
     ScamValue args = readString("(1 2 3)");
-    bool result = argsToParms(args, &engine, "test", parm1, parm2);
+    bool result = argsToParms(args, "test", parm1, parm2);
     EXPECT_FALSE(result);
 
     EXPECT_TRUE(parm1.valid);
@@ -791,7 +791,7 @@ TEST_F(ParameterTest, ArgToParmsJustRight)
     ObjectParameter parm2;
 
     ScamValue args = readString("(1 2)");
-    bool result = argsToParms(args, &engine, "test", parm1, parm2);
+    bool result = argsToParms(args, "test", parm1, parm2);
     EXPECT_TRUE(result);
 
     EXPECT_TRUE(parm1.valid);

@@ -18,7 +18,6 @@ namespace scam
                 ScamValue forms,
                 Continuation * cont,
                 Env * env,
-                ScamEngine * engine,
                 bool rebind);
 
 
@@ -26,7 +25,6 @@ namespace scam
                                       ScamValue forms,
                                       Continuation * cont,
                                       Env * env,
-                                      ScamEngine * engine,
                                       bool rebind);
 
     public:

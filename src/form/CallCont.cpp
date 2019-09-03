@@ -13,17 +13,17 @@
 using namespace scam;
 using namespace std;
 
-CallCont::CallCont(Continuation * cont, Env * env, ScamEngine * engine)
-    : Continuation("CallCont", engine)
+CallCont::CallCont(Continuation * cont, Env * env)
+    : Continuation("CallCont")
     , cont(cont)
     , env(env)
 {
 }
 
 CallCont *
-CallCont::makeInstance(Continuation * cont, Env * env, ScamEngine * engine)
+CallCont::makeInstance(Continuation * cont, Env * env)
 {
-    return new CallCont(cont, env, engine);
+    return new CallCont(cont, env);
 }
 
 void CallCont::mark()
@@ -40,7 +40,7 @@ void CallCont::handleValue(ScamValue value)
     Continuation::handleValue(value);
 
     if ( isUnhandledError(value) ) {
-        engine->handleError(value);
+        ScamEngine::getEngine().handleError(value);
         return;
     }
 
@@ -48,11 +48,11 @@ void CallCont::handleValue(ScamValue value)
         ScamValue err =
             makeError("call/cc: form '%{0}' cannot be applied", value);
         err->errorCategory() = evalCategory;
-        engine->handleError(err);
+        ScamEngine::getEngine().handleError(err);
         return;
     }
 
     ScamValue contExpr = makeContinuation(cont);
     ScamValue args = makeList(contExpr);
-    apply(value, args, cont, env, engine);
+    apply(value, args, cont, env);
 }

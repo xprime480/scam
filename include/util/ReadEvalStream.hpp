@@ -12,7 +12,7 @@ namespace scam
     class ReadEvalStream : public ReadEval
     {
     public:
-        ReadEvalStream(ScamEngine * engine, CharStream & stream);
+        ReadEvalStream(CharStream & stream);
 
     private:
         CharStreamTokenizer tokenizer;

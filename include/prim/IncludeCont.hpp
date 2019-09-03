@@ -12,10 +12,8 @@ namespace scam
     private:
         friend class scam::MemoryManager;
 
-        IncludeCont(ScamValue args, Continuation * cont, ScamEngine * engine);
-
-        static IncludeCont *
-        makeInstance(ScamValue args, Continuation * cont, ScamEngine * engine);
+        IncludeCont(ScamValue args, Continuation * cont);
+        static IncludeCont * makeInstance(ScamValue args, Continuation * cont);
 
     public:
         void mark() override;

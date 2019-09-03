@@ -20,14 +20,13 @@ namespace scam
         friend class scam::MemoryManager;
 
         SyntaxRule(ScamValue rule,
-                   ScamEngine * engine,
                    ScamValue name,
                    const std::set<std::string> & reserved);
 
-        static SyntaxRule * makeInstance(ScamValue rule,
-                                         ScamEngine * engine,
-                                         ScamValue name,
-                                         const std::set<std::string> & reserved);
+        static SyntaxRule *
+        makeInstance(ScamValue rule,
+                     ScamValue name,
+                     const std::set<std::string> & reserved);
 
     public:
         ~SyntaxRule();
@@ -53,8 +52,8 @@ namespace scam
         std::set<std::string> patternIdentifiers;
 
         PatternData * parsePattern(ScamValue pat,
-                                   ScamEngine * engine,
                                    const std::set<std::string> & reserved);
+
         TemplateData * parseTemplate(ScamValue tem);
 
         ScamValue invalidPattern(ScamValue pat);

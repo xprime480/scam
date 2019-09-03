@@ -16,10 +16,9 @@ namespace scam
         using InstanceVec = std::vector<ScamValue>;
 
         friend class scam::MemoryManager;
-        ClassCont(ScamValue cls, Continuation * cont, ScamEngine * engine);
 
-        static ClassCont *
-        makeInstance(ScamValue cls, Continuation * cont, ScamEngine * engine);
+        ClassCont(ScamValue cls, Continuation * cont);
+        static ClassCont * makeInstance(ScamValue cls, Continuation * cont);
 
     public:
         void mark() override;

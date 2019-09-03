@@ -14,14 +14,12 @@ namespace scam
         PrimWorker(ScamValue caller,
                    ScamValue args,
                    Continuation * original,
-                   Env * env,
-                   ScamEngine * engine);
+                   Env * env);
 
         static PrimWorker * makeInstance(ScamValue caller,
                                          ScamValue args,
                                          Continuation * original,
-                                         Env * env,
-                                         ScamEngine * engine);
+                                         Env * env);
 
     public:
         void mark() override;

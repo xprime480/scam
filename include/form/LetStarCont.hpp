@@ -16,15 +16,13 @@ namespace scam
                     ScamValue rest,
                     ScamValue forms,
                     Continuation * cont,
-                    Env * env,
-                    ScamEngine * engine);
+                    Env * env);
 
         static LetStarCont * makeInstance(ScamValue formals,
                                           ScamValue rest,
                                           ScamValue forms,
                                           Continuation * cont,
-                                          Env * env,
-                                          ScamEngine * engine);
+                                          Env * env);
 
     public:
         void mark() override;

@@ -28,7 +28,7 @@ namespace scam
         void TearDown() override;
 
         Extractor * extractor;
-        ScamEngine engine;
+        ScamEngine & engine;
         MemoryManager & mm;
         TestHandler * handler;
 

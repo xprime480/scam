@@ -1,7 +1,6 @@
 #include "prim/InputOps.hpp"
 
 #include "Continuation.hpp"
-#include "ScamEngine.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/ValueFactory.hpp"
 #include "input/CharStreamTokenizer.hpp"
@@ -13,12 +12,10 @@
 using namespace scam;
 using namespace std;
 
-void scam::applyRead(ScamValue args,
-                     Continuation * cont,
-                     ScamEngine * engine)
+void scam::applyRead(ScamValue args, Continuation * cont)
 {
     PortParameter p0;
-    if ( argsToParms(args, engine, "read", p0) ) {
+    if ( argsToParms(args, "read", p0) ) {
         ScamValue port = p0.value;
 
         port->portValue()->rollback();
@@ -32,10 +29,9 @@ void scam::applyRead(ScamValue args,
 }
 
 void scam::applyEofObject(ScamValue args,
-                          Continuation * cont,
-                          ScamEngine * engine)
+                          Continuation * cont)
 {
-    if ( argsToParms(args, engine, "eof-object") ) {
+    if ( argsToParms(args, "eof-object") ) {
         cont->handleValue(makeEof());
     };
 }

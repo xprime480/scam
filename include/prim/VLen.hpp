@@ -5,9 +5,7 @@
 
 namespace scam
 {
-    extern void applyVLen(ScamValue args,
-                          Continuation * cont,
-                          ScamEngine * engine);
+    extern void applyVLen(ScamValue args, Continuation * cont);
 }
 
 #endif

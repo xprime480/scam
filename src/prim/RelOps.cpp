@@ -102,9 +102,7 @@ namespace
 }
 
 #define CMP_OP_DEFINE(Name, Impl)                                       \
-    void scam::apply##Name(ScamValue args,                              \
-                           Continuation * cont,                         \
-                           ScamEngine * engine)                         \
+    void scam::apply##Name(ScamValue args, Continuation * cont)         \
     {                                                                   \
         static const char * context = { #Name };                        \
                                                                         \
@@ -119,7 +117,7 @@ namespace
         CountedParameter pNums(pNum, 1);                                \
         AlternativeParameter p0(pStrs, pNums);                          \
                                                                         \
-        if ( argsToParms(args, engine, context, p0) ) {                 \
+        if ( argsToParms(args, context, p0) ) {                         \
             ScamValue rv = compareAlgorithm(p0.value, context, Impl);   \
             cont->handleValue(rv);                                      \
         }                                                               \

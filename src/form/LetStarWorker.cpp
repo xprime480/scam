@@ -11,20 +11,15 @@
 using namespace scam;
 using namespace std;
 
-LetStarWorker::LetStarWorker(LetDef & def,
-                             Continuation * cont,
-                             Env * env,
-                             ScamEngine * engine)
-    : LetBaseWorker("LetStar", def, cont, env, engine)
+LetStarWorker::LetStarWorker(LetDef & def, Continuation * cont, Env * env)
+    : LetBaseWorker("LetStar", def, cont, env)
 {
 }
 
-LetStarWorker * LetStarWorker::makeInstance(LetDef & def,
-                                            Continuation * cont,
-                                            Env * env,
-                                            ScamEngine * engine)
+LetStarWorker *
+LetStarWorker::makeInstance(LetDef & def, Continuation * cont, Env * env)
 {
-    return new LetStarWorker(def, cont, env, engine);
+    return new LetStarWorker(def, cont, env);
 }
 
 void
@@ -39,8 +34,7 @@ LetStarWorker::do_next(ScamValue formals, ScamValue values, ScamValue forms)
                                                 getCdr(safe),
                                                 forms,
                                                 cont,
-                                                extended,
-                                                engine);
-    eval(getCar(safe), ch, env, engine);
+                                                extended);
+    eval(getCar(safe), ch, env);
 }
 

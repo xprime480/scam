@@ -10,10 +10,7 @@ namespace scam
     class LetCommonCont : public Continuation
     {
     protected:
-        LetCommonCont(char const * name,
-                      ScamValue forms,
-                      Continuation * cont,
-                      ScamEngine * engine);
+        LetCommonCont(char const * name, ScamValue forms, Continuation * cont);
 
     public:
         void mark() override;

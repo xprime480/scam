@@ -20,9 +20,8 @@ static const char * myName = "quasiquote";
 
 QuasiQuoteWorker::QuasiQuoteWorker(ScamValue form,
                                    Continuation * cont,
-                                   Env * env,
-                                   ScamEngine * engine)
-    : Worker(myName, engine)
+                                   Env * env)
+    : Worker(myName)
     , form(form)
     , cont(cont)
     , env(env)
@@ -31,10 +30,9 @@ QuasiQuoteWorker::QuasiQuoteWorker(ScamValue form,
 
 QuasiQuoteWorker * QuasiQuoteWorker::makeInstance(ScamValue form,
                                                   Continuation * cont,
-                                                  Env * env,
-                                                  ScamEngine * engine)
+                                                  Env * env)
 {
-    return new QuasiQuoteWorker(form, cont, env, engine);
+    return new QuasiQuoteWorker(form, cont, env);
 }
 
 void QuasiQuoteWorker::mark()
@@ -55,14 +53,14 @@ void QuasiQuoteWorker::run()
 bool QuasiQuoteWorker::verify_single_form(ScamValue input, Continuation * cont)
 {
     ObjectParameter p0;
-    return argsToParms(input, engine, myName, p0);
+    return argsToParms(input, myName, p0);
 }
 
 void QuasiQuoteWorker::unquote_form(ScamValue input, Continuation * cont)
 {
     if ( verify_single_form(input, cont) ) {
         ScamValue form = nthcar(input, 0);
-        eval(form, cont, env, engine);
+        eval(form, cont, env);
     }
 }
 
@@ -70,9 +68,9 @@ void QuasiQuoteWorker::splice_form(ScamValue input, Continuation * cont)
 {
     if ( verify_single_form(input, cont) ) {
         Continuation * h =
-            standardMemoryManager.make<QQSpliceCont>(cont, engine);
+            standardMemoryManager.make<QQSpliceCont>(cont);
         ScamValue form = nthcar(input, 0);
-        eval(form, h, env, engine);
+        eval(form, h, env);
     }
 }
 
@@ -81,10 +79,7 @@ void QuasiQuoteWorker::cons_qq_list(ScamValue car,
                                     Continuation * cont)
 {
     Continuation * h =
-        standardMemoryManager.make<QQConsListCarCont>(cdr,
-                                                      cont,
-                                                      env,
-                                                      engine);
+        standardMemoryManager.make<QQConsListCarCont>(cdr, cont, env);
     build_qq_form(car, h);
 }
 

@@ -10,23 +10,18 @@
 using namespace scam;
 using namespace std;
 
-CarContinuation::CarContinuation(ScamValue cdr,
-                                 Continuation * cont,
-                                 Env * env,
-                                 ScamEngine * engine)
-    : Continuation("Cons Map Car", engine)
+CarContinuation::CarContinuation(ScamValue cdr, Continuation * cont, Env * env)
+    : Continuation("Cons Map Car")
     , cdr(cdr)
     , cont(cont)
     , env(env)
 {
 }
 
-CarContinuation * CarContinuation::makeInstance(ScamValue cdr,
-                                                Continuation * cont,
-                                                Env * env,
-                                                ScamEngine * engine)
+CarContinuation *
+CarContinuation::makeInstance(ScamValue cdr, Continuation * cont, Env * env)
 {
-    return new CarContinuation(cdr, cont, env, engine);
+    return new CarContinuation(cdr, cont, env);
 }
 
 void CarContinuation::mark()
@@ -44,9 +39,9 @@ void CarContinuation::handleValue(ScamValue value)
     Continuation::handleValue(value);
 
     if ( isUnhandledError(value) ) {
-        engine->handleError(value);
+        ScamEngine::getEngine().handleError(value);
     }
     else {
-        workQueueHelper<MapCdr>(value, cdr, cont, env, engine);
+        workQueueHelper<MapCdr>(value, cdr, cont, env);
     }
 }

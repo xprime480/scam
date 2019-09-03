@@ -15,14 +15,12 @@ namespace scam
         DefineWorker(ScamValue symbol,
                      ScamValue form,
                      Continuation * cont,
-                     Env * env,
-                     ScamEngine * engine);
+                     Env * env);
 
         static DefineWorker * makeInstance(ScamValue symbol,
                                            ScamValue form,
                                            Continuation * cont,
-                                           Env * env,
-                                           ScamEngine * engine);
+                                           Env * env);
 
     public:
         void mark() override;

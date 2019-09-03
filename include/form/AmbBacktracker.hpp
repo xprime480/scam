@@ -15,13 +15,11 @@ namespace scam
         AmbBacktracker(ScamValue args,
                        Continuation * cont,
                        Env * env,
-                       ScamEngine * engine,
                        Backtracker * parent);
 
         static AmbBacktracker * makeInstance(ScamValue args,
                                              Continuation * cont,
                                              Env * env,
-                                             ScamEngine * engine,
                                              Backtracker * parent);
 
     public:
@@ -32,7 +30,6 @@ namespace scam
         ScamValue      args;
         Continuation  * cont;
         Env           * env;
-        ScamEngine    * engine;
     };
 
 }

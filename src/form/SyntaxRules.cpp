@@ -20,15 +20,12 @@ SyntaxRules::SyntaxRules()
 {
 }
 
-SyntaxRules::SyntaxRules(ScamEngine * engine,
-                         ScamValue name,
-                         ScamValue spec,
-                         Env * env)
+SyntaxRules::SyntaxRules(ScamValue name, ScamValue spec, Env * env)
     : valid(false)
     , name(name)
     , defined(env)
 {
-    ScamValue rules = extractRules(spec, engine);
+    ScamValue rules = extractRules(spec);
     if ( isNothing(rules) ) {
         return;
     }
@@ -37,9 +34,9 @@ SyntaxRules::SyntaxRules(ScamEngine * engine,
         ScamValue head = getCar(rules);
         rules          = getCdr(rules);
 
-        if ( ! decodeRule(head, engine) ) {
+        if ( ! decodeRule(head) ) {
             ScamValue err = invalidSyntax(head);
-            engine->handleError(err);
+            ScamEngine::getEngine().handleError(err);
             return;
         }
     }
@@ -67,14 +64,11 @@ bool SyntaxRules::isValid() const
     return valid;
 }
 
-void SyntaxRules::applySyntax(ScamValue args,
-                              Continuation * cont,
-                              Env * env,
-                              ScamEngine * engine)
+void SyntaxRules::applySyntax(ScamValue args, Continuation * cont, Env * env)
 {
     SyntaxMatchData data;
     SyntaxRule * match = findSyntaxRule(args, data);
-    ScamValue expansion = expandWith(args, engine, data, match);
+    ScamValue expansion = expandWith(args, data, match);
 
     if ( ! isNothing(expansion) ) {
         Env * applicationEnv = extendDefinition(env, match);
@@ -83,16 +77,16 @@ void SyntaxRules::applySyntax(ScamValue args,
         expanded.valid = true;
         expanded.forms = expansion;
         ScamValue closure = makeClosure(expanded, applicationEnv);
-        apply(closure, makeNull(), cont, applicationEnv, engine);
+        apply(closure, makeNull(), cont, applicationEnv);
     }
 }
 
-ScamValue SyntaxRules::expandSyntax(ScamValue args, ScamEngine * engine)
+ScamValue SyntaxRules::expandSyntax(ScamValue args)
 {
-    return expand(args, engine);
+    return expand(args);
 }
 
-ScamValue SyntaxRules::extractRules(ScamValue spec, ScamEngine * engine)
+ScamValue SyntaxRules::extractRules(ScamValue spec)
 {
     const char * chName = name->stringValue().c_str();
 
@@ -103,8 +97,8 @@ ScamValue SyntaxRules::extractRules(ScamValue spec, ScamEngine * engine)
     CountedParameter p2(pList);
 
     ScamValue rv = makeNothing();
-    if ( argsToParms(spec, engine, chName, p0, p1, p2) ) {
-        if ( extractReserved(p1.value, engine) ) {
+    if ( argsToParms(spec, chName, p0, p1, p2) ) {
+        if ( extractReserved(p1.value) ) {
             rv = p2.value;
         }
     }
@@ -112,7 +106,7 @@ ScamValue SyntaxRules::extractRules(ScamValue spec, ScamEngine * engine)
     return rv;
 }
 
-bool SyntaxRules::extractReserved(ScamValue syms, ScamEngine * engine)
+bool SyntaxRules::extractReserved(ScamValue syms)
 {
     reserved.clear();
 
@@ -122,7 +116,7 @@ bool SyntaxRules::extractReserved(ScamValue syms, ScamEngine * engine)
 
         if ( ! isSymbol(sym) ) {
             ScamValue err = badReserved(sym);
-            engine->handleError(err);
+            ScamEngine::getEngine().handleError(err);
             return false;
         }
 
@@ -132,10 +126,10 @@ bool SyntaxRules::extractReserved(ScamValue syms, ScamEngine * engine)
     return true;
 }
 
-bool SyntaxRules::decodeRule(ScamValue rule, ScamEngine * engine)
+bool SyntaxRules::decodeRule(ScamValue rule)
 {
     SyntaxRule * sr =
-        standardMemoryManager.make<SyntaxRule>(rule, engine, name, reserved);
+        standardMemoryManager.make<SyntaxRule>(rule, name, reserved);
 
     bool rv = sr->isValid();
     if ( rv ) {
@@ -145,11 +139,11 @@ bool SyntaxRules::decodeRule(ScamValue rule, ScamEngine * engine)
     return rv;
 }
 
-ScamValue SyntaxRules::expand(ScamValue args, ScamEngine * engine)
+ScamValue SyntaxRules::expand(ScamValue args)
 {
     SyntaxMatchData data;
     SyntaxRule * match = findSyntaxRule(args, data);
-    return expandWith(args, engine, data, match);
+    return expandWith(args, data, match);
 }
 
 Env * SyntaxRules::extendDefinition(Env * base, SyntaxRule * match)
@@ -179,10 +173,10 @@ SyntaxRule * SyntaxRules::findSyntaxRule(ScamValue args, SyntaxMatchData & data)
     return nullptr;
 }
 
-ScamValue SyntaxRules::expandWith(ScamValue args,
-                                  ScamEngine * engine,
-                                  SyntaxMatchData & data,
-                                  SyntaxRule * match)
+ScamValue
+SyntaxRules::expandWith(ScamValue args,
+                        SyntaxMatchData & data,
+                        SyntaxRule * match)
 {
     ScamValue rv = makeNothing();
     if ( match && match->isValid() ) {
@@ -193,7 +187,7 @@ ScamValue SyntaxRules::expandWith(ScamValue args,
     }
 
     if ( isUnhandledError(rv) ) {
-        engine->handleError(rv);
+        ScamEngine::getEngine().handleError(rv);
         rv = makeNothing();
     }
 

@@ -8,20 +8,17 @@
 using namespace scam;
 using namespace std;
 
-CdrContinuation::CdrContinuation(ScamValue car,
-                                 Continuation * original,
-                                 ScamEngine * engine)
-    : Continuation("Cons Map Cdr", engine)
+CdrContinuation::CdrContinuation(ScamValue car, Continuation * original)
+    : Continuation("Cons Map Cdr")
     , car(car)
     , original(original)
 {
 }
 
-CdrContinuation * CdrContinuation::makeInstance(ScamValue car,
-                                                Continuation * original,
-                                                ScamEngine * engine)
+CdrContinuation *
+CdrContinuation::makeInstance(ScamValue car, Continuation * original)
 {
-    return new CdrContinuation(car, original, engine);
+    return new CdrContinuation(car, original);
 }
 
 void CdrContinuation::mark()
@@ -38,7 +35,7 @@ void CdrContinuation::handleValue(ScamValue value)
     Continuation::handleValue(value);
 
     if ( isUnhandledError(value) ) {
-        engine->handleError(value);
+        ScamEngine::getEngine().handleError(value);
     }
     else {
         ScamValue e = makePair(car, value);

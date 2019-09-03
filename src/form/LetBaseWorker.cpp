@@ -13,9 +13,8 @@ using namespace std;
 LetBaseWorker::LetBaseWorker(char const * name,
                              LetDef & def,
                              Continuation * cont,
-                             Env * env,
-                             ScamEngine * engine)
-    : Worker(name, engine)
+                             Env * env)
+    : Worker(name)
     , cont(cont)
     , env(env)
     , def(def)

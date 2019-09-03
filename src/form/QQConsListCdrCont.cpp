@@ -14,8 +14,8 @@ using namespace std;
 
 QQConsListCdrCont::QQConsListCdrCont(ScamValue car,
                                      Continuation * cont,
-                                     Env * env, ScamEngine * engine)
-    : Continuation("QQConsListCdrCont", engine)
+                                     Env * env)
+    : Continuation("QQConsListCdrCont")
     , car(car)
     , cont(cont)
     , env(env)
@@ -24,10 +24,9 @@ QQConsListCdrCont::QQConsListCdrCont(ScamValue car,
 
 QQConsListCdrCont * QQConsListCdrCont::makeInstance(ScamValue car,
                                                     Continuation * cont,
-                                                    Env * env,
-                                                    ScamEngine * engine)
+                                                    Env * env)
 {
-    return new  QQConsListCdrCont(car, cont, env, engine);
+    return new  QQConsListCdrCont(car, cont, env);
 }
 
 void QQConsListCdrCont::mark()
@@ -45,7 +44,7 @@ void QQConsListCdrCont::handleValue(ScamValue value)
     Continuation::handleValue(value);
 
     if ( isUnhandledError(value) ) {
-        engine->handleError(value);
+        ScamEngine::getEngine().handleError(value);
     }
     else {
         handle(value);

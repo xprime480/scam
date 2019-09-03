@@ -551,11 +551,11 @@ ScamValue scam::errorCheckMsg(const char * name, ScamValue value)
     return value;
 }
 
-bool scam::errorCheck(ScamEngine * engine, const char * name, ScamValue value)
+bool scam::errorCheck(const char * name, ScamValue value)
 {
     errorCheckMsg(name, value);
     if ( isUnhandledError(value) ) {
-        engine->handleError(value);
+        ScamEngine::getEngine().handleError(value);
         return false;
     }
     return true;
@@ -572,11 +572,11 @@ ScamValue scam::argsToParmsMsg(ScamValue args)
     return err;
 }
 
-bool scam::argsToParms(ScamValue args, ScamEngine * engine, const char * name)
+bool scam::argsToParms(ScamValue args, const char * name)
 {
     ScamValue rv = argsToParmsMsg(args);
     if ( isUnhandledError(rv) ) {
-        engine->handleError(rv);
+        ScamEngine::getEngine().handleError(rv);
         return false;
     }
     return true;

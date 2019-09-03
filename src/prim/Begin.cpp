@@ -7,15 +7,13 @@
 using namespace scam;
 using namespace std;
 
-void scam::applyBegin(ScamValue args,
-                      Continuation * cont,
-                      ScamEngine * engine)
+void scam::applyBegin(ScamValue args, Continuation * cont)
 {
     static const char * name = "begin";
 
     ObjectParameter itemizer;
     CountedParameter p0(itemizer);
-    if ( argsToParms(args, engine, name, p0) ) {
+    if ( argsToParms(args, name, p0) ) {
         ScamValue rv = p0.value;
 
         const size_t count = length(rv);

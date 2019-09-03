@@ -10,7 +10,7 @@ namespace scam
 #else
 
 #define DECL_PREDICATE(name)                                            \
-    void apply##name(ScamValue args, Continuation * cont, ScamEngine * engine);
+    void apply##name(ScamValue args, Continuation * cont);
 
     DECL_PREDICATE(NullP);
     DECL_PREDICATE(ErrorP);

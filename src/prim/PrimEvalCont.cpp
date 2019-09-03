@@ -7,21 +7,16 @@
 using namespace scam;
 using namespace std;
 
-PrimEvalCont::PrimEvalCont(ScamValue caller,
-                           Continuation * cont,
-                           ScamEngine * engine)
-    : Continuation("Primitive Eval", engine)
+PrimEvalCont::PrimEvalCont(ScamValue caller, Continuation * cont)
+    : Continuation("Primitive Eval")
     , caller(caller)
     , cont(cont)
 {
 }
 
-PrimEvalCont *
-PrimEvalCont::makeInstance(ScamValue caller,
-                           Continuation * cont,
-                           ScamEngine * engine)
+PrimEvalCont * PrimEvalCont::makeInstance(ScamValue caller, Continuation * cont)
 {
-    return new PrimEvalCont(caller, cont, engine);
+    return new PrimEvalCont(caller, cont);
 }
 
 void PrimEvalCont::mark()
@@ -38,9 +33,9 @@ void PrimEvalCont::handleValue(ScamValue value)
     Continuation::handleValue(value);
 
     if ( isUnhandledError(value) ) {
-        engine->handleError(value);
+        ScamEngine::getEngine().handleError(value);
     }
     else {
-        (caller->primFunc())(value, cont, engine);
+        (caller->primFunc())(value, cont);
     }
 }

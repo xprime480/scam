@@ -8,9 +8,7 @@
 namespace scam
 {
     extern std::string findFileOnPath(const std::string & filename);
-
-    extern ScamValue
-    loadEvalFile(const std::string & fullpath, ScamEngine * engine);
+    extern ScamValue loadEvalFile(const std::string & fullpath);
 }
 
 #endif

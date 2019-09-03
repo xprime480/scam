@@ -13,15 +13,10 @@ namespace scam
     private:
         friend class scam::MemoryManager;
 
-        IfCont(ScamValue args,
-               Continuation * cont,
-               Env * env,
-               ScamEngine * engine);
+        IfCont(ScamValue args, Continuation * cont, Env * env);
 
-        static IfCont * makeInstance(ScamValue args,
-                                     Continuation * cont,
-                                     Env * env,
-                                     ScamEngine * engine);
+        static IfCont *
+        makeInstance(ScamValue args, Continuation * cont, Env * env);
 
     public:
         void mark() override;

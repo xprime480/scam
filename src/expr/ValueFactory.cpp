@@ -328,30 +328,24 @@ ScamValue scam::makeContinuation(Continuation * cont)
     return v;
 }
 
-ScamValue scam::makeSpecialForm(string const & name,
-                                SfFunction func,
-                                ScamEngine * engine,
-                                bool managed)
+ScamValue
+scam::makeSpecialForm(string const & name, SfFunction func, bool managed)
 {
     static constexpr auto myType = ScamData::SpecialForm;
     ScamValue v = standardMemoryManager.make<ScamData>(myType, managed);
     v->sfName()   = name;
     v->sfFunc()   = func;
-    v->sfEngine() = engine;
 
     return v;
 }
 
-ScamValue scam::makePrimitive(string const & name,
-                              PrimFunction func,
-                              ScamEngine * engine,
-                              bool managed)
+ScamValue
+scam::makePrimitive(string const & name, PrimFunction func, bool managed)
 {
     static constexpr auto myType = ScamData::Primitive;
     ScamValue v = standardMemoryManager.make<ScamData>(myType, managed);
     v->primName()   = name;
     v->primFunc()   = func;
-    v->primEngine() = engine;
 
     return v;
 }

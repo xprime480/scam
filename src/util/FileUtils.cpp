@@ -47,15 +47,15 @@ string scam::findFileOnPath(const string & filename)
     return "";
 }
 
-ScamValue scam::loadEvalFile(const string & fullpath, ScamEngine * engine)
+ScamValue scam::loadEvalFile(const string & fullpath)
 {
     FilePort * port = new FilePort(fullpath.c_str(), ScamPort::Readable);
     ScamValue value = makePort(port);
     PortCharStream stream(value);
-    ReadEvalStream helper(engine, stream);
+    ReadEvalStream helper(stream);
     ScamValue save = dynamicPath;
     if ( isNothing(dynamicPath) ) {
-	dynamicPath = getPath();
+        dynamicPath = getPath();
     }
     dynamicPath = pushPath(fullpath);
     ScamValue last = helper.run();

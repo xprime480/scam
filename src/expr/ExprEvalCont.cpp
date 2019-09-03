@@ -9,23 +9,18 @@
 using namespace scam;
 using namespace std;
 
-ExprEvalCont::ExprEvalCont(ScamValue cdr,
-                           Continuation * cont,
-                           Env * env,
-                           ScamEngine * engine)
-    : Continuation("Cons Eval Eval", engine)
+ExprEvalCont::ExprEvalCont(ScamValue cdr, Continuation * cont, Env * env)
+    : Continuation("Cons Eval Eval")
     , cdr(cdr)
     , cont(cont)
     , env(env)
 {
 }
 
-ExprEvalCont * ExprEvalCont::makeInstance(ScamValue cdr,
-                                          Continuation * cont,
-                                          Env * env,
-                                          ScamEngine * engine)
+ExprEvalCont *
+ExprEvalCont::makeInstance(ScamValue cdr, Continuation * cont, Env * env)
 {
-    return new ExprEvalCont(cdr, cont, env, engine);
+    return new ExprEvalCont(cdr, cont, env);
 }
 
 void ExprEvalCont::mark()
@@ -43,9 +38,9 @@ void ExprEvalCont::handleValue(ScamValue value)
     Continuation::handleValue(value);
 
     if ( isUnhandledError(value) ) {
-        engine->handleError(value);
+        ScamEngine::getEngine().handleError(value);
     }
     else {
-        apply(value, cdr, cont, env, engine);
+        apply(value, cdr, cont, env);
     }
 }

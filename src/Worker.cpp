@@ -7,9 +7,8 @@
 using namespace scam;
 using namespace std;
 
-Worker::Worker(char const * id, ScamEngine * engine)
+Worker::Worker(char const * id)
     : name(GlobalId::makeName(id))
-    , engine(engine)
 {
 }
 
@@ -17,9 +16,9 @@ Worker::~Worker()
 {
 }
 
-Worker * Worker::makeInstance(char const * id, ScamEngine * engine)
+Worker * Worker::makeInstance(char const * id)
 {
-    return new Worker(id, engine);
+    return new Worker(id);
 }
 
 void Worker::run()

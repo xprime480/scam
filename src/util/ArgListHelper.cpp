@@ -1,7 +1,6 @@
 #include "util/ArgListHelper.hpp"
 
 #include "Continuation.hpp"
-#include "ScamEngine.hpp"
 #include "ScamException.hpp"
 #include "expr/ExtendedNumeric.hpp"
 #include "expr/ScamToInternal.hpp"

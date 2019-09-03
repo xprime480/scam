@@ -14,18 +14,17 @@
 using namespace scam;
 using namespace std;
 
-ClassCont::ClassCont(ScamValue cls, Continuation * cont, ScamEngine * engine)
-    : Continuation("ClassCont", engine)
+ClassCont::ClassCont(ScamValue cls, Continuation * cont)
+    : Continuation("ClassCont")
     , cls(cls)
     , cont(cont)
 {
     env = getClassCapture(cls);
 }
 
-ClassCont *
-ClassCont::makeInstance(ScamValue cls, Continuation * cont, ScamEngine * engine)
+ClassCont * ClassCont::makeInstance(ScamValue cls, Continuation * cont)
 {
-    return new ClassCont(cls, cont, engine);
+    return new ClassCont(cls, cont);
 }
 
 void ClassCont::mark()
@@ -43,7 +42,7 @@ void ClassCont::handleValue(ScamValue value)
     Continuation::handleValue(value);
 
     if ( isUnhandledError(value) ) {
-        engine->handleError(value);
+        ScamEngine::getEngine().handleError(value);
     }
     else {
         InstanceVec instances;
@@ -51,12 +50,12 @@ void ClassCont::handleValue(ScamValue value)
 
         result = build(cls, instances);
         if ( isUnhandledError(result) ) {
-            engine->handleError(value);
+            ScamEngine::getEngine().handleError(value);
         }
         else {
             ScamValue instance = connect(instances);
             if ( isError(instance) ) {
-                engine->handleError(instance);
+                ScamEngine::getEngine().handleError(instance);
             }
             else {
                 init(instance, value);
@@ -149,5 +148,5 @@ ScamValue ClassCont::base_class_not_class(ScamValue name, ScamValue value) const
 
 void ClassCont::init(ScamValue instance, ScamValue expr) const
 {
-    workQueueHelper<ClassInitWorker>(instance, expr, cont, env, engine);
+    workQueueHelper<ClassInitWorker>(instance, expr, cont, env);
 }

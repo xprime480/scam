@@ -12,17 +12,15 @@
 using namespace scam;
 using namespace std;
 
-void scam::applyBacktrack(ScamValue args,
-                          Continuation * cont,
-                          ScamEngine * engine)
+void scam::applyBacktrack(ScamValue args, Continuation * cont)
 {
     static const char * name = "backtrack";
-    if ( argsToParms(args, engine, name) ) {
-        Backtracker * backtracker = engine->getBacktracker();
+    if ( argsToParms(args, name) ) {
+        Backtracker * backtracker = ScamEngine::getEngine().getBacktracker();
         if ( ! backtracker ) {
             ScamValue err = makeError("No current backtrack context");
             err->errorCategory() = valuesCategory;
-            engine->handleError(err);
+            ScamEngine::getEngine().handleError(err);
         }
         else {
             backtracker->run();

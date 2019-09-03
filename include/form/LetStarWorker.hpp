@@ -13,15 +13,10 @@ namespace scam
     {
     private:
         friend class scam::MemoryManager;
-        LetStarWorker(LetDef & def,
-                      Continuation * cont,
-                      Env * env,
-                      ScamEngine * engine);
+        LetStarWorker(LetDef & def, Continuation * cont, Env * env);
 
-        static LetStarWorker * makeInstance(LetDef & def,
-                                            Continuation * cont,
-                                            Env * env,
-                                            ScamEngine * engine);
+        static LetStarWorker *
+        makeInstance(LetDef & def, Continuation * cont, Env * env);
 
     protected:
         void do_next(ScamValue formals,

@@ -5,18 +5,13 @@
 
 namespace scam
 {
-    extern Env * getConfigurationEnv(ScamEngine * engine);
-    extern Env * getSyntaxEnv(ScamEngine * engine, Env * base);
-    extern void initalizeLibraries(ScamEngine * engine, Env * base);
-    extern Env * makeInteractionEnv(ScamEngine * engine, Env * base);
+    extern Env * getConfigurationEnv();
+    extern Env * getSyntaxEnv(Env * base);
+    extern void initalizeLibraries(Env * base);
+    extern Env * makeInteractionEnv(Env * base);
 
-    extern void applyInteractionEnv(ScamValue args,
-                                    Continuation * cont,
-                                    ScamEngine * engine);
-
-    extern void applyEval(ScamValue args,
-                          Continuation * cont,
-                          ScamEngine * engine);
+    extern void applyInteractionEnv(ScamValue args, Continuation * cont);
+    extern void applyEval(ScamValue args, Continuation * cont);
 }
 
 #endif

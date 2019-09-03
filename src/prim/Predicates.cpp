@@ -19,17 +19,15 @@ namespace
 #error "DEFINE_PREDICATE already defined"
 #else
 
-#define DEFINE_PREDICATE(cls, label, pred)                      \
-        void scam::apply##cls(ScamValue args,                   \
-                        Continuation * cont,                    \
-                        ScamEngine * engine)                    \
-        {                                                       \
-            static const char * name { label };                 \
-            ObjectParameter p0;                                 \
-            if ( argsToParms(args, engine, name, p0) ) {        \
-                bool answer = pred(p0.value);                   \
-                cont->handleValue(makeBoolean(answer));         \
-            }                                                   \
+#define DEFINE_PREDICATE(cls, label, pred)                         \
+        void scam::apply##cls(ScamValue args, Continuation * cont) \
+        {                                                          \
+            static const char * name { label };                    \
+            ObjectParameter p0;                                    \
+            if ( argsToParms(args, name, p0) ) {                   \
+                bool answer = pred(p0.value);                      \
+                cont->handleValue(makeBoolean(answer));            \
+            }                                                      \
         }
 
 DEFINE_PREDICATE(NullP, "null?", isNull)

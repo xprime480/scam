@@ -5,9 +5,7 @@
 
 namespace scam
 {
-    extern void applySpawn(ScamValue args,
-                           Continuation * cont,
-                           ScamEngine * engine);
+    extern void applySpawn(ScamValue args, Continuation * cont);
 }
 
 #endif

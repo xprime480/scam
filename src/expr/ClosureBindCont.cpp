@@ -19,9 +19,8 @@ using namespace std;
 
 ClosureBindCont::ClosureBindCont(LambdaDef & lambda,
                                  Env * capture,
-                                 Continuation * cont,
-                                 ScamEngine * engine)
-    : Continuation("proc - bind", engine)
+                                 Continuation * cont)
+    : Continuation("proc - bind")
     , lambda(lambda)
     , capture(capture)
     , cont(cont)
@@ -30,10 +29,9 @@ ClosureBindCont::ClosureBindCont(LambdaDef & lambda,
 
 ClosureBindCont * ClosureBindCont::makeInstance(LambdaDef & lambda,
                                                 Env * capture,
-                                                Continuation * cont,
-                                                ScamEngine * engine)
+                                                Continuation * cont)
 {
-    return new ClosureBindCont(lambda, capture, cont, engine);
+    return new ClosureBindCont(lambda, capture, cont);
 }
 
 void ClosureBindCont::mark()
@@ -51,7 +49,7 @@ void ClosureBindCont::handleValue(ScamValue value)
     Continuation::handleValue(value);
 
     if ( isUnhandledError(value) ) {
-        engine->handleError(value);
+        ScamEngine::getEngine().handleError(value);
     }
     else if ( malformedActuals(value) ) {
         /* do nothing */
@@ -59,7 +57,7 @@ void ClosureBindCont::handleValue(ScamValue value)
     else if ( checkArgLength(value) ) {
         ScamValue test = finalize(value);
         if ( isError(test) ) {
-            engine->handleError(test);
+            ScamEngine::getEngine().handleError(test);
         }
     }
 }
@@ -73,7 +71,7 @@ bool ClosureBindCont::malformedActuals(ScamValue expr) const
     ScamValue err =
         makeError("Expecting list or symbol for parameter list (%{0})", expr);
     err->errorCategory() = argsCategory;
-    engine->handleError(err);
+    ScamEngine::getEngine().handleError(err);
 
     return true;
 }
@@ -99,7 +97,7 @@ void ClosureBindCont::wrongNumberOfParameters(unsigned formalsLen,
                               makeInteger(formalsLen, true),
                               makeInteger(actualsLen, true));
     err->errorCategory() = argsCategory;
-    engine->handleError(err);
+    ScamEngine::getEngine().handleError(err);
 }
 
 bool ClosureBindCont::checkArgLength(ScamValue expr) const
@@ -127,7 +125,7 @@ ScamValue ClosureBindCont::finalize(ScamValue actuals) const
     }
 
     Env * extended = test->envValue();
-    workQueueHelper<EvalWorker>(lambda.forms, extended, cont, engine);
+    workQueueHelper<EvalWorker>(lambda.forms, extended, cont);
 
     return makeNothing();
 }

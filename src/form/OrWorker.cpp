@@ -13,23 +13,18 @@
 using namespace scam;
 using namespace std;
 
-OrWorker::OrWorker(Continuation * cont,
-                   Env * env,
-                   ScamValue args,
-                   ScamEngine * engine)
-    : Worker("Or", engine)
+OrWorker::OrWorker(Continuation * cont, Env * env, ScamValue args)
+    : Worker("Or")
     , args(args)
     , cont(cont)
     , env(env)
 {
 }
 
-OrWorker * OrWorker::makeInstance(Continuation * cont,
-                                  Env * env,
-                                  ScamValue args,
-                                  ScamEngine * engine)
+OrWorker *
+OrWorker::makeInstance(Continuation * cont, Env * env, ScamValue args)
 {
-    return new OrWorker(cont, env, args, engine);
+    return new OrWorker(cont, env, args);
 }
 
 void OrWorker::mark()
@@ -53,7 +48,7 @@ void OrWorker::run()
         ScamValue test = getCar(args);
         ScamValue rest = getCdr(args);
         Continuation * newCont =
-            standardMemoryManager.make<OrCont>(rest, cont, env, engine);
-        eval(test, newCont, env, engine);
+            standardMemoryManager.make<OrCont>(rest, cont, env);
+        eval(test, newCont, env);
     }
 }

@@ -15,12 +15,16 @@ namespace scam
     class Tokenizer;
 
     extern Env * configEnv;
-    
+
     class ScamEngine
     {
-    public:
+    private:
         ScamEngine();
+
+    public:
         ~ScamEngine();
+
+        static ScamEngine & getEngine();
 
         /***  functions to manage the frame stack ***/
 
@@ -30,10 +34,10 @@ namespace scam
         Env * getInteractionFrame();
         void setFrame(Env * env);
 
-	/*** functions to manage libraries ***/
+        /*** functions to manage libraries ***/
 
-	ScamValue findLibrary(ScamValue name);
-	void saveLibrary(ScamValue name, Env * env);
+        ScamValue findLibrary(ScamValue name);
+        void saveLibrary(ScamValue name, Env * env);
 
         /*** functions to manage the input buffer ***/
 
@@ -49,7 +53,7 @@ namespace scam
         ScamValue readEvalCurrent();
         ScamValue read();
         ScamValue eval(ScamValue expr);
-	ScamValue eval(ScamValue expr, Handler * handler);
+        ScamValue eval(ScamValue expr, Handler * handler);
         ScamValue apply(ScamValue expr, ScamValue args);
 
         /*** functions to manage backtracking */
@@ -75,7 +79,7 @@ namespace scam
     private:
         Env * env;
         Env * topEnv;
-	ScamValue libs;
+        ScamValue libs;
         std::vector<ScamParser> input;
         Backtracker * backtracker;
         Continuation * cont;

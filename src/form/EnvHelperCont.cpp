@@ -12,9 +12,8 @@ using namespace std;
 EnvHelperCont::EnvHelperCont(ScamValue sym,
                              Continuation * cont,
                              Env * env,
-                             ScamEngine * engine,
                              char const * name)
-    : Continuation(name, engine)
+    : Continuation(name)
     , sym(sym)
     , env(env)
     , cont(cont)
@@ -36,7 +35,7 @@ void EnvHelperCont::handleValue(ScamValue value)
     Continuation::handleValue(value);
     ScamValue test = finish(value);
     if ( isUnhandledError(test) ) {
-        engine->handleError(test);
+        ScamEngine::getEngine().handleError(test);
     }
     else {
         cont->handleValue(test);

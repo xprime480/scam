@@ -1,7 +1,6 @@
 #include "form/IfWorker.hpp"
 
 #include "Continuation.hpp"
-#include "ScamEngine.hpp"
 #include "env/Env.hpp"
 #include "expr/EvalOps.hpp"
 #include "expr/ScamData.hpp"
@@ -12,23 +11,18 @@
 using namespace scam;
 using namespace std;
 
-IfWorker::IfWorker(Continuation * cont,
-                   Env * env,
-                   ScamEngine * engine,
-                   ScamValue args)
-    : Worker("If", engine)
+IfWorker::IfWorker(Continuation * cont, Env * env, ScamValue args)
+    : Worker("If")
     , args(args)
     , cont(cont)
     , env(env)
 {
 }
 
-IfWorker * IfWorker::makeInstance(Continuation * cont,
-                                  Env * env,
-                                  ScamEngine * engine,
-                                  ScamValue args)
+IfWorker *
+IfWorker::makeInstance(Continuation * cont, Env * env, ScamValue args)
 {
-    return new IfWorker(cont, env, engine, args);
+    return new IfWorker(cont, env, args);
 }
 
 void IfWorker::mark()
@@ -45,8 +39,7 @@ void IfWorker::run()
 {
     Worker::run();
 
-    Continuation * newCont =
-        standardMemoryManager.make<IfCont>(args, cont, env, engine);
+    Continuation * c = standardMemoryManager.make<IfCont>(args, cont, env);
     ScamValue test = nthcar(args, 0);
-    eval(test, newCont, env, engine);
+    eval(test, c, env);
 }

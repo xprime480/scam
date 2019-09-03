@@ -12,22 +12,20 @@ using namespace std;
 PrimWorker::PrimWorker(ScamValue caller,
                        ScamValue args,
                        Continuation * original,
-                       Env * env,
-                       ScamEngine * engine)
-    : Worker("Primitive", engine)
+                       Env * env)
+    : Worker("Primitive")
     , args(args)
     , env(env)
 {
-    cont = standardMemoryManager.make<PrimEvalCont>(caller, original, engine);
+    cont = standardMemoryManager.make<PrimEvalCont>(caller, original);
 }
 
 PrimWorker * PrimWorker::makeInstance(ScamValue caller,
                                       ScamValue args,
                                       Continuation * original,
-                                      Env * env,
-                                      ScamEngine * engine)
+                                      Env * env)
 {
-    return new PrimWorker(caller, args, original, env, engine);
+    return new PrimWorker(caller, args, original, env);
 }
 
 void PrimWorker::mark()
@@ -43,5 +41,5 @@ void PrimWorker::mark()
 void PrimWorker::run()
 {
     Worker::run();
-    scam::mapEval(args, cont, env, engine);
+    scam::mapEval(args, cont, env);
 }

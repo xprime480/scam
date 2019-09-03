@@ -15,14 +15,13 @@ namespace scam
         MapWorker(ScamValue car,
                   ScamValue cdr,
                   Continuation * original,
-                  Env * env,
-                  ScamEngine * engine);
+                  Env * env);
 
-        static MapWorker * makeInstance(ScamValue car,
-                                        ScamValue cdr,
-                                        Continuation * original,
-                                        Env * env,
-                                        ScamEngine * engine);
+        static MapWorker *
+        makeInstance(ScamValue car,
+                     ScamValue cdr,
+                     Continuation * original,
+                     Env * env);
 
     public:
         void mark() override;

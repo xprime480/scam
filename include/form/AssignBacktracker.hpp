@@ -15,14 +15,12 @@ namespace scam
         AssignBacktracker(ScamValue sym,
                           ScamValue old,
                           Env * env,
-                          Backtracker * backtracker,
-                          ScamEngine * engine);
+                          Backtracker * backtracker);
 
         static AssignBacktracker * makeInstance(ScamValue sym,
                                                 ScamValue old,
                                                 Env * env,
-                                                Backtracker * backtracker,
-                                                ScamEngine * engine);
+                                                Backtracker * backtracker);
 
     public:
         void mark() override;
@@ -32,7 +30,6 @@ namespace scam
         ScamValue   sym;
         ScamValue   old;
         Env       * env;
-        ScamEngine * engine;
     };
 }
 

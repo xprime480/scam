@@ -9,12 +9,10 @@
 
 namespace scam
 {
-    class ScamEngine;
-
     class ReadEvalString : public ReadEval
     {
     public:
-        ReadEvalString(ScamEngine * engine, std::string const & text);
+        ReadEvalString(std::string const & text);
 
     private:
         StringTokenizer tokenizer;

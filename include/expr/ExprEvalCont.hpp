@@ -12,15 +12,10 @@ namespace scam
     private:
         friend class scam::MemoryManager;
 
-        ExprEvalCont(ScamValue cdr,
-                     Continuation * cont,
-                     Env * env,
-                     ScamEngine * engine);
+        ExprEvalCont(ScamValue cdr, Continuation * cont, Env * env);
 
-        static ExprEvalCont * makeInstance(ScamValue cdr,
-                                           Continuation * cont,
-                                           Env * env,
-                                           ScamEngine * engine);
+        static ExprEvalCont *
+        makeInstance(ScamValue cdr, Continuation * cont, Env * env);
 
     public:
         void mark() override;

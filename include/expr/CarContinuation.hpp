@@ -11,15 +11,10 @@ namespace scam
     {
     private:
         friend class scam::MemoryManager;
-        CarContinuation(ScamValue cdr,
-                        Continuation * cont,
-                        Env * env,
-                        ScamEngine * engine);
+        CarContinuation(ScamValue cdr, Continuation * cont, Env * env);
 
-        static CarContinuation * makeInstance(ScamValue cdr,
-                                              Continuation * cont,
-                                              Env * env,
-                                              ScamEngine * engine);
+        static CarContinuation *
+        makeInstance(ScamValue cdr, Continuation * cont, Env * env);
 
     public:
         void mark() override;

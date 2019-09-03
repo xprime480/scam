@@ -5,17 +5,9 @@
 
 namespace scam
 {
-    extern void applyEqP(ScamValue args,
-                         Continuation * cont,
-                         ScamEngine * engine);
-
-    extern void applyEqvP(ScamValue args,
-                          Continuation * cont,
-                          ScamEngine * engine);
-
-    extern void applyEqualP(ScamValue args,
-                            Continuation * cont,
-                            ScamEngine * engine);
+    extern void applyEqP(ScamValue args, Continuation * cont);
+    extern void applyEqvP(ScamValue args, Continuation * cont);
+    extern void applyEqualP(ScamValue args, Continuation * cont);
 }
 
 #endif

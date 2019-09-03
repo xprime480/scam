@@ -15,13 +15,13 @@ namespace scam
     {
     protected:
         friend class scam::MemoryManager;
-        Worker(char const * id, ScamEngine * engine);
+        Worker(char const * id);
 
     public:
         ~Worker();
 
     private:
-        static Worker * makeInstance(char const * id, ScamEngine * engine);
+        static Worker * makeInstance(char const * id);
 
     public:
         virtual void run();
@@ -29,9 +29,6 @@ namespace scam
 
     private:
         std::string const name;
-
-    protected:
-        ScamEngine * engine;
     };
 }
 

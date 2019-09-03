@@ -19,9 +19,8 @@ LetStarCont::LetStarCont(ScamValue formals,
                          ScamValue rest,
                          ScamValue forms,
                          Continuation * cont,
-                         Env * env,
-                         ScamEngine * engine)
-    : LetCommonCont("Let*", forms, cont, engine)
+                         Env * env)
+    : LetCommonCont("Let*", forms, cont)
     , formals(formals)
     , rest(rest)
     , env(env)
@@ -32,10 +31,9 @@ LetStarCont * LetStarCont::makeInstance(ScamValue formals,
                                         ScamValue rest,
                                         ScamValue forms,
                                         Continuation * cont,
-                                        Env * env,
-                                        ScamEngine * engine)
+                                        Env * env)
 {
-    return new LetStarCont(formals, rest, forms, cont, env, engine);
+    return new LetStarCont(formals, rest, forms, cont, env);
 }
 
 void LetStarCont::mark()
@@ -68,9 +66,8 @@ ScamValue LetStarCont::do_let(ScamValue expr)
                                                     getCdr(safe),
                                                     forms,
                                                     cont,
-                                                    env,
-                                                    engine);
-        eval(getCar(safe), ch, env, engine);
+                                                    env);
+        eval(getCar(safe), ch, env);
     }
 
     return makeNothing();
@@ -78,11 +75,8 @@ ScamValue LetStarCont::do_let(ScamValue expr)
 
 void LetStarCont::makeBacktracker(ScamValue sym) const
 {
-    Backtracker * backtracker = engine->getBacktracker();
+    Backtracker * backtracker = ScamEngine::getEngine().getBacktracker();
     Backtracker * newBT =
-        standardMemoryManager.make<LetStarBacktracker>(env,
-                                                       sym,
-                                                       backtracker,
-                                                       engine);
-    engine->setBacktracker(newBT);
+        standardMemoryManager.make<LetStarBacktracker>(env, sym, backtracker);
+    ScamEngine::getEngine().setBacktracker(newBT);
 }

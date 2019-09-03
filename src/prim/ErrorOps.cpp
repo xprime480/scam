@@ -20,91 +20,76 @@ using namespace std;
 
 namespace
 {
-    extern ScamValue makeErrorObject(ScamValue args,
-                                     Continuation * cont,
-                                     ScamEngine * engine,
-                                     const char * name);
+    extern ScamValue
+    makeErrorObject(ScamValue args, Continuation * cont, const char * name);
 
-    extern ScamValue fetchErrorObject(ScamValue args,
-                                      Continuation * cont,
-                                      ScamEngine * engine,
-                                      const char * name);
+    extern ScamValue
+    fetchErrorObject(ScamValue args, Continuation * cont, const char * name);
 
-    extern void checkErrorCategory(ScamValue args,
-                                   Continuation * cont,
-                                   ScamEngine * engine,
-                                   const char * name,
-                                   ScamValue target);
+    extern void
+    checkErrorCategory(ScamValue args,
+                       Continuation * cont,
+                       const char * name,
+                       ScamValue target);
 }
 
-void scam::applyMakeError(ScamValue args,
-                          Continuation * cont,
-                          ScamEngine * engine)
+void scam::applyMakeError(ScamValue args, Continuation * cont)
 {
     static const char * name = "make-error";
-    ScamValue error = makeErrorObject(args, cont, engine, name);
+    ScamValue error = makeErrorObject(args, cont, name);
     if ( ! isNothing(error) ) {
         error->errorHandled() = true;
         cont->handleValue(error);
     }
 }
 
-void scam::applyError(ScamValue args,
-                      Continuation * cont,
-                      ScamEngine * engine)
+void scam::applyError(ScamValue args, Continuation * cont)
 {
     static const char * name = "error";
-    ScamValue error = makeErrorObject(args, cont, engine, name);
+    ScamValue error = makeErrorObject(args, cont, name);
     if ( ! isNothing(error) ) {
-        engine->handleError(error);
+        ScamEngine::getEngine().handleError(error);
     }
 }
 
-void scam::applyRaise(ScamValue args,
-                      Continuation * cont,
-                      ScamEngine * engine)
+void scam::applyRaise(ScamValue args, Continuation * cont)
 {
     static const char * name = "raise";
 
     ObjectParameter pObj;
-    if ( argsToParms(args, engine, name, pObj) ) {
-        engine->handleError(pObj.value);
+    if ( argsToParms(args, name, pObj) ) {
+        ScamEngine::getEngine().handleError(pObj.value);
     }
 }
 
-void scam::applyWithHandler(ScamValue args,
-                            Continuation * cont,
-                            ScamEngine * engine)
+void scam::applyWithHandler(ScamValue args, Continuation * cont)
 {
     static const char * name = "with-exception-handler";
 
     ApplicableParameter pHandler;
     ApplicableParameter pThunk;
-    if ( argsToParms(args, engine, name, pHandler, pThunk) ) {
+    if ( argsToParms(args, name, pHandler, pThunk) ) {
         ScamValue handler = pHandler.value;
         ScamValue thunk   = pThunk.value;
 
         Continuation * newCont =
-            standardMemoryManager.make<WithHandlerCont>(cont, engine);
+            standardMemoryManager.make<WithHandlerCont>(cont);
 
         Handler * wrapper =
             standardMemoryManager.make<UserHandler>(handler,
                                                     cont,
-                                                    env(handler),
-                                                    engine);
+                                                    env(handler));
 
-        engine->pushHandler(wrapper);
-        apply(thunk, makeNull(), newCont, env(thunk), engine);
+        ScamEngine::getEngine().pushHandler(wrapper);
+        apply(thunk, makeNull(), newCont, env(thunk));
     }
 }
 
-void scam::applyErrorMessage(ScamValue args,
-                             Continuation * cont,
-                             ScamEngine * engine)
+void scam::applyErrorMessage(ScamValue args, Continuation * cont)
 {
     static const char * name = "error-object-message";
 
-    ScamValue error = fetchErrorObject(args, cont, engine, name);
+    ScamValue error = fetchErrorObject(args, cont, name);
     if ( isError(error) ) {
         const string & message = error->errorMessage();
         ScamValue rv = makeString(message);
@@ -112,13 +97,11 @@ void scam::applyErrorMessage(ScamValue args,
     }
 }
 
-void scam::applyErrorIrritant(ScamValue args,
-                              Continuation * cont,
-                              ScamEngine * engine)
+void scam::applyErrorIrritant(ScamValue args, Continuation * cont)
 {
     static const char * name = "error-object-irritants";
 
-    ScamValue error = fetchErrorObject(args, cont, engine, name);
+    ScamValue error = fetchErrorObject(args, cont, name);
     if ( isError(error) ) {
         const ScamData::VectorData & irritants = error->errorIrritants();
         ScamValue rv = makeList(irritants);
@@ -126,42 +109,34 @@ void scam::applyErrorIrritant(ScamValue args,
     }
 }
 
-void scam::applyReadErrorP(ScamValue args,
-                           Continuation * cont,
-                           ScamEngine * engine)
+void scam::applyReadErrorP(ScamValue args, Continuation * cont)
 {
     static const char * name = "read-error?";
-    checkErrorCategory(args, cont, engine, name, readCategory);
+    checkErrorCategory(args, cont, name, readCategory);
 }
 
-void scam::applyFileErrorP(ScamValue args,
-                           Continuation * cont,
-                           ScamEngine * engine)
+void scam::applyFileErrorP(ScamValue args, Continuation * cont)
 {
     static const char * name = "file-error?";
-    checkErrorCategory(args, cont, engine, name, fileCategory);
+    checkErrorCategory(args, cont, name, fileCategory);
 }
 
-void scam::applyErrorCat(ScamValue args,
-                         Continuation * cont,
-                         ScamEngine * engine)
+void scam::applyErrorCat(ScamValue args, Continuation * cont)
 {
     static const char * name = "error-category";
 
-    ScamValue error = fetchErrorObject(args, cont, engine, name);
+    ScamValue error = fetchErrorObject(args, cont, name);
     if ( isError(error) ) {
         ScamValue rv = error->errorCategory();
         cont->handleValue(rv);
     }
 }
 
-void scam::applyError2String(ScamValue args,
-                             Continuation * cont,
-                             ScamEngine * engine)
+void scam::applyError2String(ScamValue args, Continuation * cont)
 {
     static const char * name = "error->string";
 
-    ScamValue error = fetchErrorObject(args, cont, engine, name);
+    ScamValue error = fetchErrorObject(args, cont, name);
     if ( isError(error) ) {
         ScamValue rv = makeString(writeValue(error));
         cont->handleValue(rv);
@@ -170,10 +145,8 @@ void scam::applyError2String(ScamValue args,
 
 namespace
 {
-    ScamValue makeErrorObject(ScamValue args,
-                              Continuation * cont,
-                              ScamEngine * engine,
-                              const char * name)
+    ScamValue
+    makeErrorObject(ScamValue args, Continuation * cont, const char * name)
     {
         ScamValue rv = makeNothing();
 
@@ -182,7 +155,7 @@ namespace
         StringParameter   p1;
         ObjectParameter   pTemp;
         CountedParameter  p2(pTemp);
-        if ( argsToParms(args, engine, name, p0, p1, p2) ) {
+        if ( argsToParms(args, name, p0, p1, p2) ) {
             ScamValue cat = userCategory;
             if ( p0.found ) {
                 cat = p0.value;
@@ -203,15 +176,13 @@ namespace
         return rv;
     }
 
-    ScamValue fetchErrorObject(ScamValue args,
-                               Continuation * cont,
-                               ScamEngine * engine,
-                               const char * name)
+    ScamValue
+    fetchErrorObject(ScamValue args, Continuation * cont, const char * name)
     {
         ScamValue rv = makeNothing();
 
         ErrorParameter p0;
-        if ( argsToParms(args, engine, name, p0) ) {
+        if ( argsToParms(args, name, p0) ) {
             rv = p0.value;
         }
 
@@ -220,12 +191,11 @@ namespace
 
     void checkErrorCategory(ScamValue args,
                             Continuation * cont,
-                            ScamEngine * engine,
                             const char * name,
                             ScamValue target)
     {
         ErrorParameter p0;
-        if ( argsToParms(args, engine, name, p0) ) {
+        if ( argsToParms(args, name, p0) ) {
             ScamValue obj = p0.value;
             ScamValue cat = obj->errorCategory();
             bool matched = equals(cat, target);

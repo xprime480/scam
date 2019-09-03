@@ -5,26 +5,11 @@
 
 namespace scam
 {
-    extern void applyCar(ScamValue args,
-                         Continuation * cont,
-                         ScamEngine * engine);
-
-    extern void applyCdr(ScamValue args,
-                         Continuation * cont,
-                         ScamEngine * engine);
-
-    extern void applyCons(ScamValue args,
-                          Continuation * cont,
-                          ScamEngine * engine);
-
-    extern void applySetCarX(ScamValue args,
-                             Continuation * cont,
-                             ScamEngine * engine);
-
-    extern void applySetCdrX(ScamValue args,
-                             Continuation * cont,
-                             ScamEngine * engine);
-
+    extern void applyCar(ScamValue args, Continuation * cont);
+    extern void applyCdr(ScamValue args, Continuation * cont);
+    extern void applyCons(ScamValue args, Continuation * cont);
+    extern void applySetCarX(ScamValue args, Continuation * cont);
+    extern void applySetCdrX(ScamValue args, Continuation * cont);
 }
 
 #endif

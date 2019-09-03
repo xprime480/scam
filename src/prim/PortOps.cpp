@@ -12,12 +12,10 @@
 using namespace scam;
 using namespace std;
 
-void scam::applyOpenInStr(ScamValue args,
-                          Continuation * cont,
-                          ScamEngine * engine)
+void scam::applyOpenInStr(ScamValue args, Continuation * cont)
 {
     StringParameter p0;
-    if ( argsToParms(args, engine, "open-input-string", p0) ) {
+    if ( argsToParms(args, "open-input-string", p0) ) {
         string text = asString(p0.value);
         ScamPort * port = new FixedStringPort(text.c_str());
         ScamValue rv = makePort(port);
@@ -25,11 +23,9 @@ void scam::applyOpenInStr(ScamValue args,
     }
 }
 
-void scam::applyOpenOutStr(ScamValue args,
-                           Continuation * cont,
-                           ScamEngine * engine)
+void scam::applyOpenOutStr(ScamValue args, Continuation * cont)
 {
-    if ( argsToParms(args, engine, "open-output-string") ) {
+    if ( argsToParms(args, "open-output-string") ) {
         ScamPort * port = new StringPort("", ScamPort::Writeable);
         ScamValue rv = makePort(port);
         rv->setMeta("open-output-string", makeNothing());
@@ -37,12 +33,10 @@ void scam::applyOpenOutStr(ScamValue args,
     }
 }
 
-void scam::applyGetOutStr(ScamValue args,
-                          Continuation * cont,
-                          ScamEngine * engine)
+void scam::applyGetOutStr(ScamValue args, Continuation * cont)
 {
     PortParameter p0;
-    if ( argsToParms(args, engine, "get-output-string", p0) ) {
+    if ( argsToParms(args, "get-output-string", p0) ) {
         ScamValue p = p0.value;
         if ( p->hasMeta("open-output-string") ) {
             ScamPort * port = asPort(p);
@@ -54,13 +48,13 @@ void scam::applyGetOutStr(ScamValue args,
                 ScamValue err =
                     makeError("Internal error, invalid port contents %{0}", rv);
                 err->errorCategory() = evalCategory;
-                engine->handleError(err);
+                ScamEngine::getEngine().handleError(err);
             }
         }
         else {
             ScamValue err = makeError("Port is not an input string %{0}", p);
             err->errorCategory() = evalCategory;
-            engine->handleError(err);
+            ScamEngine::getEngine().handleError(err);
         }
     }
 }

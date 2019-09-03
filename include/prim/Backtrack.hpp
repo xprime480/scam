@@ -5,9 +5,7 @@
 
 namespace scam
 {
-    extern void applyBacktrack(ScamValue args,
-                               Continuation * cont,
-                               ScamEngine * engine);
+    extern void applyBacktrack(ScamValue args, Continuation * cont);
 }
 
 #endif

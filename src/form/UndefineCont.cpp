@@ -8,20 +8,15 @@
 using namespace scam;
 using namespace std;
 
-UndefineCont::UndefineCont(ScamValue sym,
-                           Continuation * cont,
-                           Env * env,
-                           ScamEngine * engine)
-    : EnvHelperCont(sym, cont, env, engine, "Undefine")
+UndefineCont::UndefineCont(ScamValue sym, Continuation * cont, Env * env)
+    : EnvHelperCont(sym, cont, env, "Undefine")
 {
 }
 
-UndefineCont * UndefineCont::makeInstance(ScamValue sym,
-                                          Continuation * cont,
-                                          Env * env,
-                                          ScamEngine * engine)
+UndefineCont *
+UndefineCont::makeInstance(ScamValue sym, Continuation * cont, Env * env)
 {
-    return new UndefineCont(sym, cont, env, engine);
+    return new UndefineCont(sym, cont, env);
 }
 
 ScamValue UndefineCont::finish(ScamValue expr) const

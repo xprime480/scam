@@ -12,24 +12,21 @@ using namespace std;
 ConsWorker::ConsWorker(ScamValue car,
                        ScamValue cdr,
                        Continuation * original,
-                       Env * env,
-                       ScamEngine * engine)
+                       Env * env)
 
-    : Worker("Cons Eval", engine)
+    : Worker("Cons Eval")
     , car(car)
     , env(env)
 {
-    cont =
-        standardMemoryManager.make<ExprEvalCont>(cdr, original, env, engine);
+    cont = standardMemoryManager.make<ExprEvalCont>(cdr, original, env);
 }
 
 ConsWorker * ConsWorker::makeInstance(ScamValue car,
                                       ScamValue cdr,
                                       Continuation * original,
-                                      Env * env,
-                                      ScamEngine * engine)
+                                      Env * env)
 {
-    return new ConsWorker(car, cdr, original, env, engine);
+    return new ConsWorker(car, cdr, original, env);
 }
 
 void ConsWorker::mark()
@@ -45,5 +42,5 @@ void ConsWorker::mark()
 void ConsWorker::run()
 {
     Worker::run();
-    eval(car, cont, env, engine);
+    eval(car, cont, env);
 }

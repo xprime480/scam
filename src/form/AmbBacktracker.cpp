@@ -14,23 +14,20 @@ using namespace std;
 AmbBacktracker::AmbBacktracker(ScamValue args,
                                Continuation * cont,
                                Env * env,
-                               ScamEngine * engine,
                                Backtracker * parent)
     : Backtracker("AmbBacktracker", parent)
     , args(args)
     , cont(cont)
     , env(env)
-    , engine(engine)
 {
 }
 
 AmbBacktracker * AmbBacktracker::makeInstance(ScamValue args,
                                               Continuation * cont,
                                               Env * env,
-                                              ScamEngine * engine,
                                               Backtracker * parent)
 {
-    return new AmbBacktracker(args, cont, env, engine, parent);
+    return new AmbBacktracker(args, cont, env, parent);
 }
 
 void AmbBacktracker::mark()
@@ -54,15 +51,14 @@ void AmbBacktracker::run()
         ScamValue head = nthcar(args, 0);
         ScamValue tail = nthcdr(args, 0);
 
-        (void) engine->getBacktracker();
+        (void) ScamEngine::getEngine().getBacktracker();
         Backtracker * newBt =
             standardMemoryManager.make<AmbBacktracker>(tail,
                                                        cont,
                                                        env,
-                                                       engine,
                                                        getParent());
-        engine->setBacktracker(newBt);
+        ScamEngine::getEngine().setBacktracker(newBt);
 
-        eval(head, cont, env, engine);
+        eval(head, cont, env);
     }
 }

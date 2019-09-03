@@ -5,13 +5,8 @@
 
 namespace scam
 {
-    extern void applyDisplay(ScamValue args,
-                             Continuation * cont,
-                             ScamEngine * engine);
-
-    extern void applyNewline(ScamValue args,
-                             Continuation * cont,
-                             ScamEngine * engine);
+    extern void applyDisplay(ScamValue args, Continuation * cont);
+    extern void applyNewline(ScamValue args, Continuation * cont);
 }
 
 #endif

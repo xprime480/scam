@@ -7,9 +7,7 @@ namespace scam
 {
 
 #define MATH_OP_DECL(Name) \
-        extern void apply##Name(ScamValue args,               \
-                                Continuation * cont,          \
-                                ScamEngine * engine);
+        extern void apply##Name(ScamValue args, Continuation * cont);
 
     MATH_OP_DECL(Add);
     MATH_OP_DECL(Sub);

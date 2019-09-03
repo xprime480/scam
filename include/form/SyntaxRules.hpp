@@ -15,22 +15,15 @@ namespace scam
     {
     public:
         SyntaxRules();
-        SyntaxRules(ScamEngine * engine,
-                    ScamValue name,
-                    ScamValue spec,
-                    Env * env);
+        SyntaxRules(ScamValue name, ScamValue spec, Env * env);
 
         void mark() const;
 
         ScamValue getName() const;
         bool isValid() const;
 
-        void applySyntax(ScamValue args,
-                         Continuation * cont,
-                         Env * env,
-                         ScamEngine * engine);
-
-        ScamValue expandSyntax(ScamValue args, ScamEngine * engine);
+        void applySyntax(ScamValue args, Continuation * cont, Env * env);
+        ScamValue expandSyntax(ScamValue args);
 
     private:
         bool valid;
@@ -39,20 +32,18 @@ namespace scam
         std::set<std::string> reserved;
         Env * defined;
 
-        ScamValue extractRules(ScamValue spec, ScamEngine * engine);
-        bool extractReserved(ScamValue syms, ScamEngine * engine);
-        bool decodeRule(ScamValue rule, ScamEngine * engine);
+        ScamValue extractRules(ScamValue spec);
+        bool extractReserved(ScamValue syms);
+        bool decodeRule(ScamValue rule);
 
-        ScamValue expand(ScamValue args, ScamEngine * engine);
+        ScamValue expand(ScamValue args);
         SyntaxRule * findSyntaxRule(ScamValue args, SyntaxMatchData & data);
 
-        ScamValue expandWith(ScamValue args,
-                             ScamEngine * engine,
-                             SyntaxMatchData & data,
-                             SyntaxRule * match);
+        ScamValue
+        expandWith(ScamValue args, SyntaxMatchData & data, SyntaxRule * match);
 
-	Env * extendDefinition(Env * base, SyntaxRule * match);
-	
+        Env * extendDefinition(Env * base, SyntaxRule * match);
+
         ScamValue badReserved(ScamValue sym);
         ScamValue invalidSyntax(ScamValue rule);
         ScamValue invalidExpansion(ScamValue args);

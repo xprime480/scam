@@ -31,7 +31,7 @@ protected:
 TEST_F(LibraryTest, NestedImport)
 {
     ScamValue spec = makeList(makeSymbol("scripts/i1"));
-    ScamValue result = importToEnv(spec, &engine);
+    ScamValue result = importToEnv(spec);
     ASSERT_TRUE(isEnv(result));
 
     ScamValue xval = asEnv(result)->get(makeSymbol("x"));
@@ -41,7 +41,7 @@ TEST_F(LibraryTest, NestedImport)
 TEST_F(LibraryTest, ImportPlainCode)
 {
     ScamValue spec = makeList(makeSymbol("scripts/lib1"));
-    ScamValue result = importToEnv(spec, &engine);
+    ScamValue result = importToEnv(spec);
     ASSERT_TRUE(isEnv(result));
 
     Env * env = asEnv(result);

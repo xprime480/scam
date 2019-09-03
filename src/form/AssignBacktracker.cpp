@@ -14,23 +14,20 @@ using namespace std;
 AssignBacktracker::AssignBacktracker(ScamValue sym,
                                      ScamValue old,
                                      Env * env,
-                                     Backtracker * backtracker,
-                                     ScamEngine * engine)
+                                     Backtracker * backtracker)
     : Backtracker("DefineBacktracker", backtracker)
     , sym(sym)
     , old(old)
     , env(env)
-    , engine(engine)
 {
 }
 
 AssignBacktracker * AssignBacktracker::makeInstance(ScamValue sym,
                                                     ScamValue old,
                                                     Env * env,
-                                                    Backtracker * backtracker,
-                                                    ScamEngine * engine)
+                                                    Backtracker * backtracker)
 {
-    return new AssignBacktracker(sym, old, env, backtracker, engine);
+    return new AssignBacktracker(sym, old, env, backtracker);
 }
 
 void AssignBacktracker::mark()
@@ -52,6 +49,6 @@ void AssignBacktracker::run()
         throw ScamException(writeValue(test));
     }
     Continuation * cont
-        = standardMemoryManager.make<Continuation>("Assign Backtrack", engine);
+        = standardMemoryManager.make<Continuation>("Assign Backtrack");
     runParent(cont);
 }

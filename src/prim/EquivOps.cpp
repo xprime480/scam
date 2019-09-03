@@ -2,7 +2,6 @@
 
 #include "Continuation.hpp"
 #include "ErrorCategory.hpp"
-#include "ScamEngine.hpp"
 #include "ScamException.hpp"
 #include "expr/EqualityOps.hpp"
 #include "expr/ExtendedNumeric.hpp"
@@ -28,12 +27,10 @@ namespace
     extern bool doEqual(ScamValue obj1, ScamValue obj2);
 }
 
-void scam::applyEqP(ScamValue args,
-                    Continuation * cont,
-                    ScamEngine * engine)
+void scam::applyEqP(ScamValue args, Continuation * cont)
 {
     ObjectParameter p0, p1;
-    if ( argsToParms(args, engine, "eq?", p0, p1) ) {
+    if ( argsToParms(args, "eq?", p0, p1) ) {
         ScamValue obj1 = p0.value;
         ScamValue obj2 = p1.value;
         ScamValue rv = makeNothing();
@@ -51,12 +48,10 @@ void scam::applyEqP(ScamValue args,
     }
 }
 
-void scam::applyEqvP(ScamValue args,
-                     Continuation * cont,
-                     ScamEngine * engine)
+void scam::applyEqvP(ScamValue args, Continuation * cont)
 {
     ObjectParameter p0, p1;
-    if ( argsToParms(args, engine, "eqv?", p0, p1) ) {
+    if ( argsToParms(args, "eqv?", p0, p1) ) {
         ScamValue obj1 = p0.value;
         ScamValue obj2 = p1.value;
 
@@ -66,12 +61,10 @@ void scam::applyEqvP(ScamValue args,
     }
 }
 
-void scam::applyEqualP(ScamValue args,
-                       Continuation * cont,
-                       ScamEngine * engine)
+void scam::applyEqualP(ScamValue args, Continuation * cont)
 {
     ObjectParameter p0, p1;
-    if ( argsToParms(args, engine, "equal?", p0, p1) ) {
+    if ( argsToParms(args, "equal?", p0, p1) ) {
         ScamValue obj1 = p0.value;
         ScamValue obj2 = p1.value;
 

@@ -14,9 +14,8 @@ using namespace std;
 ClosureWorker::ClosureWorker(ScamValue closure,
                              Continuation * cont,
                              ScamValue args,
-                             Env * argEnv,
-                             ScamEngine * engine)
-    : Worker("proc", engine)
+                             Env * argEnv)
+    : Worker("proc")
     , closure(closure)
     , cont(cont)
     , args(args)
@@ -27,10 +26,9 @@ ClosureWorker::ClosureWorker(ScamValue closure,
 ClosureWorker * ClosureWorker::makeInstance(ScamValue closure,
                                             Continuation * cont,
                                             ScamValue args,
-                                            Env * argEnv,
-                                            ScamEngine * engine)
+                                            Env * argEnv)
 {
-    return new ClosureWorker(closure, cont, args, argEnv, engine);
+    return new ClosureWorker(closure, cont, args, argEnv);
 }
 
 void ClosureWorker::mark()
@@ -51,8 +49,7 @@ void ClosureWorker::run()
     Continuation * newCont
         = standardMemoryManager.make<ClosureBindCont>(closure->closureDef(),
                                                       closure->closureEnv(),
-                                                      cont,
-                                                      engine);
+                                                      cont);
 
-    mapEval(args, newCont, argEnv, engine);
+    mapEval(args, newCont, argEnv);
 }

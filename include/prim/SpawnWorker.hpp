@@ -12,10 +12,10 @@ namespace scam
     {
     private:
         friend class scam::MemoryManager;
-        SpawnWorker(Continuation * cont, ScamEngine * engine, bool value);
+        SpawnWorker(Continuation * cont, bool value);
 
         static SpawnWorker *
-        makeInstance(Continuation * cont, ScamEngine * engine, bool value);
+        makeInstance(Continuation * cont, bool value);
 
     public:
         void mark() override;
@@ -23,7 +23,7 @@ namespace scam
 
     private:
         Continuation * cont;
-        bool       value;
+        bool           value;
     };
 }
 

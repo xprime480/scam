@@ -28,23 +28,19 @@
 using namespace scam;
 using namespace std;
 
-void scam::eval(ScamValue value,
-                Continuation * cont,
-                Env * env,
-                ScamEngine * engine)
+void scam::eval(ScamValue value, Continuation * cont, Env * env)
 {
     if ( isPair(value) ) {
         workQueueHelper<ConsWorker>(value->carValue(),
                                     value->cdrValue(),
                                     cont,
-                                    env,
-                                    engine);
+                                    env);
     }
 
     else if ( isSymbol(value) ) {
         ScamValue test = env->check(value);
         if ( isError(test) ) {
-            engine->handleError(test);
+            ScamEngine::getEngine().handleError(test);
         }
         else if ( truth(test) ) {
             ScamValue evaluated = env->get(value);
@@ -53,7 +49,7 @@ void scam::eval(ScamValue value,
         else {
             ScamValue err = makeError("Symbol not found (%{0})", value);
             err->errorCategory() = evalCategory;
-            engine->handleError(err);
+            ScamEngine::getEngine().handleError(err);
         }
     }
 
@@ -61,7 +57,7 @@ void scam::eval(ScamValue value,
         static const char * msg{ "The null type cannot be evaluated." };
         ScamValue err = makeError(msg);
         err->errorCategory() = evalCategory;
-        engine->handleError(err);
+        ScamEngine::getEngine().handleError(err);
     }
 
     else {
@@ -70,32 +66,29 @@ void scam::eval(ScamValue value,
     }
 }
 
-void scam::apply(ScamValue value,
-                 ScamValue args,
-                 Continuation * cont,
-                 Env * env,
-                 ScamEngine * engine)
+void
+scam::apply(ScamValue value, ScamValue args, Continuation * cont, Env * env)
 {
     static const char * name { "apply" };
     if ( isClass(value) ) {
-        workQueueHelper<ClassWorker>(value, args, cont, env, engine);
+        workQueueHelper<ClassWorker>(value, args, cont, env);
     }
 
     else if ( isClosure(value) ) {
-        workQueueHelper<ClosureWorker>(value, cont, args, env, engine);
+        workQueueHelper<ClosureWorker>(value, cont, args, env);
     }
 
     else if ( isContinuation(value) ) {
         ObjectParameter p0;
-        if ( argsToParms(args, engine, name, p0) ) {
+        if ( argsToParms(args, name, p0) ) {
             ScamValue arg = p0.value;
-            eval(arg, value->contValue(), env, engine);
+            eval(arg, value->contValue(), env);
         }
     }
 
     else if ( isDict(value) ) {
         DictCommand cmd;
-        if ( ! argsToParms(args, engine, name, cmd) ) {
+        if ( ! argsToParms(args, name, cmd) ) {
             return;
         }
 
@@ -124,7 +117,7 @@ void scam::apply(ScamValue value,
         }
 
         if ( isUnhandledError(rv) ) {
-            engine->handleError(rv);
+            ScamEngine::getEngine().handleError(rv);
         }
         else {
             cont->handleValue(rv);
@@ -133,37 +126,37 @@ void scam::apply(ScamValue value,
 
     else if ( isInstance(value) ) {
         InstanceDef def;
-        if ( argsToParms(args, engine, name, def) ) {
+        if ( argsToParms(args, name, def) ) {
             ScamValue name    = def.name;
             ScamValue funargs = def.forms;
 
             ScamValue method = getInstanceMethod(value, name);
             if ( isUnhandledError(method) ) {
-                engine->handleError(method);
+                ScamEngine::getEngine().handleError(method);
             }
             else {
-                apply(method, funargs, cont, env, engine);
+                apply(method, funargs, cont, env);
             }
         }
     }
 
     else if ( isSpecialForm(value) ) {
-        (value->sfFunc())(args, cont, env, value->sfEngine());
+        (value->sfFunc())(args, cont, env);
     }
 
     else if ( isPrimitive(value) ) {
-        workQueueHelper<PrimWorker>(value, args, cont, env, engine);
+        workQueueHelper<PrimWorker>(value, args, cont, env);
     }
 
     else if ( isSyntax(value) ) {
-        value->syntaxRules().applySyntax(args, cont, env, engine);
+        value->syntaxRules().applySyntax(args, cont, env);
     }
 
     else {
         // default case
         ScamValue err = makeError("Cannot apply", value, args);
         err->errorCategory() = evalCategory;
-        engine->handleError(err);
+        ScamEngine::getEngine().handleError(err);
     }
 }
 
@@ -172,17 +165,13 @@ Env * scam::env(ScamValue value)
     return standardMemoryManager.make<Env>();
 }
 
-void scam::mapEval(ScamValue value,
-                   Continuation * cont,
-                   Env * env,
-                   ScamEngine * engine)
+void scam::mapEval(ScamValue value, Continuation * cont, Env * env)
 {
     if ( isPair(value) ) {
         workQueueHelper<MapWorker>(value->carValue(),
                                    value->cdrValue(),
                                    cont,
-                                   env,
-                                   engine);
+                                   env);
     }
 
     else {

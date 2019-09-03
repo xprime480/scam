@@ -22,17 +22,16 @@ namespace
     extern ScamValue getLibraryName(ScamValue & args);
     extern ScamValue getDirectiveName(ScamValue arg0);
 
-    extern ScamValue importImportSet(ScamValue arg, ScamEngine * engine);
+    extern ScamValue importImportSet(ScamValue arg);
 
-    extern ScamValue importLib(ScamValue symbol, ScamEngine * engine);
-    extern ScamValue importOnly(ScamValue args, ScamEngine * engine);
-    extern ScamValue importExcept(ScamValue args, ScamEngine * engine);
-    extern ScamValue importPrefix(ScamValue args, ScamEngine * engine);
-    extern ScamValue importRename(ScamValue args, ScamEngine * engine);
-    extern ScamValue loadLibraryFromFile(ScamValue arg, ScamEngine * engine);
+    extern ScamValue importLib(ScamValue symbol);
+    extern ScamValue importOnly(ScamValue args);
+    extern ScamValue importExcept(ScamValue args);
+    extern ScamValue importPrefix(ScamValue args);
+    extern ScamValue importRename(ScamValue args);
+    extern ScamValue loadLibraryFromFile(ScamValue arg);
 
-    extern ScamValue
-    importCommon(ScamValue args, ScamEngine * engine, const char * name);
+    extern ScamValue importCommon(ScamValue args, const char * name);
 
     extern ScamValue validateKey(Env * env, ScamValue key, const char * name);
     extern string findImportLib(ScamValue lib);
@@ -54,32 +53,26 @@ namespace
     extern ScamValue missingSymbol(ScamValue arg, const char * where);
 }
 
-void scam::applyDefineLibrary(ScamValue args,
-                              Continuation * cont,
-                              Env * env,
-                              ScamEngine * engine)
+void scam::applyDefineLibrary(ScamValue args, Continuation * cont, Env * env)
 {
-    ScamValue result = defineLibrary(args, engine);
+    ScamValue result = defineLibrary(args);
     if ( isUnhandledError(result) ) {
-        engine->handleError(result);
+        ScamEngine::getEngine().handleError(result);
     }
 }
 
-void scam::applyImport(ScamValue args,
-                       Continuation * cont,
-                       Env * env,
-                       ScamEngine * engine)
+void scam::applyImport(ScamValue args, Continuation * cont, Env * env)
 {
-    ScamValue result = importToEnv(args, engine);
+    ScamValue result = importToEnv(args);
     if ( isUnhandledError(result) ) {
-        engine->handleError(result);
+        ScamEngine::getEngine().handleError(result);
     }
     else if ( isEnv(result) ) {
-        engine->getFrame()->merge(asEnv(result));
+        ScamEngine::getEngine().getFrame()->merge(asEnv(result));
     }
 }
 
-ScamValue scam::defineLibrary(ScamValue args, ScamEngine * engine)
+ScamValue scam::defineLibrary(ScamValue args)
 {
     ScamValue name = getLibraryName(args);
     if ( isUnhandledError(name) ) {
@@ -116,16 +109,18 @@ ScamValue scam::defineLibrary(ScamValue args, ScamEngine * engine)
         }
     }
 
-    Env * original = engine->getFrame();
+    ScamEngine & engine = ScamEngine::getEngine();
+
+    Env * original = engine.getFrame();
     Env * extended = original->extend();
-    engine->setFrame(extended);
+    engine.setFrame(extended);
 
     for ( const auto i : imports ) {
         ScamValue specs = getCdr(i);
         while ( ! isNull(specs) ) {
             ScamValue spec = getCar(specs);
             specs = getCdr(specs);
-            ScamValue result = importImportSet(spec, engine);
+            ScamValue result = importImportSet(spec);
             if ( isEnv(result) ) {
                 extended->merge(asEnv(result));
             }
@@ -136,13 +131,13 @@ ScamValue scam::defineLibrary(ScamValue args, ScamEngine * engine)
     }
 
     for ( const auto d : defines ) {
-        ScamValue result = engine->eval(d);
+        ScamValue result = engine.eval(d);
         if ( isUnhandledError(result) ) {
             return result;
         }
     }
 
-    engine->setFrame(original);
+    engine.setFrame(original);
 
     Env * lib = standardMemoryManager.make<Env>();
     if ( exports.empty() ) {
@@ -160,14 +155,15 @@ ScamValue scam::defineLibrary(ScamValue args, ScamEngine * engine)
     }
 
     ScamValue rv = makeEnv(lib);
-    engine->saveLibrary(name, lib);
+    engine.saveLibrary(name, lib);
     return rv;
 }
 
-ScamValue scam::importToEnv(ScamValue args, ScamEngine * engine)
+ScamValue scam::importToEnv(ScamValue args)
 {
-    Env * original = engine->getFrame();
-    engine->setFrame(original->extend());
+    ScamEngine & engine = ScamEngine::getEngine();
+    Env * original = engine.getFrame();
+    engine.setFrame(original->extend());
     Env * target = standardMemoryManager.make<Env>();
     ScamValue rv = makeEnv(target);
 
@@ -175,7 +171,7 @@ ScamValue scam::importToEnv(ScamValue args, ScamEngine * engine)
         ScamValue arg0 = getCar(args);
         args = getCdr(args);
 
-        ScamValue result = importImportSet(arg0, engine);
+        ScamValue result = importImportSet(arg0);
         if ( isEnv(result) ) {
             target->merge(asEnv(result));
         }
@@ -185,7 +181,7 @@ ScamValue scam::importToEnv(ScamValue args, ScamEngine * engine)
         }
     }
 
-    engine->setFrame(original);
+    engine.setFrame(original);
     return rv;
 }
 
@@ -229,12 +225,12 @@ namespace
         return unknownLibraryDirective(type);
     }
 
-    ScamValue importImportSet(ScamValue arg, ScamEngine * engine)
+    ScamValue importImportSet(ScamValue arg)
     {
         ScamValue rv = makeNothing();
 
         if ( isSymbol(arg) ) {
-            rv = importLib(arg, engine);
+            rv = importLib(arg);
         }
 
         else if ( isPair(arg) ) {
@@ -244,23 +240,23 @@ namespace
             if ( isSymbol(directive) ) {
                 const string & name = directive->stringValue();
                 if ( name == "only" ) {
-                    rv = importOnly(rest, engine);
+                    rv = importOnly(rest);
                 }
 
                 else if ( name == "except" ) {
-                    rv = importExcept(rest, engine);
+                    rv = importExcept(rest);
                 }
 
                 else if ( name == "prefix" ) {
-                    rv = importPrefix(rest, engine);
+                    rv = importPrefix(rest);
                 }
 
                 else if ( name == "rename" ) {
-                    rv = importRename(rest, engine);
+                    rv = importRename(rest);
                 }
 
                 else {
-                    rv = loadLibraryFromFile(arg, engine);
+                    rv = loadLibraryFromFile(arg);
                 }
             }
             else {
@@ -275,18 +271,19 @@ namespace
         return rv;
     }
 
-    ScamValue importLib(ScamValue symbol, ScamEngine * engine)
+    ScamValue importLib(ScamValue symbol)
     {
         string fileToLoad = findImportLib(symbol);
         if ( fileToLoad.empty() ) {
             return libraryNotFound(symbol);
         }
 
-        Env * original = engine->getFrame();
+        ScamEngine & engine = ScamEngine::getEngine();
+        Env * original = engine.getFrame();
         Env * extended = original->extend();
-        engine->setFrame(extended);
-        ScamValue rv = loadEvalFile(fileToLoad, engine);
-        engine->setFrame(original);
+        engine.setFrame(extended);
+        ScamValue rv = loadEvalFile(fileToLoad);
+        engine.setFrame(original);
 
         if ( isError(rv) ) {
             return importError(symbol, rv);
@@ -296,9 +293,9 @@ namespace
         return rv;
     }
 
-    ScamValue importOnly(ScamValue args, ScamEngine * engine)
+    ScamValue importOnly(ScamValue args)
     {
-        ScamValue result = importCommon(args, engine, "only");
+        ScamValue result = importCommon(args, "only");
         if ( ! isEnv(result) ) {
             return result;
         }
@@ -310,9 +307,9 @@ namespace
         return copyOnlyRename(base, temp, rest, "only");
     }
 
-    ScamValue importExcept(ScamValue args, ScamEngine * engine)
+    ScamValue importExcept(ScamValue args)
     {
-        ScamValue result = importCommon(args, engine, "except");
+        ScamValue result = importCommon(args, "except");
         if ( ! isEnv(result) ) {
             return result;
         }
@@ -335,7 +332,7 @@ namespace
         return result;
     }
 
-    ScamValue importPrefix(ScamValue args, ScamEngine * engine)
+    ScamValue importPrefix(ScamValue args)
     {
         ScamValue rest = getCdr(args);
         ScamValue p    = getCar(rest);
@@ -344,7 +341,7 @@ namespace
         }
         const string & prefix = p->stringValue();
 
-        ScamValue result = importCommon(args, engine, "prefix");
+        ScamValue result = importCommon(args, "prefix");
         if ( ! isEnv(result) ) {
             return result;
         }
@@ -366,9 +363,9 @@ namespace
         return result;
     }
 
-    ScamValue importRename(ScamValue args, ScamEngine * engine)
+    ScamValue importRename(ScamValue args)
     {
-        ScamValue result = importCommon(args, engine, "rename");
+        ScamValue result = importCommon(args, "rename");
         if ( ! isEnv(result) ) {
             return result;
         }
@@ -379,11 +376,12 @@ namespace
         return copyOnlyRename(temp, temp, rest, "rename");
     }
 
-    ScamValue loadLibraryFromFile(ScamValue arg, ScamEngine * engine)
+    ScamValue loadLibraryFromFile(ScamValue arg)
     {
+        ScamEngine & engine = ScamEngine::getEngine();
         ScamValue originalArg = arg;
 
-        ScamValue lib = engine->findLibrary(arg);
+        ScamValue lib = engine.findLibrary(arg);
         if ( isEnv(lib) ) {
             return lib;
         }
@@ -402,8 +400,8 @@ namespace
 
         const string path = findImportLib(name);
         if ( ! path.empty() ) {
-            (void) loadEvalFile(path, engine);
-            lib = engine->findLibrary(originalArg);
+            (void) loadEvalFile(path);
+            lib = engine.findLibrary(originalArg);
             if ( isEnv(lib) ) {
                 return lib;
             }
@@ -414,7 +412,7 @@ namespace
     }
 
     ScamValue
-    importCommon(ScamValue args, ScamEngine * engine, const char * name)
+    importCommon(ScamValue args, const char * name)
     {
         ScamValue rv = makeNothing();
 
@@ -423,7 +421,7 @@ namespace
         }
         else {
             ScamValue arg = getCar(args);
-            rv = importImportSet(arg, engine);
+            rv = importImportSet(arg);
         }
 
         return rv;

@@ -11,20 +11,15 @@
 using namespace scam;
 using namespace std;
 
-AssignCont::AssignCont(ScamValue sym,
-                       Continuation * cont,
-                       Env * env,
-                       ScamEngine * engine)
-    : EnvHelperCont(sym, cont, env, engine, "Assign")
+AssignCont::AssignCont(ScamValue sym, Continuation * cont, Env * env)
+    : EnvHelperCont(sym, cont, env, "Assign")
 {
 }
 
-AssignCont * AssignCont::makeInstance(ScamValue sym,
-                                      Continuation * cont,
-                                      Env * env,
-                                      ScamEngine * engine)
+AssignCont *
+AssignCont::makeInstance(ScamValue sym, Continuation * cont, Env * env)
 {
-    return new AssignCont(sym, cont, env, engine);
+    return new AssignCont(sym, cont, env);
 }
 
 ScamValue AssignCont::finish(ScamValue expr) const
@@ -46,7 +41,7 @@ ScamValue AssignCont::finish(ScamValue expr) const
 
     (void) env->assign(sym, expr);
 
-    Backtracker * backtracker = engine->getBacktracker();
+    Backtracker * backtracker = ScamEngine::getEngine().getBacktracker();
     if ( ! backtracker ) {
         return makeNothing();
     }
@@ -55,9 +50,8 @@ ScamValue AssignCont::finish(ScamValue expr) const
         standardMemoryManager.make<AssignBacktracker>(sym,
                                                       old,
                                                       env,
-                                                      backtracker,
-                                                      engine);
-    engine->setBacktracker(bt);
+                                                      backtracker);
+    ScamEngine::getEngine().setBacktracker(bt);
 
     return makeNothing();
 }

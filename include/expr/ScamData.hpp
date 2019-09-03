@@ -16,15 +16,8 @@ namespace scam
     class ScamPort;
     class SyntaxRules;
 
-    using SfFunction =
-        std::function<void(ScamValue,
-                           Continuation *,
-                           Env *,
-                           ScamEngine *)>;
-    using PrimFunction =
-        std::function<void(ScamValue,
-                           Continuation *,
-                           ScamEngine *)>;
+    using SfFunction   = std::function<void(ScamValue, Continuation *, Env *)>;
+    using PrimFunction = std::function<void(ScamValue, Continuation *)>;
 
     struct ScamData : public ManagedObject
     {
@@ -189,14 +182,12 @@ namespace scam
         {
             std::string    name;
             PrimFunction   func;
-            ScamEngine   * engine;
         };
 
         struct SpecialFormData
         {
             std::string   name;
             SfFunction    func;
-            ScamEngine  * engine;
         };
 
     private:
@@ -269,11 +260,9 @@ namespace scam
 
         std::string & primName();
         PrimFunction & primFunc();
-        ScamEngine *& primEngine();
 
         std::string & sfName();
         SfFunction & sfFunc();
-        ScamEngine *& sfEngine();
 
         ScamPort *& portValue();
 

@@ -21,427 +21,407 @@ using namespace std;
 
 namespace
 {
-    extern void addForms(ScamEngine * engine, Env * env);
+    extern void addForms(Env * env);
 
-    extern Env * initializeSchemeBase(ScamEngine * engine, Env * base);
-    extern Env * initializeSchemeChar(ScamEngine * engine, Env * base);
-    extern Env * initializeSchemeEval(ScamEngine * engine, Env * base);
-    extern Env * initializeSchemeInexact(ScamEngine * engine, Env * base);
-    extern Env * initializeSchemeLoad(ScamEngine * engine, Env * base);
-    extern Env * initializeSchemeRead(ScamEngine * engine, Env * base);
-    extern Env * initializeSchemeRepl(ScamEngine * engine, Env * base);
-    extern Env * initializeSchemeWrite(ScamEngine * engine, Env * base);
-    extern Env * initializeScamBase(ScamEngine * engine, Env * base);
-    extern Env * initializeScamBacktrack(ScamEngine * engine, Env * base);
-    extern Env * initializeScamClass(ScamEngine * engine, Env * base);
-    extern Env * initializeScamError(ScamEngine * engine, Env * base);
-    extern Env * initializeScamUnify(ScamEngine * engine, Env * base);
-    extern Env * initializeScamMisc(ScamEngine * engine, Env * base);
+    extern Env * initializeSchemeBase(Env * base);
+    extern Env * initializeSchemeChar(Env * base);
+    extern Env * initializeSchemeEval(Env * base);
+    extern Env * initializeSchemeInexact(Env * base);
+    extern Env * initializeSchemeLoad(Env * base);
+    extern Env * initializeSchemeRead(Env * base);
+    extern Env * initializeSchemeRepl(Env * base);
+    extern Env * initializeSchemeWrite(Env * base);
+    extern Env * initializeScamBase(Env * base);
+    extern Env * initializeScamBacktrack(Env * base);
+    extern Env * initializeScamClass(Env * base);
+    extern Env * initializeScamError(Env * base);
+    extern Env * initializeScamUnify(Env * base);
+    extern Env * initializeScamMisc(Env * base);
 
-    extern void addSpecialForm(Env * env,
-                               const char * name,
-                               SfFunction func,
-                               ScamEngine * engine);
-
-    extern void addPrimitive(Env * env,
-                             const char * name,
-                             PrimFunction func,
-                             ScamEngine * engine);
-
-    extern void addPorts(Env * env, ScamEngine * engine);
+    extern void addSpecialForm(Env * env, const char * name, SfFunction func);
+    extern void addPrimitive(Env * env, const char * name, PrimFunction func);
+    extern void addPorts(Env * env);
 
     extern void doPut(Env * env, ScamValue key, ScamValue value);
 }
 
-Env * scam::getConfigurationEnv(ScamEngine * engine)
+Env * scam::getConfigurationEnv()
 {
     Env * env = standardMemoryManager.make<Env>();
-    addPorts(env, engine);
+    addPorts(env);
     return env;
 }
 
-Env * scam::getSyntaxEnv(ScamEngine * engine, Env * base)
+Env * scam::getSyntaxEnv(Env * base)
 {
     Env * env = base->extend();
-    addSpecialForm(env, "and", applyAnd, engine);
-    addSpecialForm(env, "define", applyDefine, engine);
-    addSpecialForm(env, "define-library", applyDefineLibrary, engine);
-    addSpecialForm(env, "define-syntax", applyDefineSyntax, engine);
-    addSpecialForm(env, "if", applyIf, engine);
-    addSpecialForm(env, "import", applyImport, engine);
-    addSpecialForm(env, "lambda", applyLambda, engine);
-    addSpecialForm(env, "let", applyLet, engine);
-    addSpecialForm(env, "let*", applyLetStar, engine);
-    addSpecialForm(env, "letrec", applyLetRec, engine);
-    addSpecialForm(env, "or", applyOr, engine);
-    addSpecialForm(env, "quasiquote", applyQuasiQuote, engine);
-    addSpecialForm(env, "quote", applyQuote, engine);
-    addSpecialForm(env, "set!", applySetX, engine);
+    addSpecialForm(env, "and", applyAnd);
+    addSpecialForm(env, "define", applyDefine);
+    addSpecialForm(env, "define-library", applyDefineLibrary);
+    addSpecialForm(env, "define-syntax", applyDefineSyntax);
+    addSpecialForm(env, "if", applyIf);
+    addSpecialForm(env, "import", applyImport);
+    addSpecialForm(env, "lambda", applyLambda);
+    addSpecialForm(env, "let", applyLet);
+    addSpecialForm(env, "let*", applyLetStar);
+    addSpecialForm(env, "letrec", applyLetRec);
+    addSpecialForm(env, "or", applyOr);
+    addSpecialForm(env, "quasiquote", applyQuasiQuote);
+    addSpecialForm(env, "quote", applyQuote);
+    addSpecialForm(env, "set!", applySetX);
 
-    addPrimitive(env, "begin", applyBegin, engine);
-    
+    addPrimitive(env, "begin", applyBegin);
+
     return env;
 }
 
-void scam::initalizeLibraries(ScamEngine * engine, Env * base)
+void scam::initalizeLibraries(Env * base)
 {
-    initializeSchemeBase(engine, base);
-    initializeSchemeChar(engine, base);
-    initializeSchemeEval(engine, base);
-    initializeSchemeInexact(engine, base);
-    initializeSchemeLoad(engine, base);
-    initializeSchemeRead(engine, base);
-    initializeSchemeRepl(engine, base);
-    initializeSchemeWrite(engine, base);
-    initializeScamBase(engine, base);
-    initializeScamBacktrack(engine, base);
-    initializeScamClass(engine, base);
-    initializeScamError(engine, base);
-    initializeScamUnify(engine, base);
-    initializeScamMisc(engine, base);
+    initializeSchemeBase(base);
+    initializeSchemeChar(base);
+    initializeSchemeEval(base);
+    initializeSchemeInexact(base);
+    initializeSchemeLoad(base);
+    initializeSchemeRead(base);
+    initializeSchemeRepl(base);
+    initializeSchemeWrite(base);
+    initializeScamBase(base);
+    initializeScamBacktrack(base);
+    initializeScamClass(base);
+    initializeScamError(base);
+    initializeScamUnify(base);
+    initializeScamMisc(base);
 }
 
-Env * scam::makeInteractionEnv(ScamEngine * engine, Env * base)
+Env * scam::makeInteractionEnv(Env * base)
 {
     Env * env = base->extend();
-    addForms(engine, env);
+    addForms(env);
     return env;
 }
 
-void scam::applyInteractionEnv(ScamValue args,
-                               Continuation * cont,
-                               ScamEngine * engine)
+void scam::applyInteractionEnv(ScamValue args, Continuation * cont)
 {
     static const char * name = "interaction-environment";
 
-    if ( argsToParms(args, engine, name) ) {
-        ScamValue iEnv = makeEnv(engine->getInteractionFrame());
+    if ( argsToParms(args, name) ) {
+        Env * e = ScamEngine::getEngine().getInteractionFrame();
+        ScamValue iEnv = makeEnv(e);
         cont->handleValue(iEnv);
     }
 }
 
-void scam::applyEval(ScamValue args,
-                     Continuation * cont,
-                     ScamEngine * engine)
+void scam::applyEval(ScamValue args, Continuation * cont)
 {
     static const char * name = "eval";
 
     ObjectParameter p0;
     EnvParameter    p1;
-    if ( argsToParms(args, engine, name, p0, p1) ) {
+    if ( argsToParms(args, name, p0, p1) ) {
         Env * env = asEnv(p1.value);
-        eval(p0.value, cont, env, engine);
+        eval(p0.value, cont, env);
     }
 }
 
 namespace
 {
-    void addForms(ScamEngine * engine, Env * env)
+    void addForms(Env * env)
     {
-        env->merge(initializeSchemeBase(engine, env));
-        env->merge(initializeSchemeChar(engine, env));
-        env->merge(initializeSchemeEval(engine, env));
-        env->merge(initializeSchemeInexact(engine, env));
-        env->merge(initializeSchemeLoad(engine, env));
-        env->merge(initializeSchemeRead(engine, env));
-        env->merge(initializeSchemeRepl(engine, env));
-        env->merge(initializeSchemeWrite(engine, env));
-        env->merge(initializeScamBase(engine, env));
-        env->merge(initializeScamBacktrack(engine, env));
-        env->merge(initializeScamClass(engine, env));
-        env->merge(initializeScamError(engine, env));
-        env->merge(initializeScamUnify(engine, env));
-        env->merge(initializeScamMisc(engine, env));
+        env->merge(initializeSchemeBase(env));
+        env->merge(initializeSchemeChar(env));
+        env->merge(initializeSchemeEval(env));
+        env->merge(initializeSchemeInexact(env));
+        env->merge(initializeSchemeLoad(env));
+        env->merge(initializeSchemeRead(env));
+        env->merge(initializeSchemeRepl(env));
+        env->merge(initializeSchemeWrite(env));
+        env->merge(initializeScamBase(env));
+        env->merge(initializeScamBacktrack(env));
+        env->merge(initializeScamClass(env));
+        env->merge(initializeScamError(env));
+        env->merge(initializeScamUnify(env));
+        env->merge(initializeScamMisc(env));
     }
 
-    Env * initializeSchemeBase(ScamEngine * engine, Env * base)
-    {
-        Env * env = base->extend();
-
-        addPrimitive(env, "%", applyMod, engine);
-        addPrimitive(env, "*", applyMul, engine);
-        addPrimitive(env, "+", applyAdd, engine);
-        addPrimitive(env, "-", applySub, engine);
-        addPrimitive(env, "/", applyDiv, engine);
-
-        addPrimitive(env, "<>", applyNe, engine);
-        addPrimitive(env, "=",  applyEq, engine);
-        addPrimitive(env, "<",  applyLt, engine);
-        addPrimitive(env, "<=", applyLe, engine);
-        addPrimitive(env, ">",  applyGt, engine);
-        addPrimitive(env, ">=", applyGe, engine);
-
-        addSpecialForm(env, "apply", applyApply, engine);
-        addPrimitive(env, "append", applyAppend, engine);
-
-        addPrimitive(env, "boolean?", applyBoolP, engine);
-
-        addSpecialForm(env, "call/cc", applyCallCC, engine);
-        addPrimitive(env, "car", applyCar, engine);
-        addPrimitive(env, "cdr", applyCdr, engine);
-        addPrimitive(env, "char?", applyCharP, engine);
-        addPrimitive(env, "complex?", applyComplexP, engine);
-        addPrimitive(env, "cons", applyCons, engine);
-
-        addPrimitive(env, "eof-object", applyEofObject, engine);
-        addPrimitive(env, "eof-object?", applyEofP, engine);
-        addPrimitive(env, "eq?", applyEqP, engine);
-        addPrimitive(env, "equal?", applyEqualP, engine);
-        addPrimitive(env, "eqv?", applyEqvP, engine);
-        addPrimitive(env, "error", applyError, engine);
-        addPrimitive(env, "error-object-irritants", applyErrorIrritant, engine);
-        addPrimitive(env, "error-object-message", applyErrorMessage, engine);
-        addPrimitive(env, "error-object?", applyErrorP, engine);
-        addPrimitive(env, "exact?", applyExactP, engine);
-
-        addPrimitive(env, "file-error?", applyFileErrorP, engine);
-
-        addPrimitive(env, "get-output-string",    applyGetOutStr,   engine);
-
-        addPrimitive(env, "inexact?", applyInexactP, engine);
-        addPrimitive(env, "integer?", applyIntegerP, engine);
-
-        addPrimitive(env, "list", applyList, engine);
-        addPrimitive(env, "list->string", applyList2String, engine);
-        addPrimitive(env, "list?", applyListP, engine);
-
-        addPrimitive(env, "make-list", applyMakeList, engine);
-        addPrimitive(env, "make-string", applyMakeString, engine);
-
-        addPrimitive(env, "newline", applyNewline, engine);
-        addSpecialForm(env, "not", applyNot, engine);
-        addPrimitive(env, "null?", applyNullP, engine);
-
-        addPrimitive(env, "open-input-string", applyOpenInStr, engine);
-        addPrimitive(env, "open-output-string", applyOpenOutStr, engine);
-
-        addPrimitive(env, "pair?", applyPairP, engine);
-        addPrimitive(env, "port?", applyPortP, engine);
-        addPrimitive(env, "procedure?", applyProcedureP, engine);
-
-        addPrimitive(env, "raise", applyRaise, engine);
-        addPrimitive(env, "rational?", applyRationalP, engine);
-        addPrimitive(env, "read-error?", applyReadErrorP, engine);
-        addPrimitive(env, "real?", applyRealP, engine);
-
-        addPrimitive(env, "set-car!", applySetCarX, engine);
-        addPrimitive(env, "set-cdr!", applySetCdrX, engine);
-        addPrimitive(env, "string", applyString, engine);
-        addPrimitive(env, "string->list", applyString2List, engine);
-        addPrimitive(env, "string-append", applyStringAppend, engine);
-        addPrimitive(env, "string-copy!", applyStringCopyX, engine);
-        addPrimitive(env, "string-copy", applyStringCopy, engine);
-        addPrimitive(env, "string-fill!", applyStringFillX, engine);
-        addPrimitive(env, "string-length", applyStringLength, engine);
-        addPrimitive(env, "string-ref", applyStringRef, engine);
-        addPrimitive(env, "string-set!", applyStringSetX, engine);
-        addPrimitive(env, "string<=?", applyStringLeP, engine);
-        addPrimitive(env, "string<?", applyStringLtP, engine);
-        addPrimitive(env, "string=?", applyStringEqP, engine);
-        addPrimitive(env, "string>=?", applyStringGeP, engine);
-        addPrimitive(env, "string>?", applyStringGtP, engine);
-        addPrimitive(env, "string?", applyStringP, engine);
-        addPrimitive(env, "symbol?", applySymbolP, engine);
-
-        addPrimitive(env, "vector?", applyVectorP, engine);
-
-        addPrimitive(env, "with-exception-handler", applyWithHandler, engine);
-
-	ScamValue name = makeList(makeSymbol("scheme"), makeSymbol("base"));
-	engine->saveLibrary(name, env);
-        return env;
-    }
-
-    Env * initializeSchemeChar(ScamEngine * engine, Env * base)
+    Env * initializeSchemeBase(Env * base)
     {
         Env * env = base->extend();
 
-        addPrimitive(env, "string-ci<=?", applyStringCiLeP, engine);
-        addPrimitive(env, "string-ci<?", applyStringCiLtP, engine);
-        addPrimitive(env, "string-ci=?", applyStringCiEqP, engine);
-        addPrimitive(env, "string-ci>=?", applyStringCiGeP, engine);
-        addPrimitive(env, "string-ci>?", applyStringCiGtP, engine);
-        addPrimitive(env, "string-downcase", applyStringDowncase, engine);
-        addPrimitive(env, "string-upcase", applyStringUpcase, engine);
+        addPrimitive(env, "%", applyMod);
+        addPrimitive(env, "*", applyMul);
+        addPrimitive(env, "+", applyAdd);
+        addPrimitive(env, "-", applySub);
+        addPrimitive(env, "/", applyDiv);
 
-	ScamValue name = makeList(makeSymbol("scheme"), makeSymbol("char"));
-	engine->saveLibrary(name, env);
+        addPrimitive(env, "<>", applyNe);
+        addPrimitive(env, "=",  applyEq);
+        addPrimitive(env, "<",  applyLt);
+        addPrimitive(env, "<=", applyLe);
+        addPrimitive(env, ">",  applyGt);
+        addPrimitive(env, ">=", applyGe);
+
+        addSpecialForm(env, "apply", applyApply);
+        addPrimitive(env, "append", applyAppend);
+
+        addPrimitive(env, "boolean?", applyBoolP);
+
+        addSpecialForm(env, "call/cc", applyCallCC);
+        addPrimitive(env, "car", applyCar);
+        addPrimitive(env, "cdr", applyCdr);
+        addPrimitive(env, "char?", applyCharP);
+        addPrimitive(env, "complex?", applyComplexP);
+        addPrimitive(env, "cons", applyCons);
+
+        addPrimitive(env, "eof-object", applyEofObject);
+        addPrimitive(env, "eof-object?", applyEofP);
+        addPrimitive(env, "eq?", applyEqP);
+        addPrimitive(env, "equal?", applyEqualP);
+        addPrimitive(env, "eqv?", applyEqvP);
+        addPrimitive(env, "error", applyError);
+        addPrimitive(env, "error-object-irritants", applyErrorIrritant);
+        addPrimitive(env, "error-object-message", applyErrorMessage);
+        addPrimitive(env, "error-object?", applyErrorP);
+        addPrimitive(env, "exact?", applyExactP);
+
+        addPrimitive(env, "file-error?", applyFileErrorP);
+
+        addPrimitive(env, "get-output-string", applyGetOutStr);
+
+        addPrimitive(env, "inexact?", applyInexactP);
+        addPrimitive(env, "integer?", applyIntegerP);
+
+        addPrimitive(env, "list", applyList);
+        addPrimitive(env, "list->string", applyList2String);
+        addPrimitive(env, "list?", applyListP);
+
+        addPrimitive(env, "make-list", applyMakeList);
+        addPrimitive(env, "make-string", applyMakeString);
+
+        addPrimitive(env, "newline", applyNewline);
+        addSpecialForm(env, "not", applyNot);
+        addPrimitive(env, "null?", applyNullP);
+
+        addPrimitive(env, "open-input-string", applyOpenInStr);
+        addPrimitive(env, "open-output-string", applyOpenOutStr);
+
+        addPrimitive(env, "pair?", applyPairP);
+        addPrimitive(env, "port?", applyPortP);
+        addPrimitive(env, "procedure?", applyProcedureP);
+
+        addPrimitive(env, "raise", applyRaise);
+        addPrimitive(env, "rational?", applyRationalP);
+        addPrimitive(env, "read-error?", applyReadErrorP);
+        addPrimitive(env, "real?", applyRealP);
+
+        addPrimitive(env, "set-car!", applySetCarX);
+        addPrimitive(env, "set-cdr!", applySetCdrX);
+        addPrimitive(env, "string", applyString);
+        addPrimitive(env, "string->list", applyString2List);
+        addPrimitive(env, "string-append", applyStringAppend);
+        addPrimitive(env, "string-copy!", applyStringCopyX);
+        addPrimitive(env, "string-copy", applyStringCopy);
+        addPrimitive(env, "string-fill!", applyStringFillX);
+        addPrimitive(env, "string-length", applyStringLength);
+        addPrimitive(env, "string-ref", applyStringRef);
+        addPrimitive(env, "string-set!", applyStringSetX);
+        addPrimitive(env, "string<=?", applyStringLeP);
+        addPrimitive(env, "string<?", applyStringLtP);
+        addPrimitive(env, "string=?", applyStringEqP);
+        addPrimitive(env, "string>=?", applyStringGeP);
+        addPrimitive(env, "string>?", applyStringGtP);
+        addPrimitive(env, "string?", applyStringP);
+        addPrimitive(env, "symbol?", applySymbolP);
+
+        addPrimitive(env, "vector?", applyVectorP);
+
+        addPrimitive(env, "with-exception-handler", applyWithHandler);
+
+        ScamValue name = makeList(makeSymbol("scheme"), makeSymbol("base"));
+        ScamEngine::getEngine().saveLibrary(name, env);
         return env;
     }
 
-    Env * initializeSchemeEval(ScamEngine * engine, Env * base)
+    Env * initializeSchemeChar(Env * base)
     {
         Env * env = base->extend();
 
-        addPrimitive(env, "eval", applyEval, engine);
+        addPrimitive(env, "string-ci<=?", applyStringCiLeP);
+        addPrimitive(env, "string-ci<?", applyStringCiLtP);
+        addPrimitive(env, "string-ci=?", applyStringCiEqP);
+        addPrimitive(env, "string-ci>=?", applyStringCiGeP);
+        addPrimitive(env, "string-ci>?", applyStringCiGtP);
+        addPrimitive(env, "string-downcase", applyStringDowncase);
+        addPrimitive(env, "string-upcase", applyStringUpcase);
 
-	ScamValue name = makeList(makeSymbol("scheme"), makeSymbol("eval"));
-	engine->saveLibrary(name, env);
+        ScamValue name = makeList(makeSymbol("scheme"), makeSymbol("char"));
+        ScamEngine::getEngine().saveLibrary(name, env);
         return env;
     }
 
-    Env * initializeSchemeInexact(ScamEngine * engine, Env * base)
+    Env * initializeSchemeEval(Env * base)
     {
         Env * env = base->extend();
 
-        addPrimitive(env, "finite?", applyFiniteP, engine);
-        addPrimitive(env, "infinite?", applyInfiniteP, engine);
-        addPrimitive(env, "nan?", applyNanP, engine);
+        addPrimitive(env, "eval", applyEval);
 
-	ScamValue name = makeList(makeSymbol("scheme"), makeSymbol("inexact"));
-	engine->saveLibrary(name, env);
+        ScamValue name = makeList(makeSymbol("scheme"), makeSymbol("eval"));
+        ScamEngine::getEngine().saveLibrary(name, env);
         return env;
     }
 
-    Env * initializeSchemeLoad(ScamEngine * engine, Env * base)
+    Env * initializeSchemeInexact(Env * base)
     {
         Env * env = base->extend();
 
-        addPrimitive(env, "load", applyLoad, engine);
+        addPrimitive(env, "finite?", applyFiniteP);
+        addPrimitive(env, "infinite?", applyInfiniteP);
+        addPrimitive(env, "nan?", applyNanP);
 
-	ScamValue name = makeList(makeSymbol("scheme"), makeSymbol("load"));
-	engine->saveLibrary(name, env);
+        ScamValue name = makeList(makeSymbol("scheme"), makeSymbol("inexact"));
+        ScamEngine::getEngine().saveLibrary(name, env);
         return env;
     }
 
-    Env * initializeSchemeRead(ScamEngine * engine, Env * base)
+    Env * initializeSchemeLoad(Env * base)
     {
         Env * env = base->extend();
 
-        addPrimitive(env, "read", applyRead, engine);
+        addPrimitive(env, "load", applyLoad);
 
-	ScamValue name = makeList(makeSymbol("scheme"), makeSymbol("read"));
-	engine->saveLibrary(name, env);
+        ScamValue name = makeList(makeSymbol("scheme"), makeSymbol("load"));
+        ScamEngine::getEngine().saveLibrary(name, env);
         return env;
     }
 
-    Env * initializeSchemeRepl(ScamEngine * engine, Env * base)
+    Env * initializeSchemeRead(Env * base)
     {
         Env * env = base->extend();
 
-        addPrimitive(env,
-                     "interaction-environment",
-                     applyInteractionEnv,
-                     engine);
+        addPrimitive(env, "read", applyRead);
 
-	ScamValue name = makeList(makeSymbol("scheme"), makeSymbol("repl"));
-	engine->saveLibrary(name, env);
+        ScamValue name = makeList(makeSymbol("scheme"), makeSymbol("read"));
+        ScamEngine::getEngine().saveLibrary(name, env);
         return env;
     }
 
-    Env * initializeSchemeWrite(ScamEngine * engine, Env * base)
+    Env * initializeSchemeRepl(Env * base)
     {
         Env * env = base->extend();
 
-        addPrimitive(env, "display", applyDisplay, engine);
+        addPrimitive(env, "interaction-environment", applyInteractionEnv);
 
-	ScamValue name = makeList(makeSymbol("scheme"), makeSymbol("write"));
-	engine->saveLibrary(name, env);
+        ScamValue name = makeList(makeSymbol("scheme"), makeSymbol("repl"));
+        ScamEngine::getEngine().saveLibrary(name, env);
         return env;
     }
 
-    Env * initializeScamBase(ScamEngine * engine, Env * base)
+    Env * initializeSchemeWrite(Env * base)
     {
         Env * env = base->extend();
 
-        addPrimitive(env, "dict?", applyDictP, engine);
-        addPrimitive(env, "keyword?", applyKeywordP, engine);
-        addPrimitive(env, "numeric?", applyNumericP, engine);
-        addPrimitive(env, "vlen", applyVLen, engine);
-        addPrimitive(env, "vref", applyVRef, engine);
+        addPrimitive(env, "display", applyDisplay);
 
-	ScamValue name = makeList(makeSymbol("scam"), makeSymbol("base"));
-	engine->saveLibrary(name, env);
+        ScamValue name = makeList(makeSymbol("scheme"), makeSymbol("write"));
+        ScamEngine::getEngine().saveLibrary(name, env);
         return env;
     }
 
-    Env * initializeScamBacktrack(ScamEngine * engine, Env * base)
+    Env * initializeScamBase(Env * base)
     {
         Env * env = base->extend();
 
-        addSpecialForm(env, "amb", applyAmb, engine);
-        addPrimitive(env, "backtrack", applyBacktrack, engine);
+        addPrimitive(env, "dict?", applyDictP);
+        addPrimitive(env, "keyword?", applyKeywordP);
+        addPrimitive(env, "numeric?", applyNumericP);
+        addPrimitive(env, "vlen", applyVLen);
+        addPrimitive(env, "vref", applyVRef);
 
-	ScamValue name = makeList(makeSymbol("scam"), makeSymbol("backtrack"));
-	engine->saveLibrary(name, env);
+        ScamValue name = makeList(makeSymbol("scam"), makeSymbol("base"));
+        ScamEngine::getEngine().saveLibrary(name, env);
         return env;
     }
 
-    Env * initializeScamClass(ScamEngine * engine, Env * base)
+    Env * initializeScamBacktrack(Env * base)
     {
         Env * env = base->extend();
 
-        addSpecialForm(env, "make-class", applyClassMaker, engine);
-        addPrimitive(env, "class?", applyClassP, engine);
-        addPrimitive(env, "instance?", applyInstanceP, engine);
+        addSpecialForm(env, "amb", applyAmb);
+        addPrimitive(env, "backtrack", applyBacktrack);
 
-	ScamValue name = makeList(makeSymbol("scam"), makeSymbol("class"));
-	engine->saveLibrary(name, env);
+        ScamValue name = makeList(makeSymbol("scam"), makeSymbol("backtrack"));
+        ScamEngine::getEngine().saveLibrary(name, env);
         return env;
     }
 
-    Env * initializeScamError(ScamEngine * engine, Env * base)
+    Env * initializeScamClass(Env * base)
     {
         Env * env = base->extend();
 
-        addPrimitive(env, "make-error", applyMakeError, engine);
-        addPrimitive(env, "error-category", applyErrorCat, engine);
-        addPrimitive(env, "error->string", applyError2String, engine);
+        addSpecialForm(env, "make-class", applyClassMaker);
+        addPrimitive(env, "class?", applyClassP);
+        addPrimitive(env, "instance?", applyInstanceP);
 
-	ScamValue name = makeList(makeSymbol("scam"), makeSymbol("error"));
-	engine->saveLibrary(name, env);
+        ScamValue name = makeList(makeSymbol("scam"), makeSymbol("class"));
+        ScamEngine::getEngine().saveLibrary(name, env);
         return env;
     }
 
-    Env * initializeScamUnify(ScamEngine * engine, Env * base)
+    Env * initializeScamError(Env * base)
     {
         Env * env = base->extend();
 
-        addPrimitive(env, "match", applyMatch, engine);
-        addPrimitive(env, "unify", applyUnify, engine);
-        addPrimitive(env, "substitute", applySubstitute, engine);
-        addPrimitive(env, "instantiate", applyInstantiate, engine);
+        addPrimitive(env, "make-error", applyMakeError);
+        addPrimitive(env, "error-category", applyErrorCat);
+        addPrimitive(env, "error->string", applyError2String);
 
-	ScamValue name = makeList(makeSymbol("scam"), makeSymbol("unify"));
-	engine->saveLibrary(name, env);
+        ScamValue name = makeList(makeSymbol("scam"), makeSymbol("error"));
+        ScamEngine::getEngine().saveLibrary(name, env);
         return env;
     }
 
-    Env * initializeScamMisc(ScamEngine * engine, Env * base)
+    Env * initializeScamUnify(Env * base)
     {
         Env * env = base->extend();
 
-        addSpecialForm(env, "syntax-expand", applySyntaxExpand, engine);
-        addSpecialForm(env, "undefine", applyUndefine, engine);
-        addPrimitive(env, "environment?",  applyEnvironmentP, engine);
-        addPrimitive(env, "spawn", applySpawn, engine);
+        addPrimitive(env, "match", applyMatch);
+        addPrimitive(env, "unify", applyUnify);
+        addPrimitive(env, "substitute", applySubstitute);
+        addPrimitive(env, "instantiate", applyInstantiate);
 
-	ScamValue name = makeList(makeSymbol("scam"), makeSymbol("misc"));
-	engine->saveLibrary(name, env);
+        ScamValue name = makeList(makeSymbol("scam"), makeSymbol("unify"));
+        ScamEngine::getEngine().saveLibrary(name, env);
         return env;
     }
 
-    void addSpecialForm(Env * env,
-                        const char * name,
-                        SfFunction func,
-                        ScamEngine * engine)
+    Env * initializeScamMisc(Env * base)
+    {
+        Env * env = base->extend();
+
+        addSpecialForm(env, "syntax-expand", applySyntaxExpand);
+        addSpecialForm(env, "undefine", applyUndefine);
+        addPrimitive(env, "environment?",  applyEnvironmentP);
+        addPrimitive(env, "spawn", applySpawn);
+
+        ScamValue name = makeList(makeSymbol("scam"), makeSymbol("misc"));
+        ScamEngine::getEngine().saveLibrary(name, env);
+        return env;
+    }
+
+    void addSpecialForm(Env * env, const char * name, SfFunction func)
     {
         ScamValue key  = makeSymbol(name);
-        ScamValue form = makeSpecialForm(name, func, engine, true);
+        ScamValue form = makeSpecialForm(name, func, true);
         doPut(env, key, form);
     }
 
-    void addPrimitive(Env * env,
-                      const char * name,
-                      PrimFunction func,
-                      ScamEngine * engine)
+    void addPrimitive(Env * env, const char * name, PrimFunction func)
     {
         ScamValue key  = makeSymbol(name);
-        ScamValue form = makePrimitive(name, func, engine, true);
+        ScamValue form = makePrimitive(name, func, true);
         doPut(env, key, form);
     }
 
-    void addPorts(Env * env, ScamEngine * engine)
+    void addPorts(Env * env)
     {
         ScamPort * cinPort  = new CinPort;
         ScamPort * coutPort = new CoutPort;

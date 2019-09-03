@@ -15,15 +15,10 @@ namespace scam
     private:
         friend class scam::MemoryManager;
 
-        ClosureBindCont(LambdaDef & lambda,
-                        Env * capture,
-                        Continuation * cont,
-                        ScamEngine * engine);
+        ClosureBindCont(LambdaDef & lambda, Env * capture, Continuation * cont);
 
-        static ClosureBindCont * makeInstance(LambdaDef & lambda,
-                                              Env * capture,
-                                              Continuation * cont,
-                                              ScamEngine * engine);
+        static ClosureBindCont *
+        makeInstance(LambdaDef & lambda, Env * capture, Continuation * cont);
 
     public:
         void mark() override;

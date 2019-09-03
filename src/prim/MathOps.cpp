@@ -115,17 +115,15 @@ namespace
 }
 
 #define MATH_OP_DEFINE(Name, Proc) \
-    void scam::apply##Name(ScamValue args,                                \
-                           Continuation * cont,                           \
-                           ScamEngine * engine)                           \
+    void scam::apply##Name(ScamValue args, Continuation * cont)           \
         {                                                                 \
             static const char * context { #Name };                        \
             NumericParameter pNum;                                        \
             CountedParameter p0(pNum);                                    \
-            if ( argsToParms(args, engine, context, p0) ) {               \
+            if ( argsToParms(args, context, p0) ) {                       \
                 ScamValue rv = numericAlgorithm(p0.value, context, Proc); \
                 if ( isUnhandledError(rv) ) {                             \
-                    engine->handleError(rv);                              \
+                    ScamEngine::getEngine().handleError(rv);              \
                 }                                                         \
                 else {                                                    \
                     cont->handleValue(rv);                                \

@@ -11,8 +11,8 @@ namespace scam
     {
     private:
         friend class scam::MemoryManager;
-        NotCont(Continuation * cont, ScamEngine * engine);
-        static NotCont * makeInstance(Continuation * cont, ScamEngine * engine);
+        NotCont(Continuation * cont);
+        static NotCont * makeInstance(Continuation * cont);
 
     public:
         void mark() override;

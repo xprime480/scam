@@ -14,9 +14,8 @@ using namespace std;
 AssignWorker::AssignWorker(ScamValue sym,
                            ScamValue value,
                            Continuation * cont,
-                           Env * env,
-                           ScamEngine * engine)
-    : Worker("Assign", engine)
+                           Env * env)
+    : Worker("Assign")
     , sym(sym)
     , value(value)
     , cont(cont)
@@ -27,10 +26,9 @@ AssignWorker::AssignWorker(ScamValue sym,
 AssignWorker * AssignWorker::makeInstance(ScamValue sym,
                                            ScamValue value,
                                            Continuation * cont,
-                                           Env * env,
-                                           ScamEngine * engine)
+                                           Env * env)
 {
-    return new AssignWorker(sym, value, cont, env, engine);
+    return new AssignWorker(sym, value, cont, env);
 }
 
 void AssignWorker::mark()
@@ -48,9 +46,6 @@ void AssignWorker::run()
 {
     Worker::run();
 
-    Continuation * c = standardMemoryManager.make<AssignCont>(sym,
-                                                              cont,
-                                                              env,
-                                                              engine);
-    eval(value, c, env, engine);
+    Continuation * c = standardMemoryManager.make<AssignCont>(sym, cont, env);
+    eval(value, c, env);
 }

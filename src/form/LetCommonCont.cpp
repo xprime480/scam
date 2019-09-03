@@ -12,9 +12,8 @@ using namespace std;
 
 LetCommonCont::LetCommonCont(char const * name,
                              ScamValue forms,
-                             Continuation * cont,
-                             ScamEngine * engine)
-    : Continuation(name, engine)
+                             Continuation * cont)
+    : Continuation(name)
     , forms(forms)
     , cont(cont)
 {
@@ -34,18 +33,18 @@ void LetCommonCont::handleValue(ScamValue value)
     Continuation::handleValue(value);
 
     if ( isUnhandledError(value) ) {
-        engine->handleError(value);
+        ScamEngine::getEngine().handleError(value);
     }
     else {
         ScamValue test = do_let(value);
         if ( isUnhandledError(test) ) {
-            engine->handleError(value);
+            ScamEngine::getEngine().handleError(value);
         }
     }
 }
 
 void LetCommonCont::final_eval(Env * env)
 {
-    workQueueHelper<EvalWorker>(forms, env, cont, engine);
+    workQueueHelper<EvalWorker>(forms, env, cont);
 }
 

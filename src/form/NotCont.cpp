@@ -8,15 +8,15 @@
 using namespace scam;
 using namespace std;
 
-NotCont::NotCont(Continuation * cont, ScamEngine * engine)
-    : Continuation("Not", engine)
+NotCont::NotCont(Continuation * cont)
+    : Continuation("Not")
     , cont(cont)
 {
 }
 
-NotCont * NotCont::makeInstance(Continuation * cont, ScamEngine * engine)
+NotCont * NotCont::makeInstance(Continuation * cont)
 {
-    return new NotCont(cont, engine);
+    return new NotCont(cont);
 }
 
 void NotCont::mark()
@@ -32,7 +32,7 @@ void NotCont::handleValue(ScamValue value)
     Continuation::handleValue(value);
 
     if ( isUnhandledError(value) ) {
-        engine->handleError(value);
+        ScamEngine::getEngine().handleError(value);
     }
     else {
         ScamValue rv = makeBoolean(! truth(value));

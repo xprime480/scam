@@ -10,9 +10,7 @@ namespace scam
         class TestWorkerBase : public Worker
         {
         protected:
-            TestWorkerBase(ScamEngine * engine,
-                           size_t * counter,
-                           char const * name);
+            TestWorkerBase(size_t * counter, char const * name);
 
         public:
             void run() override;

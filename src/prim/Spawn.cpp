@@ -7,13 +7,11 @@
 using namespace scam;
 using namespace std;
 
-void scam::applySpawn(ScamValue args,
-                      Continuation * cont,
-                      ScamEngine * engine)
+void scam::applySpawn(ScamValue args, Continuation * cont)
 {
     static const char * name = "spawn";
-    if ( argsToParms(args, engine, name) ) {
-        workQueueHelper<SpawnWorker>(cont, engine, true);
-        workQueueHelper<SpawnWorker>(cont, engine, false);
+    if ( argsToParms(args, name) ) {
+        workQueueHelper<SpawnWorker>(cont, true);
+        workQueueHelper<SpawnWorker>(cont, false);
     }
 }

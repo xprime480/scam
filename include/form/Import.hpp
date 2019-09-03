@@ -5,12 +5,9 @@
 
 namespace scam
 {
-    extern void applyImport(ScamValue args,
-                            Continuation * cont,
-                            Env * env,
-                            ScamEngine * engine);
+    extern void applyImport(ScamValue args, Continuation * cont, Env * env);
 
-    extern ScamValue importToEnv(ScamValue args, ScamEngine * engine);
+    extern ScamValue importToEnv(ScamValue args);
 }
 
 #endif

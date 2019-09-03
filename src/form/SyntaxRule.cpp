@@ -29,7 +29,6 @@ namespace
 }
 
 SyntaxRule::SyntaxRule(ScamValue rule,
-                       ScamEngine * engine,
                        ScamValue name,
                        const set<string> & reserved)
     : valid(false)
@@ -43,16 +42,16 @@ SyntaxRule::SyntaxRule(ScamValue rule,
     ObjectParameter  spObj;
     CountedParameter sp1(spObj);
 
-    if ( argsToParms(rule, engine, chName, sp0, sp1) ) {
+    if ( argsToParms(rule, chName, sp0, sp1) ) {
         ScamValue pat = makePair(makeNothing(), getCdr(sp0.value));
-        pattern = parsePattern(pat, engine, reserved);
+        pattern = parsePattern(pat, reserved);
 
         ScamValue tem = sp1.value;
         templat = parseTemplate(tem);
 
         if ( pattern && templat ) {
             valid = true;
-	    freeSymbols = templat->getFreeSymbols();
+            freeSymbols = templat->getFreeSymbols();
         }
     }
 }
@@ -62,11 +61,10 @@ SyntaxRule::~SyntaxRule()
 }
 
 SyntaxRule * SyntaxRule::makeInstance(ScamValue rule,
-                                      ScamEngine * engine,
                                       ScamValue name,
                                       const set<string> & reserved)
 {
-    return new SyntaxRule(rule, engine, name, reserved);
+    return new SyntaxRule(rule, name, reserved);
 }
 
 void SyntaxRule::mark()
@@ -80,9 +78,9 @@ void SyntaxRule::mark()
         if ( templat ) {
             templat->mark();
         }
-	for ( auto s : freeSymbols ) {
-	    s->mark();
-	}
+        for ( auto s : freeSymbols ) {
+            s->mark();
+        }
         name->mark();
     }
 }
@@ -125,9 +123,8 @@ string SyntaxRule::identify() const
     return s.str();
 }
 
-PatternData * SyntaxRule::parsePattern(ScamValue pat,
-                                       ScamEngine * engine,
-                                       const set<string> & reserved)
+PatternData *
+SyntaxRule::parsePattern(ScamValue pat, const set<string> & reserved)
 {
     MemoryManager & mm = standardMemoryManager;
     PatternData * rv = nullptr;
@@ -159,7 +156,7 @@ PatternData * SyntaxRule::parsePattern(ScamValue pat,
                 continue;
             }
 
-            PatternData * temp = parsePattern(head, engine, reserved);
+            PatternData * temp = parsePattern(head, reserved);
             if ( nullptr == temp ) {
                 return nullptr;
             }
@@ -174,7 +171,7 @@ PatternData * SyntaxRule::parsePattern(ScamValue pat,
         }
         else if ( ! isNull(pat) ) {
             ScamValue err = invalidPattern(orig);
-            engine->handleError(err);
+            ScamEngine::getEngine().handleError(err);
             return nullptr;
         }
 
@@ -198,7 +195,7 @@ PatternData * SyntaxRule::parsePattern(ScamValue pat,
 
     else {
         ScamValue err = invalidPattern(pat);
-        engine->handleError(err);
+        ScamEngine::getEngine().handleError(err);
     }
 
     return rv;

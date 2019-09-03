@@ -12,15 +12,10 @@ namespace scam
     private:
         friend class scam::MemoryManager;
 
-        UndefineWorker(ScamValue value,
-                       Continuation * cont,
-                       Env * env,
-                       ScamEngine * engine);
+        UndefineWorker(ScamValue value, Continuation * cont, Env * env);
 
-        static UndefineWorker * makeInstance(ScamValue value,
-                                             Continuation * cont,
-                                             Env * env,
-                                             ScamEngine * engine);
+        static UndefineWorker *
+        makeInstance(ScamValue value, Continuation * cont, Env * env);
 
     public:
         void mark() override;

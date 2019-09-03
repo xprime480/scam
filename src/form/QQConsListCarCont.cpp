@@ -15,9 +15,8 @@ using namespace std;
 
 QQConsListCarCont::QQConsListCarCont(ScamValue cdr,
                                      Continuation * cont,
-                                     Env * env,
-                                     ScamEngine * engine)
-    : Continuation("QQConsListCarCont", engine)
+                                     Env * env)
+    : Continuation("QQConsListCarCont")
     , cdr(cdr)
     , cont(cont)
     , env(env)
@@ -26,10 +25,9 @@ QQConsListCarCont::QQConsListCarCont(ScamValue cdr,
 
 QQConsListCarCont * QQConsListCarCont::makeInstance(ScamValue cdr,
                                                     Continuation * cont,
-                                                    Env * env,
-                                                    ScamEngine * engine)
+                                                    Env * env)
 {
-    return new QQConsListCarCont(cdr, cont, env, engine);
+    return new QQConsListCarCont(cdr, cont, env);
 }
 
 void QQConsListCarCont::mark()
@@ -47,14 +45,11 @@ void QQConsListCarCont::handleValue(ScamValue expr)
     Continuation::handleValue(expr);
 
     if ( isUnhandledError(expr) ) {
-        engine->handleError(expr);
+        ScamEngine::getEngine().handleError(expr);
     }
     else {
         Continuation * h =
-            standardMemoryManager.make<QQConsListCdrCont>(expr,
-                                                          cont,
-                                                          env,
-                                                          engine);
-        workQueueHelper<QuasiQuoteWorker>(cdr, h, env, engine);
+            standardMemoryManager.make<QQConsListCdrCont>(expr, cont, env);
+        workQueueHelper<QuasiQuoteWorker>(cdr, h, env);
     }
 }

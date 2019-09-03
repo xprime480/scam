@@ -59,11 +59,12 @@ namespace
 }
 
 TestBase::TestBase(bool loadPrelude)
-    : mm(standardMemoryManager)
+    : engine(ScamEngine::getEngine())
+    , mm(standardMemoryManager)
 {
     mm.reset();
     engine.reset(true);
-    extractor = mm.make<Extractor>(&engine);
+    extractor = mm.make<Extractor>();
     engine.setCont(extractor);
     handler = mm.make<TestHandler>(extractor);
     engine.pushHandler(handler);
@@ -111,7 +112,7 @@ ScamValue TestBase::readString(char const * input)
 {
     try {
         StringCharStream stream(input);
-        ReadEvalStream   helper(&engine, stream);
+        ReadEvalStream   helper(stream);
         ScamValue rv = helper.read();
         return rv;
     }
@@ -128,7 +129,7 @@ ScamValue TestBase::readEval(std::string const & input)
 {
     try {
         StringCharStream stream(input);
-        ReadEvalStream helper(&engine, stream);
+        ReadEvalStream helper(stream);
         ScamValue rv = helper.run();
         if ( isNothing(rv) ) {
             rv = extractor->getLastValue();
@@ -155,7 +156,7 @@ ScamValue TestBase::readEvalFile(char const * filename)
         return makeBoolean(false);
     }
 
-    return loadEvalFile(fullpath, &engine);
+    return loadEvalFile(fullpath);
 }
 
 void TestBase::runsafe(std::function<void()> thunk)

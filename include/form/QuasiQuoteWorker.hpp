@@ -11,15 +11,10 @@ namespace scam
     {
     private:
         friend class scam::MemoryManager;
-        QuasiQuoteWorker(ScamValue form,
-                         Continuation * cont,
-                         Env * env,
-                         ScamEngine * engine);
+        QuasiQuoteWorker(ScamValue form, Continuation * cont, Env * env);
 
-        static QuasiQuoteWorker * makeInstance(ScamValue form,
-                                               Continuation * cont,
-                                               Env * env,
-                                               ScamEngine * engine);
+        static QuasiQuoteWorker *
+        makeInstance(ScamValue form, Continuation * cont, Env * env);
 
     public:
         void mark() override;

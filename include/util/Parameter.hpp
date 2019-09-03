@@ -246,9 +246,7 @@ namespace scam
     };
 
     extern ScamValue errorCheckMsg(const char * name, ScamValue value);
-
-    extern bool
-    errorCheck(ScamEngine * engine, const char * name, ScamValue value);
+    extern bool errorCheck(const char * name, ScamValue value);
 
     template <typename... PS>
     ScamValue argsToParmsMsg(ScamValue args, Parameter & parm, PS & ... ps)
@@ -262,18 +260,16 @@ namespace scam
 
     template <typename... PS>
     bool argsToParms(ScamValue args,
-                     ScamEngine * engine,
                      const char * name,
                      Parameter & parm,
                      PS & ... ps)
     {
         ScamValue result = argsToParmsMsg(args, parm, ps...);
-        return errorCheck(engine, name, result);
+        return errorCheck(name, result);
     }
 
     ScamValue argsToParmsMsg(ScamValue args);
-
-    bool argsToParms(ScamValue args, ScamEngine * engine, const char * name);
+    bool argsToParms(ScamValue args, const char * name);
 }
 
 #endif

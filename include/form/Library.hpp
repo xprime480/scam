@@ -5,19 +5,13 @@
 
 namespace scam
 {
-    extern void applyDefineLibrary(ScamValue args,
-                                   Continuation * cont,
-                                   Env * env,
-                                   ScamEngine * engine);
+    extern void
+    applyDefineLibrary(ScamValue args, Continuation * cont, Env * env);
 
-    extern void applyImport(ScamValue args,
-                            Continuation * cont,
-                            Env * env,
-                            ScamEngine * engine);
+    extern void applyImport(ScamValue args, Continuation * cont, Env * env);
 
-    extern ScamValue defineLibrary(ScamValue args, ScamEngine * engine);
-    
-    extern ScamValue importToEnv(ScamValue args, ScamEngine * engine);
+    extern ScamValue defineLibrary(ScamValue args);
+    extern ScamValue importToEnv(ScamValue args);
 }
 
 #endif

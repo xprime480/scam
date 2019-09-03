@@ -5,9 +5,7 @@
 
 namespace scam
 {
-    extern void applyMatch(ScamValue args,
-                           Continuation * cont,
-                           ScamEngine * engine);
+    extern void applyMatch(ScamValue args, Continuation * cont);
 }
 
 #endif

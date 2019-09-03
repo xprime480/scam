@@ -11,10 +11,8 @@ namespace scam
     {
     private:
         friend class scam::MemoryManager;
-        QQSpliceCont(Continuation * cont, ScamEngine * engine);
-
-        static QQSpliceCont *
-        makeInstance(Continuation * cont, ScamEngine * engine);
+        QQSpliceCont(Continuation * cont);
+        static QQSpliceCont * makeInstance(Continuation * cont);
 
     public:
         void mark() override;

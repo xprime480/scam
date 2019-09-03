@@ -348,7 +348,7 @@ TEST_F(ValueFactoryTest, SpecialFormQuote)
 {
     string const value { "Special Form quote" };
 
-    ScamValue quote  = makeSpecialForm("quote", applyQuote, nullptr, true);
+    ScamValue quote  = makeSpecialForm("quote", applyQuote, true);
     expectApplicable(quote, value, true);
 
     ScamValue evaled = evaluate(quote);
@@ -359,7 +359,7 @@ TEST_F(ValueFactoryTest, SpecialFormQuasiQuote)
 {
     string const value { "Special Form quasiquote" };
 
-    ScamValue quote  = makeSpecialForm("quasiquote", applyQuasiQuote, nullptr, true);
+    ScamValue quote  = makeSpecialForm("quasiquote", applyQuasiQuote, true);
     expectApplicable(quote, value, true);
 
     ScamValue evaled = evaluate(quote);

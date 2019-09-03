@@ -10,23 +10,17 @@
 using namespace scam;
 using namespace std;
 
-OrCont::OrCont(ScamValue args,
-               Continuation * cont,
-               Env * env,
-               ScamEngine * engine)
-    : Continuation("Or", engine)
+OrCont::OrCont(ScamValue args, Continuation * cont, Env * env)
+    : Continuation("Or")
     , args(args)
     , cont(cont)
     , env(env)
 {
 }
 
-OrCont * OrCont::makeInstance(ScamValue args,
-                              Continuation * cont,
-                              Env * env,
-                              ScamEngine * engine)
+OrCont * OrCont::makeInstance(ScamValue args, Continuation * cont, Env * env)
 {
-    return new OrCont(args, cont, env, engine);
+    return new OrCont(args, cont, env);
 }
 
 void OrCont::mark()
@@ -44,12 +38,12 @@ void OrCont::handleValue(ScamValue value)
     Continuation::handleValue(value);
 
     if ( isUnhandledError(value) ) {
-        engine->handleError(value);
+        ScamEngine::getEngine().handleError(value);
     }
     else if ( truth(value) || isNull(args) ) {
         cont->handleValue(value);
     }
     else {
-        workQueueHelper<OrWorker>(cont, env, args, engine);
+        workQueueHelper<OrWorker>(cont, env, args);
     }
 }

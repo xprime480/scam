@@ -532,12 +532,6 @@ PrimFunction & ScamData::primFunc()
     return value.primitiveData->func;
 }
 
-ScamEngine *& ScamData::primEngine()
-{
-    assertType(ScamData::Primitive);
-    return value.primitiveData->engine;
-}
-
 std::string & ScamData::sfName()
 {
     assertType(ScamData::SpecialForm);
@@ -548,12 +542,6 @@ SfFunction & ScamData::sfFunc()
 {
     assertType(ScamData::SpecialForm);
     return value.specialFormData->func;
-}
-
-ScamEngine *& ScamData::sfEngine()
-{
-    assertType(ScamData::SpecialForm);
-    return value.specialFormData->engine;
 }
 
 ScamPort *& ScamData::portValue()

@@ -10,14 +10,12 @@
 using namespace scam;
 using namespace std;
 
-void scam::applyMakeList(ScamValue args,
-                         Continuation * cont,
-                         ScamEngine * engine)
+void scam::applyMakeList(ScamValue args, Continuation * cont)
 {
     CountParameter p0;
     ObjectParameter pObj;
     OptionalParameter p1(pObj);
-    if ( argsToParms(args, engine, "make-list", p0, p1) ) {
+    if ( argsToParms(args, "make-list", p0, p1) ) {
         int count = asInteger(p0.value);
         ScamValue fill = makeNull();
         if ( ! isNothing(p1.value) ) {
@@ -33,23 +31,19 @@ void scam::applyMakeList(ScamValue args,
     }
 }
 
-void scam::applyList(ScamValue args,
-                     Continuation * cont,
-                     ScamEngine * engine)
+void scam::applyList(ScamValue args, Continuation * cont)
 {
     /** literally anything goes **/
     cont->handleValue(args);
 }
 
-void scam::applyAppend(ScamValue args,
-                       Continuation * cont,
-                       ScamEngine * engine)
+void scam::applyAppend(ScamValue args, Continuation * cont)
 {
     ListParameter pList;
     ObjectParameter pObj;
     CountedParameter p0(pList);
     OptionalParameter p1(pObj);
-    if ( argsToParms(args, engine, "append", p0, p1) ) {
+    if ( argsToParms(args, "append", p0, p1) ) {
         ScamValue objs = p0.value;
         ScamValue tail = makeNull();
         if ( ! isNothing(p1.value) ) {

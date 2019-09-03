@@ -3,8 +3,8 @@
 using namespace scam;
 using namespace std;
 
-ReadEvalString::ReadEvalString(ScamEngine * engine, string const & text)
-    : ReadEval(engine, tokenizer)
+ReadEvalString::ReadEvalString(string const & text)
+    : ReadEval(tokenizer)
     , tokenizer(text)
 {
 }

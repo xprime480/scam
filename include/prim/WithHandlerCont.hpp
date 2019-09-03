@@ -11,10 +11,8 @@ namespace scam
     {
         friend class scam::MemoryManager;
 
-        WithHandlerCont(Continuation * cont, ScamEngine * engine);
-
-        static WithHandlerCont *
-        makeInstance(Continuation * cont, ScamEngine * engine);
+        WithHandlerCont(Continuation * cont);
+        static WithHandlerCont * makeInstance(Continuation * cont);
 
     public:
         void mark() override;

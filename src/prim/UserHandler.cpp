@@ -9,24 +9,18 @@
 using namespace scam;
 using namespace std;
 
-UserHandler::UserHandler(ScamValue handler,
-                         Continuation * cont,
-                         Env * env,
-                         ScamEngine * engine)
+UserHandler::UserHandler(ScamValue handler, Continuation * cont, Env * env)
     : Handler("User Handler")
     , handler(handler)
     , cont(cont)
     , env(env)
-    , engine(engine)
 {
 }
 
-UserHandler * UserHandler::makeInstance(ScamValue handler,
-                                        Continuation * cont,
-                                        Env * env,
-                                        ScamEngine * engine)
+UserHandler *
+UserHandler::makeInstance(ScamValue handler, Continuation * cont, Env * env)
 {
-    return new UserHandler(handler, cont, env, engine);
+    return new UserHandler(handler, cont, env);
 }
 
 void UserHandler::mark()
@@ -41,8 +35,8 @@ void UserHandler::mark()
 
 ScamValue UserHandler::handleError(ScamValue err)
 {
-    engine->popHandler();
+    ScamEngine::getEngine().popHandler();
     ScamValue args = makeList(err);
-    apply(handler, args, cont, env, engine);
+    apply(handler, args, cont, env);
     return makeNothing();
 }

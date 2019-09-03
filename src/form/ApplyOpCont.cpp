@@ -10,23 +10,18 @@
 using namespace scam;
 using namespace std;
 
-ApplyOpCont::ApplyOpCont(ScamValue args,
-                         Continuation * cont,
-                         Env * env,
-                         ScamEngine * engine)
-    : Continuation("apply", engine)
+ApplyOpCont::ApplyOpCont(ScamValue args, Continuation * cont, Env * env)
+    : Continuation("Apply")
     , args(args)
     , cont(cont)
     , env(env)
 {
 }
 
-ApplyOpCont * ApplyOpCont::makeInstance(ScamValue args,
-                                        Continuation * cont,
-                                        Env * env,
-                                        ScamEngine * engine)
+ApplyOpCont *
+ApplyOpCont::makeInstance(ScamValue args, Continuation * cont, Env * env)
 {
-    return new ApplyOpCont(args, cont, env, engine);
+    return new ApplyOpCont(args, cont, env);
 }
 
 void ApplyOpCont::mark()
@@ -44,9 +39,9 @@ void ApplyOpCont::handleValue(ScamValue value)
     Continuation::handleValue(value);
 
     if ( isUnhandledError(value) ) {
-        engine->handleError(value);
+        ScamEngine::getEngine().handleError(value);
     }
     else {
-        workQueueHelper<ApplyArgsWorker>(value, args, cont, env, engine);
+        workQueueHelper<ApplyArgsWorker>(value, args, cont, env);
     }
 }

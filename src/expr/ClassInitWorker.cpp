@@ -22,9 +22,8 @@ namespace
 ClassInitWorker::ClassInitWorker(ScamValue instance,
                                  ScamValue args,
                                  Continuation * cont,
-                                 Env * env,
-                                 ScamEngine * engine)
-    : Worker("ClassInit", engine)
+                                 Env * env)
+    : Worker("ClassInit")
     , instance(instance)
     , args(args)
     , cont(cont)
@@ -35,10 +34,9 @@ ClassInitWorker::ClassInitWorker(ScamValue instance,
 ClassInitWorker * ClassInitWorker::makeInstance(ScamValue instance,
                                                 ScamValue args,
                                                 Continuation * cont,
-                                                Env * env,
-                                                ScamEngine * engine)
+                                                Env * env)
 {
-    return new ClassInitWorker(instance, args, cont, env, engine);
+    return new ClassInitWorker(instance, args, cont, env);
 }
 
 void ClassInitWorker::mark()
@@ -59,7 +57,7 @@ void ClassInitWorker::run()
 
     ScamValue test = env->check(initSym);
     if ( isUnhandledError(test) ) {
-        engine->handleError(test);
+        ScamEngine::getEngine().handleError(test);
         return;
     }
     else if ( ! truth(test) ) {
@@ -68,7 +66,7 @@ void ClassInitWorker::run()
     }
 
     Continuation * newCont
-        = standardMemoryManager.make<ClassInitCont>(instance, cont, engine);
+        = standardMemoryManager.make<ClassInitCont>(instance, cont);
     ScamValue newArgs = makePair(initSym, args);
-    apply(instance, newArgs, newCont, env, engine);
+    apply(instance, newArgs, newCont, env);
 }

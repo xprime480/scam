@@ -7,20 +7,18 @@
 
 namespace scam
 {
-    class ScamEngine;
     class Tokenizer;
 
     class ReadEval
     {
     public:
-        ReadEval(ScamEngine * engine, Tokenizer & tokenizer);
+        ReadEval(Tokenizer & tokenizer);
         virtual ~ReadEval();
 
         ScamValue run();
         ScamValue read();
 
     private:
-        ScamEngine * engine;
         Tokenizer & tokenizer;
     };
 }

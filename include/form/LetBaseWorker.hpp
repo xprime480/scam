@@ -15,8 +15,7 @@ namespace scam
         LetBaseWorker(char const * name,
                       LetDef & def,
                       Continuation * cont,
-                      Env * env,
-                      ScamEngine * engine);
+                      Env * env);
 
     public:
         void mark() override;

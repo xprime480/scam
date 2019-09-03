@@ -12,20 +12,16 @@
 using namespace scam;
 using namespace std;
 
-IncludeWorker::IncludeWorker(ScamValue args,
-                             Continuation * cont,
-                             ScamEngine * engine)
-    : Worker("Include", engine)
+IncludeWorker::IncludeWorker(ScamValue args, Continuation * cont)
+    : Worker("Include")
     , args(args)
     , cont(cont)
 {
 }
 
-IncludeWorker * IncludeWorker::makeInstance(ScamValue args,
-                                            Continuation * cont,
-                                            ScamEngine * engine)
+IncludeWorker * IncludeWorker::makeInstance(ScamValue args, Continuation * cont)
 {
-    return new IncludeWorker(args, cont, engine);
+    return new IncludeWorker(args, cont);
 }
 
 void IncludeWorker::mark()
@@ -45,8 +41,8 @@ void IncludeWorker::run()
     Continuation * nextCont = cont;
     ScamValue rest = getCdr(args);
     if ( ! isNull(rest) ) {
-        nextCont = standardMemoryManager.make<IncludeCont>(rest, cont, engine);
+        nextCont = standardMemoryManager.make<IncludeCont>(rest, cont);
     }
 
-    applyLoad(newArg, nextCont, engine);
+    applyLoad(newArg, nextCont);
 }

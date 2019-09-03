@@ -10,23 +10,18 @@
 using namespace scam;
 using namespace std;
 
-NotWorker::NotWorker(Continuation * cont,
-                     Env * env,
-                     ScamEngine * engine,
-                     ScamValue value)
-    : Worker("Not", engine)
+NotWorker::NotWorker(Continuation * cont, Env * env, ScamValue value)
+    : Worker("Not")
     , value(value)
     , cont(cont)
     , env(env)
 {
 }
 
-NotWorker * NotWorker::makeInstance(Continuation * cont,
-                                    Env * env,
-                                    ScamEngine * engine,
-                                    ScamValue value)
+NotWorker *
+NotWorker::makeInstance(Continuation * cont, Env * env, ScamValue value)
 {
-    return new NotWorker(cont, env, engine, value);
+    return new NotWorker(cont, env, value);
 }
 
 void NotWorker::mark()
@@ -43,6 +38,6 @@ void NotWorker::run()
 {
     Worker::run();
 
-    Continuation * newCont = standardMemoryManager.make<NotCont>(cont, engine);
-    eval(value, newCont, env, engine);
+    Continuation * newCont = standardMemoryManager.make<NotCont>(cont);
+    eval(value, newCont, env);
 }

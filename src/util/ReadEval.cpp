@@ -5,24 +5,23 @@
 using namespace scam;
 using namespace std;
 
-ReadEval::ReadEval(ScamEngine * engine, Tokenizer & tokenizer)
-    : engine(engine)
-    , tokenizer(tokenizer)
+ReadEval::ReadEval(Tokenizer & tokenizer)
+    : tokenizer(tokenizer)
 {
-    engine->pushInput(tokenizer);
+    ScamEngine::getEngine().pushInput(tokenizer);
 }
 
 ReadEval::~ReadEval()
 {
-    engine->popInput();
+    ScamEngine::getEngine().popInput();
 }
 
 ScamValue ReadEval::run()
 {
-    return engine->readEvalCurrent();
+    return ScamEngine::getEngine().readEvalCurrent();
 }
 
 ScamValue ReadEval::read()
 {
-    return engine->read();
+    return ScamEngine::getEngine().read();
 }

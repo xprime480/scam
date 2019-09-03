@@ -2,8 +2,8 @@
 
 using namespace scam;
 
-ReadEvalStream::ReadEvalStream(ScamEngine * engine, CharStream & stream)
-    : ReadEval(engine, tokenizer)
+ReadEvalStream::ReadEvalStream(CharStream & stream)
+    : ReadEval(tokenizer)
     , tokenizer(stream)
 {
 }

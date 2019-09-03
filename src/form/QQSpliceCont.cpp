@@ -9,16 +9,16 @@
 using namespace scam;
 using namespace std;
 
-QQSpliceCont::QQSpliceCont(Continuation * cont, ScamEngine * engine)
-    : Continuation("QQSpliceCont", engine)
+QQSpliceCont::QQSpliceCont(Continuation * cont)
+    : Continuation("QQSpliceCont")
     , cont(cont)
 {
 }
 
 QQSpliceCont *
-QQSpliceCont::makeInstance(Continuation * cont, ScamEngine * engine)
+QQSpliceCont::makeInstance(Continuation * cont)
 {
-    return new QQSpliceCont(cont, engine);
+    return new QQSpliceCont(cont);
 }
 
 void QQSpliceCont::mark()
@@ -34,7 +34,7 @@ void QQSpliceCont::handleValue(ScamValue value)
     Continuation::handleValue(value);
 
     if ( isUnhandledError(value) ) {
-        engine->handleError(value);
+        ScamEngine::getEngine().handleError(value);
     }
     else {
         ScamValue internal = makePair(spliceTag, value);

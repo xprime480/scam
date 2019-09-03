@@ -1,7 +1,6 @@
 #include "util/LambdaDef.hpp"
 
 #include "ErrorCategory.hpp"
-#include "ScamEngine.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"

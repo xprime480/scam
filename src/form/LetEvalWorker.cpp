@@ -18,9 +18,8 @@ LetEvalWorker::LetEvalWorker(ScamValue formals,
                              ScamValue forms,
                              Continuation * cont,
                              Env * env,
-                             ScamEngine * engine,
                              bool rebind)
-    : Worker("LetEvalWorker", engine)
+    : Worker("LetEvalWorker")
     , formals(formals)
     , evaled(evaled)
     , args(args)
@@ -37,17 +36,9 @@ LetEvalWorker * LetEvalWorker::makeInstance(ScamValue formals,
                                             ScamValue forms,
                                             Continuation * cont,
                                             Env * env,
-                                            ScamEngine * engine,
                                             bool rebind)
 {
-    return new LetEvalWorker(formals,
-                             evaled,
-                             args,
-                             forms,
-                             cont,
-                             env,
-                             engine,
-                             rebind);
+    return new LetEvalWorker(formals, evaled, args, forms, cont, env, rebind);
 }
 
 void LetEvalWorker::mark()
@@ -78,9 +69,8 @@ void LetEvalWorker::run()
                                                       cdr,
                                                       cont,
                                                       env,
-                                                      engine,
                                                       rebind);
-        eval(car, ch, env, engine);
+        eval(car, ch, env);
     }
     else {
         Continuation * ch
@@ -88,7 +78,6 @@ void LetEvalWorker::run()
                                                   forms,
                                                   cont,
                                                   env,
-                                                  engine,
                                                   rebind);
         ch->handleValue(evaled);
     }

@@ -15,14 +15,12 @@ namespace scam
         MapCdr(ScamValue car,
                ScamValue cdr,
                Continuation * original,
-               Env * env,
-               ScamEngine * engine);
+               Env * env);
 
         static MapCdr * makeInstance(ScamValue car,
                ScamValue cdr,
                Continuation * original,
-               Env * env,
-               ScamEngine * engine);
+               Env * env);
 
     public:
         void mark() override;

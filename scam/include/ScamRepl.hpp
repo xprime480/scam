@@ -17,7 +17,7 @@ namespace scam
     private:
         std::vector<std::string> preloads;
 
-        ScamEngine engine;
+        ScamEngine & engine;
         ReplTokenizer tokenizer;
         ScamParser parser;
 

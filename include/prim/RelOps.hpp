@@ -6,9 +6,7 @@
 namespace scam
 {
 #define CMP_OP_DECL(Name)                                             \
-    extern void apply##Name(ScamValue args,                           \
-                            Continuation * cont,                      \
-                            ScamEngine * engine);
+    extern void apply##Name(ScamValue args, Continuation * cont);
 
     CMP_OP_DECL(Eq);
     CMP_OP_DECL(Ne);

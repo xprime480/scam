@@ -13,9 +13,8 @@ using namespace std;
 ApplyArgsWorker::ApplyArgsWorker(ScamValue op,
                                  ScamValue args,
                                  Continuation * cont,
-                                 Env * env,
-                                 ScamEngine * engine)
-    : Worker("Apply Args", engine)
+                                 Env * env)
+    : Worker("Apply Args")
     , op(op)
     , args(args)
     , cont(cont)
@@ -26,10 +25,9 @@ ApplyArgsWorker::ApplyArgsWorker(ScamValue op,
 ApplyArgsWorker * ApplyArgsWorker::makeInstance(ScamValue op,
                                                 ScamValue args,
                                                 Continuation * cont,
-                                                Env * env,
-                                                ScamEngine * engine)
+                                                Env * env)
 {
-    return new ApplyArgsWorker(op, args, cont, env, engine);
+    return new ApplyArgsWorker(op, args, cont, env);
 }
 
 void ApplyArgsWorker::mark()
@@ -46,6 +44,6 @@ void ApplyArgsWorker::mark()
 void ApplyArgsWorker::run()
 {
     Continuation * newCont =
-        standardMemoryManager.make<ApplyArgsCont>(op, cont, env, engine);
-    eval(args, newCont, env, engine);
+        standardMemoryManager.make<ApplyArgsCont>(op, cont, env);
+    eval(args, newCont, env);
 }

@@ -5,9 +5,7 @@
 
 namespace scam
 {
-    extern void applyVRef(ScamValue args,
-                          Continuation * cont,
-                          ScamEngine * engine);
+    extern void applyVRef(ScamValue args, Continuation * cont);
 }
 
 #endif

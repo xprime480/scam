@@ -16,15 +16,15 @@ namespace scam
     {
     private:
         friend class MemoryManager;
-        Extractor(ScamEngine * engine)
-            : Continuation("Extractor", engine)
+        Extractor()
+            : Continuation("Extractor")
             , lastValue(makeNothing())
         {
         }
 
-        static Extractor * makeInstance(ScamEngine * engine)
+        static Extractor * makeInstance()
         {
-            return new Extractor(engine);
+            return new Extractor;
         }
 
     public:

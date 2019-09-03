@@ -38,26 +38,22 @@ namespace
     template <typename Comparator>
     extern void compareString(ScamValue args,
                               Continuation * cont,
-                              ScamEngine * engine,
                               const char * name,
                               Transformer transform,
                               Comparator compare);
 
     extern void transformString(ScamValue args,
                                 Continuation * cont,
-                                ScamEngine * engine,
                                 const char * name,
                                 Transformer transform);
 
 }
 
-void scam::applyString(ScamValue args,
-                       Continuation * cont,
-                       ScamEngine * engine)
+void scam::applyString(ScamValue args, Continuation * cont)
 {
     CharacterParameter pChar;
     CountedParameter p0(pChar);
-    if ( argsToParms(args, engine, "string", p0) ) {
+    if ( argsToParms(args, "string", p0) ) {
         ScamValue chars = p0.value;
         size_t count = length(chars);
         char * buffer = new char[1+count];
@@ -75,14 +71,12 @@ void scam::applyString(ScamValue args,
     }
 }
 
-void scam::applyMakeString(ScamValue args,
-                           Continuation * cont,
-                           ScamEngine * engine)
+void scam::applyMakeString(ScamValue args, Continuation * cont)
 {
     CountParameter p0;
     CharacterParameter pChar;
     OptionalParameter p1(pChar);
-    if ( argsToParms(args, engine, "make-string", p0, p1) ) {
+    if ( argsToParms(args, "make-string", p0, p1) ) {
         int count = asInteger(p0.value);
         char c = ' ';
         if ( ! isNothing(p1.value) ) {
@@ -93,24 +87,20 @@ void scam::applyMakeString(ScamValue args,
     }
 }
 
-void scam::applyStringLength(ScamValue args,
-                             Continuation * cont,
-                             ScamEngine * engine)
+void scam::applyStringLength(ScamValue args, Continuation * cont)
 {
     StringParameter p0;
-    if ( argsToParms(args, engine, "string-length", p0) ) {
+    if ( argsToParms(args, "string-length", p0) ) {
         const string s = asString(p0.value);
         cont->handleValue(makeInteger(s.size(), true));
     }
 }
 
-void scam::applyStringRef(ScamValue args,
-                          Continuation * cont,
-                          ScamEngine * engine)
+void scam::applyStringRef(ScamValue args, Continuation * cont)
 {
     StringParameter p0;
     IndexParameter p1(p0);
-    if ( argsToParms(args, engine, "string-ref", p0, p1) ) {
+    if ( argsToParms(args, "string-ref", p0, p1) ) {
         const string str = asString(p0.value);
         const int idx    = asInteger(p1.value);
         const char c     = str.at(idx);
@@ -118,16 +108,14 @@ void scam::applyStringRef(ScamValue args,
     }
 }
 
-void scam::applyStringSetX(ScamValue args,
-                           Continuation * cont,
-                           ScamEngine * engine)
+void scam::applyStringSetX(ScamValue args, Continuation * cont)
 {
     StringParameter    pStr;
     MutableParameter   p0(pStr);
     IndexParameter     p1(p0);
     CharacterParameter p2;
 
-    if ( argsToParms(args, engine, "string-set!", p0, p1, p2) ) {
+    if ( argsToParms(args, "string-set!", p0, p1, p2) ) {
         ScamValue original  = p0.value;
         const string str    = asString(original);
         const unsigned size = str.size();
@@ -145,107 +133,81 @@ void scam::applyStringSetX(ScamValue args,
     }
 }
 
-void scam::applyStringEqP(ScamValue args,
-                          Continuation * cont,
-                          ScamEngine * engine)
+void scam::applyStringEqP(ScamValue args, Continuation * cont)
 {
     static const char * name { "string=?" };
-    compareString(args, cont, engine, name, identityString, eqString());
+    compareString(args, cont, name, identityString, eqString());
 }
 
-void scam::applyStringCiEqP(ScamValue args,
-                            Continuation * cont,
-                            ScamEngine * engine)
+void scam::applyStringCiEqP(ScamValue args, Continuation * cont)
 {
     static const char * name { "string-ci=?" };
-    compareString(args, cont, engine, name, downcaseString, eqString());
+    compareString(args, cont, name, downcaseString, eqString());
 }
 
-void scam::applyStringLtP(ScamValue args,
-                          Continuation * cont,
-                          ScamEngine * engine)
+void scam::applyStringLtP(ScamValue args, Continuation * cont)
 {
     static const char * name { "string<?" };
-    compareString(args, cont, engine, name, identityString, ltString());
+    compareString(args, cont, name, identityString, ltString());
 }
 
-void scam::applyStringCiLtP(ScamValue args,
-                            Continuation * cont,
-                            ScamEngine * engine)
+void scam::applyStringCiLtP(ScamValue args, Continuation * cont)
 {
     static const char * name { "string-ci<?" };
-    compareString(args, cont, engine, name, downcaseString, ltString());
+    compareString(args, cont, name, downcaseString, ltString());
 }
 
-void scam::applyStringLeP(ScamValue args,
-                          Continuation * cont,
-                          ScamEngine * engine)
+void scam::applyStringLeP(ScamValue args, Continuation * cont)
 {
     static const char * name { "string<=?" };
-    compareString(args, cont, engine, name, identityString, leString());
+    compareString(args, cont, name, identityString, leString());
 }
 
-void scam::applyStringCiLeP(ScamValue args,
-                            Continuation * cont,
-                            ScamEngine * engine)
+void scam::applyStringCiLeP(ScamValue args, Continuation * cont)
 {
     static const char * name { "string-ci<=?" };
-    compareString(args, cont, engine, name, downcaseString, leString());
+    compareString(args, cont, name, downcaseString, leString());
 }
 
-void scam::applyStringGtP(ScamValue args,
-                          Continuation * cont,
-                          ScamEngine * engine)
+void scam::applyStringGtP(ScamValue args, Continuation * cont)
 {
     static const char * name { "string>?" };
-    compareString(args, cont, engine, name, identityString, gtString());
+    compareString(args, cont, name, identityString, gtString());
 }
 
-void scam::applyStringCiGtP(ScamValue args,
-                            Continuation * cont,
-                            ScamEngine * engine)
+void scam::applyStringCiGtP(ScamValue args, Continuation * cont)
 {
     static const char * name { "string-ci>?" };
-    compareString(args, cont, engine, name, downcaseString, gtString());
+    compareString(args, cont, name, downcaseString, gtString());
 }
 
-void scam::applyStringGeP(ScamValue args,
-                          Continuation * cont,
-                          ScamEngine * engine)
+void scam::applyStringGeP(ScamValue args, Continuation * cont)
 {
     static const char * name { "string>=?" };
-    compareString(args, cont, engine, name, identityString, geString());
+    compareString(args, cont, name, identityString, geString());
 }
 
-void scam::applyStringCiGeP(ScamValue args,
-                            Continuation * cont,
-                            ScamEngine * engine)
+void scam::applyStringCiGeP(ScamValue args, Continuation * cont)
 {
     static const char * name { "string-ci>=?" };
-    compareString(args, cont, engine, name, downcaseString, geString());
+    compareString(args, cont, name, downcaseString, geString());
 }
 
-void scam::applyStringUpcase(ScamValue args,
-                             Continuation * cont,
-                             ScamEngine * engine)
+void scam::applyStringUpcase(ScamValue args, Continuation * cont)
 {
-    transformString(args, cont, engine, "string-upcase", upcaseString);
+    transformString(args, cont, "string-upcase", upcaseString);
 }
 
-void scam::applyStringDowncase(ScamValue args,
-                               Continuation * cont,
-                               ScamEngine * engine)
+void scam::applyStringDowncase(ScamValue args, Continuation * cont)
 {
-    transformString(args, cont, engine, "string-downcase", downcaseString);
+    transformString(args, cont, "string-downcase", downcaseString);
 }
 
-void scam::applyStringAppend(ScamValue args,
-                             Continuation * cont,
-                             ScamEngine * engine)
+void scam::applyStringAppend(ScamValue args, Continuation * cont)
 {
     StringParameter  pStr;
     CountedParameter p0(pStr);
-    if ( argsToParms(args, engine, "string-append", p0) ) {
+    if ( argsToParms(args, "string-append", p0) ) {
         ScamValue strs = p0.value ;
         const int len = length(strs);
         stringstream s;
@@ -257,9 +219,7 @@ void scam::applyStringAppend(ScamValue args,
     }
 }
 
-void scam::applyString2List(ScamValue args,
-                            Continuation * cont,
-                            ScamEngine * engine)
+void scam::applyString2List(ScamValue args, Continuation * cont)
 {
     StringParameter p0;
     StartIndexParameter pStart(p0);
@@ -267,7 +227,7 @@ void scam::applyString2List(ScamValue args,
     EndIndexParameter pEnd(p0, pStart);
     OptionalParameter p2(pEnd);
 
-    if ( argsToParms(args, engine, "eq?", p0, p1, p2) ) {
+    if ( argsToParms(args, "eq?", p0, p1, p2) ) {
         string str = asString(p0.value);
         int start  = 0;
         int end    = str.size();
@@ -290,13 +250,11 @@ void scam::applyString2List(ScamValue args,
     }
 }
 
-extern void scam::applyList2String(ScamValue args,
-                                   Continuation * cont,
-                                   ScamEngine * engine)
+extern void scam::applyList2String(ScamValue args, Continuation * cont)
 {
     CharacterParameter pChar;
     ListOfParameter p0(pChar);
-    if ( argsToParms(args, engine, "list->string", p0) ) {
+    if ( argsToParms(args, "list->string", p0) ) {
         ScamValue chars = p0.value;
         const int len = length(chars);
 
@@ -309,9 +267,7 @@ extern void scam::applyList2String(ScamValue args,
     }
 }
 
-void scam::applyStringCopy(ScamValue args,
-                           Continuation * cont,
-                           ScamEngine * engine)
+void scam::applyStringCopy(ScamValue args, Continuation * cont)
 {
     StringParameter p0;
     StartIndexParameter pStart(p0);
@@ -319,7 +275,7 @@ void scam::applyStringCopy(ScamValue args,
     EndIndexParameter pEnd(p0, pStart);
     OptionalParameter p2(pEnd);
 
-    if ( argsToParms(args, engine, "string-copy", p0, p1, p2) ) {
+    if ( argsToParms(args, "string-copy", p0, p1, p2) ) {
         string str = asString(p0.value);
         int start = 0;
         int end = str.size();
@@ -340,9 +296,7 @@ void scam::applyStringCopy(ScamValue args,
     }
 }
 
-void scam::applyStringCopyX(ScamValue args,
-                            Continuation * cont,
-                            ScamEngine * engine)
+void scam::applyStringCopyX(ScamValue args, Continuation * cont)
 {
     StringParameter pStr;
     MutableParameter p0(pStr);
@@ -353,7 +307,7 @@ void scam::applyStringCopyX(ScamValue args,
     EndIndexParameter pEnd(p2, pStart);
     OptionalParameter p4(pEnd);
 
-    if ( argsToParms(args, engine, "string-copy!", p0, p1, p2, p3, p4) ) {
+    if ( argsToParms(args, "string-copy!", p0, p1, p2, p3, p4) ) {
         ScamValue toValue = p0.value;
         string toStr = asString(toValue);
         int at = asInteger(p1.value);
@@ -379,7 +333,7 @@ void scam::applyStringCopyX(ScamValue args,
             ScamValue err =
                 makeError("Insufficient room in destination to copy source");
             err->errorCategory() = evalCategory;
-            engine->handleError(err);
+            ScamEngine::getEngine().handleError(err);
             return;
         }
 
@@ -398,9 +352,7 @@ void scam::applyStringCopyX(ScamValue args,
     }
 }
 
-void scam::applyStringFillX(ScamValue args,
-                            Continuation * cont,
-                            ScamEngine * engine)
+void scam::applyStringFillX(ScamValue args, Continuation * cont)
 {
     StringParameter pStr;
     MutableParameter p0(pStr);
@@ -410,7 +362,7 @@ void scam::applyStringFillX(ScamValue args,
     EndIndexParameter pEnd(pStr, pStart);
     OptionalParameter p3(pEnd);
 
-    if ( argsToParms(args, engine, "eq?", p0, p1, p2, p3) ) {
+    if ( argsToParms(args, "eq?", p0, p1, p2, p3) ) {
         ScamValue toValue = p0.value;
         string toStr = asString(toValue);
         char fill = asChar(p1.value);
@@ -471,14 +423,13 @@ namespace
     template <typename Comparator>
     void compareString(ScamValue args,
                        Continuation * cont,
-                       ScamEngine * engine,
                        const char * name,
                        Transformer transform,
                        Comparator compare)
     {
         StringParameter pStr;
         CountedParameter p0(pStr, 2);
-        if ( argsToParms(args, engine, name, p0) ) {
+        if ( argsToParms(args, name, p0) ) {
             ScamValue strs = p0.value;
             int len = length(strs);
             bool rv = true;
@@ -499,12 +450,11 @@ namespace
 
     void transformString(ScamValue args,
                          Continuation * cont,
-                         ScamEngine * engine,
                          const char * name,
                          Transformer transformer)
     {
         StringParameter p0;
-        if ( argsToParms(args, engine, name, p0) ) {
+        if ( argsToParms(args, name, p0) ) {
             string text    = asString(p0.value);
             string newText = transformer(text);
             cont->handleValue(makeString(newText));

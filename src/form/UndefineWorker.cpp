@@ -14,23 +14,18 @@
 using namespace scam;
 using namespace std;
 
-UndefineWorker::UndefineWorker(ScamValue value,
-                               Continuation * cont,
-                               Env * env,
-                               ScamEngine * engine)
-    : Worker("Undefine", engine)
+UndefineWorker::UndefineWorker(ScamValue value, Continuation * cont, Env * env)
+    : Worker("Undefine")
     , value(value)
     , cont(cont)
     , env(env)
 {
 }
 
-UndefineWorker * UndefineWorker::makeInstance(ScamValue value,
-                                              Continuation * cont,
-                                              Env * env,
-                                              ScamEngine * engine)
+UndefineWorker *
+UndefineWorker::makeInstance(ScamValue value, Continuation * cont, Env * env)
 {
-    return new UndefineWorker(value, cont, env, engine);
+    return new UndefineWorker(value, cont, env);
 }
 
 void UndefineWorker::mark()
@@ -49,16 +44,16 @@ void UndefineWorker::run()
 
     ScamValue test = env->check(value, false);
     if ( isError(test) ) {
-        engine->handleError(test);
+        ScamEngine::getEngine().handleError(test);
     }
     else if ( truth(test) ) {
         Continuation * c =
-            standardMemoryManager.make<UndefineCont>(value, cont, env, engine);
+            standardMemoryManager.make<UndefineCont>(value, cont, env);
         c->handleValue(makeNull());
     }
     else {
         ScamValue err = makeError("Symbol not found (%{0})", value);
         err->errorCategory() = envCategory;
-        engine->handleError(err);
+        ScamEngine::getEngine().handleError(err);
     }
 }

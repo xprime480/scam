@@ -9,25 +9,21 @@
 using namespace scam;
 using namespace std;
 
-MapCdr::MapCdr(ScamValue car,
-               ScamValue cdr,
-               Continuation * original,
-               Env * env,
-               ScamEngine * engine)
-    : Worker("Cons Map Cdr", engine)
+MapCdr::MapCdr(ScamValue car, ScamValue cdr, Continuation * original, Env * env)
+    : Worker("Cons Map Cdr")
     , cdr(cdr)
     , env(env)
 {
-    cont = standardMemoryManager.make<CdrContinuation>(car, original, engine);
+    cont = standardMemoryManager.make<CdrContinuation>(car, original);
 }
 
-MapCdr * MapCdr::makeInstance(ScamValue car,
-                              ScamValue cdr,
-                              Continuation * original,
-                              Env * env,
-                              ScamEngine * engine)
+MapCdr *
+MapCdr::makeInstance(ScamValue car,
+                     ScamValue cdr,
+                     Continuation * original,
+                     Env * env)
 {
-    return new MapCdr(car, cdr, original, env, engine);
+    return new MapCdr(car, cdr, original, env);
 }
 
 void MapCdr::mark()
@@ -43,5 +39,5 @@ void MapCdr::mark()
 void MapCdr::run()
 {
     Worker::run();
-    mapEval(cdr, cont, env, engine);
+    mapEval(cdr, cont, env);
 }

@@ -5,9 +5,7 @@
 
 namespace scam
 {
-    extern void applySubstitute(ScamValue args,
-                                Continuation * cont,
-                                ScamEngine * engine);
+    extern void applySubstitute(ScamValue args, Continuation * cont);
 }
 
 #endif

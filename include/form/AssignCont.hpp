@@ -12,15 +12,10 @@ namespace scam
     private:
         friend class scam::MemoryManager;
 
-        AssignCont(ScamValue sym,
-                   Continuation * cont,
-                   Env * env,
-                   ScamEngine * engine);
+        AssignCont(ScamValue sym, Continuation * cont, Env * env);
 
-        static AssignCont * makeInstance(ScamValue sym,
-                                         Continuation * cont,
-                                         Env * env,
-                                         ScamEngine * engine);
+        static AssignCont *
+        makeInstance(ScamValue sym, Continuation * cont, Env * env);
 
     protected:
         ScamValue finish(ScamValue expr) const override;

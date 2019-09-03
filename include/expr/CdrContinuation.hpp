@@ -12,13 +12,10 @@ namespace scam
     private:
         friend class scam::MemoryManager;
 
-        CdrContinuation(ScamValue car,
-                        Continuation * original,
-                        ScamEngine * engine);
+        CdrContinuation(ScamValue car, Continuation * original);
 
-        static CdrContinuation * makeInstance(ScamValue car,
-                                              Continuation * original,
-                                              ScamEngine * engine);
+        static CdrContinuation *
+        makeInstance(ScamValue car, Continuation * original);
 
     public:
         void mark() override;

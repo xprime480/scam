@@ -12,15 +12,10 @@ namespace scam
     private:
         friend class MemoryManager;
 
-        UserHandler(ScamValue handler,
-                    Continuation * cont,
-                    Env * env,
-                    ScamEngine * engine);
+        UserHandler(ScamValue handler, Continuation * cont, Env * env);
 
-        static UserHandler * makeInstance(ScamValue handler,
-                                          Continuation * cont,
-                                          Env * env,
-                                          ScamEngine * engine);
+        static UserHandler *
+        makeInstance(ScamValue handler, Continuation * cont, Env * env);
 
     public:
         void mark() override;
@@ -31,7 +26,6 @@ namespace scam
         ScamValue      handler;
         Continuation * cont;
         Env          * env;
-        ScamEngine   * engine;
     };
 }
 

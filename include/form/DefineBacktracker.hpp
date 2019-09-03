@@ -12,15 +12,10 @@ namespace scam
     private:
         friend class scam::MemoryManager;
 
-        DefineBacktracker(ScamValue sym,
-                          Env * env,
-                          Backtracker * backtracker,
-                          ScamEngine * engine);
+        DefineBacktracker(ScamValue sym, Env * env, Backtracker * backtracker);
 
-        static DefineBacktracker * makeInstance(ScamValue sym,
-                                                Env * env,
-                                                Backtracker * backtracker,
-                                                ScamEngine * engine);
+        static DefineBacktracker *
+        makeInstance(ScamValue sym, Env * env, Backtracker * backtracker);
 
     public:
         void mark() override;
@@ -29,7 +24,6 @@ namespace scam
     private:
         ScamValue    sym;
         Env        * env;
-        ScamEngine * engine;
     };
 }
 
