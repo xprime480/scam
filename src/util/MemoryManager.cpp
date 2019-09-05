@@ -1,6 +1,7 @@
 #include "util/MemoryManager.hpp"
 
 #include <algorithm>
+#include <iostream>
 
 using namespace scam;
 using namespace std;
@@ -8,12 +9,14 @@ using namespace std;
 MemoryManager::MemoryManager(size_t size)
     : arena_size(size)
     , createCount(0)
+    , maxCount(0)
     , suppressed(false)
 {
 }
 
 MemoryManager::~MemoryManager()
 {
+    cerr << "Allocation maximum: " << maxCount << "\n";
 }
 
 void MemoryManager::addHook(Hook * hook)

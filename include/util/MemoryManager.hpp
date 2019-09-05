@@ -31,6 +31,9 @@ namespace scam
             if ( raw && raw->isManaged() ) {
                 arena.emplace_back(raw);
                 ++createCount;
+                if ( arena.size() > maxCount ) {
+                    maxCount = arena.size();
+                }
             }
             return raw;
         }
@@ -54,6 +57,7 @@ namespace scam
         std::set<Hook *> hooks;
 
         size_t createCount;
+        size_t maxCount;
 
         bool suppressed;
 
