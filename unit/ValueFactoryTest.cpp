@@ -25,6 +25,9 @@ TEST_F(ValueFactoryTest, NullExpression)
 
     ScamValue evaled = evaluate(expr);
     expectError(evaled, "The null type cannot be evaluated.");
+
+    ScamValue expr2 = makeNothing();
+    EXPECT_EQ(expr, expr2);
 }
 
 TEST_F(ValueFactoryTest, ErrorExpressionNoIrritants)
@@ -72,12 +75,18 @@ TEST_F(ValueFactoryTest, BooleanTrue)
 {
     ScamValue expr = makeBoolean(true);
     booleanTest(expr, true, "#t");
+
+    ScamValue expr2 = makeBoolean(true);
+    EXPECT_EQ(expr, expr2);
 }
 
 TEST_F(ValueFactoryTest, BooleanFalse)
 {
     ScamValue expr = makeBoolean(false);
     booleanTest(expr, false, "#f");
+
+    ScamValue expr2 = makeBoolean(false);
+    EXPECT_EQ(expr, expr2);
 }
 
 TEST_F(ValueFactoryTest, ComplexTest)
@@ -139,6 +148,9 @@ TEST_F(ValueFactoryTest, CharacterTest)
 
     ScamValue evaled = evaluate(expr);
     expectChar(evaled, value, repr);
+
+    ScamValue expr2 = makeCharacter(value);
+    EXPECT_EQ(expr, expr2);
 }
 
 TEST_F(ValueFactoryTest, StringTest)
@@ -506,5 +518,7 @@ TEST_F(ValueFactoryTest, EnvTest)
         rv = makeError("Unknown exception");
     }
 
-    cerr << writeValue(rv) << "\n";
+    if ( isError(rv) ) {
+        cerr << writeValue(rv) << "\n";
+    }
 }

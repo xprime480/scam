@@ -10,6 +10,7 @@
 #include "expr/ValueWriter.hpp"
 #include "form/SyntaxRules.hpp"
 #include "input/StringCharStream.hpp"
+#include "util/Cache.hpp"
 #include "util/FunctionDef.hpp"
 #include "util/LambdaDef.hpp"
 #include "util/MemoryManager.hpp"
@@ -19,7 +20,35 @@
 using namespace scam;
 using namespace std;
 
-ScamValue scam::makeNothing()
+namespace
+{
+    static Cache<char> charCache;
+
+    class ValueFactoryHook : public MemoryManager::Hook
+    {
+    public:
+        void markRoots() const override
+        {
+            // charCache.mark();
+            // symbolCache.mark();
+        }
+
+        void releaseRoots() override
+        {
+            // charCache.release();
+            // symbolCache.release();
+        }
+    };
+}
+
+void scam::initializeValueFactory(MemoryManager & mm)
+{
+    static ValueFactoryHook hook;
+    hook.releaseRoots();
+    mm.addHook(&hook);
+}
+
+ ScamValue scam::makeNothing()
 {
     static ScamData instance(ScamData::Nothing, false);
     return &instance;
@@ -42,7 +71,6 @@ namespace
         v->boolValue() = value;
         return v;
     }
-
 }
 
 ScamValue scam::makeBoolean(bool value)
@@ -56,8 +84,14 @@ ScamValue scam::makeBoolean(bool value)
 ScamValue scam::makeCharacter(const char c)
 {
     static constexpr auto myType = ScamData::Character;
-    ScamValue v = mm.make<ScamData>(myType);
-    v->charValue() = c;
+
+    ScamValue v = charCache.get(c);
+    if ( ! v ) {
+        v = mm.make<ScamData>(myType);
+        v->charValue() = c;
+        v = charCache.put(c, v);
+    }
+
     return v;
 }
 
@@ -78,10 +112,10 @@ ScamValue scam::makeError(const char * msg, ExprVec & irritants)
     return v;
 }
 
-ScamValue scam::makeSymbol(string const & value, bool managed)
+ScamValue scam::makeSymbol(string const & value)
 {
     static constexpr auto myType = ScamData::Symbol;
-    ScamValue v = mm.make<ScamData>(myType, managed);
+    ScamValue v = mm.make<ScamData>(myType);
     v->stringValue() = value;
     return v;
 }

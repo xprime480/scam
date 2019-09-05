@@ -17,10 +17,8 @@ namespace scam
 
     class ScamEngine
     {
-    private:
-        ScamEngine();
-
     public:
+        ScamEngine();
         ~ScamEngine();
 
         static ScamEngine & getEngine();

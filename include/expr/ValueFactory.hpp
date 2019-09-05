@@ -19,6 +19,8 @@ namespace scam
     using ExprVec = std::vector<ScamValue>;
     using ByteVec = std::vector<unsigned char>;
 
+    extern void initializeValueFactory(MemoryManager & mm);
+
     extern ScamValue makeNothing();
     extern ScamValue makeNull();
     extern ScamValue makeBoolean(bool value);
@@ -44,7 +46,7 @@ namespace scam
         return makeError(msg, irritants, irrs...);
     }
 
-    extern ScamValue makeSymbol(std::string const & value, bool managed = true);
+    extern ScamValue makeSymbol(std::string const & value);
 
     extern ScamValue makeKeyword(std::string const & value,
                                  bool managed = true);

@@ -17,8 +17,7 @@ using namespace std;
 
 namespace
 {
-    static ScamValue self = makeSymbol("self", false);
-    static ScamValue parentKey = makeSymbol("parent", false);
+    static const char * parentValue = "parent";
 
     extern void checkClass(ScamValue cls, const char * op);
     extern void checkInstance(ScamValue inst, const char * op);
@@ -74,6 +73,8 @@ Env * scam::getInstanceEnv(ScamValue inst)
 
 ScamValue scam::getInstanceParent(ScamValue inst)
 {
+    const ScamValue parentKey = makeSymbol(parentValue);
+    
     checkInstance(inst, "getInstanceParent");
     Env *& local = inst->instanceLocal();
 
@@ -90,12 +91,14 @@ ScamValue scam::getInstanceParent(ScamValue inst)
 
 ScamValue scam::setInstanceSelf(ScamValue inst, ScamValue expr)
 {
+    const ScamValue self = makeSymbol("self");
     checkInstance(inst, "setInstanceSelf");
     return inst->instanceLocal()->put(self, expr);
 }
 
 ScamValue scam::setInstanceParent(ScamValue inst, ScamValue expr)
 {
+    const ScamValue parentKey = makeSymbol(parentValue);
     checkInstance(inst, "setInstanceParent");
     return inst->instanceLocal()->put(parentKey, expr);
 }

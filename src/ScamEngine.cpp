@@ -73,6 +73,7 @@ ScamEngine::ScamEngine()
     , cont(nullptr)
 {
     mm.addHook(&marker);
+    initializeValueFactory(mm);
 }
 
 ScamEngine::~ScamEngine()
@@ -89,6 +90,8 @@ ScamEngine & ScamEngine::getEngine()
 void ScamEngine::reset(bool initEnv)
 {
     mm.addHook(&marker);
+    initializeValueFactory(mm);
+
     backtracker = nullptr;
     cont = mm.make<HistoryCont>(1);
 

@@ -444,8 +444,7 @@ namespace
         return error;
     }
 
-    ScamValue
-    importCommon(ScamValue args, const char * name)
+    ScamValue importCommon(ScamValue args, const char * name)
     {
         ScamValue rv = makeNothing();
 

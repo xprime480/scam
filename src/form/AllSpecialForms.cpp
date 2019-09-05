@@ -19,7 +19,7 @@
 using namespace scam;
 using namespace std;
 
-ScamValue const scam::spliceTag = makeSymbol("**splicing**", false);
+const char * scam::spliceValue = "**splicing**";
 
 void scam::applyAmb(ScamValue args, Continuation * cont, Env * env)
 {

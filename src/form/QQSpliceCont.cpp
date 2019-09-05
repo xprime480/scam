@@ -37,7 +37,7 @@ void QQSpliceCont::handleValue(ScamValue value)
         ScamEngine::getEngine().handleError(value);
     }
     else {
-        ScamValue internal = makePair(spliceTag, value);
+        ScamValue internal = makePair(makeSymbol(spliceValue), value);
         cont->handleValue(internal);
     }
 }

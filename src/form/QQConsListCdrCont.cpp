@@ -2,6 +2,7 @@
 
 #include "ScamEngine.hpp"
 #include "env/Env.hpp"
+#include "expr/EqualityOps.hpp"
 #include "expr/ScamData.hpp"
 #include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
@@ -64,7 +65,8 @@ bool QQConsListCdrCont::check_splice(ScamValue expr)
     if ( isPair(car) ) {
         ScamValue first = nthcar(car, 0);
         if ( isSymbol(first) ) {
-            if ( writeValue(first) == writeValue(spliceTag) ) {
+	    const ScamValue spliceTag = makeSymbol(spliceValue);
+            if ( equals(first, spliceTag) ) {
                 do_splice(expr);
                 return true;
             }

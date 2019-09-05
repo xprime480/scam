@@ -54,9 +54,7 @@ protected:
         expectNonManaged(cut1, cut2);
     }
 
-    void expectManaged(ScamValue cut1,
-                       ScamValue cut2,
-                       size_t count = 2)
+    void expectManaged(ScamValue cut1, ScamValue cut2, size_t count = 2)
     {
         EXPECT_NE(cut1, cut2);
         EXPECT_EQ(count, mm.getCreateCount());
@@ -68,6 +66,13 @@ protected:
         EXPECT_EQ(cut1, cut2);
         EXPECT_EQ(0, mm.getCreateCount());
         EXPECT_EQ(0, mm.getCurrentCount());
+    }
+
+    void expectCached(ScamValue cut1, ScamValue cut2)
+    {
+        EXPECT_EQ(cut1, cut2);
+        EXPECT_EQ(1, mm.getCreateCount());
+        EXPECT_EQ(1, mm.getCurrentCount());
     }
 
     void expectMarked(bool value) {}
@@ -231,7 +236,7 @@ TEST_F(MemoryTest, TestCharacter)
     expectChar(cut1, val, repr);
     expectChar(cut2, val, repr);
 
-    expectManaged(cut1, cut2);
+    expectCached(cut1, cut2);
 }
 
 TEST_F(MemoryTest, TestScamInteger)

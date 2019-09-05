@@ -34,3 +34,6 @@
 
 * Look at refactoring the composite test cases in
   .../scam/tests/core/pred/eqivalance/
+
+* Caching for values other than characters.  Some unexplained seg fault
+  occurs when symbols are cached.

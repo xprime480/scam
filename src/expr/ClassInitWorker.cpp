@@ -14,11 +14,6 @@
 using namespace scam;
 using namespace std;
 
-namespace
-{
-    static ScamValue const initSym = makeSymbol("init", false);
-}
-
 ClassInitWorker::ClassInitWorker(ScamValue instance,
                                  ScamValue args,
                                  Continuation * cont,
@@ -56,7 +51,9 @@ void ClassInitWorker::run()
 
     Env * env = getInstanceFunctionMap(instance);
 
+    const ScamValue initSym = makeSymbol("init");
     ScamValue test = env->check(initSym);
+
     if ( isUnhandledError(test) ) {
         ScamEngine::getEngine().handleError(test);
     }

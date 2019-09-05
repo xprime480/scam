@@ -7,7 +7,7 @@
 
 namespace scam
 {
-    extern const ScamValue spliceTag;
+    extern const char * spliceValue;
 
     extern void applyAmb(ScamValue args, Continuation * cont, Env * env);
     extern void applyAnd(ScamValue args, Continuation * cont, Env * env);

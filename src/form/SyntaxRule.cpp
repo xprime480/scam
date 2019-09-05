@@ -16,7 +16,7 @@ using namespace std;
 
 namespace
 {
-    static const ScamValue dots = makeSymbol("...", false);
+    static const char * dotsValue = "...";
 
     bool isLiteral(ScamValue pat)
     {
@@ -128,6 +128,7 @@ SyntaxRule::parsePattern(ScamValue pat, const set<string> & reserved)
 {
     MemoryManager & mm = ScamEngine::getEngine().getMemoryManager();
     PatternData * rv = nullptr;
+    const ScamValue dots = makeSymbol(dotsValue);
 
     if ( isNothing(pat) ) {
         rv = mm.make<PatternDataNothing>();
@@ -203,6 +204,7 @@ SyntaxRule::parsePattern(ScamValue pat, const set<string> & reserved)
 
 TemplateData * SyntaxRule::parseTemplate(ScamValue tem)
 {
+    const ScamValue dots = makeSymbol(dotsValue);
     MemoryManager & mm = ScamEngine::getEngine().getMemoryManager();
     TemplateData * rv = nullptr;
 
