@@ -5,9 +5,8 @@
 
 namespace scam
 {
-    extern const ScamValue fileErrorCategory;
-
     extern void applyLoad(ScamValue args, Continuation * cont);
+    extern ScamValue loadHelper(const char * filename);
 }
 
 #endif

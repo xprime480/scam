@@ -1,5 +1,5 @@
-(import lib/prelude
-        (lib test narc))
+(import (only (scheme base) boolean=?)
+        (test narc))
 
 (narc-label "Equality of Booleans")
 

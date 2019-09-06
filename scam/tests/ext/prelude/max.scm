@@ -1,5 +1,5 @@
-(import (only lib/prelude max)
-        (lib test narc))
+(import (only (scheme base) max)
+        (test narc))
 
 (narc-label "Max")
 

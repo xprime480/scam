@@ -1,5 +1,5 @@
-(import lib/test/value_helper
-        (lib test narc))
+(import (test value-helper)
+        (test narc))
 
 (narc-label "AMB basic")
 

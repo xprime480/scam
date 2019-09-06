@@ -1,5 +1,5 @@
 (import (only checks c-check)
-        (lib test narc))
+        (test narc))
 
 (narc-label "Complex Times")
 

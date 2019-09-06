@@ -1,0 +1,20 @@
+(define (cross fn fst snd)
+  (if (or (null? fst) (null? snd))
+      '()
+      (reduce append
+              '()
+              (map (lambda (fitem)
+                     (map (lambda (sitem)
+                            (fn fitem sitem))
+                          snd))
+                   fst))))
+
+(define (power-set elts)
+  (if (null? elts)
+      (list '())
+      (let ((first (list (car elts)))
+            (pscdr (power-set (cdr elts))))
+        (append pscdr
+                (cross (lambda (item elts) (cons item elts))
+                       first
+                       pscdr)))))

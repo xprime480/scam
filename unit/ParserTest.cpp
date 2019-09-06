@@ -16,7 +16,6 @@ class ParserTest : public TestBase
 {
 protected:
     ParserTest()
-        : TestBase(false)
     {
     }
 

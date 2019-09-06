@@ -4,7 +4,7 @@
 ;;; where the instance was created, and where the method was invoked.
 ;;;
 
-(import (lib test narc))
+(import (test narc))
 
 (narc-label "Captured Env in Class")
 

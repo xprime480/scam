@@ -1,5 +1,5 @@
-(import lib/listops
-        (lib test narc))
+(import (only (scheme base) exact? length)
+        (test narc))
 
 (narc-label "List Length")
 

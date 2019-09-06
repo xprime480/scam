@@ -18,8 +18,7 @@ protected:
     ScamValue exp;
 
     EnvTest()
-        : TestBase(false)
-        , env(mm.make<Env>())
+        : env(mm.make<Env>())
         , key(makeNothing())
         , exp(makeNothing())
     {

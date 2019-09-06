@@ -21,7 +21,7 @@ namespace scam
     class TestBase : public ::testing::Test
     {
     protected:
-        TestBase(bool loadPrelude = true);
+        TestBase();
         virtual ~TestBase();
 
         void SetUp() override;

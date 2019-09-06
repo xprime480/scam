@@ -1,5 +1,8 @@
-(import (only lib/prelude string-foldcase)
-        (lib test narc))
+(import (only (scheme char)
+	      string-foldcase
+	      string-upcase
+	      string-downcase)
+        (test narc))
 
 (narc-label "Change String Case")
 

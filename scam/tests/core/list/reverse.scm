@@ -1,5 +1,5 @@
-(import lib/listops
-        (lib test narc))
+(import (only (scheme base) reverse)
+        (test narc))
 
 (narc-label "Reverse Lists")
 

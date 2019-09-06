@@ -1,5 +1,5 @@
-(import lib/alist
-        (lib test narc))
+(import (scam extra alist)
+        (test narc))
 
 (narc-label "AList")
 

@@ -14,7 +14,7 @@ using namespace std;
 
 namespace
 {
-    extern void fileNotFound(string const & filename, Continuation * cont);
+    extern ScamValue fileNotFound(string const & filename);
     extern ScamValue makeFileError(const char * text, ScamValue irr0);
 }
 
@@ -24,32 +24,43 @@ void scam::applyLoad(ScamValue args, Continuation * cont)
     StringParameter p0;
     if ( argsToParms(args, name, p0) ) {
         string filename = asString(p0.value);
+
         if ( ScamEngine::getEngine().isLoaded(filename) ) {
             ScamValue err = makeFileError("File %{0} already loaded", p0.value);
             ScamEngine::getEngine().handleError(err);
             return;
         }
 
-        string fullpath = findFileOnPath(filename);
-        if ( fullpath.empty() ) {
-            fileNotFound(filename, cont);
-            return;
+        else {
+            ScamValue rv = loadHelper(filename.c_str());
+            if ( isUnhandledError(rv) ) {
+                ScamEngine::getEngine().handleError(rv);
+            }
+            else {
+                ScamEngine::getEngine().setLoaded(filename);
+                cont->handleValue(rv);
+            }
         }
-
-        ScamValue last = loadEvalFile(fullpath);
-        ScamEngine::getEngine().setLoaded(filename);
-        cont->handleValue(last);
     }
+}
+
+ScamValue scam::loadHelper(const char * filename)
+{
+    string fullpath = findFileOnPath(filename);
+    if ( fullpath.empty() ) {
+        return fileNotFound(filename);
+    }
+
+    return loadEvalFile(fullpath);
 }
 
 namespace
 {
-    void fileNotFound(string const & filename, Continuation * cont)
+    ScamValue fileNotFound(string const & filename)
     {
         ScamValue err = makeFileError("File Error, file not found (%{0})",
-                                      makeSymbol(filename));
-        err->errorCategory() = fileCategory;
-        ScamEngine::getEngine().handleError(err);
+                                      makeString(filename));
+        return err;
     }
 
     ScamValue makeFileError(const char * text, ScamValue irr0)

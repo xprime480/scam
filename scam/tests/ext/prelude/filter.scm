@@ -1,5 +1,6 @@
-(import (only lib/prelude filter even?)
-        (lib test narc))
+(import (only (scheme base) even?)
+        (only (scam base) filter)
+        (test narc))
 
 (narc-label "Filter")
 

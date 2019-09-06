@@ -1,5 +1,5 @@
-(import lib/prelude
-	(lib test narc))
+(import (only (scheme base) cond)
+        (test narc))
 
 (define (inc x)
   (+ x 1))

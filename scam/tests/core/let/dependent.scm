@@ -1,5 +1,5 @@
-(import lib/test/let-suite
-	(lib test narc))
+(import (test let-suite)
+        (test narc))
 
 (narc-label "Let Dependent Bindings")
 

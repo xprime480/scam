@@ -12,7 +12,6 @@ class NumericParserTest : public TestBase
 {
 protected:
     NumericParserTest()
-        : TestBase(false)
     {
     }
 };

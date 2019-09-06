@@ -1,5 +1,5 @@
-(import lib/listops
-        (lib test narc))
+(import (scheme cxr)
+        (test narc))
 
 (narc-label "Car / Cdr combinations")
 

@@ -1,5 +1,5 @@
 (import (only checks z-check)
-        (lib test narc))
+        (test narc))
 
 (narc-label "Integer Plus")
 

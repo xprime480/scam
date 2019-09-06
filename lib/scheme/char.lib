@@ -1,0 +1,2 @@
+(define (string-foldcase str)
+  (string-downcase str))

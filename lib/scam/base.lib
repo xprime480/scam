@@ -1,0 +1,56 @@
+(define (reduce fn init seq)
+  (letrec ((helper (lambda (acc tail)
+                     (if (null? tail)
+                         acc
+                         (helper (fn acc (car tail)) (cdr tail))))))
+    (helper init seq)))
+
+(define (filter fn lst)
+  (if (null? lst)
+      lst
+      (let ((head (car lst))
+            (tail (cdr lst)))
+        (if (fn head)
+            (cons head (filter fn tail))
+            (filter fn tail)))))
+
+(define-syntax while
+  (syntax-rules ()
+    ((while2 test body)
+     (letrec
+         ((loop (lambda ()
+                  (if test
+                      (begin
+                        body
+                        (loop))
+                      ()))))
+       (loop)))))
+
+(define (nth idx some)
+  (if (pair? some)
+      (if (= 0 idx)
+          (car some)
+          (nth (- idx 1) (cdr some)))
+      (if (vector? some)
+          (vref idx some)
+          (error :args "Cannot index unknown type"))))
+
+(define (member? val lst)
+  (if (null? lst)
+      #f
+      (let ((item (car lst))
+            (tail (cdr lst)))
+        (or (equal? val item) (member? val tail)))))
+
+(define (distinct? lst)
+  (if (null? lst)
+      #t
+      (let ((item (car lst))
+            (tail (cdr lst)))
+        (and (not (member? item tail))
+             (distinct? tail)))))
+
+(define (xor a b)
+  (or (and a (not b))
+      (and (not a) b)))
+

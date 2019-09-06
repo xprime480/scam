@@ -30,15 +30,6 @@ int ScamRepl::run()
     engine.reset(true);
     engine.pushHandler(handler);
 
-    if ( ! testmode ) {
-        ScamValue spec = makeList(makeSymbol("lib/prelude"));
-        ScamValue result = importToEnv(spec);
-        if ( isUnhandledError(result) ) {
-            engine.handleError(result);
-            return 1;
-        }
-    }
-
     int status = load_preloads();
     if ( ! testmode && (0 == status) ) {
         status = repl();

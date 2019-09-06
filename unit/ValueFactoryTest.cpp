@@ -13,7 +13,6 @@ class ValueFactoryTest : public TestBase
 {
 protected:
     ValueFactoryTest()
-        : TestBase(false)
     {
     }
 };

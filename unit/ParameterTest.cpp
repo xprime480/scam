@@ -15,7 +15,6 @@ class ParameterTest : public TestBase
 {
 protected:
     ParameterTest()
-        : TestBase(false)
     {
     }
 };

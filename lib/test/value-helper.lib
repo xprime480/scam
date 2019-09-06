@@ -1,0 +1,20 @@
+;;; Value accumulator for tests with backtracking
+;;;
+
+(define-library
+    (test value-helper)
+
+  (import (only (scam class) make-class))
+
+  (begin
+    (define ValueHelper
+      (make-class
+       Root
+       (port)
+       (init () (set! port (open-output-string)))
+       (update (value) (begin
+                         (display value port)
+                         (display " " port)
+                         #t))
+       (get () (get-output-string port))))))
+

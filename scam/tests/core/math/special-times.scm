@@ -1,4 +1,4 @@
-(import (lib test narc))
+(import (test narc))
 
 (narc-label "Special Times")
 

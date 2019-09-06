@@ -37,3 +37,5 @@
 
 * Caching for values other than characters.  Some unexplained seg fault
   occurs when symbols are cached.
+
+* Fix test pythag2.scm.  It randomly (??) causes segmentation violations.

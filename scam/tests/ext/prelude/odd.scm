@@ -1,5 +1,5 @@
-(import (only lib/prelude odd?)
-        (lib test narc))
+(import (only (scheme base) odd?)
+        (test narc))
 
 (narc-label "Odd?")
 

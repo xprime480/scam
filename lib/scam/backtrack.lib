@@ -1,0 +1,26 @@
+(define (require x)
+  (if x x (amb)))
+
+(define (one-of lst)
+  (begin
+    (require (and (list? lst)
+                  (not (null? lst))))
+    (amb (car lst)
+         (one-of (cdr lst)))))
+
+(define (some-of lst)
+  (let ((ffn (lambda (item)
+               (not (null? item))))
+        (mfn (lambda (item)
+               `(quote ,item))))
+    (eval `(amb ,@(map mfn (filter ffn (power-set lst))))
+          (interaction-environment))))
+
+(define (exclude vals lst)
+  (if (null? lst)
+      lst
+      (let ((item (car lst))
+            (tail (cdr lst)))
+        (if (member? item vals)
+            (exclude vals tail)
+            (cons item (exclude vals tail))))))

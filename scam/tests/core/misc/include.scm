@@ -1,5 +1,5 @@
-(import lib/prelude
-        (lib test narc))
+(import (only (scheme base) include)
+        (test narc))
 
 (narc-label "Include")
 

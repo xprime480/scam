@@ -1,5 +1,5 @@
 (import (only checks q-check)
-        (lib test narc))
+        (test narc))
 
 (narc-label "Rational Divide")
 

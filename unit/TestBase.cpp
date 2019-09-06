@@ -58,7 +58,7 @@ namespace
     static const unsigned long ALL_DICT       = SELECT_DICT | SELECT_APPLY | SELECT_MANAGED;
 }
 
-TestBase::TestBase(bool loadPrelude)
+TestBase::TestBase()
     : engine(ScamEngine::getEngine())
     , mm(engine.getMemoryManager())
 {
@@ -68,12 +68,6 @@ TestBase::TestBase(bool loadPrelude)
     engine.setCont(extractor);
     handler = mm.make<TestHandler>(extractor);
     engine.pushHandler(handler);
-    if ( loadPrelude ) {
-        ScamValue result = readEvalFile("lib/prelude.scm");
-        if ( isError(result) || (! truth(result)) ) {
-            expectInteger(result, 0, "0", true);
-        }
-    }
 }
 
 TestBase::~TestBase()

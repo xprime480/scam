@@ -1,4 +1,3 @@
-
 (define (map fn seq)
   (if (null? seq)
       ()
@@ -66,6 +65,28 @@
          (begin result1 result2 ...)
          (cond clause1 clause2 ...)))))
 
+(define (length lst)
+  (letrec ((list-length
+            (lambda (l)
+              (if (null? l)
+                  0
+                  (+ 1 (list-length (cdr l)))))))
+    (if (list? lst)
+        (list-length lst)
+        (error :args "length: expected a list, got: %{0}" lst))))
+
+(define (type-helper=? pred bs)
+  (if (null? bs)
+      #t
+      (if (= 1 (length bs))
+          (pred (car bs))
+          (let ((fst (car bs))
+                (snd (cadr bs))
+                (rst (cdr bs)))
+            (and (pred fst)
+                 (eqv? fst snd)
+                 (type-helper=? pred rst))))))
+
 (define (boolean=? b1 b2 . bs)
   (type-helper=? boolean? (cons b1 (cons b2 bs))))
 
@@ -73,3 +94,13 @@
 (define (cadr x) (car (cdr x)))
 (define (cdar x) (cdr (car x)))
 (define (cddr x) (cdr (cdr x)))
+
+(define (reverse lst)
+  (letrec ((list-reverse
+            (lambda (l)
+              (if (null? l)
+                  l
+                  (append (reverse (cdr l)) (list (car l)))))))
+    (if (list? lst)
+        (list-reverse lst)
+        (error :args "reverse expected a list, got: %{0}" lst))))

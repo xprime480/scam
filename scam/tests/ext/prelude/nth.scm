@@ -1,5 +1,5 @@
-(import (only lib/prelude nth)
-        (lib test narc))
+(import (only (scam base) nth)
+        (test narc))
 
 (narc-label "Nth")
 

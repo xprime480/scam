@@ -1,5 +1,5 @@
-(import (only lib/prelude even?)
-        (lib test narc))
+(import (only (scheme base) even?)
+        (test narc))
 
 (narc-label "Even?")
 

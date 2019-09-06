@@ -1,5 +1,5 @@
-(import (only lib/prelude xor)
-        (lib test narc))
+(import (only (scam base) xor)
+        (test narc))
 
 (narc-label "Basic Logic")
 

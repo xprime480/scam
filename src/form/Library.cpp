@@ -33,6 +33,7 @@ namespace
     extern ScamValue importPrefix(ScamValue args);
     extern ScamValue importRename(ScamValue args);
     extern ScamValue loadLibraryFromFile(ScamValue arg);
+    extern ScamValue lookForLibrary(ScamValue arg, ScamValue name);
 
     extern ScamValue importCommon(ScamValue args, const char * name);
 
@@ -411,14 +412,22 @@ namespace
 
     ScamValue loadLibraryFromFile(ScamValue arg)
     {
-        ScamEngine & engine = ScamEngine::getEngine();
-        ScamValue originalArg = arg;
-
-        ScamValue lib = engine.findLibrary(arg);
+        ScamValue lib = ScamEngine::getEngine().findLibrary(arg);
         if ( isEnv(lib) ) {
             return lib;
         }
 
+        lib = lookForLibrary(arg, arg);
+        if ( isEnv(lib) ) {
+            return lib;
+        }
+
+        ScamValue arg2 = makePair(makeSymbol("lib"), arg);
+        return lookForLibrary(arg2, arg);
+    }
+
+    ScamValue lookForLibrary(ScamValue arg, ScamValue name)
+    {
         stringstream s;
         while ( ! isNull(arg) ) {
             ScamValue element = getCar(arg);
@@ -429,18 +438,18 @@ namespace
             }
         }
 
-        ScamValue name = makeSymbol(s.str());
+        ScamValue text = makeSymbol(s.str());
 
-        const string path = findImportLib(name);
+        const string path = findImportLib(text);
         if ( ! path.empty() ) {
             (void) loadEvalFile(path);
-            lib = engine.findLibrary(originalArg);
+            ScamValue lib = ScamEngine::getEngine().findLibrary(name);
             if ( isEnv(lib) ) {
                 return lib;
             }
         }
 
-        ScamValue error = unknownImportDirective(originalArg);
+        ScamValue error = unknownImportDirective(name);
         return error;
     }
 

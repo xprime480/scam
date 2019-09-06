@@ -1,5 +1,5 @@
-(import lib/prelude
-	(lib test narc))
+(import (only (scheme base) call/cc)
+        (test narc))
 
 (narc-label "Call/CC")
 

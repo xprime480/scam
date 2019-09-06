@@ -1,5 +1,6 @@
-(import lib/prelude
-	(lib test narc))
+(import (only (scheme base) list)
+        (only (scam base) member?)
+        (test narc))
 
 (narc-label "Member")
 

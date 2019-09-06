@@ -25,6 +25,7 @@ namespace
 
     extern Env * initializeSchemeBase(Env * base);
     extern Env * initializeSchemeChar(Env * base);
+    extern Env * initializeSchemeCxr(Env * base);
     extern Env * initializeSchemeEval(Env * base);
     extern Env * initializeSchemeInexact(Env * base);
     extern Env * initializeSchemeLoad(Env * base);
@@ -43,6 +44,8 @@ namespace
     extern void addPorts(Env * env);
 
     extern void doPut(Env * env, ScamValue key, ScamValue value);
+
+    extern void safeInclude(Env * env, const char * filename);
 }
 
 Env * scam::getConfigurationEnv()
@@ -79,6 +82,7 @@ void scam::initalizeLibraries(Env * base)
 {
     initializeSchemeBase(base);
     initializeSchemeChar(base);
+    initializeSchemeCxr(base);
     initializeSchemeEval(base);
     initializeSchemeInexact(base);
     initializeSchemeLoad(base);
@@ -129,6 +133,7 @@ namespace
     {
         env->merge(initializeSchemeBase(env));
         env->merge(initializeSchemeChar(env));
+        env->merge(initializeSchemeCxr(env));
         env->merge(initializeSchemeEval(env));
         env->merge(initializeSchemeInexact(env));
         env->merge(initializeSchemeLoad(env));
@@ -236,6 +241,8 @@ namespace
 
         addPrimitive(env, "with-exception-handler", applyWithHandler);
 
+        safeInclude(env, "lib/scheme/base.lib");
+
         ScamValue name = makeList(makeSymbol("scheme"), makeSymbol("base"));
         ScamEngine::getEngine().saveLibrary(name, env);
         return env;
@@ -253,7 +260,20 @@ namespace
         addPrimitive(env, "string-downcase", applyStringDowncase);
         addPrimitive(env, "string-upcase", applyStringUpcase);
 
+        safeInclude(env, "lib/scheme/char.lib");
+
         ScamValue name = makeList(makeSymbol("scheme"), makeSymbol("char"));
+        ScamEngine::getEngine().saveLibrary(name, env);
+        return env;
+    }
+
+    Env * initializeSchemeCxr(Env * base)
+    {
+        Env * env = base->extend();
+
+        safeInclude(env, "lib/scheme/cxr.lib");
+
+        ScamValue name = makeList(makeSymbol("scheme"), makeSymbol("cxr"));
         ScamEngine::getEngine().saveLibrary(name, env);
         return env;
     }
@@ -336,6 +356,8 @@ namespace
         addPrimitive(env, "vlen", applyVLen);
         addPrimitive(env, "vref", applyVRef);
 
+        safeInclude(env, "lib/scam/base.lib");
+
         ScamValue name = makeList(makeSymbol("scam"), makeSymbol("base"));
         ScamEngine::getEngine().saveLibrary(name, env);
         return env;
@@ -347,6 +369,8 @@ namespace
 
         addSpecialForm(env, "amb", applyAmb);
         addPrimitive(env, "backtrack", applyBacktrack);
+
+        safeInclude(env, "lib/scam/backtrack.lib");
 
         ScamValue name = makeList(makeSymbol("scam"), makeSymbol("backtrack"));
         ScamEngine::getEngine().saveLibrary(name, env);
@@ -402,6 +426,8 @@ namespace
         addPrimitive(env, "environment?",  applyEnvironmentP);
         addPrimitive(env, "spawn", applySpawn);
 
+        safeInclude(env, "lib/scam/misc.lib");
+
         ScamValue name = makeList(makeSymbol("scam"), makeSymbol("misc"));
         ScamEngine::getEngine().saveLibrary(name, env);
         return env;
@@ -438,5 +464,14 @@ namespace
         if ( isError(test) ) {
             throw ScamException(writeValue(test));
         }
+    }
+
+    void safeInclude(Env * env, const char * filename)
+    {
+        ScamEngine & engine = ScamEngine::getEngine();
+        Env * old = engine.getFrame();
+        engine.setFrame(env);
+        (void) loadHelper(filename);
+        engine.setFrame(old);
     }
 }

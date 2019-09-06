@@ -1,10 +1,11 @@
-(import (lib test narc))
+(import (scheme load)
+        (test narc))
 
-(load "lib/prelude.scm")
+(load "lib/test/data/foo.scm")
 
 (narc-label "Load Twice")
 
 (narc-catch
- (:file (load "lib/prelude.scm")))
+ (:file (load "lib/test/data/foo.scm")))
 
 (narc-report)

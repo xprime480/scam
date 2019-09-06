@@ -1,5 +1,5 @@
 (import (lib2)
-        (lib test narc))
+        (test narc))
 
 (narc-label "Library Import")
 

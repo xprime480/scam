@@ -11,7 +11,6 @@ class SequenceOpsTest : public TestBase
 {
 protected:
     SequenceOpsTest()
-        : TestBase(false)
     {
     }
 };

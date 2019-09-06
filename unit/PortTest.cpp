@@ -15,7 +15,6 @@ class PortTest : public TestBase
 {
 protected:
     PortTest()
-        : TestBase(false)
     {
     }
 

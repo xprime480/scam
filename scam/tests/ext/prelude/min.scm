@@ -1,5 +1,5 @@
-(import (only lib/prelude min)
-        (lib test narc))
+(import (only (scheme base) min)
+        (test narc))
 
 (narc-label "Min")
 

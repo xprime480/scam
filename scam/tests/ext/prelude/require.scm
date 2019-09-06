@@ -1,5 +1,4 @@
-(import lib/prelude
-        (lib test narc))
+(import (test narc))
 
 (narc-label "Require")
 

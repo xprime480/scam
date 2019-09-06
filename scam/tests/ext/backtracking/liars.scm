@@ -17,8 +17,7 @@
 ;;; What in fact was the order in which the the girls were placed?
 ;;;
 
-(import lib/prelude
-        (lib test narc))
+(import (test narc))
 
 (narc-label "Liars")
 

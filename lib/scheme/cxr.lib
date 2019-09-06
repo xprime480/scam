@@ -1,9 +1,4 @@
 
-(define (caar x) (car (car x)))
-(define (cadr x) (car (cdr x)))
-(define (cdar x) (cdr (car x)))
-(define (cddr x) (cdr (cdr x)))
-
 (define (caaar x) (car (caar x)))
 (define (caadr x) (car (cadr x)))
 (define (cadar x) (car (cdar x)))
@@ -29,25 +24,3 @@
 (define (cddadr x) (cdr (cdadr x)))
 (define (cdddar x) (cdr (cddar x)))
 (define (cddddr x) (cdr (cdddr x)))
-
-(define (length lst)
-  (letrec ((list-length
-            (lambda (l)
-              (if (null? l)
-                  0
-                  (+ 1 (list-length (cdr l)))))))
-    (if (list? lst)
-        (list-length lst)
-        (error :args "length: expected a list, got: %{0}" lst))))
-
-(define (reverse lst)
-  (letrec ((list-reverse
-            (lambda (l)
-              (if (null? l)
-                  l
-                  (append (reverse (cdr l)) (list (car l)))))))
-    (if (list? lst)
-        (list-reverse lst)
-        (error :args "reverse expected a list, got: %{0}" lst))))
-
-#t

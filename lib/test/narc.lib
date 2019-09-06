@@ -1,5 +1,5 @@
 (define-library
-    (lib test narc 0 1)
+    (test narc 0 1)
 
   (import (scheme base)
           (scheme eval)

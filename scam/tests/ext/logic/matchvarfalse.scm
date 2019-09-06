@@ -1,5 +1,4 @@
-(import lib/listops
-        (lib test narc))
+(import (test narc))
 
 (narc-label "Match Var False")
 
