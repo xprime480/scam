@@ -74,6 +74,9 @@ Env * scam::getSyntaxEnv(Env * base)
     addSpecialForm(env, "set!", applySetX);
 
     addPrimitive(env, "begin", applyBegin);
+    addPrimitive(env, "include", applyInclude);
+
+    safeInclude(env, "lib/scheme/syntax.lib");
 
     return env;
 }

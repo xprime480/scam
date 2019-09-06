@@ -5,7 +5,9 @@
 
 namespace scam
 {
+    extern void applyInclude(ScamValue args, Continuation * cont);
     extern void applyLoad(ScamValue args, Continuation * cont);
+
     extern ScamValue loadHelper(const char * filename);
 }
 

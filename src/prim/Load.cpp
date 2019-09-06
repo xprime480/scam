@@ -3,8 +3,10 @@
 #include "Continuation.hpp"
 #include "ErrorCategory.hpp"
 #include "ScamEngine.hpp"
+#include "WorkQueue.hpp"
 #include "expr/ScamToInternal.hpp"
 #include "expr/ValueFactory.hpp"
+#include "prim/IncludeWorker.hpp"
 #include "util/FileUtils.hpp"
 #include "util/MemoryManager.hpp"
 #include "util/Parameter.hpp"
@@ -16,6 +18,16 @@ namespace
 {
     extern ScamValue fileNotFound(string const & filename);
     extern ScamValue makeFileError(const char * text, ScamValue irr0);
+}
+
+void scam::applyInclude(ScamValue args, Continuation * cont)
+{
+    static const char * name = "include";
+    StringParameter  pStr;
+    CountedParameter p0(pStr, 1);
+    if ( argsToParms(args, name, p0) ) {
+        workQueueHelper<IncludeWorker>(p0.value, cont);
+    }
 }
 
 void scam::applyLoad(ScamValue args, Continuation * cont)

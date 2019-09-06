@@ -1,5 +1,4 @@
-(import (only (scheme base) include)
-        (test narc))
+(import (test narc))
 
 (narc-label "Include")
 

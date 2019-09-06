@@ -1,5 +1,4 @@
-(import (only (scheme base) cond)
-        (test narc))
+(import (test narc))
 
 (define (inc x)
   (+ x 1))

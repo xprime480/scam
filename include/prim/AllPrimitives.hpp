@@ -2,7 +2,6 @@
 #include "prim/Begin.hpp"
 #include "prim/EquivOps.hpp"
 #include "prim/ErrorOps.hpp"
-#include "prim/Include.hpp"
 #include "prim/InputOps.hpp"
 #include "prim/Instantiate.hpp"
 #include "prim/ListOps.hpp"
