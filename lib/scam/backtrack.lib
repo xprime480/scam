@@ -1,3 +1,14 @@
+(import (only (scheme base)
+              car
+              cdr
+              cons
+              list?
+              not
+              null?)
+        (only (scam base)
+              filter
+              member?))
+
 (define (require x)
   (if x x (amb)))
 
@@ -7,14 +18,6 @@
                   (not (null? lst))))
     (amb (car lst)
          (one-of (cdr lst)))))
-
-(define (some-of lst)
-  (let ((ffn (lambda (item)
-               (not (null? item))))
-        (mfn (lambda (item)
-               `(quote ,item))))
-    (eval `(amb ,@(map mfn (filter ffn (power-set lst))))
-          (interaction-environment))))
 
 (define (exclude vals lst)
   (if (null? lst)

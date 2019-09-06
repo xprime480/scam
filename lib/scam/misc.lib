@@ -1,3 +1,21 @@
+(import (only (scheme base)
+              append
+              car
+              cdr
+              cons
+              list
+              not
+              map
+              null?)
+        (scheme eval)
+        (only (scheme repl)
+              interaction-environment)
+        (only (scam base)
+              filter
+              reduce)
+        (only (scam backtrack)
+              amb))
+
 (define (cross fn fst snd)
   (if (or (null? fst) (null? snd))
       '()
@@ -18,3 +36,11 @@
                 (cross (lambda (item elts) (cons item elts))
                        first
                        pscdr)))))
+
+(define (some-of lst)
+  (let ((ffn (lambda (item)
+               (not (null? item))))
+        (mfn (lambda (item)
+               `(quote ,item))))
+    (eval `(amb ,@(map mfn (filter ffn (power-set lst))))
+          (interaction-environment))))

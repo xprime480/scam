@@ -1,3 +1,16 @@
+(import (only (scheme base)
+	      -
+	      =
+	      car
+	      cdr
+	      cons
+	      equal?
+	      error
+	      not
+	      null?
+	      pair?
+	      vector?))
+
 (define (reduce fn init seq)
   (letrec ((helper (lambda (acc tail)
                      (if (null? tail)

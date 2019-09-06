@@ -1,3 +1,10 @@
+(import (only (scheme base)
+              car
+              cdr
+              caar
+              cadr
+              cdar
+              cddr))
 
 (define (caaar x) (car (caar x)))
 (define (caadr x) (car (cadr x)))
