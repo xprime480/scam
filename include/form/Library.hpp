@@ -11,7 +11,7 @@ namespace scam
     extern void applyImport(ScamValue args, Continuation * cont, Env * env);
 
     extern ScamValue defineLibrary(ScamValue args);
-    extern ScamValue importToEnv(ScamValue args);
+    extern ScamValue importToEnv(ScamValue args, Env * target = nullptr);
 }
 
 #endif

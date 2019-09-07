@@ -1,4 +1,5 @@
-(import (test narc))
+(import (scam class)
+        (test narc))
 
 (narc-label "Class Predicates")
 

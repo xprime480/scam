@@ -30,6 +30,7 @@ namespace scam
 
         Env * getFrame();
         Env * getConfigFrame();
+        Env * getSyntaxFrame();
         Env * getInteractionFrame();
         void setFrame(Env * env);
 
@@ -78,6 +79,7 @@ namespace scam
 
     private:
         Env * configEnv;
+        Env * syntaxEnv;
         Env * env;
         Env * topEnv;
         ScamValue libs;

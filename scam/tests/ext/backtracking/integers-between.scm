@@ -1,4 +1,7 @@
-(import (scam extra numeric)
+(import (only (scam backtrack)
+              backtrack)
+        (only (scam extra numeric)
+              integers-between)
         (test value-helper)
         (test narc))
 

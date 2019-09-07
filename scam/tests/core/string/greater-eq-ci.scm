@@ -1,4 +1,5 @@
-(import (test narc))
+(import (scheme char)
+        (test narc))
 
 (narc-label "(CI) String Greater Than or Equal")
 

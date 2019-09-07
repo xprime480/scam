@@ -1,4 +1,6 @@
-(import (test narc))
+(import (only (scam unify)
+              match)
+        (test narc))
 
 (narc-label "Match Var Dup False")
 

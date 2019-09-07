@@ -1,4 +1,6 @@
-(import (test narc))
+(import (only (scam misc)
+              undefine)
+        (test narc))
 
 (narc-label "Undefine")
 

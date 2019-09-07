@@ -1,4 +1,5 @@
-(import (test narc))
+(import (scheme read)
+        (test narc))
 
 (narc-label "Read Errors")
 
@@ -6,7 +7,7 @@
  (:args (read))
  (:args (read (open-input-string "") :nope))
  (:args (read 2))
- 
+
  (:read (read (open-input-string "(2 3 4")))
  (:read (read (open-input-string ")"))))
 

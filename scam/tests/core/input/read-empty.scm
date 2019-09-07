@@ -1,4 +1,5 @@
-(import (test narc))
+(import (scheme read)
+        (test narc))
 
 (narc-label "Read Empty")
 

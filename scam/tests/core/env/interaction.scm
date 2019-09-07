@@ -1,4 +1,7 @@
-(import (test narc))
+(import (scheme repl)
+	(only (scam misc)
+	      environment?)
+	(test narc))
 
 (narc-label "Interaction Environment")
 

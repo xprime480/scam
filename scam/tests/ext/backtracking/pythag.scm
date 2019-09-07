@@ -3,7 +3,12 @@
 ;;; Find Some set of pythagorean triples.
 ;;;
 
-(import (scam extra numeric)
+(import (only (scam backtrack)
+              amb
+              backtrack
+              require)
+        (only (scam extra numeric)
+              square)
         (test value-helper)
         (test narc))
 

@@ -1,18 +1,19 @@
-(import (test narc))
+(import (only (scam misc)
+              power-set)
+        (test narc))
 
 (narc-label "Power-Set")
+
+(define pset (power-set '(1 2)))
 
 (narc-expect
  ('(())     (power-set '()))
  ('(() (1)) (power-set '(1)))
 
- ('(4 #t #t #t #t)
-  (let ((pset (power-set '(1 2))))
-    (list
-     (length pset)
-     (member? '() pset)
-     (member? '(1) pset)
-     (member? '(2) pset)
-     (member? '(1 2) pset)))))
+ (4  (length pset))
+ (#t (member? '()    pset))
+ (#t (member? '(1)   pset))
+ (#t (member? '(2)   pset))
+ (#t (member? '(1 2) pset)))
 
 (narc-report)

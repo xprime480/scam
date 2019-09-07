@@ -1,4 +1,6 @@
-(import (test narc))
+(import (only (scheme inexact)
+              nan?)
+        (test narc))
 
 (narc-label "Special Plus")
 

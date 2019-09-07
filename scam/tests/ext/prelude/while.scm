@@ -1,4 +1,6 @@
-(import (test narc))
+(import (only (scam base)
+              while)
+        (test narc))
 
 (narc-label "While")
 

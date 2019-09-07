@@ -1,4 +1,6 @@
-(import (test narc))
+(import (only (scam class)
+              make-class)
+        (test narc))
 
 (narc-label "Equality")
 
@@ -25,7 +27,7 @@
 (narc-expect
  (#t (equal? Class1 Class1))
  (#f (equal? Class1 Class2))
- (#f (equal? Class1 Class3))		; even with same definition
+ (#f (equal? Class1 Class3))            ; even with same definition
  (#t (equal? Class1 Class4))
 
  (#t (equal? thing1 thing1))

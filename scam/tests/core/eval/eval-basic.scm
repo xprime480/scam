@@ -1,4 +1,6 @@
-(import (test narc))
+(import (scheme eval)
+        (scheme repl)
+        (test narc))
 
 (narc-label "Basic Eval")
 

@@ -4,7 +4,9 @@
 (define-library
     (test value-helper)
 
-  (import (only (scam class) make-class))
+  (import (scheme write)
+          (only (scam class)
+                make-class))
 
   (begin
     (define ValueHelper

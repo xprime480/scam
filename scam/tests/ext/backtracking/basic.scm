@@ -1,4 +1,7 @@
-(import (test value-helper)
+(import (only (scam backtrack)
+              amb
+              backtrack)
+        (test value-helper)
         (test narc))
 
 (narc-label "AMB basic")

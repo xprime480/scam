@@ -15,7 +15,14 @@
 ;;; wine as the first customer. Which barrel contains beer?
 ;;;
 
-(import (scam extra numeric)
+(import (only (scam backtrack)
+              exclude
+              one-of
+              require)
+        (only (scam misc)
+              some-of)
+        (only (scam extra numeric)
+              sum)
         (test narc))
 
 (narc-label "Barrels")

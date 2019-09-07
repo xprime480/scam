@@ -4,7 +4,6 @@
 #include "expr/ScamToInternal.hpp"
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueFactory.hpp"
-#include "form/Import.hpp"
 #include "util/FileUtils.hpp"
 
 #include "ReplHandler.hpp"

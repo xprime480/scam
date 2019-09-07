@@ -11,6 +11,7 @@ namespace scam
     extern Env * makeInteractionEnv(Env * base);
 
     extern void applyInteractionEnv(ScamValue args, Continuation * cont);
+    extern void applyEnvironment(ScamValue args, Continuation * cont);
     extern void applyEval(ScamValue args, Continuation * cont);
 }
 

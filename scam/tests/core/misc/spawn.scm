@@ -1,4 +1,6 @@
-(import (test narc))
+(import (only (scam misc)
+              spawn)
+        (test narc))
 
 (narc-label "Spawn")
 

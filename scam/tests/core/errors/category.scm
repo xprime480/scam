@@ -1,4 +1,8 @@
-(import (test narc))
+(import (scheme load)
+        (scheme read)
+        (only (scam error)
+              error-category)
+        (test narc))
 
 (narc-label "Error Category")
 

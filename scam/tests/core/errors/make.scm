@@ -1,4 +1,5 @@
-(import (test narc))
+(import (scam error)
+        (test narc))
 
 (narc-label "Make Error")
 

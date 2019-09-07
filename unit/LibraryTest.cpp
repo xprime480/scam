@@ -4,7 +4,7 @@
 #include "expr/ScamToInternal.hpp"
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueFactory.hpp"
-#include "form/Import.hpp"
+#include "form/Library.hpp"
 #include "port/FilePort.hpp"
 
 #include "gtest/gtest.h"

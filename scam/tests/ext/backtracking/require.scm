@@ -1,4 +1,8 @@
-(import (test value-helper)
+(import (only (scam backtrack)
+              amb
+              backtrack
+              require)
+        (test value-helper)
         (test narc))
 
 (narc-label "Require")

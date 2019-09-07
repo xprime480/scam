@@ -3,7 +3,12 @@
 ;;; See liars.scm for description
 ;;;
 
-(import (test narc))
+(import (only (scam backtrack)
+              amb
+              exclude
+              one-of
+              require)
+        (test narc))
 
 (narc-label "Liars Optimized")
 

@@ -1,5 +1,8 @@
-
 (define-library (scam extra numeric)
+  (import (only (scam backtrack)
+                amb
+                require))
+
   (begin
     (define (integers-from x)
       (amb x

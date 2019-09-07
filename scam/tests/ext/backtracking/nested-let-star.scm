@@ -1,4 +1,7 @@
-(import (test value-helper)
+(import (only (scam backtrack)
+              amb
+              backtrack)
+        (test value-helper)
         (test narc))
 
 (narc-label "AMB Nested Let*")
@@ -6,7 +9,7 @@
 (define helper (ValueHelper))
 
 (helper update (let* ((fst (amb 'a 'b))
-                     (snd (amb 1 2)))
+                      (snd (amb 1 2)))
                  (list fst snd)))
 (backtrack)
 (backtrack)

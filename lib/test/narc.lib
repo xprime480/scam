@@ -3,7 +3,8 @@
 
   (import (scheme base)
           (scheme eval)
-          (scheme write))
+          (scheme write)
+	  (scam error))
 
   (export narc-label
           narc-skip

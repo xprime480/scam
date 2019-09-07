@@ -1,7 +1,11 @@
 ;;; Natural language processing example from Bill Hails.
 ;;;
 
-(import (test value-helper)
+(import (only (scam backtrack)
+              amb
+              backtrack
+              require)
+        (test value-helper)
         (test narc))
 
 (narc-label "Parse")

@@ -21,7 +21,6 @@ using namespace std;
 
 namespace
 {
-    extern void addForms(Env * env);
     extern void mergeLibrary(Env * env, ScamValue key);
 
     extern Env * initializeSchemeBase(Env * base);
@@ -104,7 +103,10 @@ void scam::initalizeLibraries(Env * base)
 Env * scam::makeInteractionEnv(Env * base)
 {
     Env * env = base->extend();
-    addForms(env);
+    ScamValue scheme = makeSymbol("scheme");
+    mergeLibrary(env, makeList(scheme, makeSymbol("base")));
+    ScamValue scam = makeSymbol("scam");
+    mergeLibrary(env, makeList(scam, makeSymbol("base")));
     return env;
 }
 
@@ -116,6 +118,25 @@ void scam::applyInteractionEnv(ScamValue args, Continuation * cont)
         Env * e = ScamEngine::getEngine().getInteractionFrame();
         ScamValue iEnv = makeEnv(e);
         cont->handleValue(iEnv);
+    }
+}
+
+void scam::applyEnvironment(ScamValue args, Continuation * cont)
+{
+    static const char * name = "environment";
+
+    ObjectParameter  pObj;
+    CountedParameter p0(pObj, 1);
+    if ( argsToParms(args, name, p0) ) {
+        ScamEngine & engine = ScamEngine::getEngine();
+        Env * env = engine.getSyntaxFrame()->extend();
+        ScamValue rv = importToEnv(p0.value, env);
+        if ( isUnhandledError(rv) ) {
+            engine.handleError(rv);
+        }
+        else {
+            cont->handleValue(rv);
+        }
     }
 }
 
@@ -133,30 +154,6 @@ void scam::applyEval(ScamValue args, Continuation * cont)
 
 namespace
 {
-    void addForms(Env * env)
-    {
-        ScamValue scheme = makeSymbol("scheme");
-
-        mergeLibrary(env, makeList(scheme, makeSymbol("base")));
-        mergeLibrary(env, makeList(scheme, makeSymbol("char")));
-        mergeLibrary(env, makeList(scheme, makeSymbol("cxr")));
-        mergeLibrary(env, makeList(scheme, makeSymbol("eval")));
-        mergeLibrary(env, makeList(scheme, makeSymbol("inexact")));
-        mergeLibrary(env, makeList(scheme, makeSymbol("load")));
-        mergeLibrary(env, makeList(scheme, makeSymbol("read")));
-        mergeLibrary(env, makeList(scheme, makeSymbol("repl")));
-        mergeLibrary(env, makeList(scheme, makeSymbol("write")));
-
-        ScamValue scam = makeSymbol("scam");
-
-        mergeLibrary(env, makeList(scam, makeSymbol("base")));
-        mergeLibrary(env, makeList(scam, makeSymbol("backtrack")));
-        mergeLibrary(env, makeList(scam, makeSymbol("class")));
-        mergeLibrary(env, makeList(scam, makeSymbol("error")));
-        mergeLibrary(env, makeList(scam, makeSymbol("unify")));
-        mergeLibrary(env, makeList(scam, makeSymbol("misc")));
-    }
-
     void mergeLibrary(Env * env, ScamValue key)
     {
         ScamEngine & engine = ScamEngine::getEngine();
@@ -300,6 +297,7 @@ namespace
     {
         Env * env = base->extend();
 
+        addPrimitive(env, "environment", applyEnvironment);
         addPrimitive(env, "eval", applyEval);
 
         ScamValue name = makeList(makeSymbol("scheme"), makeSymbol("eval"));

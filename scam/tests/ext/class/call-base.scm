@@ -1,4 +1,6 @@
-(import (test narc))
+(import (only (scam class)
+              make-class)
+        (test narc))
 
 (narc-label "Call Parent Function Parent Directly")
 

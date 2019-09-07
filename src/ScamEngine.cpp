@@ -66,6 +66,7 @@ namespace
 
 ScamEngine::ScamEngine()
     : configEnv(nullptr)
+    , syntaxEnv(nullptr)
     , env(nullptr)
     , topEnv(nullptr)
     , libs(nullptr)
@@ -101,7 +102,7 @@ void ScamEngine::reset(bool initEnv)
 
     libs = makeDict();
     configEnv = getConfigurationEnv();
-    topEnv = env = getSyntaxEnv(configEnv);
+    env = syntaxEnv = getSyntaxEnv(configEnv);
     initalizeLibraries(env);
     if ( initEnv ) {
         env = makeInteractionEnv(env);
@@ -117,6 +118,11 @@ Env * ScamEngine::getFrame()
 Env * ScamEngine::getConfigFrame()
 {
     return configEnv;
+}
+
+Env * ScamEngine::getSyntaxFrame()
+{
+    return syntaxEnv;
 }
 
 Env * ScamEngine::getInteractionFrame()
@@ -313,6 +319,7 @@ MemoryManager & ScamEngine::getMemoryManager()
 void ScamEngine::release()
 {
     configEnv = nullptr;
+    syntaxEnv = nullptr;
     // GlobalWorkQueue.clear();
 
     env = nullptr;
@@ -329,6 +336,7 @@ void ScamEngine::release()
 void ScamEngine::mark()
 {
     configEnv->mark();
+    syntaxEnv->mark();
     GlobalWorkQueue.mark();
 
     env->mark();

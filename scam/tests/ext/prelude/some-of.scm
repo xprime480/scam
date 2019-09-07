@@ -1,4 +1,6 @@
-(import (test narc))
+(import (only (scam misc)
+              some-of)
+        (test narc))
 
 (narc-label "Some-Of")
 

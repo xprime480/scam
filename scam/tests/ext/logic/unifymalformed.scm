@@ -1,4 +1,6 @@
-(import (test narc))
+(import (only (scam unify)
+              unify)
+        (test narc))
 
 (narc-label "Unify Malformed")
 

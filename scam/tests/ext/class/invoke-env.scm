@@ -4,7 +4,9 @@
 ;;; where the instance was created, and where the method was invoked.
 ;;;
 
-(import (test narc))
+(import (only (scam class)
+              make-class)
+        (test narc))
 
 (narc-label "Captured Env in Class")
 

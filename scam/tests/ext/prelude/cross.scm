@@ -1,4 +1,6 @@
-(import (test narc))
+(import (only (scam misc)
+              cross)
+        (test narc))
 
 (narc-label "Cross")
 

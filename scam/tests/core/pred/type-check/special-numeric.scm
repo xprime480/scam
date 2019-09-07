@@ -1,4 +1,5 @@
-(import (test narc))
+(import (scheme inexact)
+        (test narc))
 
 (narc-label "Special Numeric Predicates")
 

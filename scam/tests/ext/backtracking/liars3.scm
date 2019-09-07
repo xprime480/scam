@@ -3,7 +3,12 @@
 ;;; See liars.scm for description
 ;;;
 
-(import (test narc))
+(import (scheme eval)
+        (only (scam backtrack)
+              amb
+              exclude
+              require)
+        (test narc))
 
 (narc-label "Liars Optimized")
 
@@ -11,13 +16,13 @@
   (let* ((betty (amb 1 2 3 4 5))
          (ethel (eval `(amb ,@(exclude (list betty)
                                        (list 1 2 3 4 5)))
-                      (interaction-environment)))
+                      (environment '(only (scam backtrack) amb))))
          (joan  (eval `(amb ,@(exclude (list betty ethel)
                                        (list 1 2 3 4 5)))
-                      (interaction-environment)))
+                      (environment '(only (scam backtrack) amb))))
          (kitty (eval `(amb ,@(exclude (list betty ethel joan)
                                        (list 1 2 3 4 5)))
-                      (interaction-environment)))
+                      (environment '(only (scam backtrack) amb))))
          (mary  (car (exclude (list betty ethel joan kitty)
                               (list 1 2 3 4 5)))))
     (begin

@@ -173,7 +173,7 @@ ScamValue scam::defineLibrary(ScamValue args)
     return rv;
 }
 
-ScamValue scam::importToEnv(ScamValue args)
+ScamValue scam::importToEnv(ScamValue args, Env * target)
 {
     ScamEngine & engine = ScamEngine::getEngine();
     MemoryManager & mm = engine.getMemoryManager();
@@ -183,7 +183,9 @@ ScamValue scam::importToEnv(ScamValue args)
     Env * original = engine.getFrame();
     Env * local    = extendEnv(original);
     engine.setFrame(local);
-    Env * target = newEnv();
+    if ( nullptr == target ) {
+        target = newEnv();
+    }
     ScamValue rv = makeEnv(target);
 
     while ( ! isNull(args) ) {

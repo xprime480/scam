@@ -17,7 +17,10 @@
 ;;; What in fact was the order in which the the girls were placed?
 ;;;
 
-(import (test narc))
+(import (only (scam backtrack)
+              amb
+              require)
+        (test narc))
 
 (narc-label "Liars")
 

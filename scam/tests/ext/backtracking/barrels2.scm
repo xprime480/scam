@@ -15,22 +15,29 @@
 ;;; wine as the first customer. Which barrel contains beer?
 ;;;
 
-(import (test narc))
+(import (scheme eval)
+        (only (scam backtrack)
+              exclude
+              require)
+        (only (scam misc)
+              some-of)
+        (only (scam extra numeric)
+              sum)
+        (test narc))
 
 (narc-label "Barrels")
 
-(define (sum lst)
-  (apply + lst))
-
 (define (barrels-of-fun)
-  (let* ((barrels (list 30 32 36 38 40 62))
-         (beer (eval `(amb ,@barrels) (interaction-environment)))
+  (let* ((barrels  (list 30 32 36 38 40 62))
+         (beer (eval `(amb ,@barrels)
+                     (environment '(only (scam backtrack) amb))))
          (wine (exclude (list beer) barrels))
          (barrel-1 (eval `(amb ,@wine)
-                         (interaction-environment)))
+                         (environment '(only (scam backtrack) amb))))
          (barrel-2 (eval `(amb ,@(exclude (list barrel-1) wine))
-                         (interaction-environment)))
-         (purchase (some-of (exclude (list barrel-1 barrel-2) wine))))
+                         (environment '(only (scam backtrack) amb))))
+         (purchase (some-of (exclude (list barrel-1 barrel-2)
+                                     wine))))
     (begin
       (require (= (* 2 (+ barrel-1 barrel-2))
                   (sum purchase)))

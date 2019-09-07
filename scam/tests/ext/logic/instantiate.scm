@@ -1,4 +1,8 @@
-(import (test narc))
+(import (only (scheme cxr)
+              caddr)
+        (only (scam unify)
+              instantiate)
+        (test narc))
 
 (narc-label "Instantiate")
 

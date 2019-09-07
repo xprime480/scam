@@ -1,4 +1,5 @@
-(import (test narc))
+(import (scheme char)
+        (test narc))
 
 (narc-label "(CI) String Less Than")
 
@@ -10,12 +11,12 @@
 (define s5 "GIRL")
 
 (narc-expect
- (#t     (string-ci<? s1 s2))
- (#f     (string-ci<? s2 s2))
- (#t     (string-ci<? s2 s4))
- (#f     (string-ci<? s2 s3))
- (#f     (string-ci<? s3 s2))
- (#t     (string-ci<? s1 s2 s5)))
+ (#t (string-ci<? s1 s2))
+ (#f (string-ci<? s2 s2))
+ (#t (string-ci<? s2 s4))
+ (#f (string-ci<? s2 s3))
+ (#f (string-ci<? s3 s2))
+ (#t (string-ci<? s1 s2 s5)))
 
 (narc-catch
  (:args  (string-ci<? s1 s2 err))
