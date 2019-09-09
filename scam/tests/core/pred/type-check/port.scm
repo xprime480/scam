@@ -1,4 +1,5 @@
-(import (test narc))
+(import (only (scheme base) list open-input-string port?)
+        (test narc))
 
 (narc-label "Type Checker of Ports")
 

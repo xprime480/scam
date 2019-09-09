@@ -1,4 +1,5 @@
-(import (scheme cxr)
+(import (only (scheme base) caar cadr cdar cddr)
+        (scheme cxr)
         (test narc))
 
 (narc-label "Car / Cdr combinations")

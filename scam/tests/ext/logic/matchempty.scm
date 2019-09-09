@@ -1,5 +1,5 @@
-(import (only (scam unify)
-              match)
+(import (only (scam base) dict?)
+        (only (scam unify) match)
         (test narc))
 
 (narc-label "Match Empty")

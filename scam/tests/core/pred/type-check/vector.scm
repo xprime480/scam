@@ -1,4 +1,5 @@
-(import (test narc))
+(import (only (scheme base) list vector?)
+        (test narc))
 
 (narc-label "Type Checker of Vectors")
 

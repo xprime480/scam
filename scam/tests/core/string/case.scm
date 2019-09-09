@@ -1,7 +1,4 @@
-(import (only (scheme char)
-	      string-foldcase
-	      string-upcase
-	      string-downcase)
+(import (only (scheme char) string-foldcase string-upcase string-downcase)
         (test narc))
 
 (narc-label "Change String Case")

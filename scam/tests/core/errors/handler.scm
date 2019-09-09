@@ -1,4 +1,6 @@
-(import (test narc))
+(import (scheme base)
+        (scam base)
+        (test narc))
 
 (narc-label "Handler")
 

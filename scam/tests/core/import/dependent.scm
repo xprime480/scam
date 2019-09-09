@@ -1,5 +1,5 @@
 (import x2
-	(test narc))
+        (test narc))
 
 (narc-label "Import Library Recursively")
 

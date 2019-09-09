@@ -1,4 +1,5 @@
-(import (test narc))
+(import (only (scheme base) eq? list)
+        (test narc))
 
 (narc-label "Eq for numbers")
 

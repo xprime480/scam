@@ -1,20 +1,22 @@
-(import (only (scam class)
-              make-class)
+(import (only (scheme base) *)
+        (only (scam class) make-class)
         (test narc))
 
 (narc-label "Parent Calls Self Function")
 
-(define Parent (make-class
-                Root
-                ()
-                (jarthur () (* (self doodle) 17))
-                (doodle () 1)))
+(define Parent
+  (make-class
+   Root
+   ()
+   (jarthur () (* (self doodle) 17))
+   (doodle () 1)))
 
-(define Trivial (make-class
-                 Parent
-                 ()
-                 (get () (parent jarthur))
-                 (doodle () 2)))
+(define Trivial
+  (make-class
+   Parent
+   ()
+   (get () (parent jarthur))
+   (doodle () 2)))
 
 (define obj (Trivial))
 

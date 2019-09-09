@@ -1,4 +1,5 @@
-(import (test narc))
+(import (only (scheme base) string-append)
+        (test narc))
 
 (narc-label "Append string")
 

@@ -1,4 +1,5 @@
-(import (test narc))
+(import (only (scheme base) null?)
+        (test narc))
 
 (narc-label "Type Checker of Null")
 

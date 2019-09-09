@@ -1,4 +1,5 @@
-(import (only checks c-check)
+(import (only (scheme base) /)
+        (only (checks) c-check)
         (test narc))
 
 (narc-label "Complex Divide")

@@ -1,4 +1,5 @@
-(import (test narc))
+(import (only (scam base) keyword?)
+        (test narc))
 
 (narc-label "Type Checker of Keywords")
 

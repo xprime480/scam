@@ -1,5 +1,6 @@
-(import (only (scam unify)
-              match)
+(import (only (scheme base) car map)
+        (only (scam base) dict? filter)
+        (only (scam unify) match)
         (test narc))
 
 (narc-label "Match Mapping")

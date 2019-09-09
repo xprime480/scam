@@ -1,4 +1,5 @@
-(import (test narc))
+(import (only (scheme base) list->string string->list)
+        (test narc))
 
 (narc-label "List-String conversions")
 

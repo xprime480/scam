@@ -1,5 +1,5 @@
-(import (only (scheme inexact)
-              nan?)
+(import (only (scheme base) + - * /)
+        (only (scheme inexact) nan?)
         (test narc))
 
 (narc-label "Math Miscellaneous")

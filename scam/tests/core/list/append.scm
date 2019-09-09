@@ -1,4 +1,5 @@
-(import (test narc))
+(import (only (scheme base) append)
+        (test narc))
 
 (narc-label "Append Lists")
 

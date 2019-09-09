@@ -1,4 +1,5 @@
-(import (test narc))
+(import (only (scheme base) > boolean?)
+        (test narc))
 
 (narc-label "Type Checker of Booleans")
 

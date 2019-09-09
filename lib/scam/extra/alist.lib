@@ -1,7 +1,7 @@
 (define-library
     (scam extra alist 0 1)
 
-  (import (only (scheme base) length cdar)
+  (import (only (scheme base) car cdar cons equal? length not null?)
           (only (scam base) filter)
           (only (scam class) make-class))
 

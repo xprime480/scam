@@ -1,4 +1,5 @@
-(import (only checks z-check)
+(import (only (scheme base) +)
+        (only (checks) z-check)
         (test narc))
 
 (narc-label "Integer Plus")

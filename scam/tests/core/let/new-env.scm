@@ -1,4 +1,5 @@
-(import (test let-suite)
+(import (only (scheme base) /)
+        (test let-suite)
         (test narc))
 
 (narc-label "Let Env")
@@ -9,7 +10,6 @@
 (let-suite-expect 2.0 ((y 1.0)) (/ x y))
 
 (narc-expect
- (0   y))
+ (0 y))
 
 (narc-report)
-

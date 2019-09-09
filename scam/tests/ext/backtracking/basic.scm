@@ -1,6 +1,4 @@
-(import (only (scam backtrack)
-              amb
-              backtrack)
+(import (only (scam backtrack) amb backtrack)
         (test value-helper)
         (test narc))
 

@@ -1,22 +1,23 @@
-(import (test narc))
+(import (only (scheme base) eqv?)
+        (test narc))
 
 (narc-label "Eqv for atoms")
 
 (narc-expect
- ('(#t #t #f) (list (eqv? #t #t)
-                    (eqv? #f #f)
-                    (eqv? #t #f)))
+ (#t (eqv? #t #t))
+ (#t (eqv? #f #f))
+ (#f (eqv? #t #f))
 
- ('(#t #f) (list (eqv? 'sym1 'sym1)
-                 (eqv? 'sym1 'sym2)))
+ (#t (eqv? 'sym1 'sym1))
+ (#f (eqv? 'sym1 'sym2))
 
- ('(#t #f) (list (eqv? :keyword1 :keyword1)
-                 (eqv? :keyword1 :keyword2)))
+ (#t (eqv? :keyword1 :keyword1))
+ (#f (eqv? :keyword1 :keyword2))
 
- ('(#t #f) (list (eqv? #\a #\a)
-                 (eqv? #\a #\b)))
+ (#t (eqv? #\a #\a))
+ (#f (eqv? #\a #\b))
 
- ('(#t #f) (list (eqv? '() '())
-                 (eqv? '() 2))))
+ (#t (eqv? '() '()))
+ (#f (eqv? '() 2)))
 
 (narc-report)

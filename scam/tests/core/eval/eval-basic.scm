@@ -1,4 +1,5 @@
-(import (scheme eval)
+(import (only (scheme base) + list)
+        (scheme eval)
         (scheme repl)
         (test narc))
 

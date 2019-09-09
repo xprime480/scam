@@ -1,5 +1,4 @@
-(import (only (scam unify)
-              unify)
+(import (only (scam unify) unify)
         (test narc))
 
 (narc-label "Unify Empty")

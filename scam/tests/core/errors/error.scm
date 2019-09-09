@@ -1,4 +1,5 @@
-(import (test narc))
+(import (only (scam base) error)
+        (test narc))
 
 (narc-label "Raise")
 

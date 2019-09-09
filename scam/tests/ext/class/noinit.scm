@@ -1,13 +1,13 @@
-(import (only (scam class)
-              make-class)
+(import (only (scam class) make-class)
         (test narc))
 
 (narc-label "Class Without Init")
 
-(define Trivial (make-class
-                 Root
-                 (n)
-                 (get () n)))
+(define Trivial
+  (make-class
+   Root
+   (n)
+   (get () n)))
 
 (define obj (Trivial))
 

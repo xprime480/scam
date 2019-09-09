@@ -1,4 +1,5 @@
-(import (test narc))
+(import (only (scheme base) car cdr cons list)
+        (test narc))
 
 (narc-label "Car / Cdr")
 

@@ -1,4 +1,5 @@
-(import (test narc))
+(import (only (scheme base) raise)
+        (test narc))
 
 (narc-label "Raise")
 

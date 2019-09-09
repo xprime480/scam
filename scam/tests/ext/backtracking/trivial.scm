@@ -1,5 +1,4 @@
-(import (only (scam backtrack)
-              amb)
+(import (only (scam backtrack) amb)
         (test narc))
 
 (narc-label "AMB Without Values")

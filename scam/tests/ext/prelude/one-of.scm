@@ -1,5 +1,5 @@
-(import (only (scam backtrack)
-              one-of)
+(import (only (scheme base) list)
+        (only (scam backtrack) one-of)
         (test narc))
 
 (narc-label "One-Of")

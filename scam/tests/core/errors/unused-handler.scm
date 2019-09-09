@@ -1,4 +1,5 @@
-(import (test narc))
+(import (scheme base)
+        (test narc))
 
 (narc-label "Handler Not Used")
 

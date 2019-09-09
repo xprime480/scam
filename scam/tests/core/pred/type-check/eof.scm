@@ -1,4 +1,5 @@
-(import (test narc))
+(import (only (scheme base) eof-object eof-object? list)
+        (test narc))
 
 (narc-label "Type Checker of EOF")
 

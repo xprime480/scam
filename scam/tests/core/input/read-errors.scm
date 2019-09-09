@@ -1,4 +1,5 @@
-(import (scheme read)
+(import (only (scheme base) open-input-string)
+        (scheme read)
         (test narc))
 
 (narc-label "Read Errors")

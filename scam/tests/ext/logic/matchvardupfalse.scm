@@ -1,5 +1,6 @@
-(import (only (scam unify)
-              match)
+(import (only (scheme base) cadr)
+        (only (scam base) dict?)
+        (only (scam unify) match)
         (test narc))
 
 (narc-label "Match Var Dup False")

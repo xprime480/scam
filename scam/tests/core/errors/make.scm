@@ -1,4 +1,5 @@
-(import (scam error)
+(import (only (scheme base) error-object?)
+        (scam error)
         (test narc))
 
 (narc-label "Make Error")

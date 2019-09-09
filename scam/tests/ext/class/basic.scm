@@ -1,12 +1,14 @@
-(import (scam class)
+(import (only (scheme base) procedure?)
+        (scam class)
         (test narc))
 
 (narc-label "Class Predicates")
 
-(define Trivial (make-class
-                 Root
-                 ()
-                 (init ())))
+(define Trivial
+  (make-class
+   Root
+   ()
+   (init ())))
 
 (define instance (Trivial))
 

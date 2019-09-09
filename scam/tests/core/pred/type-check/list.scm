@@ -1,4 +1,5 @@
-(import (test narc))
+(import (only (scheme base) cons list list?)
+        (test narc))
 
 (narc-label "Type Checker of Lists")
 

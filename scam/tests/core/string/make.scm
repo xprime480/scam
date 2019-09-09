@@ -1,4 +1,5 @@
-(import (test narc))
+(import (only (scheme base) make-string string)
+        (test narc))
 
 (narc-label "Make some strings")
 

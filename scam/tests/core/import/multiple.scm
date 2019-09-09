@@ -3,11 +3,12 @@
 (narc-label "Import Library Multiple")
 
 (narc-catch
- ;;(:eval (max 17 42))
+ (:eval (max 17 42))
  (:eval (sample))
  (:eval (example)))
 
-(import sample (only (scheme base) max))
+(import (only (scheme base) max)
+        sample)
 
 (narc-expect
  (123     (sample))

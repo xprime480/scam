@@ -1,5 +1,4 @@
-(import (only (scam unify)
-              substitute)
+(import (only (scam unify) substitute)
         (test narc))
 
 (narc-label "Substitute")

@@ -1,4 +1,5 @@
-(import (test narc))
+(import (only (scheme base) + apply list)
+        (test narc))
 
 (narc-label "Basic Lambda Expressions")
 

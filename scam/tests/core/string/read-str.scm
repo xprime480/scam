@@ -1,4 +1,5 @@
-(import (test narc))
+(import (only (scheme base) string-length string-ref)
+        (test narc))
 
 (narc-label "Read operations on strings")
 

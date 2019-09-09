@@ -1,5 +1,5 @@
-(import (only (scam class)
-              make-class)
+(import (only (scheme base) *)
+        (only (scam class) make-class)
         (test narc))
 
 (narc-label "Simple Constant Class")

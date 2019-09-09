@@ -1,25 +1,36 @@
-(define-syntax tester
-  (syntax-rules ()
-    ((tester op v1 v2 v3)
-     (list
-      (op v1 v1)
-      (op v1 v2)
-      (op v1 v3)))))
+(define-library
+    (checks 0 1)
 
-(define (test-eq t1 t2 t3)
-  (tester eqv? t1 t2 t3))
+  (import (only (scheme base) list eq? eqv? equal?))
 
-(define (test-eqv t1 t2 t3)
-  (tester eqv? t1 t2 t3))
+  (export test-eq
+          test-eqv
+          test-equal
+          check-3)
 
-(define (test-equal t1 t2 t3)
-  (tester equal? t1 t2 t3))
+  (begin
+    (define-syntax tester
+      (syntax-rules ()
+        ((tester op v1 v2 v3)
+         (list
+          (op v1 v1)
+          (op v1 v2)
+          (op v1 v3)))))
 
-(define-syntax check-3
-  (syntax-rules ()
-    ((check-3 test-op val1 val2 val3)
-     (let ((test1 val1)
-           (test2 val2)
-           (test3 val3))
-       (test-op test1 test2 test3)))))
+    (define (test-eq t1 t2 t3)
+      (tester eq? t1 t2 t3))
+
+    (define (test-eqv t1 t2 t3)
+      (tester eqv? t1 t2 t3))
+
+    (define (test-equal t1 t2 t3)
+      (tester equal? t1 t2 t3))
+
+    (define-syntax check-3
+      (syntax-rules ()
+        ((check-3 test-op val1 val2 val3)
+         (let ((test1 val1)
+               (test2 val2)
+               (test3 val3))
+           (test-op test1 test2 test3)))))))
 

@@ -1,4 +1,5 @@
-(import (test narc))
+(import (only (scheme base) cons list pair?)
+        (test narc))
 
 (narc-label "Type Checker of Pairs")
 

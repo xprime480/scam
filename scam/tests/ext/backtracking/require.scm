@@ -1,7 +1,5 @@
-(import (only (scam backtrack)
-              amb
-              backtrack
-              require)
+(import (only (scheme base) even?)
+        (only (scam backtrack) amb backtrack require)
         (test value-helper)
         (test narc))
 

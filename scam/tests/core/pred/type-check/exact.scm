@@ -1,4 +1,5 @@
-(import (test narc))
+(import (only (scheme base) exact? inexact?)
+        (test narc))
 
 (narc-label "Type Checker of Exact Numbers")
 

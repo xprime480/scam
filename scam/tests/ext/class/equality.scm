@@ -1,23 +1,26 @@
-(import (only (scam class)
-              make-class)
+(import (only (scheme base) + equal?)
+        (only (scam class) make-class)
         (test narc))
 
 (narc-label "Equality")
 
-(define Class1 (make-class
-                Root
-                ()
-                (init ())))
+(define Class1
+  (make-class
+   Root
+   ()
+   (init ())))
 
-(define Class2 (make-class
-                Root
-                (x)
-                (init (q c) (set! x (+ 3 q c)))))
+(define Class2
+  (make-class
+   Root
+   (x)
+   (init (q c) (set! x (+ 3 q c)))))
 
-(define Class3 (make-class
-                Root
-                (x)
-                (init (q c) (set! x (+ 3 q c)))))
+(define Class3
+  (make-class
+   Root
+   (x)
+   (init (q c) (set! x (+ 3 q c)))))
 
 (define Class4 Class1)
 

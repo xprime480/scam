@@ -1,4 +1,5 @@
-(import (test narc))
+(import (only (scheme base) + * / call/cc)
+        (test narc))
 
 (narc-label "Persisted Continuation")
 

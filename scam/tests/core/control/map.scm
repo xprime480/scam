@@ -1,4 +1,4 @@
-(import (only (scheme base) integer? map)
+(import (only (scheme base) integer? list map)
         (test narc))
 
 (narc-label "Map")

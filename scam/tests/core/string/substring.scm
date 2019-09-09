@@ -1,4 +1,4 @@
-(import (only (scheme base) substring)
+(import (only (scheme base) string-copy substring)
         (test narc))
 
 (narc-label "Substring functions")

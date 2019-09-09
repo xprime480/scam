@@ -1,4 +1,5 @@
-(import (test narc))
+(import (only (scheme base) eqv?)
+        (test narc))
 
 (narc-label "Eqv? Special")
 

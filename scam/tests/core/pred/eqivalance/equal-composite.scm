@@ -1,5 +1,5 @@
-(import checks
-	(test narc))
+(import (checks)
+        (test narc))
 
 (narc-label "Equal for Composites")
 

@@ -17,6 +17,7 @@ ScamRepl::ScamRepl(int argc, char ** argv)
     : engine(ScamEngine::getEngine())
     , parser(tokenizer)
     , testmode(false)
+    , interactive(true)
     , done(false)
 {
     readArgs(argc, argv);
@@ -26,7 +27,7 @@ int ScamRepl::run()
 {
     Handler * handler = engine.getMemoryManager().make<ReplHandler>();
 
-    engine.reset(true);
+    engine.reset(interactive);
     engine.pushHandler(handler);
 
     int status = load_preloads();
@@ -40,7 +41,6 @@ int ScamRepl::run()
 
 void ScamRepl::readArgs(int argc, char ** argv)
 {
-    bool interactive = true;
     while ( --argc ) {
         const char * arg = *++argv;
         if ( '-' == arg[0] ) {

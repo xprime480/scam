@@ -1,5 +1,4 @@
-(import (only (scam unify)
-              match)
+(import (only (scam unify) match)
         (test narc))
 
 (narc-label "Match Vector")

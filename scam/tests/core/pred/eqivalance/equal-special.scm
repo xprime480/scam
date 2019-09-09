@@ -1,4 +1,5 @@
-(import (test narc))
+(import (only (scheme base) equal?)
+        (test narc))
 
 (narc-label "Equal? Special")
 

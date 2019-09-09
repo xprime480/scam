@@ -17,9 +17,9 @@
 ;;; What in fact was the order in which the the girls were placed?
 ;;;
 
-(import (only (scam backtrack)
-              amb
-              require)
+(import (only (scheme base) = list)
+        (only (scam base) distinct? xor)
+        (only (scam backtrack) amb require)
         (test narc))
 
 (narc-label "Liars")

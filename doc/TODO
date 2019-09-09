@@ -17,10 +17,6 @@
 * Fix the build process -- some files are recompiled even when it is not
   necessary to do so.
 
-* Is it worth it to make the ScamEngine a global parameter, and make it
-  the only way.  Is it really ever going to be necessary to have more than
-  one engine at a time?
-
 * ClassInitWorker::run could probably use the original continuation and
   not need ClassInitCont.  See comments in the latter implementation file.
 
@@ -31,9 +27,6 @@
 
 * When an error is reported, the REPL displays the last non-error result.
   It should not display anything additional.
-
-* Look at refactoring the composite test cases in
-  .../scam/tests/core/pred/eqivalance/
 
 * Caching for values other than characters.  Some unexplained seg fault
   occurs when symbols are cached.

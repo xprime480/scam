@@ -1,5 +1,4 @@
-(import (only (scam backtrack)
-              require)
+(import (only (scam backtrack) require)
         (test narc))
 
 (narc-label "Require")

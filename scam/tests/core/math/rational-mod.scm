@@ -1,4 +1,5 @@
-(import (only checks q-check)
+(import (only (scheme base) %)
+        (only (checks) q-check)
         (test narc))
 
 (narc-label "Rational Modulus")

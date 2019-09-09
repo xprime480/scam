@@ -6,4 +6,3 @@
 (let-suite-expect 2 () 2)
 
 (narc-report)
-

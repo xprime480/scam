@@ -1,4 +1,5 @@
-(import (test narc))
+(import (only (scheme base) - * >)
+        (test narc))
 
 (narc-label "LetRec")
 
@@ -20,4 +21,3 @@
  (:eval (test let*)))
 
 (narc-report)
-

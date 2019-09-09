@@ -22,6 +22,7 @@ namespace scam
         ScamParser parser;
 
         bool testmode;
+	bool interactive;
         bool done;
 
         void readArgs(int argc, char ** argv);

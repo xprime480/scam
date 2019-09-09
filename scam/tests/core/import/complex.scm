@@ -7,8 +7,8 @@
  (:eval (example)))
 
 (import (except
-	 (rename sample (example howdy))
-	 sample))
+         (rename sample (example howdy))
+         sample))
 
 (narc-expect
  ("howdy" (howdy)))

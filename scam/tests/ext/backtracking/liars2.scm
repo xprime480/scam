@@ -3,11 +3,9 @@
 ;;; See liars.scm for description
 ;;;
 
-(import (only (scam backtrack)
-              amb
-              exclude
-              one-of
-              require)
+(import (only (scheme base) = car list)
+        (only (scam base) xor)
+        (only (scam backtrack) amb exclude one-of require)
         (test narc))
 
 (narc-label "Liars Optimized")

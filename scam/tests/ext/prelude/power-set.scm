@@ -1,5 +1,6 @@
-(import (only (scam misc)
-              power-set)
+(import (only (scheme base) length)
+        (only (scam base) member?)
+        (only (scam misc) power-set)
         (test narc))
 
 (narc-label "Power-Set")

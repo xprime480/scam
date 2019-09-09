@@ -1,14 +1,15 @@
-(import (only (scam class)
-              make-class)
+(import (only (scheme base) / max)
+        (only (scam class) make-class)
         (test narc))
 
 (narc-label "Nontrivial Class Method")
 
-(define Maxxer (make-class
-                Root
-                (val)
-                (init (v) (set! val v))
-                (get (n) (max val n))))
+(define Maxxer
+  (make-class
+   Root
+   (val)
+   (init (v) (set! val v))
+   (get (n) (max val n))))
 
 (define obj (Maxxer 0))
 

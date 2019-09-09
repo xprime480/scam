@@ -1,5 +1,5 @@
-(import (only (scam backtrack)
-              exclude)
+(import (only (scheme base) cdr list)
+        (only (scam backtrack) exclude)
         (test narc))
 
 (narc-label "Exclude")

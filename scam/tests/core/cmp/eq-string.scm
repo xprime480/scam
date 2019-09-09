@@ -1,4 +1,5 @@
-(import (test narc))
+(import (only (scheme base) =)
+        (test narc))
 
 (narc-label "CMP = String")
 
@@ -6,7 +7,7 @@
  (#t (= "A"))
  (#t (= "A" "A"))
  (#f (= "A" "Z"))
- 
+
  (#t (= "A" "A" "A" "A" "A" "A"))
  (#f (= "A" "A" "A" "A" "A" "Z")))
 

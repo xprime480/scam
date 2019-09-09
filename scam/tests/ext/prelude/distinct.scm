@@ -1,4 +1,6 @@
-(import (test narc))
+(import (only (scheme base) list)
+        (only (scam base) distinct?)
+        (test narc))
 
 (narc-label "Distinct?")
 

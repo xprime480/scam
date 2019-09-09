@@ -1,4 +1,5 @@
-(import (test narc))
+(import (only (scheme base) list)
+        (test narc))
 
 (narc-label "Define Syntax With Arguments")
 

@@ -1,4 +1,6 @@
-(import (test narc))
+(import (only (scheme base) complex? integer? rational? real?)
+        (only (scam base) numeric?)
+        (test narc))
 
 (narc-label "Type Checker of Numbers")
 

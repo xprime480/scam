@@ -1,7 +1,7 @@
-(import (only (scheme cxr)
-              caddr)
-        (only (scam unify)
-              instantiate)
+(import (only (scheme base) cadr car equal? not pair? vector?)
+        (only (scam base) dict? keyword? nth vlen)
+        (only (scheme cxr) caddr)
+        (only (scam unify) instantiate)
         (test narc))
 
 (narc-label "Instantiate")

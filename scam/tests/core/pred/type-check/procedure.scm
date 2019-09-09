@@ -1,4 +1,5 @@
-(import (test narc))
+(import (only (scheme base) call/cc car cdr procedure?)
+        (test narc))
 
 (narc-label "Type Checker of Procedures")
 

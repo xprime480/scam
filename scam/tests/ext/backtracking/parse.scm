@@ -1,10 +1,9 @@
 ;;; Natural language processing example from Bill Hails.
 ;;;
 
-(import (only (scam backtrack)
-              amb
-              backtrack
-              require)
+(import (only (scheme base) car cdr list null? pair?)
+        (only (scam base) member?)
+        (only (scam backtrack) amb backtrack require)
         (test value-helper)
         (test narc))
 
@@ -72,10 +71,11 @@
                           (noun-phrase (det an)
                                        (noun arrow)))))
 
-(define expected (let ((p (ValueHelper)))
-                   (p update parse-result1)
-                   (p update parse-result2)
-                   (p get)))
+(define expected
+  (let ((p (ValueHelper)))
+    (p update parse-result1)
+    (p update parse-result2)
+    (p get)))
 
 (define helper (ValueHelper))
 

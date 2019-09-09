@@ -2,12 +2,12 @@
 
 (narc-label "Lambda With Dotted Formals")
 
+(define (f x . y)
+  y)
+
 (narc-expect
- ('(() (2) (2 4 #t)) (let ((f (lambda (x . y)
-                                y)))
-                       (list
-                        (f 1)
-                        (f 1 2)
-                        (f 1 2 (+ 2 2) #t)))))
+ ('()       (f 1))
+ ('(2)      (f 1 2))
+ ('(2 4 #t) (f 1 2 (+ 2 2) #t)))
 
 (narc-report)

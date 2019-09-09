@@ -1,14 +1,15 @@
-(import (only (scam class)
-              make-class)
+(import (only (scheme base) *)
+        (only (scam class) make-class)
         (test narc))
 
 (narc-label "Class Member")
 
-(define Trivial (make-class
-                 Root
-                 ()
-                 (get () (self jarthur 1))
-                 (jarthur (n) (* n 17))))
+(define Trivial
+  (make-class
+   Root
+   ()
+   (get () (self jarthur 1))
+   (jarthur (n) (* n 17))))
 
 (define obj (Trivial))
 

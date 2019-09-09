@@ -1,4 +1,5 @@
-(import (test narc))
+(import (only (scheme base) list make-list)
+        (test narc))
 
 (narc-label "Make Lists")
 

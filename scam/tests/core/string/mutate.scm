@@ -1,4 +1,5 @@
-(import (test narc))
+(import (only (scheme base) string-copy string-copy! string-fill! string-set!)
+        (test narc))
 
 (narc-label "Mutation operations on strings")
 

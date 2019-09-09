@@ -1,4 +1,5 @@
-(import (test narc))
+(import (only (scheme base) <>)
+        (test narc))
 
 (narc-label "CMP <> Special Numbers")
 
