@@ -1,4 +1,4 @@
-(import (only (scam base) error)
+(import (only (scheme base) error)
         (test narc))
 
 (narc-label "Raise")
