@@ -188,6 +188,40 @@ This comment style can span lines!\n\
         string2tokens(input, exp);
     }
 
+    TEST(TokenizerTest, CharacterNamed)
+    {
+        string const input{ "#\\alarm #\\backspace #\\delete #\\escape "
+                            "#\\newline #\\null #\\return #\\space #\\tab" };
+        vector<Token> exp {
+            Token(TokenType::TT_CHARACTER, "\a"),
+            Token(TokenType::TT_CHARACTER, "\b"),
+            Token(TokenType::TT_CHARACTER, "\x7f"),
+            Token(TokenType::TT_CHARACTER, "\e"),
+            Token(TokenType::TT_CHARACTER, "\n"),
+            Token(TokenType::TT_CHARACTER, string(1u, 0)),
+            Token(TokenType::TT_CHARACTER, "\r"),
+            Token(TokenType::TT_CHARACTER, " "),
+            Token(TokenType::TT_CHARACTER, "\t")
+        };
+
+        string2tokens(input, exp);
+    }
+
+    TEST(TokenizerTest, CharacterHexValues)
+    {
+        string const input{ "#\\x00 #\\x20 #\\x30 #\\x41 #\\x3a #\\x3A" };
+        vector<Token> exp {
+            Token(TokenType::TT_CHARACTER, string(1u, 0)),
+            Token(TokenType::TT_CHARACTER, " "),
+            Token(TokenType::TT_CHARACTER, "0"),
+            Token(TokenType::TT_CHARACTER, "A"),
+            Token(TokenType::TT_CHARACTER, ":"),
+            Token(TokenType::TT_CHARACTER, ":")
+        };
+
+        string2tokens(input, exp);
+    }
+
     TEST(TokenizerTest, CharacterPrefixWithoutValue)
     {
         string const input{ "#\\" };

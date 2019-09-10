@@ -41,8 +41,49 @@ string scam::writeValue(ScamValue data)
             writeByteVector(s, data);
             break;
 
-        case ScamData::Character:
-            s << "#\\" << data->charValue();
+        case ScamData::Character: {
+            s << "#\\";
+            const char c = data->charValue();
+            switch (c) {
+            case 0x07:
+                s << "alarm";
+                break;
+            case 0x08:
+                s << "backspace";
+                break;
+            case 0x7f:
+                s << "delete";
+                break;
+            case 0x1b:
+                s << "escape";
+                break;
+            case 0x0a:
+                s << "newline";
+                break;
+            case 0x00:
+                s << "null";
+                break;
+            case 0x0d:
+                s << "return";
+                break;
+            case 0x20:
+                s << "space";
+                break;
+            case 0x09:
+                s << "tab";
+                break;
+            default:
+                if ( isprint(c) ) {
+                    s << c;
+                }
+                else {
+                    s << "x"
+                      << "0123456789abcdef"[(c & 0xf0) >> 4]
+                      << "0123456789abcdef"[(c & 0x0f)];
+                }
+                break;
+            }
+        }
             break;
 
         case ScamData::Class:

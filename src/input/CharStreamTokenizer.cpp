@@ -8,7 +8,12 @@
 using namespace scam;
 using namespace std;
 
-static const Token none(TokenType::TT_NONE, "");
+namespace
+{
+    static const Token none(TokenType::TT_NONE, "");
+
+    extern Token translateCharacter(const string & text);
+}
 
 CharStreamTokenizer::CharStreamTokenizer(CharStream & stream)
     : stream(stream)
@@ -308,16 +313,7 @@ Token CharStreamTokenizer::scanCharacter()
     }
 
     string text = stream.strBetween(original);
-    if ( 3u != text.size() ) {
-        stringstream s;
-        s << "Malformed character: {" << text << "}";
-
-        Token err(TokenType::TT_SCAN_ERROR, s.str());
-        return err;
-    }
-
-    Token token(TokenType::TT_CHARACTER, text.substr(2));
-    return token;
+    return translateCharacter(text);
 }
 
 Token CharStreamTokenizer::scanString()
@@ -449,4 +445,70 @@ Token CharStreamTokenizer::scanDelimitedSymbol()
     string text = stream.strBetween(start, end);
     Token token(TokenType::TT_SYMBOL, text);
     return token;
+}
+
+namespace
+{
+    Token translateCharacter(const string & text)
+    {
+        string subText = text.substr(2);
+        if ( 1u == subText.size() ) {
+            Token token(TokenType::TT_CHARACTER, text.substr(2));
+            return token;
+        }
+
+        if ( 3u == subText.size() &&
+             'x' == subText[0] &&
+             isxdigit(subText[1]) &&
+             isxdigit(subText[2] )) {
+	    char tokenValue;
+	    tokenValue = strtol(&subText.c_str()[1], nullptr, 16);
+	    string tokenText(1u, tokenValue);
+            Token token(TokenType::TT_CHARACTER, tokenText);
+            return token;
+        }
+
+        if ( "alarm" == subText ) {
+            Token token(TokenType::TT_CHARACTER, "\a");
+            return token;
+        }
+        if ( "backspace" == subText ) {
+            Token token(TokenType::TT_CHARACTER, "\b");
+            return token;
+        }
+        if ( "delete" == subText ) {
+            Token token(TokenType::TT_CHARACTER, "\x7f");
+            return token;
+        }
+        if ( "escape" == subText ) {
+            Token token(TokenType::TT_CHARACTER, "\e");
+            return token;
+        }
+        if ( "newline" == subText ) {
+            Token token(TokenType::TT_CHARACTER, "\n");
+            return token;
+        }
+        if ( "null" == subText ) {
+            Token token(TokenType::TT_CHARACTER, string(1u, 0));
+            return token;
+        }
+        if ( "return" == subText ) {
+            Token token(TokenType::TT_CHARACTER, "\r");
+            return token;
+        }
+        if ( "space" == subText ) {
+            Token token(TokenType::TT_CHARACTER, " ");
+            return token;
+        }
+        if ( "tab" == subText ) {
+            Token token(TokenType::TT_CHARACTER, "\t");
+            return token;
+        }
+
+        stringstream s;
+        s << "Malformed character: {" << text << "}";
+        Token err(TokenType::TT_SCAN_ERROR, s.str());
+        return err;
+    }
+
 }

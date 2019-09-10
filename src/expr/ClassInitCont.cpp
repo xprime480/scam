@@ -6,8 +6,6 @@
 using namespace scam;
 using namespace std;
 
-/* This continuation seems *entirely* useless */
-
 ClassInitCont::ClassInitCont(ScamValue instance, Continuation * cont)
     : Continuation("ClassInit")
     , instance(instance)
