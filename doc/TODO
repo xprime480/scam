@@ -26,5 +26,3 @@
   occurs when symbols are cached.
 
 * Fix test pythag2.scm.  It randomly (??) causes segmentation violations.
-
-* REPL should not display anything after (import ...)

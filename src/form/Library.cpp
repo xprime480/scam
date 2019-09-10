@@ -1,5 +1,6 @@
 #include "form/AllSpecialForms.hpp"
 
+#include "Continuation.hpp"
 #include "ErrorCategory.hpp"
 #include "ScamEngine.hpp"
 #include "env/Env.hpp"
@@ -75,6 +76,7 @@ void scam::applyImport(ScamValue args, Continuation * cont, Env * env)
         Env * dst = ScamEngine::getEngine().getFrame();
         Env * src = asEnv(result);
         dst->merge(src);
+        cont->handleValue(makeNothing());
     }
 }
 
