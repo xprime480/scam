@@ -102,6 +102,14 @@ Token CharStreamTokenizer::scanAtmosphere()
         if ( TokenType::TT_SCAN_ERROR == rv.getType() ) {
             return rv;
         }
+
+        const string peek2 = stream.strPeek(2);
+        if ( peek2 == "#;" ) {
+            static const Token token(TokenType::TT_DATUM_COMMENT, "#;");
+            stream.advance(2);
+            return token;
+        }
+
         keepSkipping |= TokenType::TT_BOOLEAN == rv.getType();
     }
 
@@ -461,9 +469,9 @@ namespace
              'x' == subText[0] &&
              isxdigit(subText[1]) &&
              isxdigit(subText[2] )) {
-	    char tokenValue;
-	    tokenValue = strtol(&subText.c_str()[1], nullptr, 16);
-	    string tokenText(1u, tokenValue);
+            char tokenValue;
+            tokenValue = strtol(&subText.c_str()[1], nullptr, 16);
+            string tokenText(1u, tokenValue);
             Token token(TokenType::TT_CHARACTER, tokenText);
             return token;
         }

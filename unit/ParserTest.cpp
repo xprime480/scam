@@ -68,6 +68,32 @@ TEST_F(ParserTest, ScanError)
     expectError(expr, msg);
 }
 
+TEST_F(ParserTest, DatumCommentSimple)
+{
+    vector<Token> tokens {
+        Token(TokenType::TT_DATUM_COMMENT, "#;"),
+        Token(TokenType::TT_SYMBOL, "some-symbol"),
+        Token(TokenType::TT_NUMERIC, "3", makeInteger(3, true))
+    };
+
+    ScamValue expr = runTest(tokens);
+    expectInteger(expr, 3, "3", true);
+}
+
+TEST_F(ParserTest, DatumCommentList)
+{
+    vector<Token> tokens {
+        Token(TokenType::TT_DATUM_COMMENT, "#;"),
+        Token(TokenType::TT_OPEN_PAREN, "("),
+        Token(TokenType::TT_SYMBOL, "some-symbol"),
+        Token(TokenType::TT_CLOSE_PAREN, ")"),
+        Token(TokenType::TT_NUMERIC, "3", makeInteger(3, true))
+    };
+
+    ScamValue expr = runTest(tokens);
+    expectInteger(expr, 3, "3", true);
+}
+
 TEST_F(ParserTest, BoolTrue)
 {
     booltest("#t", true);

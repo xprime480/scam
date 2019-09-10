@@ -13,6 +13,8 @@ namespace scam
         {
          TT_NONE = 0,
 
+         TT_DATUM_COMMENT,
+
          TT_OPEN_PAREN,
          TT_CLOSE_PAREN,
          TT_OPEN_BRACKET,
@@ -70,6 +72,10 @@ namespace scam
         switch ( tt ) {
         case TokenType::TT_NONE:
             os << "None";
+            break;
+
+        case TokenType::TT_DATUM_COMMENT:
+            os << "Datum Comment";
             break;
 
         case TokenType::TT_OPEN_PAREN:

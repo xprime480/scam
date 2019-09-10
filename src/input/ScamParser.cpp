@@ -51,6 +51,13 @@ ScamValue ScamParser::tokenToExpr(Token const & token) const
         rv->errorCategory() = scanCategory;
         break;
 
+    case TokenType::TT_DATUM_COMMENT:
+        rv = parseSubExpr();
+        if ( ! isUnhandledError(rv) ) {
+            rv = parseSubExpr();
+        }
+        break;
+
     case TokenType::TT_DOT:
         rv = makeError("Dot (.) outside list");
         rv->errorCategory() = scanCategory;
