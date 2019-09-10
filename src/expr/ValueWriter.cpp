@@ -115,7 +115,12 @@ string scam::writeValue(ScamValue data)
             break;
 
         case ScamData::ScamEnv:
-            s << "env";
+            if ( isForwarder(data) ) {
+                s << "forwarder";
+            }
+            else {
+                s << "env";
+            }
             break;
 
         default:
@@ -543,4 +548,3 @@ namespace
         }
     }
 }
-

@@ -42,13 +42,12 @@ ScamValue DefineCont::finish(ScamValue expr) const
 
     ScamEngine & engine = ScamEngine::getEngine();
     Backtracker * backtracker = engine.getBacktracker();
-    if ( ! backtracker ) {
-        return makeNothing();
+    if ( backtracker ) {
+        MemoryManager & mm = engine.getMemoryManager();
+        Backtracker * bt = mm.make<DefineBacktracker>(sym, env, backtracker);
+        engine.setBacktracker(bt);
     }
 
-    MemoryManager & mm = engine.getMemoryManager();
-    Backtracker * bt = mm.make<DefineBacktracker>(sym, env, backtracker);
-    engine.setBacktracker(bt);
 
     return makeNothing();
 }

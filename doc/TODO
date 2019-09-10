@@ -33,7 +33,4 @@
 
 * Fix test pythag2.scm.  It randomly (??) causes segmentation violations.
 
-* (environment ...) forms aren't getting captured in let expression.  See,
-  e.g., barrels2.scm for example of where they could be useful.
-
 * Some backtracking tests are being skipped.  Find out why and fix.

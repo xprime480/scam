@@ -38,7 +38,7 @@ void scam::applyGetOutStr(ScamValue args, Continuation * cont)
     PortParameter p0;
     if ( argsToParms(args, "get-output-string", p0) ) {
         ScamValue p = p0.value;
-        if ( p->hasMeta("open-output-string") ) {
+        if ( truth(p->hasMeta("open-output-string")) ) {
             ScamPort * port = asPort(p);
             ScamValue rv = port->getContents();
             if ( isString(rv) ) {
