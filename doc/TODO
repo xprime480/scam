@@ -27,4 +27,4 @@
 
 * Fix test pythag2.scm.  It randomly (??) causes segmentation violations.
 
-* Some backtracking tests are being skipped.  Find out why and fix.
+* REPL should not display anything after (import ...)
