@@ -4,6 +4,7 @@
 #include "ScamFwd.hpp"
 
 #include <cstdlib>
+#include <vector>
 
 namespace scam
 {
@@ -12,11 +13,13 @@ namespace scam
     extern size_t length(ScamValue value);
     extern ScamValue nthcar(ScamValue value, size_t n);
     extern ScamValue nthcdr(ScamValue value, size_t n);
-    
+
     // not like scheme append ... returns a copy of lst with value
     // at the end
     //
     extern ScamValue append(ScamValue lst, ScamValue value);
+
+    extern std::vector<ScamValue> detectSharedStructure(ScamValue value);
 }
 
 #endif

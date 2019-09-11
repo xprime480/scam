@@ -18,6 +18,17 @@ namespace
     extern void writeByteVector(std::stringstream & s, ScamValue data);
     extern void writeClosure(std::stringstream & s, ScamValue data);
     extern void writePair(std::stringstream & s, ScamValue data);
+    extern void writeList(stringstream & s, ScamValue data);
+
+    extern void writeSexp(stringstream & s,
+                          ScamValue data,
+                          vector<ScamValue> & shared);
+
+    extern void writeSexpHelper(stringstream & s,
+                                ScamValue data,
+                                map<ScamValue, size_t> & indexes,
+                                set<ScamValue> & seen);
+
     extern void writeDict(std::stringstream & s, ScamValue data);
     extern void writeNumeric(std::stringstream & s, ScamValue data);
     extern void writeVector(std::stringstream & s, ScamValue data);
@@ -402,8 +413,21 @@ namespace
 
     void writePair(stringstream & s, ScamValue data)
     {
+        vector<ScamValue> shared = detectSharedStructure(data);
+
+        if ( shared.empty() ) {
+            writeList(s, data);
+        }
+        else {
+            writeSexp(s, data, shared);
+        }
+    }
+
+    void writeList(stringstream & s, ScamValue data)
+    {
         s << "(";
         s << writeValue(data->carValue());
+
         ScamValue next = data->cdrValue();
         while ( ! isNull(next) ) {
             if ( isPair(next) ) {
@@ -415,6 +439,69 @@ namespace
                 break;
             }
         }
+
+        s << ")";
+    }
+
+    void writeSexp(stringstream & s, ScamValue data, vector<ScamValue> & shared)
+    {
+        set<ScamValue> seen;
+
+        map<ScamValue, size_t> indexes;
+        size_t i { 0 };
+        for ( auto p : shared ) {
+            indexes[p] = i++;
+        }
+
+        writeSexpHelper(s, data, indexes, seen);
+    }
+
+    void writeSexpHelper(stringstream & s,
+                         ScamValue data,
+                         map<ScamValue, size_t> & indexes,
+                         set<ScamValue> & seen)
+    {
+        if ( ! isPair(data) ) {
+            s << writeValue(data);
+            return;
+        }
+
+        const auto iIndex = indexes.find(data);
+        if ( iIndex != indexes.end() ) {
+            const auto iSeen = seen.find(data);
+            unsigned idx = iIndex->second;
+            if ( iSeen == seen.end() ) {
+                s << "#" << idx << "=";
+                seen.insert(data);
+            }
+            else {
+                s << "#" << idx << "#";
+                return;
+            }
+        }
+
+        s << "(";
+        writeSexpHelper(s, data->carValue(), indexes, seen);
+
+        ScamValue next = data->cdrValue();
+        while ( ! isNull(next) ) {
+            const auto iter = indexes.find(next);
+            if ( iter != indexes.end() ) {
+                s << " . #" << iter->second << "#";
+                next = makeNull();
+            }
+            else if ( isPair(next) ) {
+                s << " ";
+                writeSexpHelper(s, getCar(next), indexes, seen);
+                next = getCdr(next);
+            }
+            else {
+                s << " . ";
+                writeSexpHelper(s, next, indexes, seen);
+                next = makeNull();
+            }
+        }
+
         s << ")";
     }
 

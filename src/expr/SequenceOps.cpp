@@ -7,10 +7,19 @@
 #include "expr/ValueWriter.hpp"
 #include "expr/ValueFactory.hpp"
 
+#include <algorithm>
 #include <sstream>
+#include <vector>
 
 using namespace scam;
 using namespace std;
+
+namespace
+{
+    extern void loopFinderHelper(vector<ScamValue> & shared,
+                                 vector<ScamValue> & path,
+                                 ScamValue value);
+}
 
 ScamValue scam::getCar(ScamValue value)
 {
@@ -191,4 +200,45 @@ ScamValue scam::append(ScamValue expr, ScamValue tail)
     ScamValue cdr = nthcdr(expr, 0);
     ScamValue newCdr = append(cdr, tail);
     return makePair(car, newCdr);
+}
+
+vector<ScamValue> scam::detectSharedStructure(ScamValue value)
+{
+    vector<ScamValue> shared;
+
+    if ( isPair(value) ) {
+        vector<ScamValue> path;
+        path.push_back(value);
+
+        loopFinderHelper(shared, path, getCar(value));
+        loopFinderHelper(shared, path, getCdr(value));
+    }
+
+    return shared;
+}
+
+namespace
+{
+    void loopFinderHelper(vector<ScamValue> & shared,
+                          vector<ScamValue> & path,
+                          ScamValue value)
+    {
+        if ( ! isPair(value) ) {
+            return;
+        }
+
+        const auto iter = find(path.begin(), path.end(), value);
+        if ( iter != path.end() ) {
+            const auto iter2 = find(shared.begin(), shared.end(), value);
+            if ( iter2 == shared.end() ) {
+                shared.push_back(value);
+            }
+            return;
+        }
+
+        path.push_back(value);
+        loopFinderHelper(shared, path, getCar(value));
+        loopFinderHelper(shared, path, getCdr(value));
+        path.pop_back();
+    }
 }
