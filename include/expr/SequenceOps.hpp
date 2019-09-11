@@ -19,7 +19,8 @@ namespace scam
     //
     extern ScamValue append(ScamValue lst, ScamValue value);
 
-    extern std::vector<ScamValue> detectSharedStructure(ScamValue value);
+    extern std::vector<ScamValue>
+    detectSharedStructure(ScamValue value, bool checkCars);
 }
 
 #endif

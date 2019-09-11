@@ -18,7 +18,8 @@ namespace
 {
     extern void loopFinderHelper(vector<ScamValue> & shared,
                                  vector<ScamValue> & path,
-                                 ScamValue value);
+                                 ScamValue value,
+                                 bool checkCars);
 }
 
 ScamValue scam::getCar(ScamValue value)
@@ -202,7 +203,7 @@ ScamValue scam::append(ScamValue expr, ScamValue tail)
     return makePair(car, newCdr);
 }
 
-vector<ScamValue> scam::detectSharedStructure(ScamValue value)
+vector<ScamValue> scam::detectSharedStructure(ScamValue value, bool checkCars)
 {
     vector<ScamValue> shared;
 
@@ -210,8 +211,10 @@ vector<ScamValue> scam::detectSharedStructure(ScamValue value)
         vector<ScamValue> path;
         path.push_back(value);
 
-        loopFinderHelper(shared, path, getCar(value));
-        loopFinderHelper(shared, path, getCdr(value));
+        if ( checkCars ) {
+            loopFinderHelper(shared, path, getCar(value), checkCars);
+        }
+        loopFinderHelper(shared, path, getCdr(value), checkCars);
     }
 
     return shared;
@@ -221,7 +224,8 @@ namespace
 {
     void loopFinderHelper(vector<ScamValue> & shared,
                           vector<ScamValue> & path,
-                          ScamValue value)
+                          ScamValue value,
+                          bool checkCars)
     {
         if ( ! isPair(value) ) {
             return;
@@ -237,8 +241,10 @@ namespace
         }
 
         path.push_back(value);
-        loopFinderHelper(shared, path, getCar(value));
-        loopFinderHelper(shared, path, getCdr(value));
+        if ( checkCars ) {
+            loopFinderHelper(shared, path, getCar(value), checkCars);
+        }
+        loopFinderHelper(shared, path, getCdr(value), checkCars);
         path.pop_back();
     }
 }

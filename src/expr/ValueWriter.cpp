@@ -413,7 +413,7 @@ namespace
 
     void writePair(stringstream & s, ScamValue data)
     {
-        vector<ScamValue> shared = detectSharedStructure(data);
+        vector<ScamValue> shared = detectSharedStructure(data, true);
 
         if ( shared.empty() ) {
             writeList(s, data);

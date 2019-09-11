@@ -2,12 +2,18 @@
 
 #include "ScamException.hpp"
 #include "expr/ScamData.hpp"
+#include "expr/SequenceOps.hpp"
 #include "expr/ValueWriter.hpp"
 
 #include <sstream>
 
 using namespace scam;
 using namespace std;
+
+namespace
+{
+    extern bool isListFast(ScamValue data);
+}
 
 bool scam::isImmutable(ScamValue data)
 {
@@ -149,15 +155,29 @@ bool scam::isPair(ScamValue data)
 
 bool scam::isList(ScamValue data)
 {
-    if ( isNull(data) ) {
-        return true;
-    }
-    if ( isPair(data) ) {
-        ScamValue cdr = data->cdrValue();
-        return isList(cdr);
+    const auto shared = detectSharedStructure(data, false);
+    if ( ! shared.empty() ) {
+        return false;
     }
 
-    return false;
+    return isListFast(data);
+}
+
+namespace
+{
+    bool isListFast(ScamValue data)
+    {
+        if ( isNull(data) ) {
+            return true;
+        }
+
+        if ( isPair(data) ) {
+            ScamValue cdr = data->cdrValue();
+            return isList(cdr);
+        }
+
+        return false;
+    }
 }
 
 bool scam::isVector(ScamValue data)
