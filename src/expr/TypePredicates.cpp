@@ -264,3 +264,8 @@ bool scam::isForwarder(ScamValue data)
 {
     return isEnv(data) && truth(data->hasMeta("forward-address"));
 }
+
+bool scam::isPlaceholder(ScamValue data)
+{
+    return data->type == ScamData::Placeholder;
+}

@@ -39,6 +39,9 @@ namespace scam
 
          TT_NUMERIC,
 
+         TT_DATUM_DEF,
+         TT_DATUM_REF,
+
          TT_END_OF_INPUT = 254,
          TT_SCAN_ERROR = 255
         };
@@ -156,6 +159,14 @@ namespace scam
 
         case TokenType::TT_NUMERIC:
             os << "Numeric";
+            break;
+
+        case TokenType::TT_DATUM_DEF:
+            os << "DatumDefinition";
+            break;
+
+        case TokenType::TT_DATUM_REF:
+            os << "DatumReference";
             break;
 
         case TokenType::TT_END_OF_INPUT:

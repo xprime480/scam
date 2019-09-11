@@ -2,7 +2,9 @@
 
 #include "ErrorCategory.hpp"
 #include "ScamException.hpp"
+#include "expr/EqualityOps.hpp"
 #include "expr/ScamToInternal.hpp"
+#include "expr/SequenceOps.hpp"
 #include "expr/TypePredicates.hpp"
 #include "expr/ValueFactory.hpp"
 
@@ -14,6 +16,9 @@ using namespace std;
 namespace
 {
     extern void tagPartial(ScamValue expr);
+
+    extern void
+    substituePlaceholders(ScamValue & expr, ScamValue tag, ScamValue value);
 }
 
 ScamParser::ScamParser(Tokenizer & tokenizer)
@@ -130,6 +135,23 @@ ScamValue ScamParser::tokenToExpr(Token const & token) const
         rv = makeSymbol("backtrack");
         rv = makeList(rv);
         rv->makeImmutable();
+        break;
+
+    case TokenType::TT_DATUM_DEF:
+        rv = parseSubExpr();
+        if ( isPair(rv) ) {
+            ScamValue tag = token.getExpr();
+            substituePlaceholders(rv->carValue(), tag, rv);
+            substituePlaceholders(rv->cdrValue(), tag, rv);
+        }
+        else {
+            rv = makeError("Bad datum definition %{0}", rv);
+            rv->errorCategory() = scanCategory;
+        }
+        break;
+
+    case TokenType::TT_DATUM_REF:
+        rv = makePlaceholder(token.getExpr());
         break;
 
     case TokenType::TT_END_OF_INPUT:
@@ -407,6 +429,20 @@ namespace
             if ( isError(expr) ) {
                 expr->errorCategory() = scanCategory;
             }
+        }
+    }
+
+    void
+    substituePlaceholders(ScamValue & expr, ScamValue tag, ScamValue value)
+    {
+        if ( isPlaceholder(expr) ) {
+            if ( equals(expr->dataValue(), tag) ) {
+                expr = value;
+            }
+        }
+        else if ( isPair(expr) ) {
+            substituePlaceholders(expr->carValue(), tag, value);
+            substituePlaceholders(expr->cdrValue(), tag, value);
         }
     }
 }

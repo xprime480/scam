@@ -424,3 +424,12 @@ ScamValue scam::makeForwarder(Env * env)
     v->setMeta("forward-address", makeNothing());
     return v;
 }
+
+ScamValue scam::makePlaceholder(ScamValue tag)
+{
+    static constexpr auto myType = ScamData::Placeholder;
+    ScamValue v = mm.make<ScamData>(myType);
+    v->dataValue() = tag;
+    return v;
+}
+

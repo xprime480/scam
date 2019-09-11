@@ -7,7 +7,7 @@ DEP = $(SRC:.cpp=.d)
 
 CPP = /usr/bin/g++
 INC =  -I ../include
-CPPFLAGS =  -g -Wall $(INC)
+CPPFLAGS = -g -Wall $(INC)
 SUBOBJ = env/*.o expr/*.o form/*.o input/*.o port/*.o prim/*.o util/*.o
 
 libscam.a : $(OBJ) subs

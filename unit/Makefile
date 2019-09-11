@@ -27,7 +27,7 @@ gmocklib :
 	:
 
 qexe : $(OBJ)
-	$(CPP) -o $(TEST_EXE) $(OBJ) -L../src -lscam -Lgmock -lgtest -lpthread
+	$(CPP) -g -o $(TEST_EXE) $(OBJ) -L../src -lscam -Lgmock -lgtest -lpthread
 	touch $@
 
 do_it_manually :

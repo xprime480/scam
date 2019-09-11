@@ -129,21 +129,23 @@ This comment style can span lines!\n\
 
     TEST(TokenizerTest, SpecialSymbols)
     {
-        string const input{ " ( ) [ ] { } #( #u8( . ' ` , ,@ " };
+        string const input{ " ( ) [ ] { } #( #u8( . ' ` , ,@ #0= #0#" };
         vector<Token> exp {
-            Token(TokenType::TT_OPEN_PAREN,       "(") ,
-            Token(TokenType::TT_CLOSE_PAREN,      ")") ,
-            Token(TokenType::TT_OPEN_BRACKET,     "[") ,
-            Token(TokenType::TT_CLOSE_BRACKET,    "]") ,
-            Token(TokenType::TT_OPEN_CURLY,       "{") ,
-            Token(TokenType::TT_CLOSE_CURLY,      "}") ,
-            Token(TokenType::TT_OPEN_VECTOR,      "#("),
+            Token(TokenType::TT_OPEN_PAREN,       "(")  ,
+            Token(TokenType::TT_CLOSE_PAREN,      ")")  ,
+            Token(TokenType::TT_OPEN_BRACKET,     "[")  ,
+            Token(TokenType::TT_CLOSE_BRACKET,    "]")  ,
+            Token(TokenType::TT_OPEN_CURLY,       "{")  ,
+            Token(TokenType::TT_CLOSE_CURLY,      "}")  ,
+            Token(TokenType::TT_OPEN_VECTOR,      "#(") ,
             Token(TokenType::TT_OPEN_BYTE_VECTOR, "#u8("),
-            Token(TokenType::TT_DOT,              ".") ,
-            Token(TokenType::TT_QUOTE,            "'") ,
-            Token(TokenType::TT_QUASIQUOTE,       "`") ,
-            Token(TokenType::TT_UNQUOTE,          ",") ,
-            Token(TokenType::TT_SPLICE,           ",@")
+            Token(TokenType::TT_DOT,              ".")  ,
+            Token(TokenType::TT_QUOTE,            "'")  ,
+            Token(TokenType::TT_QUASIQUOTE,       "`")  ,
+            Token(TokenType::TT_UNQUOTE,          ",")  ,
+            Token(TokenType::TT_SPLICE,           ",@") ,
+            Token(TokenType::TT_DATUM_DEF,        "#0="),
+            Token(TokenType::TT_DATUM_REF,        "#0#")
         };
 
         string2tokens(input, exp);

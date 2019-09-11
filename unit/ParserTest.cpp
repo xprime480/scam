@@ -186,6 +186,27 @@ TEST_F(ParserTest, ListTest)
     expectList(expr, msg, 2);
 }
 
+TEST_F(ParserTest, DatumListTest)
+{
+    static const string msg{ "#0=(2 . #0#)" };
+    vector<Token> tokens {
+        Token(TokenType::TT_DATUM_DEF, "#0=", makeInteger(0, true)),
+        Token(TokenType::TT_OPEN_PAREN, "("),
+        Token(TokenType::TT_NUMERIC, "2", makeInteger(2, true)),
+        Token(TokenType::TT_DOT, "."),
+        Token(TokenType::TT_DATUM_REF, "#0#", makeInteger(0, true)),
+        Token(TokenType::TT_CLOSE_PAREN, ")")
+    };
+
+    ScamValue expr = runTest(tokens);
+    expectPair(expr, msg);
+
+    if ( isPair(expr) ) {
+	ScamValue cdr = getCdr(expr);
+	EXPECT_EQ(expr, cdr);
+    }
+}
+
 TEST_F(ParserTest, UnterminatedList)
 {
     vector<Token> tokens {

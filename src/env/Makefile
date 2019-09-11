@@ -7,7 +7,7 @@ DEP = $(SRC:.cpp=.d)
 
 CPP = /usr/bin/g++
 INC = -I ../../include
-CPPFLAGS =  -g -Wall $(INC)
+CPPFLAGS = -g -Wall $(INC)
 
 libenv.a : $(OBJ)
 	ar crf	$@ $(OBJ)

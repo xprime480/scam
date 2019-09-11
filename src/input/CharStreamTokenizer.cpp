@@ -1,5 +1,6 @@
 #include "input/CharStreamTokenizer.hpp"
 
+#include "expr/ValueFactory.hpp"
 #include "util/NumericConverter.hpp"
 
 #include <algorithm>
@@ -237,6 +238,31 @@ Token CharStreamTokenizer::scanSpecial()
         if ( 0 == c2 || isspace(c2) ) {
             rv = TokenType::TT_DOT;
         }
+        stream.setPos(original);
+    }
+        break;
+
+    case '#' : {
+        PositionType original = stream.getPos();
+        stream.advance();
+        while ( isdigit(stream.peek()) ) {
+            stream.advance();
+        }
+        char c2 = stream.peek();
+        if ( '=' == c2 || '#' == c2 ) {
+            stream.advance();
+            string text = stream.strBetween(original);
+            string numtext = text.substr(1, text.size() - 2);
+            if ( numtext.empty() ) {
+                Token err(TokenType::TT_SCAN_ERROR, text);
+                return err;
+            }
+            long index = strtol(numtext.c_str(), nullptr, 10);
+            rv = '=' == c2 ? TokenType::TT_DATUM_DEF : TokenType::TT_DATUM_REF;
+            Token token(rv, text, makeInteger(index, true));
+            return token;
+        }
+
         stream.setPos(original);
     }
         break;

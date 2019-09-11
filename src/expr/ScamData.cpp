@@ -16,6 +16,11 @@
 using namespace scam;
 using namespace std;
 
+namespace
+{
+    extern void safeMark(ManagedObject * p);
+}
+
 ScamData::ScamData(DataTagType type, bool managed)
     : ManagedObject(managed)
     , type(type)
@@ -104,6 +109,10 @@ ScamData::ScamData(DataTagType type, bool managed)
 
     case ScamData::ScamEnv:
         value.envData = nullptr;
+        break;
+
+    case ScamData::Placeholder:
+        value.valueData = nullptr;
         break;
 
     default:
@@ -204,14 +213,12 @@ void ScamData::mark()
     }
 
     ManagedObject::mark();
-    if ( metadata ) {
-        metadata->mark();
-    }
+    safeMark(metadata);
 
     if ( isNumeric(this) ) {
         if ( isPureComplex(this) ) {
-            realPart()->mark();
-            imagPart()->mark();
+            safeMark(realPart());
+            safeMark(imagPart());
         }
         return;
     }
@@ -219,19 +226,19 @@ void ScamData::mark()
     switch ( type ) {
     case ScamData::Error:
         for ( auto const & e : errorIrritants() ) {
-            e->mark();
+            safeMark(e);
         }
-        errorCategory()->mark();
+        safeMark(errorCategory());
         break;
 
     case ScamData::Pair:
-        carValue()->mark();
-        cdrValue()->mark();
+        safeMark(carValue());
+        safeMark(cdrValue());
         break;
 
     case ScamData::Vector:
         for ( auto const & e : vectorData() ) {
-            e->mark();
+            safeMark(e);
         }
         break;
 
@@ -242,29 +249,29 @@ void ScamData::mark()
         size_t size = keys.size();
 
         for ( size_t idx = 0 ; idx < size ; ++idx ) {
-            keys[idx]->mark();
-            vals[idx]->mark();
+            safeMark(keys[idx]);
+            safeMark(vals[idx]);
         }
     }
         break;
 
     case ScamData::Closure:
         closureDef().mark();
-        closureEnv()->mark();
+        safeMark(closureEnv());
         break;
 
     case ScamData::Class:
         classDef().mark();
-        classEnv()->mark();
+        safeMark(classEnv());
         break;
 
     case ScamData::Instance:
-        instancePrivate()->mark();
-        instanceLocal()->mark();
+        safeMark(instancePrivate());
+        safeMark(instanceLocal());
         break;
 
     case ScamData::Cont:
-        contValue()->mark();
+        safeMark(contValue());
         break;
 
     case ScamData::Syntax:
@@ -272,9 +279,11 @@ void ScamData::mark()
         break;
 
     case ScamData::ScamEnv:
-        if ( auto temp = envValue() ) {
-            temp->mark();
-        }
+        safeMark(envValue());
+        break;
+
+    case ScamData::Placeholder:
+        safeMark(dataValue());
         break;
 
     default:
@@ -563,3 +572,20 @@ Env *& ScamData::envValue()
     assertType(ScamData::ScamEnv);
     return value.envData;
 }
+
+ScamValue & ScamData::dataValue()
+{
+    assertType(ScamData::Placeholder);
+    return value.valueData;
+}
+
+namespace
+{
+    void safeMark(ManagedObject * p)
+    {
+        if ( p ) {
+            p->mark();
+        }
+    }
+}
+

@@ -97,6 +97,8 @@ namespace scam
         constexpr static DataTagType Syntax  { 1 << 27 };
         constexpr static DataTagType ScamEnv { 1 << 28 };
 
+        constexpr static DataTagType Placeholder { 1 << 29 };
+
         /**
          * member data
          */
@@ -104,6 +106,7 @@ namespace scam
 
     private:
         bool immutable;
+
     public:
         struct ComplexData
         {
@@ -211,6 +214,7 @@ namespace scam
             ScamPort * portData;
             SyntaxRules * syntaxData;
             Env * envData;
+            ScamValue valueData;
         } value;
 
     public:
@@ -268,6 +272,8 @@ namespace scam
         SyntaxRules & syntaxRules();
 
         Env *& envValue();
+
+        ScamValue & dataValue();
     };
 }
 

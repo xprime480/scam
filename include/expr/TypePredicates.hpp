@@ -59,6 +59,8 @@ namespace scam
     extern bool isSyntax(ScamValue data);
     extern bool isEnv(ScamValue data);
     extern bool isForwarder(ScamValue data);
+
+    extern bool isPlaceholder(ScamValue data);
 }
 
 #endif

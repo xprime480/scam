@@ -175,6 +175,10 @@ string scam::writeValue(ScamValue data)
             }
             break;
 
+        case ScamData::Placeholder:
+            s << "placeholder:" << writeValue(data->dataValue());
+            break;
+
         default:
             s << "don't know how to represent this object, type = "
               << data->type;
@@ -352,6 +356,10 @@ string scam::describe(DataTagType type)
 
     case ScamData::ScamEnv:
         text = "env";
+        break;
+
+    case ScamData::Placeholder:
+        text = "placeholder";
         break;
 
     default:
