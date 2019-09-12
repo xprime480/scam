@@ -23,7 +23,6 @@ namespace
     extern bool compareSequence(ScamValue obj1, ScamValue obj2);
     extern bool compareDict(ScamValue obj1, ScamValue obj2);
 
-    extern bool doEqv(ScamValue obj1, ScamValue obj2);
     extern bool doEqual(ScamValue obj1, ScamValue obj2);
 }
 
@@ -72,6 +71,62 @@ void scam::applyEqualP(ScamValue args, Continuation * cont)
         ScamValue rv = makeBoolean(match);
         cont->handleValue(rv);
     }
+}
+
+bool scam::doEqv(ScamValue obj1, ScamValue obj2)
+{
+    bool rv = false;
+
+    if ( isNumeric(obj1) && isNumeric(obj2) ) {
+        if ( isExact(obj1) == isExact(obj2) ) {
+            rv = ExtendedNumeric(obj1) == ExtendedNumeric(obj2);
+        }
+    }
+    else if ( obj1->type == obj2->type ) {
+        switch ( obj1->type ) {
+        case ScamData::Nothing:
+            break;
+
+        case ScamData::Null:
+            rv = true;
+            break;
+
+        case ScamData::Boolean:
+            rv = compareBoolean(obj1, obj2);
+            break;
+
+        case ScamData::Character:
+            rv = compareChar(obj1, obj2);
+            break;
+
+        case ScamData::Symbol:
+        case ScamData::Keyword:
+            rv = compareStringLike(obj1, obj2);
+            break;
+
+        case ScamData::String:
+        case ScamData::Pair:
+        case ScamData::Vector:
+        case ScamData::ByteVector:
+        case ScamData::Dict:
+            rv = obj1 == obj2;
+            break;
+
+        case ScamData::Error:
+        case ScamData::Closure:
+        case ScamData::Class:
+        case ScamData::Instance:
+        case ScamData::Cont:
+        case ScamData::Primitive:
+        case ScamData::SpecialForm:
+        case ScamData::Port:
+        default:
+            rv = obj1 == obj2;
+            break;
+        }
+    }
+
+    return rv;
 }
 
 namespace
@@ -140,62 +195,6 @@ namespace
         }
 
         return true;
-    }
-
-    bool doEqv(ScamValue obj1, ScamValue obj2)
-    {
-        bool rv = false;
-
-        if ( isNumeric(obj1) && isNumeric(obj2) ) {
-            if ( isExact(obj1) == isExact(obj2) ) {
-                rv = ExtendedNumeric(obj1) == ExtendedNumeric(obj2);
-            }
-        }
-        else if ( obj1->type == obj2->type ) {
-            switch ( obj1->type ) {
-            case ScamData::Nothing:
-                break;
-
-            case ScamData::Null:
-                rv = true;
-                break;
-
-            case ScamData::Boolean:
-                rv = compareBoolean(obj1, obj2);
-                break;
-
-            case ScamData::Character:
-                rv = compareChar(obj1, obj2);
-                break;
-
-            case ScamData::Symbol:
-            case ScamData::Keyword:
-                rv = compareStringLike(obj1, obj2);
-                break;
-
-            case ScamData::String:
-            case ScamData::Pair:
-            case ScamData::Vector:
-            case ScamData::ByteVector:
-            case ScamData::Dict:
-                rv = obj1 == obj2;
-                break;
-
-            case ScamData::Error:
-            case ScamData::Closure:
-            case ScamData::Class:
-            case ScamData::Instance:
-            case ScamData::Cont:
-            case ScamData::Primitive:
-            case ScamData::SpecialForm:
-            case ScamData::Port:
-            default:
-                rv = obj1 == obj2;
-                break;
-            }
-        }
-
-        return rv;
     }
 
     bool doEqual(ScamValue obj1, ScamValue obj2)

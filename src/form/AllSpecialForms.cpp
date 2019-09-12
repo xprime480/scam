@@ -12,6 +12,7 @@
 #include "form/DefineCont.hpp"
 #include "form/Helpers.hpp"
 #include "form/SyntaxRules.hpp"
+#include "prim/EquivOps.hpp"
 #include "util/ClassDef.hpp"
 #include "util/LetDef.hpp"
 #include "util/MemoryManager.hpp"
@@ -24,6 +25,19 @@ const char * scam::spliceValue = "**splicing**";
 
 namespace
 {
+    extern void
+    caseElseClause(ScamValue key, ScamValue forms, Continuation * cont);
+
+    extern bool caseNormalClause(ScamValue key,
+                                 ScamValue values,
+                                 ScamValue forms,
+                                 Continuation * cont);
+
+    extern bool keyInValues(ScamValue key, ScamValue values);
+
+    extern void
+    caseCommonExec(ScamValue key, ScamValue forms, Continuation * cont);
+
     extern void condElseClause(ScamValue clauses, Continuation * cont);
 
     extern bool condApplyClause(ScamValue test,
@@ -35,6 +49,13 @@ namespace
                                  Continuation * cont);
 
     extern void condEvalClauses(ScamValue clauses, Continuation * cont);
+
+    extern void
+    commonApplyClause(ScamValue form, ScamValue arg, Continuation * cont);
+
+
+    extern bool checkForNullElse(ScamValue clauses);
+    extern bool checkForExcessApplyClauses(ScamValue clauses);
 }
 
 void scam::applyAmb(ScamValue args, Continuation * cont, Env * env)
@@ -100,6 +121,59 @@ void scam::applyClassMaker(ScamValue args, Continuation * cont, Env * env)
         ScamValue cls = makeClass(def, env);
         cont->handleValue(cls);
     }
+}
+
+void scam::applyCase(ScamValue args, Continuation * cont, Env * env)
+{
+    ScamEngine & engine = ScamEngine::getEngine();
+    static const char * name = "cond";
+
+    ObjectParameter  p0;
+    ListParameter    pList;
+    CountedParameter p1(pList, 1);
+    if ( ! argsToParms(args, name, p0, p1) ) {
+        return;
+    }
+
+    ScamValue key = engine.eval(p0.value);
+    if ( isUnhandledError(key) ) {
+        engine.handleError(key);
+        return;
+    }
+
+    ScamValue clauses = p1.value;
+    while ( ! isNull(clauses) ) {
+        ScamValue clause = getCar(clauses);
+        clauses = getCdr(clauses);
+
+        ObjectParameter  pObj;
+        CountedParameter p0(pObj, 2);
+        if ( ! argsToParms(clause, name, p0) ) {
+            return;
+        }
+
+        ScamValue data = getCar(p0.value);
+        ScamValue forms = getCdr(p0.value);
+
+        if ( equals(data, makeSymbol("else")) ) {
+            caseElseClause(key, forms, cont);
+            return;
+        }
+
+        if ( (! isList(data)) || (length(data) < 1) ) {
+            ScamValue err =
+                makeError("case clause expects list of values", data);
+            err->errorCategory() = argsCategory;
+            engine.handleError(err);
+            return;
+        }
+
+        if ( caseNormalClause(key, data, forms, cont) ) {
+            return;
+        }
+    }
+
+    cont->handleValue(makeNull());
 }
 
 void scam::applyCond(ScamValue args, Continuation * cont, Env * env)
@@ -347,15 +421,60 @@ ScamValue scam::safeCons(ScamValue expr)
 
 namespace
 {
+    void caseElseClause(ScamValue key, ScamValue forms, Continuation * cont)
+    {
+        if ( checkForNullElse(forms) ) {
+            return;
+        }
+
+        caseCommonExec(key, forms, cont);
+    }
+
+    bool caseNormalClause(ScamValue key,
+                          ScamValue values,
+                          ScamValue forms,
+                          Continuation * cont)
+    {
+        if ( keyInValues(key, values) ) {
+            caseCommonExec(key, forms, cont);
+            return true;
+        }
+
+        return false;
+    }
+
+    bool keyInValues(ScamValue key, ScamValue values)
+    {
+        while ( ! isNull(values) ) {
+            ScamValue value = getCar(values);
+            if ( doEqv(key, value) ) {
+                return true;
+            }
+            values = getCdr(values);
+        }
+
+        return false;
+    }
+
+    void caseCommonExec(ScamValue key, ScamValue forms, Continuation * cont)
+    {
+        ScamValue first = getCar(forms);
+        if ( equals(first, makeSymbol("=>")) ) {
+            ScamValue clauses = getCdr(forms);
+            if ( checkForExcessApplyClauses(clauses) ) {
+                return;
+            }
+            ScamValue clause = getCar(clauses);
+            commonApplyClause(clause, key, cont);
+        }
+        else {
+            condElseClause(forms, cont);
+        }
+    }
+
     void condElseClause(ScamValue clauses, Continuation * cont)
     {
-        ScamEngine & engine = ScamEngine::getEngine();
-
-        if ( isNull(clauses) ) {
-            ScamValue err =
-                makeError("else clause requires at least one result form");
-            err->errorCategory() = syntaxCategory;
-            engine.handleError(err);
+        if ( checkForNullElse(clauses) ) {
             return;
         }
 
@@ -367,12 +486,7 @@ namespace
     {
         ScamEngine & engine = ScamEngine::getEngine();
 
-        if ( 1 != length(clauses) ) {
-            ScamValue err =
-                makeError("=> clause requires exactly one result form",
-                          clauses);
-            err->errorCategory() = syntaxCategory;
-            engine.handleError(err);
+        if ( checkForExcessApplyClauses(clauses) ) {
             return true;
         }
 
@@ -386,20 +500,7 @@ namespace
         }
 
         ScamValue form   = getCar(clauses);
-        ScamValue proc   = engine.eval(form);
-        if ( isUnhandledError(proc) ) {
-            engine.handleError(proc);
-        }
-        else {
-	    ScamValue result = engine.apply(proc, makeList(testValue));
-	    if ( isUnhandledError(result) ) {
-		engine.handleError(result);
-	    }
-	    else {
-		cont->handleValue(result);
-	    }
-        }
-
+        commonApplyClause(form, testValue, cont);
         return true;
     }
 
@@ -446,5 +547,51 @@ namespace
         else {
             cont->handleValue(last);
         }
+    }
+
+    void commonApplyClause(ScamValue form, ScamValue arg, Continuation * cont)
+    {
+        ScamEngine & engine = ScamEngine::getEngine();
+
+        ScamValue proc = engine.eval(form);
+        if ( isUnhandledError(proc) ) {
+            engine.handleError(proc);
+        }
+        else {
+            ScamValue result = engine.apply(proc, makeList(arg));
+            if ( isUnhandledError(result) ) {
+                engine.handleError(result);
+            }
+            else {
+                cont->handleValue(result);
+            }
+        }
+    }
+
+    bool checkForNullElse(ScamValue clauses)
+    {
+        if ( isNull(clauses) ) {
+            ScamValue err =
+                makeError("else clause requires at least one result form");
+            err->errorCategory() = syntaxCategory;
+            ScamEngine::getEngine().handleError(err);
+            return true;
+        }
+
+        return false;
+    }
+
+    bool checkForExcessApplyClauses(ScamValue clauses)
+    {
+        if ( 1 != length(clauses) ) {
+            ScamValue err =
+                makeError("=> clause requires exactly one result form",
+                          clauses);
+            err->errorCategory() = syntaxCategory;
+            ScamEngine::getEngine().handleError(err);
+            return true;
+        }
+
+        return false;
     }
 }

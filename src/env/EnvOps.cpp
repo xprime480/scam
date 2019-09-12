@@ -59,6 +59,7 @@ Env * scam::getSyntaxEnv(Env * base)
 {
     Env * env = base->extend();
     addSpecialForm(env, "and", applyAnd);
+    addSpecialForm(env, "case", applyCase);
     addSpecialForm(env, "cond", applyCond);
     addSpecialForm(env, "define", applyDefine);
     addSpecialForm(env, "define-library", applyDefineLibrary);
