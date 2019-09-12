@@ -1,4 +1,4 @@
-(import (only (scheme base) + < =)
+(import (only (scheme base) + * < =)
         (test narc))
 
 (define (inc x)
@@ -24,9 +24,12 @@
  (3 (cond
      (3)))
  (2 (cond
-     (1 => inc))))
+     (1 => inc)))
+ (3 (cond
+     (1 => (lambda (x) (* x 3))))))
 
-(narc-catch
+#;(narc-catch
+ (:args   (cond))
  (:syntax (cond ())))
 
 (narc-report)

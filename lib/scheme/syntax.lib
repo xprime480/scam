@@ -1,6 +1,9 @@
-;;; taken directly from the R7RS specification p. 68
-;;
-(define-syntax cond
+;;; taken directly from the R7RS specification pp. 68-9
+;;  (slightly modified to break circular dependencies -- is this a bug?
+
+#;(import (only (scheme base) memv))
+
+#;(define-syntax cond
   (syntax-rules (else =>)
     ((cond (else result1 result2 ...))
      (begin result1 result2 ...))
@@ -25,3 +28,42 @@
      (if test
          (begin result1 result2 ...)
          (cond clause1 clause2 ...)))))
+
+#;(define-syntax case
+  (syntax-rules (else =>)
+    ((case (key ...)
+       clauses ...)
+     (let ((atom-key (key ...)))
+       (case atom-key clauses ...)))
+    ((case key
+       (else => result))
+     (result key))
+    ((case key
+       (else result1 result2 ...))
+     (begin result1 result2 ...))
+    ((case key
+       ((atoms ...) result1 result2 ...))
+     (begin
+       (import (only (scheme base) memv))
+       (if (memv key '(atoms ...))
+           (begin result1 result2 ...))))
+    ((case key
+       ((atoms ...) => result))
+     (begin
+       (import (only (scheme base) memv))
+       (if (memv key '(atoms ...))
+         (result key))))
+    ((case key
+       ((atoms ...) => result)
+       clause clauses ...)
+     (begin
+       (import (only (scheme base) memv))
+       (if (memv key '(atoms ...))
+         (result key)
+         (case key clause clauses ...))))
+    ((case key
+       ((atoms ...) result1 result2 ...)
+       clause clauses ...)
+     (if (memv key '(atoms ...))
+         (begin result1 result2 ...)
+         (case key clause clauses ...)))))

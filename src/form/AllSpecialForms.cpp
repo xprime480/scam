@@ -5,6 +5,7 @@
 #include "ScamEngine.hpp"
 #include "WorkQueue.hpp"
 #include "env/Env.hpp"
+#include "expr/EqualityOps.hpp"
 #include "expr/EvalOps.hpp"
 #include "expr/SequenceOps.hpp"
 #include "expr/ValueFactory.hpp"
@@ -20,6 +21,21 @@ using namespace scam;
 using namespace std;
 
 const char * scam::spliceValue = "**splicing**";
+
+namespace
+{
+    extern void condElseClause(ScamValue clauses, Continuation * cont);
+
+    extern bool condApplyClause(ScamValue test,
+                                ScamValue clauses,
+                                Continuation * cont);
+
+    extern bool condNormalClause(ScamValue test,
+                                 ScamValue clauses,
+                                 Continuation * cont);
+
+    extern void condEvalClauses(ScamValue clauses, Continuation * cont);
+}
 
 void scam::applyAmb(ScamValue args, Continuation * cont, Env * env)
 {
@@ -84,6 +100,50 @@ void scam::applyClassMaker(ScamValue args, Continuation * cont, Env * env)
         ScamValue cls = makeClass(def, env);
         cont->handleValue(cls);
     }
+}
+
+void scam::applyCond(ScamValue args, Continuation * cont, Env * env)
+{
+    ScamEngine & engine = ScamEngine::getEngine();
+    static const char * name = "cond";
+
+    if ( length(args) < 1 ) {
+        ScamValue err = makeError("Bad Argument list for cond (%{})", args);
+        err->errorCategory() = argsCategory;
+        engine.handleError(err);
+        return;
+    }
+
+    while ( ! isNull(args) ) {
+        ScamValue arg0 = getCar(args);
+        args = getCdr(args);
+
+        ObjectParameter  pObj;
+        CountedParameter p0(pObj, 1);
+        if ( ! argsToParms(arg0, name, p0) ) {
+            break;
+        }
+
+        ScamValue first = getCar(p0.value);
+        ScamValue rest  = getCdr(p0.value);
+
+        if ( equals(first, makeSymbol("else")) ) {
+            condElseClause(rest, cont);
+            return;
+        }
+
+        if ( (length(rest) > 1) && equals( getCar(rest), makeSymbol("=>")) ) {
+            if ( condApplyClause(first, getCdr(rest), cont) ) {
+                return;
+            }
+        }
+
+        else if ( condNormalClause(first, rest, cont) ) {
+            return;
+        }
+    }
+
+    cont->handleValue(makeNull());
 }
 
 void scam::applyDefine(ScamValue args, Continuation * cont, Env * env)
@@ -283,4 +343,108 @@ ScamValue scam::safeCons(ScamValue expr)
         return expr;
     }
     return makeList(expr);
+}
+
+namespace
+{
+    void condElseClause(ScamValue clauses, Continuation * cont)
+    {
+        ScamEngine & engine = ScamEngine::getEngine();
+
+        if ( isNull(clauses) ) {
+            ScamValue err =
+                makeError("else clause requires at least one result form");
+            err->errorCategory() = syntaxCategory;
+            engine.handleError(err);
+            return;
+        }
+
+        condEvalClauses(clauses, cont);
+    }
+
+    bool
+    condApplyClause(ScamValue test, ScamValue clauses, Continuation * cont)
+    {
+        ScamEngine & engine = ScamEngine::getEngine();
+
+        if ( 1 != length(clauses) ) {
+            ScamValue err =
+                makeError("=> clause requires exactly one result form",
+                          clauses);
+            err->errorCategory() = syntaxCategory;
+            engine.handleError(err);
+            return true;
+        }
+
+        ScamValue testValue = engine.eval(test);
+        if ( isUnhandledError(testValue) ) {
+            engine.handleError(testValue);
+            return true;
+        }
+        else if ( ! truth(testValue) ) {
+            return false;
+        }
+
+        ScamValue form   = getCar(clauses);
+        ScamValue proc   = engine.eval(form);
+        if ( isUnhandledError(proc) ) {
+            engine.handleError(proc);
+        }
+        else {
+	    ScamValue result = engine.apply(proc, makeList(testValue));
+	    if ( isUnhandledError(result) ) {
+		engine.handleError(result);
+	    }
+	    else {
+		cont->handleValue(result);
+	    }
+        }
+
+        return true;
+    }
+
+    bool
+    condNormalClause(ScamValue test, ScamValue clauses, Continuation * cont)
+    {
+        ScamEngine & engine = ScamEngine::getEngine();
+
+        ScamValue testValue = engine.eval(test);
+        if ( isUnhandledError(testValue) ) {
+            engine.handleError(testValue);
+            return true;
+        }
+        else if ( ! truth(testValue) ) {
+            return false;
+        }
+        else if ( isNull(clauses) ) {
+            cont->handleValue(testValue);
+            return true;
+        }
+
+        condEvalClauses(clauses, cont);
+        return true;
+    }
+
+    void condEvalClauses(ScamValue clauses, Continuation * cont)
+    {
+        ScamEngine & engine = ScamEngine::getEngine();
+
+        ScamValue last = makeNull();
+
+        while ( ! isNull(clauses) ) {
+            last = engine.eval(getCar(clauses));
+            if ( isUnhandledError(last) ) {
+                break;
+            }
+            clauses = getCdr(clauses);
+        }
+
+        if ( isUnhandledError(last) ) {
+            engine.handleError(last);
+            return;
+        }
+        else {
+            cont->handleValue(last);
+        }
+    }
 }
