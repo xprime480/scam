@@ -53,6 +53,7 @@ namespace
     extern void
     commonApplyClause(ScamValue form, ScamValue arg, Continuation * cont);
 
+    extern ScamValue evaluateFeatures(ScamValue features);
 
     extern bool checkForNullElse(ScamValue clauses);
     extern bool checkForExcessApplyClauses(ScamValue clauses);
@@ -176,13 +177,59 @@ void scam::applyCase(ScamValue args, Continuation * cont, Env * env)
     cont->handleValue(makeNull());
 }
 
+void scam::applyCondExpand(ScamValue args, Continuation * cont, Env * env)
+{
+    ScamEngine & engine = ScamEngine::getEngine();
+    static const char * name = "cond-expand";
+
+    if ( length(args) < 1 ) {
+        ScamValue err =
+            makeError("Bad Argument list for cond-expand (%{0})", args);
+        err->errorCategory() = argsCategory;
+        engine.handleError(err);
+        return;
+    }
+
+
+    while ( ! isNull(args) ) {
+        ScamValue arg0 = getCar(args);
+        args = getCdr(args);
+
+        ObjectParameter  pObj;
+        CountedParameter p0(pObj, 1);
+        if ( ! argsToParms(arg0, name, p0) ) {
+            break;
+        }
+
+        ScamValue features = getCar(p0.value);
+        ScamValue clauses  = getCdr(p0.value);
+
+        if ( equals(features, makeSymbol("else")) ) {
+            condElseClause(clauses, cont);
+            return;
+        }
+
+        ScamValue status = evaluateFeatures(features);
+        if ( isUnhandledError(status) ) {
+            engine.handleError(status);
+            return;
+        }
+        else if ( truth(status) ) {
+            condEvalClauses(clauses, cont);
+            return;
+        }
+    }
+
+    cont->handleValue(makeNull());
+}
+
 void scam::applyCond(ScamValue args, Continuation * cont, Env * env)
 {
     ScamEngine & engine = ScamEngine::getEngine();
     static const char * name = "cond";
 
     if ( length(args) < 1 ) {
-        ScamValue err = makeError("Bad Argument list for cond (%{})", args);
+        ScamValue err = makeError("Bad Argument list for cond (%{0})", args);
         err->errorCategory() = argsCategory;
         engine.handleError(err);
         return;
@@ -224,7 +271,7 @@ void scam::applyDefine(ScamValue args, Continuation * cont, Env * env)
 {
     static const char * name = "define";
 
-    ScamValue err = makeError("Bad Argument list for define (%{})", args);
+    ScamValue err = makeError("Bad Argument list for define (%{0})", args);
     err->errorCategory() = argsCategory;
 
     if ( length(args) < 1 ) {
@@ -566,6 +613,82 @@ namespace
                 cont->handleValue(result);
             }
         }
+    }
+
+    ScamValue evaluateFeatures(ScamValue features)
+    {
+        ScamEngine & engine = ScamEngine::getEngine();
+
+        SymbolParameter  p0;
+        ObjectParameter  pObj;
+        CountedParameter p1(pObj);
+        ScamValue check = argsToParmsMsg(features, p0, p1);
+        if ( isUnhandledError(check) ) {
+            return check;
+        }
+
+        ScamValue rv = makeBoolean(false);
+        ScamValue f = p0.value;
+        ScamValue arg = p1.value;
+
+        if ( equals(f, makeSymbol("library")) ) {
+            if ( 1 != length(arg) ) {
+                rv = makeError("library requires exactly one argument %{0}",
+                               arg);
+                rv->errorCategory() = argsCategory;
+            }
+            else {
+                ScamValue result = engine.findLibrary(getCar(arg));
+                if ( isUnhandledError(result) ) {
+                    rv = result;
+                }
+                else {
+                    rv = makeBoolean(! isNothing(result) );
+                }
+            }
+        }
+        else if ( equals(f, makeSymbol("and")) ) {
+            rv = makeBoolean(true);
+            while ( ! isNull(arg) ) {
+                ScamValue result = evaluateFeatures(getCar(arg));
+                if ( isUnhandledError(result) || ! truth(result) ) {
+                    rv = result;
+                    break;
+                }
+                arg = getCdr(arg);
+            }
+        }
+        else if ( equals(f, makeSymbol("or")) ) {
+            while ( ! isNull(arg) ) {
+                ScamValue result = evaluateFeatures(getCar(arg));
+                if ( isUnhandledError(result) || truth(result) ) {
+                    rv = result;
+                    break;
+                }
+                arg = getCdr(arg);
+            }
+        }
+        else if ( equals(f, makeSymbol("not")) ) {
+            if ( 1 != length(arg) ) {
+                rv = makeError("not requires exactly one argument %{0}", arg);
+                rv->errorCategory() = argsCategory;
+            }
+            else {
+                ScamValue result = evaluateFeatures(getCar(arg));
+                if ( isUnhandledError(result) ) {
+                    rv = result;
+                }
+                else {
+                    rv = makeBoolean(! truth(result));
+                }
+            }
+        }
+        else {
+            rv = makeError("unknown cond-expand directive %{0}", arg);
+            rv->errorCategory() = argsCategory;
+        }
+
+        return rv;
     }
 
     bool checkForNullElse(ScamValue clauses)

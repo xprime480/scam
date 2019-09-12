@@ -154,7 +154,7 @@ scam::apply(ScamValue value, ScamValue args, Continuation * cont, Env * env)
 
     else {
         // default case
-        ScamValue err = makeError("Cannot apply", value, args);
+        ScamValue err = makeError("Cannot apply %{0} to %{1}", value, args);
         err->errorCategory() = evalCategory;
         ScamEngine::getEngine().handleError(err);
     }

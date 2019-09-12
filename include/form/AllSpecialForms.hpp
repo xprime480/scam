@@ -16,6 +16,7 @@ namespace scam
     extern void applyClassMaker(ScamValue args, Continuation * cont, Env * env);
     extern void applyCase(ScamValue args, Continuation * cont, Env * env);
     extern void applyCond(ScamValue args, Continuation * cont, Env * env);
+    extern void applyCondExpand(ScamValue args, Continuation * cont, Env * env);
     extern void applyDefine(ScamValue args, Continuation * cont, Env * env);
 
     extern void
