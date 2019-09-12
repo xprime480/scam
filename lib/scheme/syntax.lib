@@ -4,5 +4,15 @@
     ((when test expr1 expr2 ...)
      (if test
          (begin
-	   expr1
+           expr1
+           expr2 ...)))))
+
+
+(define-syntax unless
+  (syntax-rules ()
+    ((unless test expr1 expr2 ...)
+     (if test
+         '()
+         (begin
+           expr1
            expr2 ...)))))
