@@ -255,6 +255,7 @@ namespace
         addPrimitive(env, "string?", applyStringP);
         addPrimitive(env, "symbol?", applySymbolP);
 
+        addPrimitive(env, "values", applyValues);
         addPrimitive(env, "vector?", applyVectorP);
 
         addPrimitive(env, "with-exception-handler", applyWithHandler);

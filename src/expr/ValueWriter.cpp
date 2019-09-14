@@ -176,7 +176,20 @@ string scam::writeValue(ScamValue data)
             break;
 
         case ScamData::Placeholder:
-            s << "placeholder:" << writeValue(data->dataValue());
+            s << "placeholder:" << writeValue(data->placeholderValue());
+            break;
+
+        case ScamData::Multiple:
+            do {
+                ScamData::VectorData & values = data->multipleValues();
+                string sep = "";
+                s << "multiple values: [";
+                for ( const auto v : values ) {
+                    s << sep << writeValue(v);
+                    sep = "; ";
+                }
+                s << "]";
+            } while ( false );
             break;
 
         default:
@@ -360,6 +373,10 @@ string scam::describe(DataTagType type)
 
     case ScamData::Placeholder:
         text = "placeholder";
+        break;
+
+    case ScamData::Multiple:
+        text = "multiple values";
         break;
 
     default:

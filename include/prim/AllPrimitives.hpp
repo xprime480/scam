@@ -17,5 +17,6 @@
 #include "prim/StringOps.hpp"
 #include "prim/Substitute.hpp"
 #include "prim/Unify.hpp"
+#include "prim/ValueOps.hpp"
 #include "prim/VLen.hpp"
 #include "prim/VRef.hpp"

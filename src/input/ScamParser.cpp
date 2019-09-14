@@ -436,7 +436,7 @@ namespace
     substituePlaceholders(ScamValue & expr, ScamValue tag, ScamValue value)
     {
         if ( isPlaceholder(expr) ) {
-            if ( equals(expr->dataValue(), tag) ) {
+            if ( equals(expr->placeholderValue(), tag) ) {
                 expr = value;
             }
         }

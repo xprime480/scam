@@ -68,6 +68,7 @@ ScamData::ScamData(DataTagType type, bool managed)
         break;
 
     case ScamData::Vector:
+    case ScamData::Multiple:
         value.vectorData = new VectorData;
         break;
 
@@ -157,6 +158,7 @@ ScamData::~ScamData()
         break;
 
     case ScamData::Vector:
+    case ScamData::Multiple:
         delete value.vectorData;
         break;
 
@@ -237,6 +239,7 @@ void ScamData::mark()
         break;
 
     case ScamData::Vector:
+    case ScamData::Multiple:
         for ( auto const & e : vectorData() ) {
             safeMark(e);
         }
@@ -283,7 +286,7 @@ void ScamData::mark()
         break;
 
     case ScamData::Placeholder:
-        safeMark(dataValue());
+        safeMark(placeholderValue());
         break;
 
     default:
@@ -573,10 +576,16 @@ Env *& ScamData::envValue()
     return value.envData;
 }
 
-ScamValue & ScamData::dataValue()
+ScamValue & ScamData::placeholderValue()
 {
     assertType(ScamData::Placeholder);
     return value.valueData;
+}
+
+ScamData::VectorData & ScamData::multipleValues()
+{
+    assertType(ScamData::Multiple);
+    return *(value.vectorData);
 }
 
 namespace

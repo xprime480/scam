@@ -222,7 +222,6 @@ ScamValue ScamRepl::eval(ScamValue form)
     }
 
     return rv;
-
 }
 
 void ScamRepl::print(ScamValue value)

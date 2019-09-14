@@ -61,6 +61,7 @@ namespace scam
     extern bool isForwarder(ScamValue data);
 
     extern bool isPlaceholder(ScamValue data);
+    extern bool isMultiple(ScamValue data);
 }
 
 #endif

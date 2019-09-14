@@ -98,6 +98,7 @@ namespace scam
         constexpr static DataTagType ScamEnv { 1 << 28 };
 
         constexpr static DataTagType Placeholder { 1 << 29 };
+        constexpr static DataTagType Multiple    { 1 << 30 };
 
         /**
          * member data
@@ -273,7 +274,9 @@ namespace scam
 
         Env *& envValue();
 
-        ScamValue & dataValue();
+        ScamValue & placeholderValue();
+
+        VectorData & multipleValues();
     };
 }
 

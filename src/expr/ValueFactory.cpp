@@ -429,7 +429,15 @@ ScamValue scam::makePlaceholder(ScamValue tag)
 {
     static constexpr auto myType = ScamData::Placeholder;
     ScamValue v = mm.make<ScamData>(myType);
-    v->dataValue() = tag;
+    v->placeholderValue() = tag;
+    return v;
+}
+
+ScamValue scam::makeMultiple(ExprVec const & elts)
+{
+    static constexpr auto myType = ScamData::Multiple;
+    ScamValue v = mm.make<ScamData>(myType);
+    v->multipleValues() = elts;
     return v;
 }
 

@@ -24,6 +24,7 @@ namespace scam
         virtual ~Continuation();
 
         virtual void handleValue(ScamValue value);
+        virtual void handleMultipleValues(ScamValue value);
         std::string id() const;
 
     private:

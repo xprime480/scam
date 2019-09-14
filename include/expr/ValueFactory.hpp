@@ -98,6 +98,7 @@ namespace scam
     extern ScamValue makeForwarder(Env * env);
 
     extern ScamValue makePlaceholder(ScamValue tag);
+    extern ScamValue makeMultiple(ExprVec const & elts);
 }
 
 #endif

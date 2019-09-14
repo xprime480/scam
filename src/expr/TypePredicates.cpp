@@ -269,3 +269,8 @@ bool scam::isPlaceholder(ScamValue data)
 {
     return data->type == ScamData::Placeholder;
 }
+
+bool scam::isMultiple(ScamValue data)
+{
+    return data->type == ScamData::Multiple;
+}
