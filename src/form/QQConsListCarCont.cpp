@@ -4,11 +4,11 @@
 #include "ScamEngine.hpp"
 #include "WorkQueue.hpp"
 #include "env/Env.hpp"
-#include "expr/ScamData.hpp"
-#include "expr/TypePredicates.hpp"
 #include "form/QQConsListCdrCont.hpp"
 #include "form/QuasiQuoteWorker.hpp"
 #include "util/MemoryManager.hpp"
+#include "value/ScamData.hpp"
+#include "value/TypePredicates.hpp"
 
 using namespace scam;
 using namespace std;

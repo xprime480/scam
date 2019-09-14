@@ -1,11 +1,11 @@
 #include "TestBase.hpp"
 
 #include "env/Env.hpp"
-#include "expr/ScamToInternal.hpp"
-#include "expr/TypePredicates.hpp"
-#include "expr/ValueFactory.hpp"
 #include "form/Library.hpp"
 #include "port/FilePort.hpp"
+#include "value/ScamToInternal.hpp"
+#include "value/TypePredicates.hpp"
+#include "value/ValueFactory.hpp"
 
 #include "gtest/gtest.h"
 

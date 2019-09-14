@@ -3,9 +3,9 @@
 #include "ScamEngine.hpp"
 #include "env/Env.hpp"
 #include "expr/EvalOps.hpp"
-#include "expr/ScamData.hpp"
 #include "prim/PrimEvalCont.hpp"
 #include "util/MemoryManager.hpp"
+#include "value/ScamData.hpp"
 
 using namespace scam;
 using namespace std;

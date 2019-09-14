@@ -1,9 +1,9 @@
-#include "expr/TypePredicates.hpp"
+#include "value/TypePredicates.hpp"
 
 #include "ScamException.hpp"
-#include "expr/ScamData.hpp"
 #include "expr/SequenceOps.hpp"
-#include "expr/ValueWriter.hpp"
+#include "value/ScamData.hpp"
+#include "value/ValueWriter.hpp"
 
 #include <sstream>
 

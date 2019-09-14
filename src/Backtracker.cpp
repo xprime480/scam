@@ -3,11 +3,11 @@
 #include "Continuation.hpp"
 #include "ErrorCategory.hpp"
 #include "ScamException.hpp"
-#include "expr/ScamData.hpp"
-#include "expr/TypePredicates.hpp"
-#include "expr/ValueFactory.hpp"
-#include "expr/ValueWriter.hpp"
 #include "util/GlobalId.hpp"
+#include "value/ScamData.hpp"
+#include "value/TypePredicates.hpp"
+#include "value/ValueFactory.hpp"
+#include "value/ValueWriter.hpp"
 
 #include <iostream>
 #include <sstream>

@@ -4,15 +4,14 @@
 #include "ScamEngine.hpp"
 #include "env/Env.hpp"
 #include "expr/EvalOps.hpp"
-#include "expr/ScamData.hpp"
 #include "expr/SequenceOps.hpp"
-#include "expr/TypePredicates.hpp"
-#include "expr/ValueWriter.hpp"
 #include "form/QQConsListCarCont.hpp"
 #include "form/QQSpliceCont.hpp"
 #include "util/MemoryManager.hpp"
 #include "util/Parameter.hpp"
-
+#include "value/ScamData.hpp"
+#include "value/TypePredicates.hpp"
+#include "value/ValueWriter.hpp"
 
 using namespace scam;
 using namespace std;

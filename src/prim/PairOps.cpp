@@ -1,11 +1,11 @@
 #include "prim/PairOps.hpp"
 
 #include "Continuation.hpp"
-#include "expr/ScamData.hpp"
 #include "expr/SequenceOps.hpp"
-#include "expr/TypePredicates.hpp"
-#include "expr/ValueFactory.hpp"
 #include "util/Parameter.hpp"
+#include "value/ScamData.hpp"
+#include "value/TypePredicates.hpp"
+#include "value/ValueFactory.hpp"
 
 using namespace scam;
 using namespace std;

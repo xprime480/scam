@@ -4,10 +4,8 @@
 #include "ScamFwd.hpp"
 
 #include <cstddef>
-#include <string>
-
-#include "expr/ValueFactory.hpp"
 #include <iostream>
+#include <string>
 
 namespace scam
 {

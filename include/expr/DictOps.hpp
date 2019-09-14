@@ -2,7 +2,7 @@
 #define DICTOPS_HPP 1
 
 #include "ScamFwd.hpp"
-#include "expr/ScamData.hpp"
+#include "value/ScamData.hpp"
 
 namespace scam
 {

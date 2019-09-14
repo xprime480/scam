@@ -1,7 +1,7 @@
 #if ! defined(SCAMNUMERIC_H)
 #define SCAMNUMERIC_H 1
 
-#include "expr/ScamData.hpp"
+#include "value/ScamData.hpp"
 
 namespace scam
 {

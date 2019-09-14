@@ -3,10 +3,10 @@
 #include "Binder.hpp"
 #include "env/Env.hpp"
 #include "expr/EvalOps.hpp"
-#include "expr/ScamData.hpp"
 #include "expr/SequenceOps.hpp"
-#include "expr/TypePredicates.hpp"
-#include "expr/ValueFactory.hpp"
+#include "value/ScamData.hpp"
+#include "value/TypePredicates.hpp"
+#include "value/ValueFactory.hpp"
 
 using namespace scam;
 using namespace std;

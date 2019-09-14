@@ -3,10 +3,10 @@
 #include "ErrorCategory.hpp"
 #include "ScamException.hpp"
 #include "expr/EqualityOps.hpp"
-#include "expr/ScamToInternal.hpp"
 #include "expr/SequenceOps.hpp"
-#include "expr/TypePredicates.hpp"
-#include "expr/ValueFactory.hpp"
+#include "value/ScamToInternal.hpp"
+#include "value/TypePredicates.hpp"
+#include "value/ValueFactory.hpp"
 
 #include <vector>
 

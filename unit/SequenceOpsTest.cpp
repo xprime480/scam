@@ -2,7 +2,7 @@
 
 #include "ScamException.hpp"
 #include "expr/SequenceOps.hpp"
-#include "expr/ValueFactory.hpp"
+#include "value/ValueFactory.hpp"
 
 using namespace std;
 using namespace scam;

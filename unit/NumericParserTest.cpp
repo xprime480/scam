@@ -1,9 +1,9 @@
 #include "TestBase.hpp"
 
 #include "ScamException.hpp"
-#include "expr/ScamToInternal.hpp"
-#include "expr/ValueFactory.hpp"
 #include "util/NumericConverter.hpp"
+#include "value/ScamToInternal.hpp"
+#include "value/ValueFactory.hpp"
 
 using namespace std;
 using namespace scam;

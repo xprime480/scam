@@ -1,7 +1,7 @@
 #include "input/CharStreamTokenizer.hpp"
 
-#include "expr/ValueFactory.hpp"
 #include "util/NumericConverter.hpp"
+#include "value/ValueFactory.hpp"
 
 #include <algorithm>
 #include <sstream>

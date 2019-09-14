@@ -1,9 +1,9 @@
 #include "prim/Unify.hpp"
 
-#include "expr/TypePredicates.hpp"
-#include "expr/ValueFactory.hpp"
 #include "prim/MatchUnifyCommon.hpp"
 #include "util/Parameter.hpp"
+#include "value/TypePredicates.hpp"
+#include "value/ValueFactory.hpp"
 
 using namespace scam;
 

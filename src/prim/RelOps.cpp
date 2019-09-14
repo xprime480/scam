@@ -2,10 +2,10 @@
 
 #include "Continuation.hpp"
 #include "expr/ExtendedNumeric.hpp"
-#include "expr/TypePredicates.hpp"
 #include "util/ArgListHelper.hpp"
 #include "util/MemoryManager.hpp"
 #include "util/Parameter.hpp"
+#include "value/TypePredicates.hpp"
 
 #include <functional>
 

@@ -3,14 +3,14 @@
 #include "ScamEngine.hpp"
 #include "ScamException.hpp"
 #include "WorkQueue.hpp"
-#include "expr/ScamToInternal.hpp"
 #include "expr/SequenceOps.hpp"
-#include "expr/TypePredicates.hpp"
 #include "input/ScamParser.hpp"
 #include "input/StringTokenizer.hpp"
 #include "port/ScamPort.hpp"
 #include "util/FileUtils.hpp"
 #include "util/ReadEvalStream.hpp"
+#include "value/ScamToInternal.hpp"
+#include "value/TypePredicates.hpp"
 
 using namespace scam;
 using namespace std;

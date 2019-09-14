@@ -5,11 +5,11 @@
 #include "ScamException.hpp"
 #include "expr/EqualityOps.hpp"
 #include "expr/ExtendedNumeric.hpp"
-#include "expr/ScamToInternal.hpp"
 #include "expr/SequenceOps.hpp"
-#include "expr/TypePredicates.hpp"
-#include "expr/ValueFactory.hpp"
 #include "util/Parameter.hpp"
+#include "value/ScamToInternal.hpp"
+#include "value/TypePredicates.hpp"
+#include "value/ValueFactory.hpp"
 
 using namespace scam;
 using namespace std;

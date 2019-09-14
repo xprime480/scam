@@ -4,12 +4,12 @@
 #include "ErrorCategory.hpp"
 #include "ScamEngine.hpp"
 #include "WorkQueue.hpp"
-#include "expr/ScamToInternal.hpp"
-#include "expr/ValueFactory.hpp"
 #include "prim/IncludeWorker.hpp"
 #include "util/FileUtils.hpp"
 #include "util/MemoryManager.hpp"
 #include "util/Parameter.hpp"
+#include "value/ScamToInternal.hpp"
+#include "value/ValueFactory.hpp"
 
 using namespace scam;
 using namespace std;

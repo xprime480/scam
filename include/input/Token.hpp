@@ -2,8 +2,8 @@
 #define TOKEN_H 1
 
 #include "ScamFwd.hpp"
-#include "expr/TypePredicates.hpp"
-#include "expr/ValueWriter.hpp"
+#include "value/TypePredicates.hpp"
+#include "value/ValueWriter.hpp"
 
 #include <string>
 

@@ -8,7 +8,7 @@ DEP = $(SRC:.cpp=.d)
 CPP = /usr/bin/g++
 INC =  -I ../include
 CPPFLAGS = -g -Wall $(INC)
-SUBOBJ = env/*.o expr/*.o form/*.o input/*.o port/*.o prim/*.o util/*.o
+SUBOBJ = env/*.o expr/*.o form/*.o input/*.o port/*.o prim/*.o util/*.o value/*.o
 
 libscam.a : $(OBJ) subs
 	ar crf	$@ $(OBJ) $(SUBOBJ)
@@ -28,6 +28,7 @@ clean :
 	make -C port clean
 	make -C prim clean
 	make -C util clean
+	make -C value clean
 
 subs :
 	make -C env all
@@ -37,5 +38,6 @@ subs :
 	make -C port all
 	make -C prim all
 	make -C util all
+	make -C value all
 
 include $(DEP)

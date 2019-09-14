@@ -2,12 +2,12 @@
 
 #include "ScamException.hpp"
 #include "expr/EqualityOps.hpp"
-#include "expr/ScamData.hpp"
-#include "expr/ScamNumeric.hpp"
-#include "expr/ScamToInternal.hpp"
-#include "expr/TypePredicates.hpp"
-#include "expr/ValueFactory.hpp"
 #include "util/NumericConverter.hpp"
+#include "value/ScamData.hpp"
+#include "value/ScamNumeric.hpp"
+#include "value/ScamToInternal.hpp"
+#include "value/TypePredicates.hpp"
+#include "value/ValueFactory.hpp"
 
 #include <cmath>
 #include <sstream>

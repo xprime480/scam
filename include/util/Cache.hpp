@@ -2,7 +2,7 @@
 #define CACHE_HPP 1
 
 #include "ScamFwd.hpp"
-#include "expr/ScamData.hpp"
+#include "value/ScamData.hpp"
 
 #include <map>
 

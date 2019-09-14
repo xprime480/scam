@@ -6,10 +6,10 @@
 #include "env/Env.hpp"
 #include "expr/ClassInitWorker.hpp"
 #include "expr/ClassOps.hpp"
-#include "expr/ScamData.hpp"
-#include "expr/TypePredicates.hpp"
-#include "expr/ValueFactory.hpp"
-#include "expr/ValueWriter.hpp"
+#include "value/ScamData.hpp"
+#include "value/TypePredicates.hpp"
+#include "value/ValueFactory.hpp"
+#include "value/ValueWriter.hpp"
 
 using namespace scam;
 using namespace std;

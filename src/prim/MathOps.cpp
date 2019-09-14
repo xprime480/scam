@@ -4,9 +4,9 @@
 #include "ErrorCategory.hpp"
 #include "ScamEngine.hpp"
 #include "expr/ExtendedNumeric.hpp"
-#include "expr/ValueFactory.hpp"
 #include "util/ArgListHelper.hpp"
 #include "util/Parameter.hpp"
+#include "value/ValueFactory.hpp"
 
 #include <algorithm>
 #include <numeric>

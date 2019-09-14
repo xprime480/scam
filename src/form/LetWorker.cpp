@@ -1,8 +1,8 @@
 #include "form/LetWorker.hpp"
 
 #include "WorkQueue.hpp"
-#include "expr/ValueFactory.hpp"
 #include "form/LetEvalWorker.hpp"
+#include "value/ValueFactory.hpp"
 
 using namespace scam;
 using namespace std;

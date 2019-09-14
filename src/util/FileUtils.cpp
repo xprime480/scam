@@ -1,10 +1,11 @@
 #include "util/FileUtils.hpp"
 
-#include "expr/ScamToInternal.hpp"
 #include "expr/SequenceOps.hpp"
 #include "input/PortCharStream.hpp"
 #include "port/FilePort.hpp"
 #include "util/ReadEvalStream.hpp"
+#include "value/ScamToInternal.hpp"
+#include "value/ValueFactory.hpp"
 
 using namespace scam;
 using namespace std;

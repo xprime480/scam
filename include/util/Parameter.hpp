@@ -2,7 +2,7 @@
 #define PARAMETER_HPP 1
 
 #include "ScamFwd.hpp"
-#include "expr/TypePredicates.hpp"
+#include "value/TypePredicates.hpp"
 
 #include <functional>
 

@@ -2,7 +2,7 @@
 #define EXTENDEDNUMERIC_HPP 1
 
 #include "ScamFwd.hpp"
-#include "expr/ValueWriter.hpp"
+#include "value/ValueWriter.hpp"
 
 namespace scam
 {

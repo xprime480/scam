@@ -4,10 +4,10 @@
 #include "ScamEngine.hpp"
 #include "ScamException.hpp"
 #include "env/Env.hpp"
-#include "expr/ScamData.hpp"
-#include "expr/TypePredicates.hpp"
-#include "expr/ValueWriter.hpp"
 #include "util/MemoryManager.hpp"
+#include "value/ScamData.hpp"
+#include "value/TypePredicates.hpp"
+#include "value/ValueWriter.hpp"
 
 using namespace scam;
 using namespace std;

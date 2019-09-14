@@ -5,15 +5,15 @@
 #include "ScamEngine.hpp"
 #include "expr/EqualityOps.hpp"
 #include "expr/EvalOps.hpp"
-#include "expr/ScamData.hpp"
 #include "expr/SequenceOps.hpp"
-#include "expr/ScamToInternal.hpp"
-#include "expr/ValueFactory.hpp"
 #include "input/ScamParser.hpp"
 #include "prim/Load.hpp"
 #include "prim/UserHandler.hpp"
 #include "prim/WithHandlerCont.hpp"
 #include "util/Parameter.hpp"
+#include "value/ScamData.hpp"
+#include "value/ScamToInternal.hpp"
+#include "value/ValueFactory.hpp"
 
 using namespace scam;
 using namespace std;

@@ -1,8 +1,8 @@
 #include "util/FunctionDef.hpp"
 
-#include "expr/TypePredicates.hpp"
-#include "expr/ValueFactory.hpp"
 #include "util/Parameter.hpp"
+#include "value/TypePredicates.hpp"
+#include "value/ValueFactory.hpp"
 
 using namespace scam;
 using namespace std;
@@ -21,7 +21,7 @@ void FunctionDef::mark() const
 ScamValue FunctionDef::transform(ScamValue args)
 {
     valid = false;
-    
+
     SymbolParameter  p0;
     ScamValue rv = p0.transform(args);
     if ( ! isUnhandledError(rv) ) {

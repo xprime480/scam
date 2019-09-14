@@ -1,7 +1,7 @@
 #include "port/CoutPort.hpp"
 
 #include "ScamException.hpp"
-#include "expr/ValueFactory.hpp"
+#include "value/ValueFactory.hpp"
 
 #include <iostream>
 

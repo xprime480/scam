@@ -3,7 +3,7 @@
 
 #include "Extractor.hpp"
 #include "ScamEngine.hpp"
-#include "expr/ScamToInternal.hpp"
+#include "value/ScamToInternal.hpp"
 
 #include "TestHandler.hpp"
 

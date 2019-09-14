@@ -3,11 +3,12 @@
 #include "Continuation.hpp"
 #include "ErrorCategory.hpp"
 #include "ScamEngine.hpp"
-#include "expr/ScamToInternal.hpp"
-#include "expr/TypePredicates.hpp"
 #include "port/FixedStringPort.hpp"
 #include "port/StringPort.hpp"
 #include "util/Parameter.hpp"
+#include "value/ScamToInternal.hpp"
+#include "value/TypePredicates.hpp"
+#include "value/ValueFactory.hpp"
 
 using namespace scam;
 using namespace std;

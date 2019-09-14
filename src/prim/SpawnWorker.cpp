@@ -1,7 +1,7 @@
 #include "prim/SpawnWorker.hpp"
 
 #include "Continuation.hpp"
-#include "expr/ValueFactory.hpp"
+#include "value/ValueFactory.hpp"
 
 using namespace scam;
 using namespace std;

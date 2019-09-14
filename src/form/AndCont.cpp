@@ -3,9 +3,9 @@
 #include "ScamEngine.hpp"
 #include "WorkQueue.hpp"
 #include "env/Env.hpp"
-#include "expr/ScamData.hpp"
-#include "expr/TypePredicates.hpp"
 #include "form/AndWorker.hpp"
+#include "value/ScamData.hpp"
+#include "value/TypePredicates.hpp"
 
 using namespace scam;
 using namespace std;

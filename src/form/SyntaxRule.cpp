@@ -4,12 +4,12 @@
 #include "ScamEngine.hpp"
 #include "expr/EqualityOps.hpp"
 #include "expr/SequenceOps.hpp"
-#include "expr/TypePredicates.hpp"
-#include "expr/ValueFactory.hpp"
 #include "form/PatternData.hpp"
 #include "form/SyntaxMatchData.hpp"
 #include "form/TemplateData.hpp"
 #include "util/Parameter.hpp"
+#include "value/TypePredicates.hpp"
+#include "value/ValueFactory.hpp"
 
 using namespace scam;
 using namespace std;

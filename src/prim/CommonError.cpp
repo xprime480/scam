@@ -1,6 +1,6 @@
 #include "prim/CommonError.hpp"
 
-#include "expr/ValueFactory.hpp"
+#include "value/ValueFactory.hpp"
 
 using namespace scam;
 

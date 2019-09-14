@@ -5,10 +5,10 @@
 #include "env/Env.hpp"
 #include "expr/EvalOps.hpp"
 #include "expr/SequenceOps.hpp"
-#include "expr/ValueFactory.hpp"
 #include "form/SyntaxMatchData.hpp"
 #include "util/LambdaDef.hpp"
 #include "util/Parameter.hpp"
+#include "value/ValueFactory.hpp"
 
 using namespace scam;
 using namespace std;

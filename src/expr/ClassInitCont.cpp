@@ -1,7 +1,7 @@
 #include "expr/ClassInitCont.hpp"
 
 #include "Continuation.hpp"
-#include "expr/ScamData.hpp"
+#include "value/ScamData.hpp"
 
 using namespace scam;
 using namespace std;

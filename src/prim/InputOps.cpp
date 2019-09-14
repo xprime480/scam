@@ -1,13 +1,13 @@
 #include "prim/InputOps.hpp"
 
 #include "Continuation.hpp"
-#include "expr/ScamData.hpp"
-#include "expr/ValueFactory.hpp"
 #include "input/CharStreamTokenizer.hpp"
 #include "input/PortCharStream.hpp"
 #include "input/ScamParser.hpp"
 #include "port/ScamPort.hpp"
 #include "util/Parameter.hpp"
+#include "value/ScamData.hpp"
+#include "value/ValueFactory.hpp"
 
 using namespace scam;
 using namespace std;

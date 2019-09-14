@@ -1,8 +1,9 @@
 #include "input/PortCharStream.hpp"
 
 #include "ScamException.hpp"
-#include "expr/ScamToInternal.hpp"
 #include "port/ScamPort.hpp"
+#include "value/ScamData.hpp"
+#include "value/ScamToInternal.hpp"
 
 #include <cstdlib>
 

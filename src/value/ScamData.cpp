@@ -1,17 +1,17 @@
-#include "expr/ScamData.hpp"
+#include "value/ScamData.hpp"
 
 #include "Continuation.hpp"
 #include "ScamEngine.hpp"
 #include "ScamException.hpp"
 #include "env/Env.hpp"
-#include "expr/ScamNumeric.hpp"
-#include "expr/TypePredicates.hpp"
-#include "expr/ValueFactory.hpp"
-#include "expr/ValueWriter.hpp"
 #include "form/SyntaxRules.hpp"
 #include "port/ScamPort.hpp"
 #include "util/ClassDef.hpp"
 #include "util/LambdaDef.hpp"
+#include "value/ScamNumeric.hpp"
+#include "value/TypePredicates.hpp"
+#include "value/ValueFactory.hpp"
+#include "value/ValueWriter.hpp"
 
 using namespace scam;
 using namespace std;

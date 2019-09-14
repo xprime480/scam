@@ -1,6 +1,6 @@
 #include "input/Token.hpp"
 
-#include "expr/ValueFactory.hpp"
+#include "value/ValueFactory.hpp"
 
 using namespace scam;
 using namespace std;

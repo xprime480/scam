@@ -4,8 +4,8 @@
 #include "EvalWorker.hpp"
 #include "ScamEngine.hpp"
 #include "WorkQueue.hpp"
-#include "expr/ScamData.hpp"
-#include "expr/TypePredicates.hpp"
+#include "value/ScamData.hpp"
+#include "value/TypePredicates.hpp"
 
 using namespace scam;
 using namespace std;

@@ -1,10 +1,10 @@
 #include "expr/EqualityOps.hpp"
 
-#include "expr/ScamData.hpp"
-#include "expr/ScamNumeric.hpp"
-#include "expr/ScamToInternal.hpp"
 #include "expr/SequenceOps.hpp"
-#include "expr/TypePredicates.hpp"
+#include "value/ScamData.hpp"
+#include "value/ScamNumeric.hpp"
+#include "value/ScamToInternal.hpp"
+#include "value/TypePredicates.hpp"
 
 #include <cmath>
 

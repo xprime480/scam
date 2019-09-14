@@ -5,9 +5,9 @@
 #include "env/Env.hpp"
 #include "expr/ClosureBindCont.hpp"
 #include "expr/EvalOps.hpp"
-#include "expr/ScamData.hpp"
 #include "util/LambdaDef.hpp"
 #include "util/MemoryManager.hpp"
+#include "value/ScamData.hpp"
 
 using namespace scam;
 using namespace std;

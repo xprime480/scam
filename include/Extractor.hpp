@@ -3,9 +3,9 @@
 
 #include "Continuation.hpp"
 
-#include "expr/ScamData.hpp"
-#include "expr/ValueFactory.hpp"
-#include "expr/TypePredicates.hpp"
+#include "value/ScamData.hpp"
+#include "value/TypePredicates.hpp"
+#include "value/ValueFactory.hpp"
 
 #include <iostream>
 #include <memory>

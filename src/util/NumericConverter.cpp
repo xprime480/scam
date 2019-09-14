@@ -1,12 +1,12 @@
 #include "util/NumericConverter.hpp"
 
 #include "expr/ExtendedNumeric.hpp"
-#include "expr/ScamNumeric.hpp"
-#include "expr/ScamToInternal.hpp"
-#include "expr/TypePredicates.hpp"
-#include "expr/ValueFactory.hpp"
-#include "input/StringTokenizer.hpp"
 #include "input/CharStream.hpp"
+#include "input/StringTokenizer.hpp"
+#include "value/ScamNumeric.hpp"
+#include "value/ScamToInternal.hpp"
+#include "value/TypePredicates.hpp"
+#include "value/ValueFactory.hpp"
 
 #include <cmath>
 #include <cstring>

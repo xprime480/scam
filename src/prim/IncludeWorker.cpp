@@ -2,13 +2,13 @@
 
 #include "Continuation.hpp"
 #include "ScamEngine.hpp"
-#include "expr/ScamData.hpp"
 #include "expr/SequenceOps.hpp"
-#include "expr/TypePredicates.hpp"
-#include "expr/ValueFactory.hpp"
 #include "prim/IncludeCont.hpp"
 #include "prim/Load.hpp"
 #include "util/MemoryManager.hpp"
+#include "value/ScamData.hpp"
+#include "value/TypePredicates.hpp"
+#include "value/ValueFactory.hpp"
 
 using namespace scam;
 using namespace std;

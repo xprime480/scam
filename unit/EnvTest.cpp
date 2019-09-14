@@ -2,8 +2,8 @@
 
 #include "ErrorCategory.hpp"
 #include "env/Env.hpp"
-#include "expr/ScamData.hpp"
-#include "expr/ValueFactory.hpp"
+#include "value/ValueFactory.hpp"
+#include "value/ScamData.hpp"
 
 #include "gtest/gtest.h"
 

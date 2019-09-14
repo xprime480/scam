@@ -1,12 +1,12 @@
-#include "expr/ValueWriter.hpp"
+#include "value/ValueWriter.hpp"
 
-#include "expr/ScamData.hpp"
-#include "expr/ScamData.hpp"
-#include "expr/ScamToInternal.hpp"
 #include "expr/SequenceOps.hpp"
-#include "expr/TypePredicates.hpp"
 #include "form/SyntaxRules.hpp"
 #include "port/ScamPort.hpp"
+#include "value/ScamData.hpp"
+#include "value/ScamToInternal.hpp"
+#include "value/TypePredicates.hpp"
+#include "value/ValueFactory.hpp"
 
 #include <sstream>
 

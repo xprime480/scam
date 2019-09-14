@@ -1,10 +1,10 @@
 #include "ScamRepl.hpp"
 
 #include "ScamException.hpp"
-#include "expr/ScamToInternal.hpp"
-#include "expr/TypePredicates.hpp"
-#include "expr/ValueFactory.hpp"
 #include "util/FileUtils.hpp"
+#include "value/ScamToInternal.hpp"
+#include "value/TypePredicates.hpp"
+#include "value/ValueFactory.hpp"
 
 #include "ReplHandler.hpp"
 

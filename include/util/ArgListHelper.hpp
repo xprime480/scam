@@ -2,9 +2,9 @@
 #define ARGLISTHELPER_H 1
 
 #include "expr/ExtendedNumeric.hpp"
-#include "expr/ScamToInternal.hpp"
-#include "expr/TypePredicates.hpp"
-#include "expr/ValueFactory.hpp"
+#include "value/ScamToInternal.hpp"
+#include "value/TypePredicates.hpp"
+#include "value/ValueFactory.hpp"
 
 #include <functional>
 #include <memory>

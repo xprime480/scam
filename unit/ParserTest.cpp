@@ -1,10 +1,10 @@
 #include "TestBase.hpp"
 #include "StaticTokenizer.hpp"
 
-#include "expr/ScamToInternal.hpp"
 #include "expr/SequenceOps.hpp"
-#include "expr/ValueFactory.hpp"
 #include "input/ScamParser.hpp"
+#include "value/ScamToInternal.hpp"
+#include "value/ValueFactory.hpp"
 
 #include <vector>
 
@@ -202,8 +202,8 @@ TEST_F(ParserTest, DatumListTest)
     expectPair(expr, msg);
 
     if ( isPair(expr) ) {
-	ScamValue cdr = getCdr(expr);
-	EXPECT_EQ(expr, cdr);
+        ScamValue cdr = getCdr(expr);
+        EXPECT_EQ(expr, cdr);
     }
 }
 

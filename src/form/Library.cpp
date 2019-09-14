@@ -5,13 +5,13 @@
 #include "ScamEngine.hpp"
 #include "env/Env.hpp"
 #include "expr/EqualityOps.hpp"
-#include "expr/ScamToInternal.hpp"
 #include "expr/SequenceOps.hpp"
-#include "expr/ScamData.hpp"
-#include "expr/TypePredicates.hpp"
-#include "expr/ValueFactory.hpp"
 #include "util/FileUtils.hpp"
 #include "util/MemoryManager.hpp"
+#include "value/ScamData.hpp"
+#include "value/ScamToInternal.hpp"
+#include "value/TypePredicates.hpp"
+#include "value/ValueFactory.hpp"
 
 #include <sstream>
 

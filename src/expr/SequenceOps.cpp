@@ -1,11 +1,11 @@
 #include "expr/SequenceOps.hpp"
 
 #include "ScamException.hpp"
-#include "expr/ScamData.hpp"
 #include "expr/SequenceOps.hpp"
-#include "expr/TypePredicates.hpp"
-#include "expr/ValueWriter.hpp"
-#include "expr/ValueFactory.hpp"
+#include "value/ScamData.hpp"
+#include "value/TypePredicates.hpp"
+#include "value/ValueFactory.hpp"
+#include "value/ValueWriter.hpp"
 
 #include <algorithm>
 #include <sstream>

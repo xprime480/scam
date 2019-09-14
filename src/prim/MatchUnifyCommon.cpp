@@ -2,13 +2,13 @@
 
 #include "Continuation.hpp"
 #include "expr/EqualityOps.hpp"
-#include "expr/ScamData.hpp"
 #include "expr/SequenceOps.hpp"
-#include "expr/TypePredicates.hpp"
-#include "expr/ValueFactory.hpp"
-#include "expr/ValueWriter.hpp"
 #include "prim/CommonError.hpp"
 #include "prim/Substitutor.hpp"
+#include "value/ScamData.hpp"
+#include "value/TypePredicates.hpp"
+#include "value/ValueFactory.hpp"
+#include "value/ValueWriter.hpp"
 
 #include <sstream>
 #include <string>

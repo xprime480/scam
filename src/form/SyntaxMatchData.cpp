@@ -1,7 +1,7 @@
 #include "form/SyntaxMatchData.hpp"
 
 #include "ScamException.hpp"
-#include "expr/ValueWriter.hpp"
+#include "value/ValueWriter.hpp"
 
 #include <sstream>
 

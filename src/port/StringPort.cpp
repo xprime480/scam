@@ -1,7 +1,7 @@
 #include "port/StringPort.hpp"
 
 #include "ScamException.hpp"
-#include "expr/ValueFactory.hpp"
+#include "value/ValueFactory.hpp"
 
 #include <algorithm>
 #include <cstdlib>

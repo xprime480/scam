@@ -5,16 +5,16 @@
 #include "ScamException.hpp"
 #include "env/Env.hpp"
 #include "expr/EvalOps.hpp"
-#include "expr/ScamToInternal.hpp"
-#include "expr/TypePredicates.hpp"
-#include "expr/ValueFactory.hpp"
-#include "expr/ValueWriter.hpp"
 #include "form/AllSpecialForms.hpp"
 #include "port/CerrPort.hpp"
 #include "port/CinPort.hpp"
 #include "port/CoutPort.hpp"
 #include "prim/AllPrimitives.hpp"
 #include "util/MemoryManager.hpp"
+#include "value/ScamToInternal.hpp"
+#include "value/TypePredicates.hpp"
+#include "value/ValueFactory.hpp"
+#include "value/ValueWriter.hpp"
 
 using namespace scam;
 using namespace std;

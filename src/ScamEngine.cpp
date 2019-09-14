@@ -8,11 +8,11 @@
 #include "env/Env.hpp"
 #include "env/EnvOps.hpp"
 #include "expr/EvalOps.hpp"
-#include "expr/ScamData.hpp"
-#include "expr/TypePredicates.hpp"
-#include "expr/ValueFactory.hpp"
 #include "input/ScamParser.hpp"
 #include "util/MemoryManager.hpp"
+#include "value/ScamData.hpp"
+#include "value/TypePredicates.hpp"
+#include "value/ValueFactory.hpp"
 
 using namespace std;
 using namespace scam;
@@ -139,7 +139,7 @@ ScamValue ScamEngine::findLibrary(ScamValue name)
 {
     ScamValue check = dictHas(libs, name);
     if ( isUnhandledError(check) ) {
-	return check;
+        return check;
     }
     if ( truth(check) ) {
         return dictGet(libs, name);

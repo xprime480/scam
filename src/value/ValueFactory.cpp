@@ -1,13 +1,10 @@
-#include "expr/ValueFactory.hpp"
+#include "value/ValueFactory.hpp"
 
 #include "ErrorCategory.hpp"
 #include "ScamEngine.hpp"
 #include "ScamException.hpp"
 #include "env/Env.hpp"
 #include "expr/ClassOps.hpp"
-#include "expr/ScamData.hpp"
-#include "expr/TypePredicates.hpp"
-#include "expr/ValueWriter.hpp"
 #include "form/SyntaxRules.hpp"
 #include "input/StringCharStream.hpp"
 #include "util/Cache.hpp"
@@ -16,6 +13,9 @@
 #include "util/MemoryManager.hpp"
 #include "util/NumericConverter.hpp"
 #include "util/NumericUtils.hpp"
+#include "value/ScamData.hpp"
+#include "value/TypePredicates.hpp"
+#include "value/ValueWriter.hpp"
 
 using namespace scam;
 using namespace std;
@@ -48,7 +48,7 @@ void scam::initializeValueFactory(MemoryManager & mm)
     mm.addHook(&hook);
 }
 
- ScamValue scam::makeNothing()
+ScamValue scam::makeNothing()
 {
     static ScamData instance(ScamData::Nothing, false);
     return &instance;

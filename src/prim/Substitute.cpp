@@ -1,12 +1,12 @@
 #include "prim/Substitute.hpp"
 
 #include "Continuation.hpp"
-#include "expr/ScamData.hpp"
 #include "expr/SequenceOps.hpp"
-#include "expr/ValueFactory.hpp"
-#include "expr/ValueWriter.hpp"
 #include "prim/Substitutor.hpp"
 #include "util/Parameter.hpp"
+#include "value/ScamData.hpp"
+#include "value/ValueFactory.hpp"
+#include "value/ValueWriter.hpp"
 
 using namespace std;
 using namespace scam;

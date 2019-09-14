@@ -1,6 +1,6 @@
 #include "ErrorCategory.hpp"
 
-#include "expr/ValueFactory.hpp"
+#include "value/ValueFactory.hpp"
 
 using namespace scam;
 

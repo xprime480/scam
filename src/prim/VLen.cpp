@@ -2,8 +2,8 @@
 
 #include "Continuation.hpp"
 #include "expr/SequenceOps.hpp"
-#include "expr/ValueFactory.hpp"
 #include "util/Parameter.hpp"
+#include "value/ValueFactory.hpp"
 
 using namespace scam;
 using namespace std;

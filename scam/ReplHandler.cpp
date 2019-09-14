@@ -1,7 +1,7 @@
 #include "ReplHandler.hpp"
 
-#include "expr/ValueFactory.hpp"
-#include "expr/ValueWriter.hpp"
+#include "value/ValueFactory.hpp"
+#include "value/ValueWriter.hpp"
 
 #include <iostream>
 

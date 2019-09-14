@@ -3,7 +3,7 @@
 
 #include "Continuation.hpp"
 #include "env/Env.hpp"
-#include "expr/ScamData.hpp"
+#include "value/ScamData.hpp"
 
 namespace scam
 {

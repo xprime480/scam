@@ -8,7 +8,6 @@
 #include "expr/EqualityOps.hpp"
 #include "expr/EvalOps.hpp"
 #include "expr/SequenceOps.hpp"
-#include "expr/ValueFactory.hpp"
 #include "form/DefineCont.hpp"
 #include "form/Helpers.hpp"
 #include "form/SyntaxRules.hpp"
@@ -17,6 +16,7 @@
 #include "util/LetDef.hpp"
 #include "util/MemoryManager.hpp"
 #include "util/Parameter.hpp"
+#include "value/ValueFactory.hpp"
 
 using namespace scam;
 using namespace std;

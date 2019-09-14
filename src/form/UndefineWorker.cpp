@@ -5,11 +5,11 @@
 #include "ScamEngine.hpp"
 #include "ScamException.hpp"
 #include "env/Env.hpp"
-#include "expr/ScamData.hpp"
-#include "expr/ValueFactory.hpp"
-#include "expr/ValueWriter.hpp"
 #include "form/UndefineCont.hpp"
 #include "util/MemoryManager.hpp"
+#include "value/ScamData.hpp"
+#include "value/ValueFactory.hpp"
+#include "value/ValueWriter.hpp"
 
 using namespace scam;
 using namespace std;

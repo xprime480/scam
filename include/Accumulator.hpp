@@ -4,8 +4,8 @@
 #include "Continuation.hpp"
 
 #include "ScamFwd.hpp"
-#include "expr/TypePredicates.hpp"
-#include "expr/ValueWriter.hpp"
+#include "value/TypePredicates.hpp"
+#include "value/ValueWriter.hpp"
 
 #include <sstream>
 

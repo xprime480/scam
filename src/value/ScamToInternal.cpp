@@ -1,9 +1,9 @@
-#include "expr/ScamToInternal.hpp"
+#include "value/ScamToInternal.hpp"
 
 #include "ScamException.hpp"
-#include "expr/ScamData.hpp"
-#include "expr/TypePredicates.hpp"
-#include "expr/ValueWriter.hpp"
+#include "value/ScamData.hpp"
+#include "value/TypePredicates.hpp"
+#include "value/ValueWriter.hpp"
 
 #include <sstream>
 

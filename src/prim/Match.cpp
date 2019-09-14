@@ -1,8 +1,8 @@
 #include "prim/Match.hpp"
 
-#include "expr/ValueFactory.hpp"
 #include "prim/MatchUnifyCommon.hpp"
 #include "util/Parameter.hpp"
+#include "value/ValueFactory.hpp"
 
 using namespace scam;
 using namespace std;

@@ -4,7 +4,7 @@
 #include "ScamEngine.hpp"
 #include "env/Env.hpp"
 #include "expr/EvalOps.hpp"
-#include "expr/ValueFactory.hpp"
+#include "value/ValueFactory.hpp"
 
 using namespace scam;
 using namespace std;

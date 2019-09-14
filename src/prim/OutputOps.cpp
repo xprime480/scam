@@ -2,12 +2,12 @@
 
 #include "Continuation.hpp"
 #include "ScamEngine.hpp"
-#include "expr/ScamToInternal.hpp"
-#include "expr/TypePredicates.hpp"
-#include "expr/ValueFactory.hpp"
-#include "expr/ValueWriter.hpp"
 #include "port/ScamPort.hpp"
 #include "util/Parameter.hpp"
+#include "value/ScamToInternal.hpp"
+#include "value/TypePredicates.hpp"
+#include "value/ValueFactory.hpp"
+#include "value/ValueWriter.hpp"
 
 #include <iostream>
 #include <sstream>

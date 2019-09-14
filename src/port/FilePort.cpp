@@ -1,7 +1,7 @@
 #include "port/FilePort.hpp"
 
 #include "ScamException.hpp"
-#include "expr/ValueFactory.hpp"
+#include "value/ValueFactory.hpp"
 
 #include <sstream>
 #include <unistd.h>

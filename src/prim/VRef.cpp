@@ -2,8 +2,8 @@
 
 #include "Continuation.hpp"
 #include "expr/SequenceOps.hpp"
-#include "expr/ScamToInternal.hpp"
 #include "util/Parameter.hpp"
+#include "value/ScamToInternal.hpp"
 
 using namespace scam;
 using namespace std;

@@ -3,12 +3,12 @@
 #include "ErrorCategory.hpp"
 #include "ScamException.hpp"
 #include "env/Env.hpp"
-#include "expr/ScamData.hpp"
 #include "expr/SequenceOps.hpp"
-#include "expr/TypePredicates.hpp"
-#include "expr/ValueFactory.hpp"
-#include "expr/ValueWriter.hpp"
 #include "util/ClassDef.hpp"
+#include "value/ScamData.hpp"
+#include "value/TypePredicates.hpp"
+#include "value/ValueFactory.hpp"
+#include "value/ValueWriter.hpp"
 
 #include <sstream>
 
@@ -74,7 +74,7 @@ Env * scam::getInstanceEnv(ScamValue inst)
 ScamValue scam::getInstanceParent(ScamValue inst)
 {
     const ScamValue parentKey = makeSymbol(parentValue);
-    
+
     checkInstance(inst, "getInstanceParent");
     Env *& local = inst->instanceLocal();
 

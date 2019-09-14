@@ -2,9 +2,9 @@
 #define VALUEFACTORY_HPP 1
 
 #include "ScamFwd.hpp"
-#include "expr/ScamData.hpp"
 #include "expr/DictOps.hpp"
 #include "util/MemoryManager.hpp"
+#include "value/ScamData.hpp"
 
 #include <sstream>
 #include <string>
