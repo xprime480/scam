@@ -32,7 +32,7 @@ TEST_F(LibraryTest, NestedImport)
 {
     ScamValue spec = makeList(makeSymbol("scripts/i1"));
     ScamValue result = importToEnv(spec);
-    ASSERT_TRUE(isEnv(result));
+    ASSERT_TRUE(isEnv(result)) << writeValue(result) << "\n";
 
     ScamValue xval = asEnv(result)->get(makeSymbol("x"));
     expectInteger(xval, 4, "4", true);

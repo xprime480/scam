@@ -9,6 +9,7 @@
 #include <cmath>
 
 using namespace scam;
+using namespace std;
 
 namespace
 {
@@ -110,8 +111,8 @@ namespace
 
     bool equalsByteVector(ScamValue lhs, ScamValue rhs)
     {
-        const ScamData::ByteVectorData & lhbv = lhs->byteVectorData();
-        const ScamData::ByteVectorData & rhbv = rhs->byteVectorData();
+        const vector<unsigned char> & lhbv = lhs->byteVectorData();
+        const vector<unsigned char> & rhbv = rhs->byteVectorData();
 
         if ( lhbv.size() != rhbv.size() ) {
             return false;
@@ -130,8 +131,8 @@ namespace
 
     bool equalsDict(ScamValue lhs, ScamValue rhs)
     {
-        const ScamData::DictKeyData & lhk = lhs->dictKeys();
-        const ScamData::DictKeyData & rhk = rhs->dictKeys();
+        const vector<ScamValue> & lhk = lhs->dictKeys();
+        const vector<ScamValue> & rhk = rhs->dictKeys();
 
         if ( lhk.size() != rhk.size() ) {
             return false;
@@ -139,8 +140,8 @@ namespace
 
         size_t len = lhk.size();
         size_t otherIdx = len+1;
-        const ScamData::DictValueData & lhv = lhs->dictValues();
-        const ScamData::DictValueData & rhv = rhs->dictValues();
+        const vector<ScamValue> & lhv = lhs->dictValues();
+        const vector<ScamValue> & rhv = rhs->dictValues();
 
         for ( size_t lhsIdx = 0 ; lhsIdx < len ; ++lhsIdx ) {
             ScamValue myKey = lhk[lhsIdx];
@@ -163,8 +164,8 @@ namespace
 
     bool equalsVector(ScamValue lhs, ScamValue rhs)
     {
-        const ScamData::VectorData & lhv = lhs->vectorData();
-        const ScamData::VectorData & rhv = rhs->vectorData();
+        const vector<ScamValue> & lhv = lhs->vectorData();
+        const vector<ScamValue> & rhv = rhs->vectorData();
 
         if ( lhv.size() != rhv.size() ) {
             return false;

@@ -44,15 +44,15 @@ string scam::writeValue(ScamValue data)
     }
     else {
         switch ( data->type ) {
-        case ScamData::Boolean:
+        case ScamValueType::Boolean:
             s << (data->boolValue() ? "#t" : "#f");
             break;
 
-        case ScamData::ByteVector:
+        case ScamValueType::ByteVector:
             writeByteVector(s, data);
             break;
 
-        case ScamData::Character: {
+        case ScamValueType::Character: {
             s << "#\\";
             const char c = data->charValue();
             switch (c) {
@@ -97,76 +97,76 @@ string scam::writeValue(ScamValue data)
         }
             break;
 
-        case ScamData::Class:
+        case ScamValueType::Class:
             s << "class";
             break;
 
-        case ScamData::Closure:
+        case ScamValueType::Closure:
             writeClosure(s, data);
             break;
 
-        case ScamData::Pair:
+        case ScamValueType::Pair:
             writePair(s, data);
             break;
 
-        case ScamData::Dict:
+        case ScamValueType::Dict:
             writeDict(s, data);
             break;
 
-        case ScamData::Cont:
+        case ScamValueType::Cont:
             s << "continuation";
             break;
 
-        case ScamData::Keyword:
-        case ScamData::Symbol:
+        case ScamValueType::Keyword:
+        case ScamValueType::Symbol:
             s << data->stringValue();
             break;
 
-        case ScamData::String:
+        case ScamValueType::String:
             s << '"' << data->stringValue() << '"';
             break;
 
-        case ScamData::Error:
+        case ScamValueType::Error:
             writeError(s, data);
             break;
 
-        case ScamData::Instance:
+        case ScamValueType::Instance:
             s << "instance";
             break;
 
-        case ScamData::Null:
+        case ScamValueType::Null:
             s << "()";
             break;
 
-        case ScamData::Nothing:
+        case ScamValueType::Nothing:
             s << "null";
             break;
 
-        case ScamData::Vector:
+        case ScamValueType::Vector:
             writeVector(s, data);
             break;
 
-        case ScamData::SpecialForm:
+        case ScamValueType::SpecialForm:
             s << "Special Form " << data->sfName();
             break;
 
-        case ScamData::Primitive:
+        case ScamValueType::Primitive:
             s << "Primitive " << data->primName();
             break;
 
-        case ScamData::Port:
+        case ScamValueType::Port:
             s << data->portValue()->describe();
             break;
 
-        case ScamData::Eof:
+        case ScamValueType::Eof:
             s << "eof";
             break;
 
-        case ScamData::Syntax:
+        case ScamValueType::Syntax:
             s << "syntax for " << writeValue(data->syntaxRules().getName());
             break;
 
-        case ScamData::ScamEnv:
+        case ScamValueType::ScamEnv:
             if ( isForwarder(data) ) {
                 s << "forwarder";
             }
@@ -175,13 +175,13 @@ string scam::writeValue(ScamValue data)
             }
             break;
 
-        case ScamData::Placeholder:
+        case ScamValueType::Placeholder:
             s << "placeholder:" << writeValue(data->placeholderValue());
             break;
 
-        case ScamData::Multiple:
+        case ScamValueType::Multiple:
             do {
-                ScamData::VectorData & values = data->multipleValues();
+                vector<ScamValue> & values = data->multipleValues();
                 string sep = "";
                 s << "multiple values: [";
                 for ( const auto v : values ) {
@@ -194,7 +194,7 @@ string scam::writeValue(ScamValue data)
 
         default:
             s << "don't know how to represent this object, type = "
-              << data->type;
+              << (unsigned char)(data->type);
             break;
         }
     }
@@ -213,169 +213,133 @@ string scam::debugWriteValue(ScamValue data)
     return s.str() ;
 }
 
-string scam::describe(DataTagType type)
+string scam::describe(ScamValueType type)
 {
     const char * text = "unknown";
 
     switch ( type ) {
 
-    case ScamData::Complex:
+    case ScamValueType::Complex:
         text = "complex";
         break;
 
-    case ScamData::Real:
+    case ScamValueType::Real:
         text = "real";
         break;
 
-    case ScamData::Rational:
+    case ScamValueType::Rational:
         text = "rational";
         break;
 
-    case ScamData::Integer:
+    case ScamValueType::Integer:
         text = "integer";
         break;
 
-    case ScamData::NaN:
+    case ScamValueType::NaN:
         text = "NaN";
         break;
 
-    case ScamData::NegInf:
+    case ScamValueType::NegInf:
         text = "-inf";
         break;
 
-    case ScamData::PosInf:
+    case ScamValueType::PosInf:
         text = "+inf";
         break;
 
-    case ScamData::SpecialNumeric:
-        text = "special numeric";
-        break;
-
-    case ScamData::RationalTypes:
-        text = "as rational";
-        break;
-
-    case ScamData::RealNumTypes:
-        text = "non-special as real";
-        break;
-
-    case ScamData::RealTypes:
-        text = "as real";
-        break;
-
-    case ScamData::ComplexTypes:
-        text = "as complex";
-        break;
-
-    case ScamData::Numeric:
-        text = "numeric";
-        break;
-
-    case ScamData::Nothing:
+    case ScamValueType::Nothing:
         text = "nothing";
         break;
 
-    case ScamData::Null:
+    case ScamValueType::Null:
         text = "null";
         break;
 
-    case ScamData::Boolean:
+    case ScamValueType::Boolean:
         text = "boolean";
         break;
 
-    case ScamData::Character:
+    case ScamValueType::Character:
         text = "character";
         break;
 
-    case ScamData::Symbol:
+    case ScamValueType::Symbol:
         text = "symbol";
         break;
 
-    case ScamData::Keyword:
+    case ScamValueType::Keyword:
         text = "keyword";
         break;
 
-    case ScamData::String:
+    case ScamValueType::String:
         text = "string";
         break;
 
-    case ScamData::Error:
+    case ScamValueType::Error:
         text = "error";
         break;
 
-    case ScamData::Pair:
+    case ScamValueType::Pair:
         text = "pair";
         break;
 
-    case ScamData::Vector:
+    case ScamValueType::Vector:
         text = "vector";
         break;
 
-    case ScamData::ByteVector:
+    case ScamValueType::ByteVector:
         text = "byte vector";
         break;
 
-    case ScamData::Dict:
+    case ScamValueType::Dict:
         text = "dict";
         break;
 
-    case ScamData::Closure:
+    case ScamValueType::Closure:
         text = "closure";
         break;
 
-    case ScamData::Class:
+    case ScamValueType::Class:
         text = "class";
         break;
 
-    case ScamData::Instance:
+    case ScamValueType::Instance:
         text = "instance";
         break;
 
-    case ScamData::Cont:
+    case ScamValueType::Cont:
         text = "continuation";
         break;
 
-    case ScamData::StringLike:
-        text = "as string";
-        break;
-
-    case ScamData::Procedure:
-        text = "procedure";
-        break;
-
-    case ScamData::Primitive:
+    case ScamValueType::Primitive:
         text = "primitive";
         break;
 
-    case ScamData::SpecialForm:
+    case ScamValueType::SpecialForm:
         text = "special form";
         break;
 
-    case ScamData::Applicable:
-        text = "applicable";
-        break;
-
-    case ScamData::Port:
+    case ScamValueType::Port:
         text = "port";
         break;
 
-    case ScamData::Eof:
+    case ScamValueType::Eof:
         text = "eof";
         break;
 
-    case ScamData::Syntax:
+    case ScamValueType::Syntax:
         text = "syntax";
         break;
 
-    case ScamData::ScamEnv:
+    case ScamValueType::ScamEnv:
         text = "env";
         break;
 
-    case ScamData::Placeholder:
+    case ScamValueType::Placeholder:
         text = "placeholder";
         break;
 
-    case ScamData::Multiple:
+    case ScamValueType::Multiple:
         text = "multiple values";
         break;
 
@@ -391,7 +355,7 @@ namespace
     void writeByteVector(stringstream & s, ScamValue data)
     {
         string sep { "" };
-        const ScamData::ByteVectorData & bv = data->byteVectorData();
+        const vector<unsigned char> & bv = data->byteVectorData();
 
         s << "#u8(";
         for ( auto const & e : bv ) {
@@ -532,8 +496,8 @@ namespace
 
     void writeDict(stringstream & s, ScamValue data)
     {
-        ScamData::DictKeyData   & keys = data->dictKeys();
-        ScamData::DictValueData & vals = data->dictValues();
+        vector<ScamValue> & keys = data->dictKeys();
+        vector<ScamValue> & vals = data->dictValues();
 
         s << "{";
 
@@ -611,7 +575,7 @@ namespace
 
     void writeVector(stringstream & s, ScamValue data)
     {
-        const ScamData::VectorData & vec = data->vectorData();
+        const vector<ScamValue> & vec = data->vectorData();
 
         string sep { "" };
 

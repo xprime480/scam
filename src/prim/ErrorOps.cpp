@@ -99,7 +99,7 @@ void scam::applyErrorIrritant(ScamValue args, Continuation * cont)
 
     ScamValue error = fetchErrorObject(args, cont, name);
     if ( isError(error) ) {
-        const ScamData::VectorData & irritants = error->errorIrritants();
+        const vector<ScamValue> & irritants = error->errorIrritants();
         ScamValue rv = makeList(irritants);
         cont->handleValue(rv);
     }
@@ -159,7 +159,7 @@ namespace
             string str     = asString(p1.value);
             ScamValue objs = p2.value;
 
-            ScamData::VectorData irritants;
+            vector<ScamValue> irritants;
             unsigned len = length(objs);
             for ( unsigned i = 0 ; i < len ; ++i ) {
                 irritants.push_back(nthcar(objs, i));

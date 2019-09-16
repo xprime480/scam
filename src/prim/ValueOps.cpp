@@ -12,7 +12,7 @@ using namespace std;
 void scam::applyValues(ScamValue args, Continuation * cont)
 {
     // Anything goes here
-    ScamData::VectorData values;
+    vector<ScamValue> values;
     while ( ! isNull(args) ) {
         values.push_back(getCar(args));
         args = getCdr(args);

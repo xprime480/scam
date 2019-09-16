@@ -36,7 +36,7 @@ do_it_manually :
 #TEST_FILTER = --gtest_filter=MemoryTest.*
 
 qtest : qexe
-	@$(TEST_EXE) $(TEST_FILTER) --gtest_print_time=0
+	@SCAM_PATH=`pwd`:$SCAM_PATH $(TEST_EXE) $(TEST_FILTER) --gtest_print_time=0
 
 test : exe qtest
 	:

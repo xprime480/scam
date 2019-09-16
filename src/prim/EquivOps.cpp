@@ -84,42 +84,42 @@ bool scam::doEqv(ScamValue obj1, ScamValue obj2)
     }
     else if ( obj1->type == obj2->type ) {
         switch ( obj1->type ) {
-        case ScamData::Nothing:
+        case ScamValueType::Nothing:
             break;
 
-        case ScamData::Null:
+        case ScamValueType::Null:
             rv = true;
             break;
 
-        case ScamData::Boolean:
+        case ScamValueType::Boolean:
             rv = compareBoolean(obj1, obj2);
             break;
 
-        case ScamData::Character:
+        case ScamValueType::Character:
             rv = compareChar(obj1, obj2);
             break;
 
-        case ScamData::Symbol:
-        case ScamData::Keyword:
+        case ScamValueType::Symbol:
+        case ScamValueType::Keyword:
             rv = compareStringLike(obj1, obj2);
             break;
 
-        case ScamData::String:
-        case ScamData::Pair:
-        case ScamData::Vector:
-        case ScamData::ByteVector:
-        case ScamData::Dict:
+        case ScamValueType::String:
+        case ScamValueType::Pair:
+        case ScamValueType::Vector:
+        case ScamValueType::ByteVector:
+        case ScamValueType::Dict:
             rv = obj1 == obj2;
             break;
 
-        case ScamData::Error:
-        case ScamData::Closure:
-        case ScamData::Class:
-        case ScamData::Instance:
-        case ScamData::Cont:
-        case ScamData::Primitive:
-        case ScamData::SpecialForm:
-        case ScamData::Port:
+        case ScamValueType::Error:
+        case ScamValueType::Closure:
+        case ScamValueType::Class:
+        case ScamValueType::Instance:
+        case ScamValueType::Cont:
+        case ScamValueType::Primitive:
+        case ScamValueType::SpecialForm:
+        case ScamValueType::Port:
         default:
             rv = obj1 == obj2;
             break;
@@ -170,10 +170,10 @@ namespace
 
     bool compareDict(ScamValue obj1, ScamValue obj2)
     {
-        const ScamData::DictKeyData & k1 = obj1->dictKeys();
-        const ScamData::DictKeyData & k2 = obj2->dictKeys();
-        const ScamData::DictValueData & v1 = obj1->dictValues();
-        const ScamData::DictValueData & v2 = obj2->dictValues();
+        const vector<ScamValue> & k1 = obj1->dictKeys();
+        const vector<ScamValue> & k2 = obj2->dictKeys();
+        const vector<ScamValue> & v1 = obj1->dictValues();
+        const vector<ScamValue> & v2 = obj2->dictValues();
 
         int len = length(obj1);
 
@@ -206,20 +206,20 @@ namespace
         }
         else if ( obj1->type == obj2->type ) {
             switch ( obj1->type ) {
-            case ScamData::String:
+            case ScamValueType::String:
                 rv = compareStringLike(obj1, obj2);
                 break;
 
-            case ScamData::Pair:
+            case ScamValueType::Pair:
                 rv = comparePair(obj1, obj2);
                 break;
 
-            case ScamData::Vector:
-            case ScamData::ByteVector:
+            case ScamValueType::Vector:
+            case ScamValueType::ByteVector:
                 rv = compareSequence(obj1, obj2);
                 break;
 
-            case ScamData::Dict:
+            case ScamValueType::Dict:
                 rv = compareDict(obj1, obj2);
                 break;
 

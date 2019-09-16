@@ -22,7 +22,7 @@ ScamValue scam::dictHas(ScamValue value, ScamValue key)
         return test;
     }
 
-    const ScamData::DictKeyData & keys = value->dictKeys();
+    const vector<ScamValue> & keys = value->dictKeys();
 
     for ( size_t jdx = 0 ; jdx < keys.size() ; ++jdx ) {
         if ( equals(keys[jdx], key) ) {
@@ -40,7 +40,7 @@ ScamValue scam::dictGet(ScamValue value, ScamValue key)
         return test;
     }
 
-    const ScamData::DictKeyData & keys = value->dictKeys();
+    const vector<ScamValue> & keys = value->dictKeys();
 
     for ( size_t jdx = 0 ; jdx < keys.size() ; ++jdx ) {
         if ( equals(keys[jdx], key) ) {
@@ -60,8 +60,8 @@ ScamValue scam::dictPut(ScamValue value, ScamValue key, ScamValue val)
         return test;
     }
 
-    ScamData::DictKeyData   & keys = value->dictKeys();
-    ScamData::DictValueData & vals = value->dictValues();
+    vector<ScamValue>   & keys = value->dictKeys();
+    vector<ScamValue> & vals = value->dictValues();
     size_t prev = keys.size();
 
     for ( size_t jdx = 0 ; jdx < keys.size() ; ++jdx ) {
@@ -89,8 +89,8 @@ ScamValue scam::dictRemove(ScamValue value, ScamValue key)
         return test;
     }
 
-    ScamData::DictKeyData   & keys = value->dictKeys();
-    ScamData::DictValueData & vals = value->dictValues();
+    vector<ScamValue>   & keys = value->dictKeys();
+    vector<ScamValue> & vals = value->dictValues();
     ScamValue rv = makeNull();
 
     for ( size_t jdx = 0 ; jdx < keys.size() ; ++jdx ) {
@@ -105,7 +105,7 @@ ScamValue scam::dictRemove(ScamValue value, ScamValue key)
     return rv;
 }
 
-ScamValue scam::getDictKeys(ScamValue value, const KeyVec *& result)
+ScamValue scam::getDictKeys(ScamValue value, const vector<ScamValue> *& result)
 {
     ScamValue test = checkDict(value, "getDictKeys");
     if ( isError(test) ) {

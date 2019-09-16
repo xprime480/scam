@@ -50,13 +50,13 @@ void scam::initializeValueFactory(MemoryManager & mm)
 
 ScamValue scam::makeNothing()
 {
-    static ScamData instance(ScamData::Nothing, false);
+    static ScamData instance(ScamValueType::Nothing, false);
     return &instance;
 }
 
 ScamValue scam::makeNull()
 {
-    static ScamData instance(ScamData::Null, false);
+    static ScamData instance(ScamValueType::Null, false);
     return &instance;
 }
 
@@ -66,7 +66,7 @@ namespace
 
     ScamValue boolValue(bool value)
     {
-        static constexpr auto myType = ScamData::Boolean;
+        static constexpr auto myType = ScamValueType::Boolean;
         ScamValue v = mm.make<ScamData>(myType, false);
         v->boolValue() = value;
         return v;
@@ -83,7 +83,7 @@ ScamValue scam::makeBoolean(bool value)
 
 ScamValue scam::makeCharacter(const char c)
 {
-    static constexpr auto myType = ScamData::Character;
+    static constexpr auto myType = ScamValueType::Character;
 
     ScamValue v = charCache.get(c);
     if ( ! v ) {
@@ -97,7 +97,7 @@ ScamValue scam::makeCharacter(const char c)
 
 ScamValue scam::makeString(string const & value, bool managed)
 {
-    static constexpr auto myType = ScamData::String;
+    static constexpr auto myType = ScamValueType::String;
     ScamValue v = mm.make<ScamData>(myType, managed);
     v->stringValue() = value;
     return v;
@@ -105,7 +105,7 @@ ScamValue scam::makeString(string const & value, bool managed)
 
 ScamValue scam::makeError(const char * msg, ExprVec & irritants)
 {
-    static constexpr auto myType = ScamData::Error;
+    static constexpr auto myType = ScamValueType::Error;
     ScamValue v = mm.make<ScamData>(myType);
     v->errorMessage() = msg;
     v->errorIrritants() = irritants;
@@ -114,7 +114,7 @@ ScamValue scam::makeError(const char * msg, ExprVec & irritants)
 
 ScamValue scam::makeSymbol(string const & value)
 {
-    static constexpr auto myType = ScamData::Symbol;
+    static constexpr auto myType = ScamValueType::Symbol;
     ScamValue v = mm.make<ScamData>(myType);
     v->stringValue() = value;
     return v;
@@ -122,7 +122,7 @@ ScamValue scam::makeSymbol(string const & value)
 
 ScamValue scam::makeKeyword(string const & value, bool managed)
 {
-    static constexpr auto myType = ScamData::Keyword;
+    static constexpr auto myType = ScamValueType::Keyword;
     ScamValue v = mm.make<ScamData>(myType, managed);
     v->stringValue() = value;
     return v;
@@ -137,7 +137,7 @@ ScamValue scam::makeNumeric(string const & value)
 
 namespace
 {
-    ScamValue inexactNumericSingleton(unsigned long type)
+    ScamValue inexactNumericSingleton(ScamValueType type)
     {
         ScamValue v = mm.make<ScamData>(type, false);
         v->exactFlag() = false;
@@ -147,25 +147,28 @@ namespace
 
 ScamValue scam::makeNaN()
 {
-    static ScamValue instance { inexactNumericSingleton(ScamData::NaN) };
+    static ScamValue instance
+        { inexactNumericSingleton(ScamValueType::NaN) };
     return instance;
 }
 
 ScamValue scam::makeNegInf()
 {
-    static ScamValue instance { inexactNumericSingleton(ScamData::NegInf) };
+    static ScamValue instance
+        { inexactNumericSingleton(ScamValueType::NegInf) };
     return instance;
 }
 
 ScamValue scam::makePosInf()
 {
-    static ScamValue instance { inexactNumericSingleton(ScamData::PosInf) };
+    static ScamValue instance
+        { inexactNumericSingleton(ScamValueType::PosInf) };
     return instance;
 }
 
 ScamValue scam::makeComplex(ScamValue real, ScamValue imag)
 {
-    static constexpr auto myType = ScamData::Complex;
+    static constexpr auto myType = ScamValueType::Complex;
     ScamValue v = mm.make<ScamData>(myType);
 
     v->exactFlag() = real->exactFlag() && imag->exactFlag();
@@ -184,7 +187,7 @@ ScamValue scam::makeComplex(ScamValue real, ScamValue imag)
 
 ScamValue scam::makeReal(double value, bool exact)
 {
-    static constexpr auto myType = ScamData::Real;
+    static constexpr auto myType = ScamValueType::Real;
     ScamValue v = mm.make<ScamData>(myType);
 
     v->exactFlag() = exact;
@@ -195,7 +198,7 @@ ScamValue scam::makeReal(double value, bool exact)
 
 ScamValue scam::makeRational(int num, int den, bool exact)
 {
-    static constexpr auto myType = ScamData::Rational;
+    static constexpr auto myType = ScamValueType::Rational;
     ScamValue v = mm.make<ScamData>(myType);
 
     v->exactFlag() = exact;
@@ -214,7 +217,7 @@ ScamValue scam::makeRational(int num, int den, bool exact)
 
 ScamValue scam::makeInteger(int value, bool exact)
 {
-    static constexpr auto myType = ScamData::Integer;
+    static constexpr auto myType = ScamValueType::Integer;
     ScamValue v = mm.make<ScamData>(myType);
 
     v->exactFlag() = exact;
@@ -225,7 +228,7 @@ ScamValue scam::makeInteger(int value, bool exact)
 
 ScamValue scam::makePair(ScamValue car, ScamValue cdr)
 {
-    static constexpr auto myType = ScamData::Pair;
+    static constexpr auto myType = ScamValueType::Pair;
     ScamValue v = mm.make<ScamData>(myType);
     v->carValue() = car;
     v->cdrValue() = cdr;
@@ -255,7 +258,7 @@ ScamValue scam::makeList(const vector<ScamValue> & items)
 
 ScamValue scam::makeVector(ExprVec const & elts)
 {
-    static constexpr auto myType = ScamData::Vector;
+    static constexpr auto myType = ScamValueType::Vector;
     ScamValue v = mm.make<ScamData>(myType);
     v->vectorData() = elts;
     return v;
@@ -263,7 +266,7 @@ ScamValue scam::makeVector(ExprVec const & elts)
 
 ScamValue scam::makeByteVector(ByteVec const & elts)
 {
-    static constexpr auto myType = ScamData::ByteVector;
+    static constexpr auto myType = ScamValueType::ByteVector;
     ScamValue v = mm.make<ScamData>(myType);
     v->byteVectorData() = elts;
     return v;
@@ -271,7 +274,7 @@ ScamValue scam::makeByteVector(ByteVec const & elts)
 
 ScamValue scam::makeDict()
 {
-    static constexpr auto myType = ScamData::Dict;
+    static constexpr auto myType = ScamValueType::Dict;
     ScamValue v = mm.make<ScamData>(myType);
     return v;
 }
@@ -280,7 +283,7 @@ ScamValue scam::makeDict(ExprVec const & args)
 {
     ScamValue v = makeDict();
 
-    ValVec input = args;
+    vector<ScamValue> input = args;
     if ( 1 == (input.size() % 2) ) {
         input.push_back(makeNull());
     }
@@ -299,7 +302,7 @@ ScamValue scam::makeDict(ExprVec const & args)
 
 ScamValue scam::makeClosure(const LambdaDef & lambda, Env * env)
 {
-    static constexpr auto myType = ScamData::Closure;
+    static constexpr auto myType = ScamValueType::Closure;
     ScamValue v = mm.make<ScamData>(myType);
     v->closureDef() = lambda;
     v->closureEnv() = env;
@@ -308,7 +311,7 @@ ScamValue scam::makeClosure(const LambdaDef & lambda, Env * env)
 
 ScamValue scam::makeClass(ClassDef & def, Env * env)
 {
-    static constexpr auto myType = ScamData::Class;
+    static constexpr auto myType = ScamValueType::Class;
     ScamValue v = mm.make<ScamData>(myType);
     v->classDef() = def;
     v->classEnv() = env;
@@ -324,7 +327,7 @@ ScamValue scam::makeClassInstance(ScamValue value, Env * env)
         return err;
     }
 
-    static constexpr auto myType = ScamData::Instance;
+    static constexpr auto myType = ScamValueType::Instance;
     ScamValue v = mm.make<ScamData>(myType);
 
     Env *& priv = v->instancePrivate();
@@ -360,7 +363,7 @@ ScamValue scam::makeClassInstance(ScamValue value, Env * env)
 
 ScamValue scam::makeContinuation(Continuation * cont)
 {
-    static constexpr auto myType = ScamData::Cont;
+    static constexpr auto myType = ScamValueType::Cont;
     ScamValue v = mm.make<ScamData>(myType);
     v->contValue() = cont;
     return v;
@@ -369,7 +372,7 @@ ScamValue scam::makeContinuation(Continuation * cont)
 ScamValue
 scam::makeSpecialForm(string const & name, SfFunction func, bool managed)
 {
-    static constexpr auto myType = ScamData::SpecialForm;
+    static constexpr auto myType = ScamValueType::SpecialForm;
     ScamValue v = mm.make<ScamData>(myType, managed);
     v->sfName()   = name;
     v->sfFunc()   = func;
@@ -380,7 +383,7 @@ scam::makeSpecialForm(string const & name, SfFunction func, bool managed)
 ScamValue
 scam::makePrimitive(string const & name, PrimFunction func, bool managed)
 {
-    static constexpr auto myType = ScamData::Primitive;
+    static constexpr auto myType = ScamValueType::Primitive;
     ScamValue v = mm.make<ScamData>(myType, managed);
     v->primName()   = name;
     v->primFunc()   = func;
@@ -390,7 +393,7 @@ scam::makePrimitive(string const & name, PrimFunction func, bool managed)
 
 ScamValue scam::makePort(ScamPort * port)
 {
-    static constexpr auto myType = ScamData::Port;
+    static constexpr auto myType = ScamValueType::Port;
     ScamValue v = mm.make<ScamData>(myType);
     v->portValue() = port;
     return v;
@@ -398,13 +401,13 @@ ScamValue scam::makePort(ScamPort * port)
 
 ScamValue scam::makeEof()
 {
-    static ScamData instance(ScamData::Eof, false);
+    static ScamData instance(ScamValueType::Eof, false);
     return &instance;
 }
 
 ScamValue scam::makeSyntax(const SyntaxRules & def)
 {
-    static constexpr auto myType = ScamData::Syntax;
+    static constexpr auto myType = ScamValueType::Syntax;
     ScamValue v = mm.make<ScamData>(myType);
     v->syntaxRules() = def;
     return v;
@@ -412,7 +415,7 @@ ScamValue scam::makeSyntax(const SyntaxRules & def)
 
 ScamValue scam::makeEnv(Env * env)
 {
-    static constexpr auto myType = ScamData::ScamEnv;
+    static constexpr auto myType = ScamValueType::ScamEnv;
     ScamValue v = mm.make<ScamData>(myType);
     v->envValue() = env;
     return v;
@@ -427,7 +430,7 @@ ScamValue scam::makeForwarder(Env * env)
 
 ScamValue scam::makePlaceholder(ScamValue tag)
 {
-    static constexpr auto myType = ScamData::Placeholder;
+    static constexpr auto myType = ScamValueType::Placeholder;
     ScamValue v = mm.make<ScamData>(myType);
     v->placeholderValue() = tag;
     return v;
@@ -435,7 +438,7 @@ ScamValue scam::makePlaceholder(ScamValue tag)
 
 ScamValue scam::makeMultiple(ExprVec const & elts)
 {
-    static constexpr auto myType = ScamData::Multiple;
+    static constexpr auto myType = ScamValueType::Multiple;
     ScamValue v = mm.make<ScamData>(myType);
     v->multipleValues() = elts;
     return v;

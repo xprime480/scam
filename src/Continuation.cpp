@@ -35,7 +35,7 @@ void Continuation::handleMultipleValues(ScamValue value)
     ScamValue rv = makeBoolean(false);
 
     if ( isMultiple(value) ) {
-        ScamData::VectorData & values = value->multipleValues();
+        vector<ScamValue> & values = value->multipleValues();
         if ( ! values.empty() ) {
             rv = values[0];
         }

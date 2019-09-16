@@ -22,7 +22,7 @@ bool scam::isImmutable(ScamValue data)
 
 bool scam::isNothing(ScamValue data)
 {
-    return data->type == ScamData::Nothing;
+    return data->type == ScamValueType::Nothing;
 }
 
 bool scam::isAnything(ScamValue data)
@@ -32,7 +32,7 @@ bool scam::isAnything(ScamValue data)
 
 bool scam::isError(ScamValue data)
 {
-    return data->type == ScamData::Error;
+    return data->type == ScamValueType::Error;
 }
 
 bool scam::isUnhandledError(ScamValue data)
@@ -54,32 +54,32 @@ bool scam::truth(ScamValue data)
 
 bool scam::isBoolean(ScamValue data)
 {
-    return data->type == ScamData::Boolean;
+    return data->type == ScamValueType::Boolean;
 }
 
 bool scam::isChar(ScamValue data)
 {
-    return data->type == ScamData::Character;
+    return data->type == ScamValueType::Character;
 }
 
 bool scam::isString(ScamValue data)
 {
-    return data->type == ScamData::String;
+    return data->type == ScamValueType::String;
 }
 
 bool scam::isSymbol(ScamValue data)
 {
-    return data->type == ScamData::Symbol;
+    return data->type == ScamValueType::Symbol;
 }
 
 bool scam::isKeyword(ScamValue data)
 {
-    return data->type == ScamData::Keyword;
+    return data->type == ScamValueType::Keyword;
 }
 
 bool scam::isNumeric(ScamValue data)
 {
-    return 0 != (data->type & ScamData::Numeric);
+    return ( isComplex(data) || isSpecialNumeric(data) );
 }
 
 bool scam::isExact(ScamValue data)
@@ -100,57 +100,59 @@ bool scam::isInexact(ScamValue data)
 
 bool scam::isComplex(ScamValue data)
 {
-    return 0 != (data->type & ScamData::ComplexTypes);
+    return ( isPureComplex(data) || isReal(data) );
 }
 
 bool scam::isPureComplex(ScamValue data)
 {
-    return data->type == ScamData::Complex;
+    return data->type == ScamValueType::Complex;
 }
 
 bool scam::isReal(ScamValue data)
 {
-    return 0 != (data->type & ScamData::RealTypes);
+    return ( (data->type == ScamValueType::Real) ||
+             isRational(data) ||
+             isSpecialNumeric(data) );
 }
 
 bool scam::isRational(ScamValue data)
 {
-    return 0 != (data->type & ScamData::RationalTypes);
+    return ( (data->type == ScamValueType::Rational) || isInteger(data) );
 }
 
 bool scam::isInteger(ScamValue data)
 {
-    return data->type == ScamData::Integer;
+    return data->type == ScamValueType::Integer;
 }
 
 bool scam::isNaN(ScamValue data)
 {
-    return data->type == ScamData::NaN;
+    return data->type == ScamValueType::NaN;
 }
 
 bool scam::isNegInf(ScamValue data)
 {
-    return data->type == ScamData::NegInf;
+    return data->type == ScamValueType::NegInf;
 }
 
 bool scam::isPosInf(ScamValue data)
 {
-    return data->type == ScamData::PosInf;
+    return data->type == ScamValueType::PosInf;
 }
 
 bool scam::isSpecialNumeric(ScamValue data)
 {
-    return 0 != (data->type & ScamData::SpecialNumeric);
+    return ( isNaN(data) || isNegInf(data) || isPosInf(data) );
 }
 
 bool scam::isNull(ScamValue data)
 {
-    return data->type == ScamData::Null;
+    return data->type == ScamValueType::Null;
 }
 
 bool scam::isPair(ScamValue data)
 {
-    return data->type == ScamData::Pair;
+    return data->type == ScamValueType::Pair;
 }
 
 bool scam::isList(ScamValue data)
@@ -182,57 +184,61 @@ namespace
 
 bool scam::isVector(ScamValue data)
 {
-    return data->type == ScamData::Vector;
+    return data->type == ScamValueType::Vector;
 }
 
 bool scam::isByteVector(ScamValue data)
 {
-    return data->type == ScamData::ByteVector;
+    return data->type == ScamValueType::ByteVector;
 }
 
 bool scam::isClosure(ScamValue data)
 {
-    return 0 != (data->type & ScamData::Closure);
+    return data->type == ScamValueType::Closure;
 }
 
 bool scam::isProcedure(ScamValue data)
 {
-    return 0 != (data->type & ScamData::Procedure);
+    return ( isClosure(data) || isClass(data) || isInstance(data) );
 }
 
 bool scam::isClass(ScamValue data)
 {
-    return data->type == ScamData::Class;
+    return data->type == ScamValueType::Class;
 }
 
 bool scam::isInstance(ScamValue data)
 {
-    return data->type == ScamData::Instance;
+    return data->type == ScamValueType::Instance;
 }
 
 bool scam::isDict(ScamValue data)
 {
-    return data->type == ScamData::Dict;
+    return data->type == ScamValueType::Dict;
 }
 
 bool scam::isSpecialForm(ScamValue data)
 {
-    return data->type == ScamData::SpecialForm;
+    return data->type == ScamValueType::SpecialForm;
 }
 
 bool scam::isPrimitive(ScamValue data)
 {
-    return data->type == ScamData::Primitive;
+    return data->type == ScamValueType::Primitive;
 }
 
 bool scam::isApplicable(ScamValue data)
 {
-    return 0 != (data->type & ScamData::Applicable);
+    return ( isDict(data) ||
+             isProcedure(data) ||
+             isPrimitive(data) ||
+             isSpecialForm(data) ||
+             isContinuation(data) );
 }
 
 bool scam::isContinuation(ScamValue data)
 {
-    return data->type == ScamData::Cont;
+    return data->type == ScamValueType::Cont;
 }
 
 bool scam::isScamProcedure(ScamValue data)
@@ -242,22 +248,22 @@ bool scam::isScamProcedure(ScamValue data)
 
 bool scam::isPort(ScamValue data)
 {
-    return data->type == ScamData::Port;
+    return data->type == ScamValueType::Port;
 }
 
 bool scam::isEof(ScamValue data)
 {
-    return data->type == ScamData::Eof;
+    return data->type == ScamValueType::Eof;
 }
 
 bool scam::isSyntax(ScamValue data)
 {
-    return data->type == ScamData::Syntax;
+    return data->type == ScamValueType::Syntax;
 }
 
 bool scam::isEnv(ScamValue data)
 {
-    return data->type == ScamData::ScamEnv;
+    return data->type == ScamValueType::ScamEnv;
 }
 
 bool scam::isForwarder(ScamValue data)
@@ -267,10 +273,10 @@ bool scam::isForwarder(ScamValue data)
 
 bool scam::isPlaceholder(ScamValue data)
 {
-    return data->type == ScamData::Placeholder;
+    return data->type == ScamValueType::Placeholder;
 }
 
 bool scam::isMultiple(ScamValue data)
 {
-    return data->type == ScamData::Multiple;
+    return data->type == ScamValueType::Multiple;
 }

@@ -2,6 +2,7 @@
 #define VALUEWRITER_HPP 1
 
 #include "ScamFwd.hpp"
+#include "value/ScamValueType.hpp"
 
 #include <string>
 
@@ -9,7 +10,7 @@ namespace scam
 {
     extern std::string debugWriteValue(ScamValue data);
     extern std::string writeValue(ScamValue data);
-    extern std::string describe(DataTagType type);
+    extern std::string describe(ScamValueType type);
 }
 
 #endif
