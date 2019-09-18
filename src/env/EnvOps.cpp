@@ -191,6 +191,7 @@ namespace
         addSpecialForm(env, "call/cc", applyCallCC);
         addPrimitive(env, "car", applyCar);
         addPrimitive(env, "cdr", applyCdr);
+        addPrimitive(env, "ceiling", applyCeiling);
         addPrimitive(env, "char?", applyCharP);
         addPrimitive(env, "complex?", applyComplexP);
         addPrimitive(env, "cons", applyCons);
@@ -207,6 +208,7 @@ namespace
         addPrimitive(env, "exact?", applyExactP);
 
         addPrimitive(env, "file-error?", applyFileErrorP);
+        addPrimitive(env, "floor", applyFloor);
 
         addPrimitive(env, "get-output-string", applyGetOutStr);
 
@@ -235,6 +237,7 @@ namespace
         addPrimitive(env, "rational?", applyRationalP);
         addPrimitive(env, "read-error?", applyReadErrorP);
         addPrimitive(env, "real?", applyRealP);
+        addPrimitive(env, "round", applyRound);
 
         addPrimitive(env, "set-car!", applySetCarX);
         addPrimitive(env, "set-cdr!", applySetCdrX);
@@ -254,6 +257,8 @@ namespace
         addPrimitive(env, "string>?", applyStringGtP);
         addPrimitive(env, "string?", applyStringP);
         addPrimitive(env, "symbol?", applySymbolP);
+
+        addPrimitive(env, "truncate", applyTruncate);
 
         addPrimitive(env, "values", applyValues);
         addPrimitive(env, "vector?", applyVectorP);

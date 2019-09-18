@@ -562,14 +562,15 @@ NumericConverter::makeComplexPolar(ScamValue r, ScamValue theta) const
         real = imag = nan;
     }
     else {
+        const bool exact = isExact(r) && isExact(theta);
         const double radius = asDouble(r);
         const double cosine = ::cos(asDouble(theta));
         const double sine   = ::sin(asDouble(theta));
 
         const double x = radius * cosine;
         const double y = radius * sine;
-        real = makeReal(x, false);
-        imag = makeReal(y, false);
+        real = makeReal(x, exact);
+        imag = makeReal(y, exact);
     }
 
     ScamValue rv = makeComplex(real, imag);

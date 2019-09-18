@@ -9,7 +9,10 @@
 namespace scam
 {
     extern std::string debugWriteValue(ScamValue data);
-    extern std::string writeValue(ScamValue data);
+
+    extern std::string
+    writeValue(ScamValue data, bool suppressExactness = false);
+
     extern std::string describe(ScamValueType type);
 }
 

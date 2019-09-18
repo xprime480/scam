@@ -9,11 +9,103 @@
 #include "value/ValueFactory.hpp"
 
 #include <algorithm>
+#include <cmath>
 #include <numeric>
 #include <sstream>
 
 using namespace scam;
 using namespace std;
+
+namespace
+{
+    extern ExtendedNumeric
+    do_add(vector<ExtendedNumeric> const & ns, ScamValue & state);
+
+    extern ExtendedNumeric
+    do_sub(vector<ExtendedNumeric> const & ns, ScamValue & state);
+
+    extern ExtendedNumeric
+    do_mul(vector<ExtendedNumeric> const & ns, ScamValue & state);
+
+    extern ExtendedNumeric
+    do_div(vector<ExtendedNumeric> const & ns, ScamValue & state);
+
+    extern ExtendedNumeric
+    do_mod(vector<ExtendedNumeric> const & ns, ScamValue & state);
+
+    extern ScamValue convertWith(ScamValue initial, double (fn)(double value));
+}
+
+void scam::applyCeiling(ScamValue args, Continuation * cont)
+{
+    static const char * name = "ceiling";
+
+    FiniteRealParameter p0;
+    if ( argsToParms(args, name, p0) ) {
+        ScamValue rv = convertWith(p0.value, ceil);
+        cont->handleValue(rv);
+    }
+}
+
+void scam::applyFloor(ScamValue args, Continuation * cont)
+{
+    static const char * name = "floor";
+
+    FiniteRealParameter p0;
+    if ( argsToParms(args, name, p0) ) {
+        ScamValue rv = convertWith(p0.value, floor);
+        cont->handleValue(rv);
+    }
+}
+
+void scam::applyRound(ScamValue args, Continuation * cont)
+{
+    static const char * name = "round";
+
+    FiniteRealParameter p0;
+    if ( argsToParms(args, name, p0) ) {
+        ScamValue rv = convertWith(p0.value, round);
+        cont->handleValue(rv);
+    }
+}
+
+void scam::applyTruncate(ScamValue args, Continuation * cont)
+{
+    static const char * name = "truncate";
+
+    FiniteRealParameter p0;
+    if ( argsToParms(args, name, p0) ) {
+        ScamValue rv = convertWith(p0.value, trunc);
+        cont->handleValue(rv);
+    }
+}
+
+#define MATH_OP_DEFINE(Name, Proc) \
+    void scam::apply##Name(ScamValue args, Continuation * cont)           \
+        {                                                                 \
+            static const char * context { #Name };                        \
+            NumericParameter pNum;                                        \
+            CountedParameter p0(pNum);                                    \
+            if ( argsToParms(args, context, p0) ) {                       \
+                ScamValue rv = numericAlgorithm(p0.value, context, Proc); \
+                if ( isUnhandledError(rv) ) {                             \
+                    ScamEngine::getEngine().handleError(rv);              \
+                }                                                         \
+                else {                                                    \
+                    cont->handleValue(rv);                                \
+                }                                                         \
+            }                                                             \
+        }
+
+
+MATH_OP_DEFINE(Add, do_add);
+MATH_OP_DEFINE(Sub, do_sub);
+MATH_OP_DEFINE(Mul, do_mul);
+MATH_OP_DEFINE(Div, do_div);
+MATH_OP_DEFINE(Mod, do_mod);
+
+#undef MATH_OP_DEFINE
+
 
 namespace
 {
@@ -112,30 +204,18 @@ namespace
 
         return ns[0] % ns[1];
     }
-}
 
-#define MATH_OP_DEFINE(Name, Proc) \
-    void scam::apply##Name(ScamValue args, Continuation * cont)           \
-        {                                                                 \
-            static const char * context { #Name };                        \
-            NumericParameter pNum;                                        \
-            CountedParameter p0(pNum);                                    \
-            if ( argsToParms(args, context, p0) ) {                       \
-                ScamValue rv = numericAlgorithm(p0.value, context, Proc); \
-                if ( isUnhandledError(rv) ) {                             \
-                    ScamEngine::getEngine().handleError(rv);              \
-                }                                                         \
-                else {                                                    \
-                    cont->handleValue(rv);                                \
-                }                                                         \
-            }                                                             \
+    ScamValue convertWith(ScamValue initial, double (fn)(double value))
+    {
+        ScamValue rv = initial;
+
+        if ( ! isInteger(rv) ) {
+            bool exact = isExact(rv);
+            double d = fn(asDouble(rv));
+            rv = makeInteger((int) d, exact);
         }
 
+        return rv;
+    }
 
-MATH_OP_DEFINE(Add, do_add);
-MATH_OP_DEFINE(Sub, do_sub);
-MATH_OP_DEFINE(Mul, do_mul);
-MATH_OP_DEFINE(Div, do_div);
-MATH_OP_DEFINE(Mod, do_mod);
-
-#undef MATH_OP_DEFINE
+}

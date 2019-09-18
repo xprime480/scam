@@ -30,17 +30,20 @@ namespace
                                 set<ScamValue> & seen);
 
     extern void writeDict(std::stringstream & s, ScamValue data);
-    extern void writeNumeric(std::stringstream & s, ScamValue data);
+
+    extern void
+    writeNumeric(std::stringstream & s, ScamValue data, bool suppressExactness);
+
     extern void writeVector(std::stringstream & s, ScamValue data);
     extern void writeError(std::stringstream & s, ScamValue data);
 }
 
-string scam::writeValue(ScamValue data)
+string scam::writeValue(ScamValue data, bool suppressExactness)
 {
     stringstream s;
 
     if ( isNumeric(data) ) {
-        writeNumeric(s, data);
+        writeNumeric(s, data, suppressExactness);
     }
     else {
         switch ( data->type ) {
@@ -513,9 +516,17 @@ namespace
         s << "}";
     }
 
-    void writeNumeric(stringstream & s, ScamValue data)
+    void writeNumeric(stringstream & s, ScamValue data, bool suppressExactness)
     {
         ScamValue hack = const_cast<ScamValue>(data);
+
+        if ( (! suppressExactness) &&
+             isReal(hack) &&
+             (! isSpecialNumeric(hack)) &&
+             (! isExact(hack)) ) {
+            s << "#i";
+        }
+
         if ( isNaN(hack) ) {
             s << "+nan.0";
         }
@@ -540,16 +551,23 @@ namespace
             // form that will be read by the scanner as the same value.
             // For example, An imaginary part of "-1i" is equivalent to
             // "-i", so the latter is used for the representation.  The
-            // real pa
+            // real part is skipped if zero, and  signs are added
+            // elsewhere.
             //
             ScamValue r { data->realPart() };
             ScamValue i { data->imagPart() };
 
-            if ( ! isInteger(r) || 0 != asInteger(r) ) {
-                s << writeValue(r);
+            if ( (! isSpecialNumeric(r)) &&
+                 (! isSpecialNumeric(i)) &&
+                 (! isExact(hack)) ) {
+                s << "#i";
             }
 
-            const string irepr = writeValue(i);
+            if ( ! isInteger(r) || 0 != asInteger(r) ) {
+                s << writeValue(r, true);
+            }
+
+            const string irepr = writeValue(i, true);
             if ( irepr == "0" ) {
                 // nothing
             }

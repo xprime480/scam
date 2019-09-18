@@ -25,13 +25,13 @@ TEST_F(NumericParserTest, ZeroExact)
 TEST_F(NumericParserTest, ZeroInexact)
 {
     ScamValue expr = makeNumeric("0.0");
-    expectInteger(expr, 0, "0", false);
+    expectInteger(expr, 0, "#i0", false);
 }
 
 TEST_F(NumericParserTest, ZeroForceInexact)
 {
     ScamValue expr = makeNumeric("#i0");
-    expectInteger(expr, 0, "0", false);
+    expectInteger(expr, 0, "#i0", false);
 }
 
 TEST_F(NumericParserTest, PositiveIntegerExact)
@@ -43,7 +43,7 @@ TEST_F(NumericParserTest, PositiveIntegerExact)
 TEST_F(NumericParserTest, PositiveIntegerInexact)
 {
     ScamValue expr = makeNumeric("42.0");
-    expectInteger(expr, 42, "42", false);
+    expectInteger(expr, 42, "#i42", false);
 }
 
 TEST_F(NumericParserTest, NegativeIntegerExact)
@@ -55,7 +55,7 @@ TEST_F(NumericParserTest, NegativeIntegerExact)
 TEST_F(NumericParserTest, NegativeIntegerInexact)
 {
     ScamValue expr = makeNumeric("-42.0");
-    expectInteger(expr, -42, "-42", false);
+    expectInteger(expr, -42, "#i-42", false);
 }
 
 TEST_F(NumericParserTest, PositiveRationalExact)
@@ -69,7 +69,7 @@ TEST_F(NumericParserTest, PositiveRationalInexact)
 {
     ScamValue expr = makeNumeric("#i22/7");
     RationalPair value { 22, 7 };
-    expectRational(expr, value, "22/7", false);
+    expectRational(expr, value, "#i22/7", false);
 }
 
 TEST_F(NumericParserTest, NegativeRationalExact)
@@ -83,7 +83,7 @@ TEST_F(NumericParserTest, NegativeRationalInexact)
 {
     ScamValue expr = makeNumeric("#I-22/7");
     RationalPair value { -22, 7 };
-    expectRational(expr, value, "-22/7", false);
+    expectRational(expr, value, "#i-22/7", false);
 }
 
 TEST_F(NumericParserTest, HexadecimalRational)
@@ -115,7 +115,7 @@ TEST_F(NumericParserTest, PositiveRealExact)
 TEST_F(NumericParserTest, PositiveRealInexact)
 {
     ScamValue expr = makeNumeric("42.5000000");
-    expectReal(expr, 42.5, "42.5", false);
+    expectReal(expr, 42.5, "#i42.5", false);
 }
 
 TEST_F(NumericParserTest, NegativeRealExact)
@@ -127,13 +127,13 @@ TEST_F(NumericParserTest, NegativeRealExact)
 TEST_F(NumericParserTest, NegativeRealInexact)
 {
     ScamValue expr = makeNumeric("-42.5000000");
-    expectReal(expr, -42.5, "-42.5", false);
+    expectReal(expr, -42.5, "#i-42.5", false);
 }
 
 TEST_F(NumericParserTest, DecimalExplicitRadix)
 {
     ScamValue expr = makeNumeric("#d#i17");
-    expectInteger(expr, 17, "17", false);
+    expectInteger(expr, 17, "#i17", false);
 }
 
 TEST_F(NumericParserTest, BinaryPositiveInteger)
@@ -157,7 +157,7 @@ TEST_F(NumericParserTest, OctalPositiveInteger)
 TEST_F(NumericParserTest, OctalNegativeInteger)
 {
     ScamValue expr = makeNumeric("#O#I-13");
-    expectInteger(expr, -11, "-11", false);
+    expectInteger(expr, -11, "#i-11", false);
 }
 
 TEST_F(NumericParserTest, HexadecimalPositiveInteger)
@@ -169,7 +169,7 @@ TEST_F(NumericParserTest, HexadecimalPositiveInteger)
 TEST_F(NumericParserTest, HexadecimalNegativeInteger)
 {
     ScamValue expr = makeNumeric("#X#I-FF");
-    expectInteger(expr, -255, "-255", false);
+    expectInteger(expr, -255, "#i-255", false);
 }
 
 TEST_F(NumericParserTest, NotANumberPositive)
@@ -204,42 +204,42 @@ TEST_F(NumericParserTest, IntegerZeroExponent)
 {
     const char * text { "5e0" };
     ScamValue expr = makeNumeric(text);
-    expectInteger(expr, 5, "5", false);
+    expectInteger(expr, 5, "#i5", false);
 }
 
 TEST_F(NumericParserTest, IntegerPositiveExponent)
 {
     const char * text { "5e1" };
     ScamValue expr = makeNumeric(text);
-    expectInteger(expr, 50, "50", false);
+    expectInteger(expr, 50, "#i50", false);
 }
 
 TEST_F(NumericParserTest, IntegerNegativeExponent)
 {
     const char * text { "5e-1" };
     ScamValue expr = makeNumeric(text);
-    expectReal(expr, 0.5, "0.5", false);
+    expectReal(expr, 0.5, "#i0.5", false);
 }
 
 TEST_F(NumericParserTest, RealZeroExponent)
 {
     const char * text { "5.5500000e0" };
     ScamValue expr = makeNumeric(text);
-    expectReal(expr, 5.55, "5.55", false);
+    expectReal(expr, 5.55, "#i5.55", false);
 }
 
 TEST_F(NumericParserTest, RealPositiveExponent)
 {
     const char * text { "-5.0010000e1" };
     ScamValue expr = makeNumeric(text);
-    expectReal(expr, -50.01, "-50.01", false);
+    expectReal(expr, -50.01, "#i-50.01", false);
 }
 
 TEST_F(NumericParserTest, RealNegativeExponent)
 {
     const char * text { "500.0e-2" };
     ScamValue expr = makeNumeric(text);
-    expectInteger(expr, 5, "5", false);
+    expectInteger(expr, 5, "#i5", false);
 }
 
 TEST_F(NumericParserTest, ComplexSimpleParts)
@@ -263,7 +263,7 @@ TEST_F(NumericParserTest, ComplexInfiniteImaginary)
     const char * text { "5-inf.0i" };
     ScamValue expr = makeNumeric(text);
     ScamValue null  { makeNothing() };
-    expectComplex(expr, null, null, text, false);
+    expectComplex(expr, null, null, "5-inf.0i", false);
 }
 
 TEST_F(NumericParserTest, ComplexNanImaginary)
@@ -271,7 +271,7 @@ TEST_F(NumericParserTest, ComplexNanImaginary)
     const char * text { "5+nan.0i" };
     ScamValue expr = makeNumeric(text);
     ScamValue null  { makeNothing() };
-    expectComplex(expr, null, null, text, false);
+    expectComplex(expr, null, null, "5+nan.0i", false);
 }
 
 TEST_F(NumericParserTest, ComplexJustNanImaginary)
@@ -279,7 +279,7 @@ TEST_F(NumericParserTest, ComplexJustNanImaginary)
     const char * text { "+nan.0i" };
     ScamValue expr = makeNumeric(text);
     ScamValue null  { makeNothing() };
-    expectComplex(expr, null, null, text, false);
+    expectComplex(expr, null, null, "+nan.0i", false);
 }
 
 TEST_F(NumericParserTest, ComplexMinusI)
@@ -309,7 +309,7 @@ TEST_F(NumericParserTest, ComplexInfRealFiniteImag)
 TEST_F(NumericParserTest, ComplexPolarForm)
 {
     const char * text { "1.41421356237@-0.78539816339" };
-    const char * repr { "1-i" };
+    const char * repr { "#i1-i" };
     ScamValue expr = makeNumeric(text);
     ScamValue null  { makeNothing() };
     expectComplex(expr, null, null, repr, false);
@@ -318,7 +318,7 @@ TEST_F(NumericParserTest, ComplexPolarForm)
 TEST_F(NumericParserTest, RealFractionVeryLong)
 {
     const char * text { "-0.78539816339" };
-    const char * repr { "-0.785398" };
+    const char * repr { "#i-0.785398" };
     ScamValue expr = makeNumeric(text);
     expectReal(expr, -0.78539816339, repr, false);
 }

@@ -5,6 +5,10 @@
 
 namespace scam
 {
+    extern void applyRound(ScamValue args, Continuation * cont);
+    extern void applyCeiling(ScamValue args, Continuation * cont);
+    extern void applyFloor(ScamValue args, Continuation * cont);
+    extern void applyTruncate(ScamValue args, Continuation * cont);
 
 #define MATH_OP_DECL(Name) \
         extern void apply##Name(ScamValue args, Continuation * cont);

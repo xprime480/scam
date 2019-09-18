@@ -104,7 +104,7 @@ TEST_F(ValueFactoryTest, ComplexTest)
 TEST_F(ValueFactoryTest, RealTest)
 {
     double value { 33.2 };
-    string const repr{ "33.2" };
+    string const repr{ "#i33.2" };
 
     ScamValue expr = makeReal(value, false);
     expectReal(expr, value, repr, false);

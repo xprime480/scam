@@ -256,7 +256,7 @@ TEST_F(MemoryTest, TestScamInteger)
 TEST_F(MemoryTest, TestScamReal)
 {
     const float value { 2.5 };
-    const string repr { "2.5" };
+    const string repr { "#i2.5" };
 
     ScamValue cut1 = makeReal(value, false);
     ScamValue cut2 = makeReal(value, false);

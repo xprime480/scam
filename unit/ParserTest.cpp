@@ -146,7 +146,7 @@ TEST_F(ParserTest, RealTest)
     };
 
     ScamValue expr = runTest(tokens);
-    expectReal(expr, -17.5, msg, false);
+    expectReal(expr, -17.5, "#i-17.5", false);
 }
 
 TEST_F(ParserTest, IntegerTest)

@@ -26,3 +26,8 @@
   occurs when symbols are cached.
 
 * Fix test pythag2.scm.  It randomly (??) causes segmentation violations.
+
+* Implement the round-toward-even rule.
+
+* Refine the output of real numbers.  Default is inexact for reals so should
+  probably output "#e" for exact values.
