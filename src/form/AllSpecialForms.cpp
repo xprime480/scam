@@ -8,6 +8,7 @@
 #include "expr/EqualityOps.hpp"
 #include "expr/EvalOps.hpp"
 #include "expr/SequenceOps.hpp"
+#include "form/CondWorker.hpp"
 #include "form/DefineCont.hpp"
 #include "form/Helpers.hpp"
 #include "form/SyntaxRules.hpp"
@@ -39,14 +40,6 @@ namespace
     caseCommonExec(ScamValue key, ScamValue forms, Continuation * cont);
 
     extern void condElseClause(ScamValue clauses, Continuation * cont);
-
-    extern bool condApplyClause(ScamValue test,
-                                ScamValue clauses,
-                                Continuation * cont);
-
-    extern bool condNormalClause(ScamValue test,
-                                 ScamValue clauses,
-                                 Continuation * cont);
 
     extern void condEvalClauses(ScamValue clauses, Continuation * cont);
 
@@ -225,46 +218,14 @@ void scam::applyCondExpand(ScamValue args, Continuation * cont, Env * env)
 
 void scam::applyCond(ScamValue args, Continuation * cont, Env * env)
 {
-    ScamEngine & engine = ScamEngine::getEngine();
-    static const char * name = "cond";
-
     if ( length(args) < 1 ) {
         ScamValue err = makeError("Bad Argument list for cond (%{0})", args);
         err->errorCategory() = argsCategory;
-        engine.handleError(err);
+        ScamEngine::getEngine().handleError(err);
         return;
     }
 
-    while ( ! isNull(args) ) {
-        ScamValue arg0 = getCar(args);
-        args = getCdr(args);
-
-        ObjectParameter  pObj;
-        CountedParameter p0(pObj, 1);
-        if ( ! argsToParms(arg0, name, p0) ) {
-            break;
-        }
-
-        ScamValue first = getCar(p0.value);
-        ScamValue rest  = getCdr(p0.value);
-
-        if ( equals(first, makeSymbol("else")) ) {
-            condElseClause(rest, cont);
-            return;
-        }
-
-        if ( (length(rest) > 1) && equals( getCar(rest), makeSymbol("=>")) ) {
-            if ( condApplyClause(first, getCdr(rest), cont) ) {
-                return;
-            }
-        }
-
-        else if ( condNormalClause(first, rest, cont) ) {
-            return;
-        }
-    }
-
-    cont->handleValue(makeNull());
+    workQueueHelper<CondWorker>(args, cont, env);
 }
 
 void scam::applyDefine(ScamValue args, Continuation * cont, Env * env)
@@ -526,51 +487,6 @@ namespace
         }
 
         condEvalClauses(clauses, cont);
-    }
-
-    bool
-    condApplyClause(ScamValue test, ScamValue clauses, Continuation * cont)
-    {
-        ScamEngine & engine = ScamEngine::getEngine();
-
-        if ( checkForExcessApplyClauses(clauses) ) {
-            return true;
-        }
-
-        ScamValue testValue = engine.eval(test);
-        if ( isUnhandledError(testValue) ) {
-            engine.handleError(testValue);
-            return true;
-        }
-        else if ( ! truth(testValue) ) {
-            return false;
-        }
-
-        ScamValue form   = getCar(clauses);
-        commonApplyClause(form, testValue, cont);
-        return true;
-    }
-
-    bool
-    condNormalClause(ScamValue test, ScamValue clauses, Continuation * cont)
-    {
-        ScamEngine & engine = ScamEngine::getEngine();
-
-        ScamValue testValue = engine.eval(test);
-        if ( isUnhandledError(testValue) ) {
-            engine.handleError(testValue);
-            return true;
-        }
-        else if ( ! truth(testValue) ) {
-            return false;
-        }
-        else if ( isNull(clauses) ) {
-            cont->handleValue(testValue);
-            return true;
-        }
-
-        condEvalClauses(clauses, cont);
-        return true;
     }
 
     void condEvalClauses(ScamValue clauses, Continuation * cont)

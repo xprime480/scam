@@ -29,7 +29,12 @@
  (2 (cond
      (1 => inc)))
  (3 (cond
-     (1 => (lambda (x) (* x 3))))))
+     (1 => (lambda (x) (* x 3)))))
+
+ ('b (let ((n 5))
+       (cond
+        ((< n 2) 'a)
+        (else    'b)))))
 
 (narc-catch
  (:args   (cond)))
