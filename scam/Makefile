@@ -7,10 +7,11 @@ DEP = $(SRC:.cpp=.d)
 
 CPP = /usr/bin/g++
 INC = -I include -I ../include
-CPPFLAGS = -g -Wall $(INC)
+GMP = -L/usr/local/lib -lgmpxx -lgmp
+CPPFLAGS = -g -Wall $(INC) $(GMP)
 
 scam : $(OBJ) lib
-	$(CPP) -g -o $@ $(OBJ) -L../src -lscam
+	$(CPP) -g -o $@ $(OBJ) -L../src -lscam $(GMP)
 
 $(OBJ) : %.o : %.cpp
 	$(CPP) $(CPPFLAGS) -c $<

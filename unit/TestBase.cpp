@@ -171,6 +171,8 @@ void TestBase::runsafe(std::function<void()> thunk)
     }
 
     cerr << writeValue(rv) << "\n";
+
+    EXPECT_TRUE(isSymbol(rv));
 }
 
 
@@ -411,22 +413,32 @@ void TestBase::expectRational(ScamValue expr,
 
 }
 
+void TestBase::expectIntegerCommon(ScamValue expr,
+                                   string const & repr,
+                                   bool exact)
+{
+    assertType(expr, "integer", isInteger);
+    checkPredicates(expr, SELECT_TRUTH | ALL_INTEGER);
+    EXPECT_EQ(repr, writeValue(expr));
+    EXPECT_EQ(exact, isExact(expr));
+}
+
 void TestBase::expectInteger(ScamValue expr,
                              int value,
                              string const & repr,
                              bool exact)
 {
-    assertType(expr, "integer", isInteger);
-    checkPredicates(expr, SELECT_TRUTH | ALL_INTEGER);
-    EXPECT_EQ(repr, writeValue(expr));
-    try {
-        EXPECT_EQ(value, asInteger(expr));
-    }
-    catch ( ScamException e ) {
-        FAIL() << e.getMessage() << "\n";
-    }
+    expectIntegerCommon(expr, repr, exact);
+    EXPECT_EQ(value, asInteger(expr));
+}
 
-    EXPECT_EQ(exact, isExact(expr));
+void TestBase::expectInteger(ScamValue expr,
+                             mpz_t & value,
+                             string const & repr,
+                             bool exact)
+{
+    expectIntegerCommon(expr, repr, exact);
+    EXPECT_EQ(0, mpz_cmp(value, expr->intPart()));
 }
 
 void TestBase::expectChar(ScamValue expr,

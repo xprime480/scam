@@ -275,11 +275,12 @@ This comment style can span lines!\n\
 
     TEST(TokenizerTest, Integers)
     {
-        string const input{ "1 +3 -5" };
+        string const input{ "1 +3 -5 12342341234141341341341444134" };
         vector<Token> exp {
             Token(TokenType::TT_NUMERIC, "1"),
             Token(TokenType::TT_NUMERIC, "+3"),
-            Token(TokenType::TT_NUMERIC, "-5")
+            Token(TokenType::TT_NUMERIC, "-5"),
+            Token(TokenType::TT_NUMERIC, "12342341234141341341341444134")
         };
 
         string2tokens(input, exp);

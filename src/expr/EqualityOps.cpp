@@ -80,7 +80,7 @@ namespace
     bool equalsNumeric(ScamValue lhs, ScamValue rhs)
     {
         if ( isNaN(lhs) || isNaN(rhs) ) {
-            return isNaN(lhs) && isNaN(rhs);
+            return false;
         }
         if ( isNegInf(lhs) || isNegInf(rhs) ) {
             return isNegInf(lhs) && isNegInf(rhs);

@@ -10,6 +10,7 @@
 
 #include <cmath>
 #include <cstring>
+#include <limits>
 
 using namespace scam;
 using namespace std;
@@ -51,8 +52,11 @@ ScamValue NumericConverter::simplify(ScamValue value)
         }
     }
 
-    if ( isReal(value) && ! isRational(value) ) {
+    if ( isReal(value) && (! isRational(value)) ) {
         double v = asDouble(value);
+        if ( ::fabs(v) >= (double) numeric_limits<int>::max() ) {
+            return value;
+        }
         double frac = ::fmod(v, 1.0);
         if ( 0.0 == frac ) {
             const bool ex = isExact(value);
@@ -91,6 +95,9 @@ void NumericConverter::scanNum()
 
 void NumericConverter::scanComplex()
 {
+    ScamValue zero = makeIntegerWithExactness("0");
+    ScamValue one  = makeIntegerWithExactness("1");
+
     ScamValue rv = makeNothing();
     PositionType original = stream.getPos();
 
@@ -103,10 +110,10 @@ void NumericConverter::scanComplex()
             rv = imag;
         }
         else {
-            real = makeIntegerWithExactness(0);
+            real = zero;
             imag = scanUReal();
             if ( isNothing(imag) ) {
-                imag = makeIntegerWithExactness(1);
+                imag = one;
             }
             if ( 'i' == tolower(stream.peek()) ) {
                 stream.advance();
@@ -121,7 +128,7 @@ void NumericConverter::scanComplex()
             stream.advance();
             if ( isNothing(imag) ) {
                 imag = real;
-                real = makeIntegerWithExactness(0);
+                real = zero;
             }
             rv = makeComplex(real, imag);
         }
@@ -144,12 +151,12 @@ void NumericConverter::scanComplex()
             if ( isNothing(imag) ) {
                 sign = scanSign();
                 if ( 0 == sign ) {
-                    imag = makeIntegerWithExactness(0);
+                    imag = zero;
                 }
                 else {
                     imag = scanUReal();
                     if ( isNothing(imag) ) {
-                        imag = makeIntegerWithExactness(1);
+                        imag = one;
                     }
                 }
             }
@@ -299,7 +306,7 @@ ScamValue NumericConverter::scanUInteger()
     PositionType original = stream.getPos();
 
     size_t count { 0 };
-    int value { 0 };
+    stringstream s;
 
     while ( char c = stream.peek() ) {
         int digit = convertDigit(c);
@@ -307,9 +314,9 @@ ScamValue NumericConverter::scanUInteger()
             break;
         }
 
+        s  << c;
         stream.advance();
         ++count;
-        value = value * base + digit;
     }
 
     if ( 0 == count ) {
@@ -317,7 +324,7 @@ ScamValue NumericConverter::scanUInteger()
         return makeNothing();
     }
 
-    return makeIntegerWithExactness(value);
+    return makeIntegerWithExactness(stream.strBetween(original));
 }
 
 void NumericConverter::scanPrefix()
@@ -589,7 +596,7 @@ ScamValue NumericConverter::makeRationalWithExactness(int num, int den) const
     return makeRational(num, den, makeExact);
 }
 
-ScamValue NumericConverter::makeIntegerWithExactness(int value) const
+ScamValue NumericConverter::makeIntegerWithExactness(const string & value) const
 {
     bool makeExact = ! (exactness == ExactnessType::ET_INEXACT);
     return makeInteger(value, makeExact);

@@ -3,6 +3,8 @@
 
 #include "ScamFwd.hpp"
 
+#include <string>
+
 namespace scam
 {
     class CharStream;
@@ -55,7 +57,7 @@ namespace scam
         ScamValue makeComplexPolar(ScamValue r, ScamValue theta) const;
         ScamValue makeRealWithExactness(double value) const;
         ScamValue makeRationalWithExactness(int num, int den) const;
-        ScamValue makeIntegerWithExactness(int value) const;
+        ScamValue makeIntegerWithExactness(const std::string & value) const;
     };
 }
 

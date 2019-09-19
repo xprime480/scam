@@ -36,7 +36,7 @@ namespace scam
          Syntax,
          Closure,
 
-	 /* scam only structured types */
+         /* scam only structured types */
          Dict,
          Class,
          Instance,

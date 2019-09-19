@@ -5,6 +5,7 @@
 #include "value/TypePredicates.hpp"
 #include "value/ValueWriter.hpp"
 
+#include <limits>
 #include <sstream>
 
 using namespace scam;
@@ -52,7 +53,16 @@ double scam::asDouble(ScamValue data)
     }
 
     if ( isInteger(data) ) {
-        return (double) data->intPart();
+        const mpz_t & value = data->intPart();
+        if ( mpz_cmpabs_d(value, numeric_limits<double>::max() ) < 0 ) {
+            return (double) mpz_get_d(value);
+        }
+        else {
+            stringstream s;
+            s << "Cannot convert MPZ: <" << writeValue(data)
+              << "> to double";
+            throw ScamException(s.str());
+        }
     }
     else if ( isRational(data) ) {
         return ((double) data->numPart() / (double) data->denPart() );
@@ -78,7 +88,7 @@ RationalPair scam::asRational(ScamValue data)
     RationalPair pair { 0, 1 };
 
     if ( isInteger(data) ) {
-        pair.num = data->intPart();
+        pair.num = asInteger(data);
     }
     else {
         pair.num = data->numPart();
@@ -96,7 +106,15 @@ int scam::asInteger(ScamValue data)
         throw ScamException(s.str());
     }
 
-    return data->intPart();
+    const mpz_t & mpz = data->intPart();
+    if ( mpz_fits_sint_p(mpz) ) {
+        return mpz_get_si(mpz);
+    }
+    else {
+        stringstream s;
+        s << "Value <" << writeValue(data) << "> too large for integer";
+        throw ScamException(s.str());
+    }
 }
 
 ScamPort * scam::asPort(ScamValue data)

@@ -217,12 +217,39 @@ ScamValue scam::makeRational(int num, int den, bool exact)
 
 ScamValue scam::makeInteger(int value, bool exact)
 {
+    mpz_t bigInt;
+    mpz_init_set_si(bigInt, value);
+    ScamValue v = makeInteger(bigInt, exact);
+    mpz_clear(bigInt);
+    return v;
+}
+
+ScamValue scam::makeInteger(mpz_t value, bool exact)
+{
     static constexpr auto myType = ScamValueType::Integer;
     ScamValue v = mm.make<ScamData>(myType);
 
     v->exactFlag() = exact;
-    v->intPart()   = value;
+    mpz_set(v->intPart(), value);
 
+    return v;
+}
+
+ScamValue scam::makeInteger(string const & value, bool exact)
+{
+    mpz_t bigInt;
+
+    if ( 0 != mpz_init_set_str(bigInt, value.c_str(), 10) ) {
+        mpz_clear(bigInt);
+
+        ScamValue err = makeError("<%{0}> is not a valid integer constant",
+                                  makeString(value));
+        err->errorCategory() = readCategory;
+        return err;
+    }
+
+    ScamValue v = makeInteger(bigInt, exact);
+    mpz_clear(bigInt);
     return v;
 }
 

@@ -445,7 +445,7 @@ int & ScamData::denPart()
     return temp->den;
 }
 
-int & ScamData::intPart()
+mpz_t & ScamData::intPart()
 {
     IntegerContents * temp = assertContentsType<IntegerContents>();
     return temp->value;

@@ -137,6 +137,40 @@ TEST_F(ValueFactoryTest, IntegerTest)
     expectInteger(evaled, value, repr, true);
 }
 
+TEST_F(ValueFactoryTest, IntegerFromMpzTest)
+{
+    mpz_t value;
+    string const repr{ "-1234567890123456789042" };
+
+    mpz_init_set_str(value, repr.c_str(), 10);
+    ScamValue expr = makeInteger(value, true);
+
+    expectInteger(expr, value, repr, true);
+
+    ScamValue evaled = evaluate(expr);
+    expectInteger(evaled, value, repr, true);
+    mpz_clear(value);
+}
+
+TEST_F(ValueFactoryTest, IntegerFromStringTest)
+{
+    const int value { -33 };
+    string const repr{ "-33" };
+
+    ScamValue expr = makeInteger(repr, true);
+    expectInteger(expr, value, repr, true);
+
+    ScamValue evaled = evaluate(expr);
+    expectInteger(evaled, value, repr, true);
+}
+
+TEST_F(ValueFactoryTest, IntegerFromStringErrorTest)
+{
+    string const repr{ "not-a-number" };
+    ScamValue expr = makeInteger(repr, true);
+    expectError(expr);
+}
+
 TEST_F(ValueFactoryTest, CharacterTest)
 {
     string const repr { "#\\Q" };

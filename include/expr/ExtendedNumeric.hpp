@@ -67,7 +67,6 @@ namespace scam
         os << expr << "\t" << value;
         return os;
     }
-
 }
 
 #endif

@@ -1,6 +1,9 @@
 #if ! defined(SCAMCONTENTS_HPP)
 #define SCAMCONTENTS_HPP 1
 
+#include <gmpxx.h>
+#include <gmp.h>
+
 namespace scam
 {
     template <typename T>
@@ -342,14 +345,19 @@ namespace scam
 
         struct IntegerContents : public NumericContents
         {
-            static const constexpr char * name = "integer";
+            static const constexpr char * name = "mpz integer";
 
             IntegerContents()
-                : value(0)
             {
+                mpz_init(value);
             }
 
-            int value;
+            ~IntegerContents()
+            {
+                mpz_clear(value);
+            }
+
+            mpz_t value;
         };
     }
 }

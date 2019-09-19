@@ -80,8 +80,17 @@ namespace scam
                             std::string const & repr,
                             bool exact);
 
+        void expectIntegerCommon(ScamValue expr,
+                                 std::string const & repr,
+                                 bool exact);
+
         void expectInteger(ScamValue expr,
                            int value,
+                           std::string const & repr,
+                           bool exact);
+
+        void expectInteger(ScamValue expr,
+                           mpz_t & value,
                            std::string const & repr,
                            bool exact);
 

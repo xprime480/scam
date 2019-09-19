@@ -15,6 +15,9 @@
 #include <string>
 #include <vector>
 
+#include <gmpxx.h>
+#include <gmp.h>
+
 namespace scam
 {
     class ScamPort;
@@ -106,7 +109,7 @@ namespace scam
         double & realValue();
         int & numPart();
         int & denPart();
-        int & intPart();
+        mpz_t & intPart();
 
     private:
         bool immutable;

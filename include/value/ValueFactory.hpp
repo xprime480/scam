@@ -59,6 +59,8 @@ namespace scam
     extern ScamValue makeReal(double value, bool exact);
     extern ScamValue makeRational(int num, int den, bool exact);
     extern ScamValue makeInteger(int value, bool exact);
+    extern ScamValue makeInteger(mpz_t value, bool exact);
+    extern ScamValue makeInteger(std::string const & value, bool exact);
 
     extern ScamValue makePair(ScamValue car, ScamValue cdr);
     extern ScamValue makeList();

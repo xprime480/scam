@@ -57,6 +57,10 @@ bool scam::operator==(const ExtendedNumeric & a, const ExtendedNumeric & b)
         return false;
     }
 
+    if ( dA == dB ) {
+        return true;
+    }
+
     const bool aNegInf = isNegInf(dA);
     const bool aPosInf = isPosInf(dA);
     const bool bNegInf = isNegInf(dB);
@@ -172,8 +176,11 @@ scam::operator+(const ExtendedNumeric & a, const ExtendedNumeric & b)
     const auto joint = computeJoint(dA, dB);
     if ( ! joint.special ) {
         if ( joint.integer ) {
-            const int rv = asInteger(dA) + asInteger(dB);
+            mpz_t rv;
+            mpz_init(rv);
+            mpz_add(rv, dA->intPart(), dB->intPart());
             expr = makeInteger(rv, joint.exact);
+            mpz_clear(rv);
         }
         else if ( joint.rational ) {
             const RationalPair ratA = asRational(dA);
@@ -311,8 +318,11 @@ scam::operator*(const ExtendedNumeric & a, const ExtendedNumeric & b)
     const auto joint = computeJoint(dA, dB);
     if ( ! joint.special ) {
         if ( joint.integer ) {
-            const int rv = asInteger(dA) * asInteger(dB);
+            mpz_t rv;
+            mpz_init(rv);
+            mpz_mul(rv, dA->intPart(), dB->intPart());
             expr = makeInteger(rv, joint.exact);
+            mpz_clear(rv);
         }
         else if ( joint.rational ) {
             const RationalPair ratA = asRational(dA);
@@ -476,10 +486,14 @@ scam::operator%(const ExtendedNumeric & a, const ExtendedNumeric & b)
 
     const auto joint = computeJoint(dA, dB);
     if ( ! joint.special ) {
-
         if ( joint.integer ) {
-            const int rv = asInteger(dA) % asInteger(dB);
+            const mpz_t & mpzA = dA->intPart();
+            const mpz_t & mpzB = dB->intPart();
+            mpz_t rv;
+            mpz_init(rv);
+            mpz_tdiv_r(rv, mpzA, mpzB);
             expr = makeInteger(rv, joint.exact);
+            mpz_clear(rv);
         }
         else if ( joint.rational ) {
             ExtendedNumeric quotient = a / b;

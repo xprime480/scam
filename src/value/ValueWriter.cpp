@@ -537,7 +537,10 @@ namespace
             s << "+inf.0";
         }
         else if ( isInteger(hack) ) {
-            s << data->intPart();
+            mpz_t & value = data->intPart();
+            char * tmp = mpz_get_str(nullptr, 10, value);
+            s << tmp;
+            free(tmp);
         }
         else if ( isRational(hack) ) {
             s << data->numPart() << "/" << data->denPart();
