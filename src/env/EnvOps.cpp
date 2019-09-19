@@ -25,6 +25,7 @@ namespace
 
     extern Env * initializeSchemeBase(Env * base);
     extern Env * initializeSchemeChar(Env * base);
+    extern Env * initializeSchemeComplex(Env * base);
     extern Env * initializeSchemeCxr(Env * base);
     extern Env * initializeSchemeEval(Env * base);
     extern Env * initializeSchemeInexact(Env * base);
@@ -88,6 +89,7 @@ void scam::initalizeLibraries(Env * base)
 {
     initializeSchemeBase(base);
     initializeSchemeChar(base);
+    initializeSchemeComplex(base);
     initializeSchemeCxr(base);
     initializeSchemeEval(base);
     initializeSchemeInexact(base);
@@ -291,6 +293,20 @@ namespace
         return env;
     }
 
+    Env * initializeSchemeComplex(Env * base)
+    {
+        Env * env = base->extend();
+
+        addPrimitive(env, "imag-part", applyImagPart);
+        addPrimitive(env, "real-part", applyRealPart);
+
+        safeInclude(env, "lib/scheme/complex.lib");
+
+        ScamValue name = makeList(makeSymbol("scheme"), makeSymbol("complex"));
+        ScamEngine::getEngine().saveLibrary(name, env);
+        return env;
+    }
+
     Env * initializeSchemeCxr(Env * base)
     {
         Env * env = base->extend();
@@ -321,6 +337,7 @@ namespace
         addPrimitive(env, "finite?", applyFiniteP);
         addPrimitive(env, "infinite?", applyInfiniteP);
         addPrimitive(env, "nan?", applyNanP);
+        addPrimitive(env, "sqrt", applySqrt);
 
         ScamValue name = makeList(makeSymbol("scheme"), makeSymbol("inexact"));
         ScamEngine::getEngine().saveLibrary(name, env);

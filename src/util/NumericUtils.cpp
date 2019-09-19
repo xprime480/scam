@@ -15,7 +15,7 @@ int scam::gcd(int a, int b)
     if ( 0 == a ) {
         return b;
     }
-    if ( a * b < 0 ) {
+   if ( (a < 0) ^ (b < 0) ) {
         return gcd(abs(a), abs(b));
     }
     if ( a < b ) {

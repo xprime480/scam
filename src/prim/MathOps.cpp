@@ -6,6 +6,7 @@
 #include "expr/ExtendedNumeric.hpp"
 #include "util/ArgListHelper.hpp"
 #include "util/Parameter.hpp"
+#include "value/ScamNumeric.hpp"
 #include "value/ValueFactory.hpp"
 
 #include <algorithm>
@@ -58,6 +59,28 @@ void scam::applyFloor(ScamValue args, Continuation * cont)
     }
 }
 
+void scam::applyImagPart(ScamValue args, Continuation * cont)
+{
+    static const char * name = "imag-part";
+
+    ComplexParameter p0;
+    if ( argsToParms(args, name, p0) ) {
+        ScamValue rv = imagPart(p0.value);
+        cont->handleValue(rv);
+    }
+}
+
+void scam::applyRealPart(ScamValue args, Continuation * cont)
+{
+    static const char * name = "real-part";
+
+    ComplexParameter p0;
+    if ( argsToParms(args, name, p0) ) {
+        ScamValue rv = realPart(p0.value);
+        cont->handleValue(rv);
+    }
+}
+
 void scam::applyRound(ScamValue args, Continuation * cont)
 {
     static const char * name = "round";
@@ -65,6 +88,52 @@ void scam::applyRound(ScamValue args, Continuation * cont)
     FiniteRealParameter p0;
     if ( argsToParms(args, name, p0) ) {
         ScamValue rv = convertWith(p0.value, round);
+        cont->handleValue(rv);
+    }
+}
+
+void scam::applySqrt(ScamValue args, Continuation * cont)
+{
+    static const char * name = "sqrt";
+
+    NumericParameter p0;
+    if ( argsToParms(args, name, p0) ) {
+        ScamValue rv = makeNothing();
+        ScamValue value = p0.value;
+
+        if ( isSpecialNumeric(value) ) {
+            if ( isNegInf(value) ) {
+                rv = makeComplex(makeInteger(0, true), makeNegInf());
+            }
+            else {
+                rv = value;
+            }
+        }
+        else if ( isReal(value) ) {
+            double d = asDouble(value);
+            double r = sqrt(abs(d));
+            if ( d < 0 ) {
+                rv = makeComplex(makeInteger(0, true),
+                                 makeReal(r, false));
+            }
+            else {
+                rv = makeReal(r, false);
+            }
+        }
+        else {
+            double real   = asDouble(realPart(value));
+            double imag   = asDouble(imagPart(value));
+            double r      = sqrt(real*real + imag*imag);
+            double theta  = atan2(imag, real);
+            double rr     = sqrt(r);
+            double rtheta = theta / 2;
+            double rreal  = rr * cos(rtheta);
+            double rimag  = rr * sin(rtheta);
+
+            rv = makeComplex(makeReal(rreal, false),
+                             makeReal(rimag, false));
+        }
+
         cont->handleValue(rv);
     }
 }

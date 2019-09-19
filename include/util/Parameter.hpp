@@ -39,6 +39,12 @@ namespace scam
         ScamValue check() override;
     };
 
+    struct ComplexParameter : public FilteredParameter
+    {
+    protected:
+        ScamValue check() override;
+    };
+
     struct FiniteRealParameter : public FilteredParameter
     {
     protected:

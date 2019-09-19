@@ -111,6 +111,11 @@ ScamValue NumericParameter::check()
     return checker(value, isNumeric, "number");
 }
 
+ScamValue ComplexParameter::check()
+{
+    return checker(value, isComplex, "complex");
+}
+
 ScamValue FiniteRealParameter::check()
 {
     auto fn = [] (ScamValue v) -> bool {
